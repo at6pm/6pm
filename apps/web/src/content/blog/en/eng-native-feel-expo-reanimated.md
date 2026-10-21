@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [engineering, expo, react native, reanimated, gestures]
 related: [eng-sky-shaders-react-native-skia, eng-widgets-controls-live-activities-expo, eng-why-we-open-sourced-our-money-app]
 cta: "Read the motion code on GitHub, or feel it in the public beta."
+hero: [close-caught, close-tomorrow]
 ---
 
 # Native feel in Expo: Reanimated 4 worklets, real form sheets and haptics choreography
@@ -63,6 +64,8 @@ export function project(velocity: number, decelerationRate = 0.998): number {
   return ((velocity / 1000) * decelerationRate) / (1 - decelerationRate);
 }
 ```
+
+<!-- media: close-swipe-clip -->
 
 The close card uses it to pick a verdict. Only the axis the finger mostly travelled counts, so a mostly downward drag that drifts right is "not mine", never "keep":
 
@@ -121,6 +124,8 @@ Gesture.Pan()
     }
   });
 ```
+
+<!-- media: diagram-threads -->
 
 1. **Interruptible.** Grab a card that is still springing home and it is picked up where it is. Because upward drags are rubber-banded, `onStart` runs the inverse (`unband`) to find the finger offset that produces the current position. No jump.
 2. **Rubber, not walls.** Dragging up, the card follows less and less, the same curve iOS uses at a scroll view's edge:
@@ -204,6 +209,8 @@ const stampStyle = useAnimatedStyle(() => {
 });
 ```
 
+<!-- media: close-stamp-clip -->
+
 The haptic fires in the timing's completion callback, the instant the stamp hits paper. That timing is the whole trick: a thump 100 ms late reads as a bug.
 
 ## Haptics: four words, used consistently
@@ -237,6 +244,8 @@ From a gesture worklet, haptics hop to the JS thread with `scheduleOnRN` (Reanim
 // apps/mobile/src/ui/odometer.tsx
 const slide = LinearTransition.duration(durations.screen).easing(ease);
 ```
+
+<!-- media: number-roll-clip -->
 
 No re-render can make the number jump, because the layout change itself is animated on the UI thread.
 

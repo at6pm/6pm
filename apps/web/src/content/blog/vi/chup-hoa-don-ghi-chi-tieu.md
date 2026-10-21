@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [hoá đơn, quét hoá đơn, ghi chi tiêu, chia bill, ocr]
 related: [scan-receipts-track-expenses, cach-ghi-chi-tieu-tu-dong-tren-iphone, quet-vietqr-tu-ghi-chi-tieu, ghi-chi-tieu-bang-giong-noi]
 cta: "Giơ điện thoại lên tờ hoá đơn. 6pm lo phần còn lại."
+hero: [scan-receipt]
 ---
 
 # Chụp hoá đơn là ghi chi tiêu: quét hoá đơn bằng iPhone trong vài giây
@@ -20,6 +21,8 @@ cta: "Giơ điện thoại lên tờ hoá đơn. 6pm lo phần còn lại."
 Gõ tay một tờ hoá đơn 186.000₫ thì không khó. Cái khó là phải nhớ làm điều đó, ngay lúc tay đang xách hai túi đồ. Chụp thì nhanh hơn gõ, và quan trọng hơn: chụp thì không cần nhớ con số.
 
 ## Cách quét hoá đơn bằng 6pm
+
+<!-- media: scan-receipt-clip -->
 
 ### Bước 1: Mở Quét
 
@@ -72,6 +75,8 @@ Quét lại một tờ đã lưu? 6pm báo "Hoá đơn này đã lưu rồi." Th
 ## Từ tờ hoá đơn tới con số sáng mai
 
 Mỗi tờ hoá đơn bạn quét đi vào **Hộp thư**, cùng các khoản quét VietQR, email và giọng nói. 18:00, 6pm nhắc **chốt ngày**: mỗi khoản hiện như một tờ biên lai, bạn Giữ, Sửa hoặc báo Không phải của tôi. Tờ cuối đóng dấu **ĐÃ CHỐT**.
+
+<!-- media: close-tomorrow -->
 
 Sáng mai, bạn thấy **Hôm nay tiêu được**: lương trừ hoá đơn, trừ phần cho các hũ và bạn của tương lai, phần còn lại chia đều tới ngày lương. Đi siêu thị nhiều hôm nay thì mấy ngày sau bớt chút. Không cần ngồi cộng hoá đơn.
 

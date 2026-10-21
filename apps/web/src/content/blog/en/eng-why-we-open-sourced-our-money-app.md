@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [engineering, open source, privacy, sqlcipher, cloudflare workers]
 related: [eng-reading-vietqr-on-device, eng-one-camera-qr-and-receipts, eng-widgets-controls-live-activities-expo]
 cta: "Read the code on GitHub, then try the public beta."
+hero: [close-receipt]
 ---
 
 # Why we open-sourced our money app
@@ -24,6 +25,8 @@ The website says it plainly: "The app, the money maths and the privacy promises 
 Open source also helps with a duller problem: correctness. The daily number, the pay cycle, the close, the VietQR and receipt parsers all live in `packages/domain`, a pure TypeScript package with unit tests. If our maths is wrong, you can show us the line.
 
 ## What stays on the phone
+
+<!-- media: diagram-privacy -->
 
 ### An encrypted database with a key that never leaves
 
@@ -149,6 +152,8 @@ This is the section most privacy pages skip. In plain terms, from `apps/web/src/
 ### On-device mode
 
 Settings → AI can keep 6pm's AI on the iPhone: questions are read, companion lines written and receipts read with a model downloaded once from Hugging Face. In that mode receipt email is off (it needs the server), crash reports are off, and voice uses Apple's on-device recogniser.
+
+<!-- media: store-ai -->
 
 ## What open source does not prove
 

@@ -8,6 +8,7 @@ featured: true
 tags: [ghi chi tiêu, tự động, iphone, vietqr, hướng dẫn]
 related: [track-spending-automatically-iphone, quet-vietqr-tu-ghi-chi-tieu, ghi-chi-tieu-bang-giong-noi, chup-hoa-don-ghi-chi-tieu]
 cta: "Tiêu tới đâu, tự ghi tới đó. Thử 6pm trên iPhone."
+hero: [close-caught, today]
 ---
 
 # Cách ghi chi tiêu tự động trên iPhone: 6 đường, một hộp thư
@@ -25,6 +26,8 @@ Vấn đề không nằm ở ý chí. Ghi tay bắt bạn làm hai việc cùng 
 ## 6 cách để khoản chi tự vào sổ
 
 Không phải ngày nào bạn cũng trả tiền theo một kiểu. Sáng Grab bằng thẻ, trưa quét QR quán cơm, chiều mua nước mía bằng tiền mặt. Vì vậy 6pm có nhiều cửa vào, và cửa nào cũng dẫn về **Hộp thư**.
+
+<!-- media: diagram-capture -->
 
 ### 1. Quét VietQR ngay tại quầy
 
@@ -69,11 +72,15 @@ Còn tiền mặt thì dùng **Thêm nhanh**: ba lần chạm. Thêm nút Thêm 
 
 Một ly trà sữa 45k trả bằng QR có thể "được thấy" hai lần: một lần lúc bạn quét, một lần khi bạn chia sẻ biên lai chuyển khoản từ app ngân hàng. 6pm gộp hai lần thấy cùng số tiền từ hai nguồn khác nhau, cách nhau vài phút, thành một khoản, ghi chú "Thấy qua 2 nguồn". Bạn không phải ngồi xoá trùng.
 
+<!-- media: store-inbox -->
+
 Khoản chưa xác nhận vẫn được tính ngay vào con số hôm nay. Nghĩa là nếu bạn vừa quét 120k mà chưa chốt, con số "Hôm nay tiêu được" đã trừ 120k. Con số luôn thật.
 
 ## 18:00: chốt ngày trong một phút
 
 Ghi tự động mới là nửa câu chuyện. Nửa còn lại là **chốt ngày**.
+
+<!-- media: close-swipe-clip -->
 
 Đến giờ chốt (mặc định 18:00, đổi được từ 15:00 đến 23:45), 6pm nhắc bạn. Mỗi khoản hiện lên như một tờ biên lai: **Giữ**, **Sửa**, hoặc **Không phải của tôi**. Tờ cuối cùng đóng dấu **ĐÃ CHỐT**. Thường chưa tới một phút.
 
@@ -82,6 +89,8 @@ Lỡ hôm nào quên? Không sao. Ngày bị lỡ nằm chờ, và những gì �
 ## Sáng mai: một con số
 
 Sau khi chốt, sáng hôm sau bạn chỉ cần nhìn một con số: **Hôm nay tiêu được**. Nó lấy lương trừ hoá đơn, trừ phần để dành cho các hũ và cho bạn của tương lai, rồi chia đều phần còn lại cho số ngày tới kỳ lương. Hôm nay tiêu ít, mai rộng hơn. Hôm nay chơi lớn, mấy ngày sau bớt lại chút.
+
+<!-- media: close-tomorrow -->
 
 Muốn thấy con số này mà không mở app? Gắn widget lên Màn hình khoá.
 

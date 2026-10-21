@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [expense tracker, budget apps, iphone, app comparison, ynab]
 related: [app-quan-ly-chi-tieu-tot-nhat-2026, ynab-alternatives-for-people-who-hate-budgeting, track-spending-automatically-iphone, how-much-can-i-spend-per-day]
 cta: "Get 6pm on the App Store from 6 Nov, or join the public beta today."
+hero: [today, close-receipt]
 ---
 
 # The best expense tracker apps for iPhone in 2026, honestly compared
@@ -86,6 +87,8 @@ Spendee has shared wallets for couples, families and roommates, category budgets
 
 **Best for:** iPhone users who have quit expense trackers before, and want a daily answer instead of a dashboard.
 
+<!-- media: diagram-capture -->
+
 6pm is built around a one-minute ritual. During the day, spends land in one **Inbox** on their own: Apple Pay taps (through a Shortcuts automation you set up once), receipt photos read on your phone, bank and shop emails forwarded to your own address (like k7m2qx@at6pm.app), voice ("lunch, twelve dollars"), QR codes, and a keypad for cash. Duplicates seen two ways merge into one.
 
 At 6pm (or the time you pick) you swipe through the day: Keep, Edit or Not mine. The last card stamps the day **CLOSED**. Next morning you get one number, **Safe to spend today**: your pay, minus bills, minus pots and **Future you**, spread evenly to payday. **Ask 6pm** answers "Can I afford $350 on Saturday?" from your own numbers.
@@ -93,6 +96,8 @@ At 6pm (or the time you pick) you swipe through the day: Keep, Edit or Not mine.
 The free tier is the whole ritual: the close, every way to capture, Budget together (shared pots for two). 6pm Max ($4.99/month or $34.99/year, 7-day trial) adds looks, unlimited Ask and pots, Travel mode, Year book and encrypted backup.
 
 **Where 6pm is weaker, plainly:** no bank sync, so a card swipe you never photograph, forward or tap with Apple Pay has to be typed. No Android yet, no web or Mac. No investments or net worth. Light on reports. And it has not launched yet: it reaches the App Store on 6 November 2026.
+
+<!-- media: close-swipe-clip -->
 
 ## So which one?
 

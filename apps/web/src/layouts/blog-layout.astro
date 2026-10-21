@@ -1,8 +1,13 @@
 ---
 import type { MarkdownHeading } from 'astro';
 
+import { getImage } from 'astro:assets';
+
 import '../styles/reading.css';
+import '../styles/blog-media.css';
 import BlogFrame from '../components/blog/blog-frame.astro';
+import LoopClips from '../components/blog/loop-clips.astro';
+import PostHero from '../components/blog/post-hero.astro';
 import {
   authorPath,
   blogPath,
@@ -17,6 +22,7 @@ import {
   type Post,
 } from '../data/blog';
 import { blogCopy } from '../data/blog-copy';
+import { shotImage, withMedia } from '../data/blog-figures';
 import { appStoreUrl, ctaMode, founder, repoUrl, testFlightUrl } from '../data/site/config';
 import { homePath } from '../data/site/copy';
 import { articleLd, ldJson } from '../data/structured-data';
@@ -30,7 +36,7 @@ interface Props {
 }
 
 const { post, headings, published } = Astro.props;
-const { lang, slug, title, description, pubDate, tags, cta } = post.data;
+const { lang, slug, title, description, pubDate, tags, cta, hero } = post.data;
 const t = blogCopy[lang];
 const store = ctaMode === 'store';
 const engineering = isEngineering(post);
@@ -44,13 +50,21 @@ const words = (post.body ?? '').split(/\s+/).filter(Boolean).length;
 const sections = headings.filter((heading) => heading.depth === 2);
 
 // The page prints its own `<h1>`, so the body's goes; links to posts not out yet keep only words;
-// a table's first column names its row, so screen readers announce it with each cell.
-const body = unlinkUnpublished(
-  (await Astro.slots.render('default'))
-    .replace(/<h1[^>]*>[\s\S]*?<\/h1>/, '')
-    .replace(/<tr>(\s*)<td([^>]*)>([\s\S]*?)<\/td>/g, '<tr>$1<th scope="row"$2>$3</th>'),
-  published,
+// a table's first column names its row, so screen readers announce it with each cell; each
+// `<!-- media: … -->` line becomes its figure.
+const body = await withMedia(
+  unlinkUnpublished(
+    (await Astro.slots.render('default'))
+      .replace(/<h1[^>]*>[\s\S]*?<\/h1>/, '')
+      .replace(/<tr>(\s*)<td([^>]*)>([\s\S]*?)<\/td>/g, '<tr>$1<th scope="row"$2>$3</th>'),
+    published,
+  ),
+  lang,
 );
+// The hero's first screen, as a plain JPEG, for the article's structured data.
+const [heroShot = 'today'] = hero;
+const heroMeta = shotImage(heroShot, lang).meta;
+const heroJpeg = await getImage({ src: heroMeta, format: 'jpg', width: 720 });
 
 const alternates =
   translation === undefined
@@ -73,11 +87,18 @@ const switchTo =
     { color: '#fbf7ef', media: '(prefers-color-scheme: light)' },
     { color: '#0b0716', media: '(prefers-color-scheme: dark)' },
   ]}
-  image={{ path: ogImagePath(lang, slug), alt: title }}
+  image={{ path: ogImagePath(lang, slug), alt: t.cardAlt(title) }}
   article={{ published: pubDate, modified, tags }}
   feed={{ path: `${blogPath(lang)}/rss.xml`, title: `6pm ${t.name}` }}
 >
-  <script type="application/ld+json" slot="head" set:html={ldJson(articleLd(post, words))} />
+  <script type="application/ld+json" slot="head" set:html={ldJson(
+      articleLd(post, words, {
+        path: heroJpeg.src,
+        width: 720,
+        height: Math.round((heroMeta.height / heroMeta.width) * 720),
+      }),
+    )}
+  />
   <BlogFrame lang={lang} switchTo={switchTo} switchIsTranslation={translation !== undefined}>
     <main class="wrap">
       <nav class="crumbs" aria-label={t.breadcrumb}>
@@ -109,6 +130,8 @@ const switchTo =
           <span>{t.minutes(minutes)}</span>
         </span>
       </p>
+
+      <PostHero lang={lang} shots={hero} />
 
       {
         sections.length > 2 && (
@@ -169,6 +192,7 @@ const switchTo =
       }
     </main>
   </BlogFrame>
+  <LoopClips />
 </PageLayout>
 
 <style>

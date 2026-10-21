@@ -1,0 +1,119 @@
+/*
+ * Figures inside an article (`src/data/blog-figures.ts`): app screens framed as a phone, muted
+ * loops, and diagrams drawn in the reading pages' own tokens, so they follow light and dark.
+ */
+.blog article .media {
+  margin: 30px 0 34px;
+}
+.blog article .media-row {
+  display: flex;
+  justify-content: center;
+  gap: clamp(12px, 4vw, 28px);
+}
+.blog article .media .phone {
+  display: block;
+  width: min(300px, 64%);
+}
+.blog article .media-pair .phone {
+  width: min(260px, 44%);
+}
+.blog article .media .phone img,
+.blog article video.phone {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 13.5% / 6.2%;
+  background: #120c1d;
+  box-shadow:
+    0 0 0 4px #120c1d,
+    0 0 0 5px var(--lg-hair),
+    0 18px 40px rgba(11, 7, 22, 0.28);
+}
+.blog article video.clip:not(.phone) {
+  display: block;
+  width: min(560px, 100%);
+  height: auto;
+  border-radius: 18px;
+  background: #120c1d;
+  box-shadow: 0 0 0 1px var(--lg-hair);
+}
+.blog article .media figcaption {
+  max-width: 34em;
+  margin: 16px auto 0;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--lg-faint);
+  text-wrap: balance;
+}
+
+/* Diagrams */
+.blog article .dg {
+  display: block;
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  margin: 0 auto;
+  font-family: var(--font-text);
+}
+.dg .dg-card {
+  fill: var(--lg-card);
+  stroke: var(--lg-hair);
+}
+.dg .dg-soft {
+  fill: var(--lg-hair);
+}
+.dg .dg-line {
+  fill: var(--lg-link);
+  opacity: 0.55;
+}
+.dg .dg-accent {
+  fill: #ff8552;
+}
+.dg .dg-track {
+  fill: rgba(26, 15, 10, 0.18);
+}
+.dg .dg-ink {
+  fill: #1a0f0a;
+}
+.dg .dg-arrow {
+  fill: none;
+  stroke: var(--lg-faint);
+  stroke-width: 1.5;
+}
+.dg .dg-head {
+  fill: var(--lg-faint);
+}
+.dg text {
+  font-size: 13.5px;
+  fill: var(--lg-soft);
+}
+.dg .dg-strong {
+  font-weight: 600;
+  fill: var(--lg-ink);
+}
+.dg .dg-faint {
+  fill: var(--lg-faint);
+}
+.dg .dg-mono,
+.dg .dg-num {
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+.dg .dg-mono {
+  letter-spacing: 0.1em;
+  fill: var(--lg-faint);
+}
+.dg .dg-num {
+  fill: var(--lg-ink);
+}
+.dg .dg-on {
+  font-weight: 600;
+  fill: #1a0f0a;
+}
+.dg .dg-big {
+  font-family: var(--font-display);
+  font-weight: 700;
+  fill: #1a0f0a;
+  letter-spacing: -0.02em;
+}

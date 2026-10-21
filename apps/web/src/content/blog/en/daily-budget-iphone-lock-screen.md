@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [iphone widgets, lock screen, budget widget, daily budget]
 related: [dat-so-du-an-toan-len-man-hinh-khoa-iphone, track-spending-automatically-iphone, how-much-can-i-spend-per-day, why-expense-tracking-fails]
 cta: "Put your number on your Lock Screen. One glance, no unlocking."
+hero: [today]
 ---
 
 # How to put your daily budget on your iPhone Lock Screen
@@ -23,12 +24,16 @@ That's the difference between an app you have to remember to open and a number t
 
 Safe to spend today is your pay, minus bills, minus what you set aside for Future you and your pots, spread evenly over the days until payday. Every spend 6pm catches during the day (Apple Pay, receipt photos, card alert emails, voice, the keypad) comes off immediately, even before you confirm it at your evening close. So the widget shows the honest number right now, not this morning's. For the full method, see [how much can I spend per day?](/blog/how-much-can-i-spend-per-day)
 
+<!-- media: diagram-formula -->
+
 ## Add 6pm to your Lock Screen
 
 1. **Touch and hold the Lock Screen**, then tap **Customize**.
 2. Choose **Lock Screen**, then tap the **space under the clock**.
 3. Tap **6pm**, then pick the **ring** or the **card**.
 4. Tap outside the panel to close it, then tap **Done**.
+
+<!-- media: lock-widgets -->
 
 Two styles:
 
@@ -42,6 +47,8 @@ If you live on your Home Screen instead:
 1. Touch and hold an empty spot until the apps jiggle.
 2. Tap **Edit** in the top corner, then **Add Widget**.
 3. Search for **6pm**, swipe to the size you want, then tap **Add Widget**.
+
+<!-- media: home-widgets -->
 
 | Size | What it shows |
 |---|---|
@@ -72,6 +79,8 @@ Now one press on the side of your phone opens it. Prefer talking? Tell Siri "Log
 ## Live Activities: a waiting payment on your Lock Screen
 
 Nothing to set up here. When you scan a payment QR code with 6pm and pay in your bank app (common in Vietnam and across Southeast Asia), the payment **waits on your Lock Screen** and in the Dynamic Island as a Live Activity. Tap **Paid** once the money has gone, and it closes by itself. A Live Activity also shows while you travel with Travel mode, a 6pm Max feature.
+
+<!-- media: live-activity-clip -->
 
 Not showing? In **Settings**, open **6pm** and turn on **Live Activities**.
 

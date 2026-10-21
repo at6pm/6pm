@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [engineering, vietqr, emvco, typescript, ios]
 related: [eng-one-camera-qr-and-receipts, eng-why-we-open-sourced-our-money-app, eng-widgets-controls-live-activities-expo]
 cta: "Read the parser on GitHub, or scan a VietQR with the public beta."
+hero: [vietqr]
 ---
 
 # Reading VietQR on the phone: EMVCo TLV, NAPAS 247 and handing off to 28 bank apps
@@ -37,6 +38,8 @@ VietQR is NAPAS's profile of the EMVCo merchant-presented QR. The payload is a f
 62 .. 08 .. Banh mi           additional data, 08 = purpose
 63 04 ABCD                    CRC
 ```
+
+<!-- media: diagram-vietqr -->
 
 The merchant account template can sit in any tag from 26 to 51. NAPAS's has GUID `A000000727` in sub-tag 00, a nested beneficiary in 01 (BIN in 00, account in 01), and a service code in 02: `QRIBFTTA` (account), `QRIBFTTC` (card) or `QRPUSH` (merchant).
 
@@ -128,6 +131,8 @@ The result is a discriminated union. Success carries the bank (looked up by BIN)
 
 Travellers scan codes abroad, and Vietnamese visitors scan Thai and Singaporean codes at home. 6pm recognises them and keeps the spend in its own currency, but never tries to pay them.
 
+<!-- media: promptpay -->
+
 Detection is by the GUID in the merchant template, falling back to the country in tag 58:
 
 ```ts
@@ -212,6 +217,8 @@ On Android, `handoffPlan` opens the app's home: no bank's transfer link has been
 ## Coming back: "Did it go through?"
 
 No bank app returns to 6pm on its own. When the user comes back, 6pm asks "Did it go through?". Until then the scan is a pending spend, shown as a Live Activity with a Paid button, and it already lowers the day's safe-to-spend number so the number stays honest.
+
+<!-- media: live-activity-clip -->
 
 If the bank's own receipt also arrives (a shared screenshot, a forwarded email, an Apple Pay tap), the two are merged rather than counted twice. Most sources merge within three minutes; a waiting scan gets longer, because people finish paying in the bank app a while later:
 

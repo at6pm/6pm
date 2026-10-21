@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [quản lý tài chính cặp đôi, quỹ chung, cùng chia ngân sách, tiết kiệm]
 related: [budgeting-as-a-couple, luong-10-trieu-ha-noi-moi-ngay-tieu-bao-nhieu, ke-hoach-chi-tieu-tet-thuong-li-xi, quy-tac-6-chiec-lo-hay-mot-con-so]
 cta: "Mở một hũ chung với người ấy. Chi tiêu của ai người nấy giữ."
+hero: [plan]
 ---
 
 # Quản lý chi tiêu cho cặp đôi: chung hũ, riêng ví
@@ -29,6 +30,8 @@ Kiểu thứ ba được nhiều người chọn vì nó giữ được hai th�
 
 Cãi nhau về tiền hiếm khi vì số lớn. Thường là vì số nhỏ: "Sao tháng này Shopee nhiều vậy?", "Lại Grab à?". Khi một người thấy được từng khoản của người kia, mọi ly cà phê đều có thể thành chủ đề.
 
+<!-- media: today -->
+
 Giữ chi tiêu cá nhân là của riêng không phải là giấu giếm. Đó là ranh giới. Hai người vẫn minh bạch ở chỗ cần minh bạch: đã góp được bao nhiêu cho mục tiêu chung.
 
 ## Góp bao nhiêu mới công bằng?
@@ -44,6 +47,8 @@ Không có công thức đúng cho mọi cặp, nhưng có ba cách hay dùng:
 ## Cùng chia ngân sách trên 6pm hoạt động thế nào
 
 **Cùng chia ngân sách** là tính năng hũ chung của 6pm. Nó miễn phí cho mọi người.
+
+<!-- media: diagram-couple -->
 
 ### Bắt đầu
 

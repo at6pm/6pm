@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [voice, expense tracking, siri, cash, iphone]
 related: [ghi-chi-tieu-bang-giong-noi, track-spending-automatically-iphone, scan-receipts-track-expenses, track-spending-from-qr-payments]
 cta: "Say “coffee, six dollars” to 6pm. Done."
+hero: [quick-add]
 ---
 
 # How to log expenses by voice (and actually keep doing it)
@@ -20,6 +21,8 @@ Card taps leave a trail. Online orders send emails. But a surprising chunk of mo
 These are exactly the spends manual tracking was supposed to catch, and exactly the ones nobody bothers to type. Open app, find button, tap amount, pick category: four steps for a $4 coffee. Saying it takes three seconds and one hand.
 
 ## How to log an expense by voice in 6pm
+
+<!-- media: store-inbox -->
 
 ### 1. Tap the mic
 
@@ -63,6 +66,8 @@ The cloud service hears whichever language you speak, so if your app is in Engli
 
 Voice isn't meant to replace everything. It's the gap filler.
 
+<!-- media: quick-add-clip -->
+
 | Spend | Best way |
 |---|---|
 | Apple Pay tap | Shortcuts automation (zero effort) |
@@ -77,6 +82,8 @@ Everything lands in the same Inbox, and duplicates from different automatic sour
 ## The close: where misheard words get fixed
 
 Speech recognition sometimes hears "fifteen" as "fifty". That's fine, because nothing is final until the close. At 6pm (or any time you choose between 3pm and 11:45pm), each spend comes up as a receipt card: **Keep**, **Edit**, or **Not mine**. The last one stamps the day **CLOSED**. About a minute.
+
+<!-- media: close-swipe-clip -->
 
 Your companion (a small sun, by default) might chime in with something like "Caught it. Back to your day." It teases habits, never you. Not in the mood? Serious mode turns the jokes off.
 

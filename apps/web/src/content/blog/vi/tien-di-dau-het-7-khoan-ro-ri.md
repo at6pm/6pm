@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [tiền đi đâu hết, chi tiêu nhỏ, gen z, quản lý chi tiêu cá nhân]
 related: [where-does-my-money-go, luong-10-trieu-ha-noi-moi-ngay-tieu-bao-nhieu, song-sot-11-11-chot-so-truoc-khi-chot-don, vi-sao-ghi-chi-tieu-that-bai-sau-2-tuan]
 cta: "Để 6pm bắt từng khoản nhỏ, rồi xem chúng cộng lại thành bao nhiêu."
+hero: [close-receipt]
 ---
 
 # Tiền đi đâu hết? 7 khoản rò rỉ của Gen Z, cộng lại mới giật mình
@@ -51,6 +52,8 @@ Nhạc, phim, dung lượng iCloud, app chỉnh ảnh, gói học tiếng Anh d�
 
 Đi chơi về trễ, gọi Grab bike thay vì xe buýt, ghé quán ốc hoặc bánh tráng nướng. Tám tối một tháng, mỗi tối 60k: **480.000₫**.
 
+<!-- media: diagram-leaks -->
+
 ## Tổng: gần 3 triệu một tháng
 
 | Khoản | Mỗi tháng |
@@ -69,6 +72,8 @@ Với lương 10 triệu, đó là gần 30%. Chia theo ngày, khoảng 100k m�
 Lưu ý: không khoản nào ở trên là "sai". Trà sữa ngon, cà phê giúp bạn tỉnh, ăn khuya với bạn bè là kỷ niệm. Vấn đề chỉ là bạn không *chọn* chúng, chúng tự xảy ra.
 
 ## Cách làm một cuộc "kiểm toán lỗ rò" 7 ngày
+
+<!-- media: quick-add-clip -->
 
 ### Bước 1: Ghi mọi khoản, kể cả 5k
 
@@ -89,6 +94,8 @@ Không phải để tự trách, mà để xem con số ngày của bạn có r�
 ## 6pm giúp bịt lỗ rò thế nào
 
 6pm không cấm bạn mua trà sữa. Nó chỉ làm cho mỗi khoản nhỏ hiện ra.
+
+<!-- media: store-diary -->
 
 - **Tự bắt khoản nhỏ.** Quét VietQR ở quán trà sữa, nói "cà phê 35 nghìn", chia sẻ biên lai chuyển khoản từ app ngân hàng, chuyển tiếp email đơn hàng Shopee, Grab về địa chỉ riêng của bạn (kiểu k7m2qx@at6pm.app), hay cài automation cho Apple Pay. Tiêu tới đâu, tự ghi tới đó, mọi thứ về một Hộp thư.
 - **Chốt ngày lúc 18:00.** Mỗi tối, các khoản trong ngày hiện ra như biên lai. Vuốt Giữ từng tờ, khoảng một phút. Chính lúc vuốt qua tờ phí ship thứ ba trong tuần, bạn sẽ tự thấy.

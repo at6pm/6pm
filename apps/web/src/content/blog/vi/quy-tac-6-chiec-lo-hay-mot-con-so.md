@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [quy tắc 6 chiếc lọ, 50/30/20, quản lý tài chính cá nhân, chi tiêu hằng ngày]
 related: [envelope-budgeting-vs-one-daily-number, luong-10-trieu-ha-noi-moi-ngay-tieu-bao-nhieu, quan-ly-chi-tieu-cho-cap-doi, app-quan-ly-chi-tieu-tot-nhat-2026]
 cta: "Thử một con số thay cho sáu cái lọ. Dùng thử 6pm trên iPhone."
+hero: [today]
 ---
 
 # Quy tắc 6 chiếc lọ hay một con số mỗi ngày: cách nào hợp với bạn?
@@ -63,6 +64,8 @@ Cách của ông bà: rút tiền mặt, chia vào phong bì "đi chợ", "xăng
 3. **Bạn của tương lai** nhận phần trước, ví dụ 10%.
 4. Phần còn lại là tiền tự do, chia cho số ngày tới kỳ lương, tính cả hôm nay.
 
+<!-- media: diagram-formula -->
+
 Kết quả là một con số duy nhất mỗi sáng: **Hôm nay tiêu được**. Với ví dụ lương 10 triệu ở trên, nó ra 131.000₫ mỗi ngày (chi tiết trong bài [lương 10 triệu mỗi ngày tiêu được bao nhiêu](/vi/blog/luong-10-trieu-ha-noi-moi-ngay-tieu-bao-nhieu)).
 
 Tiêu lố hôm nay, những ngày sau bớt một chút. Tiêu ít, chúng rộng ra. Không có lọ nào "vỡ", chỉ có con số tự cân lại.
@@ -77,6 +80,8 @@ Nhìn kỹ thì đây không phải là "không có lọ". Hoá đơn, hũ và b
 | Giới hạn theo danh mục | Có | Có (nhóm lớn) | Có, cứng | Không |
 | Tự cân khi tiêu lố | Không | Không | Không | Có |
 | Hợp với chi tiêu qua QR, chuyển khoản | Cần ghi chép | Cần ghi chép | Kém | Cần ghi chép, 6pm tự bắt phần lớn |
+
+<!-- media: diagram-jars -->
 
 ## Cách nào hợp với bạn?
 
@@ -97,6 +102,8 @@ Thích tinh thần 6 lọ nhưng ngại sáu con số? Dùng tỷ lệ của nó
 ## Con số chỉ đúng khi ghi đủ
 
 Phương pháp nào cũng chết nếu một nửa chi tiêu không được ghi. 6pm bắt chi tiêu gần như tự động: quét VietQR ở quầy, chụp hoá đơn, chia sẻ màn hình chuyển khoản thành công, chuyển email hoá đơn về địa chỉ riêng của máy, nói "trà sữa 45 nghìn", hoặc Thêm nhanh cho tiền mặt. Tất cả về một Hộp thư. 18:00, vuốt một phút, dấu ĐÃ CHỐT.
+
+<!-- media: store-inbox -->
 
 ## Câu hỏi thường gặp
 

@@ -8,6 +8,7 @@ featured: true
 tags: [lương 10 triệu, chi tiêu hằng ngày, quản lý chi tiêu cá nhân, hôm nay tiêu được]
 related: [how-much-can-i-spend-per-day, vi-sao-ghi-chi-tieu-that-bai-sau-2-tuan, cach-ghi-chi-tieu-tu-dong-tren-iphone, quet-vietqr-tu-ghi-chi-tieu]
 cta: "Mỗi sáng một con số: hôm nay tiêu được bao nhiêu. Dùng thử 6pm trên iPhone."
+hero: [today]
 ---
 
 # Lương 10 triệu ở Hà Nội: mỗi ngày tiêu được bao nhiêu?
@@ -31,6 +32,8 @@ Cách 6pm tính, cũng là cách bạn có thể tự tính trên giấy:
 3. **Trừ phần cho các hũ**: mỗi hũ có số tiền để riêng mỗi tháng = (mục tiêu − đã có) ÷ số tháng còn lại, làm tròn lên 50k.
 4. **Trừ bạn của tương lai**: một phần trăm bạn trả cho chính mình trước, ví dụ 10%.
 5. Phần còn lại là **tiền tự do**. Chia cho **số ngày tới kỳ lương, tính cả hôm nay**, làm tròn xuống 1.000₫.
+
+<!-- media: diagram-formula -->
 
 Thứ tự này quan trọng. Hoá đơn trước, bạn của tương lai sau, phần còn lại mới là của bạn hôm nay.
 
@@ -66,6 +69,8 @@ Không có con số nào "đúng" cho mọi người. Có con số đúng cho k�
 
 Đây là chỗ con số mỗi ngày dễ chịu hơn ngân sách tháng: nó tự cân lại.
 
+<!-- media: close-tomorrow -->
+
 Giả sử 4 ngày đầu bạn tiêu đúng 131k mỗi ngày. Sáng ngày thứ 5, tiền tự do còn 3.426.000₫ cho 26 ngày, vẫn là 131.000₫.
 
 Rồi tối thứ Bảy là sinh nhật bạn thân. Lẩu, quà, nước. Hết 450.000₫.
@@ -84,6 +89,8 @@ Bạn đồng hành trong 6pm sẽ nói kiểu "Hôm nay chơi lớn. Mai còn 1
 
 Cuối tuần có vé concert 2 triệu? Thay vì nhẩm, hỏi thẳng **Hỏi 6pm**: "Thứ Bảy tiêu 2tr được không?"
 
+<!-- media: ask -->
+
 Với ví dụ trên, sáng ngày 5 còn 3.426.000₫. Tiêu 2 triệu thì còn 1.426.000₫ cho 25 ngày: **57.000₫ mỗi ngày** tới kỳ lương. Được, nhưng bạn sẽ ăn cơm nhà khá nhiều.
 
 Điện thoại tự tính từ số liệu của chính bạn. AI chỉ đọc câu hỏi và viết câu trả lời cho dễ hiểu. Nó cho bạn thấy cái giá, còn quyết định là của bạn. 6pm không đưa lời khuyên tài chính.
@@ -91,6 +98,8 @@ Với ví dụ trên, sáng ngày 5 còn 3.426.000₫. Tiêu 2 triệu thì còn
 ## Con số chỉ đúng khi chi tiêu được ghi đủ
 
 Công thức trên vô dụng nếu bạn quên ghi một nửa. Ly trà sữa 45k, cuốc Grab 38k, đơn Shopee 189k: thiếu vài khoản là con số "an toàn" thành con số lạc quan.
+
+<!-- media: close-swipe-clip -->
 
 6pm bắt chi tiêu gần như tự động, nên bạn không phải nhớ:
 

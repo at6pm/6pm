@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [envelope budgeting, 50/30/20 rule, budgeting methods, safe to spend, daily budget]
 related: [quy-tac-6-chiec-lo-hay-mot-con-so, how-much-can-i-spend-per-day, ynab-alternatives-for-people-who-hate-budgeting, budgeting-as-a-couple]
 cta: "Swap ten envelopes for one number. Try 6pm on iPhone."
+hero: [today]
 ---
 
 # Envelope budgeting vs one daily number: which method fits you?
@@ -52,6 +53,8 @@ This is how 6pm works:
 3. **Future you** gets paid next, a percentage you choose.
 4. What’s left is free money, divided by the days until payday, counting today.
 
+<!-- media: diagram-formula -->
+
 You get one number every morning: **Safe to spend today**. For a $4,000 take-home with typical city bills, a pot and 10% to Future you, it lands around $37 (the full maths is in [how much can I spend per day](/blog/how-much-can-i-spend-per-day)).
 
 Overspend today and the next days shrink a little. Underspend and they grow. Nothing "breaks," because there’s nothing to break. The number simply re-balances.
@@ -66,6 +69,8 @@ Look closely and it isn’t "no envelopes." Bills, pots and Future you are envel
 | Category limits | Yes, hard | Loose | Yes | No |
 | Rebalances after a big day | No, you move money by hand | No | By hand | Automatically |
 | Time per day | Low (cash) to medium | Low | Medium to high | About a minute at the close |
+
+<!-- media: diagram-jars -->
 
 ## Which one should you pick?
 
@@ -88,6 +93,8 @@ Like the envelope idea for goals but hate the daily upkeep? Use pots as your "bi
 ## Every method needs the spending logged
 
 Envelopes, buckets, zero-based or a daily number: all of them fail when half your spending never gets recorded. 6pm catches most of it for you. A one-time Shortcuts automation logs each Apple Pay tap, Scan reads receipts on the phone first, forwarded card alerts and order emails land through your phone’s own address (like k7m2qx@at6pm.app), and you can just say "coffee five dollars." Cash goes in with Quick add. It all waits in one Inbox, and at 6pm you close the day in about a minute.
+
+<!-- media: store-inbox -->
 
 ## FAQ
 

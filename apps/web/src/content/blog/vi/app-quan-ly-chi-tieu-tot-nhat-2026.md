@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [app quản lý chi tiêu, so sánh app, iphone, sổ thu chi, money lover]
 related: [best-expense-tracker-apps-iphone-2026, money-lover-vs-misa-moneykeeper-vs-6pm, cach-ghi-chi-tieu-tu-dong-tren-iphone, luong-10-trieu-ha-noi-moi-ngay-tieu-bao-nhieu]
 cta: "Tải 6pm trên App Store từ 18:00 ngày 6/11, hoặc thử bản beta ngay hôm nay."
+hero: [today, close-receipt]
 ---
 
 # App quản lý chi tiêu tốt nhất 2026 cho iPhone: so sánh thật lòng
@@ -44,6 +45,8 @@ Trước khi xem bảng, hỏi mình ba câu:
 
 **Hợp với:** người dùng iPhone, trả tiền chủ yếu bằng QR và chuyển khoản, đã từng bỏ app ghi chi tiêu sau vài tuần.
 
+<!-- media: diagram-capture -->
+
 6pm xoay quanh một nghi thức: chi tiêu tự về một **Hộp thư** suốt ngày, đến 18:00 bạn vuốt qua từng khoản trong khoảng một phút, khoản cuối cùng đóng dấu **ĐÃ CHỐT**. Sáng hôm sau, màn hình chỉ có một con số: **Hôm nay tiêu được**.
 
 Cách ghi là thứ 6pm đầu tư nhiều nhất:
@@ -58,6 +61,8 @@ Cách ghi là thứ 6pm đầu tư nhiều nhất:
 Con số mỗi ngày được tính từ lương, trừ hoá đơn, trừ phần cho **bạn của tương lai** và các hũ, rồi chia đều cho số ngày đến kỳ lương. Bạn hỏi được luôn: "Thứ Bảy tiêu 2tr được không?" và **Hỏi 6pm** trả lời từ chính số liệu của bạn.
 
 **Điểm yếu, nói thật:** chưa có Android, bản web hay máy tính. Không liên kết ngân hàng, nên khoản nào không quét, không chia sẻ, không qua email thì phải tự ghi. Ít báo cáo theo danh mục. Và 6pm chưa ra mắt: app lên App Store ngày 6/11/2026.
+
+<!-- media: close-swipe-clip -->
 
 ## 2. Money Lover: lâu đời, đủ món
 

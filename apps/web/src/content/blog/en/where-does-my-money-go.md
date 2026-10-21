@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [where does my money go, small spending, spending audit, budgeting]
 related: [tien-di-dau-het-7-khoan-ro-ri, how-much-can-i-spend-per-day, black-friday-spending-daily-number, why-expense-tracking-fails]
 cta: "Let 6pm catch every small spend, then see what they add up to."
+hero: [close-receipt]
 ---
 
 # Where does my money go? The small-leak audit
@@ -51,6 +52,8 @@ Snacks, an energy drink, gum at the register. Ten stops at $5: **$50**.
 
 Uber home instead of the train, a slice on the way. Four nights at $15: **$60**.
 
+<!-- media: diagram-leaks -->
+
 ## The total: about $435 a month
 
 | Leak | Monthly |
@@ -69,6 +72,8 @@ That's over $14 a day leaving without a single purchase feeling "big." Over a ye
 None of these spends is wrong. Coffee is good, splitting dinner with friends is good, a phone stand might change your life. The problem is you didn't *choose* them. They just happened.
 
 ## How to run a 7-day small-leak audit
+
+<!-- media: quick-add-clip -->
 
 ### Step 1: Capture everything, even $2
 
@@ -89,6 +94,8 @@ Not to judge yourself, but to see whether your daily number got a bit roomier.
 ## How 6pm plugs leaks without banning lattes
 
 6pm doesn't tell you to stop buying coffee. It just makes every small spend visible.
+
+<!-- media: store-diary -->
 
 - **It catches small spends for you.** A one-time Shortcuts automation logs every Apple Pay tap. Card alert emails forwarded to your phone's own address (like k7m2qx@at6pm.app) land in the Inbox. Say "coffee six dollars" by voice. Every spend, caught, all in one Inbox.
 - **You close the day at 6pm.** Each evening the day's spends come up as receipts. Keep, Edit, or Not mine, about a minute. Swiping past your third delivery fee of the week tells you more than any chart.

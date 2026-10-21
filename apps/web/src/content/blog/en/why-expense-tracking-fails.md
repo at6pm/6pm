@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [expense tracking, habits, daily close, budgeting]
 related: [vi-sao-ghi-chi-tieu-that-bai-sau-2-tuan, track-spending-automatically-iphone, how-much-can-i-spend-per-day, where-does-my-money-go]
 cta: "Stop logging every spend. Let 6pm catch them and close your day at six."
+hero: [day-closed]
 ---
 
 # Why expense tracking fails after two weeks, and the one-minute fix
@@ -51,6 +52,8 @@ So week two isn't when the habit is supposed to have kicked in. It's the hardest
 
 6pm's idea is simple. **During the day it asks nothing of you.** In the evening it asks **one thing**.
 
+<!-- media: diagram-capture -->
+
 ### During the day: let it catch spends
 
 Every spend, caught. Spends land in one Inbox from wherever they happen:
@@ -77,11 +80,15 @@ What you get back isn't a chart. It's **Safe to spend today**: your pay, minus b
 
 Nothing breaks. The missed day simply waits for you. Everything you spent that day already counted toward your number, so you don't owe anything. Next time you close, the older spends come up alongside today's.
 
+<!-- media: close-swipe-clip -->
+
 The money day ends at 4am, so the 1am taco run still belongs to yesterday, which is how it feels anyway.
 
 ## The companion teases the habit, never you
 
 A small sun keeps you company (or swap it for Nhang, Bánh Bao or Giọt). It might say your wallet "is still breathing" after a quiet day. It pokes at spending habits, never at the person. On days you're not in the mood, turn on **Serious mode**: no jokes, no color, no companion. Just the number.
+
+<!-- media: store-companion -->
 
 ## A two-week starter plan that sticks
 

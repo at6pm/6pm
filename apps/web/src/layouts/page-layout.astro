@@ -51,6 +51,17 @@ const pageUrl = new URL(Astro.url.pathname.replace(/(?:\/index)?\.html$/, ''), A
       type="font/woff2"
       crossorigin
     />
+    {
+      lang === 'vi' && (
+        <link
+          rel="preload"
+          href="/fonts/bricolage-grotesque-vietnamese.woff2"
+          as="font"
+          type="font/woff2"
+          crossorigin
+        />
+      )
+    }
     <link
       rel="preload"
       href="/fonts/ibm-plex-mono-latin-500.woff2"

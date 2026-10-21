@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [vietqr, quét mã qr, ghi chi tiêu, chuyển khoản, napas]
 related: [track-spending-from-qr-payments, cach-ghi-chi-tieu-tu-dong-tren-iphone, chup-hoa-don-ghi-chi-tieu, tu-dong-ghi-chi-tieu-tu-email-ngan-hang]
 cta: "Quét là ghi. Thử Quét của 6pm ở quán quen ngày mai."
+hero: [vietqr]
 ---
 
 # Quét VietQR là tự ghi chi tiêu: thôi ghi lại từng lần chuyển khoản
@@ -55,6 +56,8 @@ App ngân hàng không tự quay về 6pm, nên khi bạn quay lại, 6pm hỏi:
 
 Chưa kịp trả lời? Khoản chi nằm chờ trên Màn hình khoá và Dynamic Island dưới dạng Live Activity, với nút **Đã trả**. Chạm khi tiền đã đi, nó tự đóng.
 
+<!-- media: live-activity-clip -->
+
 ## Còn mã QR của cửa hàng thì sao?
 
 Mã của cửa hàng lớn (mã merchant NAPAS, kiểu ở chuỗi cà phê hay siêu thị) không có số tài khoản để bạn tự chuyển. Với loại này, 6pm vẫn ghi khoản chi và hiện nút **Trả trong app ngân hàng**: số tiền được chép sẵn, bạn quét lại mã trong app ngân hàng của mình. Hơi thêm một bước, nhưng khoản chi vẫn đã nằm trong sổ.
@@ -63,6 +66,8 @@ Mã của cửa hàng lớn (mã merchant NAPAS, kiểu ở chuỗi cà phê hay
 
 Quét mã PromptPay ở Bangkok, PayNow ở Singapore, DuitNow ở Kuala Lumpur? 6pm nhận ra mã nào của nước nào và nói thẳng: "Đây là mã PromptPay của Thái Lan. 6pm chưa trả được mã này." Bạn bấm ghi tay, khoản chi được giữ đúng loại tiền của nước đó. Việc trả vẫn làm bằng cách bạn quen. Muốn tự đổi tiền tệ theo nơi bạn đang đứng, có Chế độ du lịch trong 6pm Max.
 
+<!-- media: promptpay -->
+
 ## Không lo ghi trùng
 
 Nếu sau khi trả bạn còn chia sẻ màn hình "Giao dịch thành công" sang 6pm (hoặc ngân hàng của bạn có gửi email báo giao dịch về địa chỉ 6pm), cùng một ly cà phê có thể được thấy hai lần. 6pm gộp khoản quét QR đang chờ với khoản cùng số tiền từ ngân hàng đến trong vòng 20 phút sau khi bạn bấm trả, thành một khoản duy nhất, ghi "Thấy qua 2 nguồn". (Xem thêm [tự động ghi chi tiêu từ email](/vi/blog/tu-dong-ghi-chi-tieu-tu-email-ngan-hang).)
@@ -70,6 +75,8 @@ Nếu sau khi trả bạn còn chia sẻ màn hình "Giao dịch thành công" s
 ## Từ quét QR đến con số mỗi sáng
 
 Khoản quét xong lập tức trừ vào **Hôm nay tiêu được**, kể cả khi chưa chốt. Ví dụ: sáng bạn có 250k, trưa quét bún chả 45k, trà sữa 45k, con số còn 160k, ngay lúc đó.
+
+<!-- media: close-tomorrow -->
 
 18:00, 6pm nhắc **chốt ngày**. Mỗi khoản hiện như một tờ biên lai, bạn Giữ, Sửa hoặc báo Không phải của tôi. Tờ cuối đóng dấu **ĐÃ CHỐT**. Sáng mai, con số mới đã chờ sẵn: tiêu ít hôm nay thì mai rộng hơn.
 
