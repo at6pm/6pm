@@ -17,8 +17,6 @@ export interface IosApp {
   appStoreId: string;
   /** The filled-in transfer link, when the bank's format is known; null opens the app as is. */
   link: HandoffLink | null;
-  /** The bank was seen to open `link` filled in when 6pm sent it; only then is it sent. */
-  verified: boolean;
 }
 
 /** How to find a bank's Android app. */
@@ -82,55 +80,55 @@ const QR_PAY: HandoffLink = { kind: 'qrPay', path: 'applink' };
 
 /** An app 6pm opens as is: the bank takes no transfer link from outside its partners. */
 function plain(scheme: string, appStoreId: string): IosApp {
-  return { scheme, appStoreId, link: null, verified: false };
+  return { scheme, appStoreId, link: null };
 }
 
-/** An app whose transfer link is known but not yet seen to open filled in from 6pm. */
-function untried(scheme: string, appStoreId: string, link: HandoffLink = QR_PAY): IosApp {
-  return { scheme, appStoreId, link, verified: false };
+/** An app whose transfer link is known: 6pm opens it with the payment filled in. */
+function linked(scheme: string, appStoreId: string, link: HandoffLink = QR_PAY): IosApp {
+  return { scheme, appStoreId, link };
 }
 
 /**
  * iOS URL schemes, App Store ids and transfer links, from the bank list Zalo's "pay in a bank
  * app" reads and the links Zalo sent each app when a VietQR was paid through it (2026-10-14).
- * Zalo signs its links; MB opened 6pm's unsigned link filled in and a transfer completed, so MB is
- * the one verified bank. Vietcombank and Agribank take only a token their partner issues, so they
+ * Zalo signs its links; 6pm sends them unsigned to every bank whose form is known (2026-10-21).
+ * MB is the one bank seen to open filled in that way, with a transfer completed. Vietcombank and Agribank take only a token their partner issues, so they
  * open as is. Apps outside that list keep their VietQR hand-off scheme
  * (https://api.vietqr.io/v2/ios-app-deeplinks, 2026-10-10); the banks that list sends only to its
  * own pages open as is, with the scheme those pages open (2026-10-17). MoMo and ZaloPay open as is
  * by the schemes their payment SDKs query; ViettelMoney and VNPT Money publish none.
  */
 const IOS_APPS: Readonly<Record<string, IosApp>> = {
-  MB: { scheme: 'mbbank://', appStoreId: '1205807363', link: QR_PAY, verified: true },
+  MB: linked('mbbank://', '1205807363'),
   VCB: plain('vietcombankmobile://', '561433133'),
   VBA: plain('agribankmobile://', '935944952'),
-  TCB: untried('tcb://', '1548623362'),
-  VPB: untried('vpbankneo://', '1209349510'),
-  ACB: untried('acbone://', '950141024'),
-  BIDV: untried('dl.bidvsmartbanking.vn://', '1061867449'),
-  ICB: untried('vietinbankipay://', '689963454', { kind: 'qrPay', path: 'host.qrTransfer' }),
-  STB: untried('sacombankpay://', '1436283663'),
-  TPB: untried('hydro://', '450464147'),
-  VIB: untried('myvib2://', '1626624790'),
-  SHB: untried('saha://', '1661457183'),
-  MSB: untried('msbdigibank://', '436134873'),
-  OCB: untried('newomni-app://', '6472261202'),
-  SEAB: untried('seamobile://', '846407152'),
-  HDB: untried('hdbankmobile://', '1461658565'),
-  EIB: untried('eximbankomnimobile://', '1571427361'),
-  LPB: untried('lv24h://', '1488794748'),
-  PVCB: untried('pvcapp://', '6467857410'),
-  ABB: untried('vn.abbank.retail://', '6636532294'),
-  VCCB: untried('bvb.digimi://', '1526444697'),
-  PGB: untried('pgbank.partner://', '1537765475'),
-  VAB: untried('zalo.vietaomni://', '6744814738'),
-  VIETBANK: untried('vietbankzalo://', '6746633957'),
-  MBV: untried('mbv://', '6742386787'),
-  WVN: untried('wvbs://', '1501785125'),
-  KBANK: untried('kbank.kplusvn://', '1586576195'),
-  NAB: untried('nabtransfermoney://', '1456997296', { kind: 'namABank' }),
-  CAKE: untried('cake.vn://', '1551907051'),
-  TIMO: untried('timo://', '1521230347'),
+  TCB: linked('tcb://', '1548623362'),
+  VPB: linked('vpbankneo://', '1209349510'),
+  ACB: linked('acbone://', '950141024'),
+  BIDV: linked('dl.bidvsmartbanking.vn://', '1061867449'),
+  ICB: linked('vietinbankipay://', '689963454', { kind: 'qrPay', path: 'host.qrTransfer' }),
+  STB: linked('sacombankpay://', '1436283663'),
+  TPB: linked('hydro://', '450464147'),
+  VIB: linked('myvib2://', '1626624790'),
+  SHB: linked('saha://', '1661457183'),
+  MSB: linked('msbdigibank://', '436134873'),
+  OCB: linked('newomni-app://', '6472261202'),
+  SEAB: linked('seamobile://', '846407152'),
+  HDB: linked('hdbankmobile://', '1461658565'),
+  EIB: linked('eximbankomnimobile://', '1571427361'),
+  LPB: linked('lv24h://', '1488794748'),
+  PVCB: linked('pvcapp://', '6467857410'),
+  ABB: linked('vn.abbank.retail://', '6636532294'),
+  VCCB: linked('bvb.digimi://', '1526444697'),
+  PGB: linked('pgbank.partner://', '1537765475'),
+  VAB: linked('zalo.vietaomni://', '6744814738'),
+  VIETBANK: linked('vietbankzalo://', '6746633957'),
+  MBV: linked('mbv://', '6742386787'),
+  WVN: linked('wvbs://', '1501785125'),
+  KBANK: linked('kbank.kplusvn://', '1586576195'),
+  NAB: linked('nabtransfermoney://', '1456997296', { kind: 'namABank' }),
+  CAKE: linked('cake.vn://', '1551907051'),
+  TIMO: linked('timo://', '1521230347'),
   // Zalo lists Shinhan's app but no link to it was seen, so it opens as is.
   SHBVN: plain('shinhanglbvnbank://', '1071033810'),
   NCB: plain('ncbizimobile://', '1465217154'),

@@ -88,13 +88,16 @@ describe('transferLink', () => {
 });
 
 describe('handoffUrl', () => {
-  it('sends the filled-in link to a verified bank', () => {
-    expect(handoffUrl(app('MB'), transfer, 10_000)).toBe(transferLink(app('MB'), transfer, 10_000));
+  it('sends the filled-in link to every bank whose link is known', () => {
+    for (const id of ['MB', 'TCB', 'NAB']) {
+      const link = transferLink(app(id), transfer, 10_000);
+      expect(link).not.toBeNull();
+      expect(handoffUrl(app(id), transfer, 10_000)).toBe(link);
+    }
   });
 
-  it("opens an unverified bank's home, even when its link is known", () => {
-    expect(transferLink(app('TCB'), transfer, 10_000)).not.toBeNull();
-    expect(handoffUrl(app('TCB'), transfer, 10_000)).toBe('tcb://');
+  it("opens Nam A's home for a shop code, which its link cannot carry", () => {
+    expect(handoffUrl(app('NAB'), shop, 10_000)).toBe('nabtransfermoney://');
   });
 
   it('opens the home of a bank with no link', () => {
@@ -103,7 +106,7 @@ describe('handoffUrl', () => {
 });
 
 describe('handoffPlan', () => {
-  it('opens a verified bank filled in on iOS, with its App Store page behind it', () => {
+  it('opens a bank filled in on iOS, with its App Store page behind it', () => {
     expect(handoffPlan(findBank('MB'), 'ios', transfer, 10_000)).toEqual({
       open: transferLink(app('MB'), transfer, 10_000),
       filledIn: true,
@@ -111,9 +114,9 @@ describe('handoffPlan', () => {
     });
   });
 
-  it("opens an unverified bank's home on iOS, not filled in", () => {
-    expect(handoffPlan(findBank('TCB'), 'ios', transfer, 10_000)).toMatchObject({
-      open: 'tcb://',
+  it('opens the home of a bank with no link on iOS, not filled in', () => {
+    expect(handoffPlan(findBank('VCB'), 'ios', transfer, 10_000)).toMatchObject({
+      open: 'vietcombankmobile://',
       filledIn: false,
     });
   });
