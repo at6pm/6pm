@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [tết 2027, lì xì, thưởng tết, kế hoạch chi tiêu, hũ tiết kiệm]
 related: [holiday-spending-plan, luong-10-trieu-ha-noi-moi-ngay-tieu-bao-nhieu, song-sot-11-11-chot-so-truoc-khi-chot-don, quan-ly-chi-tieu-cho-cap-doi]
 cta: "Tạo hũ Tết từ bây giờ, tháng Giêng khỏi giật mình. Dùng thử 6pm trên iPhone."
+hero: [plan]
 ---
 
 # Tết 2027, thưởng và lì xì: lên kế hoạch chi tiêu từ bây giờ
@@ -80,6 +81,8 @@ Cách an toàn hơn: lập hũ Tết như thể không có thưởng. Khi thư�
 
 Kế hoạch tốt nhất là kế hoạch không bắt bạn cầm điện thoại ghi chép lúc đang bóc bánh chưng.
 
+<!-- media: store-inbox -->
+
 - **Lì xì tiền mặt**: nói một câu, "lì xì cháu 200 nghìn". 6pm hiểu "nghìn", "k", "tr", "triệu", "rưỡi".
 - **Đi chợ Tết, mua hoa**: quét VietQR ở quầy bằng 6pm, rồi trả trong app ngân hàng của bạn.
 - **Tiền mặt lặt vặt**: Thêm nhanh, ba lần chạm.
@@ -92,6 +95,8 @@ Bạn đồng hành có thể buông một câu kiểu "Ví vẫn còn thở. Đ
 ## Tết của hai người: một hũ chung
 
 Năm nay về nhà nội hay nhà ngoại? Hay cả hai? Quà biếu hai bên là khoản cặp đôi hay cãi nhau nhất.
+
+<!-- media: diagram-couple -->
 
 Với **Cùng chia ngân sách** trong 6pm, hai người có thể giữ một hũ chung như "Tết hai nhà", mỗi người góp phần mình. Người kia thấy hũ chung, không bao giờ thấy chi tiêu riêng của bạn. Tính năng này miễn phí. Chi tiết ở bài [quản lý chi tiêu cho cặp đôi](/vi/blog/quan-ly-chi-tieu-cho-cap-doi).
 

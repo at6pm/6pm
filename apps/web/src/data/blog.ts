@@ -1,6 +1,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 import type { BlogLang } from './blog-copy';
+import ogImages from './og-images.json';
 
 export type { BlogLang };
 export type Post = CollectionEntry<'blog'>;
@@ -119,7 +120,16 @@ export function headlineOf(post: Post): string {
   return match?.[1] !== undefined ? plain(match[1]) : post.data.title;
 }
 
-/** Where a post's social card lives. */
+const cards: Readonly<Record<string, string>> = ogImages;
+
+/**
+ * Where a page's social card lives. The file name carries a hash of the image, so a new card gets
+ * a new URL and X, Facebook and Zalo fetch it fresh; `tools/scripts/og-images.ts` writes the list.
+ */
 export function ogImagePath(lang: BlogLang, slug?: string): string {
-  return `/og/${lang}/${slug ?? 'blog'}.jpg`;
+  const key = `${lang}/${slug ?? 'blog'}`;
+  const path = cards[key];
+  if (path === undefined)
+    throw new Error(`no social card for ${key}: run tools/scripts/og-images.ts`);
+  return path;
 }

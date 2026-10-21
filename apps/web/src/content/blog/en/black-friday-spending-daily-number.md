@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [black friday, cyber monday, daily budget, impulse spending, holiday shopping]
 related: [song-sot-11-11-chot-so-truoc-khi-chot-don, how-much-can-i-spend-per-day, bank-alert-emails-expense-log, track-spending-automatically-iphone]
 cta: "Ask 6pm before you check out. Free on iPhone."
+hero: [today]
 ---
 
 # Surviving Black Friday 2026 with one daily number
@@ -24,6 +25,8 @@ Four days of sales, wrapped around a long weekend, right before December. Your w
 ## "40% off" is the wrong number
 
 A discount tells you what you didn’t spend. Your bank balance only cares about what you did. The question that actually matters is: if I buy this, what does every day between now and payday look like?
+
+<!-- media: diagram-formula -->
 
 ### A worked example: $300 on Black Friday
 
@@ -43,6 +46,8 @@ That TV isn’t $300. It’s **$16 a day, every day, until 14 December**. That�
 You might still want it. Fine. Now you’re buying it at its real price.
 
 ## Five steps: close the books before you check out
+
+<!-- media: ask -->
 
 ### 1. Cart everything, buy nothing (yet)
 
@@ -83,6 +88,8 @@ In 6pm, an installment plan is a **bill**. Add it to your plan, give it a last m
 ## Next year: give the sale its own pot
 
 If you know you’ll shop every November, don’t let it be an ambush. Make a pot called "Black Friday." 6pm works out each month’s set-aside as (goal − what you have) ÷ months left, rounded up to the nearest $50. Start a $600 pot in January and it asks for about $100 a month at first, and less once you’re ahead.
+
+<!-- media: plan -->
 
 By November the money is already sitting there, and your daily number doesn’t flinch when you check out.
 

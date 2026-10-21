@@ -200,8 +200,18 @@ export function authorLd(lang: BlogLang, posts: readonly Post[]): Json {
   };
 }
 
-/** One article: the post, its breadcrumb, and the FAQ it answers on the page. */
-export function articleLd(post: Post, wordCount: number): Json {
+/** An image on the site, by path and size. */
+export interface SiteImage {
+  path: string;
+  width: number;
+  height: number;
+}
+
+/**
+ * One article: the post, its breadcrumb, and the FAQ it answers on the page. Its images are the
+ * social card (also the thumbnail) and the hero's app screen.
+ */
+export function articleLd(post: Post, wordCount: number, hero: SiteImage): Json {
   const { lang, slug } = post.data;
   const t = blogCopy[lang];
   const url = absolute(blogPath(lang, slug));
@@ -220,12 +230,21 @@ export function articleLd(post: Post, wordCount: number): Json {
         inLanguage: inLanguage(lang),
         datePublished: post.data.pubDate.toISOString(),
         dateModified: modifiedOf(post).toISOString(),
-        image: {
-          '@type': 'ImageObject',
-          url: absolute(ogImagePath(lang, slug)),
-          width: 1200,
-          height: 630,
-        },
+        image: [
+          {
+            '@type': 'ImageObject',
+            url: absolute(ogImagePath(lang, slug)),
+            width: 1200,
+            height: 630,
+          },
+          {
+            '@type': 'ImageObject',
+            url: absolute(hero.path),
+            width: hero.width,
+            height: hero.height,
+          },
+        ],
+        thumbnailUrl: absolute(ogImagePath(lang, slug)),
         keywords: post.data.tags.join(', '),
         wordCount,
         author: founderNode,

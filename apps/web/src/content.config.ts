@@ -2,6 +2,8 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
+import { shotIds } from './data/blog-media';
+
 /**
  * The articles under `src/content/blog/<lang>/<slug>.md`. A title or description past what search
  * results show fails the build, so it is fixed before anyone sees it cut off.
@@ -23,6 +25,8 @@ const blog = defineCollection({
     /** The translation first (when there is one), then same-language siblings, by slug. */
     related: z.array(z.string()).min(1),
     cta: z.string(),
+    /** The app screens at the top of the article (one, or two side by side), from `blog-media.ts`. */
+    hero: z.array(z.enum(shotIds)).min(1).max(2),
     /** Listed first on the blog: the guides to start from. */
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),

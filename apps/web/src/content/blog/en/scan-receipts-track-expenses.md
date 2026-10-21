@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [receipt scanner, expense tracking, iphone, split bill, ocr]
 related: [chup-hoa-don-ghi-chi-tieu, track-spending-automatically-iphone, log-expenses-by-voice, bank-alert-emails-expense-log]
 cta: "Hold your phone over the receipt. 6pm does the rest."
+hero: [scan-receipt]
 ---
 
 # How to scan receipts to track expenses (in about three seconds)
@@ -20,6 +21,8 @@ Groceries at Trader Joe's, dinner with friends, a hardware store run, the power 
 Typing in a $64.18 grocery receipt isn't hard. Remembering to do it while carrying two bags is. Scanning is faster than typing, and better: you don't have to remember the number at all.
 
 ## How to scan a receipt with 6pm
+
+<!-- media: scan-receipt-clip -->
 
 ### Step 1: Open Scan
 
@@ -76,6 +79,8 @@ Plenty of receipt scanners exist, and some are great at archiving receipts for t
 ## From receipt to tomorrow's number
 
 Every scanned receipt joins the Apple Pay taps, forwarded emails and voice notes in your **Inbox**. At 6pm, you close the day: each spend comes up as a receipt card (**Keep**, **Edit**, **Not mine**), and the last one stamps **CLOSED**.
+
+<!-- media: close-tomorrow -->
 
 Next morning: **Safe to spend today**. Your pay, minus bills, pots and Future you, spread evenly to payday. A big grocery run today means the next few days shrink a little. No adding up receipts on a Sunday night.
 

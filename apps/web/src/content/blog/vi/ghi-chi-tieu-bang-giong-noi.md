@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [ghi chi tiêu, giọng nói, tiền mặt, iphone, siri]
 related: [log-expenses-by-voice, cach-ghi-chi-tieu-tu-dong-tren-iphone, quet-vietqr-tu-ghi-chi-tieu, chup-hoa-don-ghi-chi-tieu]
 cta: "Nói “cà phê 30k” với 6pm. Vậy là ghi xong."
+hero: [quick-add]
 ---
 
 # Ghi chi tiêu bằng giọng nói: “bánh mì 25 nghìn”, thế là xong
@@ -20,6 +21,8 @@ QR thì quét, thẻ thì có Apple Pay, đơn Shopee thì có email. Nhưng v�
 Gõ tay thì phải mở app, tìm nút, gõ số, chọn danh mục. Lúc đang cầm ổ bánh mì nóng hổi, chẳng ai làm thế. Nói một câu thì khác: một tay cũng xong, ba giây cũng xong.
 
 ## Cách ghi chi tiêu bằng giọng nói trong 6pm
+
+<!-- media: store-inbox -->
 
 ### Bước 1: Chạm micro
 
@@ -70,11 +73,15 @@ Dịch vụ đám mây nghe được bạn nói tiếng nào, nên nói "coffee 
 | Nhiều khoản liền nhau ở chợ | Thêm nhanh |
 | Trả bằng QR | Quét VietQR trong 6pm |
 
+<!-- media: quick-add-clip -->
+
 Không cần chọn một cách duy nhất. Mọi đường đều dẫn về Hộp thư.
 
 ## Chốt ngày: chỗ sửa mọi lỗi nghe nhầm
 
 Giọng nói đôi khi nghe "bốn lăm" thành "bốn năm". Không sao. 18:00, 6pm nhắc **chốt ngày**: mỗi khoản hiện như một tờ biên lai, bạn Giữ, Sửa hoặc báo Không phải của tôi. Tờ cuối đóng dấu **ĐÃ CHỐT**. Khoảng một phút là xong cả ngày, kể cả những khoản ghi vội.
+
+<!-- media: close-swipe-clip -->
 
 Bạn đồng hành của 6pm có thể thêm một câu kiểu "Bắt được rồi. Bạn đi chơi tiếp đi." Nó trêu thói quen tiêu tiền, không bao giờ trêu con người. Không thích đùa? Bật chế độ nghiêm túc.
 

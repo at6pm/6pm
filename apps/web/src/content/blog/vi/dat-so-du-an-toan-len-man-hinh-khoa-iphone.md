@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [widget iphone, màn hình khoá, tiện ích, quản lý chi tiêu]
 related: [daily-budget-iphone-lock-screen, cach-ghi-chi-tieu-tu-dong-tren-iphone, quet-vietqr-tu-ghi-chi-tieu, vi-sao-ghi-chi-tieu-that-bai-sau-2-tuan]
 cta: "Đặt con số của bạn lên màn hình khoá. Liếc là biết, khỏi mở app."
+hero: [today]
 ---
 
 # Cách đặt số tiền "hôm nay tiêu được" lên màn hình khoá iPhone
@@ -23,12 +24,16 @@ Một ngày bạn cầm điện thoại lên rất nhiều lần, phần lớn c
 
 "Hôm nay tiêu được" là lương của bạn trừ hoá đơn, trừ phần để dành cho bạn của tương lai và các hũ, rồi chia đều cho số ngày còn lại đến kỳ lương. Mỗi khoản 6pm bắt được trong ngày (quét VietQR, biên lai, giọng nói, Apple Pay, bàn phím) đều trừ vào con số ngay, kể cả khi bạn chưa xác nhận. Vì vậy con số trên màn hình khoá luôn trung thực, không phải số của sáng nay. Muốn hiểu cách tính chi tiết, xem bài [Lương 10 triệu ở Hà Nội: mỗi ngày tiêu được bao nhiêu?](/vi/blog/luong-10-trieu-ha-noi-moi-ngay-tieu-bao-nhieu).
 
+<!-- media: diagram-formula -->
+
 ## Thêm tiện ích 6pm vào Màn hình khoá
 
 1. **Chạm và giữ Màn hình khoá**, rồi chạm **Tuỳ chỉnh**.
 2. Chọn **Màn hình khoá**, rồi chạm vào **ô dưới đồng hồ**.
 3. Chạm **6pm**, rồi chọn **vòng** hoặc **thẻ**.
 4. Chạm ra ngoài để đóng bảng, rồi chạm **Xong**.
+
+<!-- media: lock-widgets -->
 
 Hai kiểu để chọn:
 
@@ -42,6 +47,8 @@ Nếu bạn hay ở Màn hình chính hơn:
 1. Chạm và giữ một chỗ trống trên Màn hình chính đến khi các app rung.
 2. Chạm **Sửa** ở góc trên, rồi **Thêm tiện ích**.
 3. Tìm **6pm**, vuốt tới cỡ bạn muốn, rồi chạm **Thêm tiện ích**.
+
+<!-- media: home-widgets -->
 
 | Cỡ | Hiện gì |
 |---|---|
@@ -72,6 +79,8 @@ Từ giờ, nhấn giữ nút bên cạnh máy là mở Quét QR. Nếu thích n
 ## Hoạt động trực tiếp: khoản trả QR chờ ngay trên màn hình khoá
 
 Bạn không cần bật gì ở đây. Khi bạn quét VietQR bằng 6pm rồi sang app ngân hàng để trả, khoản đó **chờ ngay trên Màn hình khoá** (và trong Dynamic Island) dưới dạng Hoạt động trực tiếp. Trả xong, chạm **Đã trả**, nó tự đóng. Hoạt động trực tiếp cũng hiện khi bạn bật chế độ du lịch (tính năng của 6pm Max).
+
+<!-- media: live-activity-clip -->
 
 Không thấy? Vào **Cài đặt**, mở **6pm** và bật **Hoạt động trực tiếp**.
 

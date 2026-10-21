@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [engineering, ios, apple vision, ocr, android]
 related: [eng-reading-vietqr-on-device, eng-native-feel-expo-reanimated, eng-why-we-open-sourced-our-money-app]
 cta: "Read the camera module on GitHub, or point the beta at a receipt."
+hero: [scan-receipt]
 ---
 
 # One camera for QR codes and receipts: live document outlines and on-device OCR with Apple Vision
@@ -36,6 +37,8 @@ final class ScanCameraSession: NSObject, @unchecked Sendable {
   static let minimumArea = 0.06
 }
 ```
+
+<!-- media: diagram-camera -->
 
 **QR codes** come from `AVCaptureMetadataOutput` with `metadataObjectTypes = [.qr]`, delivered on the main queue. It is the same reader the Camera app uses, and it is faster than running a Vision barcode request per frame. The same code is ignored for a second after it fires, so holding the phone over a code does not spam the parser.
 
@@ -119,6 +122,8 @@ The full-resolution photo goes through four steps in `ReceiptPhoto.read`:
 1. **Upright and bounded.** `CGImageSourceCreateThumbnailAtIndex` with the transform applied, at most 3,000 px on the long side, which keeps the small print on a long receipt.
 2. **Find the paper again** in the photo. If that fails, use where the live view last saw it.
 3. **Square it up** with Core Image:
+
+<!-- media: scan-receipt-clip -->
 
 ```swift
 let output = CIImage(cgImage: image).applyingFilter(

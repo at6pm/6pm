@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [ynab alternative, budgeting apps, expense tracker, app comparison]
 related: [money-lover-vs-misa-moneykeeper-vs-6pm, best-expense-tracker-apps-iphone-2026, envelope-budgeting-vs-one-daily-number, why-expense-tracking-fails]
 cta: "Try 6pm free on iPhone from 6 Nov, or join the public beta now."
+hero: [close-tomorrow]
 ---
 
 # YNAB alternatives for people who hate budgeting
@@ -81,6 +82,8 @@ Spendee has shared wallets, category budgets, savings goals, an AI receipt scann
 
 6pm is for the person who never wants to see a category budget again. It replaces "give every dollar a job" with something smaller: **pay future you first, then spend the rest evenly**.
 
+<!-- media: diagram-formula -->
+
 You tell it your pay, your bills and what you want to put aside (**Future you**, plus pots for things like a trip). Everything left is free money, spread evenly across the days to payday. Each morning you see one figure: **Safe to spend today**. Take home $3,200, set aside $1,180 for bills, $480 for pots and $352 for Future you, and $1,188 is free. With 22 days to payday, counting today, that is $54 a day.
 
 You do not assign anything. Go big on Saturday and the days after shrink a little. Spend less and they grow.
@@ -92,6 +95,8 @@ Before a big purchase, ask: "Can I afford $350 on Saturday?" **Ask 6pm** works o
 **Where 6pm is weaker than YNAB:** no bank import, so a card swipe you never tap, photograph or forward needs typing. No web, Mac or Android yet. No loan planner, net worth or investment view. And 6pm has not launched yet (it reaches the App Store on 6 November 2026); YNAB has a long track record.
 
 **What it costs:** the close, every capture method and Budget together (shared pots for two) are free. 6pm Max is $4.99 a month or $34.99 a year with a 7-day trial, for looks, unlimited Ask and pots, Travel mode, Year book and encrypted backup.
+
+<!-- media: close-stamp-clip -->
 
 ## Which alternative fits you?
 

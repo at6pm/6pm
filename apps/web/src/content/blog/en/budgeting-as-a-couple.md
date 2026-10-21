@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [budgeting as a couple, shared savings, couples finance, budget together]
 related: [quan-ly-chi-tieu-cho-cap-doi, how-much-can-i-spend-per-day, holiday-spending-plan, envelope-budgeting-vs-one-daily-number]
 cta: "Start a shared pot with your partner. Keep your own spending your own."
+hero: [today]
 ---
 
 # Budgeting as a couple without sharing passwords
@@ -45,6 +46,8 @@ The number matters less than saying it out loud and agreeing on it.
 
 **Budget together** is 6pm's shared-pots feature. It's free for everyone.
 
+<!-- media: diagram-couple -->
+
 ### Getting started
 
 1. One of you opens Budget together and **signs in with Apple**. It's the only part of 6pm with a sign-in; the rest of the app needs no account.
@@ -82,6 +85,8 @@ If you'd rather share goals but not every transaction, the pots-only approach fi
 3. **Give family obligations their own pot.** Holiday gifts and in-law birthdays are classic flashpoints; settle them upfront.
 4. **Pay the pot first.** Add to it when pay lands, not with whatever's left on the 30th.
 5. **Never use personal spending as ammunition.** That's the whole point of keeping it separate.
+
+<!-- media: plan -->
 
 ## FAQ
 

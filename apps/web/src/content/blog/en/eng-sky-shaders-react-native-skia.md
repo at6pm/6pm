@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [engineering, react native, skia, shaders, reanimated]
 related: [eng-native-feel-expo-reanimated, eng-widgets-controls-live-activities-expo, eng-why-we-open-sourced-our-money-app]
 cta: "Read the sky code on GitHub, or watch it change through the day in the beta."
+hero: [today]
 ---
 
 # Sky shaders at 120fps in React Native with Skia
@@ -37,6 +38,8 @@ export function paletteFor(input: FrameInput): Palette {
 }
 ```
 
+<!-- media: sky-day-clip -->
+
 The design's oklch tints are converted to sRGB hex in code, which renders identically to the browser references. Same function, same numbers, no "close enough".
 
 ## One canvas, one array of numbers
@@ -56,6 +59,8 @@ The design's oklch tints are converted to sRGB hex in code, which renders identi
   </Group>
 </Canvas>
 ```
+
+<!-- media: diagram-sky -->
 
 The interesting part is `frame`. Everything on the sky that changes with the hour (gradient stops, bloom colours, sun opacity, halftone ink, grain strength) is packed into one flat `number[]`, with colours taking four slots (`sky-slots.ts`). A new hour is then a single UI-thread tween of that array, the equivalent of CSS's `transition: 1s`:
 

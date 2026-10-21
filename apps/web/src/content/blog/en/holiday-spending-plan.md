@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [holiday budget, christmas on a budget, gift budget, savings pot, daily budget]
 related: [ke-hoach-chi-tieu-tet-thuong-li-xi, how-much-can-i-spend-per-day, black-friday-spending-daily-number, where-does-my-money-go]
 cta: "Make a Holidays pot now and meet January calm. Try 6pm on iPhone."
+hero: [close-tomorrow]
 ---
 
 # Holiday spending plan: pay future you first
@@ -39,6 +40,8 @@ Book flights early if you can. Once a line is booked, it stops being a guess and
 ## Step 2: set it aside first
 
 In 6pm, that total becomes a **pot**. Each month the pot takes its share before your daily number is worked out: (goal − what you already have) ÷ months left, rounded up to the nearest $50.
+
+<!-- media: plan -->
 
 Say you’ve already got $200 put away and you start now, in late October, with two months left before the holidays:
 
@@ -78,6 +81,8 @@ Nobody wants to type receipts while wrapping gifts. 6pm catches most of it:
 - **Voice**: "wrapping paper eight dollars."
 - **Cash and Venmo pay-backs**: Quick add, three taps.
 
+<!-- media: store-inbox -->
+
 Everything waits in one Inbox. At 6pm, swipe through the day in about a minute and it gets the CLOSED stamp. Miss a few days around Christmas? Nothing breaks. Missed days wait for you, and what you spent already counts.
 
 Card spending counts the day it happens, so there’s no January surprise hiding in your daily number. The money left when you tapped the card, as far as 6pm is concerned.
@@ -85,6 +90,8 @@ Card spending counts the day it happens, so there’s no January surprise hiding
 ## Hosting with someone? Share the pot
 
 If the holidays are a joint project, with two families, two sets of gifts and one very small car, Budget together lets two people keep a shared pot, like "Holidays 2026," that both add to. Your partner sees the shared pot, never your own spending. It’s free.
+
+<!-- media: diagram-couple -->
 
 6pm never moves money. The amounts in a pot are what you each say you’ve set aside; it just counts.
 

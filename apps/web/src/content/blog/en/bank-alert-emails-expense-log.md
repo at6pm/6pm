@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [bank alerts, expense tracking, email forwarding, gmail filters, automation]
 related: [tu-dong-ghi-chi-tieu-tu-email-ngan-hang, track-spending-automatically-iphone, scan-receipts-track-expenses, why-expense-tracking-fails]
 cta: "Get your own 6pm receipt address, set one filter, and let the alerts do the logging."
+hero: [close-caught]
 ---
 
 # Turn bank alert emails into an expense log
@@ -57,6 +58,8 @@ Forward an old alert by hand. Open 6pm. It should be sitting in your Inbox.
 
 This is the part most apps gloss over, so here it is plainly.
 
+<!-- media: diagram-email -->
+
 - **No amount, no reading.** An email that prints no amount is dropped unread. Newsletters cost you nothing.
 - **An AI model reads the rest.** Emails with an amount go to Anthropic's model, which tells a real payment from a transfer between your own accounts, a refund, a failed charge, an order update or a promotion. It reads who you actually paid, the category and the currency. A card charged in euros on holiday stays in euros.
 - **Amounts come from the email, never from a guess.** If the amount is not printed in the email, it is not kept.
@@ -66,6 +69,8 @@ This is the part most apps gloss over, so here it is plainly.
 ## Double alerts, one spend
 
 Order a $38.40 dinner on DoorDash and you might get two emails: your bank's alert and DoorDash's receipt. 6pm treats two different senders with the same amount, within three minutes of each other, as one spend seen two ways. When the bank alert names no shop, the merged spend keeps the name from the receipt. If you also paid with Apple Pay, that tap joins the same item. Two emails from the same sender never merge, so two real $5 coffees stay two.
+
+<!-- media: store-inbox -->
 
 ## A week of alerts, closed in a minute
 
@@ -77,6 +82,8 @@ Say you forward Chase alerts and a couple of shop receipts. By Thursday evening 
 | Bank alert + receipt | DoorDash, Thai Basil | $38.40 |
 | Shop receipt | Target order | $26.99 |
 | Bank alert | Refund, Amazon | not a spend, skipped |
+
+<!-- media: close-swipe-clip -->
 
 At 6pm your phone nudges you. Each spend comes up as a receipt: Keep, Edit or Not mine. The last one stamps the day **CLOSED**. Tomorrow morning, **Safe to spend today** already accounts for all of it.
 

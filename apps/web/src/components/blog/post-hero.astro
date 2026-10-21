@@ -1,0 +1,104 @@
+---
+import type { BlogLang } from '../../data/blog-copy';
+import { picture, shotImage } from '../../data/blog-figures';
+import { lowFocus, type ShotId } from '../../data/blog-media';
+
+interface Props {
+  lang: BlogLang;
+  /** One or two screens, as the article's front matter names them. */
+  shots: readonly ShotId[];
+}
+
+const { lang, shots } = Astro.props;
+// The hero is the page's largest paint: the first screen is fetched first, at the size it shows.
+const phones = await Promise.all(
+  shots.map((id, i) => {
+    const { meta, text } = shotImage(id, lang);
+    return picture(meta, {
+      alt: text.alt,
+      widths: [240, 360, 480, 720],
+      sizes: '(min-width: 760px) 240px, 40vw',
+      priority: i === 0,
+      className: lowFocus(id) ? 'phone low' : 'phone',
+    });
+  }),
+);
+---
+
+<div class:list={['hero', shots.length > 1 ? 'hero-pair' : 'hero-one']}>
+  <div class="sun" aria-hidden="true"></div>
+  {phones.map((html) => <Fragment set:html={html} />)}
+</div>
+
+<style>
+  .hero {
+    position: relative;
+    margin: 26px 0 0;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-radius: 24px;
+    background:
+      radial-gradient(70% 90% at 100% 100%, rgba(255, 133, 82, 0.5), rgba(255, 133, 82, 0) 70%),
+      radial-gradient(50% 60% at 0% 0%, rgba(143, 208, 198, 0.18), rgba(143, 208, 198, 0) 70%),
+      linear-gradient(180deg, #2a1640 0%, #3d1d48 45%, #6a2c4a 100%);
+    isolation: isolate;
+  }
+  .sun {
+    position: absolute;
+    right: -9%;
+    bottom: -30%;
+    width: 46%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, #ffb08a, #ff8552 55%, #c9481e);
+    opacity: 0.85;
+    z-index: -1;
+  }
+  .hero :global(.phone) {
+    position: absolute;
+    top: 9%;
+    width: 33%;
+  }
+  .hero-one :global(.phone) {
+    left: 33.5%;
+  }
+  .hero :global(.phone.low) {
+    top: auto;
+    bottom: 7%;
+  }
+  .hero-pair :global(.phone:first-of-type) {
+    left: 15%;
+  }
+  .hero-pair :global(.phone:last-of-type) {
+    left: 52%;
+    top: 17%;
+  }
+  .hero :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 13.5% / 6.2%;
+    box-shadow:
+      0 0 0 4px #120c1d,
+      0 0 0 5px rgba(251, 244, 236, 0.18),
+      0 22px 50px rgba(11, 7, 22, 0.55);
+  }
+  @media (max-width: 520px) {
+    .hero {
+      aspect-ratio: 4 / 3;
+      border-radius: 20px;
+    }
+    .hero :global(.phone) {
+      width: 40%;
+    }
+    .hero-one :global(.phone) {
+      left: 30%;
+    }
+    .hero-pair :global(.phone:first-of-type) {
+      left: 8%;
+    }
+    .hero-pair :global(.phone:last-of-type) {
+      left: 52%;
+    }
+  }
+</style>

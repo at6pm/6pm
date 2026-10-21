@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [engineering, expo, widgetkit, app intents, live activities]
 related: [eng-native-feel-expo-reanimated, eng-why-we-open-sourced-our-money-app, eng-reading-vietqr-on-device]
 cta: "Read the Swift and TypeScript on GitHub, or try the widgets in the public beta."
+hero: [lock-widgets]
 ---
 
 # Widgets, Controls and Live Activities from an Expo app
@@ -26,6 +27,8 @@ targets/
   share/      Share extension: reads a bank receipt with Vision
   _shared/    GroupFiles.swift, DomainBridge.swift, ThemeTokens.swift, strings, domain-native.js
 ```
+
+<!-- media: diagram-widgets -->
 
 Each target is declared in a few lines of JavaScript. The widget extension:
 
@@ -164,6 +167,8 @@ default: SafeSmall(entry: entry)
 }
 ```
 
+<!-- media: home-widgets -->
+
 `TodayListWidget` is the large size: what's left, a spent bar and the newest spends.
 
 The companion (a little sun, by default) appears in the widgets as PNGs the app renders and drops into the group (`companion-<mood>-<size>.png`). In serious mode the snapshot says so and the widget leaves it out.
@@ -208,6 +213,8 @@ public struct SurfaceAttributes: ActivityAttributes {
   public var key: String
 }
 ```
+
+<!-- media: live-activity-clip -->
 
 The widget decodes `PendingPayState` or `TravelState` from it, and lays out the Lock Screen banner and the Dynamic Island's compact, minimal and expanded regions. Later fields are optional, so an activity started by an older build still decodes after an over-the-air update.
 

@@ -39,6 +39,8 @@ interface BlogCopy {
   readonly openSource: string;
   readonly madeBy: string;
   readonly formatDate: (date: Date) => string;
+  /** What an article's social card shows, for `og:image:alt`. */
+  readonly cardAlt: (title: string) => string;
 }
 
 const vietnam = { timeZone: 'Asia/Ho_Chi_Minh' } as const;
@@ -91,6 +93,7 @@ export const blogCopy: Readonly<Record<BlogLang, BlogCopy>> = {
         year: 'numeric',
         ...vietnam,
       }),
+    cardAlt: (title) => `“${title}”, beside the 6pm app on an iPhone`,
   },
   vi: {
     name: 'Blog',
@@ -138,5 +141,6 @@ export const blogCopy: Readonly<Record<BlogLang, BlogCopy>> = {
         year: 'numeric',
         ...vietnam,
       }),
+    cardAlt: (title) => `“${title}”, bên cạnh ứng dụng 6pm trên iPhone`,
   },
 };

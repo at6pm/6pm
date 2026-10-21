@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [money lover, misa moneykeeper, sổ thu chi, so sánh app, quản lý chi tiêu]
 related: [ynab-alternatives-for-people-who-hate-budgeting, app-quan-ly-chi-tieu-tot-nhat-2026, quet-vietqr-tu-ghi-chi-tieu, quy-tac-6-chiec-lo-hay-mot-con-so]
 cta: "Thử 6pm miễn phí trên iPhone từ 6/11, hoặc vào bản beta ngay."
+hero: [today, close-caught]
 ---
 
 # Money Lover vs MISA MoneyKeeper vs 6pm: app nào hợp với bạn?
@@ -61,6 +62,8 @@ Linh làm văn phòng ở Cầu Giấy, lương 12 triệu. Thứ Năm của Lin
 
 Không app nào ghi được 100% mà không cần bạn. Khác biệt là bạn bỏ công ở đâu: trả phí liên kết, gõ tay, hay một phút mỗi tối.
 
+<!-- media: diagram-capture -->
+
 ## Khi nào nên chọn Money Lover
 
 - Bạn dùng Android, hoặc muốn ghi từ Apple Watch, Mac.
@@ -82,6 +85,8 @@ Không app nào ghi được 100% mà không cần bạn. Khác biệt là bạn
 - Bạn không muốn đưa thông tin đăng nhập ngân hàng cho app nào.
 - Bạn không cần hai mươi biểu đồ; bạn cần biết hôm nay tiêu thêm ly trà sữa có sao không.
 - Bạn và người yêu muốn cùng để dành cho chuyến Đà Lạt nhưng không muốn người kia soi từng khoản chi. **Cùng chia ngân sách** của 6pm cho hai người chung hũ, mỗi người giữ chi tiêu riêng, miễn phí.
+
+<!-- media: close-swipe-clip -->
 
 ## Điểm yếu của 6pm, nói trước
 

@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: ["11.11", săn sale, shopee, chi tiêu hằng ngày, mua sắm online]
 related: [black-friday-spending-daily-number, luong-10-trieu-ha-noi-moi-ngay-tieu-bao-nhieu, app-quan-ly-chi-tieu-tot-nhat-2026, quet-vietqr-tu-ghi-chi-tieu]
 cta: "Hỏi 6pm trước khi chốt đơn. Dùng thử 6pm trên iPhone."
+hero: [today]
 ---
 
 # Chốt sổ trước khi chốt đơn: sống sót mùa sale 11.11
@@ -24,6 +25,8 @@ Còn một chi tiết nhỏ mà ít ai để ý: nếu lương về ngày 10, th
 ## Giá giảm 50% không phải là con số quan trọng
 
 Sale nói chuyện bằng phần trăm. Ví bạn sống bằng ngày.
+
+<!-- media: diagram-formula -->
 
 "Giảm 50%" làm bạn thấy mình đang **tiết kiệm** 300k. Nhưng con số thật cần hỏi là: mua món này thì từ mai tới ngày lương, mỗi ngày mình còn bao nhiêu?
 
@@ -45,6 +48,8 @@ Giỏ hàng đó không phải "1,5 triệu". Nó là **49.000₫ mỗi ngày, t
 Có thể bạn vẫn muốn mua. Không sao. Nhưng giờ bạn mua với cái giá thật trước mặt.
 
 ## Bốn bước chốt sổ trước khi chốt đơn
+
+<!-- media: ask -->
 
 ### 1. Thêm vào giỏ, đừng bấm thanh toán ngay
 
@@ -83,6 +88,8 @@ Trong 6pm, khoản trả góp là **hoá đơn**: bạn thêm nó vào kế ho�
 ## Lần sau: một hũ cho mùa sale
 
 Nếu năm nào bạn cũng biết mình sẽ mua sắm dịp 11.11 và 12.12, đừng để nó là bất ngờ. Tạo một hũ "Sale cuối năm". 6pm tự tính mỗi tháng cần để riêng bao nhiêu: (mục tiêu − đã có) ÷ số tháng còn lại, làm tròn lên 50k. Muốn 2 triệu cho 11.11 năm sau, bắt đầu từ tháng 1 thì mỗi tháng chỉ cần khoảng 200k.
+
+<!-- media: plan -->
 
 Tới ngày sale, tiền đã nằm sẵn trong hũ, con số mỗi ngày không bị giật.
 

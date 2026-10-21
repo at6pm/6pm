@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [ghi chi tiêu tự động, email ngân hàng, hoá đơn điện tử, gmail, 6pm]
 related: [bank-alert-emails-expense-log, cach-ghi-chi-tieu-tu-dong-tren-iphone, quet-vietqr-tu-ghi-chi-tieu, chup-hoa-don-ghi-chi-tieu]
 cta: "Lấy địa chỉ email riêng của bạn trong 6pm, lọc một lần, chi tiêu tự về."
+hero: [close-caught]
 ---
 
 # Tự động ghi chi tiêu từ email ngân hàng và hoá đơn
@@ -35,6 +36,8 @@ Khi một email tới địa chỉ của bạn:
 2. **Email có số tiền được một mô hình AI (của Anthropic) đọc** để phân biệt: đây là một khoản chi, hay chuyển tiền giữa hai tài khoản của chính bạn, hoàn tiền, giao dịch lỗi, cập nhật đơn hàng hay quảng cáo. Nó đọc luôn bạn đã trả cho ai, cho việc gì, bằng loại tiền gì. Thẻ bị trừ bằng đô la thì khoản chi giữ nguyên đô la.
 3. **Số tiền chỉ được giữ khi nó thật sự in trong email.** AI không đoán số.
 4. **Phần đã đọc được mã hoá và giữ trên máy chủ đến khi điện thoại của bạn lấy về, rồi bị xoá.** Bản thân email không bao giờ được 6pm lưu hay ghi log.
+
+<!-- media: diagram-email -->
 
 Bản miễn phí có 50 lượt đọc bằng AI mỗi ngày. Quá số đó, hoặc khi AI không trả lời, các quy tắc đơn giản hơn sẽ đọc thay, nên không biên lai nào bị mất. 6pm Max không giới hạn lượt đọc.
 
@@ -78,6 +81,8 @@ Huy, 26 tuổi, làm thiết kế ở Quận 3, đặt bộ lọc cho ba nơi: h
 | Biên lai Grab car về nhà | 86.000₫ | Đi lại |
 | Biên lai iCloud+ | 59.000₫ | Hoá đơn hay Giải trí, Huy chọn |
 | Email khuyến mãi 11.11 | không có số tiền | bỏ qua, không đọc |
+
+<!-- media: close-swipe-clip -->
 
 Tối thứ Sáu, Huy mở 6pm lúc 18:00, vuốt bốn tờ biên lai (ba từ email, một bát phở quét QR), đóng dấu **ĐÃ CHỐT**. Không gõ một số nào.
 

@@ -81,6 +81,7 @@ catalog:
   react-native-safe-area-context: 5.9.1
   react-native-screens: 4.28.0
   react-native-worklets: 0.13.0
+  sharp: 0.35.4
   tsx: 4.23.15
   typescript: 6.0.3
   typescript-eslint: 8.70.1

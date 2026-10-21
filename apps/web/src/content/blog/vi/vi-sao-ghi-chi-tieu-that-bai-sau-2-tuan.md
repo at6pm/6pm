@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [ghi chép chi tiêu, thói quen, chốt ngày, quản lý chi tiêu cá nhân]
 related: [why-expense-tracking-fails, cach-ghi-chi-tieu-tu-dong-tren-iphone, luong-10-trieu-ha-noi-moi-ngay-tieu-bao-nhieu, tien-di-dau-het-7-khoan-ro-ri]
 cta: "Đừng ghi từng khoản nữa. Để 6pm tự ghi, bạn chỉ chốt sổ lúc sáu giờ."
+hero: [day-closed]
 ---
 
 # Vì sao ghi chép chi tiêu luôn bỏ dở sau 2 tuần (và cách sửa trong 1 phút mỗi ngày)
@@ -51,6 +52,8 @@ Nghĩa là: hai tuần đầu chưa phải lúc thói quen "vào guồng". Đó 
 
 Ý tưởng của 6pm rất đơn giản: **ban ngày không bắt bạn làm gì**, buổi tối chỉ bắt bạn làm **một việc**.
 
+<!-- media: diagram-capture -->
+
 ### Ban ngày: để app tự bắt
 
 Tiêu tới đâu, tự ghi tới đó. Các khoản chi về một Hộp thư từ nhiều nguồn:
@@ -78,11 +81,15 @@ Thứ bạn nhận lại không phải biểu đồ, mà là **"Hôm nay tiêu �
 
 Không sao cả. Ngày bị lỡ chỉ nằm chờ bạn. Những gì đã tiêu trong ngày đó vẫn đã được tính vào con số, nên bạn không "nợ" gì cả. Lần chốt tiếp theo, các khoản cũ hiện chung để bạn xử lý luôn.
 
+<!-- media: close-swipe-clip -->
+
 Ngày tiền của 6pm kết thúc lúc 04:00 sáng, nên tô phở lúc 1 giờ đêm vẫn tính cho hôm qua, đúng như cảm giác của bạn.
 
 ## Bạn đồng hành trêu thói quen, không trêu bạn
 
 Mỗi ngày có một mặt trời nhỏ đi cùng (hoặc Nhang, Bánh Bao, Giọt nếu bạn thích). Nó có thể nói "Ví vẫn còn thở. Đỉnh thiệt." hoặc "Ghi rồi. Mình không kể ai đâu." Nó chọc thói quen tiêu tiền, không bao giờ chê con người. Ngày nào không có tâm trạng đùa, bật **chế độ nghiêm túc**: bỏ đùa, bỏ màu, bỏ luôn bạn đồng hành, chỉ còn con số.
+
+<!-- media: store-companion -->
 
 ## Checklist 2 tuần đầu để không bỏ cuộc
 

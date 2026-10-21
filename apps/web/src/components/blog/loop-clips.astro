@@ -1,0 +1,50 @@
+---
+/**
+ * Plays an article's muted loops while they are on screen, and only then fetches them
+ * (`preload="none"`). With Reduce Motion on, a loop stays on its poster with the player's controls,
+ * so it plays only when asked.
+ */
+---
+
+<script>
+  const loops = [...document.querySelectorAll<HTMLVideoElement>('video[data-loop]')];
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const visible = new Set<HTMLVideoElement>();
+
+  function settle(video: HTMLVideoElement) {
+    if (reduce.matches) {
+      video.controls = true;
+      return;
+    }
+    video.controls = false;
+    if (visible.has(video)) {
+      video.play().catch(() => {
+        video.controls = true;
+      });
+    } else video.pause();
+  }
+
+  if (loops.length > 0) {
+    const watch = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const video = entry.target as HTMLVideoElement;
+          if (entry.isIntersecting) visible.add(video);
+          else visible.delete(video);
+          settle(video);
+        }
+      },
+      { rootMargin: '120px 0px' },
+    );
+    for (const video of loops) {
+      watch.observe(video);
+      settle(video);
+    }
+    reduce.addEventListener('change', () => {
+      for (const video of loops) {
+        if (reduce.matches) video.pause();
+        settle(video);
+      }
+    });
+  }
+</script>

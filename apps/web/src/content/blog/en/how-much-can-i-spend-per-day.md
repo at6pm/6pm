@@ -8,6 +8,7 @@ featured: true
 tags: [daily budget, safe to spend, budgeting, paycheck to paycheck]
 related: [luong-10-trieu-ha-noi-moi-ngay-tieu-bao-nhieu, why-expense-tracking-fails, track-spending-automatically-iphone, track-spending-from-qr-payments]
 cta: "Wake up to one number: what’s safe to spend today. Try 6pm on iPhone."
+hero: [today]
 ---
 
 # How much can I spend per day? The safe-to-spend method
@@ -31,6 +32,8 @@ This is how 6pm does it, and you can do it on a napkin:
 3. **Minus pots**: each savings goal gets a monthly set-aside, which is (goal − what you have) ÷ months left, rounded up to the nearest $50.
 4. **Minus Future you**: the percentage you pay yourself before anything else. Say 10%.
 5. What’s left is **free money**. Divide it by **the days until payday, counting today**, and round down to the dollar.
+
+<!-- media: diagram-formula -->
 
 Bills first. Future you second. The rest is yours, one day at a time.
 
@@ -68,6 +71,8 @@ There’s no universal right number. There’s the right number for your plan.
 
 Here’s where a daily number beats a monthly budget: it rebalances on its own.
 
+<!-- media: close-tomorrow -->
+
 Say you spend right on $37 for four days. On the morning of day five you have $967 left for 26 days. Still $37.
 
 Then Saturday happens. Concert, dinner, a merch shirt you will wear exactly once. $160.
@@ -86,6 +91,8 @@ One big night costs you $5 a day for the rest of the cycle. Nothing is "blown." 
 
 Got your eye on a $350 weekend? Ask 6pm: "Can I afford $350 on Saturday?"
 
+<!-- media: ask -->
+
 With the numbers above, on the morning of day five you have $967. Spend $350 and $617 is left for 25 days: **$24 a day** until payday. Yes, you can. You’ll also be making a lot of sandwiches.
 
 Your iPhone does the maths from your own records; an AI model only reads the question and words the answer. It shows you the trade-off. It doesn’t tell you what to do, and it isn’t financial advice.
@@ -93,6 +100,8 @@ Your iPhone does the maths from your own records; an AI model only reads the que
 ## The number is only as good as your tracking
 
 Any safe-to-spend method breaks the moment half your spending goes unlogged. Forget the $6 latte and the $18 Uber a few times and "safe" becomes "optimistic."
+
+<!-- media: close-swipe-clip -->
 
 So 6pm is built around catching spends for you:
 

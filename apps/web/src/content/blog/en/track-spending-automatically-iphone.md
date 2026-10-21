@@ -8,6 +8,7 @@ featured: true
 tags: [expense tracking, iphone, apple pay, automation, how-to]
 related: [cach-ghi-chi-tieu-tu-dong-tren-iphone, scan-receipts-track-expenses, log-expenses-by-voice, bank-alert-emails-expense-log]
 cta: "Every spend, caught. Try 6pm on iPhone."
+hero: [close-caught, today]
 ---
 
 # How to track spending automatically on iPhone (without linking your bank)
@@ -29,6 +30,8 @@ The usual way to automate is bank sync: you hand an aggregator your bank login a
 6pm takes the other road. It never asks for a bank login and can't move a cent. Instead, it catches spends from things you already have: the Apple Pay tap, the paper receipt, the alert email your bank sends anyway, your voice. The upside is no credentials and no aggregator in the middle. The trade-off: you set up a couple of things once, and anything your bank doesn't email you about needs a tap or a sentence.
 
 ## Six ways a spend gets caught
+
+<!-- media: diagram-capture -->
 
 ### 1. Apple Pay, via a one-time Shortcuts automation
 
@@ -80,11 +83,15 @@ For cash, there's **Quick add**: three taps. Put it in Control Center (iOS 18 an
 
 A $45 dinner paid with Apple Pay might also trigger your bank's alert email. 6pm merges two sightings of the same amount from different sources a few minutes apart into one item marked "Seen 2 ways." You don't play duplicate whack-a-mole.
 
+<!-- media: store-inbox -->
+
 And anything caught but not yet confirmed already counts against today. Your number never pretends that $45 didn't happen.
 
 ## 6pm: close the day in a minute
 
 Catching is half of it. The other half is **the close**.
+
+<!-- media: close-swipe-clip -->
 
 At your close time (6pm by default, anywhere from 3pm to 11:45pm), 6pm nudges you. Each spend comes up as a receipt card: **Keep**, **Edit**, or **Not mine**. The last one stamps the day **CLOSED**. Most days it takes under a minute.
 
@@ -93,6 +100,8 @@ Miss a day? Nothing breaks. It waits for you, and the spending already counts. A
 ## Next morning: one number
 
 After the close, the morning starts with one number: **Safe to spend today**. It takes your pay, sets aside bills, your pots and Future you first, and spreads what's left evenly to payday. Spend less today and tomorrow grows. Go big and the next few days shrink a little. No category budgets to babysit.
+
+<!-- media: close-tomorrow -->
 
 Want it without opening the app? Put the 6pm widget on your Lock Screen.
 

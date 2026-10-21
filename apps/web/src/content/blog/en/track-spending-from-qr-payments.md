@@ -7,6 +7,7 @@ pubDate: 2026-10-21
 tags: [qr payments, vietqr, travel, expense tracking, asia]
 related: [quet-vietqr-tu-ghi-chi-tieu, track-spending-automatically-iphone, scan-receipts-track-expenses, bank-alert-emails-expense-log]
 cta: "Scan it, and it's logged. Try 6pm's Scan."
+hero: [vietqr]
 ---
 
 # How to track spending from QR code payments
@@ -51,6 +52,8 @@ Banking apps don't send you back, so when you return to 6pm it asks: **Did it go
 
 Big chains often use NAPAS merchant codes, which don't contain an account a person can type in. For those, 6pm logs the spend and offers **Pay in your bank app** with the amount copied: you scan the same code again inside your bank app.
 
+<!-- media: live-activity-clip -->
+
 ## Travelling in Asia: logging foreign QR codes
 
 Here's where travellers come in. Scan recognises a long list of national payment codes and tells you what you're looking at:
@@ -66,6 +69,8 @@ Here's where travellers come in. Scan recognises a long list of national payment
 | Japan | JPQR, PayPay |
 | India | Bharat QR, UPI |
 | China | Alipay, WeChat Pay |
+
+<!-- media: promptpay -->
 
 Plus Laos, Myanmar, Hong Kong, Taiwan, Sri Lanka, Bangladesh, Brazil's Pix, SEPA transfer codes and more.
 
@@ -83,6 +88,8 @@ Want the whole trip handled, with your home currency, the local currency and the
 ## From scan to one number
 
 Every scan lands in your **Inbox**. At 6pm (or whenever you set your close, from 3pm to 11:45pm), you swipe through the day: **Keep**, **Edit**, or **Not mine**. The last card stamps **CLOSED**. About a minute.
+
+<!-- media: close-tomorrow -->
 
 Next morning you get one number: **Safe to spend today**. It's your pay minus bills, pots and Future you, spread evenly to payday. On the road, that's the difference between "I think I'm fine" and actually knowing. QR is one of several ways in; the rest are in [how to track spending automatically on iPhone](/blog/track-spending-automatically-iphone).
 
