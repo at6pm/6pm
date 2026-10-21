@@ -6,5 +6,6 @@
     "jsxImportSource": "astro",
     "types": []
   },
-  "include": ["src", "*.mjs", ".astro/types.d.ts"]
+  // Astro's generated collection types come first, so they win over its untyped fallbacks.
+  "include": [".astro/types.d.ts", "src", "*.mjs"]
 }

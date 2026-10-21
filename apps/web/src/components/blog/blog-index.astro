@@ -1,0 +1,228 @@
+---
+import '../../styles/reading.css';
+import {
+  authorPath,
+  blogPath,
+  isEngineering,
+  ogImagePath,
+  postsIn,
+  readingMinutes,
+  type BlogLang,
+  type Post,
+} from '../../data/blog';
+import { blogCopy } from '../../data/blog-copy';
+import { founder, repoUrl } from '../../data/site/config';
+import { homePath } from '../../data/site/copy';
+import { blogIndexLd, ldJson } from '../../data/structured-data';
+import PageLayout from '../../layouts/page-layout.astro';
+import BlogFrame from './blog-frame.astro';
+
+interface Props {
+  lang: BlogLang;
+}
+
+const { lang } = Astro.props;
+const t = blogCopy[lang];
+const other: BlogLang = lang === 'en' ? 'vi' : 'en';
+const mine = await postsIn(lang);
+// The engineering series is written in English; the Vietnamese blog lists it too, marked as such.
+const guides = mine.filter((post) => !isEngineering(post));
+const engineering = (await postsIn('en')).filter(isEngineering);
+const listed = [...guides, ...engineering];
+
+const sections: readonly { id: string; title: string; lede?: string; posts: readonly Post[] }[] = [
+  { id: 'guides', title: t.guides, posts: guides },
+  { id: 'engineering', title: t.engineering, lede: t.engineeringLede, posts: engineering },
+];
+---
+
+<PageLayout
+  title={t.indexTitle}
+  description={t.indexDescription}
+  lang={lang}
+  alternates={{ en: blogPath('en'), vi: blogPath('vi') }}
+  themeColors={[
+    { color: '#fbf7ef', media: '(prefers-color-scheme: light)' },
+    { color: '#0b0716', media: '(prefers-color-scheme: dark)' },
+  ]}
+  image={{ path: ogImagePath(lang), alt: t.indexTitle }}
+  feed={{ path: `${blogPath(lang)}/rss.xml`, title: `6pm ${t.name}` }}
+>
+  <script type="application/ld+json" slot="head" set:html={ldJson(blogIndexLd(lang, listed))} />
+  <BlogFrame lang={lang} switchTo={blogPath(other)} switchIsTranslation>
+    <main class="wrap">
+      <nav class="crumbs" aria-label={t.breadcrumb}>
+        <a href={homePath[lang]}>{t.home}</a>
+      </nav>
+      <h1>{t.name}</h1>
+      <p class="lede">{t.indexLede}</p>
+
+      {
+        sections.map(
+          (section) =>
+            section.posts.length > 0 && (
+              <section class="list" aria-labelledby={section.id}>
+                <h2 id={section.id}>{section.title}</h2>
+                {section.lede && <p class="section-lede">{section.lede}</p>}
+                <ul>
+                  {section.posts.map((post) => (
+                    <li lang={post.data.lang === lang ? undefined : post.data.lang}>
+                      <a href={blogPath(post.data.lang, post.data.slug)}>
+                        <span class="title">{post.data.title}</span>
+                        <span class="desc">{post.data.description}</span>
+                        <span class="meta">
+                          <time datetime={post.data.pubDate.toISOString()}>
+                            {t.formatDate(post.data.pubDate)}
+                          </time>
+                          <span>{t.minutes(readingMinutes(post.body ?? '', post.data.lang))}</span>
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ),
+        )
+      }
+
+      <section class="about" id="about" aria-label={t.by}>
+        <p class="about-name">
+          <a href={authorPath(lang)} rel="author">{founder.name}</a>
+          <span>{t.authorRole}</span>
+        </p>
+        <p>{t.authorBio} <a href={repoUrl} rel="noopener">github.com/at6pm/6pm</a></p>
+      </section>
+    </main>
+  </BlogFrame>
+</PageLayout>
+
+<style>
+  main {
+    padding: clamp(28px, 6vw, 56px) 0 64px;
+  }
+  .crumbs {
+    margin: 0 0 14px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .crumbs a {
+    color: var(--lg-faint);
+    text-decoration: none;
+  }
+  h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-variation-settings:
+      'wdth' 78,
+      'opsz' 96;
+    font-size: clamp(52px, 11vw, 84px);
+    line-height: 0.96;
+    letter-spacing: -0.02em;
+  }
+  .lede {
+    margin: 18px 0 0;
+    max-width: 36em;
+    font-size: clamp(18px, 2.4vw, 20px);
+    line-height: 1.55;
+    color: var(--lg-soft);
+    text-wrap: pretty;
+  }
+  .list {
+    margin-top: 52px;
+  }
+  .list h2 {
+    margin: 0 0 6px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--lg-accent);
+  }
+  .section-lede {
+    margin: 0 0 4px;
+    font-size: 15px;
+    color: var(--lg-faint);
+  }
+  .list ul {
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .list li {
+    border-top: 1px solid var(--lg-hair);
+  }
+  .list a {
+    display: grid;
+    gap: 6px;
+    padding: 20px 0;
+    color: var(--lg-ink);
+    text-decoration: none;
+  }
+  .title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-variation-settings:
+      'wdth' 86,
+      'opsz' 48;
+    font-size: clamp(21px, 3.6vw, 25px);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .list a:hover .title {
+    color: var(--lg-link);
+  }
+  .desc {
+    font-size: 15.5px;
+    line-height: 1.55;
+    color: var(--lg-soft);
+    text-wrap: pretty;
+  }
+  .meta {
+    display: flex;
+    gap: 16px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--lg-faint);
+  }
+  .about {
+    margin-top: 56px;
+    padding: 22px 24px;
+    border: 1px solid var(--lg-hair);
+    border-radius: 20px;
+    background: var(--lg-card);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--lg-soft);
+  }
+  .about p {
+    margin: 0;
+  }
+  .about-name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 12px;
+    margin-bottom: 6px !important;
+  }
+  .about-name a {
+    font-weight: 600;
+    color: var(--lg-ink);
+    text-decoration: none;
+  }
+  .about-name span {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--lg-faint);
+  }
+  .about p a {
+    color: var(--lg-link);
+  }
+</style>

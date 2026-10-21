@@ -2,7 +2,9 @@
 import '../../styles/site.css';
 
 import { siteBackground } from '../../data/site/config';
+import { blogPath, ogImagePath } from '../../data/blog';
 import { homePath, siteCopy, type SiteLang } from '../../data/site/copy';
+import { homeLd, ldJson } from '../../data/structured-data';
 import PageLayout from '../../layouts/page-layout.astro';
 import Ask from './ask.astro';
 import BankStrip from './bank-strip.astro';
@@ -36,7 +38,10 @@ const { meta, capture } = siteCopy[lang];
   lang={lang}
   alternates={homePath}
   themeColors={[{ color: siteBackground }]}
+  image={{ path: ogImagePath(lang, 'home'), alt: meta.title }}
+  feed={{ path: `${blogPath(lang)}/rss.xml`, title: '6pm Blog' }}
 >
+  <script type="application/ld+json" slot="head" set:html={ldJson(homeLd(lang))} />
   <script is:inline slot="head">
     // The visitor's language: the one they picked here before, else their phone's, on the
     // English page only (a link straight to /vi stays in Vietnamese).

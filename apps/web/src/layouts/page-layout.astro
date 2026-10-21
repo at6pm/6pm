@@ -8,9 +8,15 @@ interface Props {
   /** The page's language; `lang` on the document. */
   lang?: 'en' | 'vi';
   /** The same page in each language, as site paths, so search engines pair them. */
-  alternates?: Readonly<Record<'en' | 'vi', string>>;
+  alternates?: Readonly<Record<'en' | 'vi', string>> | undefined;
   /** Browser chrome colours; the media query picks one when the page has a light and a dark side. */
   themeColors?: readonly { color: string; media?: string }[];
+  /** The social card, as a site path to a 1200×630 image, and what it shows. */
+  image?: { path: string; alt: string };
+  /** An article adds its dates and tags to the social card. */
+  article?: { published: Date; modified: Date; tags: readonly string[] };
+  /** Feeds for this page's language, as site paths. */
+  feed?: { path: string; title: string };
 }
 
 const {
@@ -19,6 +25,9 @@ const {
   lang = 'en',
   alternates,
   themeColors = [{ color: '#0b0716' }],
+  image,
+  article,
+  feed,
 } = Astro.props;
 // Pages build to `privacy.html` and `index.html`, but are served (and linked) without the extension.
 const pageUrl = new URL(Astro.url.pathname.replace(/(?:\/index)?\.html$/, ''), Astro.site);
@@ -31,6 +40,7 @@ const pageUrl = new URL(Astro.url.pathname.replace(/(?:\/index)?\.html$/, ''), A
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
     {themeColors.map((t) => <meta name="theme-color" content={t.color} media={t.media} />)}
     <link rel="canonical" href={pageUrl} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -55,13 +65,43 @@ const pageUrl = new URL(Astro.url.pathname.replace(/(?:\/index)?\.html$/, ''), A
         ))
     }
     {alternates && <link rel="alternate" hreflang="x-default" href={new URL(alternates.en, Astro.site)} />}
-    <meta property="og:type" content="website" />
+    {feed && <link rel="alternate" type="application/rss+xml" title={feed.title} href={feed.path} />}
+    <meta property="og:type" content={article ? 'article' : 'website'} />
     <meta property="og:locale" content={lang === 'vi' ? 'vi_VN' : 'en_US'} />
+    {
+      alternates && (
+        <meta property="og:locale:alternate" content={lang === 'vi' ? 'en_US' : 'vi_VN'} />
+      )
+    }
     <meta property="og:site_name" content="6pm" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={pageUrl} />
-    <meta name="twitter:card" content="summary" />
+    {
+      image && (
+        <>
+          <meta property="og:image" content={new URL(image.path, Astro.site)} />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="og:image:alt" content={image.alt} />
+          <meta name="twitter:image" content={new URL(image.path, Astro.site)} />
+          <meta name="twitter:image:alt" content={image.alt} />
+        </>
+      )
+    }
+    {
+      article && (
+        <>
+          <meta property="article:published_time" content={article.published.toISOString()} />
+          <meta property="article:modified_time" content={article.modified.toISOString()} />
+          {article.tags.map((tag) => (
+            <meta property="article:tag" content={tag} />
+          ))}
+        </>
+      )
+    }
+    <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:site" content="@OddEggsStudio" />
     <slot name="head" />
   </head>
   <body>

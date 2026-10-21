@@ -15,6 +15,7 @@ export const siteCopyVi: SiteCopy = {
     surfaces: 'Tiện ích',
     privacy: 'Quyền riêng tư',
     pricing: 'Bảng giá',
+    blog: 'Blog',
     wait: 'Đăng ký sớm',
     store: 'Tải về',
     langLabel: 'Ngôn ngữ',
@@ -33,6 +34,7 @@ export const siteCopyVi: SiteCopy = {
     emailPh: 'email@cuaban.com',
     emailLabel: 'Email của bạn',
     note: 'Một email vào ngày ra mắt. Vậy thôi.',
+    beta: 'Muốn dùng ngay? Thử bản beta công khai trên TestFlight',
   },
   phone: {
     day: 'Thứ Sáu',
@@ -281,6 +283,7 @@ export const siteCopyVi: SiteCopy = {
     tag: 'Chốt ngày lúc sáu giờ.',
     openSource: 'Mã nguồn mở',
     madeBy: 'Thực hiện bởi',
+    blog: 'Blog',
     privacy: 'Quyền riêng tư',
     terms: 'Điều khoản',
   },

@@ -10,6 +10,7 @@ import {
   type LegalLang,
   type LegalSlug,
 } from '../data/legal';
+import '../styles/reading.css';
 import PageLayout from './page-layout.astro';
 
 /** A document under `src/legal`, as Astro's markdown import hands it over. */
@@ -110,41 +111,6 @@ const body = (await Astro.slots.render('default'))
     </footer>
   </div>
 </PageLayout>
-
-<style is:global>
-  :root {
-    --lg-bg: #0b0716;
-    --lg-ink: #fbf4ec;
-    --lg-soft: rgba(251, 244, 236, 0.76);
-    --lg-faint: rgba(251, 244, 236, 0.6);
-    --lg-hair: rgba(251, 244, 236, 0.16);
-    --lg-card: rgba(251, 244, 236, 0.05);
-    --lg-link: #f3b27a;
-    --lg-link-hover: #ffd2a8;
-    --lg-accent: #ff8552;
-    --lg-glow: rgba(255, 133, 82, 0.2);
-  }
-  @media (prefers-color-scheme: light) {
-    :root {
-      --lg-bg: #fbf7ef;
-      --lg-ink: #2b2530;
-      --lg-soft: rgba(43, 37, 48, 0.78);
-      --lg-faint: rgba(43, 37, 48, 0.62);
-      --lg-hair: rgba(43, 37, 48, 0.16);
-      --lg-card: rgba(43, 37, 48, 0.04);
-      --lg-link: #a63f1b;
-      --lg-link-hover: #7d2c10;
-      --lg-accent: #c9481e;
-      --lg-glow: rgba(255, 150, 100, 0.22);
-    }
-  }
-  html:root {
-    color-scheme: light dark;
-  }
-  html body:has(.legal) {
-    background: var(--lg-bg);
-  }
-</style>
 
 <style>
   .legal {

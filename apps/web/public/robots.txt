@@ -1,0 +1,7 @@
+# at6pm.app: the 6pm website and blog. Every page is open to search engines and to the answer
+# engines that cite them. /api is the app's server, not pages.
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://at6pm.app/sitemap.xml

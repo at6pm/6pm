@@ -15,6 +15,7 @@ export const siteCopyEn: SiteCopy = {
     surfaces: 'Surfaces',
     privacy: 'Privacy',
     pricing: 'Pricing',
+    blog: 'Blog',
     wait: 'Join the waitlist',
     store: 'Download',
     langLabel: 'Language',
@@ -33,6 +34,7 @@ export const siteCopyEn: SiteCopy = {
     emailPh: 'you@example.com',
     emailLabel: 'Your email',
     note: 'One email on launch day. That’s all.',
+    beta: 'Can’t wait? Try the public beta on TestFlight',
   },
   phone: {
     day: 'Friday',
@@ -278,6 +280,7 @@ export const siteCopyEn: SiteCopy = {
     tag: 'Close your day at six.',
     openSource: 'Open source',
     madeBy: 'Made by',
+    blog: 'Blog',
     privacy: 'Privacy',
     terms: 'Terms',
   },

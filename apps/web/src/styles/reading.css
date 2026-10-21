@@ -1,0 +1,44 @@
+/*
+ * The reading pages (privacy, terms, the blog): warm ink on cream by day, cream on night plum after
+ * dark, following the phone's appearance.
+ */
+:root {
+  --lg-bg: #0b0716;
+  --lg-ink: #fbf4ec;
+  --lg-soft: rgba(251, 244, 236, 0.76);
+  --lg-faint: rgba(251, 244, 236, 0.6);
+  --lg-hair: rgba(251, 244, 236, 0.16);
+  --lg-card: rgba(251, 244, 236, 0.05);
+  --lg-link: #f3b27a;
+  --lg-link-hover: #ffd2a8;
+  --lg-accent: #ff8552;
+  --lg-glow: rgba(255, 133, 82, 0.2);
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --lg-bg: #fbf7ef;
+    --lg-ink: #2b2530;
+    --lg-soft: rgba(43, 37, 48, 0.78);
+    --lg-faint: rgba(43, 37, 48, 0.7);
+    --lg-hair: rgba(43, 37, 48, 0.16);
+    --lg-card: rgba(43, 37, 48, 0.04);
+    --lg-link: #a63f1b;
+    --lg-link-hover: #7d2c10;
+    --lg-accent: #b5401a;
+    --lg-glow: rgba(255, 150, 100, 0.22);
+  }
+}
+html:root {
+  color-scheme: light dark;
+}
+html body:has(.legal),
+html body:has(.blog) {
+  background: var(--lg-bg);
+}
+/* The blog's reading column, shared by its frame and the pages inside it. */
+.blog .wrap {
+  position: relative;
+  box-sizing: border-box;
+  width: min(720px, 100% - 32px);
+  margin-inline: auto;
+}
