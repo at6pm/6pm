@@ -24,8 +24,7 @@ export function payloadFor(qr: VietQR, amount: Vnd): string {
 
 /**
  * The link that opens this transfer filled in, in the bank app's own form, or null when the bank
- * has no known form for it. Built whether or not the bank is verified; `handoffUrl` decides
- * whether to send it.
+ * has no known form for it.
  */
 export function transferLink(app: IosApp, qr: VietQR, amount: Vnd): string | null {
   const { link } = app;
@@ -48,9 +47,9 @@ export function transferLink(app: IosApp, qr: VietQR, amount: Vnd): string | nul
   return `${app.scheme}ops.namabank.com.vn/?data=${encodeURIComponent(base64(JSON.stringify(data)))}`;
 }
 
-/** What 6pm opens: the filled-in transfer for a verified bank, else the app's home. */
+/** What 6pm opens: the filled-in transfer when the bank's form is known, else the app's home. */
 export function handoffUrl(app: IosApp, qr: VietQR, amount: Vnd): string {
-  return (app.verified ? transferLink(app, qr, amount) : null) ?? app.scheme;
+  return transferLink(app, qr, amount) ?? app.scheme;
 }
 
 /** How a payment is handed to a bank app on a phone. */
@@ -65,7 +64,7 @@ export interface HandoffPlan {
 
 /**
  * What to open to hand a payment to a bank, on iOS or Android; null when 6pm has no way to its app.
- * iOS opens the bank's scheme (filled in for a verified bank) and falls back to the App Store.
+ * iOS opens the bank's transfer link (or its home, with no known link) and falls back to the App Store.
  * Android tries the same scheme at the app's home, since no bank's transfer link has been seen to
  * open filled in there, then the app's Play Store page, which opens it when installed.
  */

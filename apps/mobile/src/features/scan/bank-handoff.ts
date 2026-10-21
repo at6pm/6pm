@@ -22,7 +22,7 @@ export interface Handoff {
 const OS = Platform.OS === 'android' ? 'android' : 'ios';
 
 /**
- * Hands a payment to a bank app. A bank seen to take 6pm's transfer link opens with the payment
+ * Hands a payment to a bank app. A bank whose transfer link 6pm knows opens with the payment
  * filled in. Any other bank cannot be handed it, so the payment's QR (the amount written in, a
  * shop's code as scanned) is saved to the phone's photos for the bank's own scanner to read back,
  * and the app opens at its home. The amount goes on the clipboard either way (digits only, as a

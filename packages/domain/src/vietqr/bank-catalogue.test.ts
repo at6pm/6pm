@@ -47,7 +47,7 @@ describe('bank catalogue', () => {
 
   it('opens the wallets and the smaller banks as they are, with no transfer link', () => {
     for (const id of ['MOMO', 'ZALOPAY', 'NCB', 'SCB', 'KLB', 'CIMB', 'SGICB', 'BVB', 'COOPBANK']) {
-      expect(findBank(id)?.ios).toMatchObject({ link: null, verified: false });
+      expect(findBank(id)?.ios).toMatchObject({ link: null });
       expect(findBank(id)?.ios?.scheme).toMatch(/^[a-z][a-z0-9.+-]*:\/\/$/);
     }
   });
