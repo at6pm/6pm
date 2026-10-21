@@ -1,0 +1,168 @@
+---
+import '../../styles/reading.css';
+import { authorPath, blogPath, isEngineering, ogImagePath, postsIn, type BlogLang } from '../../data/blog';
+import { blogCopy } from '../../data/blog-copy';
+import { founder, repoUrl, studioName, studioUrl } from '../../data/site/config';
+import { authorLd, ldJson } from '../../data/structured-data';
+import PageLayout from '../../layouts/page-layout.astro';
+import BlogFrame from './blog-frame.astro';
+
+interface Props {
+  lang: BlogLang;
+}
+
+const { lang } = Astro.props;
+const t = blogCopy[lang];
+const other: BlogLang = lang === 'en' ? 'vi' : 'en';
+const posts = [
+  ...(await postsIn(lang)).filter((post) => !isEngineering(post)),
+  ...(await postsIn('en')).filter(isEngineering),
+];
+const links = [
+  [founder.url.replace('https://', ''), founder.url],
+  ...founder.sameAs.map((url) => [url.replace('https://', ''), url]),
+  [studioName, studioUrl],
+  ['github.com/at6pm/6pm', repoUrl],
+] as const;
+---
+
+<PageLayout
+  title={`${founder.name} · 6pm`}
+  description={t.authorDescription}
+  lang={lang}
+  alternates={{ en: authorPath('en'), vi: authorPath('vi') }}
+  themeColors={[
+    { color: '#fbf7ef', media: '(prefers-color-scheme: light)' },
+    { color: '#0b0716', media: '(prefers-color-scheme: dark)' },
+  ]}
+  image={{ path: ogImagePath(lang), alt: t.indexTitle }}
+>
+  <script type="application/ld+json" slot="head" set:html={ldJson(authorLd(lang, posts))} />
+  <BlogFrame lang={lang} switchTo={authorPath(other)} switchIsTranslation>
+    <main class="wrap">
+      <nav class="crumbs" aria-label={t.breadcrumb}>
+        <a href={blogPath(lang)}>{t.name}</a>
+      </nav>
+      <h1>{founder.name}</h1>
+      <p class="role">{t.authorRole}</p>
+      <p class="bio">{t.authorBio}</p>
+
+      <h2>{t.authorElsewhere}</h2>
+      <ul class="links">
+        {
+          links.map(([label, url]) => (
+            <li>
+              <a href={url} rel="me noopener">
+                {label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <h2>{t.authorPosts}</h2>
+      <ul class="posts">
+        {
+          posts.map((post) => (
+            <li lang={post.data.lang === lang ? undefined : post.data.lang}>
+              <a href={blogPath(post.data.lang, post.data.slug)}>{post.data.title}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </main>
+  </BlogFrame>
+</PageLayout>
+
+<style>
+  main {
+    padding: clamp(28px, 6vw, 56px) 0 64px;
+  }
+  .crumbs {
+    margin: 0 0 14px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .crumbs a {
+    color: var(--lg-faint);
+    text-decoration: none;
+  }
+  h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-variation-settings:
+      'wdth' 80,
+      'opsz' 96;
+    font-size: clamp(44px, 9vw, 68px);
+    line-height: 1;
+    letter-spacing: -0.012em;
+  }
+  .role {
+    margin: 12px 0 0;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--lg-faint);
+  }
+  .bio {
+    margin: 22px 0 0;
+    font-size: clamp(18px, 2.4vw, 20px);
+    line-height: 1.6;
+    color: var(--lg-soft);
+    text-wrap: pretty;
+  }
+  h2 {
+    margin: 44px 0 10px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--lg-accent);
+  }
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    height: 36px;
+    padding: 0 14px;
+    border: 1px solid var(--lg-hair);
+    border-radius: 99px;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--lg-ink);
+    text-decoration: none;
+  }
+  .links a:hover {
+    border-color: var(--lg-faint);
+  }
+  .posts li {
+    border-top: 1px solid var(--lg-hair);
+  }
+  .posts a {
+    display: block;
+    padding: 12px 0;
+    font-size: 16.5px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--lg-ink);
+    text-decoration: none;
+  }
+  .posts a:hover {
+    color: var(--lg-link);
+  }
+</style>

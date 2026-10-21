@@ -1,4 +1,5 @@
 ---
+import { blogPath } from '../../data/blog';
 import { legalPath } from '../../data/legal';
 import { repoUrl, studioUrl } from '../../data/site/config';
 import { siteCopy, type SiteLang } from '../../data/site/copy';
@@ -21,6 +22,7 @@ const t = siteCopy[lang].foot;
       <a class="os" href={repoUrl} target="_blank" rel="noopener">
         <span class="sym" aria-hidden="true">code</span>{t.openSource}
       </a>
+      <a href={blogPath(lang)}>{t.blog}</a>
       <a href={legalPath(lang, 'privacy')}>{t.privacy}</a>
       <a href={legalPath(lang, 'terms')}>{t.terms}</a>
       <span class="mono credit">

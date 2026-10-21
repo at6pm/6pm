@@ -50,6 +50,7 @@ export interface SiteCopy {
     readonly surfaces: string;
     readonly privacy: string;
     readonly pricing: string;
+    readonly blog: string;
     readonly wait: string;
     readonly store: string;
     readonly langLabel: string;
@@ -68,6 +69,8 @@ export interface SiteCopy {
     readonly emailPh: string;
     readonly emailLabel: string;
     readonly note: string;
+    /** The public beta, offered under the waitlist until the app is out. */
+    readonly beta: string;
   };
   /** The hero phone: Today at nine in the morning. */
   readonly phone: {
@@ -194,6 +197,7 @@ export interface SiteCopy {
     readonly tag: string;
     readonly openSource: string;
     readonly madeBy: string;
+    readonly blog: string;
     readonly privacy: string;
     readonly terms: string;
   };

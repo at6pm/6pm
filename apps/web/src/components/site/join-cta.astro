@@ -1,5 +1,5 @@
 ---
-import { appStoreUrl, ctaMode } from '../../data/site/config';
+import { appStoreUrl, ctaMode, testFlightUrl } from '../../data/site/config';
 import { siteCopy, type SiteLang } from '../../data/site/copy';
 
 interface Props {
@@ -55,6 +55,9 @@ const id = `email-${size}`;
       <span class="note" aria-live="polite" data-join-note data-calm={t.note}>
         {t.note}
       </span>
+      <a class="beta" href={testFlightUrl} rel="noopener">
+        {t.beta}<span class="sym" aria-hidden="true">arrow_forward</span>
+      </a>
     </div>
   )
 }
@@ -158,6 +161,30 @@ const id = `email-${size}`;
   }
   .note[data-error] {
     color: var(--error);
+  }
+  .beta {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding-left: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-color: var(--sun);
+    text-underline-offset: 4px;
+  }
+  .beta:hover {
+    color: var(--sun);
+  }
+  .final .beta {
+    align-self: center;
+    padding-left: 0;
+  }
+  .beta .sym {
+    font-size: 16px;
+    text-decoration: none;
   }
   .badge {
     align-self: flex-start;

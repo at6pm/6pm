@@ -1,5 +1,6 @@
 ---
 import { appStoreUrl, ctaMode } from '../../data/site/config';
+import { blogPath } from '../../data/blog';
 import { homePath, siteCopy, type SiteLang } from '../../data/site/copy';
 
 interface Props {
@@ -25,6 +26,7 @@ const store = ctaMode === 'store';
       <a href="#duo">iPhone Duo</a>
       <a href="#privacy">{t.privacy}</a>
       <a href="#pricing">{t.pricing}</a>
+      <a href={blogPath(lang)}>{t.blog}</a>
     </nav>
     <div class="langs mono" role="group" aria-label={t.langLabel}>
       {

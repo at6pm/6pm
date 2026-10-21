@@ -1,0 +1,540 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+import '../styles/reading.css';
+import BlogFrame from '../components/blog/blog-frame.astro';
+import {
+  authorPath,
+  blogPath,
+  headlineOf,
+  isEngineering,
+  modifiedOf,
+  ogImagePath,
+  readingMinutes,
+  relatedOf,
+  translationOf,
+  unlinkUnpublished,
+  type Post,
+} from '../data/blog';
+import { blogCopy } from '../data/blog-copy';
+import { appStoreUrl, ctaMode, founder, repoUrl, testFlightUrl } from '../data/site/config';
+import { homePath } from '../data/site/copy';
+import { articleLd, ldJson } from '../data/structured-data';
+import PageLayout from './page-layout.astro';
+
+interface Props {
+  post: Post;
+  headings: MarkdownHeading[];
+  /** Every published post in both languages, for the translation, related posts and links. */
+  published: readonly Post[];
+}
+
+const { post, headings, published } = Astro.props;
+const { lang, slug, title, description, pubDate, tags, cta } = post.data;
+const t = blogCopy[lang];
+const store = ctaMode === 'store';
+const engineering = isEngineering(post);
+const translation = translationOf(post, published);
+const related = relatedOf(post, published).slice(0, 3);
+const modified = modifiedOf(post);
+const updated = modified.valueOf() !== pubDate.valueOf();
+const headline = headlineOf(post);
+const minutes = readingMinutes(post.body ?? '', lang);
+const words = (post.body ?? '').split(/\s+/).filter(Boolean).length;
+const sections = headings.filter((heading) => heading.depth === 2);
+
+// The page prints its own `<h1>`, so the body's goes; links to posts not out yet keep only words;
+// a table's first column names its row, so screen readers announce it with each cell.
+const body = unlinkUnpublished(
+  (await Astro.slots.render('default'))
+    .replace(/<h1[^>]*>[\s\S]*?<\/h1>/, '')
+    .replace(/<tr>(\s*)<td([^>]*)>([\s\S]*?)<\/td>/g, '<tr>$1<th scope="row"$2>$3</th>'),
+  published,
+);
+
+const alternates =
+  translation === undefined
+    ? undefined
+    : lang === 'en'
+      ? { en: blogPath('en', slug), vi: blogPath('vi', translation.data.slug) }
+      : { en: blogPath('en', translation.data.slug), vi: blogPath('vi', slug) };
+const switchTo =
+  translation === undefined
+    ? blogPath(lang === 'en' ? 'vi' : 'en')
+    : blogPath(translation.data.lang, translation.data.slug);
+---
+
+<PageLayout
+  title={`${title} · 6pm`}
+  description={description}
+  lang={lang}
+  alternates={alternates}
+  themeColors={[
+    { color: '#fbf7ef', media: '(prefers-color-scheme: light)' },
+    { color: '#0b0716', media: '(prefers-color-scheme: dark)' },
+  ]}
+  image={{ path: ogImagePath(lang, slug), alt: title }}
+  article={{ published: pubDate, modified, tags }}
+  feed={{ path: `${blogPath(lang)}/rss.xml`, title: `6pm ${t.name}` }}
+>
+  <script type="application/ld+json" slot="head" set:html={ldJson(articleLd(post, words))} />
+  <BlogFrame lang={lang} switchTo={switchTo} switchIsTranslation={translation !== undefined}>
+    <main class="wrap">
+      <nav class="crumbs" aria-label={t.breadcrumb}>
+        <ol>
+          <li><a href={homePath[lang]}>{t.home}</a></li>
+          <li><a href={blogPath(lang)}>{t.name}</a></li>
+          <li>{engineering ? t.engineering : t.guides}</li>
+        </ol>
+      </nav>
+
+      <h1>{headline}</h1>
+
+      <p class="byline">
+        <span
+          >{t.by} <a href={authorPath(lang)} rel="author">{founder.name}</a> · {t.authorRole}</span
+        >
+        <span class="dates">
+          <span
+            >{t.published}{' '}<time datetime={pubDate.toISOString()}>{t.formatDate(pubDate)}</time
+            ></span
+          >
+          {
+            updated && (
+              <span>
+                {t.updated} <time datetime={modified.toISOString()}>{t.formatDate(modified)}</time>
+              </span>
+            )
+          }
+          <span>{t.minutes(minutes)}</span>
+        </span>
+      </p>
+
+      {
+        sections.length > 2 && (
+          <details class="toc">
+            <summary>{t.contents}</summary>
+            <ol>
+              {sections.map((section) => (
+                <li>
+                  <a href={`#${section.slug}`}>{section.text}</a>
+                </li>
+              ))}
+            </ol>
+          </details>
+        )
+      }
+
+      <article set:html={body} />
+
+      <aside class="cta" aria-label="6pm">
+        <p class="cta-line">{cta}</p>
+        <div class="cta-actions">
+          <a class="cta-main" href={store ? appStoreUrl : testFlightUrl} rel="noopener"
+            >{store ? t.store : t.beta}</a
+          >
+          {
+            engineering && (
+              <a class="cta-alt" href={repoUrl} rel="noopener">
+                {t.code}
+              </a>
+            )
+          }
+        </div>
+        {!store && <p class="cta-note">{t.launchNote}</p>}
+      </aside>
+
+      <section class="author" aria-label={t.by}>
+        <p class="author-name">
+          <a href={authorPath(lang)} rel="author">{founder.name}</a>
+          <span>{t.authorRole}</span>
+        </p>
+        <p>{t.authorBio}</p>
+      </section>
+
+      {
+        related.length > 0 && (
+          <nav class="related" aria-label={t.related}>
+            <h2>{t.related}</h2>
+            <ul>
+              {related.map((next) => (
+                <li>
+                  <a href={blogPath(next.data.lang, next.data.slug)}>{next.data.title}</a>
+                  <p>{next.data.description}</p>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )
+      }
+    </main>
+  </BlogFrame>
+</PageLayout>
+
+<style>
+  main {
+    padding: clamp(28px, 6vw, 56px) 0 64px;
+  }
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    margin: 0 0 18px;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1.5;
+    color: var(--lg-faint);
+  }
+  .crumbs li + li::before {
+    content: '/';
+    margin-right: 10px;
+    color: var(--lg-hair);
+  }
+  .crumbs a {
+    color: var(--lg-faint);
+    text-decoration: none;
+  }
+  .crumbs a:hover {
+    color: var(--lg-ink);
+  }
+  h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-variation-settings:
+      'wdth' 80,
+      'opsz' 96;
+    font-size: clamp(36px, 7vw, 56px);
+    line-height: 1.02;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+  }
+  .byline {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 20px 0 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--lg-soft);
+  }
+  .byline a {
+    color: var(--lg-ink);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .byline a:hover {
+    color: var(--lg-link);
+  }
+  .dates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 16px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    letter-spacing: 0.04em;
+    color: var(--lg-faint);
+  }
+
+  .toc {
+    margin: 28px 0 0;
+    padding: 14px 20px;
+    border: 1px solid var(--lg-hair);
+    border-radius: 18px;
+    background: var(--lg-card);
+  }
+  .toc summary {
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--lg-faint);
+  }
+  .toc ol {
+    margin: 12px 0 4px;
+    padding-left: 1.4em;
+  }
+  .toc li {
+    padding: 3px 0;
+    font-size: 15.5px;
+    line-height: 1.45;
+  }
+  .toc li::marker {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--lg-faint);
+  }
+  .toc a {
+    color: var(--lg-ink);
+    text-decoration: none;
+  }
+  .toc a:hover {
+    color: var(--lg-link);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  article {
+    margin-top: 28px;
+  }
+  article > :global(p:first-child) {
+    font-size: clamp(18px, 2.4vw, 20px);
+    line-height: 1.6;
+    color: var(--lg-ink);
+  }
+  article :global(h2) {
+    margin: 52px 0 14px;
+    padding-top: 26px;
+    border-top: 1px solid var(--lg-hair);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-variation-settings:
+      'wdth' 82,
+      'opsz' 48;
+    font-size: clamp(26px, 4.6vw, 32px);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    scroll-margin-top: 20px;
+  }
+  article :global(h3) {
+    margin: 30px 0 6px;
+    font-size: 18.5px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: -0.005em;
+    scroll-margin-top: 20px;
+  }
+  article :global(p),
+  article :global(ul),
+  article :global(ol) {
+    margin: 0 0 1.05em;
+    color: var(--lg-soft);
+    text-wrap: pretty;
+  }
+  article :global(ul),
+  article :global(ol) {
+    padding-left: 1.3em;
+  }
+  article :global(li) {
+    margin-bottom: 0.45em;
+    padding-left: 0.2em;
+  }
+  article :global(li)::marker {
+    color: var(--lg-accent);
+  }
+  article :global(strong) {
+    font-weight: 600;
+    color: var(--lg-ink);
+  }
+  article :global(a) {
+    color: var(--lg-link);
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    overflow-wrap: anywhere;
+  }
+  article :global(a:hover) {
+    color: var(--lg-link-hover);
+  }
+  article :global(blockquote) {
+    margin: 0 0 1.2em;
+    padding: 14px 18px;
+    border-left: 3px solid var(--lg-accent);
+    border-radius: 0 12px 12px 0;
+    background: var(--lg-card);
+  }
+  article :global(blockquote p) {
+    margin: 0;
+    color: var(--lg-ink);
+  }
+  article :global(table) {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 0 0 1.4em;
+    border-collapse: collapse;
+    font-size: 15px;
+    line-height: 1.45;
+  }
+  article :global(th),
+  article :global(td) {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--lg-hair);
+    text-align: left;
+    vertical-align: top;
+    min-width: 7em;
+  }
+  article :global(th) {
+    font-weight: 600;
+    color: var(--lg-ink);
+    background: var(--lg-card);
+  }
+  article :global(td) {
+    color: var(--lg-soft);
+  }
+  article :global(tbody th) {
+    background: none;
+  }
+  article :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.86em;
+    padding: 0.1em 0.35em;
+    border-radius: 6px;
+    background: var(--lg-card);
+    border: 1px solid var(--lg-hair);
+    overflow-wrap: anywhere;
+  }
+  article :global(pre) {
+    margin: 0 0 1.4em;
+    padding: 16px 18px;
+    overflow-x: auto;
+    border-radius: 14px;
+    border: 1px solid var(--lg-hair);
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  article :global(pre code) {
+    padding: 0;
+    border: 0;
+    background: none;
+    font-size: inherit;
+    overflow-wrap: normal;
+  }
+
+  .cta {
+    margin: 48px 0 0;
+    padding: 26px 24px 22px;
+    border-radius: 22px;
+    background: var(--lg-card);
+    border: 1px solid var(--lg-hair);
+  }
+  .cta-line {
+    margin: 0 0 16px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-variation-settings:
+      'wdth' 84,
+      'opsz' 48;
+    font-size: clamp(22px, 4vw, 27px);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .cta-main,
+  .cta-alt {
+    display: inline-flex;
+    align-items: center;
+    height: 46px;
+    padding: 0 20px;
+    border-radius: 99px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-decoration: none;
+  }
+  .cta-main {
+    background: #ff8552;
+    color: #1a0f0a;
+  }
+  .cta-main:hover {
+    background: #ff9a6e;
+    color: #1a0f0a;
+  }
+  .cta-alt {
+    border: 1px solid var(--lg-hair);
+    color: var(--lg-ink);
+  }
+  .cta-alt:hover {
+    color: var(--lg-ink);
+    border-color: var(--lg-faint);
+  }
+  .cta-note {
+    margin: 14px 0 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--lg-faint);
+  }
+
+  .author {
+    margin: 28px 0 0;
+    padding: 20px 0 0;
+    border-top: 1px solid var(--lg-hair);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--lg-soft);
+  }
+  .author p {
+    margin: 0;
+  }
+  .author-name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 12px;
+    margin-bottom: 6px !important;
+  }
+  .author-name a {
+    font-weight: 600;
+    color: var(--lg-ink);
+    text-decoration: none;
+  }
+  .author-name span {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--lg-faint);
+  }
+
+  .related {
+    margin: 44px 0 0;
+  }
+  .related h2 {
+    margin: 0 0 14px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--lg-accent);
+  }
+  .related ul {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .related li {
+    padding: 16px 18px;
+    border: 1px solid var(--lg-hair);
+    border-radius: 16px;
+  }
+  .related a {
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 1.35;
+    color: var(--lg-ink);
+    text-decoration: none;
+  }
+  .related a:hover {
+    color: var(--lg-link);
+  }
+  .related p {
+    margin: 6px 0 0;
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: var(--lg-faint);
+  }
+</style>

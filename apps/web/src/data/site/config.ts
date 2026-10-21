@@ -7,8 +7,31 @@ export const ctaMode: 'waitlist' | 'store' = 'waitlist';
 /** The App Store page, once the app has one. */
 export const appStoreUrl = '#';
 
+/** The public TestFlight beta, open to anyone with the link until and after the launch. */
+export const testFlightUrl = 'https://testflight.apple.com/join/a8UrvT5P';
+
 export const repoUrl = 'https://github.com/at6pm/6pm';
 export const studioUrl = 'https://oddeggs.studio';
+export const studioName = 'Odd Eggs';
+
+/** Who signs the articles, and where else they are found. */
+export const founder = {
+  name: 'Khánh Quốc',
+  url: 'https://quocs.com',
+  sameAs: ['https://github.com/bkdev98', 'https://x.com/bkdev98'],
+} as const;
+
+/** 6pm's own accounts, for search engines to tie the brand together. */
+export const brandProfiles = [
+  'https://www.facebook.com/profile.php?id=61595400101945',
+  'https://www.youtube.com/@at6pmapp',
+  'https://www.tiktok.com/@at6pmapp',
+  'https://www.instagram.com/at6pmapp',
+  'https://github.com/at6pm',
+] as const;
+
+/** The studio's account on X, where 6pm's posts go. */
+export const studioProfiles = ['https://x.com/OddEggsStudio'] as const;
 
 /** The page's background, also the browser chrome colour. */
 export const siteBackground = '#8fd0c6';

@@ -1,0 +1,200 @@
+---
+import { blogPath, type BlogLang } from '../../data/blog';
+import { blogCopy } from '../../data/blog-copy';
+import { legalPath } from '../../data/legal';
+import {
+  appStoreUrl,
+  ctaMode,
+  repoUrl,
+  studioName,
+  studioUrl,
+  testFlightUrl,
+} from '../../data/site/config';
+import { homePath } from '../../data/site/copy';
+
+interface Props {
+  lang: BlogLang;
+  /** The same page in the other language, or that language's blog when there is none. */
+  switchTo: string;
+  /** Whether `switchTo` is this page's translation, so it can say so. */
+  switchIsTranslation: boolean;
+}
+
+const { lang, switchTo, switchIsTranslation } = Astro.props;
+const t = blogCopy[lang];
+const other: BlogLang = lang === 'en' ? 'vi' : 'en';
+const store = ctaMode === 'store';
+---
+
+<div class="blog">
+  <div class="glow" aria-hidden="true"></div>
+  <header class="bar">
+    <a class="brand" href={homePath[lang]} aria-label={t.brandLabel}>6pm</a>
+    <a class="section" href={blogPath(lang)}>{t.name}</a>
+    <span class="spacer"></span>
+    <a
+      class="switch"
+      href={switchTo}
+      lang={other}
+      hreflang={other}
+      rel={switchIsTranslation ? 'alternate' : undefined}
+      aria-label={t.otherLanguageLabel}>{t.otherLanguage}</a
+    >
+    <a class="get" href={store ? appStoreUrl : testFlightUrl} rel="noopener"
+      >{store ? t.store : t.betaShort}</a
+    >
+  </header>
+
+  <slot />
+
+  <footer class="wrap foot">
+    <nav class="foot-links" aria-label="6pm">
+      <a href={homePath[lang]}>6pm</a>
+      <a href={blogPath(lang)}>{t.name}</a>
+      <a href={repoUrl} rel="noopener">{t.openSource}</a>
+      <a href={legalPath(lang, 'privacy')}>{t.privacy}</a>
+      <a href={legalPath(lang, 'terms')}>{t.terms}</a>
+      <a href={`${blogPath(lang)}/rss.xml`}>{t.rss}</a>
+      <span class="year"
+        >© 2026 · {t.madeBy} <a href={studioUrl} rel="noopener">{studioName}</a></span
+      >
+    </nav>
+  </footer>
+</div>
+
+<style>
+  .blog {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: clip;
+    color: var(--lg-ink);
+    background: var(--lg-bg);
+    font-family: var(--font-text);
+    font-size: 17px;
+    line-height: 1.7;
+    letter-spacing: -0.005em;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  .glow {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 560px;
+    pointer-events: none;
+    background: radial-gradient(65% 100% at 50% 0%, var(--lg-glow), transparent);
+    mask-image: linear-gradient(#000 30%, transparent);
+    -webkit-mask-image: linear-gradient(#000 30%, transparent);
+  }
+  .bar {
+    position: relative;
+    box-sizing: border-box;
+    width: min(720px, 100% - 32px);
+    margin-inline: auto;
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-top: max(20px, env(safe-area-inset-top));
+    height: 72px;
+  }
+  .brand {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 28px;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    color: var(--lg-ink);
+    text-decoration: none;
+  }
+  .section {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--lg-soft);
+    text-decoration: none;
+  }
+  .brand:hover,
+  .section:hover {
+    color: var(--lg-ink);
+  }
+  .spacer {
+    flex: 1;
+  }
+  .switch,
+  .get {
+    display: inline-flex;
+    align-items: center;
+    height: 36px;
+    padding: 0 14px;
+    border-radius: 99px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  .switch {
+    border: 1px solid var(--lg-hair);
+    color: var(--lg-ink);
+  }
+  .switch:hover {
+    color: var(--lg-ink);
+    border-color: var(--lg-faint);
+  }
+  .get {
+    background: #ff8552;
+    color: #1a0f0a;
+  }
+  .get:hover {
+    background: #ff9a6e;
+    color: #1a0f0a;
+  }
+  @media (max-width: 420px) {
+    .section {
+      display: none;
+    }
+  }
+  .blog :where(a):focus-visible {
+    outline: 2px solid var(--lg-link);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  .foot {
+    padding: 26px 0 max(40px, env(safe-area-inset-bottom));
+    border-top: 1px solid var(--lg-hair);
+  }
+  .foot-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 22px;
+    font-size: 14.5px;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+  .foot-links a {
+    color: var(--lg-soft);
+    text-decoration: none;
+  }
+  .foot-links a:hover {
+    color: var(--lg-ink);
+  }
+  .year {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--lg-faint);
+  }
+  .foot-links .year a {
+    color: var(--lg-ink);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>
