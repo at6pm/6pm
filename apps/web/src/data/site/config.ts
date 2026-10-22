@@ -1,11 +1,11 @@
 /**
  * What the home page asks visitors to do: join the launch list until the app is out, then download
- * it. Flip to `store` (and set the App Store link) on launch day and redeploy.
+ * it. Flip to `store` on launch day and redeploy.
  */
 export const ctaMode: 'waitlist' | 'store' = 'waitlist';
 
-/** The App Store page, once the app has one. */
-export const appStoreUrl = '#';
+/** 6pm's App Store page, without a storefront so each visitor lands in their own. */
+export const appStoreUrl = 'https://apps.apple.com/app/id6504689878';
 
 /** The public TestFlight beta, open to anyone with the link until and after the launch. */
 export const testFlightUrl = 'https://testflight.apple.com/join/a8UrvT5P';
