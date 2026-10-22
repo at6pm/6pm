@@ -17,6 +17,8 @@ interface Props {
   article?: { published: Date; modified: Date; tags: readonly string[] };
   /** Feeds for this page's language, as site paths. */
   feed?: { path: string; title: string };
+  /** Keeps a page that only hands visitors on out of search results. */
+  noindex?: boolean;
 }
 
 const {
@@ -28,6 +30,7 @@ const {
   image,
   article,
   feed,
+  noindex = false,
 } = Astro.props;
 // Pages build to `privacy.html` and `index.html`, but are served (and linked) without the extension.
 const pageUrl = new URL(Astro.url.pathname.replace(/(?:\/index)?\.html$/, ''), Astro.site);
@@ -40,9 +43,12 @@ const pageUrl = new URL(Astro.url.pathname.replace(/(?:\/index)?\.html$/, ''), A
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <meta
+      name="robots"
+      content={noindex ? 'noindex' : 'index, follow, max-image-preview:large, max-snippet:-1'}
+    />
     {themeColors.map((t) => <meta name="theme-color" content={t.color} media={t.media} />)}
-    <link rel="canonical" href={pageUrl} />
+    {!noindex && <link rel="canonical" href={pageUrl} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link
       rel="preload"

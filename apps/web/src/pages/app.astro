@@ -1,0 +1,160 @@
+---
+import { appLinkCopy } from '../data/app-link';
+import { appStoreUrl } from '../data/site/config';
+import { homePath } from '../data/site/copy';
+import PageLayout from '../layouts/page-layout.astro';
+import '../styles/reading.css';
+
+// With 6pm installed, iOS opens the app for `/app` (apple-app-site-association) and this page never
+// loads. Without it, the page sends the visitor straight on to the App Store, in both languages.
+const en = appLinkCopy.en;
+const vi = appLinkCopy.vi;
+---
+
+<PageLayout
+  title={`${en.title} · 6pm`}
+  description={en.description}
+  noindex
+  themeColors={[
+    { color: '#fbf7ef', media: '(prefers-color-scheme: light)' },
+    { color: '#0b0716', media: '(prefers-color-scheme: dark)' },
+  ]}
+>
+  <meta slot="head" http-equiv="refresh" content={`0; url=${appStoreUrl}`} />
+  <div class="legal">
+    <div class="glow" aria-hidden="true"></div>
+    <header class="bar">
+      <a class="brand" href={homePath.en} aria-label="6pm">6pm</a>
+    </header>
+    <main class="wrap">
+      <section>
+        <h1>{en.heading}</h1>
+        <p class="lede">{en.body}</p>
+        <a class="store" href={appStoreUrl}>{en.store}</a>
+      </section>
+      <section lang="vi">
+        <h2>{vi.heading}</h2>
+        <p class="lede">{vi.body}</p>
+        <a class="store" href={appStoreUrl}>{vi.store}</a>
+      </section>
+      <p class="home">
+        <a href={homePath.en}>{en.home}</a> · <a href={homePath.vi} lang="vi">{vi.home}</a>
+      </p>
+    </main>
+  </div>
+</PageLayout>
+
+<style>
+  .legal {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: clip;
+    color: var(--lg-ink);
+    background: var(--lg-bg);
+    font-family: var(--font-text);
+    font-size: 17px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  .glow {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 560px;
+    pointer-events: none;
+    background: radial-gradient(65% 100% at 50% 0%, var(--lg-glow), transparent);
+    mask-image: linear-gradient(#000 30%, transparent);
+    -webkit-mask-image: linear-gradient(#000 30%, transparent);
+  }
+  .wrap,
+  .bar {
+    position: relative;
+    box-sizing: border-box;
+    width: min(680px, 100% - 40px);
+    margin-inline: auto;
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    padding-top: max(20px, env(safe-area-inset-top));
+    height: 72px;
+  }
+  .brand {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 28px;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    color: var(--lg-ink);
+    text-decoration: none;
+  }
+  main {
+    padding: clamp(36px, 8vw, 72px) 0 72px;
+  }
+  section + section {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--lg-hair);
+  }
+  h1,
+  h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-variation-settings:
+      'wdth' 78,
+      'opsz' 96;
+    line-height: 0.96;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+  }
+  h1 {
+    font-size: clamp(44px, 9vw, 68px);
+  }
+  h2 {
+    font-size: clamp(32px, 6vw, 44px);
+  }
+  .lede {
+    margin: 22px 0 0;
+    font-size: clamp(18px, 2.4vw, 20px);
+    line-height: 1.55;
+    color: var(--lg-soft);
+    text-wrap: pretty;
+  }
+  .store {
+    display: inline-flex;
+    align-items: center;
+    height: 48px;
+    margin-top: 24px;
+    padding: 0 22px;
+    border-radius: 99px;
+    background: var(--lg-ink);
+    color: var(--lg-bg);
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .store:hover {
+    background: var(--lg-soft);
+  }
+  .home {
+    margin: 48px 0 0;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--lg-faint);
+  }
+  .home a {
+    color: var(--lg-soft);
+    text-decoration: none;
+  }
+  .home a:hover {
+    color: var(--lg-ink);
+  }
+  :where(a):focus-visible {
+    outline: 2px solid var(--lg-link);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+</style>
