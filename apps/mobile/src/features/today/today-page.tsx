@@ -23,7 +23,7 @@ import { CompanionGreeting } from './companion-greeting';
 import { requestDiaryDay } from './diary-request';
 import { TodayHero } from './today-hero';
 import { TodayList } from './today-list';
-import { todayView, type WeekDay } from './today-view';
+import { spreadYesterdayOf, todayView, type WeekDay } from './today-view';
 import { useSpendLabels } from './use-spend-rows';
 import { TonightCard } from './tonight-card';
 import { useOpenAsk, useOpenSpend } from '../duo/spread-pane';
@@ -63,6 +63,7 @@ export function TodayPage({
   const onScroll = useHomePageScroll('today');
   const shown = useHomePageShown();
   const view = todayView(snap, closeHour, day.spent, useSpendLabels());
+  const spreadYesterday = spreadYesterdayOf(snap);
   const monthName = new Intl.DateTimeFormat(language === 'vi' ? 'vi-VN' : 'en-GB', {
     month: 'long',
   }).format(dayDate);
@@ -128,6 +129,7 @@ export function TodayPage({
           <CompanionGreeting
             day={day}
             plan={snap.plan}
+            spread={spreadYesterday}
             event={
               view.moment === 'closed'
                 ? 'closedIdle'

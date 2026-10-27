@@ -197,17 +197,25 @@ export async function readDiary(
 /**
  * One day's receipt: the kept spends that count toward the day, oldest first, and its number. A
  * category set to not count, and a spend sent to Claim back, are not in the total, so they are not
- * lines: the lines add up to the total.
+ * lines: the lines add up to the total. Money that came in that day and was kept is listed apart,
+ * under the total; a spend given back since (refunded, or paid back) carries the day it came back.
  */
 export async function readDayReceipt(
   store: MoneyStore,
   day: LocalDate,
   notDaily: ReadonlySet<string>,
-): Promise<{ readonly day: LocalDate; readonly spends: readonly SpendRow[]; readonly no: number }> {
+): Promise<{
+  readonly day: LocalDate;
+  readonly spends: readonly SpendRow[];
+  readonly moneyIn: readonly SpendRow[];
+  readonly givenBack: Readonly<Record<string, LocalDate>>;
+  readonly no: number;
+}> {
   const [spends, no] = await Promise.all([
     readSpendsBetween(store, day, day),
     readReceiptNumber(store, day),
   ]);
+  const moneyIn = spends.filter((s) => s.direction === 'in' && s.status === 'kept');
   const lines = spends.filter(
     (s) =>
       s.status === 'kept' &&
@@ -222,7 +230,17 @@ export async function readDayReceipt(
         notDaily,
       ),
   );
-  return { day, spends: lines, no };
+  const ids = lines.map((s) => s.id);
+  const backs =
+    ids.length === 0
+      ? []
+      : await store.tables.spends.select(
+          `WHERE gives_back IN (${ids.map(() => '?').join(', ')}) AND status = 'kept' AND money_in = 'refund'`,
+          ids,
+        );
+  const givenBack: Record<string, LocalDate> = {};
+  for (const back of backs) if (back.givesBack) givenBack[back.givesBack] = back.day;
+  return { day, spends: lines, moneyIn, givenBack, no };
 }
 
 /** A month's money diary: its closed days, spends and what went to Future you. */

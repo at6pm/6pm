@@ -4,6 +4,7 @@ import {
   calendarCells,
   diaryShelf,
   floorToStep,
+  payCycleOn,
   monthEnd,
   monthOf,
   previousMonth,
@@ -13,6 +14,7 @@ import {
   weekRecap,
   yearBookShelf,
   type ClosedDayRow,
+  type SpendRow,
 } from '@6pm/domain';
 
 import {
@@ -45,17 +47,28 @@ function latestFiled(closed: readonly ClosedDayRow[]): ClosedDayRow | null {
 const NO_DAYS: readonly ClosedDayRow[] = [];
 
 /** The parts of the snapshot the Diary reads: a write to anything else leaves it alone. */
-const diaryInputs = ({ today, closedDays, cycleSpends, categories }: MoneySnapshot) => ({
+const diaryInputs = ({
   today,
   closedDays,
   cycleSpends,
   categories,
+  plan,
+  pots,
+}: MoneySnapshot) => ({
+  today,
+  closedDays,
+  cycleSpends,
+  categories,
+  plan,
+  pots,
 });
 const sameInputs = (a: ReturnType<typeof diaryInputs>, b: ReturnType<typeof diaryInputs>) =>
   a.today === b.today &&
   a.closedDays === b.closedDays &&
   a.cycleSpends === b.cycleSpends &&
-  a.categories === b.categories;
+  a.categories === b.categories &&
+  a.plan === b.plan &&
+  a.pots === b.pots;
 
 /**
  * Everything the Diary tab shows, from the database through the domain maths. Closing a day (here
@@ -67,7 +80,10 @@ const sameInputs = (a: ReturnType<typeof diaryInputs>, b: ReturnType<typeof diar
  */
 export function useDiary() {
   const day = useDay();
-  const { today, closedDays, cycleSpends, categories } = useMoneySelector(diaryInputs, sameInputs);
+  const { today, closedDays, cycleSpends, categories, plan, pots } = useMoneySelector(
+    diaryInputs,
+    sameInputs,
+  );
   const { t } = useI18n();
   const money = useMoneyFormat();
   const { currency } = money;
@@ -159,18 +175,59 @@ export function useDiary() {
   );
 
   const row = monthClosed.find((d) => d.day === receiptData?.day);
+  // What money in that day became, on the line under it.
+  const moneyInNote = (s: SpendRow): string => {
+    switch (s.moneyIn) {
+      case 'saved':
+        return t('moneyIn.diary.saved', {
+          pot:
+            pots.find((p) => p.id === s.savedTo)?.name.toLocaleUpperCase() ??
+            t('moneyIn.goesTo.futureYou').toLocaleUpperCase(),
+        });
+      case 'pay':
+        return t('moneyIn.diary.pay');
+      case 'refund':
+        return t('moneyIn.diary.refund');
+      case 'payback':
+        return t('moneyIn.diary.payback');
+      // Kept with nothing said (confirmed from the Inbox) is spread, as the number counts it.
+      case 'spread':
+      case null:
+      case undefined: {
+        const days = plan ? payCycleOn(s.day, plan.payday).daysLeft : 1;
+        const daily = floorToStep(s.amount / Math.max(1, days), currency);
+        return t('moneyIn.diary.spread', { amount: money.short(daily) });
+      }
+    }
+  };
   const receipt: DayReceiptView | null =
     row && receiptData
       ? {
           day: row.day,
           title: dates.stamp(row.day),
           no: t('diary.receipt.no', { no: receiptData.no }),
-          rows: receiptData.spends.map((s) => ({
+          rows: receiptData.spends.map((s) => {
+            const back = receiptData.givenBack[s.id];
+            return {
+              time: dates.clock(s.at),
+              name: s.merchant.toLocaleUpperCase(),
+              merchant: s.merchant,
+              categoryId: s.categoryId,
+              amount: s.amount,
+              ...(back
+                ? {
+                    back: t('moneyIn.diary.back', {
+                      date: dates.dayMonth(back).toLocaleUpperCase(),
+                    }),
+                  }
+                : {}),
+            };
+          }),
+          moneyIn: receiptData.moneyIn.map((s) => ({
             time: dates.clock(s.at),
-            name: s.merchant.toLocaleUpperCase(),
-            merchant: s.merchant,
-            categoryId: s.categoryId,
+            name: (s.merchant || t('moneyIn.name')).toLocaleUpperCase(),
             amount: s.amount,
+            note: moneyInNote(s),
           })),
           empty: t('diary.receipt.empty'),
           totalLabel: t('close.receipt.total'),

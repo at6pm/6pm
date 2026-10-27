@@ -31,8 +31,11 @@ export function useSpendLabels(): Labels {
                 ? t('today.row.notMine')
                 : row.paysBill
                   ? t('today.row.bill')
-                  : null,
+                  : row.direction === 'in'
+                    ? t('moneyIn.row.tag')
+                    : null,
       money,
+      moneyIn: t('moneyIn.name'),
     };
   }, [t, language, money]);
 }

@@ -41,11 +41,21 @@ export function CompanionGreeting({
   day,
   plan,
   event,
+  spread,
   onPress,
 }: {
   readonly day: DailyNumber;
   readonly plan: PlanSettings;
   readonly event: HomeEvent;
+  /**
+   * Money spread over the days at last night's close: on a calm day the companion says where the
+   * bigger number came from, the day after only.
+   */
+  readonly spread?: {
+    readonly name: string;
+    readonly amount: number;
+    readonly daily: number;
+  } | null;
   readonly onPress: () => void;
 }) {
   const { palette, serious } = useTheme();
@@ -59,8 +69,9 @@ export function CompanionGreeting({
   const room = useSharedValue(ROOM);
   const roomStyle = useAnimatedStyle(() => ({ height: room.value }));
   // A calm day says something about the user's own days; the other events keep their lines.
+  const told = said === 'idle' && spread ? spread : null;
   const own = useCompanionLine(said === 'closedIdle' ? 'close' : 'today', 'bubble', {
-    enabled: !serious && (said === 'idle' || said === 'closedIdle'),
+    enabled: !serious && told === null && (said === 'idle' || said === 'closedIdle'),
   });
   if (serious) return null;
   const mood = companionMood({
@@ -70,12 +81,16 @@ export function CompanionGreeting({
     toast: false,
     closed: said === 'closedIdle',
   });
-  const line =
-    own?.text ??
-    t(`companion.${said}.${plan.persona}` as 'companion.replan.cheeky', {
-      t: money.short(day.tomorrow),
-      b: money.short(day.line),
-    });
+  const line = told
+    ? t(
+        `companion.moneyInSpread.${told.name === '' ? 'plain' : plan.persona}` as 'companion.moneyInSpread.soft',
+        { name: told.name, amount: money.short(told.amount), daily: money.short(told.daily) },
+      )
+    : (own?.text ??
+      t(`companion.${said}.${plan.persona}` as 'companion.replan.cheeky', {
+        t: money.short(day.tomorrow),
+        b: money.short(day.line),
+      }));
   return (
     <>
       <View
@@ -97,7 +112,7 @@ export function CompanionGreeting({
         <PressScale onPress={onPress} accessibilityRole="button">
           <Companion size={62} mood={mood} />
         </PressScale>
-        {own === undefined ? null : (
+        {own === undefined && told === null ? null : (
           <Animated.View entering={FadeInDown.delay(150).duration(500).springify().damping(18)}>
             <PressScale
               inScroll

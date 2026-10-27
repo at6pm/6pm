@@ -1,6 +1,7 @@
 import {
   addDays,
   closeMoment,
+  floorToStep,
   foreignAmountText,
   needsReview,
   startOfWeek,
@@ -10,9 +11,11 @@ import {
   type MoneyFormat,
   type SpendRow,
 } from '@6pm/domain';
+import { moneyInInk } from '@6pm/theme';
 
 import { isSymbolName } from '../../ui/icons/symbol';
 import { waitingOf, type MoneySnapshot } from '../../data/money-store';
+import { homeCurrencyOf } from '../../money/use-money-format';
 import { merchantIcon } from './merchant-icon';
 import type { SpendRowView } from './spend-row';
 
@@ -44,6 +47,8 @@ export type Labels = {
   readonly time: (iso: string) => string;
   /** Writes amounts in the home currency. */
   readonly money: Pick<MoneyFormat, 'full'>;
+  /** What money that came in is called where its sender is not known. */
+  readonly moneyIn?: string;
 };
 
 /** Display rows for a list of spends: icon, tint, "08:15 · Drinks · Shared receipt", tag. */
@@ -57,31 +62,59 @@ export function toRowViews(
   return spends.map((s, i): SpendRowView => {
     const category = categories.get(s.categoryId);
     const categoryIcon = category && isSymbolName(category.icon) ? category.icon : 'payments';
+    // Money that came in has no category: it reads "+2.000.000₫", money in, from whoever sent it.
+    const comesIn = s.direction === 'in';
+    const moneyIn = labels.moneyIn ?? '';
     return {
       id: s.id,
-      name: s.merchant,
+      name: comesIn ? s.merchant || moneyIn : s.merchant,
       meta: [
         labels.time(s.at),
-        withCategory ? (category?.name ?? '') : null,
+        withCategory ? (comesIn ? moneyIn : (category?.name ?? '')) : null,
         labels.source(s.source),
       ]
-        .filter((part) => part !== null)
+        .filter((part) => part !== null && part !== '')
         .join(' · '),
-      amount: labels.money.full(s.amount),
+      amount: `${comesIn ? '+' : ''}${labels.money.full(s.amount)}`,
       foreign: s.foreignAmount
         ? {
             printed: foreignAmountText(s.foreignAmount),
             inHome: s.foreignAmount.rate > 0 && s.amount > 0 ? labels.money.full(s.amount) : null,
           }
         : null,
-      icon: merchantIcon(s.merchant, categoryIcon),
-      hue: category?.hue ?? 80,
+      icon: comesIn ? 'payments' : merchantIcon(s.merchant, categoryIcon),
+      hue: comesIn ? moneyInInk.hue : (category?.hue ?? 80),
       tag: labels.tag(s),
       reviewable: needsReview(s),
       skipped: s.status === 'skipped',
       first: i === 0,
     };
   });
+}
+
+/**
+ * The money spread over the days at yesterday's close, the biggest if there were several: who sent
+ * it, how much, and what it adds to each day left. Null on any other day.
+ */
+export function spreadYesterdayOf(
+  snap: MoneySnapshot,
+): { readonly name: string; readonly amount: number; readonly daily: number } | null {
+  const yesterday = addDays(snap.today, -1);
+  const biggest = snap.cycleSpends
+    .filter(
+      (s) =>
+        s.direction === 'in' &&
+        s.status === 'kept' &&
+        s.moneyIn === 'spread' &&
+        s.day === yesterday,
+    )
+    .reduce<SpendRow | null>(
+      (best, s) => (best === null || s.amount > best.amount ? s : best),
+      null,
+    );
+  if (biggest === null) return null;
+  const daily = floorToStep(biggest.amount / (snap.cycle.daysLeft + 1), homeCurrencyOf(snap.plan));
+  return { name: biggest.merchant.trim(), amount: biggest.amount, daily };
 }
 
 /**

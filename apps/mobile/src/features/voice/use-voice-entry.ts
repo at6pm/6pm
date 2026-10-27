@@ -35,6 +35,8 @@ export interface VoiceEntry {
   readonly heard: string | null;
   /** Whether what is on the ticket was said at some point. */
   readonly said: boolean;
+  /** What was said was money coming in ("mẹ cho 500k"): it is saved as money in. */
+  readonly incoming: boolean;
   /** The microphone was tapped. */
   readonly tapMic: () => void;
   /** The main button was tapped while the panel is open. */
@@ -67,6 +69,7 @@ export function useVoiceEntry({
   const [open, setOpen] = useState(false);
   const [heard, setHeard] = useState<string | null>(null);
   const [said, setSaid] = useState(false);
+  const [incoming, setIncoming] = useState(false);
   const money = useMoneyFormat();
   const home = money.currency;
 
@@ -82,6 +85,7 @@ export function useVoiceEntry({
     if (spend.amount === null) return;
     setHeard(state.settled);
     setSaid(true);
+    setIncoming(spend.direction === 'in');
     // The amount said, on the keypad in the home currency, as if typed.
     setKeys(editKeypadOf({ amount: spend.amount, foreignAmount: null }, home));
     setNote(spend.name);
@@ -120,6 +124,7 @@ export function useVoiceEntry({
     chips,
     heard: stage === 'closed' ? heard : null,
     said,
+    incoming,
     tapMic: () => {
       const action = micAction(stage);
       if (action === 'start') {
