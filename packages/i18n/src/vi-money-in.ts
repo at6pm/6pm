@@ -32,7 +32,7 @@ export const viMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'moneyIn.no': 'Không, khoản khác',
   'moneyIn.today': 'HÔM NAY',
 
-  'moneyIn.refund.title': 'Đây là tiền hoàn cho {name}?',
+  'moneyIn.refund.title': 'Đây là tiền {name} hoàn lại?',
   'moneyIn.refund.sub':
     'Nếu đúng, khoản đó được gạch trong nhật ký và {amount} quay lại các ngày của bạn.',
   'moneyIn.refund.yes': 'Đúng, tiền hoàn',

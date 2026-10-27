@@ -112,6 +112,7 @@ export function WorkQuestionStep({
           <Companion size={84} mood={mood} />
           <View
             style={{
+              flexShrink: 1,
               marginBottom: 48,
               paddingVertical: 8,
               paddingHorizontal: 13,

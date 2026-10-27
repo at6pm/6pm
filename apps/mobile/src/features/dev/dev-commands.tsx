@@ -17,6 +17,7 @@ import { pinCompanionForm } from './dev-companion-form';
 import { CUSTOMER_KEY, serializeCustomer } from '../purchases/customer-memory';
 import { FREE_CUSTOMER } from '../purchases/purchases-port';
 import { seedDesignFriday } from './design-friday-seed';
+import { seedDesignMoneyIn } from './design-money-in-seed';
 import { useYearBook } from '../year-book/use-year-book';
 import { seedDesignYear } from './design-year-seed';
 
@@ -28,7 +29,7 @@ import { seedDesignYear } from './design-year-seed';
  *   {"seed": "friday", "at": "18:07", "route": "/close", "toast": "Line to show", "companion": "max"}
  */
 const commandSchema = z.object({
-  seed: z.enum(['friday', 'year']).optional(),
+  seed: z.enum(['friday', 'year', 'moneyIn']).optional(),
   /** The friday seed's currency (ISO 4217); đồng when not given. */
   currency: z
     .string()
@@ -113,6 +114,7 @@ export function DevCommands() {
       }
       if (seed === 'friday') await seedDesignFriday(store, today, currency);
       if (seed === 'year') await seedDesignYear(store, today);
+      if (seed === 'moneyIn') await seedDesignMoneyIn(store, today);
       // Over Home, so sheets present as sheets.
       if (route) {
         router.replace('/');

@@ -161,7 +161,9 @@ function CloseOpen({ givable }: { readonly givable: readonly GivableSpend[] }) {
             counts.kept + counts.edited > 0
               ? t('close.kicker', {
                   date: shortDate(closingDate),
-                  n: close.queue.length - close.cards.length + 1,
+                  // The top card's place in the queue: money waiting for its question is not
+                  // in the stack, but keeps its number.
+                  n: close.queue.findIndex((s) => s.id === topCard?.row.id) + 1,
                   total: close.queue.length,
                   kept: money.short(close.keptBefore).toUpperCase(),
                 })

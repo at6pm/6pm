@@ -31,7 +31,7 @@ export const enMoneyIn = {
   'moneyIn.no': 'No, it’s something else',
   'moneyIn.today': 'TODAY',
 
-  'moneyIn.refund.title': 'Is this for your {name}?',
+  'moneyIn.refund.title': 'Is this a refund from {name}?',
   'moneyIn.refund.sub':
     'If it is, it’s crossed out in your diary and the {amount} goes back into your days.',
   'moneyIn.refund.yes': 'Yes, that’s the refund',
