@@ -57,7 +57,6 @@ export function DayReceipt({ receipt }: { readonly receipt: DayReceiptView }) {
         style={{
           width: 306,
           transform: [{ rotate: '-1deg' }],
-          boxShadow: '0 16px 22px rgba(15,5,25,.3)',
         }}
       >
         <View style={{ transform: [{ scaleY: -1 }] }}>
@@ -65,6 +64,8 @@ export function DayReceipt({ receipt }: { readonly receipt: DayReceiptView }) {
         </View>
         <View
           style={{
+            // The paper casts the shadow, not its torn edges, which would show it between the teeth.
+            boxShadow: '0 16px 22px rgba(15,5,25,.3)',
             backgroundColor: paper.sheet,
             paddingTop: 12,
             paddingHorizontal: 20,

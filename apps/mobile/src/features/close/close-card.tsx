@@ -127,141 +127,152 @@ export function CloseCard({
   // Too short for the running total (a short screen): the receipt keeps its name and amount.
   const compact = height < FULL_HEIGHT;
   return (
-    <View style={{ boxShadow: '0 22px 34px rgba(20,6,30,.32)' }}>
+    <View>
+      {/* The paper casts the shadow, not its torn edge, which would show it between the teeth. */}
       <View
         style={{
-          height,
-          paddingTop: 20,
-          paddingHorizontal: 22,
-          paddingBottom: 18,
-          gap: 12,
+          boxShadow: '0 22px 34px rgba(20,6,30,.32)',
           borderTopLeftRadius: 6,
           borderTopRightRadius: 6,
-          overflow: 'hidden',
-          experimental_backgroundImage: `linear-gradient(180deg, #fdfaf3, ${PAPER})`,
         }}
       >
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text
-            numberOfLines={1}
-            style={{ ...mono(11.5, 400, 0.1), color: INK_SOFT, flexShrink: 1 }}
-          >
-            {content.no.toUpperCase()}
-          </Text>
-          <Text style={{ ...mono(11.5, 400, 0.1), color: INK_SOFT }}>{content.time}</Text>
-        </View>
-        <DashedRule color={RULE} />
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-          <CategoryTile
-            icon={moneyIn ? 'payments' : row.icon}
-            hue={moneyIn ? moneyInInk.hue : row.hue}
-            size={44}
-            radius={15}
-            glyph={25}
-          />
-          <View style={{ gap: 2, flexShrink: 1 }}>
-            <Text numberOfLines={1} style={{ ...body(20, 650, -0.02), color: INK }}>
-              {row.name}
+        <View
+          style={{
+            height,
+            paddingTop: 20,
+            paddingHorizontal: 22,
+            paddingBottom: 18,
+            gap: 12,
+            borderTopLeftRadius: 6,
+            borderTopRightRadius: 6,
+            overflow: 'hidden',
+            experimental_backgroundImage: `linear-gradient(180deg, #fdfaf3, ${PAPER})`,
+          }}
+        >
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text
+              numberOfLines={1}
+              style={{ ...mono(11.5, 400, 0.1), color: INK_SOFT, flexShrink: 1 }}
+            >
+              {content.no.toUpperCase()}
             </Text>
-            <Text style={{ ...body(13), color: INK_SOFT }}>{content.category}</Text>
+            <Text style={{ ...mono(11.5, 400, 0.1), color: INK_SOFT }}>{content.time}</Text>
           </View>
-        </View>
-        {compact ? (
-          <View style={{ flex: 1 }} />
-        ) : (
-          <View style={{ flex: 1, justifyContent: 'center', gap: 6 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <Text style={{ ...mono(11.5, 400, 0.1), color: 'rgba(42,34,48,.62)' }}>
-                {moneyIn ? moneyIn.asIsLabel : labels.keptSoFar}
+          <DashedRule color={RULE} />
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+            <CategoryTile
+              icon={moneyIn ? 'payments' : row.icon}
+              hue={moneyIn ? moneyInInk.hue : row.hue}
+              size={44}
+              radius={15}
+              glyph={25}
+            />
+            <View style={{ gap: 2, flexShrink: 1 }}>
+              <Text numberOfLines={1} style={{ ...body(20, 650, -0.02), color: INK }}>
+                {row.name}
               </Text>
-              <Text style={{ ...mono(11.5), ...tabular, color: 'rgba(42,34,48,.62)' }}>
-                {money.number(moneyIn ? moneyIn.asIs : content.keptBefore)}
-              </Text>
-            </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <Text style={{ ...mono(11.5, 400, 0.1), color: INK }}>
-                {moneyIn ? moneyIn.spreadLabel : labels.withThis}
-              </Text>
-              <Text style={{ ...mono(11.5, 600), ...tabular, color: INK }}>
-                {money.number(moneyIn ? moneyIn.spread : content.keptBefore + content.amount)}
-              </Text>
+              <Text style={{ ...body(13), color: INK_SOFT }}>{content.category}</Text>
             </View>
           </View>
-        )}
-        {/* The prototype's inline `<span style="font-size:.42em; margin-left:4px">₫</span>`. */}
-        <FitWidth height={72}>
-          <AmountText
-            parts={
-              moneyIn ? { ...money.parts(content.amount), sign: '+' } : money.parts(content.amount)
-            }
-            numberOfLines={1}
-            gap={'\u2006'}
-            style={{
-              ...leading(display(72 * numK, 500, -0.02), 72 * numK, true),
-              ...tabular,
-              color: moneyIn ? moneyInInk.paper : INK,
-            }}
-            symbol={{ ...display(30, 500), opacity: 0.55 }}
-          />
-        </FitWidth>
-        {content.detail ? (
-          <View style={{ gap: 10 }}>
-            <DashedRule color={RULE} />
-            <Text style={{ ...mono(11.5), color: 'rgba(42,34,48,.62)' }}>{content.detail}</Text>
-          </View>
-        ) : null}
-        {top ? (
-          <>
-            <Stamp
-              label={moneyIn ? moneyIn.stampSpread : labels.keep}
-              color="#2f7d55"
-              rotate="-11deg"
-              style={{ top: 96, left: 18 }}
-              opacity={() => {
-                'worklet';
-                return clamp(dx.value / 90);
+          {compact ? (
+            <View style={{ flex: 1 }} />
+          ) : (
+            <View style={{ flex: 1, justifyContent: 'center', gap: 6 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <Text style={{ ...mono(11.5, 400, 0.1), color: 'rgba(42,34,48,.62)' }}>
+                  {moneyIn ? moneyIn.asIsLabel : labels.keptSoFar}
+                </Text>
+                <Text style={{ ...mono(11.5), ...tabular, color: 'rgba(42,34,48,.62)' }}>
+                  {money.number(moneyIn ? moneyIn.asIs : content.keptBefore)}
+                </Text>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <Text style={{ ...mono(11.5, 400, 0.1), color: INK }}>
+                  {moneyIn ? moneyIn.spreadLabel : labels.withThis}
+                </Text>
+                <Text style={{ ...mono(11.5, 600), ...tabular, color: INK }}>
+                  {money.number(moneyIn ? moneyIn.spread : content.keptBefore + content.amount)}
+                </Text>
+              </View>
+            </View>
+          )}
+          {/* The prototype's inline `<span style="font-size:.42em; margin-left:4px">₫</span>`. */}
+          <FitWidth height={72}>
+            <AmountText
+              parts={
+                moneyIn
+                  ? { ...money.parts(content.amount), sign: '+' }
+                  : money.parts(content.amount)
+              }
+              numberOfLines={1}
+              gap={'\u2006'}
+              style={{
+                ...leading(display(72 * numK, 500, -0.02), 72 * numK, true),
+                ...tabular,
+                color: moneyIn ? moneyInInk.paper : INK,
               }}
+              symbol={{ ...display(30, 500), opacity: 0.55 }}
             />
-            <Stamp
-              label={labels.edit}
-              color="#33599a"
-              rotate="9deg"
-              style={{ top: 96, right: 18 }}
-              opacity={() => {
-                'worklet';
-                return clamp(-dx.value / 90);
-              }}
-            />
-            <Stamp
-              label={labels.notMine}
-              color="#b5433a"
-              rotate="-4deg"
-              style={{ top: 112, alignSelf: 'center' }}
-              size={22}
-              spacing={0.14}
-              opacity={() => {
-                'worklet';
-                return clamp(dy.value / 90);
-              }}
-            />
-            {moneyIn?.canSave ? (
+          </FitWidth>
+          {content.detail ? (
+            <View style={{ gap: 10 }}>
+              <DashedRule color={RULE} />
+              <Text style={{ ...mono(11.5), color: 'rgba(42,34,48,.62)' }}>{content.detail}</Text>
+            </View>
+          ) : null}
+          {top ? (
+            <>
               <Stamp
-                label={moneyIn.stampFutureYou}
-                color={moneyInInk.stamp}
+                label={moneyIn ? moneyIn.stampSpread : labels.keep}
+                color="#2f7d55"
+                rotate="-11deg"
+                style={{ top: 96, left: 18 }}
+                opacity={() => {
+                  'worklet';
+                  return clamp(dx.value / 90);
+                }}
+              />
+              <Stamp
+                label={labels.edit}
+                color="#33599a"
+                rotate="9deg"
+                style={{ top: 96, right: 18 }}
+                opacity={() => {
+                  'worklet';
+                  return clamp(-dx.value / 90);
+                }}
+              />
+              <Stamp
+                label={labels.notMine}
+                color="#b5433a"
                 rotate="-4deg"
-                style={{ top: 118, alignSelf: 'center' }}
+                style={{ top: 112, alignSelf: 'center' }}
                 size={22}
                 spacing={0.14}
                 opacity={() => {
                   'worklet';
-                  return clamp(-dy.value / 90);
+                  return clamp(dy.value / 90);
                 }}
               />
-            ) : null}
-          </>
-        ) : null}
+              {moneyIn?.canSave ? (
+                <Stamp
+                  label={moneyIn.stampFutureYou}
+                  color={moneyInInk.stamp}
+                  rotate="-4deg"
+                  style={{ top: 118, alignSelf: 'center' }}
+                  size={22}
+                  spacing={0.14}
+                  opacity={() => {
+                    'worklet';
+                    return clamp(-dy.value / 90);
+                  }}
+                />
+              ) : null}
+            </>
+          ) : null}
+        </View>
       </View>
-      <PaperEdge color={PAPER} />
+      <PaperEdge color={PAPER} shadow={top} />
     </View>
   );
 }

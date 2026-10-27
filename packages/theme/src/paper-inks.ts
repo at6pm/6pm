@@ -11,6 +11,8 @@ export const paperInk = {
   rule: 'rgba(43,37,48,.35)',
   hand: '#4a3550',
   stamp: '#c0443a',
+  /** The soft shadow a receipt's torn edge casts under its teeth. */
+  edgeShadow: 'rgba(30,15,40,0.16)',
 } as const;
 
 export const zineInk = {
@@ -57,6 +59,14 @@ export const pullInk = {
   slot: '#0b0810',
   /** The "+" disc on the ticket before the pull is far enough. */
   discIdle: 'rgba(43,37,48,.08)',
+  /** The slot's depth inside, and the light catching its lower lip. */
+  slotDepth: 'rgba(0,0,0,.75)',
+  slotLip: 'rgba(255,255,255,.14)',
+  /** The slot's shadow on the paper just leaving it. */
+  slotShade: 'rgba(11,8,16,.28)',
+  /** The paper's top, a shade lighter than the sheet it fades into (as the close card's). */
+  paperTop: '#fdfaf3',
+  ticketShadow: 'rgba(20,10,30,.22)',
 } as const;
 
 /** The year book on the Diary shelf: dark cloth, gold lettering. */

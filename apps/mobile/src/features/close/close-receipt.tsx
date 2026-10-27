@@ -109,15 +109,11 @@ export function CloseReceipt(props: {
           alignItems: 'center',
         }}
       >
-        <Animated.View
-          ref={props.paperRef}
-          style={[
-            { width: 306, paddingBottom: 40, boxShadow: '0 18px 24px rgba(15,5,25,.35)' },
-            paper,
-          ]}
-        >
+        <Animated.View ref={props.paperRef} style={[{ width: 306, paddingBottom: 40 }, paper]}>
           <View
             style={{
+              // The paper casts the shadow, not its torn edge, which would show it between the teeth.
+              boxShadow: '0 18px 24px rgba(15,5,25,.35)',
               experimental_backgroundImage: `linear-gradient(180deg, #efe9dd 0px, #fcf9f2 30px, ${PAPER} 100%)`,
               paddingTop: 26,
               paddingHorizontal: 22,
