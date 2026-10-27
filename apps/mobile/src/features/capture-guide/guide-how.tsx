@@ -3,29 +3,28 @@ import { View } from 'react-native';
 import { useI18n } from '../../i18n/i18n';
 import { ForwardingCheckCard } from '../receipt-email/forwarding-check-card';
 import type { GuideContent } from './guide-content';
-import { AlertStatusCard, MistakesCard, OtherMailCard } from './guide-notes';
+import { MistakesCard, OtherMailCard } from './guide-notes';
 import { GuideSection, GuideSteps, type LiveChip } from './guide-sections';
+import { GuideTrouble } from './guide-trouble';
 import { isWalked, useWalkthroughSteps, type WalkedSource } from './guide-walkthroughs';
 import type { CaptureSource } from './source-status';
 import { Walkthrough } from './walkthrough/walkthrough';
 
 /**
  * "How it works": the drawn step-by-step walkthrough for the ways set up in another app, the
- * three short steps for the rest, then whatever that way needs said beside it.
+ * three short steps for the rest, then whatever that way needs said beside it: for the Shortcuts
+ * ways, folded away under "Not working?".
  */
 export function HowItWorks({
   source,
   guide,
   addressChip,
   emailAddress,
-  lastLine = null,
 }: {
   readonly source: CaptureSource;
   readonly guide: GuideContent;
   readonly addressChip: LiveChip | null;
   readonly emailAddress: string | null;
-  /** The last thing this way caught, as its status says it; null before anything. */
-  readonly lastLine?: string | null;
 }) {
   const { t } = useI18n();
   if (!isWalked(source)) {
@@ -35,19 +34,17 @@ export function HowItWorks({
       </GuideSection>
     );
   }
-  return <Walked source={source} guide={guide} emailAddress={emailAddress} lastLine={lastLine} />;
+  return <Walked source={source} guide={guide} emailAddress={emailAddress} />;
 }
 
 function Walked({
   source,
   guide,
   emailAddress,
-  lastLine,
 }: {
   readonly source: WalkedSource;
   readonly guide: GuideContent;
   readonly emailAddress: string | null;
-  readonly lastLine: string | null;
 }) {
   const { t } = useI18n();
   const steps = useWalkthroughSteps(source, emailAddress);
@@ -58,48 +55,39 @@ function Walked({
       </GuideSection>
 
       {source === 'wallet' ? (
-        <>
-          <GuideSection title={t('capture.walk.mistakes')}>
-            <MistakesCard
-              items={[
-                'capture.walk.wallet.mistake1',
-                'capture.walk.wallet.mistake2',
-                'capture.walk.wallet.mistake3',
-              ]}
-            />
-          </GuideSection>
-          <View style={{ gap: 12 }}>
-            <OtherMailCard
-              name="capture.walk.wallet.olderTitle"
-              steps={[
-                'capture.walk.wallet.older1',
-                'capture.walk.wallet.older2',
-                'capture.walk.wallet.older3',
-              ]}
-            />
-            <OtherMailCard
-              name="capture.walk.wallet.handTitle"
-              steps={['capture.walk.wallet.hand1', 'capture.walk.wallet.hand2']}
-            />
-          </View>
-        </>
+        <GuideTrouble>
+          <MistakesCard
+            items={[
+              'capture.walk.wallet.mistake1',
+              'capture.walk.wallet.mistake2',
+              'capture.walk.wallet.mistake3',
+            ]}
+          />
+          <OtherMailCard
+            name="capture.walk.wallet.olderTitle"
+            steps={[
+              'capture.walk.wallet.older1',
+              'capture.walk.wallet.older2',
+              'capture.walk.wallet.older3',
+            ]}
+          />
+          <OtherMailCard
+            name="capture.walk.wallet.handTitle"
+            steps={['capture.walk.wallet.hand1', 'capture.walk.wallet.hand2']}
+          />
+        </GuideTrouble>
       ) : null}
 
       {source === 'alerts' ? (
-        <>
-          <GuideSection title={t('capture.alerts.statusTitle')}>
-            <AlertStatusCard line={lastLine} />
-          </GuideSection>
-          <GuideSection title={t('capture.walk.mistakes')}>
-            <MistakesCard
-              items={[
-                'capture.walk.alerts.mistake1',
-                'capture.walk.alerts.mistake2',
-                'capture.walk.alerts.mistake3',
-              ]}
-            />
-          </GuideSection>
-        </>
+        <GuideTrouble>
+          <MistakesCard
+            items={[
+              'capture.walk.alerts.mistake1',
+              'capture.walk.alerts.mistake2',
+              'capture.walk.alerts.mistake3',
+            ]}
+          />
+        </GuideTrouble>
       ) : null}
 
       {source === 'email' ? (

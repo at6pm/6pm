@@ -8,11 +8,10 @@ export const koCaptureWalk: { readonly [Key in keyof typeof enCaptureWalk]: Entr
   'capture.walk.next': '다음',
   'capture.walk.back': '이전',
   'capture.walk.again': '처음부터',
-  'capture.walk.mistakes': '자주 하는 실수',
 
   'capture.walk.wallet.s1Title': '6pm 단축어 추가하기',
   'capture.walk.wallet.s1Body':
-    '아래 “6pm 단축어 추가”를 탭한 다음 단축어 추가를 탭하세요. 이름은 “Log to 6pm”이에요.',
+    '위 “6pm 단축어 추가”를 탭한 다음 단축어 추가를 탭하세요. 이름은 “Log to 6pm”이에요.',
   'capture.walk.wallet.s2Title': '자동화를 열고 + 탭하기',
   'capture.walk.wallet.s2Body':
     '단축어에서 보관함, 자동화, + 순서로 탭하세요. “단축어 설명하기”가 보이면 편집을 탭하세요.',

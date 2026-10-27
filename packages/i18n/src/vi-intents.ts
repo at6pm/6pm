@@ -15,6 +15,7 @@ export const viIntents: { readonly [Key in keyof typeof enIntents]: Entry } = {
 
   'capture.guide.back': 'Cài đặt',
   'capture.guide.howItWorks': 'Cách hoạt động',
+  'capture.guide.trouble': 'Chưa chạy được?',
   'capture.guide.lands': 'Thứ sẽ vào Inbox',
   'capture.guide.landsNote':
     'Nó nằm đó đến khi bạn giữ lại lúc chốt ngày 6pm. Chưa gì được tính khi bạn chưa đồng ý.',

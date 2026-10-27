@@ -17,6 +17,7 @@ export const deIntents: { readonly [Key in keyof typeof enIntents]: Entry } = {
 
   'capture.guide.back': 'Einstellungen',
   'capture.guide.howItWorks': 'So funktioniert’s',
+  'capture.guide.trouble': 'Klappt nicht?',
   'capture.guide.lands': 'Was in deinem Eingang landet',
   'capture.guide.landsNote':
     'Dort wartet es, bis du es beim Tagesabschluss behältst. Nichts zählt, bevor du es sagst.',

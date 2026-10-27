@@ -17,6 +17,7 @@ export const thIntents: { readonly [Key in keyof typeof enIntents]: Entry } = {
 
   'capture.guide.back': 'การตั้งค่า',
   'capture.guide.howItWorks': 'ทำงานยังไง',
+  'capture.guide.trouble': 'ยังไม่ทำงาน?',
   'capture.guide.lands': 'อะไรจะเข้ามาใน Inbox',
   'capture.guide.landsNote':
     'รายการจะรออยู่ตรงนั้นจนกว่าคุณจะเก็บไว้ตอนปิดวันหกโมงเย็น ยังไม่นับอะไรจนกว่าคุณจะตกลง',

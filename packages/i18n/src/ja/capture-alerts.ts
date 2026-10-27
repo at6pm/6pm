@@ -13,7 +13,7 @@ export const jaCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.name': '銀行の通知',
   'capture.alerts.sub': '銀行とウォレットの通知を自動で記録',
   'capture.alerts.headline': '銀行とウォレットの通知が、勝手に記録されます。',
-  'capture.alerts.time': '最初に2分ほど',
+  'capture.alerts.time': '最初に1分ほど',
   'capture.alerts.step1': 'ショートカットで通知のオートメーションを追加',
   'capture.alerts.step1Chip': 'オートメーション → 通知',
   'capture.alerts.step2': '銀行とウォレットのアプリを選ぶ',
@@ -22,11 +22,6 @@ export const jaCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.tip':
     '認証コード、失敗した支払い、プロモーションはスキップします。Apple Payやメールでキャッチ済みの支払いは、二重に追加されません。',
   'capture.alerts.privacy': '通知はiPhoneの中で読み取られ、外に出ることはありません。',
-  'capture.alerts.statusTitle': '最新の通知',
-  'capture.alerts.none': '銀行の通知はまだありません',
-  'capture.alerts.noneBody': '設定できたら、少額を支払って試してみてください。',
-  'capture.alerts.seenBody':
-    'オートメーションは動いています。動いたお金はインボックスで待っています。',
   'capture.alerts.cameIn': '{amount}の入金',
   'capture.alerts.skip.code': '認証コードのためスキップ',
   'capture.alerts.skip.failed': '支払い失敗のためスキップ',
@@ -56,7 +51,7 @@ export const jaCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
     '選んだアプリのどれかで少額を支払ってください。通知が届けば、支払いはインボックスに入っています。',
   'capture.walk.alerts.l1Title': '6pmのショートカットを追加',
   'capture.walk.alerts.l1Body':
-    '下の「6pmのショートカットを追加」をタップし、「ショートカットを追加」をタップします。名前は「Catch bank alerts」です。',
+    '上の「6pmのショートカットを追加」をタップし、「ショートカットを追加」をタップします。名前は「Catch a bank alert」です。',
   'capture.walk.alerts.l2Body':
     'ショートカットでそれを開き、上の「App」をタップして銀行を選びます。ほかの銀行やウォレットも「＋」で追加します。',
   'capture.walk.alerts.mistake1':

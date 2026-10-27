@@ -17,6 +17,7 @@ export const jaIntents: { readonly [Key in keyof typeof enIntents]: Entry } = {
 
   'capture.guide.back': '設定',
   'capture.guide.howItWorks': '仕組み',
+  'capture.guide.trouble': 'うまく動かない？',
   'capture.guide.lands': 'インボックスに届くもの',
   'capture.guide.landsNote':
     '6pmの締めで残すまで、そこで待っています。あなたが決めるまで何も数えません。',

@@ -17,6 +17,7 @@ export const zhHansIntents: { readonly [Key in keyof typeof enIntents]: Entry } 
 
   'capture.guide.back': '设置',
   'capture.guide.howItWorks': '怎么用',
+  'capture.guide.trouble': '没反应？',
   'capture.guide.lands': '什么会进收件箱',
   'capture.guide.landsNote': '它会在那里等着，直到你在 6pm 日结时保留它。你不点头，什么都不算数。',
 

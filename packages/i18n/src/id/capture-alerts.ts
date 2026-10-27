@@ -13,7 +13,7 @@ export const idCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.name': 'Notifikasi bank',
   'capture.alerts.sub': 'Notifikasi bank dan e-wallet tercatat sendiri',
   'capture.alerts.headline': 'Notifikasi bank dan e-wallet-mu tercatat sendiri.',
-  'capture.alerts.time': 'Sekitar dua menit, sekali saja',
+  'capture.alerts.time': 'Sekitar semenit, sekali saja',
   'capture.alerts.step1': 'Di Pintasan, buat otomatisasi untuk notifikasi',
   'capture.alerts.step1Chip': 'Otomatisasi → Notifikasi',
   'capture.alerts.step2': 'Pilih app bank dan e-wallet-mu',
@@ -22,11 +22,6 @@ export const idCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.tip':
     'Kode OTP, pembayaran gagal, dan promo dilewati. Pembayaran yang sudah tertangkap lewat Apple Pay atau email tidak dicatat dua kali.',
   'capture.alerts.privacy': 'Notifikasi dibaca di iPhone-mu dan tidak pernah keluar darinya.',
-  'capture.alerts.statusTitle': 'Notifikasi terakhir',
-  'capture.alerts.none': 'Belum ada notifikasi bank',
-  'capture.alerts.noneBody': 'Setelah diatur, coba bayar sesuatu yang kecil.',
-  'capture.alerts.seenBody':
-    'Otomatisasinya berjalan. Uang yang masuk dan keluar menunggu di Kotak masuk.',
   'capture.alerts.cameIn': '{amount} masuk',
   'capture.alerts.skip.code': 'kode OTP, dilewati',
   'capture.alerts.skip.failed': 'pembayaran gagal, dilewati',
@@ -56,7 +51,7 @@ export const idCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
     'Bayar sedikit dari salah satu app itu. Begitu notifikasinya datang, pembayarannya sudah ada di Kotak masuk.',
   'capture.walk.alerts.l1Title': 'Tambahkan pintasan 6pm',
   'capture.walk.alerts.l1Body':
-    'Ketuk “Ambil pintasan 6pm” di bawah, lalu Tambah Pintasan. Namanya “Catch bank alerts”.',
+    'Ketuk “Ambil pintasan 6pm” di atas, lalu Tambah Pintasan. Namanya “Catch a bank alert”.',
   'capture.walk.alerts.l2Body':
     'Buka di Pintasan, ketuk App di atas dan pilih bankmu, lalu + untuk setiap bank dan e-wallet lain.',
   'capture.walk.alerts.mistake1':

@@ -7,11 +7,10 @@ export const viCaptureWalk: { readonly [Key in keyof typeof enCaptureWalk]: Entr
   'capture.walk.next': 'Tiếp',
   'capture.walk.back': 'Lùi lại',
   'capture.walk.again': 'Xem lại từ đầu',
-  'capture.walk.mistakes': 'Hay bị nhầm',
 
   'capture.walk.wallet.s1Title': 'Thêm phím tắt của 6pm',
   'capture.walk.wallet.s1Body':
-    'Chạm “Thêm phím tắt 6pm” bên dưới, rồi Thêm phím tắt. Nó tên là “Log to 6pm”.',
+    'Chạm “Thêm phím tắt 6pm” ở trên, rồi Thêm phím tắt. Nó tên là “Log to 6pm”.',
   'capture.walk.wallet.s2Title': 'Mở Tự động hóa và chạm +',
   'capture.walk.wallet.s2Body':
     'Trong Phím tắt, chạm Thư viện, rồi Tự động hóa, rồi +. Nếu thấy “Mô tả phím tắt”, chạm Sửa.',

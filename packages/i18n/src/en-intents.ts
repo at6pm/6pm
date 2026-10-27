@@ -13,6 +13,7 @@ export const enIntents = {
 
   'capture.guide.back': 'Settings',
   'capture.guide.howItWorks': 'How it works',
+  'capture.guide.trouble': 'Not working?',
   'capture.guide.lands': 'What lands in your Inbox',
   'capture.guide.landsNote':
     'It waits there until you keep it at the 6pm close. Nothing counts until you say so.',

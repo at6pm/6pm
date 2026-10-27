@@ -15,7 +15,7 @@ export const viCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.name': 'Thông báo ngân hàng',
   'capture.alerts.sub': 'Thông báo của ngân hàng và ví tự ghi vào 6pm',
   'capture.alerts.headline': 'Ngân hàng báo tới đâu, 6pm ghi tới đó.',
-  'capture.alerts.time': 'Khoảng hai phút, một lần',
+  'capture.alerts.time': 'Khoảng một phút, một lần',
   'capture.alerts.step1': 'Trong Phím tắt, tạo một tự động hóa cho thông báo',
   'capture.alerts.step1Chip': 'Tự động hóa → Thông báo',
   'capture.alerts.step2': 'Chọn các ứng dụng ngân hàng và ví của bạn',
@@ -24,10 +24,6 @@ export const viCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.tip':
     'Mã OTP, giao dịch không thành công và khuyến mãi được bỏ qua. Khoản đã bắt qua Apple Pay hay email sẽ không bị ghi hai lần.',
   'capture.alerts.privacy': 'Thông báo được đọc ngay trên iPhone và không bao giờ rời khỏi máy.',
-  'capture.alerts.statusTitle': 'Thông báo gần nhất',
-  'capture.alerts.none': 'Chưa thấy thông báo ngân hàng nào',
-  'capture.alerts.noneBody': 'Cài xong, thử trả một khoản nhỏ nhé.',
-  'capture.alerts.seenBody': 'Tự động hóa đang chạy. Tiền vào ra đều chờ bạn trong Inbox.',
   'capture.alerts.cameIn': '{amount} vào',
   'capture.alerts.skip.code': 'mã OTP, đã bỏ qua',
   'capture.alerts.skip.failed': 'giao dịch lỗi, đã bỏ qua',
@@ -58,7 +54,7 @@ export const viCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
     'Trả một khoản nhỏ từ một trong các ứng dụng đó. Thông báo về là khoản tiền đã nằm trong Inbox.',
   'capture.walk.alerts.l1Title': 'Thêm phím tắt của 6pm',
   'capture.walk.alerts.l1Body':
-    'Chạm “Lấy phím tắt của 6pm” bên dưới, rồi Thêm phím tắt. Nó tên là “Catch bank alerts”.',
+    'Chạm “Lấy phím tắt của 6pm” ở trên, rồi Thêm phím tắt. Nó tên là “Catch a bank alert”.',
   'capture.walk.alerts.l2Body':
     'Mở nó trong Phím tắt, chạm Ứng dụng ở trên cùng và chọn ngân hàng, rồi chạm + cho từng ngân hàng và ví khác.',
   'capture.walk.alerts.mistake1':

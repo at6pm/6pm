@@ -13,7 +13,7 @@ export const zhHansCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlert
   'capture.alerts.name': '银行通知',
   'capture.alerts.sub': '银行和电子钱包的通知会自己记下',
   'capture.alerts.headline': '银行和电子钱包的通知，自己就记好了。',
-  'capture.alerts.time': '大约两分钟，只需一次',
+  'capture.alerts.time': '大约一分钟，只需一次',
   'capture.alerts.step1': '在“快捷指令”中，为通知建一个自动化',
   'capture.alerts.step1Chip': '自动化 → 通知',
   'capture.alerts.step2': '选择你的银行和电子钱包 App',
@@ -22,10 +22,6 @@ export const zhHansCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlert
   'capture.alerts.tip':
     '验证码、失败的付款和促销会被跳过。已经通过 Apple Pay 或邮件记下的付款，不会重复添加。',
   'capture.alerts.privacy': '通知只在你的 iPhone 上读取，绝不会离开它。',
-  'capture.alerts.statusTitle': '最近一条通知',
-  'capture.alerts.none': '还没收到过银行通知',
-  'capture.alerts.noneBody': '设置好后，付一小笔钱试试。',
-  'capture.alerts.seenBody': '自动化正在运行。进出的钱都在收件箱里等你。',
   'capture.alerts.cameIn': '进账 {amount}',
   'capture.alerts.skip.code': '验证码，已跳过',
   'capture.alerts.skip.failed': '付款失败，已跳过',
@@ -54,7 +50,7 @@ export const zhHansCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlert
   'capture.walk.alerts.s6Body': '用其中一个 App 付一小笔钱。通知一到，这笔付款就在收件箱里了。',
   'capture.walk.alerts.l1Title': '添加 6pm 的快捷指令',
   'capture.walk.alerts.l1Body':
-    '轻点下方的“获取 6pm 快捷指令”，再轻点“添加快捷指令”。它的名字是“Catch bank alerts”。',
+    '轻点上方的“获取 6pm 快捷指令”，再轻点“添加快捷指令”。它的名字是“Catch a bank alert”。',
   'capture.walk.alerts.l2Body':
     '在“快捷指令”中打开它，轻点顶部的“App”并选择你的银行，再轻点 + 逐个添加其他银行和电子钱包。',
   'capture.walk.alerts.mistake1':
