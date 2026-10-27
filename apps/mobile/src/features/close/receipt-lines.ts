@@ -29,6 +29,7 @@ export function receiptSpends(
           status: s.status,
           forWork: s.forWork,
           paysBill: s.paysBill,
+          direction: s.direction,
         },
         notDaily,
       ),

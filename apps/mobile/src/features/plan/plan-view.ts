@@ -1,4 +1,5 @@
 import {
+  sumMoneyIn,
   addDays,
   addMonthsTo,
   billDueIn,
@@ -72,6 +73,11 @@ export function newPotLocked(pots: readonly PotRow[], max: boolean): boolean {
   return !max && pots.filter((p) => p.kind === 'occasion').length >= FREE_OCCASION_POTS;
 }
 
+/** The month's money in: the plan's income and what came in on top this cycle and was kept. */
+export function monthIncomeOf(snap: MoneySnapshot): Vnd {
+  return (snap.plan?.income ?? 0) + sumMoneyIn(snap.cycleSpends);
+}
+
 export function riverOf(
   snap: MoneySnapshot,
   day: DailyNumber,
@@ -81,7 +87,7 @@ export function riverOf(
   const goalTopUps = topUps?.goal ?? 0;
   const joined = joinedCycle(snap.cycle, joinedAnswersOf(snap.plan));
   return moneyRiver({
-    income: snap.plan?.income ?? 0,
+    income: monthIncomeOf(snap),
     bills: billsThisCycle(snap.bills, snap.cycle),
     futureYou: futureYouIn(snap.plan?.futureYou ?? 0, joined),
     occasions: occasionsMonthly(snap),

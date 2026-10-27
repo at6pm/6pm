@@ -136,6 +136,7 @@ export function toDiarySpend(s: SpendRow): DiarySpend {
     status: s.status,
     forWork: s.forWork,
     paysBill: s.paysBill,
+    direction: s.direction,
   };
 }
 
@@ -226,6 +227,7 @@ export async function readDayReceipt(
           status: s.status,
           forWork: s.forWork,
           paysBill: s.paysBill,
+          direction: s.direction,
         },
         notDaily,
       ),

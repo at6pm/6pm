@@ -134,6 +134,18 @@ describe('spendsCsv', () => {
     ]);
   });
 
+  it('writes money that came in below zero, with no category', () => {
+    const rows = read(
+      spendsCsv(
+        [spend({ amount: 2_000_000, merchant: 'Lan Nguyễn', direction: 'in', moneyIn: 'spread' })],
+        categories,
+        labels,
+        fixedTime,
+      ),
+    );
+    expect(rows[1]?.slice(2, 5)).toEqual(['Lan Nguyễn', '', '-2000000']);
+  });
+
   it('leaves deleted spends out and keeps every other status', () => {
     const rows = read(
       spendsCsv(

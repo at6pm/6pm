@@ -39,6 +39,7 @@ import {
   beforeNote,
   billViews,
   goalViews,
+  monthIncomeOf,
   newPotLocked,
   occasionViews,
   riverOf,
@@ -193,7 +194,7 @@ function PlanContent({
 
       <View onLayout={sections.sectionLayout(0)}>
         <MoneyRiverCard
-          income={plan.income}
+          income={monthIncomeOf(snap)}
           river={river}
           colours={colours}
           copy={riverCopy(snap, topUps?.goal ?? 0, format, t, money)}
