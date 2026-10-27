@@ -2,14 +2,14 @@
 title: Privacy Policy
 description: What 6pm keeps on your phone, the little that leaves it, and who handles it.
 lede: 6pm keeps your money on your phone. This page says exactly what we do with the little that leaves it.
-updated: '2026-10-15'
+updated: '2026-10-27'
 ---
 
 ## The short version
 
 - Your spending, plan and diary live on your iPhone, in an encrypted database. We cannot read them.
 - 6pm needs no account. Only if you use Budget together do you sign in, with Apple. We never ask for your phone number, your email or your bank login.
-- We do not run ads, sell data, or use analytics or tracking tools, in the app or on this website.
+- We do not run ads or sell data. The app has no analytics or tracking tools. This website counts visits with Cloudflare Web Analytics, which sets no cookies and does not identify you.
 - A few small things do leave your phone: an anonymous device ID, your purchase status, app updates, crash reports, questions you ask 6pm, your voice while you say a spend, a few facts about your day for your companion’s lines, a receipt photo your phone cannot read, bank emails you forward to your receipt address, the shared pots you keep with someone in Budget together and, only if you turn it on, your encrypted backup. Each one is explained below.
 - You can keep all of 6pm's AI on your iPhone instead (Settings → AI). Then your questions, the facts for your companion's lines, receipt photos and your voice stay on the phone too.
 
@@ -113,7 +113,7 @@ We use this only to tell you when 6pm 2.0 is out. It is kept until you ask us to
 
 ### Visiting the website
 
-This website sets no cookies and uses no analytics. Its fonts are served from the site itself. The site runs on Cloudflare, which handles each request and may keep ordinary technical logs, such as your IP address and browser type, to run and protect the service. To slow down abuse, our server counts requests per IP address. The address is only a counter key. We do not store it.
+This website sets no cookies. It counts visits with Cloudflare Web Analytics, which gives us totals only, such as page views, the page or link you came from, your country and your type of device. It uses no cookies or local storage and does not follow you across sites or identify you. Its fonts are served from the site itself. The site runs on Cloudflare, which handles each request and may keep ordinary technical logs, such as your IP address and browser type, to run and protect the service. To slow down abuse, our server counts requests per IP address. The address is only a counter key. We do not store it.
 
 ## What the app uses on your phone
 
@@ -141,7 +141,7 @@ These companies run the parts of the service described above. They may handle yo
 
 - **Apple** processes payments, iCloud Keychain and Sign in with Apple. [Apple's privacy policy](https://www.apple.com/legal/privacy/).
 - **RevenueCat** records purchase status. [RevenueCat's privacy policy](https://www.revenuecat.com/privacy).
-- **Cloudflare** hosts our website and server. [Cloudflare's privacy policy](https://www.cloudflare.com/privacypolicy/).
+- **Cloudflare** hosts our website and server, and counts visits to the website. [Cloudflare's privacy policy](https://www.cloudflare.com/privacypolicy/).
 - **Sentry** receives crash reports. [Sentry's privacy policy](https://sentry.io/privacy/).
 - **Anthropic** reads the questions you ask, writes your companion's lines from the facts about your day described above, suggests icons for your categories from their names, names payees from number-free receipt lines, reads a receipt photo your phone cannot read, and reads the bank and shop emails you forward to your receipt address. [Anthropic's privacy policy](https://www.anthropic.com/legal/privacy).
 - **Deepgram** turns your voice into text when you say a spend. [Deepgram's privacy policy](https://deepgram.com/privacy).

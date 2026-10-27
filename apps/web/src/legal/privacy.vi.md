@@ -2,14 +2,14 @@
 title: Chính sách quyền riêng tư
 description: Những gì 6pm giữ trên điện thoại của bạn, phần rất nhỏ rời khỏi máy, và ai xử lý chúng.
 lede: 6pm giữ tiền của bạn ngay trên điện thoại. Trang này nói rõ chúng tôi làm gì với phần rất nhỏ rời khỏi máy.
-updated: '2026-10-15'
+updated: '2026-10-27'
 ---
 
 ## Tóm tắt
 
 - Chi tiêu, kế hoạch và nhật ký của bạn nằm trên iPhone, trong một cơ sở dữ liệu được mã hoá. Chúng tôi không đọc được.
 - 6pm không cần tài khoản. Chỉ khi dùng Cùng chia ngân sách bạn mới đăng nhập, bằng Apple. Chúng tôi không hỏi số điện thoại, email hay thông tin đăng nhập ngân hàng của bạn.
-- Chúng tôi không chạy quảng cáo, không bán dữ liệu, không dùng công cụ phân tích hay theo dõi, cả trong ứng dụng lẫn trên trang web này.
+- Chúng tôi không chạy quảng cáo và không bán dữ liệu. Ứng dụng không có công cụ phân tích hay theo dõi. Trang web này đếm lượt truy cập bằng Cloudflare Web Analytics, công cụ không đặt cookie và không nhận diện bạn.
 - Có một vài thứ nhỏ rời khỏi điện thoại: mã thiết bị ẩn danh, trạng thái mua hàng, bản cập nhật ứng dụng, báo cáo lỗi, câu hỏi bạn hỏi 6pm, giọng nói khi bạn đọc một khoản chi, vài thông tin về ngày của bạn để bạn đồng hành viết lời, ảnh biên lai mà điện thoại không đọc được, email ngân hàng bạn chuyển tới địa chỉ nhận biên lai, các hũ chung bạn góp cùng ai đó trong Cùng chia ngân sách và, chỉ khi bạn bật, bản sao lưu đã mã hoá. Từng thứ được giải thích bên dưới.
 - Bạn có thể giữ toàn bộ AI của 6pm trên iPhone (Cài đặt → AI). Khi đó câu hỏi, thông tin để bạn đồng hành viết lời, ảnh biên lai và giọng nói của bạn cũng ở lại trên điện thoại.
 
@@ -113,7 +113,7 @@ Chúng tôi chỉ dùng thông tin này để báo cho bạn khi 6pm 2.0 ra mắ
 
 ### Khi bạn truy cập trang web
 
-Trang web này không đặt cookie và không dùng công cụ phân tích. Phông chữ được phục vụ ngay từ trang. Trang chạy trên Cloudflare, đơn vị xử lý từng yêu cầu và có thể giữ nhật ký kỹ thuật thông thường, như địa chỉ IP và loại trình duyệt, để vận hành và bảo vệ dịch vụ. Để làm chậm hành vi lạm dụng, máy chủ của chúng tôi đếm số yêu cầu theo địa chỉ IP. Địa chỉ chỉ là khoá của bộ đếm, chúng tôi không lưu lại.
+Trang web này không đặt cookie. Trang đếm lượt truy cập bằng Cloudflare Web Analytics, công cụ chỉ cho chúng tôi số liệu tổng, như lượt xem trang, trang hay đường link bạn đến từ đó, quốc gia và loại thiết bị của bạn. Công cụ này không dùng cookie hay bộ nhớ trình duyệt, không theo dõi bạn qua các trang khác và không nhận diện bạn. Phông chữ được phục vụ ngay từ trang. Trang chạy trên Cloudflare, đơn vị xử lý từng yêu cầu và có thể giữ nhật ký kỹ thuật thông thường, như địa chỉ IP và loại trình duyệt, để vận hành và bảo vệ dịch vụ. Để làm chậm hành vi lạm dụng, máy chủ của chúng tôi đếm số yêu cầu theo địa chỉ IP. Địa chỉ chỉ là khoá của bộ đếm, chúng tôi không lưu lại.
 
 ## Ứng dụng dùng gì trên điện thoại
 
@@ -141,7 +141,7 @@ Các công ty này vận hành những phần của dịch vụ đã nêu ở tr
 
 - **Apple** xử lý thanh toán, Chuỗi khoá iCloud và Đăng nhập bằng Apple. [Chính sách quyền riêng tư của Apple](https://www.apple.com/legal/privacy/).
 - **RevenueCat** ghi lại trạng thái mua hàng. [Chính sách quyền riêng tư của RevenueCat](https://www.revenuecat.com/privacy).
-- **Cloudflare** lưu trữ trang web và máy chủ của chúng tôi. [Chính sách quyền riêng tư của Cloudflare](https://www.cloudflare.com/privacypolicy/).
+- **Cloudflare** lưu trữ trang web và máy chủ của chúng tôi, và đếm lượt truy cập trang web. [Chính sách quyền riêng tư của Cloudflare](https://www.cloudflare.com/privacypolicy/).
 - **Sentry** nhận báo cáo lỗi. [Chính sách quyền riêng tư của Sentry](https://sentry.io/privacy/).
 - **Anthropic** đọc câu hỏi bạn hỏi, viết lời của bạn đồng hành từ những thông tin về ngày của bạn mô tả ở trên, gợi ý biểu tượng cho danh mục từ tên danh mục, gọi tên nơi nhận tiền từ các dòng biên lai đã bỏ số, đọc ảnh biên lai mà điện thoại không đọc được, và đọc email ngân hàng, cửa hàng bạn chuyển tới địa chỉ nhận biên lai. [Chính sách quyền riêng tư của Anthropic](https://www.anthropic.com/legal/privacy).
 - **Deepgram** chuyển giọng nói thành chữ khi bạn đọc một khoản chi. [Chính sách quyền riêng tư của Deepgram](https://deepgram.com/privacy).
