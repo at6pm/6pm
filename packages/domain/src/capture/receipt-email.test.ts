@@ -190,6 +190,62 @@ describe('parseReceiptEmail', () => {
     expect(parseReceiptEmail(late, { receivedAt })?.at).toBe(receivedAt);
   });
 
+  it('reads a two-digit year, so a bank email sent minutes late keeps the time it printed', () => {
+    const late = email({
+      from: { name: 'MB Bank', address: 'mbbank@mbbank.com.vn' },
+      subject: 'Thông báo biến động số dư',
+      date: '2026-10-10T05:38:00.000Z',
+      text: 'TK 0xxx123|GD: -45,000VND 10/10/26 12:30|SD: 1,000,000VND|ND: THANH TOAN QR-PHO HOA',
+    });
+    expect(parseReceiptEmail(late, { receivedAt })).toMatchObject({
+      amount: 45_000,
+      at: '2026-10-10T05:30:00.000Z',
+    });
+  });
+
+  it('reads money in signed after the words that name the account', () => {
+    const credit = email({
+      from: { name: 'Vietcombank', address: 'vcbdigibank@info.vietcombank.com.vn' },
+      subject: 'Thông báo biến động số dư',
+      date: '2026-10-10T02:03:00.000Z',
+      text: 'Số dư TK VCB 0011000123456 +5,000,000 VND lúc 10-10-2026 09:02:11. Số dư 12,345,678 VND. ND: LUONG T10',
+    });
+    expect(parseReceiptEmail(credit, { receivedAt })).toMatchObject({
+      kind: 'incoming',
+      amount: 5_000_000,
+      at: '2026-10-10T02:02:11.000Z',
+    });
+  });
+
+  it('reads a refund the subject names as money given back, never as spending', () => {
+    const refund = email({
+      from: { name: 'Shopee', address: 'info@mail.shopee.vn' },
+      subject: 'Hoàn tiền thành công cho đơn hàng 2410ABC',
+      date: '2026-10-10T03:00:00.000Z',
+      text: 'Shopee đã hoàn tiền ₫129.000 cho đơn hàng 2410ABC vào ví ShopeePay của bạn.',
+    });
+    expect(parseReceiptEmail(refund, { receivedAt })).toMatchObject({
+      kind: 'refund',
+      amount: 129_000,
+      merchant: 'Shopee',
+    });
+    const asked = email({ ...refund, subject: 'Yêu cầu hoàn tiền cho đơn hàng 2410ABC' });
+    expect(parseReceiptEmail(asked, { receivedAt })?.kind).toBeUndefined();
+  });
+
+  it('takes the email’s own time for a receipt that prints only its day', () => {
+    const dayOnly = email({
+      from: { name: 'Apple', address: 'no_reply@email.apple.com' },
+      subject: 'Your receipt from Apple.',
+      date: '2026-10-10T08:15:00.000Z',
+      text: 'DATE 10 Oct 2026\nORDER ID MXYZ123\niCloud+ 50 GB 19.000 ₫\nTOTAL 19.000 ₫',
+    });
+    expect(parseReceiptEmail(dayOnly, { receivedAt })).toMatchObject({
+      amount: 19_000,
+      at: '2026-10-10T08:15:00.000Z',
+    });
+  });
+
   it('reads the printed time in another zone when told to', () => {
     const at = parseReceiptEmail(techcombank, { receivedAt, utcOffsetMinutes: 0 })?.at;
     expect(at).toBe('2026-10-09T21:40:00.000Z');

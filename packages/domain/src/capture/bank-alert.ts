@@ -3,7 +3,7 @@ import type { SpendDirection } from '../spend/spend';
 import { bankNamedIn, bankOfApp } from './bank-alert-senders';
 import { cleanMemo } from './bank-receipt';
 import { readsAsBalance } from './receipt-amount';
-import { readReceiptTime } from './receipt-time';
+import { readReceiptTime, withFullYears } from './receipt-time';
 import { foldWords } from './spoken-spend';
 import { currencyMarkOf, parseWalletAmount } from './wallet-amount';
 
@@ -302,15 +302,10 @@ function payeeInMemo(memo: string | null, way: SpendDirection): string | null {
   return cleanName(MEMO_PAYEE.exec(memo)?.[1]);
 }
 
-/** "27/10/26 12:30" as "27/10/2026 12:30", so the receipt clock reads a two-digit year. */
-function fullYears(text: string): string {
-  return text.replace(/(?<!\d)(\d{1,2})([/-])(\d{1,2})\2(\d{2})(?![\d/-])/g, '$1$2$3$220$4');
-}
-
 function atOf(date: string | null | undefined, text: string): string | null {
   const delivered = date ? new Date(date) : null;
   if (delivered && !Number.isNaN(delivered.getTime())) return delivered.toISOString();
-  return readReceiptTime(fullYears(text));
+  return readReceiptTime(withFullYears(text));
 }
 
 /** Sentences of an alert, without the ones that only warn about sharing a code. */

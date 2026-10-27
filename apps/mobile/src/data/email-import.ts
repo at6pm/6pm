@@ -18,6 +18,11 @@ export interface EmailImportDeps {
   readonly store: MoneyStore;
   readonly actions: ReturnType<typeof moneyActions>;
   readonly source: EmailCaptureSource;
+  /**
+   * Prices the foreign amounts still waiting for a rate (`priceWaitingForeign`); run once receipts
+   * in another currency are saved, so they are never left at 0 for the close.
+   */
+  readonly priceWaiting?: () => Promise<unknown>;
 }
 
 export interface EmailImportResult {
@@ -51,12 +56,14 @@ async function categoryFor(deps: EmailImportDeps, capture: EmailCapture): Promis
  * (rules, the duplicate merge with a scan or a shared receipt, the money day of when it was
  * paid), each waiting for the close. Its detail is the address it came from. The server is told
  * only after every one of them is committed, and a receipt fetched twice is saved once: its id
- * is the spend's, or its sighting is already there.
+ * is the spend's, or its sighting is already there. A receipt in another currency is then priced
+ * at once, when a rate can be had.
  */
 export async function importEmailCaptures(deps: EmailImportDeps): Promise<EmailImportResult> {
   const { store, actions, source } = deps;
   const captures = await source.fetch();
   let saved = 0;
+  let abroad = false;
   const done: string[] = [];
   for (const capture of captures) {
     if (!(await alreadyImported(store, { id: capture.id, source: 'email', at: capture.at }))) {
@@ -79,9 +86,11 @@ export async function importEmailCaptures(deps: EmailImportDeps): Promise<EmailI
           : { direction: 'in' as const, moneyIn: capture.kind === 'refund' ? 'refund' : null }),
       });
       saved += 1;
+      abroad ||= priced.foreignAmount !== null;
     }
     done.push(capture.id);
   }
   if (done.length > 0) await source.ack(done);
+  if (abroad) await deps.priceWaiting?.();
   return { saved, acknowledged: done.length };
 }

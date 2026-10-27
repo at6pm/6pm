@@ -3,16 +3,13 @@ import { useSQLiteContext } from 'expo-sqlite';
 import { useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
 
-import { fxRatesResponseSchema } from '@6pm/domain';
-
 import { surfaces } from '../../../modules/surfaces';
-import { priceWaitingForeign } from '../../data/foreign-pricing';
 import { importInbox } from '../../data/inbox-import';
 import { useMoneyActions, useMoneyStore } from '../../data/money-provider';
 import { useHomeCurrency } from '../../money/use-money-format';
 import { useApi } from '../api/native-api';
 import { createEnrichShared } from '../capture/enrich-shared';
-import { FX_CACHE_KEY, parseFxCache, rateFor } from '../travel/trip';
+import { priceWaitingNow } from '../travel/price-waiting';
 
 /**
  * Brings in what the share extension, the shortcuts and the Live Activity left in the App Group:
@@ -37,21 +34,7 @@ export function useInboxImport() {
       ruleCategory: (merchant) => actions.ruleCategory(merchant),
       categories: () => store.getSnapshot().categories,
     });
-    const price = async () => {
-      const [kept] = await store.db.getAllAsync<{ value: string }>(
-        'SELECT value FROM settings WHERE key = ?',
-        [FX_CACHE_KEY],
-      );
-      const cache = parseFxCache(kept?.value);
-      return priceWaitingForeign({
-        store,
-        actions,
-        home,
-        lastRate: (currency) => rateFor(cache, currency, home)?.rate ?? null,
-        ratesOn: async (day) =>
-          (await api.request({ path: `/v1/fx?on=${day}`, schema: fxRatesResponseSchema })).rates,
-      });
-    };
+    const price = () => priceWaitingNow({ store, actions, api, home });
     const run = () => {
       running.current = running.current
         .then(() =>

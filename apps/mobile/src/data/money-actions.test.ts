@@ -103,6 +103,51 @@ describe('moneyActions', () => {
     });
   });
 
+  it('never confirms a spend at 0: it waits under Needs a look until it has an amount', async () => {
+    const unpriced = await ctx.actions.addSpend(
+      spend({
+        amount: 0,
+        merchant: 'CLOUDFLARE',
+        source: 'email',
+        status: 'caught',
+        foreignAmount: { currency: 'USD', amount: 10, rate: 0 },
+      }),
+    );
+    expect(await ctx.actions.setStatus(unpriced.id, 'kept')).toMatchObject({ status: 'caught' });
+    expect(await ctx.store.tables.spends.get(unpriced.id)).toMatchObject({
+      status: 'caught',
+      amount: 0,
+    });
+    // Not mine is still an answer, and an amount typed in the same breath keeps it.
+    const typed = await ctx.actions.setStatus(unpriced.id, 'kept', { amount: 263_000 });
+    expect(typed).toMatchObject({ status: 'kept', amount: 263_000 });
+    const other = await ctx.actions.addSpend(
+      spend({ amount: 0, source: 'alert', status: 'caught' }),
+    );
+    expect(await ctx.actions.setStatus(other.id, 'skipped')).toMatchObject({ status: 'skipped' });
+  });
+
+  it('merges two sightings a fee apart, and keeps a different price apart', async () => {
+    const at = new Date(2026, 9, 11, 9, 47);
+    const ride = await ctx.actions.addSpend(
+      spend({ amount: 32_000, merchant: 'GREENSM', source: 'alert', status: 'caught', at }),
+    );
+    const receipt = await ctx.actions.addSpend(
+      spend({
+        amount: 32_300,
+        merchant: '',
+        source: 'email',
+        status: 'caught',
+        at: new Date(2026, 9, 11, 9, 53),
+      }),
+    );
+    expect(receipt.id).toBe(ride.id);
+    await ctx.actions.addSpend(
+      spend({ amount: 33_000, merchant: '', source: 'email', status: 'caught', at }),
+    );
+    expect(ctx.store.getSnapshot().cycleSpends).toHaveLength(2);
+  });
+
   it('keeps undo working after a double tap on delete', async () => {
     const kept = await ctx.actions.addSpend(spend());
     await ctx.actions.setStatus(kept.id, 'deleted');

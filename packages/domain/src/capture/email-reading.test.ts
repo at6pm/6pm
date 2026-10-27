@@ -69,6 +69,56 @@ describe('a receipt email read by a model', () => {
     });
   });
 
+  it('takes the email’s time for a charge abroad that prints only its day, never its midnight', () => {
+    const cloudflare: ReceiptEmail = {
+      from: { name: 'Cloudflare', address: 'noreply@notify.cloudflare.com' },
+      subject: 'Your Cloudflare receipt',
+      date: '2026-10-16T04:04:30.000Z',
+      text: 'Date paid October 16, 2026\nTotal $10.00\nAmount paid $10.00',
+      html: null,
+    };
+    const spend = emailSpendOf(
+      payment({
+        amount: '$10.00',
+        currency: 'USD',
+        merchant: 'Cloudflare',
+        at: '2026-10-16T00:00:00',
+      }),
+      cloudflare,
+      options,
+    );
+    expect(spend).toMatchObject({ amount: 1000, currency: 'USD', at: '2026-10-16T04:04:30.000Z' });
+    // A day far from when the email was sent is still the day it printed.
+    const old = emailSpendOf(
+      payment({
+        amount: '$10.00',
+        currency: 'USD',
+        merchant: 'Cloudflare',
+        at: '2026-10-12T00:00:00',
+      }),
+      cloudflare,
+      options,
+    );
+    expect(old?.at).toBe('2026-10-11T17:00:00.000Z');
+  });
+
+  it('never names the email’s own title as who was paid', () => {
+    const receipt: ReceiptEmail = {
+      from: { name: 'Bank', address: 'ebanking@bank.example.vn' },
+      subject: 'BIÊN NHẬN GIAO DỊCH',
+      date: '2026-10-16T02:53:00.000Z',
+      text: 'Số tiền: 32,300 VND\nNgười nhận: CONG TY XANH SM\nThời gian: 16/10/2026 09:53',
+      html: null,
+    };
+    const read = (merchant: string) =>
+      emailSpendOf(payment({ amount: '32,300 VND', currency: 'VND', merchant }), receipt, options)
+        ?.merchant;
+    expect(read('BIÊN NHẬN GIAO DỊCH')).toBe('CONG TY XANH SM');
+    expect(read('Biên nhận giao dịch UMBERTO CAFE')).toBe('UMBERTO CAFE');
+    expect(read('Biên nhận giao dịch 1234567')).toBe('CONG TY XANH SM');
+    expect(read('Xanh SM')).toBe('Xanh SM');
+  });
+
   it('takes the amount actually paid, and the category when it is a starter one', () => {
     const spend = emailSpendOf(
       payment({

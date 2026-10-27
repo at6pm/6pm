@@ -13,8 +13,10 @@ import { importEmailCaptures, type EmailCaptureSource } from '../../data/email-i
 import { useMoneyActions, useMoneyStore } from '../../data/money-provider';
 import { ApiRequestError } from '../api/api-error';
 import { useApi } from '../api/native-api';
+import { useHomeCurrency } from '../../money/use-money-format';
 import { useAiMode } from '../privacy/use-ai-mode';
 import { useEntitlement } from '../purchases/purchases-provider';
+import { priceWaitingNow } from '../travel/price-waiting';
 import { refreshForwardingCheck } from './forwarding-check';
 import { storedHandle } from './receipt-address';
 
@@ -27,7 +29,8 @@ const MAX_PAGES = 4;
  * happens and nothing is reported. One import runs at a time. The forwarding check waiting for
  * the address (a mail service's code to confirm forwarding) is fetched alongside, on its own, so
  * neither stops the other. Each fetch says whether the phone has Max, which lifts the day's
- * allowance of mail the server's model reads. In on-device mode receipt email does not exist: nothing is fetched,
+ * allowance of mail the server's model reads. A charge abroad is priced as soon as it is saved, so
+ * the close never shows it at 0. In on-device mode receipt email does not exist: nothing is fetched,
  * now or on a return to the app.
  */
 export function useEmailImport() {
@@ -37,6 +40,7 @@ export function useEmailImport() {
   const running = useRef<Promise<unknown>>(Promise.resolve());
   const mode = useAiMode();
   const { max } = useEntitlement();
+  const home = useHomeCurrency();
 
   useEffect(() => {
     if (mode === 'device') return undefined;
@@ -63,7 +67,12 @@ export function useEmailImport() {
         if (!(error instanceof ApiRequestError)) Sentry.captureException(error);
       });
       for (let page = 0; page < MAX_PAGES; page += 1) {
-        const { acknowledged } = await importEmailCaptures({ store, actions, source });
+        const { acknowledged } = await importEmailCaptures({
+          store,
+          actions,
+          source,
+          priceWaiting: () => priceWaitingNow({ store, actions, api, home }),
+        });
         if (acknowledged < EMAIL_CAPTURES_PAGE) return;
       }
     };
@@ -78,5 +87,5 @@ export function useEmailImport() {
       if (state === 'active') run();
     });
     return () => sub.remove();
-  }, [store, actions, api, mode, max]);
+  }, [store, actions, api, mode, max, home]);
 }

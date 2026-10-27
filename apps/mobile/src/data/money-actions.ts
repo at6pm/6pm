@@ -1,15 +1,19 @@
 import { randomUUID } from 'expo-crypto';
 
 import {
+  canKeep,
   findDuplicate,
   learnedRule,
+  mayBeSamePayment,
   mergedStatus,
   merchantKeyOf,
   moneyDayOf,
   settleTypedAmount,
   type ClosedDayRow,
   type LocalDate,
+  type SightedSpend,
   type SpendRow,
+  type Witness,
 } from '@6pm/domain';
 
 import { homeCurrencyOf } from '../money/use-money-format';
@@ -136,6 +140,8 @@ export function moneyActions(store: MoneyStore) {
       note: twin.note ?? input.note ?? null,
       wallet: twin.wallet ?? input.wallet ?? null,
       memo: twin.memo ?? input.memo ?? null,
+      // Money in seen again by an email read as a refund: the close still asks about the refund.
+      moneyIn: twin.moneyIn ?? (twin.direction === 'in' ? (input.moneyIn ?? null) : null),
       updatedAt: new Date().toISOString(),
     };
     await store.db.withTransactionAsync(async () => {
@@ -156,20 +162,48 @@ export function moneyActions(store: MoneyStore) {
     return { row: next, merged: true, before: twin, sighting: { source: input.source, seenAt } };
   };
 
+  /**
+   * The spends this capture could be a second sighting of, each with the ways it was seen already,
+   * so a payment one witness saw is never given a second sighting by it.
+   */
+  const withTrails = async (spends: readonly SpendRow[]): Promise<SightedSpend[]> => {
+    if (spends.length === 0) return [];
+    const marks = spends.map(() => '?').join(', ');
+    const rows = await store.db.getAllAsync<{
+      spend_id: string;
+      source: SpendRow['source'];
+      detail: string | null;
+    }>(
+      `SELECT spend_id, source, detail FROM spend_sightings WHERE spend_id IN (${marks})`,
+      spends.map((s) => s.id),
+    );
+    const trails = new Map<string, Witness[]>();
+    for (const row of rows) {
+      const trail = trails.get(row.spend_id) ?? [];
+      trail.push({ source: row.source, detail: row.detail });
+      trails.set(row.spend_id, trail);
+    }
+    return spends.map((s) => ({ ...s, seenBy: trails.get(s.id) ?? [] }));
+  };
+
   const captureNow = async (input: NewSpend): Promise<Capture> => {
     const at = input.at ?? new Date();
     const snap = store.getSnapshot();
+    const amount = Math.round(input.amount);
+    // Only a spend of the same amount, a fee apart, or paid abroad can be the same payment.
+    const candidates = snap.cycleSpends.filter((s) => mayBeSamePayment(s, amount));
     const twin = findDuplicate(
       {
-        amount: Math.round(input.amount),
+        amount,
         source: input.source,
         status: input.status,
         at: at.toISOString(),
         detail: input.detail ?? null,
         foreignAmount: input.foreignAmount ?? null,
         direction: input.direction ?? null,
+        merchant: input.merchant,
       },
-      snap.cycleSpends,
+      await withTrails(candidates),
     );
     if (twin) {
       const row = snap.cycleSpends.find((s) => s.id === twin.id);
@@ -264,6 +298,11 @@ export function moneyActions(store: MoneyStore) {
       inTurn(async () => {
         const row = await current(id);
         if (!row) return null;
+        // A spend at 0 (unread, or abroad and still unpriced) is never confirmed: it waits under
+        // Needs a look until an amount is typed or its rate arrives, so 0 is never counted.
+        if (status === 'kept' && !canKeep({ amount: edit.amount ?? row.amount })) {
+          return Object.keys(edit).length > 0 ? patchNow(row, edit) : row;
+        }
         // Saying the same thing twice (a double tap) must not overwrite what undo would restore.
         if (row.status === status) return Object.keys(edit).length > 0 ? patchNow(row, edit) : row;
         return patchNow(row, { ...edit, status, previousStatus: row.status });

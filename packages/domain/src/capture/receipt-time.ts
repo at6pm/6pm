@@ -37,3 +37,11 @@ export function readReceiptTime(text: string): string | null {
   if (at.getFullYear() !== year || at.getMonth() !== month - 1 || at.getDate() !== day) return null;
   return at.toISOString();
 }
+
+/**
+ * "27/10/26 12:30" as "27/10/2026 12:30", so `readReceiptTime` reads the two-digit years bank
+ * alerts and emails print ("GD: -45,000VND 27/10/26 12:30").
+ */
+export function withFullYears(text: string): string {
+  return text.replace(/(?<!\d)(\d{1,2})([/-])(\d{1,2})\2(\d{2})(?![\d/-])/g, '$1$2$3$220$4');
+}

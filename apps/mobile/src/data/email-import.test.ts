@@ -136,6 +136,88 @@ describe('importEmailCaptures', () => {
     });
   });
 
+  it('prices a charge abroad as soon as it is saved, and asks for no pricing in đồng', async () => {
+    const priceWaiting = jest.fn(() => Promise.resolve(1));
+    await importEmailCaptures({ store, actions, source: server([receipt()]).source, priceWaiting });
+    expect(priceWaiting).not.toHaveBeenCalled();
+    const dollars = receipt({
+      id: 'ZG9sbGFyLWNoYXJnZS0wMDAwMDAwMDAw',
+      amount: 1_000,
+      currency: 'USD',
+    });
+    await importEmailCaptures({ store, actions, source: server([dollars]).source, priceWaiting });
+    expect(priceWaiting).toHaveBeenCalledTimes(1);
+  });
+
+  it('makes one spend of the bank’s alert and its email sent ten minutes after it', async () => {
+    const alerted = await actions.captureSpend({
+      amount: 45_000,
+      categoryId: 'food',
+      merchant: 'PHO HOA',
+      source: 'alert',
+      status: 'caught',
+      detail: 'MB Bank',
+      at: new Date(2026, 9, 11, 12, 30),
+    });
+    const late = receipt({
+      amount: 45_000,
+      merchant: '',
+      from: 'mbbank@mbbank.com.vn',
+      at: new Date(2026, 9, 11, 12, 40).toISOString(),
+    });
+    await run(server([late]).source);
+    expect(store.getSnapshot().cycleSpends.map((s) => s.id)).toEqual([alerted.row.id]);
+  });
+
+  it('keeps the bank’s second email apart from a payment it already told of', async () => {
+    const tapped = await actions.captureSpend({
+      amount: 45_000,
+      categoryId: 'food',
+      merchant: 'Highlands',
+      source: 'applePay',
+      status: 'caught',
+      at: new Date(2026, 9, 11, 12, 30),
+    });
+    const at = (m: number) => new Date(2026, 9, 11, 12, m).toISOString();
+    const first = receipt({ amount: 45_000, from: 'alert@techcombank.com.vn', at: at(31) });
+    const second = receipt({
+      id: 'c2Vjb25kLWNvZmZlZS0wMDAwMDAwMDAw',
+      amount: 45_000,
+      from: 'alert@techcombank.com.vn',
+      at: at(37),
+    });
+    await run(server([first]).source);
+    await run(server([second]).source);
+    const spends = store.getSnapshot().cycleSpends;
+    expect(spends).toHaveLength(2);
+    expect(spends.some((s) => s.id === tapped.row.id)).toBe(true);
+    expect(spends.some((s) => s.id === second.id)).toBe(true);
+  });
+
+  it('keeps the refund an email read when it merges into the bank’s alert of the money', async () => {
+    const alerted = await actions.captureSpend({
+      amount: 129_000,
+      categoryId: 'food',
+      merchant: '',
+      source: 'alert',
+      status: 'caught',
+      detail: 'Techcombank',
+      direction: 'in',
+      at: new Date(2026, 9, 11, 10, 0),
+    });
+    const refund = receipt({
+      amount: 129_000,
+      kind: 'refund',
+      merchant: 'Shopee',
+      from: 'info@mail.shopee.vn',
+      at: new Date(2026, 9, 11, 10, 2).toISOString(),
+    });
+    await run(server([refund]).source);
+    const spends = store.getSnapshot().cycleSpends;
+    expect(spends).toHaveLength(1);
+    expect(spends[0]).toMatchObject({ id: alerted.row.id, moneyIn: 'refund', merchant: 'Shopee' });
+  });
+
   it('merges a dollar charge tapped with Apple Pay with the bank’s email for it', async () => {
     const tapped = await actions.captureSpend({
       amount: 0,
