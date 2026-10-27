@@ -8,6 +8,8 @@ import {
   type SharedValue,
 } from 'react-native-reanimated';
 
+import { scheduleOnRN } from 'react-native-worklets';
+
 import { gestures } from '@6pm/theme';
 
 import { useHomeNav } from './home-nav';
@@ -58,19 +60,39 @@ export function useHomeScroll(): HomeScroll {
 const barEase = Easing.bezier(0.2, 0.9, 0.25, 1.1);
 const BAR_MS = 350;
 
+/** A page that opens something when pulled down past its top (Today opens Quick add). */
+export interface HomePull {
+  /** How far past the top the page is pulled, in points: 0 at rest. */
+  readonly pull: SharedValue<number>;
+  /** Pulled at least this far when the finger lets go, `onRelease` runs. */
+  readonly reach: number;
+  readonly onRelease: () => void;
+}
+
 /**
  * The scroll handler a home page attaches: it drives the parallax, the compact top bar, and the
  * tab bar condensing on the way down and growing back on the way up, exactly as the prototype's
  * `onScroll` does (6 pt of travel decides the direction; above 80 pt the bar is always full).
+ * With `pulling`, the page also reports how far it is pulled past its top, and letting go far
+ * enough down runs its action.
  */
-export function useHomePageScroll(tab: HomeTab) {
+export function useHomePageScroll(tab: HomeTab, pulling?: HomePull) {
   const { y, nav, barMin, pageY } = useHomeScroll();
   const { tabIndex } = useHomeNav();
   const index = HOME_TABS.indexOf(tab);
   const last = pageY[index] ?? pageY[0];
   const condensed = useSharedValue(false);
+  const pull = pulling?.pull;
+  const reach = pulling?.reach ?? 0;
+  const release = pulling?.onRelease;
   return useAnimatedScrollHandler({
+    onEndDrag: (event) => {
+      if (release && tabIndex.get() === index && -event.contentOffset.y >= reach) {
+        scheduleOnRN(release);
+      }
+    },
     onScroll: (event) => {
+      if (pull && tabIndex.get() === index) pull.set(Math.max(0, -event.contentOffset.y));
       const offset = Math.max(0, event.contentOffset.y);
       // A page left behind can still coast; only the page on screen drives the shared chrome.
       if (tabIndex.get() !== index) {

@@ -51,6 +51,14 @@ export const moneyInInk = {
   hue: 150,
 } as const;
 
+/** Today's pull to add: the printer slot under the island and the ticket it feeds. */
+export const pullInk = {
+  /** The slot, as dark as the close receipt's printer. */
+  slot: '#0b0810',
+  /** The "+" disc on the ticket before the pull is far enough. */
+  discIdle: 'rgba(43,37,48,.08)',
+} as const;
+
 /** The year book on the Diary shelf: dark cloth, gold lettering. */
 export const yearBookInk = {
   cloth: '#1f1b26',
