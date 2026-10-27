@@ -18,9 +18,25 @@ export interface NativeReach {
   readonly widgets: boolean;
   /** Sign in with Apple, which Budget together pairs with. */
   readonly appleSignIn: boolean;
+  /**
+   * Bank and wallet alerts: iOS 27's Shortcuts automation on an app's notifications, running the
+   * "Catch a bank alert" action of a build that has it.
+   */
+  readonly bankAlerts: boolean;
+  /** "Log in 6pm" said to Siri: App Shortcuts list it from iOS 17.4. */
+  readonly siri: boolean;
+  /** Back Tap opening Quick add: the Quick add shortcut exists from iOS 18. */
+  readonly backTap: boolean;
 }
 
 const ios = Platform.OS === 'ios';
+
+/** The iOS version as a number ("27.0.1" → 27), or 0 off iOS. */
+function iosVersion(): number {
+  if (!ios) return 0;
+  const [major = '0', minor = '0'] = String(Platform.Version).split('.');
+  return Number(major) + Number(minor) / 100;
+}
 
 export const nativeReach: NativeReach = {
   scan: scanCamera !== null,
@@ -28,4 +44,7 @@ export const nativeReach: NativeReach = {
   wallet: ios,
   widgets: surfaces !== null,
   appleSignIn: ios,
+  bankAlerts: iosVersion() >= 27 && typeof surfaces?.readStatus === 'function',
+  siri: iosVersion() >= 17.04,
+  backTap: iosVersion() >= 18,
 };

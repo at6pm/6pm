@@ -8,6 +8,7 @@ import { useReceiptAddress } from '../receipt-email/receipt-address';
 import { nativeReach } from '../surfaces/native-reach';
 import { useSpendLabels } from '../today/use-spend-rows';
 import { GUIDES, type GuideContent } from './guide-content';
+import { lastAlertLine, useLastAlert } from './last-alert';
 import { onCount, sourceStatuses, type CaptureSource, type SourceStatus } from './source-status';
 
 /** The native piece each way needs; a phone without it does not list that way. */
@@ -15,7 +16,10 @@ const NEEDS: Readonly<Partial<Record<CaptureSource, boolean>>> = {
   share: nativeReach.share,
   scan: nativeReach.scan,
   wallet: nativeReach.wallet,
+  alerts: nativeReach.bankAlerts,
   widgets: nativeReach.widgets,
+  siri: nativeReach.siri,
+  backTap: nativeReach.backTap,
 };
 
 export interface CaptureSourceView extends SourceStatus {
@@ -44,6 +48,7 @@ export function useCaptureSources(): {
   const { t } = useI18n();
   const labels = useSpendLabels();
   const home = useHomeCurrency();
+  const lastAlert = useLastAlert();
   return useMemo(() => {
     const statuses = sourceStatuses([...cycleSpends, ...waitingBefore], home.code).filter(
       (status) => NEEDS[status.source] !== false,
@@ -58,6 +63,11 @@ export function useCaptureSources(): {
         const off = t('receiptEmail.deviceMode');
         return { ...status, on: false, guide, name: t(guide.name), sub: off, status: off };
       }
+      // The shortcut notes every alert it reads, even one it skips: that alone says it runs.
+      if (status.source === 'alerts' && lastAlert !== null) {
+        const line = lastAlertLine(lastAlert, t, labels.time);
+        return { ...status, on: true, guide, name: t(guide.name), sub: line, status: line };
+      }
       return {
         ...status,
         guide,
@@ -67,12 +77,12 @@ export function useCaptureSources(): {
       };
     });
     const summary = t('capture.settings.summary', {
-      on: onCount(statuses),
-      total: statuses.length,
+      on: onCount(sources),
+      total: sources.length,
     });
     const walletOn = !nativeReach.wallet || statuses.some((s) => s.source === 'wallet' && s.on);
     return { sources, summary, walletOn, emailAddress, emailAvailable };
-  }, [cycleSpends, waitingBefore, t, labels, emailAddress, emailAvailable, home]);
+  }, [cycleSpends, waitingBefore, t, labels, emailAddress, emailAvailable, home, lastAlert]);
 }
 
 type T = ReturnType<typeof useI18n>['t'];

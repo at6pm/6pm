@@ -1,4 +1,7 @@
-/** Shortcuts: "Log in 6pm" for Siri and the Wallet automation, without starting the app. */
+/**
+ * Shortcuts: "Log in 6pm" for Siri and the Wallet automation, and "Catch a bank alert" for the
+ * notification automation, without starting the app.
+ */
 /** @type {import('@bacons/apple-targets/app.plugin').ConfigFunction} */
 module.exports = (config) => ({
   type: 'app-intent',

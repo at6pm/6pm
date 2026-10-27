@@ -55,6 +55,24 @@ enum GroupFiles {
     try write(json, to: folder("inbox").appendingPathComponent("\(id).json"))
   }
 
+  /// The names of the status files extensions leave for the app to read and never import.
+  static let statusNames: Set<String> = ["last-alert"]
+
+  /// Leaves a status for the app to show (`last-alert`: the last bank alert read). The newest
+  /// replaces the one before; the app only ever reads these.
+  static func writeStatus(_ name: String, json: Data) throws {
+    guard statusNames.contains(name) else { return }
+    try write(json, to: folder("status").appendingPathComponent("\(name).json"))
+  }
+
+  /// A status an extension left, if any yet.
+  static func readStatus(_ name: String) -> Data? {
+    guard statusNames.contains(name),
+      let url = try? folder("status").appendingPathComponent("\(name).json")
+    else { return nil }
+    return try? Data(contentsOf: url)
+  }
+
   /// What the app wrote for the extensions to read (`snapshot`, `context`), if anything yet.
   static func readSurface(_ name: String) -> Data? {
     guard let url = try? folder("surfaces").appendingPathComponent("\(name).json") else {

@@ -1,7 +1,9 @@
 import type { StringKey } from '@6pm/i18n';
 
 import { useI18n } from '../../i18n/i18n';
+import { BANK_ALERT_SHORTCUT_URL } from './bank-alert-shortcut';
 import type { CaptureSource } from './source-status';
+import { AlertTestFrame, CatchActionFrame, ChooseAppsFrame } from './walkthrough/alert-frames';
 import {
   GmailAddAddressFrame,
   GmailForwardingTabFrame,
@@ -13,7 +15,7 @@ import { ReceiptShareFrame, ShareCardFrame, ShareSheetFrame } from './walkthroug
 import { RunShortcutFrame } from './walkthrough/wallet-frames-action';
 import { AddShortcutFrame } from './walkthrough/wallet-frames-add';
 import { FinishFrame, TestFrame } from './walkthrough/wallet-frames-end';
-import { AutomationFrame, WalletTriggerFrame } from './walkthrough/wallet-frames-start';
+import { AutomationFrame, TriggerFrame } from './walkthrough/wallet-frames-start';
 import type { WalkthroughStep } from './walkthrough/walkthrough';
 
 type WalkKey = Exclude<Extract<StringKey, `capture.walk.${string}`>, 'capture.walk.stepOf'>;
@@ -29,10 +31,10 @@ interface StepPlan {
 }
 
 /** The ways that are set up step by step, each with its pictured screens. */
-export type WalkedSource = Extract<CaptureSource, 'wallet' | 'email' | 'share'>;
+export type WalkedSource = Extract<CaptureSource, 'wallet' | 'email' | 'share' | 'alerts'>;
 
 export function isWalked(source: CaptureSource): source is WalkedSource {
-  return source === 'wallet' || source === 'email' || source === 'share';
+  return source === 'wallet' || source === 'email' || source === 'share' || source === 'alerts';
 }
 
 /**
@@ -59,7 +61,7 @@ const WALLET: readonly StepPlan[] = [
     detail: 'capture.walk.wallet.s3Body',
     loop: 5600,
     still: 0.525,
-    frame: (t, s) => <WalletTriggerFrame t={t} scale={s.phoneScale} />,
+    frame: (t, s) => <TriggerFrame t={t} scale={s.phoneScale} kind="wallet" />,
   },
   {
     title: 'capture.walk.wallet.s4Title',
@@ -73,7 +75,7 @@ const WALLET: readonly StepPlan[] = [
     detail: 'capture.walk.wallet.s5Body',
     loop: 5000,
     still: 0.465,
-    frame: (t, s) => <FinishFrame t={t} scale={s.phoneScale} />,
+    frame: (t, s) => <FinishFrame t={t} scale={s.phoneScale} kind="wallet" />,
   },
   {
     title: 'capture.walk.wallet.s6Title',
@@ -82,6 +84,75 @@ const WALLET: readonly StepPlan[] = [
     still: 0.4,
     frame: (t, s) => <TestFrame t={t} scale={s.phoneScale} />,
   },
+];
+
+/** Choosing the apps, saving with nothing shown, and trying it: the end of either way in. */
+const ALERTS_END: readonly StepPlan[] = [
+  {
+    title: 'capture.walk.alerts.s5Title',
+    detail: 'capture.walk.alerts.s5Body',
+    loop: 5000,
+    still: 0.465,
+    frame: (t, s) => <FinishFrame t={t} scale={s.phoneScale} kind="notification" />,
+  },
+  {
+    title: 'capture.walk.alerts.s6Title',
+    detail: 'capture.walk.alerts.s6Body',
+    loop: 5200,
+    still: 0.4,
+    frame: (t, s) => <AlertTestFrame t={t} scale={s.phoneScale} />,
+  },
+];
+
+const CHOOSE_APPS = (detail: WalkKey): StepPlan => ({
+  title: 'capture.walk.alerts.s3Title',
+  detail,
+  loop: 5600,
+  still: 0.28,
+  frame: (t, s) => <ChooseAppsFrame t={t} scale={s.phoneScale} />,
+});
+
+/**
+ * Bank and wallet alerts as iOS 27 builds them: a shortcut with the Notification trigger on the
+ * user's banking apps that runs 6pm's "Catch a bank alert" with the notification's words.
+ */
+const ALERTS_BY_HAND: readonly StepPlan[] = [
+  {
+    title: 'capture.walk.alerts.s1Title',
+    detail: 'capture.walk.alerts.s1Body',
+    loop: 6000,
+    still: 0.475,
+    frame: (t, s) => <AutomationFrame t={t} scale={s.phoneScale} />,
+  },
+  {
+    title: 'capture.walk.alerts.s2Title',
+    detail: 'capture.walk.alerts.s2Body',
+    loop: 5600,
+    still: 0.525,
+    frame: (t, s) => <TriggerFrame t={t} scale={s.phoneScale} kind="notification" />,
+  },
+  CHOOSE_APPS('capture.walk.alerts.s3Body'),
+  {
+    title: 'capture.walk.alerts.s4Title',
+    detail: 'capture.walk.alerts.s4Body',
+    loop: 7000,
+    still: 0.38,
+    frame: (t, s) => <CatchActionFrame t={t} scale={s.phoneScale} />,
+  },
+  ...ALERTS_END,
+];
+
+/** With the published shortcut: add it, then choose the apps on its trigger. */
+const ALERTS_LINKED: readonly StepPlan[] = [
+  {
+    title: 'capture.walk.alerts.l1Title',
+    detail: 'capture.walk.alerts.l1Body',
+    loop: 4200,
+    still: 0.44,
+    frame: (t, s) => <AddShortcutFrame t={t} scale={s.phoneScale} kind="notification" />,
+  },
+  CHOOSE_APPS('capture.walk.alerts.l2Body'),
+  ...ALERTS_END,
 ];
 
 const SHARE: readonly StepPlan[] = [
@@ -166,7 +237,11 @@ export function useWalkthroughSteps(
       ? WALLET
       : source === 'share'
         ? SHARE
-        : emailPlan(emailAddress ?? t('capture.email.step1Chip'));
+        : source === 'alerts'
+          ? BANK_ALERT_SHORTCUT_URL !== null
+            ? ALERTS_LINKED
+            : ALERTS_BY_HAND
+          : emailPlan(emailAddress ?? t('capture.email.step1Chip'));
   return plan.map((step, k) => ({
     id: `${source}-${k}`,
     title: t(step.title),

@@ -20,6 +20,8 @@ interface SurfacesNative {
   writeSurfaceImage(name: string, pngBase64: string): Promise<void>;
   readInbox(): Promise<InboxFile[]>;
   removeInbox(ids: readonly string[]): Promise<void>;
+  /** A status an extension left (`last-alert`), or null before one has. */
+  readStatus?(name: 'last-alert'): Promise<string | null>;
   activitiesEnabled(): boolean;
   listActivities(): Promise<RunningActivity[]>;
   startActivity(kind: ActivityKind, key: string, stateJson: string): Promise<string | null>;

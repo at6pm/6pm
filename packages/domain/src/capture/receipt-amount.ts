@@ -12,8 +12,20 @@ export function dongIn(text: string): Vnd | null {
 const PRINTED_AMOUNT =
   /([-−+])?\s*(?:vnd|₫)?\s*(?:\d{1,3}(?:[.,]\d{3})+(?:[.,]\d{1,2})?\s*(?:vnd|vnđ|đ|₫|d)?(?!\p{L})|\d+\s*(?:vnd|vnđ|đ|₫)(?!\p{L}))/giu;
 
-/** Words that, last before an unsigned amount, make it the balance ("SD: 1,250,000VND"). */
-const BALANCE_WORDS = ['so du', 'sd', 'sdc', 'balance', 'kha dung', 'available'];
+/**
+ * Words that, last before an unsigned amount, make it the balance ("SD: 1,250,000VND"), or a
+ * card's debt or limit ("Dư nợ: 2,500,000", "Hạn mức còn lại").
+ */
+const BALANCE_WORDS = [
+  'so du',
+  'sd',
+  'sdc',
+  'balance',
+  'kha dung',
+  'available',
+  'du no',
+  'han muc',
+];
 /** Words that, last before an amount, make it the transaction ("GD: -45,000", "thay đổi 50,000"). */
 const CHANGE_WORDS = [
   'gd',
@@ -41,7 +53,7 @@ function lastWord(folded: string, words: readonly string[]): [end: number, lengt
 }
 
 /** True when the words before an amount name the account's balance rather than what moved. */
-function readsAsBalance(lead: string): boolean {
+export function readsAsBalance(lead: string): boolean {
   const folded = foldWords(lead);
   const [balanceEnd, balanceLength] = lastWord(folded, BALANCE_WORDS);
   const [changeEnd, changeLength] = lastWord(folded, CHANGE_WORDS);

@@ -13,6 +13,7 @@ import {
   type FrameProps,
 } from './wallet-frames-library';
 import { EditorBar, EditorCard } from './shortcuts-chrome';
+import { NotificationTriggerCard } from './alert-cards';
 import { TriggerCard } from './shortcuts-cards';
 import { DockedDrawer, DrawerChip, DrawerItem } from './shortcuts-drawer';
 
@@ -62,10 +63,39 @@ export function AutomationFrame({ t, scale }: FrameProps) {
   );
 }
 
-/** The empty editor's drawer: Automation chip, then Wallet among the triggers. */
-export function WalletTriggerFrame({ t, scale }: FrameProps) {
+/** Which trigger a frame shows: Wallet's card taps, or an app's notifications. */
+export type TriggerKind = 'wallet' | 'notification';
+
+/**
+ * The empty editor's drawer: Automation chip, then the trigger among the others (Wallet, or
+ * Notification), and its card at the top of the shortcut.
+ */
+export function TriggerFrame({ t, scale, kind }: FrameProps & { readonly kind: TriggerKind }) {
   const { t: tr } = useI18n();
   const drawerTop = 430;
+  const wallet = (
+    <DrawerItem
+      glyph="wallet"
+      name={tr('capture.walk.ios.wallet')}
+      example={tr('capture.walk.ios.walletEx')}
+    />
+  );
+  const notification = (
+    <DrawerItem
+      glyph="notifications"
+      color={iosInk.red}
+      name={tr('capture.walk.ios.notification')}
+      example={tr('capture.walk.ios.notificationEx')}
+    />
+  );
+  const screenshot = (
+    <DrawerItem
+      glyph="capture"
+      color={iosInk.blue}
+      name={tr('capture.walk.ios.screenshot')}
+      example={tr('capture.walk.ios.screenshotEx')}
+    />
+  );
   return (
     <Phone t={t} scale={scale} background={iosInk.grouped}>
       <EditorBar name={tr('capture.walk.ios.newShortcut')} icon={false} />
@@ -82,7 +112,7 @@ export function WalletTriggerFrame({ t, scale }: FrameProps) {
       </Reveal>
       <Reveal t={t} from={0.64} to={0.74} dy={-20} style={FULL}>
         <EditorCard top={143}>
-          <TriggerCard />
+          {kind === 'wallet' ? <TriggerCard /> : <NotificationTriggerCard t={t} picks={[2, 2]} />}
         </EditorCard>
       </Reveal>
       <Reveal t={t} from={0.6} to={0.7} out dy={420} style={FULL}>
@@ -170,11 +200,7 @@ export function WalletTriggerFrame({ t, scale }: FrameProps) {
                 example={tr('capture.walk.ios.appEx')}
               />
               <View>
-                <DrawerItem
-                  glyph="wallet"
-                  name={tr('capture.walk.ios.wallet')}
-                  example={tr('capture.walk.ios.walletEx')}
-                />
+                {kind === 'wallet' ? wallet : notification}
                 <View
                   style={{
                     position: 'absolute',
@@ -189,12 +215,7 @@ export function WalletTriggerFrame({ t, scale }: FrameProps) {
                   <TapFlash t={t} at={0.56} />
                 </View>
               </View>
-              <DrawerItem
-                glyph="capture"
-                color={iosInk.blue}
-                name={tr('capture.walk.ios.screenshot')}
-                example={tr('capture.walk.ios.screenshotEx')}
-              />
+              {kind === 'wallet' ? screenshot : wallet}
             </Reveal>
           </View>
         </View>

@@ -1,7 +1,16 @@
 import type { SpendRow, SpendSource } from '@6pm/domain';
 
 /** The ways spending reaches 6pm by itself, in the order Settings lists them. */
-export const CAPTURE_SOURCES = ['share', 'email', 'scan', 'wallet', 'widgets'] as const;
+export const CAPTURE_SOURCES = [
+  'share',
+  'email',
+  'scan',
+  'wallet',
+  'alerts',
+  'widgets',
+  'siri',
+  'backTap',
+] as const;
 export type CaptureSource = (typeof CAPTURE_SOURCES)[number];
 
 /** The spend source each way leaves on what it catches; widgets open Scan and Quick add. */
@@ -10,8 +19,14 @@ const SPEND_SOURCE: Readonly<Record<CaptureSource, SpendSource | null>> = {
   email: 'email',
   scan: 'qr',
   wallet: 'applePay',
+  alerts: 'alert',
   widgets: null,
+  siri: null,
+  backTap: null,
 };
+
+/** The ways the phone cannot see set up, which count as on once they have caught something. */
+const SEEN_ONCE: ReadonlySet<CaptureSource> = new Set(['wallet', 'email', 'alerts']);
 
 export interface SourceStatus {
   readonly source: CaptureSource;
@@ -23,9 +38,9 @@ export interface SourceStatus {
 /**
  * Whether each way is on, from what the phone can know:
  *
- * - Share, Scan and the widgets ship with the app, so they are on.
- * - The Wallet automation lives in the Shortcuts app and iOS has no API to read automations, so
- *   it counts as on once a spend from Apple Pay has arrived.
+ * - Share, Scan, the widgets, Siri and Back Tap ship with the app, so they are on.
+ * - The Wallet and bank alert automations live in the Shortcuts app and iOS has no API to read
+ *   automations, so each counts as on once something it caught has arrived.
  * - Receipt email works once the user forwards mail to the address, which the phone cannot see,
  *   so it counts as on once an emailed receipt has arrived.
  *
@@ -45,12 +60,12 @@ export function sourceStatuses(
   return listed.map((source) => {
     const spendSource = SPEND_SOURCE[source];
     const last = spendSource ? (newest.get(spendSource) ?? null) : null;
-    const on = source === 'wallet' || source === 'email' ? last !== null : true;
+    const on = SEEN_ONCE.has(source) ? last !== null : true;
     return { source, on, last };
   });
 }
 
-/** "4 of 5 on". */
+/** "6 of 8 on". */
 export function onCount(statuses: readonly SourceStatus[]): number {
   return statuses.filter((s) => s.on).length;
 }

@@ -42,7 +42,7 @@ export interface NewSpend {
    */
   readonly day?: LocalDate;
   /** `in` for money that came in; spending when left out. */
-  readonly direction?: 'in' | 'out';
+  readonly direction?: 'in' | 'out' | null;
   /** What the capture read money in as (an email read as a refund), for the close to ask. */
   readonly moneyIn?: 'refund' | null;
 }

@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { useI18n } from '../../i18n/i18n';
 import { ForwardingCheckCard } from '../receipt-email/forwarding-check-card';
 import type { GuideContent } from './guide-content';
-import { MistakesCard, OtherMailCard } from './guide-notes';
+import { AlertStatusCard, MistakesCard, OtherMailCard } from './guide-notes';
 import { GuideSection, GuideSteps, type LiveChip } from './guide-sections';
 import { isWalked, useWalkthroughSteps, type WalkedSource } from './guide-walkthroughs';
 import type { CaptureSource } from './source-status';
@@ -18,11 +18,14 @@ export function HowItWorks({
   guide,
   addressChip,
   emailAddress,
+  lastLine = null,
 }: {
   readonly source: CaptureSource;
   readonly guide: GuideContent;
   readonly addressChip: LiveChip | null;
   readonly emailAddress: string | null;
+  /** The last thing this way caught, as its status says it; null before anything. */
+  readonly lastLine?: string | null;
 }) {
   const { t } = useI18n();
   if (!isWalked(source)) {
@@ -32,17 +35,19 @@ export function HowItWorks({
       </GuideSection>
     );
   }
-  return <Walked source={source} guide={guide} emailAddress={emailAddress} />;
+  return <Walked source={source} guide={guide} emailAddress={emailAddress} lastLine={lastLine} />;
 }
 
 function Walked({
   source,
   guide,
   emailAddress,
+  lastLine,
 }: {
   readonly source: WalkedSource;
   readonly guide: GuideContent;
   readonly emailAddress: string | null;
+  readonly lastLine: string | null;
 }) {
   const { t } = useI18n();
   const steps = useWalkthroughSteps(source, emailAddress);
@@ -77,6 +82,23 @@ function Walked({
               steps={['capture.walk.wallet.hand1', 'capture.walk.wallet.hand2']}
             />
           </View>
+        </>
+      ) : null}
+
+      {source === 'alerts' ? (
+        <>
+          <GuideSection title={t('capture.alerts.statusTitle')}>
+            <AlertStatusCard line={lastLine} />
+          </GuideSection>
+          <GuideSection title={t('capture.walk.mistakes')}>
+            <MistakesCard
+              items={[
+                'capture.walk.alerts.mistake1',
+                'capture.walk.alerts.mistake2',
+                'capture.walk.alerts.mistake3',
+              ]}
+            />
+          </GuideSection>
         </>
       ) : null}
 

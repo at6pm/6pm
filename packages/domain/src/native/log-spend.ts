@@ -15,7 +15,7 @@ const titleOf = (name: string, category: string | undefined) =>
   [name, category].filter((part): part is string => !!part).join(' · ');
 
 /** Minor units of a currency as an exact decimal in its own units: 350 cents is "3.50". */
-function decimalOf(minor: number, code: string): string {
+export function decimalOf(minor: number, code: string): string {
   const digits = currencyOf(code).minorDigits;
   return (minor / 10 ** digits).toFixed(digits);
 }

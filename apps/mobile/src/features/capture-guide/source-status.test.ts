@@ -30,24 +30,37 @@ const byName = (statuses: ReturnType<typeof sourceStatuses>) =>
   Object.fromEntries(statuses.map((s) => [s.source, s]));
 
 describe('sourceStatuses', () => {
-  it('lists the five ways in Settings order', () => {
+  it('lists every way in Settings order', () => {
     expect(sourceStatuses([]).map((s) => s.source)).toEqual([
       'share',
       'email',
       'scan',
       'wallet',
+      'alerts',
       'widgets',
+      'siri',
+      'backTap',
     ]);
   });
 
-  it('starts with share, scan and the widgets on, email and Wallet off', () => {
+  it('starts with what ships with the app on, and the automations and email off', () => {
     const s = byName(sourceStatuses([]));
     expect(s['share']?.on).toBe(true);
     expect(s['scan']?.on).toBe(true);
     expect(s['widgets']?.on).toBe(true);
+    expect(s['siri']?.on).toBe(true);
+    expect(s['backTap']?.on).toBe(true);
     expect(s['email']?.on).toBe(false);
     expect(s['wallet']?.on).toBe(false);
-    expect(onCount(sourceStatuses([]))).toBe(3);
+    expect(s['alerts']?.on).toBe(false);
+    expect(onCount(sourceStatuses([]))).toBe(5);
+  });
+
+  it('turns bank alerts on once an alert has been caught', () => {
+    const alert = spend({ id: 'b', source: 'alert', status: 'caught', merchant: 'PHO HOA' });
+    const s = byName(sourceStatuses([alert]));
+    expect(s['alerts']?.on).toBe(true);
+    expect(s['alerts']?.last?.id).toBe('b');
   });
 
   it('turns the Wallet automation on once an Apple Pay spend has arrived', () => {
@@ -55,7 +68,7 @@ describe('sourceStatuses', () => {
     const s = byName(sourceStatuses([tap]));
     expect(s['wallet']?.on).toBe(true);
     expect(s['wallet']?.last?.id).toBe('a');
-    expect(onCount(sourceStatuses([tap]))).toBe(4);
+    expect(onCount(sourceStatuses([tap]))).toBe(6);
   });
 
   it('keeps the Wallet automation off when its only spend was deleted', () => {
@@ -102,7 +115,10 @@ describe('sourceStatuses away from đồng', () => {
       'share',
       'email',
       'wallet',
+      'alerts',
       'widgets',
+      'siri',
+      'backTap',
     ]);
   });
 });

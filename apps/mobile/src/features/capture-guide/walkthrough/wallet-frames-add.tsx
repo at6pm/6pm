@@ -5,6 +5,7 @@ import { useI18n } from '../../../i18n/i18n';
 import { Symbol } from '../../../ui/icons/symbol';
 import type { SymbolName } from '../../../ui/icons/symbols.generated';
 import { body } from '../../../ui/type/fonts';
+import { BANK_ALERT_SHORTCUT_NAME } from '../bank-alert-shortcut';
 import { WALLET_SHORTCUT_NAME } from '../wallet-shortcut';
 import { Phone } from './device';
 import { iosInk } from './frame-ink';
@@ -12,6 +13,7 @@ import { GlassButton, LargeTitle } from './ios-parts';
 import { Reveal, TapFlash, Touch } from './moving-parts';
 import { LogShortcutIcon, SixPmIcon } from './shortcuts-chrome';
 import type { FrameProps } from './wallet-frames-library';
+import type { TriggerKind } from './wallet-frames-start';
 
 const FULL = { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 } as const;
 
@@ -47,8 +49,20 @@ function Tile({
   );
 }
 
+/** The shortcut a link adds: its name, and the 6pm action inside it. */
+interface SharedShortcut {
+  readonly name: string;
+  readonly action: string;
+}
+
 /** The sheet a shared shortcut's link opens: its icon, name, actions and Add Shortcut. */
-function AddSheet({ flash }: { readonly flash: ReactNode }) {
+function AddSheet({
+  flash,
+  shortcut,
+}: {
+  readonly flash: ReactNode;
+  readonly shortcut: SharedShortcut;
+}) {
   const { t } = useI18n();
   return (
     <View
@@ -67,9 +81,7 @@ function AddSheet({ flash }: { readonly flash: ReactNode }) {
       }}
     >
       <LogShortcutIcon size={76} />
-      <Text style={{ ...body(24, 700), color: iosInk.label, marginTop: 14 }}>
-        {WALLET_SHORTCUT_NAME}
-      </Text>
+      <Text style={{ ...body(24, 700), color: iosInk.label, marginTop: 14 }}>{shortcut.name}</Text>
       <View
         style={{
           alignSelf: 'stretch',
@@ -84,9 +96,7 @@ function AddSheet({ flash }: { readonly flash: ReactNode }) {
         }}
       >
         <SixPmIcon size={30} />
-        <Text style={{ ...body(17, 600), color: iosInk.label }}>
-          {t('native.intents.logSpend.title')}
-        </Text>
+        <Text style={{ ...body(17, 600), color: iosInk.label }}>{shortcut.action}</Text>
       </View>
       <View
         style={{
@@ -114,9 +124,20 @@ function AddSheet({ flash }: { readonly flash: ReactNode }) {
   );
 }
 
-/** The link opens Add Shortcut over All Shortcuts; tapped, "Log to 6pm" joins the list. */
-export function AddShortcutFrame({ t, scale }: FrameProps) {
+/**
+ * The link opens Add Shortcut over All Shortcuts; tapped, the shortcut joins the list: "Log to
+ * 6pm" for Wallet taps, "Catch bank alerts" for notifications.
+ */
+export function AddShortcutFrame({
+  t,
+  scale,
+  kind = 'wallet',
+}: FrameProps & { readonly kind?: TriggerKind }) {
   const { t: tr } = useI18n();
+  const shortcut: SharedShortcut =
+    kind === 'wallet'
+      ? { name: WALLET_SHORTCUT_NAME, action: tr('native.intents.logSpend.title') }
+      : { name: BANK_ALERT_SHORTCUT_NAME, action: tr('native.intents.catchAlert.title') };
   return (
     <Phone t={t} scale={scale} background={iosInk.grouped}>
       <LargeTitle
@@ -132,7 +153,7 @@ export function AddShortcutFrame({ t, scale }: FrameProps) {
           name={tr('capture.walk.ios.shortcutB')}
         />
         <Reveal t={t} from={0.58} to={0.68} fromScale={0.6}>
-          <Tile color={iosInk.logTile} glyph="layers" name={WALLET_SHORTCUT_NAME} />
+          <Tile color={iosInk.logTile} glyph="layers" name={shortcut.name} />
         </Reveal>
       </View>
       <Reveal t={t} from={0.04} to={0.14} style={FULL}>
@@ -140,7 +161,7 @@ export function AddShortcutFrame({ t, scale }: FrameProps) {
       </Reveal>
       <Reveal t={t} from={0.04} to={0.16} dy={540} style={FULL}>
         <Reveal t={t} from={0.48} to={0.56} out dy={540} style={FULL}>
-          <AddSheet flash={<TapFlash t={t} at={0.46} />} />
+          <AddSheet flash={<TapFlash t={t} at={0.46} />} shortcut={shortcut} />
         </Reveal>
       </Reveal>
       <Touch

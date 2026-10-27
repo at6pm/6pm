@@ -31,6 +31,8 @@ export interface InboxSpendDraft {
   readonly currencyGuessed: boolean;
   /** A transfer's own words ("Nội dung"), read when asking whether it paid a bill. */
   readonly memo: string | null;
+  /** `in` for money that came in (a bank alert that says so); null for spending. */
+  readonly direction: 'out' | 'in' | null;
 }
 
 export interface InboxFiling {
@@ -163,6 +165,7 @@ export function inboxItemToNewSpend(
     foreignAmount: kept,
     currencyGuessed: item.currencyGuessed === true,
     memo: item.receipt?.memo ?? null,
+    direction: item.direction ?? null,
   };
 }
 
