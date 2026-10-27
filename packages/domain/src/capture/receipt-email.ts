@@ -2,6 +2,7 @@ import type { Vnd } from '../money/format';
 import { BANKS } from '../vietqr/bank-catalogue';
 import { cleanMemo, parseBankReceipt, readReceiptTime } from './bank-receipt';
 import { htmlToLines, readForwarded, textToLines, type EmailSender } from './email-body';
+import { withFullYears } from './receipt-time';
 import { foldWords } from './spoken-spend';
 
 /** Vietnamese banks and shops print their local time, UTC+7. */
@@ -134,7 +135,7 @@ function isIncoming(lines: readonly string[]): boolean {
 }
 
 const NOTE_LINE =
-  /^(?:nội dung|noi dung|nd|description|details|diễn giải|dien giai)\s*[:\t]\s*(.+)$/iu;
+  /^(?:nội dung|noi dung|nd|mô tả|mo ta|description|details|diễn giải|dien giai)\s*[:\t]\s*(.+)$/iu;
 const PAID_AT = /(?:^|\s)(?:tại|tai|at|tới|toi|to)\s+([^\d]+?)\s*(?:[-–.,;]|\d|$)/iu;
 
 /** The transfer's words on a "Nội dung:" line, as the receipt printed them. */
@@ -204,10 +205,26 @@ export function emailOrigin(email: ReceiptEmail): EmailOrigin {
   };
 }
 
+/** How far a receipt's printed day can be from when its email was sent, in any time zone. */
+const DATE_ONLY_SLACK_MS = 36 * 60 * 60_000;
+
+/**
+ * A printed time that is only a date: midnight, as a model writes a date it was given no clock
+ * for, or noon, as `readReceiptTime` takes one.
+ */
+function isDateOnly(localIso: string): boolean {
+  const d = new Date(localIso);
+  return (
+    d.getMinutes() === 0 && d.getSeconds() === 0 && (d.getHours() === 0 || d.getHours() === 12)
+  );
+}
+
 /**
  * When a receipt was paid: the time it prints (local, `YYYY-MM-DDTHH:MM:SS`, taken as Vietnam
  * time), else the forwarded email's own date, else the email's Date, else when it arrived. A time
- * later than its arrival is not believed.
+ * later than its arrival is not believed. A receipt that prints only its day ("Date paid October
+ * 22, 2026") was paid when its email was sent, when that is the same day in some zone: its midnight
+ * would file it on the day before and miss every other sighting of the payment.
  */
 export function emailPaidAt(
   printedLocal: string | null,
@@ -217,8 +234,17 @@ export function emailPaidAt(
 ): string {
   const offset = options.utcOffsetMinutes ?? VIETNAM_UTC_OFFSET_MINUTES;
   const fromForward = forwardedTime(origin.forwardedDate);
+  const printed = printedLocal ? inZone(printedLocal, offset) : null;
+  const sent = fromForward ? inZone(fromForward, offset) : email.date;
+  const sentThatDay =
+    printedLocal !== null &&
+    printed !== null &&
+    sent !== null &&
+    isDateOnly(printedLocal) &&
+    Math.abs(Date.parse(sent) - Date.parse(printed)) <= DATE_ONLY_SLACK_MS;
   const candidates = [
-    printedLocal ? inZone(printedLocal, offset) : null,
+    sentThatDay ? sent : null,
+    printed,
     fromForward ? inZone(fromForward, offset) : null,
     email.date,
   ];
@@ -229,24 +255,35 @@ export function emailPaidAt(
   );
 }
 
+/** A subject that says money was given back ("Hoàn tiền thành công", "Your refund"), not asked for. */
+function isRefund(subject: string): boolean {
+  const folded = foldWords(subject);
+  const refund = [' hoan tien ', ' hoan tra ', ' refund ', ' refunded '];
+  const asked = [' yeu cau ', ' request ', ' requested '];
+  return refund.some((w) => folded.includes(w)) && !asked.some((w) => folded.includes(w));
+}
+
 /**
  * Reads the spend in a bank notification or a shop's e-receipt, forwarded or sent on by a filter,
  * with rules alone: the body (HTML tables or plain text) is turned into lines and read like a
- * shared receipt, with shop totals read as the amount. The shop or bank comes from the sender's
- * domain. Money that came in is read the same way and marked `incoming`; no amount, null.
- * The server reads email with a model when it can (`emailSpendOf`); this is what it falls back to.
+ * shared receipt, with shop totals read as the amount and two-digit years ("27/10/26 12:30") read
+ * as this century's. The shop or bank comes from the sender's domain. Money that came in is read
+ * the same way and marked `incoming`, or `refund` when the subject says it was given back; no
+ * amount, null. The server reads email with a model when it can (`emailSpendOf`); this is what it
+ * falls back to.
  */
 export function parseReceiptEmail(
   email: ReceiptEmail,
   options: ReceiptEmailOptions,
 ): EmailReceipt | null {
   const origin = emailOrigin(email);
-  const lines = origin.lines.map(withTotalsAsAmount);
-  const incoming = isIncoming(lines);
+  const lines = origin.lines.map((line) => withTotalsAsAmount(withFullYears(line)));
+  const refund = isRefund(email.subject);
+  const incoming = refund || isIncoming(lines);
   const receipt = parseBankReceipt(lines.map((text) => ({ text })));
   if (!receipt || receipt.amount === null) return null;
   return {
-    ...(incoming ? { kind: 'incoming' as const } : {}),
+    ...(incoming ? { kind: refund ? ('refund' as const) : ('incoming' as const) } : {}),
     amount: receipt.amount,
     // For money in, the payee a receipt names is the person themselves: only a shop is said.
     merchant: shopOf(origin.sender) ?? (incoming ? '' : receipt.payee || payeeInNote(lines)),

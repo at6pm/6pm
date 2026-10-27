@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { needsALook } from './needs-a-look';
+import { canKeep, needsALook } from './needs-a-look';
 
 const rupiah = { currency: 'IDR', amount: 496_650, rate: 1.6 };
 
@@ -27,5 +27,14 @@ describe('needsALook', () => {
     expect(needsALook({ amount: 589_056, foreignAmount: rupiah, currencyGuessed: true })).toBe(
       true,
     );
+  });
+});
+
+describe('canKeep', () => {
+  it('confirms only a spend with an amount, never one at 0 or waiting for its rate', () => {
+    expect(canKeep({ amount: 107_969 })).toBe(true);
+    expect(canKeep({ amount: 0 })).toBe(false);
+    expect(canKeep({ amount: -1 })).toBe(false);
+    expect(canKeep({ amount: Number.NaN })).toBe(false);
   });
 });

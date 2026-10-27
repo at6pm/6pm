@@ -1,9 +1,12 @@
 import { EMAIL_CATEGORY_IDS, type EmailCategoryId } from '../contracts/receipt-email';
 import { currencyCodeSchema, receiptMinorUnits } from '../contracts/receipt-read';
+import { bankNamedIn } from './bank-alert-senders';
 import { cleanMemo } from './bank-receipt';
+import { foldWords } from './spoken-spend';
 import {
   emailOrigin,
   emailPaidAt,
+  parseReceiptEmail,
   type EmailReceipt,
   type ReceiptEmail,
   type ReceiptEmailOptions,
@@ -90,6 +93,51 @@ export function mayHoldPayment(email: ReceiptEmail): boolean {
 }
 
 const squash = (text: string) => text.normalize('NFC').replace(/\s+/g, '');
+
+/** The titles bank and shop emails give themselves, folded: never who was paid. */
+const EMAIL_TITLES = [
+  'bien nhan giao dich',
+  'bien nhan chuyen tien',
+  'bien lai giao dich',
+  'bien lai chuyen tien',
+  'bien lai',
+  'thong bao giao dich',
+  'thong bao bien dong so du',
+  'thong bao thay doi so du',
+  'xac nhan giao dich',
+  'xac nhan thanh toan',
+  'giao dich thanh cong',
+  'thanh toan thanh cong',
+  'transaction receipt',
+  'transaction notification',
+  'payment receipt',
+  'payment confirmation',
+  'your receipt',
+];
+
+/**
+ * Who was paid, when a model gave the email's own title for it ("BIÊN NHẬN GIAO DỊCH …"): what the
+ * title leaves after it when that names someone other than the bank, else the payee the rules
+ * read from the body, else nobody. Any other name is kept as the model gave it.
+ */
+function payeeNotTitle(
+  merchant: string,
+  email: ReceiptEmail,
+  options: ReceiptEmailOptions,
+): string {
+  const folded = foldWords(merchant);
+  const title = EMAIL_TITLES.find((t) => folded.startsWith(` ${t} `));
+  if (title === undefined) return merchant;
+  const words = merchant.trim().split(/\s+/);
+  const rest = words
+    .slice(title.split(' ').length)
+    .join(' ')
+    .replace(/^[\s:|–-]+/u, '')
+    .trim();
+  const named = /\p{L}{2}/u.test(rest) && !/\d{3}/.test(rest) && bankNamedIn(rest) === null;
+  if (named) return rest;
+  return parseReceiptEmail(email, options)?.merchant ?? '';
+}
 const printedLocalTime = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/;
 const isCategory = (id: string): id is EmailCategoryId =>
   (EMAIL_CATEGORY_IDS as readonly string[]).includes(id);
@@ -122,7 +170,7 @@ export function emailSpendOf(
     amount,
     currency: currency.data,
     category: isCategory(category) ? category : null,
-    merchant: reading.merchant?.trim().slice(0, 120) ?? '',
+    merchant: payeeNotTitle(reading.merchant?.trim() ?? '', email, options).slice(0, 120),
     at: emailPaidAt(
       printedLocalTime.test(at) && !Number.isNaN(Date.parse(at)) ? at : null,
       origin,

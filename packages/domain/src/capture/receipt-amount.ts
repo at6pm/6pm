@@ -67,7 +67,10 @@ interface Printed {
   readonly height: number;
 }
 
-/** Each amount a row prints, leaving out the balance: one signed `-` always moved money. */
+/**
+ * Each amount a row prints, leaving out the balance: a signed one always moved money, even after
+ * the words that name the account ("Số dư TK VCB 0011000123456 +5,000,000 VND").
+ */
 function printedIn(row: Row): Printed[] {
   const text = row.cells.join(' ');
   const found: Printed[] = [];
@@ -77,7 +80,7 @@ function printedIn(row: Row): Printed[] {
     from = match.index + match[0].length;
     const debit = match[1] === '-' || match[1] === '−';
     const amount = dongIn(match[0]);
-    if (amount === null || (!debit && readsAsBalance(lead))) continue;
+    if (amount === null || (match[1] === undefined && readsAsBalance(lead))) continue;
     found.push({ amount, debit, height: row.height });
   }
   return found;

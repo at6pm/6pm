@@ -22,3 +22,12 @@ export function needsALook(spend: NeedsALookInput): boolean {
   if (foreign !== null && (!Number.isFinite(foreign.rate) || foreign.rate <= 0)) return true;
   return spend.currencyGuessed === true;
 }
+
+/**
+ * Whether a spend can be confirmed as it is: only with an amount in the home currency. One saved
+ * at 0 (an amount no source could read, or a charge abroad still waiting for its rate) stays
+ * waiting under Needs a look until it is typed or priced, so a 0 is never counted as a spend.
+ */
+export function canKeep(spend: { readonly amount: number }): boolean {
+  return Number.isFinite(spend.amount) && spend.amount > 0;
+}
