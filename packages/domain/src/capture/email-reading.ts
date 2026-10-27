@@ -2,7 +2,7 @@ import { EMAIL_CATEGORY_IDS, type EmailCategoryId } from '../contracts/receipt-e
 import { currencyCodeSchema, receiptMinorUnits } from '../contracts/receipt-read';
 import { bankNamedIn } from './bank-alert-senders';
 import { cleanMemo } from './bank-receipt';
-import { isAdvert } from './receipt-email-signs';
+import { cleanPayeeName, isAdvert, subjectIsNotPayment } from './receipt-email-signs';
 import { foldWords } from './spoken-spend';
 import {
   emailOrigin,
@@ -113,7 +113,9 @@ const PRINTED_MONEY = new RegExp(
  */
 export function mayHoldPayment(email: ReceiptEmail): boolean {
   const origin = emailOrigin(email);
-  if (isAdvert(origin.subject)) return false;
+  // An advert, a statement, a survey about an order or a warning is never one payment, whatever
+  // figures it prints; the model is not asked.
+  if (isAdvert(origin.subject) || subjectIsNotPayment(origin.subject)) return false;
   return origin.lines.some((line) => PRINTED_MONEY.test(line));
 }
 
@@ -192,18 +194,22 @@ export function emailSpendOf(
   const copied = email.date !== null && reading.at?.trim() === email.date.slice(0, 19);
   const at = copied ? '' : (reading.at?.trim() ?? '');
   const category = reading.category?.trim().toLowerCase() ?? '';
+  const paidAt = emailPaidAt(
+    printedLocalTime.test(at) && !Number.isNaN(Date.parse(at)) ? at : null,
+    origin,
+    email,
+    options,
+  );
   return {
     ...(reading.kind === 'payment' ? {} : { kind: reading.kind }),
     amount,
     currency: currency.data,
     category: isCategory(category) ? category : null,
-    merchant: payeeNotTitle(reading.merchant?.trim() ?? '', email, options).slice(0, 120),
-    at: emailPaidAt(
-      printedLocalTime.test(at) && !Number.isNaN(Date.parse(at)) ? at : null,
-      origin,
-      email,
-      options,
+    merchant: cleanPayeeName(payeeNotTitle(reading.merchant?.trim() ?? '', email, options)).slice(
+      0,
+      120,
     ),
+    at: paidAt,
     from: origin.sender?.address ?? null,
     bank: origin.bank,
     code: reading.reference?.trim().slice(0, 40) || null,
