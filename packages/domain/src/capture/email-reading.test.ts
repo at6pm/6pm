@@ -241,6 +241,29 @@ describe('a receipt email read by a model', () => {
     expect(mayHoldPayment({ ...advert, subject: 'Quà tặng [QC] cho bạn' })).toBe(true);
   });
 
+  it('never asks the model about a survey of an order, though it prints what was paid', () => {
+    const survey: ReceiptEmail = {
+      ...shopReceipt,
+      subject: 'Xin chào, Shopee muốn lắng nghe ý kiến của bạn',
+      text: 'Đơn hàng đặt lúc 16-10-2026 11:52. Tổng thanh toán: ₫670,028',
+      html: null,
+    };
+    expect(mayHoldPayment(survey)).toBe(false);
+    expect(mayHoldPayment({ ...survey, subject: 'Xác nhận thanh toán thành công' })).toBe(true);
+  });
+
+  it('names the payee as people say it, without a card processor’s or a household business’s prefix', () => {
+    const read = (merchant: string) =>
+      emailSpendOf(
+        payment({ amount: '99 USD', currency: 'USD', merchant, at: '2026-10-16T10:25:31' }),
+        cardAlert,
+        options,
+      )?.merchant;
+    expect(read('OP*Green SM')).toBe('Green SM');
+    expect(read('HO KINH DOANH 79 MART 3')).toBe('79 MART 3');
+    expect(read('Cơm Tấm Long Xuyên - Bếp Nhà')).toBe('Cơm Tấm Long Xuyên - Bếp Nhà');
+  });
+
   it('gives the model the sender and the email’s lines, not its markup', () => {
     const text = emailModelText(shopReceipt);
     expect(text).toContain('From: Shopee <info@mail.shopee.vn>');
