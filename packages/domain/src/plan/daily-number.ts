@@ -19,6 +19,11 @@ export interface DailyNumberInput {
   readonly plan: MonthPlan;
   /** Everything counted in this pay cycle before today, late spends included. */
   readonly spentBefore: Vnd;
+  /**
+   * Money that came in this cycle and was kept as free money (spread, saved, refunds; see
+   * `addsToFree`). Nothing when left out.
+   */
+  readonly moneyIn?: Vnd;
   /** Today's spends, in any status. */
   readonly today: readonly CountedSpend[];
   /** Categories that do not count toward the daily number. */
@@ -42,7 +47,10 @@ export interface DailyNumberInput {
 }
 
 export interface DailyNumber {
-  /** Free money at the start of today: income less everything set aside and spent before. */
+  /**
+   * Free money at the start of today: income and money that came in, less everything set aside
+   * and spent before.
+   */
   readonly startFree: Vnd;
   /** Today's line: an even share of `startFree`, today included; never below zero. */
   readonly line: Vnd;
@@ -105,8 +113,9 @@ export function dailyNumber(input: DailyNumberInput): DailyNumber {
   const daysLeft = Number.isFinite(input.daysLeft) ? Math.max(0, input.daysLeft) : 0;
   const futureYou = cycleFutureYou(input);
   const planned = plan.income - plan.bills - futureYou - plan.occasions;
+  const moneyIn = Number.isFinite(input.moneyIn) ? Math.max(0, input.moneyIn ?? 0) : 0;
   const startFree =
-    joinedFree(planned, share, input.beforeJoining) - plan.topUps - input.spentBefore;
+    joinedFree(planned, share, input.beforeJoining) + moneyIn - plan.topUps - input.spentBefore;
   const line = Math.max(0, floorToStep(startFree / (daysLeft + 1), currency));
   const spent = sumCounted(input.today, input.notDaily);
   const free = startFree - spent;
