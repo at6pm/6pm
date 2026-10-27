@@ -91,8 +91,9 @@ export function csvForeignAmount(amount: number, code: string): string {
 /**
  * The CSV of every spend that is not deleted. The date is the spend's money day (the day it
  * counts on, which a spend just before midnight can move); the amount is in the home currency
- * (`csvAmount`) with no grouping, so it adds up in any spreadsheet. A category since archived
- * still gives its name.
+ * (`csvAmount`) with no grouping, so it adds up in any spreadsheet. Money that came in is written
+ * below zero, so a column's sum is what went out less what came in. A category since archived
+ * still gives its name; money in has none.
  */
 export function spendsCsv(
   spends: readonly SpendRow[],
@@ -109,8 +110,8 @@ export function spendsCsv(
       date: s.day,
       time: timeOf(s.at),
       merchant: textCell(s.merchant),
-      category: textCell(names.get(s.categoryId) ?? null),
-      amount: csvAmount(s.amount, currency),
+      category: textCell(s.direction === 'in' ? null : (names.get(s.categoryId) ?? null)),
+      amount: csvAmount(s.direction === 'in' ? -s.amount : s.amount, currency),
       status: s.status === 'deleted' ? '' : labels.status[s.status],
       source: labels.source[s.source],
       wallet: textCell(s.wallet),

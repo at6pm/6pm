@@ -20,6 +20,7 @@ import {
   type SpendRow,
   startOfWeek,
   sumCounted,
+  sumMoneyIn,
 } from '@6pm/domain';
 
 import { createQueue } from './store-queue';
@@ -84,6 +85,7 @@ export function dailyInputOf(snapshot: MoneySnapshot): DailyNumberInput | null {
     status: s.status,
     forWork: s.forWork,
     paysBill: s.paysBill,
+    direction: s.direction,
   });
   const spentBefore = sumCounted(
     snapshot.cycleSpends.filter((s) => s.day < today).map(counted),
@@ -101,6 +103,7 @@ export function dailyInputOf(snapshot: MoneySnapshot): DailyNumberInput | null {
       topUps: snapshot.topUpsThisCycle,
     },
     spentBefore,
+    moneyIn: sumMoneyIn(snapshot.cycleSpends),
     today: snapshot.cycleSpends.filter((s) => s.day === today).map(counted),
     notDaily,
     daysLeft: snapshot.cycle.daysLeft,

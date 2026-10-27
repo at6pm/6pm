@@ -44,6 +44,7 @@ function labelsOf(t: T, currency: Currency): SpendsCsvLabels {
       email: t('source.email'),
       applePay: t('source.applePay'),
       cash: t('source.cash'),
+      alert: t('source.alert'),
     },
     yes: t('export.csv.yes'),
     no: t('export.csv.no'),

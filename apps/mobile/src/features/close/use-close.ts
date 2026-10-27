@@ -5,17 +5,24 @@ import {
   closeQueue,
   closeReducer,
   designAmount,
+  FUTURE_YOU,
+  moneyInAsk,
   receiptBankOf,
   remainingCards,
+  remainingMoneyCards,
   startClose,
   type CardVerdict,
   type BillRow,
   type CloseState,
   type Currency,
+  type GivableSpend,
+  type MoneyInAsk,
   type PayCycle,
   REPAYMENT,
   type SpendRow,
 } from '@6pm/domain';
+
+import type { MoneyInPlace } from '../../data/money-in-actions';
 
 import { useMoney, useMoneyActions } from '../../data/money-provider';
 import { findSpend } from '../../data/money-store';
@@ -27,6 +34,7 @@ import { useSpendLabels, useSpendRows } from '../today/use-spend-rows';
 import type { CloseCardContent } from './close-card';
 import { clearClose, parkClose, parkedClose } from './close-session';
 import type { CashChip } from './close-steps';
+import { useCloseMoney } from './use-close-money';
 
 const UNDO_MS = 4500;
 const SORTED_MS = 1700;
@@ -40,7 +48,10 @@ interface Start {
   readonly queue: readonly SpendRow[];
   readonly state: CloseState;
   readonly cash: readonly CashChip[];
+  readonly moneyAsks: Readonly<Record<string, MoneyInAsk>>;
 }
+
+const comesIn = (spend: SpendRow) => spend.direction === 'in';
 
 /**
  * The close opens on the day's waiting spends, or where it was left: a close parked past the
@@ -53,6 +64,7 @@ function startOf(
   home: Currency,
   bills: readonly BillRow[],
   cycle: PayCycle,
+  money: { readonly income: number; readonly givable: readonly GivableSpend[] },
 ): Start {
   const parked = parkedClose(day);
   if (parked !== null && parked.state.step !== 'cards' && parked.state.step !== 'done') {
@@ -61,17 +73,43 @@ function startOf(
       queue: parked.queueIds.flatMap((id) => byId.get(id) ?? []),
       state: closeReducer(parked.state, { type: 'resume' }),
       cash: parked.cash,
+      moneyAsks: parked.moneyAsks,
     };
   }
   const queue = closeQueue(spends, day);
+  const spending = queue.filter((s) => !comesIn(s));
   const askWorkId = workCandidate(queue, designAmount(WORK_QUESTION_MIN, home));
   const asks = new Map(
-    billPaymentAsks(queue, bills, cycle).map((ask) => [ask.spendId, ask.billId ?? REPAYMENT]),
+    billPaymentAsks(spending, bills, cycle).map((ask) => [ask.spendId, ask.billId ?? REPAYMENT]),
   );
+  // Each spend is given back once: a second refund of the same order is an ordinary card.
+  const taken = new Set<string>();
+  const moneyAsks: Record<string, MoneyInAsk> = {};
+  for (const s of queue.filter(comesIn)) {
+    const givable = money.givable.filter((g) => !taken.has(g.id));
+    const ask = moneyInAsk(
+      {
+        day: s.day,
+        amount: s.amount,
+        merchant: s.merchant,
+        note: s.note,
+        memo: s.memo,
+        hint: s.moneyIn === 'refund' ? 'refund' : null,
+      },
+      { income: money.income, cycle, spends: givable },
+    );
+    if (ask === null) continue;
+    if (ask.kind !== 'pay') taken.add(ask.spendId);
+    moneyAsks[s.id] = ask;
+  }
   return {
     queue,
     state: startClose(
       queue.map((s) => {
+        if (comesIn(s)) {
+          const ask = moneyAsks[s.id];
+          return { id: s.id, moneyIn: true, ...(ask ? { askMoney: ask.kind } : {}) };
+        }
         const askBill = asks.get(s.id);
         return {
           id: s.id,
@@ -81,12 +119,13 @@ function startOf(
       }),
     ),
     cash: [],
+    moneyAsks,
   };
 }
 
 function workCandidate(queue: readonly SpendRow[], min: number): string | null {
   const candidates = queue.filter(
-    (s) => s.amount >= min && (s.source === 'shared' || s.source === 'email'),
+    (s) => !comesIn(s) && s.amount >= min && (s.source === 'shared' || s.source === 'email'),
   );
   return [...candidates].sort((a, b) => b.amount - a.amount)[0]?.id ?? null;
 }
@@ -96,8 +135,9 @@ function workCandidate(queue: readonly SpendRow[], min: number): string | null {
  * the database the moment it is made (so leaving mid-close loses nothing). Leaving parks the
  * close at its step; reopening resumes it.
  */
-export function useClose() {
+export function useClose(givable: readonly GivableSpend[]) {
   const snap = useMoney();
+  const moneyIn = useCloseMoney();
   const actions = useMoneyActions();
   const run = useRunAction();
   const { t, language } = useI18n();
@@ -108,16 +148,28 @@ export function useClose() {
   // Fixed when the close opens; its order never changes underneath the user.
   const home = homeCurrencyOf(snap.plan);
   const [start] = useState(() =>
-    startOf([...snap.cycleSpends, ...snap.waitingBefore], day, home, snap.bills, snap.cycle),
+    startOf([...snap.cycleSpends, ...snap.waitingBefore], day, home, snap.bills, snap.cycle, {
+      income: snap.plan?.income ?? 0,
+      givable,
+    }),
   );
-  const { queue } = start;
+  const { queue, moneyAsks } = start;
   const askWorkId = useMemo(
     () => workCandidate(queue, designAmount(WORK_QUESTION_MIN, home)),
     [queue, home],
   );
   const [state, dispatch] = useReducer(closeReducer, start.state);
   const [cash, setCash] = useState<readonly CashChip[]>(start.cash);
-  const rows = useSpendRows(queue);
+  // Money the questions carded mid-close (the pay's extra) was not in the queue it opened with.
+  const extras = useMemo(
+    () =>
+      state.moneyCards.flatMap((card) =>
+        queue.some((s) => s.id === card.id) ? [] : (findSpend(snap, card.id) ?? []),
+      ),
+    [state.moneyCards, queue, snap],
+  );
+  const everything = useMemo(() => [...queue, ...extras], [queue, extras]);
+  const rows = useSpendRows(everything);
   const categories = useMemo(
     () => new Map(snap.categories.map((c) => [c.id, c])),
     [snap.categories],
@@ -148,9 +200,10 @@ export function useClose() {
             : closeReducer(left, { type: 'pause' }),
         queueIds,
         cash: added,
+        moneyAsks,
       });
     },
-    [day, queueIds],
+    [day, queueIds, moneyAsks],
   );
   /** The day is closed: nothing is left to resume. */
   const settle = useCallback(() => {
@@ -159,7 +212,9 @@ export function useClose() {
   }, []);
 
   const keptBefore = queue
-    .filter((s) => state.verdicts[s.id] === 'kept' || state.verdicts[s.id] === 'edited')
+    .filter(
+      (s) => !comesIn(s) && (state.verdicts[s.id] === 'kept' || state.verdicts[s.id] === 'edited'),
+    )
     .reduce((sum, s) => sum + (findSpend(snap, s.id)?.amount ?? s.amount), 0);
   // A shared receipt names its bank as the prototype words it, an emailed one the address it
   // came from; other sources show their detail.
@@ -170,27 +225,40 @@ export function useClose() {
     const bank = spend.source === 'shared' ? receiptBankOf(spend.detail) : null;
     return bank ? t('close.card.readFrom', { bank }) : spend.detail;
   };
-  const remaining = remainingCards(state);
-  const cards: CloseCardContent[] = remaining.map((card) => {
-    const spend = queue.find((s) => s.id === card.id);
-    const row = rows.find((r) => r.id === card.id);
-    const index = queue.findIndex((s) => s.id === card.id);
-    if (!spend || !row) throw new Error('A close card lost its spend');
+  const extraIds = new Set(extras.map((s) => s.id));
+  const contentOf = (id: string): CloseCardContent => {
+    const spend = everything.find((s) => s.id === id);
+    const found = rows.find((r) => r.id === id);
+    if (!spend || !found) throw new Error('A close card lost its spend');
+    const extra = extraIds.has(id);
+    const index = extra ? queue.length + extras.indexOf(spend) : queue.indexOf(spend);
+    const total = queue.length + extras.length;
     const time = labels.time(spend.at);
+    const money = moneyIn.cardOf(spend);
+    const row = money && found.name === '' ? { ...found, name: t('moneyIn.name') } : found;
     return {
       row,
-      no: t('close.card.no', {
-        n: String(index + 1).padStart(2, '0'),
-        total: String(queue.length).padStart(2, '0'),
-        source: labels.source(spend.source),
-      }),
+      no: extra
+        ? t('close.card.no', {
+            n: String(index + 1).padStart(2, '0'),
+            total: String(total).padStart(2, '0'),
+            source: labels.source(spend.source),
+          })
+        : t('close.card.no', {
+            n: String(index + 1).padStart(2, '0'),
+            total: String(queue.length).padStart(2, '0'),
+            source: labels.source(spend.source),
+          }),
       source: labels.source(spend.source),
       // A waiting spend from an earlier day says which day.
       time: spend.day < day ? `${weekday.format(new Date(spend.at))} ${time}` : time,
-      category: categories.get(spend.categoryId)?.name ?? '',
+      category: money
+        ? t(extra ? 'moneyIn.extra.category' : 'moneyIn.name')
+        : (categories.get(spend.categoryId)?.name ?? ''),
       amount: spend.amount,
       keptBefore,
-      detail: cardDetail(spend),
+      detail: extra ? moneyIn.countedAsPay : cardDetail(spend),
+      ...(money ? { money } : {}),
       labels: {
         keptSoFar: t('close.card.keptSoFar'),
         withThis: t('close.card.withThis'),
@@ -199,30 +267,55 @@ export function useClose() {
         notMine: t('close.stamp.notMine'),
       },
     };
-  });
+  };
+  const cards: CloseCardContent[] = remainingCards(state).map((card) => contentOf(card.id));
+  const moneyCards: CloseCardContent[] = remainingMoneyCards(state).map((card) =>
+    contentOf(card.id),
+  );
 
+  const startUndo = useCallback(() => {
+    clearTimeout(undoTimer.current);
+    undoTimer.current = setTimeout(() => dispatch({ type: 'undoExpired' }), UNDO_MS);
+  }, []);
   const decide = useCallback(
     (id: string, verdict: CardVerdict, edit?: { amount: number; categoryId: string }) => {
       dispatch({ type: 'decide', id, verdict });
-      void run(() => actions.setStatus(id, verdict === 'notMine' ? 'skipped' : 'kept', edit));
-      clearTimeout(undoTimer.current);
-      undoTimer.current = setTimeout(() => dispatch({ type: 'undoExpired' }), UNDO_MS);
+      if (verdict === 'spread' || verdict === 'saved') {
+        const place: MoneyInPlace =
+          verdict === 'saved' ? { moneyIn: 'saved', savedTo: FUTURE_YOU } : { moneyIn: 'spread' };
+        void run(() => actions.placeMoneyIn(id, place));
+      } else {
+        void run(() => actions.setStatus(id, verdict === 'notMine' ? 'skipped' : 'kept', edit));
+      }
+      startUndo();
     },
-    [actions, run],
+    [actions, run, startUndo],
+  );
+  /** Money placed from the edit sheet: a pot, a payback, or spread or saved after all. */
+  const decideMoney = useCallback(
+    (id: string, place: MoneyInPlace) => {
+      dispatch({ type: 'decide', id, verdict: 'edited' });
+      void run(() => actions.placeMoneyIn(id, place));
+      startUndo();
+    },
+    [actions, run, startUndo],
   );
   const undo = useCallback(() => {
     const id = state.undoable;
     if (!id) return;
     haptics.tap();
-    // An edit changed the amount and category too; undoing puts the card back as it arrived.
-    const original = queue.find((s) => s.id === id);
-    const restore =
-      state.verdicts[id] === 'edited' && original
-        ? { amount: original.amount, categoryId: original.categoryId }
-        : {};
-    void run(() => actions.undo(id, restore));
+    const verdict = state.verdicts[id];
+    const spend = everything.find((s) => s.id === id);
+    if (spend && comesIn(spend) && verdict !== 'notMine') {
+      void run(() => actions.unplaceMoneyIn(id));
+    } else {
+      // An edit changed the amount and category too; undoing puts the card back as it arrived.
+      const restore =
+        verdict === 'edited' && spend ? { amount: spend.amount, categoryId: spend.categoryId } : {};
+      void run(() => actions.undo(id, restore));
+    }
     dispatch({ type: 'undo' });
-  }, [actions, run, queue, state.undoable, state.verdicts]);
+  }, [actions, run, everything, state.undoable, state.verdicts]);
 
   // The sorted beat moves on by itself.
   useEffect(() => {
@@ -233,15 +326,20 @@ export function useClose() {
   }, [state.step]);
   useEffect(() => () => clearTimeout(undoTimer.current), []);
 
-  const undone = state.undoable ? queue.find((s) => s.id === state.undoable) : undefined;
+  const undone = state.undoable ? everything.find((s) => s.id === state.undoable) : undefined;
+  const undoVerdict = undone ? state.verdicts[undone.id] : undefined;
   const undoText = undone
     ? t(
-        state.verdicts[undone.id] === 'notMine'
+        undoVerdict === 'notMine'
           ? 'close.undoSkipped'
-          : state.verdicts[undone.id] === 'edited'
+          : undoVerdict === 'edited'
             ? 'close.undoEdited'
-            : 'close.undoKept',
-        { name: undone.merchant },
+            : undoVerdict === 'spread'
+              ? 'moneyIn.undoSpread'
+              : undoVerdict === 'saved'
+                ? 'moneyIn.undoSaved'
+                : 'close.undoKept',
+        { name: undone.merchant || t('moneyIn.name') },
       )
     : null;
 
@@ -250,8 +348,14 @@ export function useClose() {
     state,
     dispatch,
     queue,
+    everything,
+    extraIds,
     cards,
+    moneyCards,
+    moneyAsks,
+    moneyIn,
     decide,
+    decideMoney,
     undo,
     undoText,
     askWorkId,

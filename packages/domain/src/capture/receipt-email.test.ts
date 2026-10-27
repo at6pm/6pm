@@ -133,8 +133,17 @@ describe('parseReceiptEmail', () => {
     });
   });
 
-  it('skips money coming in', () => {
-    expect(parseReceiptEmail(tpbankCredit, { receivedAt })).toBeNull();
+  it('reads money coming in as money in, never naming the person themselves as who sent it', () => {
+    expect(parseReceiptEmail(tpbankCredit, { receivedAt })).toMatchObject({
+      kind: 'incoming',
+      amount: 5_000_000,
+      merchant: '',
+      memo: 'LUONG THANG 10',
+    });
+  });
+
+  it('marks nothing as money in on a payment out', () => {
+    expect(parseReceiptEmail(grab, { receivedAt })?.kind).toBeUndefined();
   });
 
   it('reads a Grab e-receipt total, named after the shop', () => {

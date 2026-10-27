@@ -143,6 +143,7 @@ export async function receiveEmail(
     memo: read.memo,
     currency: read.currency,
     category: read.category,
+    kind: read.kind,
   });
   if (!capture.success) return 'not_a_receipt';
 

@@ -24,7 +24,8 @@ export const readEmailSystem = `You read one email that a person's mail sent on 
 kind:
 - payment: money left the person's account, card or wallet to pay someone: a bank's debit or card alert, a shop, ride or food receipt, a bill paid, a transfer to another person.
 - own_transfer: money moved between the person's own accounts: the sender and the receiver are the same name, a deposit or savings purchase, a currency exchange, a top-up of their own wallet.
-- refund, incoming: money came in.
+- refund: a shop, app or bank giving money back for something paid before.
+- incoming: money came in from someone: pay, a transfer from a person, a gift.
 - failed: a payment that was declined, failed, cancelled or not charged ("Không thành công", "declined", "was not charged").
 - order_update: about an order but not its payment: placed, shipped, delivered, cancelled, rate your order, a booking being processed.
 - promo: marketing, offers, vouchers, prices of things not bought, newsletters.
@@ -33,10 +34,10 @@ kind:
 - other: anything else.
 When one email holds both an order and its payment, it is a payment.
 
-For a payment, and null otherwise:
-amount: the final amount actually paid, copied character for character as printed, with its symbol or code when it has one: "₫607,790", "158000₫", "(VND) 700,000.00", "99 USD". It is the total after vouchers, discounts and fees ("Tổng thanh toán", "Bạn trả", "Số tiền giao dịch", "Đã thanh toán hôm nay"), never a subtotal ("Tổng tiền", "Tổng tạm tính"), an item price or a limit. For a group order, the person's own share. Never work it out yourself.
+For a payment, a refund or incoming money, and null otherwise:
+amount: the final amount actually paid (for money in, the amount received), copied character for character as printed, with its symbol or code when it has one: "₫607,790", "158000₫", "(VND) 700,000.00", "99 USD". It is the total after vouchers, discounts and fees ("Tổng thanh toán", "Bạn trả", "Số tiền giao dịch", "Đã thanh toán hôm nay"), never a subtotal ("Tổng tiền", "Tổng tạm tính"), an item price or a limit. For a group order, the person's own share. Never work it out yourself.
 currency: the ISO 4217 code of that amount (VND, USD, IDR).
-merchant: who was really paid, as people say it: the restaurant or shop of a food or marketplace order ("Nhà Đậu", "meo.petshop"), "Grab" with the service for a ride ("Grab ride", "Grab tip"), the merchant of a card alert cleaned up ("Apple", "ElevenLabs", "Gloria Jean's Coffees"), the receiver's name for a transfer. Drop legal words (CÔNG TY, TNHH, CP, JSC, Pte Ltd, Inc). null when the email does not say.
+merchant: who was really paid, as people say it: the restaurant or shop of a food or marketplace order ("Nhà Đậu", "meo.petshop"), "Grab" with the service for a ride ("Grab ride", "Grab tip"), the merchant of a card alert cleaned up ("Apple", "ElevenLabs", "Gloria Jean's Coffees"), the receiver's name for a transfer. For money in, who it came from: the shop or app for a refund, the sender's name for a transfer (never the person themselves). Drop legal words (CÔNG TY, TNHH, CP, JSC, Pte Ltd, Inc). null when the email does not say.
 category: what it was for, one of food, drinks, transport, groceries, shopping, fun, health, home, family, gifts. Rides, flights and hotels are transport; rent, utilities and building fees are home; apps and subscriptions are fun. null when unclear.
 at: when it was paid, as printed, in the email's local time, written YYYY-MM-DDTHH:MM:SS. Dates are day first (16-10-2026). null when no time is printed.
 reference: the order id or the bank's transaction reference, exactly as printed. null when there is none.

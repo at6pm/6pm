@@ -18,8 +18,18 @@ export const spendSourceSchema = z.enum([
   'email',
   'applePay',
   'cash',
+  'alert',
 ]);
 export const spendStatusSchema = z.enum(['caught', 'pending', 'kept', 'skipped', 'deleted']);
+
+/** Spending goes out; money that came in (pay, a gift, a refund) comes in. */
+export const spendDirectionSchema = z.enum(['out', 'in']);
+
+/**
+ * What money that came in was, once the user said at the close: spread over the days left, saved
+ * in a pot or Future you, their pay, a refund of a spend, or someone paying back their share.
+ */
+export const moneyInSchema = z.enum(['spread', 'saved', 'pay', 'refund', 'payback']);
 
 export const categoryRowSchema = z.object({
   id,
@@ -71,6 +81,14 @@ export const spendRowSchema = z.object({
    * rows and backups from before it was kept.
    */
   memo: z.string().max(MEMO_MAX).nullable().optional(),
+  /** `in` for money that came in; null or absent is spending, as on rows from before it could. */
+  direction: spendDirectionSchema.nullable().optional(),
+  /** What money that came in was; null while it waits for the close, and on spending. */
+  moneyIn: moneyInSchema.nullable().optional(),
+  /** The spend a refund or a payback answers (its id). */
+  givesBack: id.nullable().optional(),
+  /** The pot (or Future you goal) money that came in was saved in (its id). */
+  savedTo: id.nullable().optional(),
   createdAt: instant,
   updatedAt: instant,
 });

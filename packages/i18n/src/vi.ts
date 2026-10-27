@@ -32,6 +32,7 @@ import { viTravel } from './vi-travel';
 import { viCompanions } from './vi-companions';
 import { viWidgetsGuide } from './vi-widgets-guide';
 import { viDuo } from './vi-duo';
+import { viMoneyIn } from './vi-money-in';
 
 export const vi: Catalogue = {
   ...viOnboarding,
@@ -67,4 +68,5 @@ export const vi: Catalogue = {
   ...viCompanions,
   ...viWidgetsGuide,
   ...viDuo,
+  ...viMoneyIn,
 };

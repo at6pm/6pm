@@ -2,6 +2,7 @@ import { Text, TextInput, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import type { MoneyParts } from '@6pm/domain';
+import { moneyInInk } from '@6pm/theme';
 
 import { CategoryTile } from '../../ui/category-tile';
 import type { SymbolName } from '../../ui/icons/symbols.generated';
@@ -32,6 +33,7 @@ export function QuickTicket({
   icon,
   hue,
   categoryLine,
+  incoming = false,
 }: {
   readonly heading: string;
   readonly stamp: string;
@@ -45,6 +47,8 @@ export function QuickTicket({
   readonly icon: SymbolName;
   readonly hue: number;
   readonly categoryLine: string;
+  /** Money said to have come in: the amount prints green, with its "+". */
+  readonly incoming?: boolean;
 }) {
   const { palette } = useTheme();
   return (
@@ -80,7 +84,7 @@ export function QuickTicket({
               style={{
                 ...leading(display(60 * palette.numK, 500, -0.02), 60, true),
                 ...tabular,
-                color: INK,
+                color: incoming ? moneyInInk.paper : INK,
                 opacity: amount > 0 ? 1 : 0.35,
               }}
             />

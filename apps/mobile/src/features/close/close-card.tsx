@@ -1,4 +1,6 @@
 import { Text, View } from 'react-native';
+
+import { moneyInInk } from '@6pm/theme';
 import Animated, { useAnimatedStyle, type SharedValue } from 'react-native-reanimated';
 
 import { CategoryTile } from '../../ui/category-tile';
@@ -31,6 +33,20 @@ export interface CloseCardContent {
     readonly keep: string;
     readonly edit: string;
     readonly notMine: string;
+  };
+  /**
+   * Money that came in: the card shows tomorrow as it is and with the money spread, prints the
+   * amount in green with a "+", and stamps SPREAD (right) and FUTURE YOU (up) in place of KEEP.
+   */
+  readonly money?: {
+    readonly asIs: number;
+    readonly spread: number;
+    readonly asIsLabel: string;
+    readonly spreadLabel: string;
+    readonly stampSpread: string;
+    readonly stampFutureYou: string;
+    /** Future you has goals to save in: the card can go up. */
+    readonly canSave: boolean;
   };
 }
 
@@ -105,7 +121,7 @@ export function CloseCard({
   readonly height?: number;
   readonly top: boolean;
 }) {
-  const { row, labels } = content;
+  const { row, labels, money: moneyIn } = content;
   const money = useMoneyFormat();
   const { numK } = useTheme().palette;
   // Too short for the running total (a short screen): the receipt keeps its name and amount.
@@ -136,7 +152,13 @@ export function CloseCard({
         </View>
         <DashedRule color={RULE} />
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-          <CategoryTile icon={row.icon} hue={row.hue} size={44} radius={15} glyph={25} />
+          <CategoryTile
+            icon={moneyIn ? 'payments' : row.icon}
+            hue={moneyIn ? moneyInInk.hue : row.hue}
+            size={44}
+            radius={15}
+            glyph={25}
+          />
           <View style={{ gap: 2, flexShrink: 1 }}>
             <Text numberOfLines={1} style={{ ...body(20, 650, -0.02), color: INK }}>
               {row.name}
@@ -150,16 +172,18 @@ export function CloseCard({
           <View style={{ flex: 1, justifyContent: 'center', gap: 6 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <Text style={{ ...mono(11.5, 400, 0.1), color: 'rgba(42,34,48,.62)' }}>
-                {labels.keptSoFar}
+                {moneyIn ? moneyIn.asIsLabel : labels.keptSoFar}
               </Text>
               <Text style={{ ...mono(11.5), ...tabular, color: 'rgba(42,34,48,.62)' }}>
-                {money.number(content.keptBefore)}
+                {money.number(moneyIn ? moneyIn.asIs : content.keptBefore)}
               </Text>
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <Text style={{ ...mono(11.5, 400, 0.1), color: INK }}>{labels.withThis}</Text>
+              <Text style={{ ...mono(11.5, 400, 0.1), color: INK }}>
+                {moneyIn ? moneyIn.spreadLabel : labels.withThis}
+              </Text>
               <Text style={{ ...mono(11.5, 600), ...tabular, color: INK }}>
-                {money.number(content.keptBefore + content.amount)}
+                {money.number(moneyIn ? moneyIn.spread : content.keptBefore + content.amount)}
               </Text>
             </View>
           </View>
@@ -167,13 +191,15 @@ export function CloseCard({
         {/* The prototype's inline `<span style="font-size:.42em; margin-left:4px">₫</span>`. */}
         <FitWidth height={72}>
           <AmountText
-            parts={money.parts(content.amount)}
+            parts={
+              moneyIn ? { ...money.parts(content.amount), sign: '+' } : money.parts(content.amount)
+            }
             numberOfLines={1}
             gap={'\u2006'}
             style={{
               ...leading(display(72 * numK, 500, -0.02), 72 * numK, true),
               ...tabular,
-              color: INK,
+              color: moneyIn ? moneyInInk.paper : INK,
             }}
             symbol={{ ...display(30, 500), opacity: 0.55 }}
           />
@@ -187,7 +213,7 @@ export function CloseCard({
         {top ? (
           <>
             <Stamp
-              label={labels.keep}
+              label={moneyIn ? moneyIn.stampSpread : labels.keep}
               color="#2f7d55"
               rotate="-11deg"
               style={{ top: 96, left: 18 }}
@@ -218,6 +244,20 @@ export function CloseCard({
                 return clamp(dy.value / 90);
               }}
             />
+            {moneyIn?.canSave ? (
+              <Stamp
+                label={moneyIn.stampFutureYou}
+                color={moneyInInk.stamp}
+                rotate="-4deg"
+                style={{ top: 118, alignSelf: 'center' }}
+                size={22}
+                spacing={0.14}
+                opacity={() => {
+                  'worklet';
+                  return clamp(-dy.value / 90);
+                }}
+              />
+            ) : null}
           </>
         ) : null}
       </View>

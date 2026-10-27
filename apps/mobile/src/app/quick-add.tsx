@@ -11,6 +11,7 @@ import {
   toMinor,
   type MerchantRuleRow,
 } from '@6pm/domain';
+import { moneyInInk } from '@6pm/theme';
 
 import { useMoney, useMoneyActions, useMoneyStore } from '../data/money-provider';
 import { useCompanionToast } from '../features/companion/use-companion-toast';
@@ -106,16 +107,30 @@ export default function QuickAdd() {
     // A second tap before the sheet has closed must not write the spend again.
     if (amount <= 0 || !category || saving.current) return;
     saving.current = true;
+    // Money said to have come in waits for the close, which asks where it goes.
     const saved = await run(() =>
-      actions.addSpend({
-        amount,
-        categoryId: category.id,
-        merchant: note.trim() || category.name,
-        source: voice.said ? 'voice' : 'manual',
-        status: 'kept',
-        wallet,
-        foreignAmount: entry.foreignAmount,
-      }),
+      actions.addSpend(
+        voice.incoming
+          ? {
+              amount,
+              categoryId: category.id,
+              merchant: note.trim(),
+              source: 'voice',
+              status: 'caught',
+              wallet,
+              foreignAmount: entry.foreignAmount,
+              direction: 'in',
+            }
+          : {
+              amount,
+              categoryId: category.id,
+              merchant: note.trim() || category.name,
+              source: voice.said ? 'voice' : 'manual',
+              status: 'kept',
+              wallet,
+              foreignAmount: entry.foreignAmount,
+            },
+      ),
     );
     if (!saved) {
       saving.current = false;
@@ -155,7 +170,8 @@ export default function QuickAdd() {
           heading={t('quick.ticket', { no: String(snap.cycleSpends.length + 1).padStart(3, '0') })}
           stamp={stamp}
           amount={amount}
-          typed={entry.typed}
+          typed={voice.incoming ? { ...entry.typed, sign: '+' } : entry.typed}
+          incoming={voice.incoming}
           hint={
             voice.heard !== null
               ? t('voice.heard', { said: voice.heard })
@@ -168,9 +184,15 @@ export default function QuickAdd() {
           note={note}
           placeholder={t('quick.what')}
           onNote={setNote}
-          icon={category && isSymbolName(category.icon) ? category.icon : 'payments'}
-          hue={category?.hue ?? 80}
-          categoryLine={`${category?.name ?? ''} · ${wallets.find((w) => w.value === wallet)?.label ?? wallet}`}
+          icon={
+            voice.incoming
+              ? 'payments'
+              : category && isSymbolName(category.icon)
+                ? category.icon
+                : 'payments'
+          }
+          hue={voice.incoming ? moneyInInk.hue : (category?.hue ?? 80)}
+          categoryLine={`${voice.incoming ? t('moneyIn.name') : (category?.name ?? '')} · ${wallets.find((w) => w.value === wallet)?.label ?? wallet}`}
         />
         <ScrollView
           horizontal

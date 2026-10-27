@@ -73,6 +73,8 @@ export const emailCaptureSchema = z.object({
   currency: currencyCodeSchema.optional(),
   /** What it was for, when the email says; absent before it was read. */
   category: z.enum(EMAIL_CATEGORY_IDS).nullable().optional(),
+  /** Money that came in, or a refund; absent for a payment out and before money in was read. */
+  kind: z.enum(['incoming', 'refund']).optional(),
 });
 export type EmailCapture = z.infer<typeof emailCaptureSchema>;
 

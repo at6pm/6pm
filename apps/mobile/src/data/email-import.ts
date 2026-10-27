@@ -74,6 +74,9 @@ export async function importEmailCaptures(deps: EmailImportDeps): Promise<EmailI
         detail: capture.from,
         memo: capture.memo ?? null,
         at: new Date(capture.at),
+        ...(capture.kind === undefined
+          ? {}
+          : { direction: 'in' as const, moneyIn: capture.kind === 'refund' ? 'refund' : null }),
       });
       saved += 1;
     }

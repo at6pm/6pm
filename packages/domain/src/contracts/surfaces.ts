@@ -39,7 +39,7 @@ export const inboxSpendSchema = z.object({
   v: version,
   id: z.uuid(),
   kind: z.literal('spend'),
-  source: z.enum(['shared', 'applePay', 'voice']),
+  source: z.enum(['shared', 'applePay', 'voice', 'alert']),
   status: z.enum(['caught', 'kept']),
   at: instant,
   /** Null when the source gave no readable amount, or none in the home currency yet. */
@@ -64,6 +64,8 @@ export const inboxSpendSchema = z.object({
    * by the user, or on older files.
    */
   currencyGuessed: z.boolean().optional(),
+  /** `in` for money that came in (a bank alert or receipt that says so); absent means spending. */
+  direction: z.enum(['out', 'in']).optional(),
 });
 export type InboxSpend = z.infer<typeof inboxSpendSchema>;
 

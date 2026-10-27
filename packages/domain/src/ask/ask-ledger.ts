@@ -70,8 +70,9 @@ export function matchCategory(
   return partial?.c ?? null;
 }
 
+/** Spending that happened: not marked not mine or deleted, and not money that came in. */
 export function real(s: InsightSpend): boolean {
-  return s.status !== 'skipped' && s.status !== 'deleted';
+  return s.status !== 'skipped' && s.status !== 'deleted' && s.direction !== 'in';
 }
 
 export function within(range: ResolvedRange, s: InsightSpend): boolean {

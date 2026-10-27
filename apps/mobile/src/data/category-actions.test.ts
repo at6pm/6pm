@@ -6,6 +6,8 @@ import { sql as createTogetherMoves } from '../db/migrations/0003-create-togethe
 import { sql as addCurrencyGuessed } from '../db/migrations/0004-spend-currency-guessed';
 import { sql as addBillPayments } from '../db/migrations/0008-bill-kind-and-payments';
 import { sql as addSpendMemo } from '../db/migrations/0009-spend-memo';
+import { sql as addSightingCapture } from '../db/migrations/0006-sighting-capture-id';
+import { sql as addMoneyIn } from '../db/migrations/0010-money-in';
 import { categoryActions, tallyByCategory } from './category-actions';
 import { moneyActions } from './money-actions';
 import { createMoneyStore } from './money-store';
@@ -24,6 +26,8 @@ async function openStore() {
   sqlite.exec(addCurrencyGuessed);
   sqlite.exec(addBillPayments);
   sqlite.exec(addSpendMemo);
+  sqlite.exec(addSightingCapture);
+  sqlite.exec(addMoneyIn);
   const db: SqlDatabase = {
     getAllAsync: <T>(source: string, params: SqlValue[]) =>
       Promise.resolve(sqlite.prepare(source).all(...params) as T[]),

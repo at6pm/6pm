@@ -31,6 +31,7 @@ import { enTravel } from './en-travel';
 import { enCompanions } from './en-companions';
 import { enWidgetsGuide } from './en-widgets-guide';
 import { enDuo } from './en-duo';
+import { enMoneyIn } from './en-money-in';
 
 /** The source catalogue: every key the app uses, in English. */
 export const en = {
@@ -67,4 +68,5 @@ export const en = {
   ...enCompanions,
   ...enWidgetsGuide,
   ...enDuo,
+  ...enMoneyIn,
 } as const;

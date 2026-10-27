@@ -12,6 +12,7 @@ export * from './plan/plan-lede';
 export * from './plan/plan-river';
 export * from './plan/pots';
 export * from './plan/spend-preview';
+export * from './spend/money-in';
 export * from './spend/predict-category';
 export * from './spend/spend';
 export * from './spend/spend-when';

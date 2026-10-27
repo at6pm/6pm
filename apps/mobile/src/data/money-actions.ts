@@ -14,6 +14,7 @@ import {
 
 import { homeCurrencyOf } from '../money/use-money-format';
 
+import { moneyInActions } from './money-in-actions';
 import { findSpend, type MoneyStore } from './money-store';
 
 export interface NewSpend {
@@ -40,6 +41,10 @@ export interface NewSpend {
    * close that ran past 04:00 belongs to the day being closed.
    */
   readonly day?: LocalDate;
+  /** `in` for money that came in; spending when left out. */
+  readonly direction?: 'in' | 'out';
+  /** What the capture read money in as (an email read as a refund), for the close to ask. */
+  readonly moneyIn?: 'refund' | null;
 }
 
 /**
@@ -162,6 +167,7 @@ export function moneyActions(store: MoneyStore) {
         at: at.toISOString(),
         detail: input.detail ?? null,
         foreignAmount: input.foreignAmount ?? null,
+        direction: input.direction ?? null,
       },
       snap.cycleSpends,
     );
@@ -188,6 +194,10 @@ export function moneyActions(store: MoneyStore) {
       foreignAmount: input.foreignAmount ?? null,
       currencyGuessed: input.currencyGuessed ?? false,
       memo: input.memo ?? null,
+      direction: input.direction === 'in' ? 'in' : null,
+      moneyIn: input.direction === 'in' ? (input.moneyIn ?? null) : null,
+      givesBack: null,
+      savedTo: null,
       createdAt: now,
       updatedAt: now,
     };
@@ -266,6 +276,7 @@ export function moneyActions(store: MoneyStore) {
           ? patchNow(row, { ...restore, status: row.previousStatus, previousStatus: null })
           : null;
       }),
+    ...moneyInActions(store, { inTurn, current, patchNow, replaceSpend }),
     /** "Was this one for work?" — a work spend moves to Claim back, out of the daily number. */
     markForWork: (id: string, forWork: boolean) => update(id, { forWork }),
     /** The category a saved rule files this merchant under, or null when none applies. */

@@ -1,4 +1,4 @@
-import type { SpendSource, SpendStatus } from '../spend/spend';
+import type { SpendDirection, SpendSource, SpendStatus } from '../spend/spend';
 
 /** Two sightings of one payment arrive within this long of each other. */
 export const DUPLICATE_WINDOW_MS = 3 * 60_000;
@@ -15,10 +15,10 @@ export const QR_RECEIPT_WINDOW_MS = 20 * 60_000;
  * something the user typed (Quick add, voice, cash) is a spend they chose to record, never a
  * second sighting of a capture.
  */
-const OBSERVED: ReadonlySet<SpendSource> = new Set(['qr', 'shared', 'email', 'applePay']);
+const OBSERVED: ReadonlySet<SpendSource> = new Set(['qr', 'shared', 'email', 'applePay', 'alert']);
 
 /** Sources that hear from the bank or the wallet once money has actually moved. */
-const PAID: ReadonlySet<SpendSource> = new Set(['shared', 'email', 'applePay']);
+const PAID: ReadonlySet<SpendSource> = new Set(['shared', 'email', 'applePay', 'alert']);
 
 export interface SightedSpend {
   readonly id: string;
@@ -31,6 +31,8 @@ export interface SightedSpend {
   readonly detail?: string | null;
   /** The amount in the currency it was paid in, when that is not the home currency. */
   readonly foreignAmount?: ForeignSighting | null;
+  /** `in` for money that came in; absent means spending. */
+  readonly direction?: SpendDirection | null | undefined;
 }
 
 /** An amount paid in another currency, in its major units (99 for $99.00). */
@@ -48,6 +50,8 @@ export interface NewSighting {
   /** Who told 6pm: for an email, the address it came from. */
   readonly detail?: string | null;
   readonly foreignAmount?: ForeignSighting | null;
+  /** `in` for money that came in; absent means spending. */
+  readonly direction?: SpendDirection | null | undefined;
 }
 
 interface Sighting {
@@ -105,7 +109,8 @@ function closeEnough(a: Sighting, b: Sighting): boolean {
  * within three minutes (the nearest in time wins). A QR scan still pending is also matched by a
  * bank receipt, shared receipt or Apple Pay from its tap up to twenty minutes after it, never
  * before. Skipped and deleted spends never absorb a capture. A spend the user typed (Quick add, voice, cash) is never
- * merged with anything: each was entered on purpose, and no other source can have seen cash.
+ * merged with anything: each was entered on purpose, and no other source can have seen cash. Money
+ * in and money out of the same amount are two movements, never one.
  */
 export function findDuplicate(
   incoming: NewSighting,
@@ -119,6 +124,7 @@ export function findDuplicate(
   let bestGap = Infinity;
   for (const spend of existing) {
     if (spend.status === 'skipped' || spend.status === 'deleted') continue;
+    if ((spend.direction ?? 'out') !== (incoming.direction ?? 'out')) continue;
     if (!sameAmount(spend, incoming) || !differentWitnesses(spend, incoming)) continue;
     if (!OBSERVED.has(spend.source) || !OBSERVED.has(incoming.source)) continue;
     const seen: Sighting = { source: spend.source, status: spend.status, at: Date.parse(spend.at) };

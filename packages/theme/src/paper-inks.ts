@@ -27,6 +27,30 @@ export const zineInk = {
   knob: '#ffffff',
 } as const;
 
+/**
+ * Money that came in, the same in every look: green ink on the close's paper and the Diary's slip,
+ * and Future you's own green (the river's colour for it) on the button and the pill it flies to.
+ */
+export const moneyInInk = {
+  /** The amount and its "+" on paper. */
+  paper: oklchSrgbHex(0.45, 0.12, 150),
+  /** The SPREAD and FUTURE YOU stamps, as the KEEP stamp. */
+  stamp: '#2f7d55',
+  futureYou: oklchSrgbHex(0.76, 0.13, 150),
+  /** A lighter Future you for the button held under a lifted card. */
+  futureYouLit: oklchSrgbHex(0.8, 0.14, 150),
+  futureYouFg: '#14301f',
+  futureYouGlow: `${oklchSrgbHex(0.6, 0.13, 150)}59`,
+  /** The pill a card is lifted to: a dark green glass, its label and its edge. */
+  pill: 'rgba(18,40,30,.42)',
+  pillLabel: oklchSrgbHex(0.86, 0.12, 150),
+  pillText: '#fbf4ec',
+  pillEdge: `${oklchSrgbHex(0.76, 0.13, 150)}8c`,
+  pillHalo: `${oklchSrgbHex(0.76, 0.13, 150)}1a`,
+  /** The tile hue money in wears where a category's would be. */
+  hue: 150,
+} as const;
+
 /** The year book on the Diary shelf: dark cloth, gold lettering. */
 export const yearBookInk = {
   cloth: '#1f1b26',
