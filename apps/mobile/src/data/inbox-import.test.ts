@@ -220,3 +220,105 @@ describe('importInbox', () => {
     });
   });
 });
+
+describe('importInbox: bank alerts', () => {
+  let store: MoneyStore;
+  let actions: ReturnType<typeof moneyActions>;
+
+  beforeEach(async () => {
+    const db = openMemoryDb();
+    store = createMoneyStore(db, TODAY);
+    await writePlan(db, { ...DEFAULT_PLAN, income: 20_000_000, startedOn: '2026-10-01' });
+    await store.tables.categories.put({
+      id: 'food',
+      name: 'food',
+      icon: 'restaurant',
+      hue: 40,
+      countsDaily: true,
+      sort: 0,
+      archivedAt: null,
+    });
+    await store.load(TODAY);
+    actions = moneyActions(store);
+  });
+
+  const run = (items: readonly InboxItem[]) =>
+    importInbox({
+      store,
+      actions,
+      inbox: memoryInbox(items),
+      report: () => undefined,
+      enrich: (item) => Promise.resolve(item),
+    });
+
+  const at = (minutes: number) => new Date(2026, 9, 11, 12, 30 + minutes).toISOString();
+
+  const alert = (over: Partial<InboxSpend> = {}): InboxSpend =>
+    tap({
+      source: 'alert',
+      merchant: 'PHO HOA',
+      receipt: { bank: 'MB Bank', namingLines: [], memo: 'Thanh toan QR PHO HOA' },
+      direction: 'out',
+      ...over,
+    });
+
+  it('saves money out from an alert as caught, with its bank and memo', async () => {
+    const item = alert();
+    await run([item]);
+    expect(await store.tables.spends.get(item.id)).toMatchObject({
+      source: 'alert',
+      status: 'caught',
+      amount: 45_000,
+      detail: 'MB Bank',
+      memo: 'Thanh toan QR PHO HOA',
+      // Spending is stored as no direction, as every row from before money in.
+      direction: null,
+    });
+  });
+
+  it('saves money in from an alert as money in, caught for the close', async () => {
+    const item = alert({ amount: 2_000_000, merchant: 'LUONG T10', direction: 'in' });
+    await run([item]);
+    expect(await store.tables.spends.get(item.id)).toMatchObject({
+      status: 'caught',
+      amount: 2_000_000,
+      direction: 'in',
+    });
+  });
+
+  it('merges an alert, an Apple Pay tap and a receipt email of one payment into one spend', async () => {
+    const paid = tap({ at: at(0) });
+    await run([paid]);
+    await actions.captureSpend({
+      amount: 45_000,
+      categoryId: 'food',
+      merchant: 'Phở Hòa',
+      source: 'email',
+      status: 'caught',
+      detail: 'no-reply@mbbank.com.vn',
+      at: new Date(at(2)),
+    });
+    await run([alert({ at: at(1) })]);
+    const rows = store.getSnapshot().cycleSpends;
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({ id: paid.id, source: 'applePay', merchant: 'Phở Hòa' });
+    const trail = await store.db.getAllAsync<{ source: string }>(
+      'SELECT source FROM spend_sightings WHERE spend_id = ? ORDER BY seen_at',
+      [paid.id],
+    );
+    expect(trail.map((s) => s.source)).toEqual(['applePay', 'alert', 'email']);
+  });
+
+  it('never merges money in with a spend of the same amount', async () => {
+    await run([tap({ at: at(0) })]);
+    await run([alert({ at: at(1), direction: 'in' })]);
+    expect(store.getSnapshot().cycleSpends).toHaveLength(2);
+  });
+
+  it('imports the same alert once', async () => {
+    const item = alert();
+    await run([item]);
+    await run([item]);
+    expect(store.getSnapshot().cycleSpends).toHaveLength(1);
+  });
+});

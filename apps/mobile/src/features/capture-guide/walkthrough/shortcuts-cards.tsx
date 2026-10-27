@@ -32,7 +32,13 @@ export function TriggerCard() {
 }
 
 /** A labelled row of a card, with whatever sits on its right. */
-function FieldRow({ label, children }: { readonly label: string; readonly children?: ReactNode }) {
+export function FieldRow({
+  label,
+  children,
+}: {
+  readonly label: string;
+  readonly children?: ReactNode;
+}) {
   return (
     <View
       style={{
@@ -54,7 +60,13 @@ function FieldRow({ label, children }: { readonly label: string; readonly childr
 }
 
 /** A parameter inside an action's sentence: blue on a pale blue tint, faint while unset. */
-function Token({ text, unset = false }: { readonly text: string; readonly unset?: boolean }) {
+export function Token({
+  text,
+  unset = false,
+}: {
+  readonly text: string;
+  readonly unset?: boolean;
+}) {
   return (
     <View
       style={{

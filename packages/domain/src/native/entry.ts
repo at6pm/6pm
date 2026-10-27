@@ -1,6 +1,7 @@
 import {
   shareCardSchema,
   surfaceContextSchema,
+  type BankAlertResult,
   type LogSpendResult,
   type ShareCard,
   type SurfaceContext,
@@ -9,6 +10,7 @@ import { receiptReadingOrder } from '../capture/bank-receipt';
 import { currencyAt } from '../capture/photo-place';
 import { readReceipt } from '../capture/read-receipt';
 import { contextMoney } from './context-money';
+import { buildBankAlert } from './log-bank-alert';
 import { buildLogSpend } from './log-spend';
 import { shareAmount } from './share-amount';
 import {
@@ -207,6 +209,41 @@ export function logSpend(
       amountText: '',
       title: '',
       safeAfterText: null,
+    };
+    return JSON.stringify(nothing);
+  }
+}
+
+/**
+ * Reads one bank or wallet notification the Shortcuts automation passed: the app it came from
+ * (its name or bundle id, empty when unknown), its title, subtitle and body, and `dateIso`, when
+ * iOS delivered it (empty for none). Returns `BankAlertResult`: the inbox item with a fresh
+ * lower-case UUID v4, null for an alert that is skipped, and the `last` status line.
+ */
+export function logBankAlert(
+  app: string,
+  title: string,
+  subtitle: string,
+  body: string,
+  dateIso: string,
+  contextJson: string,
+  nowIso: string,
+): string {
+  const now = nowOf(nowIso);
+  const text = (value: unknown) => (typeof value === 'string' ? value : '');
+  try {
+    const input = {
+      app: text(app),
+      title: text(title),
+      subtitle: text(subtitle),
+      body: text(body),
+      date: text(dateIso) || null,
+    };
+    return JSON.stringify(buildBankAlert(input, contextOf(contextJson), now, randomUuid()));
+  } catch {
+    const nothing: BankAlertResult = {
+      item: null,
+      last: { v: 1, at: now.toISOString(), bank: null, amountText: '', skipped: 'unread' },
     };
     return JSON.stringify(nothing);
   }

@@ -7,7 +7,7 @@ import type { CaptureSource } from './source-status';
 /** The guide's own words: none of them takes a parameter. */
 export type GuideKey = Exclude<
   Extract<StringKey, `capture.${string}`>,
-  'capture.last' | 'capture.settings.summary' | 'capture.walk.stepOf'
+  'capture.last' | 'capture.settings.summary' | 'capture.walk.stepOf' | 'capture.alerts.cameIn'
 >;
 
 export interface GuideStep {
@@ -133,6 +133,31 @@ export const GUIDES: Readonly<Record<CaptureSource, GuideContent>> = {
       source: 'applePay',
     },
   },
+  alerts: {
+    icon: 'notifications',
+    hue: 15,
+    name: 'capture.alerts.name',
+    sub: 'capture.alerts.sub',
+    headline: 'capture.alerts.headline',
+    time: 'capture.alerts.time',
+    steps: [
+      { text: 'capture.alerts.step1', icon: 'automation', chip: 'capture.alerts.step1Chip' },
+      {
+        text: 'capture.alerts.step2',
+        icon: 'account_balance',
+        chip: { names: ['MB Bank', 'Vietcombank', 'MoMo'] },
+      },
+      { text: 'capture.alerts.step3', icon: 'notifications', chip: 'capture.alerts.step3Chip' },
+    ],
+    tip: 'capture.alerts.tip',
+    sample: {
+      name: { merchant: 'PHO HOA' },
+      categoryId: 'food',
+      amount: 50000,
+      time: '12:30',
+      source: 'alert',
+    },
+  },
   widgets: {
     icon: 'widgets',
     hue: 200,
@@ -156,6 +181,48 @@ export const GUIDES: Readonly<Record<CaptureSource, GuideContent>> = {
       amount: 45000,
       time: '15:05',
       source: 'voice',
+    },
+  },
+  siri: {
+    icon: 'mic',
+    hue: 270,
+    name: 'capture.siri.name',
+    sub: 'capture.siri.sub',
+    headline: 'capture.siri.headline',
+    time: 'capture.siri.time',
+    steps: [
+      { text: 'capture.siri.step1', icon: 'mic', chip: 'capture.siri.step1Chip' },
+      { text: 'capture.siri.step2', icon: 'chat', chip: 'capture.siri.step2Chip' },
+      { text: 'capture.siri.step3', icon: 'today', chip: 'capture.siri.step3Chip' },
+    ],
+    tip: 'capture.siri.tip',
+    sample: {
+      name: { merchant: 'Phở' },
+      categoryId: 'food',
+      amount: 45000,
+      time: '12:05',
+      source: 'voice',
+    },
+  },
+  backTap: {
+    icon: 'smartphone',
+    hue: 160,
+    name: 'capture.backTap.name',
+    sub: 'capture.backTap.sub',
+    headline: 'capture.backTap.headline',
+    time: 'capture.backTap.time',
+    steps: [
+      { text: 'capture.backTap.step1', icon: 'settings', chip: 'capture.backTap.step1Chip' },
+      { text: 'capture.backTap.step2', icon: 'swipe', chip: 'capture.backTap.step2Chip' },
+      { text: 'capture.backTap.step3', icon: 'add', chip: 'capture.backTap.step3Chip' },
+    ],
+    tip: 'capture.backTap.tip',
+    sample: {
+      name: { merchant: 'Bánh mì' },
+      categoryId: 'food',
+      amount: 25000,
+      time: '07:40',
+      source: 'manual',
     },
   },
 };

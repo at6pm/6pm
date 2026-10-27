@@ -77,6 +77,22 @@ function buildMarks(): readonly Mark[] {
 
 const CURRENCY_MARKS = buildMarks();
 
+/**
+ * The currency a mark names on its own ("RM", "US$", "₫", "VND"), or null when the text holds no
+ * mark 6pm knows: unlike an amount, a bare word is never the home currency.
+ */
+export function currencyMarkOf(text: string, home: Currency = VND): string | null {
+  const s = text.normalize('NFC').trim();
+  if (s === '') return null;
+  if (home.code !== 'VND' && markOf(home.code, 'iu').test(s)) return home.code;
+  // "đ" alone is đồng only after a digit; a mark read alone stands for itself.
+  if (/^đ$/iu.test(s)) return 'VND';
+  const found = CURRENCY_MARKS.find(([mark]) => mark.test(s));
+  if (!found) return null;
+  const [, code, bare] = found;
+  return bare && currencyOf(code).symbol === home.symbol ? home.code : code;
+}
+
 /** A letter or currency sign set right against the digits, when no mark names a currency. */
 const UNNAMED_MARK = /[\p{L}\p{Sc}]\d|\d[\p{L}\p{Sc}]/u;
 

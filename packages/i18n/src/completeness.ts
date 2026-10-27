@@ -21,6 +21,9 @@ export const sameInBothLanguages: readonly string[] = [
   'Vietcombank',
   'MoMo',
   'CSV · Sheets',
+  // Siri hears English only, so its phrase and what is said to it stay English.
+  'Log in 6pm',
+  '“phở forty-five k”',
   // Mail services and iOS apps keep their names.
   'Outlook.com',
   'iCloud Mail',

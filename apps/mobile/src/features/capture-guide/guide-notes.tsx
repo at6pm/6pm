@@ -59,6 +59,72 @@ export function MistakesCard({ items }: { readonly items: readonly NoteKey[] }) 
   );
 }
 
+/**
+ * Whether the bank alert automation has run yet: the last alert it read, or a nudge to try a
+ * small payment, then where alerts are read.
+ */
+export function AlertStatusCard({ line }: { readonly line: string | null }) {
+  const { palette } = useTheme();
+  const { t } = useI18n();
+  const colours = captureColours(palette);
+  const seen = line !== null;
+  return (
+    <View
+      style={{
+        borderRadius: 26,
+        backgroundColor: palette.cell,
+        boxShadow: palette.cardShadow,
+        paddingVertical: 4,
+        paddingHorizontal: 16,
+      }}
+    >
+      <View style={{ flexDirection: 'row', gap: 12, paddingVertical: 13 }}>
+        <View
+          style={{
+            width: 26,
+            height: 26,
+            borderRadius: 13,
+            backgroundColor: seen ? colours.okBg : colours.warnBg,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Symbol
+            name={seen ? 'check' : 'notifications'}
+            size={17}
+            color={seen ? colours.ok : colours.warn}
+            weight={600}
+          />
+        </View>
+        <View style={{ flex: 1, gap: 3, paddingTop: 2 }}>
+          <Text style={{ ...body(15, 600), lineHeight: 20.5, color: palette.ink }}>
+            {line ?? t('capture.alerts.none')}
+          </Text>
+          <Text style={{ ...body(14), lineHeight: 19.6, color: palette.inkSoft }}>
+            {t(seen ? 'capture.alerts.seenBody' : 'capture.alerts.noneBody')}
+          </Text>
+        </View>
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          gap: 12,
+          paddingVertical: 13,
+          borderTopWidth: 0.5,
+          borderTopColor: palette.hair,
+        }}
+      >
+        <View style={{ width: 26, alignItems: 'center' }}>
+          <Symbol name="lock" size={18} color={palette.inkSoft} />
+        </View>
+        <Text style={{ flex: 1, ...body(14), lineHeight: 19.6, color: palette.inkSoft }}>
+          {t('capture.alerts.privacy')}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
 /** Another mail service's steps, short: its name, then numbered lines. */
 export function OtherMailCard({
   name,

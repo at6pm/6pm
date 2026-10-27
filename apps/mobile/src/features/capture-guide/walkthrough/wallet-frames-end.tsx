@@ -11,25 +11,42 @@ import { Phone } from './device';
 import { iosInk } from './frame-ink';
 import { GlassButton, LargeTitle } from './ios-parts';
 import { Reveal, Switch, TapFlash, Touch } from './moving-parts';
-import { EditorBar, EditorCard, LogShortcutIcon } from './shortcuts-chrome';
+import { EditorBar, EditorCard, LogShortcutIcon, SixPmIcon } from './shortcuts-chrome';
 import { RunShortcutCard, TriggerCard } from './shortcuts-cards';
 import { DockedDrawer } from './shortcuts-drawer';
 import type { FrameProps } from './wallet-frames-library';
+import {
+  CatchAlertCard,
+  NOTIFICATION_CARD_HEIGHT,
+  NOTIFICATION_CARD_OPEN_HEIGHT,
+  NotificationTriggerCard,
+} from './alert-cards';
+import type { TriggerKind } from './wallet-frames-start';
 
 const FULL = { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 } as const;
 
+/** Where the action's card sits under a notification trigger with its switches open. */
+const ACTION_TOP = 143 + NOTIFICATION_CARD_OPEN_HEIGHT + 12;
+
+/** The trigger's Notify switch, which stays off. */
+const NOTIFY_Y = 143 + NOTIFICATION_CARD_HEIGHT + 44 + 22;
+
 /** Show When Run turns off; back saves it, and the automation is listed under Personal. */
-export function FinishFrame({ t, scale }: FrameProps) {
+export function FinishFrame({ t, scale, kind }: FrameProps & { readonly kind: TriggerKind }) {
   const { t: tr } = useI18n();
+  const wallet = kind === 'wallet';
   return (
     <Phone t={t} scale={scale} background={iosInk.grouped}>
       <Reveal t={t} from={0.5} to={0.6} out dx={-60} style={FULL}>
-        <EditorBar name={tr('capture.walk.ios.runShortcut')} icon={false} />
+        <EditorBar
+          name={tr(wallet ? 'capture.walk.ios.runShortcut' : 'native.intents.catchAlert.title')}
+          icon={false}
+        />
         <EditorCard top={143}>
-          <TriggerCard />
+          {wallet ? <TriggerCard /> : <NotificationTriggerCard t={t} open />}
         </EditorCard>
-        <EditorCard top={251}>
-          <RunShortcutCard t={t} showOffAt={0.26} />
+        <EditorCard top={wallet ? 251 : ACTION_TOP}>
+          {wallet ? <RunShortcutCard t={t} showOffAt={0.26} /> : <CatchAlertCard t={t} />}
         </EditorCard>
         <DockedDrawer />
       </Reveal>
@@ -53,24 +70,32 @@ export function FinishFrame({ t, scale }: FrameProps) {
           }}
         >
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <Symbol name="wallet" size={28} color={iosInk.blue} fill={1} />
+            {wallet ? (
+              <Symbol name="wallet" size={28} color={iosInk.blue} fill={1} />
+            ) : (
+              <Symbol name="notifications" size={28} color={iosInk.red} fill={1} />
+            )}
             <Symbol name="arrow_forward" size={20} color={iosInk.tertiary} />
-            <LogShortcutIcon size={28} />
+            {wallet ? <LogShortcutIcon size={28} /> : <SixPmIcon size={28} />}
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
             <Text style={{ flex: 1, ...body(19, 600), color: iosInk.label }}>
-              {tr('capture.walk.ios.walletSummary')}
+              {tr(
+                wallet ? 'capture.walk.ios.walletSummary' : 'capture.walk.ios.notificationSummary',
+              )}
             </Text>
             <Switch t={t} from={2} to={2.1} startsOn />
           </View>
-          <Text style={{ ...body(15), color: iosInk.secondary }}>{WALLET_SHORTCUT_NAME}</Text>
+          <Text style={{ ...body(15), color: iosInk.secondary }}>
+            {wallet ? WALLET_SHORTCUT_NAME : tr('native.intents.catchAlert.title')}
+          </Text>
         </View>
       </Reveal>
       <Touch
         t={t}
         stops={[
           { at: 0.08, x: 250, y: 620 },
-          { at: 0.26, x: 345, y: 335, tap: true },
+          { at: 0.26, x: 345, y: wallet ? 335 : NOTIFY_Y, tap: wallet },
           { at: 0.5, x: 38, y: 84, tap: true },
         ]}
       />

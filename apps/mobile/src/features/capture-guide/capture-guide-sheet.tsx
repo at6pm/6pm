@@ -19,6 +19,7 @@ import { HowItWorks } from './guide-how';
 import { GuideSample, GuideSection, GuideTip, type LiveChip } from './guide-sections';
 import type { CaptureSource } from './source-status';
 import { useCaptureSources } from './use-capture-sources';
+import { BANK_ALERT_SHORTCUT_URL } from './bank-alert-shortcut';
 import { WALLET_SHORTCUT_URL } from './wallet-shortcut';
 
 /** The prototype's `screenIn`: up 12 pt from 98.5 %, over 0.35 s on the entrance curve. */
@@ -154,6 +155,7 @@ export function CaptureGuideSheet({ source: asked }: { readonly source: CaptureS
               guide={guide}
               addressChip={addressChip}
               emailAddress={emailAddress}
+              lastLine={view.on ? view.status : null}
             />
           )}
 
@@ -221,10 +223,11 @@ function openUrl(url: string): void {
 }
 
 /**
- * The buttons under each guide. Pinning in the share row and the Wallet automation are the user's
- * to set in iOS, so those open the share sheet and the Shortcuts app; while the automation is off,
- * the 6pm shortcut it runs is offered first. Receipt email copies the address, and has no button
- * until the server has given one.
+ * The buttons under each guide. Pinning in the share row and the automations are the user's to
+ * set in iOS, so those open the share sheet and the Shortcuts app; while an automation is off,
+ * the 6pm shortcut it runs is offered first, once one is published. Receipt email copies the
+ * address, and has no button until the server has given one. Siri and Back Tap need nothing
+ * from 6pm: their steps are all there is.
  */
 function useGuideActions(
   source: CaptureSource,
@@ -287,6 +290,23 @@ function useGuideActions(
         shortcuts,
       ];
     }
+    case 'alerts': {
+      const shortcuts: GuideAction = {
+        label: t('capture.alerts.actionOpen'),
+        accent: false,
+        run: () => openUrl('shortcuts://'),
+      };
+      // Until the 6pm shortcut is published, the automation is built by hand in Shortcuts.
+      if (on || BANK_ALERT_SHORTCUT_URL === null) return [shortcuts];
+      const url = BANK_ALERT_SHORTCUT_URL;
+      return [
+        { label: t('capture.alerts.actionAdd'), accent: true, run: () => openUrl(url) },
+        shortcuts,
+      ];
+    }
+    case 'siri':
+    case 'backTap':
+      return [];
     case 'widgets':
       return [
         {

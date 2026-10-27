@@ -21,6 +21,10 @@ public class SurfacesModule: Module {
       try Inbox.remove(ids)
     }
 
+    AsyncFunction("readStatus") { (name: String) -> String? in
+      GroupFiles.readStatus(name).flatMap { String(data: $0, encoding: .utf8) }
+    }
+
     Function("activitiesEnabled") { () -> Bool in
       LiveActivities.enabled
     }

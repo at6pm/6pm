@@ -251,3 +251,28 @@ export const logSpendResultSchema = z.object({
   safeAfterText: z.string().nullable(),
 });
 export type LogSpendResult = z.infer<typeof logSpendResultSchema>;
+
+/**
+ * The last bank or wallet alert the "Catch a bank alert" shortcut read, caught or skipped, written
+ * to `<group>/status/last-alert.json` so Settings can say the automation is running.
+ */
+export const lastAlertSchema = z.object({
+  v: version,
+  /** When it was read. */
+  at: instant,
+  /** The bank or wallet's short name, when the alert said which. */
+  bank: z.string().nullable(),
+  /** "50.000₫" for money that moved; empty for one that was skipped. */
+  amountText: z.string(),
+  direction: z.enum(['out', 'in']).optional(),
+  /** Why it was skipped: a code, a failed payment, a promotion, a balance or security notice. */
+  skipped: z.enum(['code', 'failed', 'promo', 'balance', 'security', 'unread']).optional(),
+});
+export type LastAlert = z.infer<typeof lastAlertSchema>;
+
+/** What reading one alert returns: the inbox item (null when skipped) and the status line. */
+export const bankAlertResultSchema = z.object({
+  item: inboxSpendSchema.nullable(),
+  last: lastAlertSchema,
+});
+export type BankAlertResult = z.infer<typeof bankAlertResultSchema>;
