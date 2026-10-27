@@ -9,6 +9,7 @@ import { useMoney } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
 import { haptics } from '../../ui/haptics';
 import { Symbol } from '../../ui/icons/symbol';
+import { ChoiceMenu, type MenuChoice } from '../../ui/primitives/choice-menu';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useClock } from '../../ui/theme/clock';
 import { useTheme } from '../../ui/theme/theme';
@@ -17,6 +18,9 @@ import { useRunAction } from '../companion/use-run-action';
 import { useWalletOptions } from '../quick-add/use-wallet-options';
 import { useAutosavedNote, useAutosavedText } from './use-autosaved-note';
 import { WhenPicker } from './when-picker';
+
+/** The menu key for "not a bill": bill ids are never empty. */
+const NO_BILL = '';
 
 /** One line of the card: a label on the left and what it holds on the right. */
 function Line({ first, children }: { readonly first?: boolean; readonly children: ReactNode }) {
@@ -65,15 +69,15 @@ export function DetailsCard({
   const payments = useBillPayments();
   const run = useRunAction();
   // "This was a bill", for a payment the close did not catch: no, one of this cycle's bills still
-  // to pay, or a card or loan with no bill. Tapping on from the last undoes it.
+  // to pay, or a card or loan with no bill.
   const paysBill = spend.paysBill ?? null;
   const billChoices = billChoicesFor(spend, snap.bills, snap.cycle);
-  const billLabel =
-    paysBill === null
+  const billLabel = (choice: string | null) =>
+    choice === null
       ? t('details.bill.no')
-      : paysBill === REPAYMENT
+      : choice === REPAYMENT
         ? t('details.bill.repayment')
-        : (snap.bills.find((b) => b.id === paysBill)?.name ?? t('today.row.bill'));
+        : (snap.bills.find((b) => b.id === choice)?.name ?? t('today.row.bill'));
   const range = spendDayRange(spend.day, {
     today: snap.today,
     cycleStart: snap.cycle.start,
@@ -88,7 +92,18 @@ export function DetailsCard({
           ? t('details.status.caught')
           : t('details.status.skipped');
 
-  const fields: { key: string; label: string; value: string; onPress?: () => void }[] = [
+  const wallet = spend.wallet ?? 'Cash';
+  const fields: {
+    key: string;
+    label: string;
+    value: string;
+    onPress?: () => void;
+    menu?: {
+      choices: readonly MenuChoice[];
+      selected: string;
+      onSelect: (key: string) => void;
+    };
+  }[] = [
     {
       key: 'when',
       label: t('details.when'),
@@ -99,28 +114,47 @@ export function DetailsCard({
       key: 'pot',
       label: t('details.pot'),
       value: spend.forWork ? t('details.claimBack') : t('details.freeMoney'),
-      onPress: () => onUpdate({ forWork: !spend.forWork }),
+      menu: {
+        choices: [
+          { key: 'free', label: t('details.freeMoney') },
+          { key: 'work', label: t('details.claimBack') },
+        ],
+        selected: spend.forWork ? 'work' : 'free',
+        onSelect: (key) => onUpdate({ forWork: key === 'work' }),
+      },
     },
     {
       key: 'wallet',
       label: t('details.paidWith'),
-      value: wallets.find((w) => w.value === (spend.wallet ?? 'Cash'))?.label ?? spend.wallet ?? '',
-      onPress: () => {
-        const at = wallets.findIndex((w) => w.value === (spend.wallet ?? 'Cash'));
-        onUpdate({ wallet: wallets[(at + 1) % wallets.length]?.value ?? null });
+      value: wallets.find((w) => w.value === wallet)?.label ?? wallet,
+      menu: {
+        choices: wallets.map((w) => ({ key: w.value, label: w.label })),
+        selected: wallet,
+        onSelect: (key) => onUpdate({ wallet: key }),
       },
     },
     {
       key: 'bill',
       label: t('details.bill'),
-      value: billLabel,
-      onPress: () => {
-        const next = billChoices[(billChoices.indexOf(paysBill) + 1) % billChoices.length];
-        void run(() => payments.setPaysBill(spend.id, next ?? null));
+      value: billLabel(paysBill),
+      menu: {
+        choices: billChoices.map((c) => ({ key: c ?? NO_BILL, label: billLabel(c) })),
+        selected: paysBill ?? NO_BILL,
+        onSelect: (key) =>
+          void run(() => payments.setPaysBill(spend.id, key === NO_BILL ? null : key)),
       },
     },
     { key: 'status', label: t('details.status'), value: statusLabel(spend.status) },
   ];
+  const rowStyle = {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginHorizontal: 16,
+    paddingVertical: 13,
+    borderTopWidth: 0.5,
+    borderTopColor: palette.hair,
+  } as const;
   const input = {
     flex: 1,
     textAlign: 'right',
@@ -157,43 +191,56 @@ export function DetailsCard({
           style={input}
         />
       </Line>
-      {fields.map((f) => (
-        <View key={f.key}>
-          <PressScale
-            highlight
-            highlightBleed={16}
-            disabled={!f.onPress}
-            onPress={() => {
-              haptics.tick();
-              f.onPress?.();
-            }}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 8,
-              marginHorizontal: 16,
-              paddingVertical: 13,
-              borderTopWidth: 0.5,
-              borderTopColor: palette.hair,
-            }}
-          >
+      {fields.map((f) => {
+        const row = (
+          <>
             <Text style={{ ...body(16), color: palette.inkSoft, flex: 1 }}>{f.label}</Text>
             <Text style={{ ...body(16, 550), color: palette.ink }}>{f.value}</Text>
-            {f.onPress ? <Symbol name="unfold_more" size={18} color={palette.inkSoft} /> : null}
-          </PressScale>
-          {f.key === 'when' && picking ? (
-            <Animated.View entering={FadeIn.duration(250)} exiting={FadeOut.duration(150)}>
-              <WhenPicker
-                at={new Date(spend.at)}
-                range={range}
-                today={snap.today}
-                now={now}
-                onChange={(instant) => onUpdate(movedTo(instant))}
-              />
-            </Animated.View>
-          ) : null}
-        </View>
-      ))}
+            {f.onPress || f.menu ? (
+              <Symbol name="unfold_more" size={18} color={palette.inkSoft} />
+            ) : null}
+          </>
+        );
+        return (
+          <View key={f.key}>
+            {f.menu ? (
+              <ChoiceMenu
+                label={f.label}
+                choices={f.menu.choices}
+                selected={f.menu.selected}
+                onSelect={f.menu.onSelect}
+                highlightBleed={16}
+              >
+                <View style={rowStyle}>{row}</View>
+              </ChoiceMenu>
+            ) : (
+              <PressScale
+                highlight
+                highlightBleed={16}
+                disabled={!f.onPress}
+                onPress={() => {
+                  haptics.tick();
+                  f.onPress?.();
+                }}
+                style={rowStyle}
+              >
+                {row}
+              </PressScale>
+            )}
+            {f.key === 'when' && picking ? (
+              <Animated.View entering={FadeIn.duration(250)} exiting={FadeOut.duration(150)}>
+                <WhenPicker
+                  at={new Date(spend.at)}
+                  range={range}
+                  today={snap.today}
+                  now={now}
+                  onChange={(instant) => onUpdate(movedTo(instant))}
+                />
+              </Animated.View>
+            ) : null}
+          </View>
+        );
+      })}
       <Line>
         <Text style={{ ...body(16), color: palette.inkSoft }}>{t('details.note')}</Text>
         <TextInput

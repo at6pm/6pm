@@ -14,6 +14,7 @@
     "@6pm/theme": "workspace:*",
     "@expo/log-box": "catalog:",
     "@expo/metro-runtime": "catalog:",
+    "@expo/ui": "catalog:",
     "@react-native/metro-config": "catalog:",
     "@sentry/react-native": "catalog:",
     "@shopify/react-native-skia": "catalog:",
@@ -76,6 +77,11 @@
       "android": {
         "buildFromSource": [
           ".*"
+        ]
+      },
+      "ios": {
+        "buildFromSource": [
+          "ExpoUI"
         ]
       }
     }

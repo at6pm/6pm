@@ -9,6 +9,7 @@ import {
   monthOf,
   previousMonth,
   nextMonthStart,
+  restateClosedDays,
   startOfWeek,
   underCount,
   weekRecap,
@@ -22,6 +23,7 @@ import {
   readClosedBetween,
   readDayReceipt,
   readDiary,
+  readSpendsBetween,
   toDiarySpend,
   useStoreQuery,
   type DiaryData,
@@ -109,14 +111,47 @@ export function useDiary() {
     [month, current],
   );
   const earlier = useStoreQuery(readEarlier, watch);
+  const notDaily = useMemo(() => notDailyOf({ categories }), [categories]);
+  // The spends of the month shown and of this week: a closed day's total is what its receipt lists
+  // now, which a spend kept on it after the close changes.
+  const spanFrom = `${month}-01` < monday ? `${month}-01` : monday;
+  const readSpan = useCallback(
+    (store: MoneyStore) => readSpendsBetween(store, spanFrom, today),
+    [spanFrom, today],
+  );
+  const span = useStoreQuery(readSpan, watch);
+  const restate = useCallback(
+    (rows: readonly ClosedDayRow[]): readonly ClosedDayRow[] =>
+      span === null
+        ? rows
+        : restateClosedDays(
+            rows,
+            span.map((s) => ({
+              day: s.day,
+              amount: s.amount,
+              category: s.categoryId,
+              status: s.status,
+              forWork: s.forWork,
+              paysBill: s.paysBill,
+              direction: s.direction,
+            })),
+            notDaily,
+            { from: spanFrom, to: today },
+          ),
+    [span, notDaily, spanFrom, today],
+  );
   const monthClosed = useMemo(
     () =>
-      month === current ? closedDays.filter((d) => monthOf(d.day) === month) : (earlier ?? NO_DAYS),
-    [month, current, closedDays, earlier],
+      restate(
+        month === current
+          ? closedDays.filter((d) => monthOf(d.day) === month)
+          : (earlier ?? NO_DAYS),
+      ),
+    [month, current, closedDays, earlier, restate],
   );
   const weekClosed = useMemo(
-    () => closedDays.filter((d) => d.day >= monday && d.day <= today),
-    [closedDays, monday, today],
+    () => restate(closedDays.filter((d) => d.day >= monday && d.day <= today)),
+    [closedDays, monday, today, restate],
   );
   const firstMonth = data?.since ? monthOf(data.since) : null;
   const page = useCallback(
@@ -152,7 +187,6 @@ export function useDiary() {
     [latest],
   );
 
-  const notDaily = useMemo(() => notDailyOf({ categories }), [categories]);
   const readReceipt = useCallback(
     (store: MoneyStore) =>
       selected ? readDayReceipt(store, selected, notDaily) : Promise.resolve(null),

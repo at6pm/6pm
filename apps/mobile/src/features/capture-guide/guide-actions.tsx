@@ -16,7 +16,7 @@ import { WALLET_SHORTCUT_URL } from './wallet-shortcut';
 
 interface GuideAction {
   readonly label: string;
-  /** The orange button: only while an automation is still off and its shortcut is one tap away. */
+  /** The orange button: while an automation is still off and its shortcut is one tap away. */
   readonly accent: boolean;
   readonly run: () => void;
 }
@@ -94,8 +94,8 @@ function openUrl(url: string): void {
 
 /**
  * The buttons for each way. Pinning in the share row and the automations are the user's to set in
- * iOS, so those open the share sheet and the Shortcuts app; while an automation is off, the 6pm
- * shortcut it runs is offered first, once one is published. Receipt email copies the address, and
+ * iOS, so those open the share sheet and the Shortcuts app; the 6pm shortcut an automation runs is
+ * offered first, once one is published, and stays offered once it is on. Receipt email copies the address, and
  * has no button until the server has given one. Siri and Back Tap need nothing from 6pm: their
  * steps are all there is.
  */
@@ -150,11 +150,11 @@ function useGuideActions(
         accent: false,
         run: () => openUrl('shortcuts://'),
       };
-      if (on) return [shortcuts];
+      // Still offered once it is on: a deleted shortcut is added back from here.
       return [
         {
           label: t('capture.wallet.actionAdd'),
-          accent: true,
+          accent: !on,
           run: () => openUrl(WALLET_SHORTCUT_URL),
         },
         shortcuts,
@@ -167,10 +167,10 @@ function useGuideActions(
         run: () => openUrl('shortcuts://'),
       };
       // Without a published shortcut, the automation is built by hand in Shortcuts.
-      if (on || BANK_ALERT_SHORTCUT_URL === null) return [shortcuts];
+      if (BANK_ALERT_SHORTCUT_URL === null) return [shortcuts];
       const url = BANK_ALERT_SHORTCUT_URL;
       return [
-        { label: t('capture.alerts.actionAdd'), accent: true, run: () => openUrl(url) },
+        { label: t('capture.alerts.actionAdd'), accent: !on, run: () => openUrl(url) },
         shortcuts,
       ];
     }

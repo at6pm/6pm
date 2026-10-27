@@ -50,18 +50,27 @@ function Timeline({ markers, today }: { readonly markers: Marker[]; readonly tod
             gap: 5,
           }}
         >
+          {/* The card's colour under each dot, so a see-through tint never shows the line in it. */}
           <View
             style={{
               width: 26,
               height: 26,
               borderRadius: 13,
-              backgroundColor: m.bg,
+              backgroundColor: palette.cell,
               boxShadow: `0 0 0 3px ${palette.cell}`,
-              alignItems: 'center',
-              justifyContent: 'center',
             }}
           >
-            <Symbol name={m.icon} size={15} fill={1} color={m.fg} />
+            <View
+              style={{
+                flex: 1,
+                borderRadius: 13,
+                backgroundColor: m.bg,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Symbol name={m.icon} size={15} fill={1} color={m.fg} />
+            </View>
           </View>
           <Text numberOfLines={1} style={{ ...mono(10, 400, 0.04), color: m.labelColour }}>
             {m.label}
