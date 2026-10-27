@@ -252,6 +252,343 @@ describe('parseReceiptEmail', () => {
   });
 });
 
+// Card alerts, transfers and receipts as the banks and Stripe lay them out, one line per printed
+// block; the holder is a made-up name and every card and account number is masked.
+
+const vibLines = (head?: string[]) =>
+  [
+    ...(head ?? [
+      'Thông báo giao dịch Thẻ tín dụng VIB Rewards Unlimited',
+      'Kính gửi Quý khách hàng,',
+      'Số thẻ: 5268***0000',
+      'Chủ thẻ: TRAN VAN AN',
+      'Giao dịch: Thanh toán dịch vụ - hàng hóa',
+      'Giá trị: 29,000 VND',
+      'Vào lúc: 09:53 26/10/2026',
+      'Tại .OP*Green SM',
+    ]),
+    'Để biết thêm thông tin chi tiết, Quý khách hàng vui lòng liên hệ Dịch vụ khách hàng 24/7 của VIB: KH trong nước gọi 19002200 (1.000 đồng/phút) hoặc gửi email tới: dvkh247@vib.com.vn',
+  ].join('\n');
+
+const vibCard = email({
+  from: { name: 'VIB', address: 'info@card.vib.com.vn' },
+  subject: 'Thông báo giao dịch thẻ tín dụng',
+  date: '2026-10-26T02:53:40.000Z',
+  text: vibLines(),
+});
+
+const vcbCard = (at: string, amount: string, status: string) =>
+  email({
+    from: { name: 'Vietcombank', address: 'info@info.vietcombank.com.vn' },
+    subject: 'Thông báo giao dịch thẻ/ Vietcombank card transaction notification',
+    date: '2026-10-21T10:19:20.000Z',
+    text: [
+      'Thẻ',
+      'Card',
+      'Visa 400000...0000',
+      'Sử dụng tại',
+      'At',
+      at,
+      'Số tiền',
+      'Transaction Amount',
+      amount,
+      'Ngày, giờ giao dịch',
+      'Trans. Date, Time',
+      '21-10-2026 17:19:11',
+      'Tài khoản trích nợ',
+      'Debit Account',
+      '0000000000',
+      'Tình trạng giao dịch',
+      'Status of Transaction',
+      status,
+      'Cám ơn Quý khách đã sử dụng dịch vụ của Vietcombank!',
+      'To ensure safety and security as well as to protect your rights and benefits, when making transactions via Vietcombank cards, please read carefully and follow transaction instructions on Vietcombank’s website.',
+    ].join('\n'),
+  });
+
+/** MB's transfer email: each label broken over two lines, as its table cells wrap them. */
+const mbTransfer = (payee: string, memo = 'TRAN VAN AN chuyen tien') =>
+  email({
+    from: { name: 'MB', address: 'mbebanking@mbbank.com.vn' },
+    subject: 'Thong bao giao dich thanh cong',
+    date: '2026-10-24T14:31:12.000Z',
+    text: [
+      'Cảm ơn Quý khách đã sử dụng dịch vụ MB eBanking.',
+      'MB xin thông báo giao dịch của Quý khách đã được thực hiện như sau:',
+      'Ngày,',
+      'giờ giao dịch',
+      '24-10-2026 21:31:05',
+      'Loại',
+      'giao dịch',
+      'Chuyển tiền nhanh ngoài MB',
+      'Số',
+      'tham chiếu',
+      '26102421310000000',
+      'Tài',
+      'khoản trích nợ',
+      'TRAN VAN AN - 1000000000000 (VND)',
+      'Người',
+      'thụ hưởng',
+      payee,
+      'Số',
+      'tiền giao dịch',
+      '(VND) 161,000.00',
+      'Nội',
+      'dung chuyển tiền',
+      memo,
+      'Tình',
+      'trạng',
+      'Giao dịch thành công',
+    ].join('\n'),
+  });
+
+describe('card alerts and transfers', () => {
+  it('reads a VIB card alert, naming the shop without the processor’s prefix', () => {
+    expect(parseReceiptEmail(vibCard, { receivedAt: '2026-10-26T03:00:00.000Z' })).toMatchObject({
+      amount: 29_000,
+      merchant: 'Green SM',
+      at: '2026-10-26T02:53:00.000Z',
+      bank: 'VIB',
+    });
+  });
+
+  it('reads a Vietcombank card alert’s shop under its bilingual label, not its footer', () => {
+    const alert = vcbCard('ELEVENLABS.IO +19170000000 US', '594,792 VND', 'Thành công');
+    expect(parseReceiptEmail(alert, { receivedAt })).toMatchObject({
+      amount: 594_792,
+      merchant: 'ELEVENLABS.IO',
+      bank: 'Vietcombank',
+    });
+  });
+
+  it('names who an MB transfer paid, without the account or a household business’s title', () => {
+    const shop = mbTransfer('HO KINH DOANH 79 MART 3 - 100886XX0000', 'KOVQR071VP000X');
+    expect(parseReceiptEmail(shop, { receivedAt: '2026-10-25T00:00:00.000Z' })).toMatchObject({
+      amount: 161_000,
+      merchant: '79 MART 3',
+      at: '2026-10-24T14:31:05.000Z',
+      code: '26102421310000000',
+    });
+    const person = mbTransfer('LE THI MAI - 0560000000');
+    expect(parseReceiptEmail(person, { receivedAt })?.merchant).toBe('LE THI MAI');
+  });
+
+  it('skips a transfer between the person’s own accounts, unless it repays a card', () => {
+    const own = mbTransfer('TRAN VAN AN - 1020000000');
+    expect(parseReceiptEmail(own, { receivedAt })).toBeNull();
+    const card = mbTransfer('TRAN VAN AN - 1020000000', 'Thanh toan the tin dung');
+    expect(parseReceiptEmail(card, { receivedAt })?.amount).toBe(161_000);
+  });
+});
+
+describe('charges that did not go through', () => {
+  it('skips a VIB notice of a declined card, which prints only its hotline’s price', () => {
+    const declined = email({
+      ...vibCard,
+      subject: 'Thông báo về việc thẻ tín dụng VIB giao dịch không thành công',
+      text: vibLines([
+        'VIB xin thông báo tình trạng giao dịch Thẻ tín dụng của Quý khách như sau:',
+        'Số thẻ: 5268***0000',
+        'Chủ Thẻ: TRAN VAN AN',
+        'Thời gian giao dịch: 10:09 27/10/2026',
+        'Tại: .OP*Green SM',
+        'Nội dung: Giao dịch không thành công do Thẻ không đủ số dư',
+      ]),
+    });
+    expect(parseReceiptEmail(declined, { receivedAt })).toBeNull();
+  });
+
+  it('skips a Vietcombank card alert whose status is not successful', () => {
+    const alert = vcbCard('ELEVENLABS.IO +19170000000 US', '1,486,981 VND', 'Không thành công');
+    expect(parseReceiptEmail(alert, { receivedAt })).toBeNull();
+  });
+
+  it('skips a card check of nothing', () => {
+    const check = vcbCard('GROK XAI +18000000000 US', '00 USD', 'Thành công');
+    expect(parseReceiptEmail(check, { receivedAt })).toBeNull();
+  });
+
+  it('skips a Stripe notice of a failed payment', () => {
+    const failed = email({
+      from: { name: 'Eleven Labs Inc.', address: 'failed-payments+acct_0000@stripe.com' },
+      subject: '₫1,486,981 payment to Eleven Labs Inc. was unsuccessful',
+      text: [
+        "We weren't able to charge the credit card you provided.",
+        'Eleven Labs Inc.',
+        '₫1,486,981 payment to Eleven Labs Inc. was unsuccessful',
+        'We were unable to charge your Visa ending in 0000 for your Eleven Labs Inc. subscription.',
+        'Update payment method',
+      ].join('\n'),
+    });
+    expect(parseReceiptEmail(failed, { receivedAt })).toBeNull();
+  });
+});
+
+describe('Stripe receipts', () => {
+  it('reads the đồng a dollar receipt was charged as, named after the shop', () => {
+    const receipt = email({
+      from: { name: 'Eleven Labs Inc.', address: 'invoice+statements+acct_0000@stripe.com' },
+      subject: 'Your receipt from Eleven Labs Inc. #2513-0000-0000',
+      date: '2026-10-25T09:00:00.000Z',
+      text: [
+        'Eleven Labs Inc.',
+        'Receipt from Eleven Labs Inc.',
+        '$22.00',
+        'Paid on October 25, 2026 with',
+        '- 0000',
+        'Receipt #2513-0000-0000',
+        'Subtotal',
+        '$20.00',
+        'VAT - Vietnam (10%)',
+        '$2.00',
+        '(₫51,683)',
+        'Total',
+        '$22.00',
+        'Amount paid',
+        '$22.00',
+        'Charged ₫594,792 using 1 USD = 27,036.0203 VND',
+      ].join('\n'),
+    });
+    expect(parseReceiptEmail(receipt, { receivedAt: '2026-10-25T10:00:00.000Z' })).toMatchObject({
+      amount: 594_792,
+      merchant: 'Eleven Labs',
+    });
+  });
+
+  it('names who a receipt is from, not the words of Stripe’s footer', () => {
+    const grok = email({
+      from: { name: 'Grok xAI', address: 'receipts+acct_0000@stripe.com' },
+      subject: 'Your Grok xAI receipt [#1880-0000]',
+      date: '2026-10-21T12:02:20.000Z',
+      text: [
+        'Receipt from Grok xAI',
+        'Receipt #1880-0000',
+        'Amount paid',
+        '₫409,500',
+        'Date paid',
+        'October 21, 2026 at 5:02:15 AM PDT',
+        "You're receiving this email because you made a purchase at Grok xAI, which uses Stripe to provide invoicing and payment processing.",
+      ].join('\n'),
+    });
+    expect(parseReceiptEmail(grok, { receivedAt: '2026-10-21T13:00:00.000Z' })).toMatchObject({
+      amount: 409_500,
+      merchant: 'Grok xAI',
+    });
+  });
+});
+
+describe('emails that are not payments', () => {
+  const notPayments: [string, ReceiptEmail][] = [
+    [
+      'a rewards-points statement',
+      email({
+        from: { name: 'VIB', address: 'info@card.vib.com.vn' },
+        subject: 'SAO KE DIEM THUONG THE TIN DUNG VIB REWARDS UNLIMITED NGAY 25/10/2026',
+        text: [
+          'THÔNG BÁO ĐIỂM THƯỞNG THẺ TÍN DỤNG VIB',
+          'VIB REWARDS UNLIMITED 526800******0000',
+          'Tổng điểm thưởng tích lũy kỳ trước',
+          '(Point carried forward)',
+          '307,203.00',
+          'Tổng điểm thưởng được cộng trong kỳ',
+          '(Point earned)',
+          '852.00',
+        ].join('\n'),
+      }),
+    ],
+    [
+      'an advert the law marks [QC]',
+      email({
+        from: { name: 'Shopee', address: 'info@newsletter.shopee.vn' },
+        subject: '[QC] Tặng thành viên Vàng voucher 35% + Hoàn 800K Xu',
+        text: 'Loa siêu trầm khuếch đại ô tô\n₫ 62,800.00\n89 đã bán',
+      }),
+    ],
+    [
+      'a bank’s advert that promises money back',
+      email({
+        from: { name: 'VPBank', address: 'customercare@care.vpb.com.vn' },
+        subject: '[QC] TRỌN BỘ MERCH CHÍNH HÃNG ĐÃ LÊN KỆ: HOÀN TIỀN ĐẾN 200.000Đ',
+        text: 'Hoàn tiền đến 200.000đ khi thanh toán bằng thẻ VPBank.',
+      }),
+    ],
+    [
+      'a launch email with prices',
+      email({
+        from: { name: 'Apple', address: 'News@InsideApple.Apple.com' },
+        subject: 'iPhone Duo mới đã có mặt.',
+        text: 'Mua\nTừ 64.999.000đ hoặc 2.647.000đ/tháng trong 24 tháng\nSạc lên đến 50% pin trong khoảng 20 phút.',
+      }),
+    ],
+    [
+      'a subscription about to renew',
+      email({
+        from: { name: 'Apple', address: 'no_reply@email.apple.com' },
+        subject: 'Your Subscription is Expiring',
+        text: 'Subscription Expiring\nSketchUp Go Yearly (1 year)\n₫1.499.000/year\nTo renew or learn more, review your subscription .',
+      }),
+    ],
+    [
+      'a storage warning',
+      email({
+        from: { name: 'Google', address: 'google-noreply@google.com' },
+        subject: '⚠️ Your Gmail has 1% of storage remaining',
+        text: 'Get more storage or clean up space\n100 GB ₫19,000/month\nWhen your storage runs out, you will not be able to send and receive emails on Gmail.',
+      }),
+    ],
+    [
+      'a usage alert',
+      email({
+        from: { name: 'GitHub', address: 'noreply@github.com' },
+        subject: '[GitHub] You have used 90% of the Actions minutes included for the account',
+        text: 'Your plan includes 2,000 Actions minutes per month at no extra cost.\n1,800 min used / 2,000 min included',
+      }),
+    ],
+    [
+      'a newsletter',
+      email({
+        from: { name: 'OKX', address: 'updates@okx.com' },
+        subject: 'Call earnings and more. 250K USDT in rewards',
+        text: 'Compete for a share of 250,000 USDT across Season 3.\nIf you no longer want to receive our communication, please unsubscribe here .',
+      }),
+    ],
+    [
+      'a survey about an order',
+      email({
+        from: { name: 'Shopee', address: 'info@mail.shopee.vn' },
+        subject: 'Xin chào bạn, Shopee muốn lắng nghe ý kiến của bạn!',
+        text: [
+          'Shopee muốn được biết ý kiến của bạn về đơn hàng mã #261016R0000000 bạn đặt mua gần đây.',
+          'Khảo sát ngay',
+          'Giá:\t₫788,269',
+          'Tổng tiền:\t₫788,269',
+          'Tổng thanh toán:\t₫670,028',
+        ].join('\n'),
+      }),
+    ],
+    [
+      'a job alert with a salary range',
+      email({
+        from: { name: 'ITviec', address: 'itviec@itviec.com' },
+        subject: 'Looking for a ReactJS job? A company has openings',
+        text: 'Frontend Developer (JavaScript, React)\n1,500 - 3,000 USD',
+      }),
+    ],
+  ];
+  it.each(notPayments)('skips %s', (_, notPayment) => {
+    expect(parseReceiptEmail(notPayment, { receivedAt })).toBeNull();
+  });
+
+  it('reads what a shop order finally cost, after vouchers', () => {
+    const order = email({
+      from: { name: 'Shopee', address: 'info@mail.shopee.vn' },
+      subject: 'Xác nhận thanh toán thành công',
+      text: 'Tổng tiền:\t₫709,830\nVoucher từ Shopee:\t₫82,540\nTổng thanh toán:\t₫607,790',
+    });
+    expect(parseReceiptEmail(order, { receivedAt })?.amount).toBe(607_790);
+  });
+});
+
 describe('email bodies', () => {
   it('turns table cells into label and value, and drops styles and comments', () => {
     const lines = htmlToLines(
