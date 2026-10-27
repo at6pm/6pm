@@ -60,6 +60,7 @@ export const viToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'source.email': 'Email',
   'source.applePay': 'Apple Pay',
   'source.cash': 'Tiền mặt',
+  'source.alert': 'Thông báo ngân hàng',
   'inbox.title': 'Inbox',
   'inbox.today': 'Hôm nay · {weekday}',
   'inbox.afterClose': '{weekday} · sau khi chốt',

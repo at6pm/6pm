@@ -1,7 +1,11 @@
 import type { Vnd } from '../money/format';
 
 /** Where a spend came from. Shown on cards, rows and the source trail. */
-export type SpendSource = 'manual' | 'voice' | 'shared' | 'qr' | 'email' | 'applePay' | 'cash';
+export type SpendSource =
+  'manual' | 'voice' | 'shared' | 'qr' | 'email' | 'applePay' | 'cash' | 'alert';
+
+/** Spending goes out; money that came in comes in (see `money-in.ts`). */
+export type SpendDirection = 'out' | 'in';
 
 /**
  * Where a spend is in its life:
@@ -22,15 +26,19 @@ export interface CountedSpend {
   readonly forWork?: boolean;
   /** Paid a bill (its id) or a card or loan with none: the bill already came off the plan. */
   readonly paysBill?: string | null | undefined;
+  /** `in` for money that came in: never spending, whatever its status. */
+  readonly direction?: SpendDirection | null | undefined;
 }
 
 /**
  * Whether a spend lowers the daily number. Caught and pending spends count until the user says
  * otherwise, so the number never flatters the day; skipped, deleted and work spends never count,
+ * nor does money that came in (it is added to free money once kept, see `money-in.ts`),
  * nor does paying a bill (the bill came off the plan already), nor categories the user marked as
  * not daily.
  */
 export function countsTowardDay(spend: CountedSpend, notDaily: ReadonlySet<string>): boolean {
+  if (spend.direction === 'in') return false;
   if (spend.status === 'skipped' || spend.status === 'deleted') return false;
   if (spend.forWork === true) return false;
   if (spend.paysBill != null) return false;

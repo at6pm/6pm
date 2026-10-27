@@ -64,6 +64,7 @@ export const enToday = {
   'source.email': 'Email',
   'source.applePay': 'Apple Pay',
   'source.cash': 'Cash',
+  'source.alert': 'Bank alert',
   'inbox.title': 'Inbox',
   'inbox.today': 'Today · {weekday}',
   'inbox.afterClose': '{weekday} · after you closed',
