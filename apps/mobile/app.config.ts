@@ -153,7 +153,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   owner: 'sixpm',
   slug: '6pm',
   scheme: variant.scheme,
-  version: '2.0.0',
+  version: '2.1.0',
   orientation: 'portrait',
   // The companion as the setting sun, half-sunk on a calm horizon: six o'clock without words.
   icon: './assets/icon/icon.png',
