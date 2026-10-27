@@ -10,6 +10,7 @@ import {
   type EmailReceipt,
   type ReceiptEmail,
   type ReceiptEmailOptions,
+  VIETNAM_UTC_OFFSET_MINUTES,
 } from './receipt-email';
 
 /**
@@ -61,13 +62,33 @@ export interface EmailSpend extends Omit<EmailReceipt, 'amount'> {
 /** The most of an email's text the model reads; receipts say what matters well before this. */
 export const EMAIL_MODEL_TEXT_MAX = 12_000;
 
-/** The text the model reads: the sender, the date and the email's lines (subject first). */
-export function emailModelText(email: ReceiptEmail): string {
+/** An instant as the clock at `utcOffsetMinutes` shows it, with that offset: "2026-10-27T00:08:38+07:00". */
+function localStamp(instant: string, utcOffsetMinutes: number): string {
+  const at = Date.parse(instant);
+  if (Number.isNaN(at)) return instant;
+  const wall = new Date(at + utcOffsetMinutes * 60_000).toISOString().slice(0, 19);
+  const sign = utcOffsetMinutes < 0 ? '-' : '+';
+  const off = Math.abs(utcOffsetMinutes);
+  const hh = String(Math.floor(off / 60)).padStart(2, '0');
+  const mm = String(off % 60).padStart(2, '0');
+  return `${wall}${sign}${hh}:${mm}`;
+}
+
+/**
+ * The text the model reads: the sender, the date and the email's lines (subject first). The date is
+ * the one the person's clock showed: a receipt that prints only its day is dated from it, and a UTC
+ * time copied from here would land the payment hours early, even on the day before.
+ */
+export function emailModelText(
+  email: ReceiptEmail,
+  utcOffsetMinutes: number = VIETNAM_UTC_OFFSET_MINUTES,
+): string {
   const origin = emailOrigin(email);
   const sender = origin.sender;
+  const sent = email.date ? localStamp(email.date, utcOffsetMinutes) : null;
   const head = [
     `From: ${sender ? `${sender.name} <${sender.address}>`.trim() : '(unknown)'}`,
-    `Date: ${origin.forwardedDate ?? email.date ?? '(unknown)'}`,
+    `Date: ${origin.forwardedDate ?? sent ?? '(unknown)'}`,
     '',
   ];
   return [...head, ...origin.lines].join('\n').slice(0, EMAIL_MODEL_TEXT_MAX);
@@ -163,7 +184,9 @@ export function emailSpendOf(
   const amount = receiptMinorUnits(reading.amount, currency.data);
   if (amount === null || amount <= 0) return null;
 
-  const at = reading.at?.trim() ?? '';
+  // A time that is the email's own UTC timestamp was copied from its header, not printed in it.
+  const copied = email.date !== null && reading.at?.trim() === email.date.slice(0, 19);
+  const at = copied ? '' : (reading.at?.trim() ?? '');
   const category = reading.category?.trim().toLowerCase() ?? '';
   return {
     ...(reading.kind === 'payment' ? {} : { kind: reading.kind }),

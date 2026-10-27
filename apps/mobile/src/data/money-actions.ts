@@ -285,6 +285,51 @@ export function moneyActions(store: MoneyStore) {
     captureSpend: (input: NewSpend) => inTurn(() => captureNow(input)),
     /** Takes back a capture (a cancelled payment) without touching anything it did not make. */
     withdrawCapture: (capture: Capture) => inTurn(() => withdrawNow(capture)),
+    /**
+     * A charge abroad just priced may be one the bank already debited in đồng (its alert or email
+     * came first, and only now can the two amounts be compared): it then joins that payment as a
+     * sighting, and its own row goes. Only a catch still waiting for the close is moved.
+     */
+    mergePriced: (id: string): Promise<SpendRow | null> =>
+      inTurn(async () => {
+        const row = await current(id);
+        if (!row || row.status !== 'caught' || !row.foreignAmount || row.amount <= 0) return null;
+        const snap = store.getSnapshot();
+        const homeOnly = snap.cycleSpends.filter((s) => s.id !== id && !s.foreignAmount);
+        const twin = findDuplicate(
+          {
+            amount: row.amount,
+            source: row.source,
+            status: row.status,
+            at: row.at,
+            detail: row.detail,
+            foreignAmount: row.foreignAmount,
+            direction: row.direction ?? null,
+            merchant: row.merchant,
+          },
+          await withTrails(homeOnly),
+        );
+        const target = twin ? snap.cycleSpends.find((s) => s.id === twin.id) : undefined;
+        if (!target) return null;
+        const merged = await mergeInto(
+          target,
+          {
+            id: row.id,
+            amount: row.amount,
+            categoryId: row.categoryId,
+            merchant: row.merchant,
+            source: row.source,
+            status: row.status,
+            note: row.note,
+            wallet: row.wallet,
+            detail: row.detail,
+            memo: row.memo ?? null,
+          },
+          row.at,
+        );
+        await patchNow(row, { status: 'deleted', previousStatus: row.status });
+        return merged.row;
+      }),
     update,
     /**
      * Keep, not mine, delete: remembers the old status so the undo pill can put it back. An edit
