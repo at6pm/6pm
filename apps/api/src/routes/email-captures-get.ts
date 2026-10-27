@@ -1,4 +1,9 @@
-import { EMAIL_CAPTURES_PAGE, EMAIL_PLAN_PARAM, type EmailCapture } from '@6pm/domain';
+import {
+  EMAIL_CAPTURES_PAGE,
+  EMAIL_MONEY_IN_PARAM,
+  EMAIL_PLAN_PARAM,
+  type EmailCapture,
+} from '@6pm/domain';
 
 import { ApiError } from '../errors';
 import { rememberPlan } from '../receipt-email/read-spend';
@@ -9,7 +14,9 @@ import type { RouteDefinition } from '../route';
  * The receipts waiting for this phone, oldest first, at most a page of them. Nothing is deleted
  * here: the phone saves them, then acknowledges. A row that no longer opens (the seal key was
  * replaced) can never be read, so it is deleted instead of being sent. The phone says whether it
- * has Max (`?plan=max|free`), which sets how much of its mail the model reads in a day.
+ * has Max (`?plan=max|free`), which sets how much of its mail the model reads in a day, and
+ * whether it places money that came in (`?in=1`): one that does not would count incoming money and
+ * refunds as spending, so those are deleted instead of sent, as before they were read at all.
  */
 export const emailCapturesGetRoute: RouteDefinition = {
   method: 'GET',
@@ -19,6 +26,7 @@ export const emailCapturesGetRoute: RouteDefinition = {
     const secret = sealKeyOf(c.env);
     if (secret === null) throw new ApiError('internal', 'Receipt email is not set up');
     const deviceHash = c.var.device.hash;
+    const takesMoneyIn = c.req.query(EMAIL_MONEY_IN_PARAM) === '1';
     await rememberPlan(c.env.DB, deviceHash, c.req.query(EMAIL_PLAN_PARAM), new Date());
     const { results } = await c.env.DB.prepare(
       `SELECT id, sealed FROM email_captures WHERE device_hash = ?
@@ -27,10 +35,11 @@ export const emailCapturesGetRoute: RouteDefinition = {
       .bind(deviceHash, EMAIL_CAPTURES_PAGE)
       .all<{ id: string; sealed: string }>();
     const captures: EmailCapture[] = [];
+    // Rows that no longer open, and money in for a phone that would count it as spending.
     const broken: string[] = [];
     for (const row of results) {
       const capture = await openCapture(secret, deviceHash, row.id, row.sealed);
-      if (capture) captures.push(capture);
+      if (capture && (takesMoneyIn || capture.kind === undefined)) captures.push(capture);
       else broken.push(row.id);
     }
     if (broken.length > 0) {
