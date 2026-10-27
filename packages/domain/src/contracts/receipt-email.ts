@@ -25,6 +25,12 @@ export const emailHandlePattern = /^(?:[a-km-np-z2-9]{6}|[a-km-np-z2-9]{10})$/;
  * (`free`): the server reads email with no phone at hand, and needs to know the day's allowance.
  */
 export const EMAIL_PLAN_PARAM = 'plan';
+/**
+ * The query parameter a phone that places money that came in sends (`in=1`) when it fetches its
+ * receipts. A phone without it reads every capture as a spend, so incoming money and refunds are
+ * never handed to it: they are dropped, as they were before such phones existed.
+ */
+export const EMAIL_MONEY_IN_PARAM = 'in';
 export const EMAIL_PLANS = ['free', 'max'] as const;
 export type EmailPlan = (typeof EMAIL_PLANS)[number];
 

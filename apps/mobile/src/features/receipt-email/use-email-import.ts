@@ -5,6 +5,7 @@ import { AppState } from 'react-native';
 import {
   ackEmailCapturesResponseSchema,
   EMAIL_CAPTURES_PAGE,
+  EMAIL_MONEY_IN_PARAM,
   EMAIL_PLAN_PARAM,
   emailCapturesResponseSchema,
 } from '@6pm/domain';
@@ -48,7 +49,7 @@ export function useEmailImport() {
       fetch: async () =>
         (
           await api.request({
-            path: `/v1/email/captures?${EMAIL_PLAN_PARAM}=${max ? 'max' : 'free'}`,
+            path: `/v1/email/captures?${EMAIL_PLAN_PARAM}=${max ? 'max' : 'free'}&${EMAIL_MONEY_IN_PARAM}=1`,
             schema: emailCapturesResponseSchema,
           })
         ).captures,

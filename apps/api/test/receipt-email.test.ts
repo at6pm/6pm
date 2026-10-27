@@ -57,8 +57,8 @@ async function phone() {
   };
 }
 
-const fetchCaptures = async (token: string) => {
-  const response = await call('/api/v1/email/captures', { token });
+const fetchCaptures = async (token: string, query = '?in=1') => {
+  const response = await call(`/api/v1/email/captures${query}`, { token });
   expect(response.status).toBe(200);
   return emailCapturesResponseSchema.parse(await response.json()).captures;
 };
@@ -184,6 +184,26 @@ describe('receiving a receipt email', () => {
     // The same code on another amount is another payment.
     await receiveEmail(inbound(address, withCode('other-1', '30,000')).message, env, NOW);
     expect(await fetchCaptures(token)).toHaveLength(2);
+  });
+
+  it('hands money that came in only to a phone that places it, and drops it for the rest', async () => {
+    const incoming = (id: string) => rawEmail(id).replace('GD: -45,000VND', 'GD: +45,000VND');
+    const newer = await phone();
+    await receiveEmail(inbound(newer.address, incoming('in-1')).message, env, NOW);
+    expect(await fetchCaptures(newer.token)).toMatchObject([{ amount: 45_000, kind: 'incoming' }]);
+
+    const older = await phone();
+    await receiveEmail(inbound(older.address, incoming('in-2')).message, env, NOW);
+    await receiveEmail(inbound(older.address, rawEmail('out-2')).message, env, NOW);
+    const seen = await fetchCaptures(older.token, '');
+    expect(seen).toHaveLength(1);
+    expect(seen[0]?.kind).toBeUndefined();
+    const left = await env.DB.prepare(
+      'SELECT COUNT(*) AS n FROM email_captures WHERE device_hash = ?',
+    )
+      .bind(older.hash)
+      .first<{ n: number }>();
+    expect(left?.n).toBe(1);
   });
 
   it('drops mail that holds no payment, without a bounce', async () => {
