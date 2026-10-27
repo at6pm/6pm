@@ -64,6 +64,8 @@ export async function priceWaitingForeign(deps: ForeignPricingDeps): Promise<num
     const fromNote = waiting.fromNote ? { note: null } : {};
     if (done) {
       await actions.update(row.id, { ...done, ...fromNote });
+      // Priced, it can be told apart from (or matched with) the bank's own debit of it.
+      await actions.mergePriced(row.id);
       priced += 1;
     } else if (waiting.fromNote) {
       // Still no rate: the printed amount moves from the note to a foreign amount that waits.

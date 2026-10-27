@@ -27,6 +27,14 @@ export const NOTICE_LATE_WINDOW_MS = 15 * 60_000;
 export const FEE_SLACK_RATIO = 0.01;
 
 /**
+ * A charge abroad seen twice: the bank's alert debits it in the home currency, the shop's receipt
+ * prints it in its own, priced here at the day's rate. The two differ by the bank's foreign fee and
+ * its spread (about 2–3% at Vietnamese banks), so they are one payment at most this share apart,
+ * and only when both name the same payee.
+ */
+export const FX_SLACK_RATIO = 0.05;
+
+/**
  * Sources 6pm hears about a payment from. Two of these seeing one payment are two witnesses of it;
  * something the user typed (Quick add, voice, cash) is a spend they chose to record, never a
  * second sighting of a capture.
@@ -126,6 +134,17 @@ function feeApart(a: Amounts, b: Amounts): boolean {
 }
 
 /**
+ * One amount paid abroad (priced in the home currency) and the other in the home currency only,
+ * within `FX_SLACK_RATIO` of each other.
+ */
+function convertedApart(a: Amounts, b: Amounts): boolean {
+  if (Boolean(a.foreignAmount) === Boolean(b.foreignAmount)) return false;
+  if (!(a.amount > 0) || !(b.amount > 0)) return false;
+  const gap = Math.abs(a.amount - b.amount);
+  return gap <= Math.max(a.amount, b.amount) * FX_SLACK_RATIO;
+}
+
+/**
  * Whether a spend already saved can be the same payment as an amount just captured: the same
  * amount, a fee apart, or paid abroad (matched by the amount in its own currency).
  */
@@ -143,6 +162,22 @@ function namesAgree(a: string | null | undefined, b: string | null | undefined):
   if (cx.includes(cy) || cy.includes(cx)) return true;
   const words = new Set(x.split(' ').filter((w) => w.length >= 4));
   return y.split(' ').some((w) => words.has(w));
+}
+
+/** Two emails from one named sender. */
+function sameSender(a: Witness, b: Witness): boolean {
+  if (a.source !== 'email' || b.source !== 'email' || !a.detail || !b.detail) return false;
+  return a.detail.trim().toLowerCase() === b.detail.trim().toLowerCase();
+}
+
+/** Both name a payee, and the names agree: a looser amount needs a surer name. */
+function namesMatch(
+  a: { readonly merchant?: string | null | undefined },
+  b: { readonly merchant?: string | null | undefined },
+): boolean {
+  return (
+    Boolean(a.merchant?.trim()) && Boolean(b.merchant?.trim()) && namesAgree(a.merchant, b.merchant)
+  );
 }
 
 /**
@@ -195,10 +230,13 @@ function closeEnough(a: Sighting, b: Sighting): boolean {
  * its tap up to twenty minutes after it, never before; a bank's email or alert is matched up to
  * fifteen minutes after another sighting, since it is written after the payment. A payment already
  * seen by a witness (first, or merged in since) never absorbs another sighting from it: that is a
- * second payment. Skipped and deleted spends never absorb a capture. A spend the user typed (Quick
- * add, voice, cash) is never merged with anything: each was entered on purpose, and no other
- * source can have seen cash. Money in and money out of the same amount are two movements, never
- * one.
+ * second payment, unless it sends the same amount stamped the same second (an invoice and its
+ * confirmation). A charge abroad priced at the day's rate matches the bank's home-currency debit
+ * of it within `FX_SLACK_RATIO` when both name the payee; an exact amount wins over a fee apart,
+ * and a fee apart over a converted one. Skipped and deleted spends never absorb a capture. A
+ * spend the user typed (Quick add, voice, cash) is never merged with anything: each was entered on
+ * purpose, and no other source can have seen cash. Money in and money out of the same amount are
+ * two movements, never one.
  */
 export function findDuplicate(
   incoming: NewSighting,
@@ -212,27 +250,38 @@ export function findDuplicate(
   let bestGap = Infinity;
   let nearFee: SightedSpend | null = null;
   let nearFeeGap = Infinity;
+  let nearConverted: SightedSpend | null = null;
+  let nearConvertedGap = Infinity;
   for (const spend of existing) {
     if (spend.status === 'skipped' || spend.status === 'deleted') continue;
     if ((spend.direction ?? 'out') !== (incoming.direction ?? 'out')) continue;
-    if (!newWitness(spend, incoming)) continue;
     if (!OBSERVED.has(spend.source) || !OBSERVED.has(incoming.source)) continue;
     const exact = sameAmount(spend, incoming);
+    const seen: Sighting = { source: spend.source, status: spend.status, at: Date.parse(spend.at) };
+    // A sender writing twice about one purchase (an invoice and its confirmation) sends the same
+    // amount stamped the same second. Only a time to the second says so: a receipt that prints the
+    // minute (13:30, read as 13:30:00) can be two orders in that minute.
+    const echo = exact && seen.at === at && at % 60_000 !== 0 && sameSender(spend, incoming);
+    if (!echo && !newWitness(spend, incoming)) continue;
     const fee =
       !exact && feeApart(spend, incoming) && namesAgree(spend.merchant, incoming.merchant);
-    if (!exact && !fee) continue;
-    const seen: Sighting = { source: spend.source, status: spend.status, at: Date.parse(spend.at) };
+    const converted =
+      !exact && !fee && convertedApart(spend, incoming) && namesMatch(spend, incoming);
+    if (!exact && !fee && !converted) continue;
     const gap = Math.abs(seen.at - at);
-    if (!closeEnough(seen, arriving)) continue;
+    if (!echo && !closeEnough(seen, arriving)) continue;
     if (exact && gap < bestGap) {
       best = spend;
       bestGap = gap;
     } else if (fee && gap < nearFeeGap) {
       nearFee = spend;
       nearFeeGap = gap;
+    } else if (converted && gap < nearConvertedGap) {
+      nearConverted = spend;
+      nearConvertedGap = gap;
     }
   }
-  return best ?? nearFee;
+  return best ?? nearFee ?? nearConverted;
 }
 
 /** What a merged spend becomes: confirmed if either sighting was, otherwise as it was. */

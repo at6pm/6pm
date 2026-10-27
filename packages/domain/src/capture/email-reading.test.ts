@@ -203,6 +203,35 @@ describe('a receipt email read by a model', () => {
     }
   });
 
+  it('dates the email for the model on the person’s clock, never in UTC', () => {
+    // Sent 00:08 on the 27th in Vietnam, which is 17:08 on the 26th in UTC.
+    const late = { ...shopReceipt, date: '2026-10-26T17:08:38.000Z' };
+    const text = emailModelText(late);
+    expect(text).toContain('Date: 2026-10-27T00:08:38+07:00');
+    expect(text).not.toContain('2026-10-26T17:08');
+  });
+
+  it('dates a receipt that prints only its day by when it was sent, not by a UTC time copied from the header', () => {
+    const invoice: ReceiptEmail = {
+      from: { name: 'Cloudflare', address: 'noreply@notify.cloudflare.com' },
+      subject: 'Your invoice is available',
+      date: '2026-10-26T17:08:38.000Z',
+      text: 'Invoice IN-0000001: $10.46 due October 26, 2026\nAmount: $10.46',
+      html: null,
+    };
+    const spend = emailSpendOf(
+      payment({
+        amount: '$10.46',
+        currency: 'USD',
+        merchant: 'Cloudflare',
+        at: '2026-10-26T17:08:38',
+      }),
+      invoice,
+      { receivedAt: '2026-10-26T17:08:40.000Z' },
+    );
+    expect(spend?.at).toBe('2026-10-26T17:08:38.000Z');
+  });
+
   it('gives the model the sender and the email’s lines, not its markup', () => {
     const text = emailModelText(shopReceipt);
     expect(text).toContain('From: Shopee <info@mail.shopee.vn>');

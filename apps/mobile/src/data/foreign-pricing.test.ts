@@ -181,4 +181,35 @@ describe('pricing captured foreign amounts', () => {
     expect((await store.tables.spends.get(typed.id))?.note).toBe('Dinner with Linh');
     expect((await store.tables.spends.get(voice.id))?.foreignAmount).toBeNull();
   });
+
+  it('folds a priced receipt from abroad into the bank’s đồng debit of the same charge', async () => {
+    const at = new Date(2026, 9, 11, 9, 55);
+    const debit = await actions.addSpend({
+      amount: 594_792,
+      categoryId: 'food',
+      merchant: 'ELEVENLABS.IO',
+      source: 'email',
+      status: 'caught',
+      detail: 'info@info.vietcombank.com.vn',
+      at,
+    });
+    const receipt = await actions.addSpend({
+      amount: 0,
+      foreignAmount: { currency: 'USD', amount: 22, rate: 0 },
+      categoryId: 'food',
+      merchant: 'Eleven Labs',
+      source: 'email',
+      status: 'caught',
+      detail: 'invoice+statements@stripe.com',
+      at: new Date(at.getTime() + 60_000),
+    });
+    expect(receipt.id).not.toBe(debit.id);
+    await price({ ratesOn: () => Promise.resolve([{ currency: 'USD', rate: '26300' }]) });
+    expect((await store.tables.spends.get(receipt.id))?.status).toBe('deleted');
+    expect(await store.tables.spends.get(debit.id)).toMatchObject({
+      amount: 594_792,
+      status: 'caught',
+    });
+    expect(await actions.sightings(debit.id)).toHaveLength(2);
+  });
 });

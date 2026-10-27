@@ -275,6 +275,70 @@ describe('findDuplicate', () => {
     expect(findDuplicate(emailed, [tapped])).toBeNull();
   });
 
+  it('takes a sender’s invoice and its confirmation, stamped the same second, as one purchase', () => {
+    const invoice = {
+      ...base,
+      source: 'email' as const,
+      status: 'caught' as const,
+      amount: 0,
+      foreignAmount: { currency: 'USD', amount: 10.46 },
+      detail: 'noreply@notify.cloudflare.com',
+    };
+    const confirmation = {
+      amount: 0,
+      source: 'email' as const,
+      at: base.at,
+      foreignAmount: { currency: 'USD', amount: 10.46 },
+      detail: 'noreply@notify.cloudflare.com',
+    };
+    const stamped = { ...invoice, at: at(38_000) };
+    expect(findDuplicate({ ...confirmation, at: at(38_000) }, [stamped])?.id).toBe('a');
+    // A second purchase from the same sender is another payment, even a moment later.
+    expect(findDuplicate({ ...confirmation, at: at(39_000) }, [stamped])).toBeNull();
+    // A time to the minute only (a receipt printing 13:10) could be two orders in that minute.
+    expect(findDuplicate(confirmation, [invoice])).toBeNull();
+  });
+
+  it('matches the bank’s debit of a charge abroad with the shop’s receipt priced at the day’s rate', () => {
+    // The bank debits $22 as 594,792₫ (its rate and fee); the receipt, priced at the day's rate, is
+    // 578,600₫.
+    const debit = {
+      ...base,
+      source: 'email' as const,
+      status: 'caught' as const,
+      amount: 594_792,
+      merchant: 'ELEVENLABS.IO',
+      detail: 'info@info.vietcombank.com.vn',
+    };
+    const receipt = {
+      amount: 578_600,
+      source: 'email' as const,
+      at: at(30_000),
+      foreignAmount: { currency: 'USD', amount: 22 },
+      merchant: 'Eleven Labs',
+      detail: 'invoice+statements@stripe.com',
+    };
+    expect(findDuplicate(receipt, [debit])?.id).toBe('a');
+    // Either way round.
+    const priced = { ...debit, ...receipt, id: 'b', at: base.at, status: 'caught' as const };
+    expect(
+      findDuplicate(
+        {
+          amount: 594_792,
+          source: 'email',
+          at: at(30_000),
+          merchant: 'ElevenLabs',
+          detail: 'x@vcb',
+        },
+        [priced],
+      )?.id,
+    ).toBe('b');
+    // Without a payee on both sides, or further apart than a bank's fee, they stay two.
+    expect(findDuplicate({ ...receipt, merchant: '' }, [debit])).toBeNull();
+    expect(findDuplicate({ ...receipt, amount: 550_000 }, [debit])).toBeNull();
+    expect(findDuplicate({ ...receipt, merchant: 'Grok' }, [debit])).toBeNull();
+  });
+
   it('never merges cash, which no other source can have seen', () => {
     expect(findDuplicate({ amount: 45_000, source: 'cash', at: at(0) }, [base])).toBeNull();
     const cash = { ...base, source: 'cash' as const, status: 'kept' as const };
