@@ -13,7 +13,7 @@ export const koCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.name': '은행 알림',
   'capture.alerts.sub': '은행·페이 알림이 알아서 기록돼요',
   'capture.alerts.headline': '은행이 알리면, 6pm이 받아 적어요.',
-  'capture.alerts.time': '2분 정도, 한 번만',
+  'capture.alerts.time': '1분 정도, 한 번만',
   'capture.alerts.step1': '단축어에서 알림 자동화 만들기',
   'capture.alerts.step1Chip': '자동화 → 알림',
   'capture.alerts.step2': '은행 앱과 페이 앱 고르기',
@@ -22,10 +22,6 @@ export const koCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.tip':
     '인증번호, 실패한 결제, 광고는 건너뛰어요. Apple Pay나 이메일로 이미 잡힌 결제는 두 번 들어가지 않아요.',
   'capture.alerts.privacy': '알림은 iPhone 안에서 읽고, 밖으로 나가지 않아요.',
-  'capture.alerts.statusTitle': '최근 알림',
-  'capture.alerts.none': '아직 은행 알림을 못 봤어요',
-  'capture.alerts.noneBody': '설정을 마쳤다면 소액을 결제해서 시험해 보세요.',
-  'capture.alerts.seenBody': '자동화가 돌아가고 있어요. 오간 돈은 수신함에서 기다려요.',
   'capture.alerts.cameIn': '{amount} 입금',
   'capture.alerts.skip.code': '인증번호, 건너뜀',
   'capture.alerts.skip.failed': '실패한 결제, 건너뜀',
@@ -55,7 +51,7 @@ export const koCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
     '그 앱 중 하나로 소액을 결제해 보세요. 알림이 오면 결제가 수신함에 와 있어요.',
   'capture.walk.alerts.l1Title': '6pm 단축어 추가하기',
   'capture.walk.alerts.l1Body':
-    '아래 “6pm 단축어 받기”를 탭한 다음 단축어 추가를 탭하세요. 이름은 “Catch bank alerts”예요.',
+    '위 “6pm 단축어 받기”를 탭한 다음 단축어 추가를 탭하세요. 이름은 “Catch a bank alert”예요.',
   'capture.walk.alerts.l2Body':
     '단축어에서 열고 맨 위의 앱을 탭해 은행을 고른 다음, 다른 은행·페이 앱마다 +를 탭하세요.',
   'capture.walk.alerts.mistake1':

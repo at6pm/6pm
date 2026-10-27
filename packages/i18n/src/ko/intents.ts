@@ -18,6 +18,7 @@ export const koIntents: { readonly [Key in keyof typeof enIntents]: Entry } = {
 
   'capture.guide.back': '설정',
   'capture.guide.howItWorks': '작동 방식',
+  'capture.guide.trouble': '안 되나요?',
   'capture.guide.lands': '수신함에 들어오는 것',
   'capture.guide.landsNote':
     '저녁 6시 마감 때 맞다고 할 때까지 거기서 기다려요. 직접 확인하기 전엔 아무것도 계산되지 않아요.',

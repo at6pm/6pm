@@ -13,7 +13,7 @@ export const frCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.name': 'Alertes bancaires',
   'capture.alerts.sub': 'Tes alertes de banque et de portefeuille se notent toutes seules',
   'capture.alerts.headline': 'Tes alertes de banque et de portefeuille se notent toutes seules.',
-  'capture.alerts.time': 'Environ deux minutes, une seule fois',
+  'capture.alerts.time': 'Environ une minute, une seule fois',
   'capture.alerts.step1': 'Dans Raccourcis, crée une automatisation pour les notifications',
   'capture.alerts.step1Chip': 'Automatisation → Notification',
   'capture.alerts.step2': 'Choisis tes apps de banque et de portefeuille',
@@ -22,11 +22,6 @@ export const frCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.tip':
     'Les codes, les paiements échoués et les promos sont ignorés. Un paiement déjà repéré par Apple Pay ou par e-mail n’est pas ajouté deux fois.',
   'capture.alerts.privacy': 'Les alertes sont lues sur ton iPhone et ne le quittent jamais.',
-  'capture.alerts.statusTitle': 'Dernière alerte',
-  'capture.alerts.none': 'Aucune alerte bancaire vue pour l’instant',
-  'capture.alerts.noneBody': 'Une fois réglé, fais un petit paiement pour tester.',
-  'capture.alerts.seenBody':
-    'L’automatisation tourne. Ce qui a bougé t’attend dans ta Boîte de réception.',
   'capture.alerts.cameIn': 'Reçu : {amount}',
   'capture.alerts.skip.code': 'un code, ignoré',
   'capture.alerts.skip.failed': 'paiement échoué, ignoré',
@@ -56,7 +51,7 @@ export const frCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
     'Paie un petit montant depuis une de ces apps. Quand son alerte arrive, le paiement est dans ta Boîte de réception.',
   'capture.walk.alerts.l1Title': 'Ajoute le raccourci 6pm',
   'capture.walk.alerts.l1Body':
-    'Touche « Obtenir le raccourci 6pm » ci-dessous, puis Ajouter un raccourci. Il s’appelle « Catch bank alerts ».',
+    'Touche « Obtenir le raccourci 6pm » ci-dessus, puis Ajouter un raccourci. Il s’appelle « Catch a bank alert ».',
   'capture.walk.alerts.l2Body':
     'Ouvre-le dans Raccourcis, touche App en haut et choisis ta banque, puis + pour chaque autre banque et portefeuille.',
   'capture.walk.alerts.mistake1':

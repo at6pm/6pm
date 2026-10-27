@@ -13,7 +13,7 @@ export const esCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.name': 'Avisos del banco',
   'capture.alerts.sub': 'Los avisos de tu banco y tu monedero se apuntan solos',
   'capture.alerts.headline': 'Los avisos de tu banco y tu monedero se apuntan solos.',
-  'capture.alerts.time': 'Unos dos minutos, una vez',
+  'capture.alerts.time': 'Un minuto, una vez',
   'capture.alerts.step1': 'En Atajos, crea una automatización para notificaciones',
   'capture.alerts.step1Chip': 'Automatización → Notificación',
   'capture.alerts.step2': 'Elige las apps de tu banco y tu monedero',
@@ -22,11 +22,6 @@ export const esCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.tip':
     'Se omiten los códigos, los pagos fallidos y las promociones. Un pago ya pillado con Apple Pay o por correo no se añade dos veces.',
   'capture.alerts.privacy': 'Los avisos se leen en tu iPhone y nunca salen de él.',
-  'capture.alerts.statusTitle': 'Último aviso',
-  'capture.alerts.none': 'Aún no ha llegado ningún aviso del banco',
-  'capture.alerts.noneBody': 'Cuando esté configurado, haz un pago pequeño para probarlo.',
-  'capture.alerts.seenBody':
-    'La automatización funciona. Lo que se ha movido te espera en la Bandeja.',
   'capture.alerts.cameIn': 'Entran {amount}',
   'capture.alerts.skip.code': 'un código, omitido',
   'capture.alerts.skip.failed': 'pago fallido, omitido',
@@ -56,7 +51,7 @@ export const esCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
     'Paga algo pequeño desde una de esas apps. Cuando llegue su aviso, el pago estará en tu Bandeja.',
   'capture.walk.alerts.l1Title': 'Añade el atajo de 6pm',
   'capture.walk.alerts.l1Body':
-    'Toca “Conseguir el atajo de 6pm” aquí abajo y luego Añadir atajo. Se llama “Catch bank alerts”.',
+    'Toca “Conseguir el atajo de 6pm” aquí arriba y luego Añadir atajo. Se llama “Catch a bank alert”.',
   'capture.walk.alerts.l2Body':
     'Ábrelo en Atajos, toca App arriba y elige tu banco; luego toca + para cada uno de tus otros bancos y monederos.',
   'capture.walk.alerts.mistake1':

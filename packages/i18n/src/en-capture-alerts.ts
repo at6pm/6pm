@@ -16,7 +16,7 @@ export const enCaptureAlerts = {
   'capture.alerts.name': 'Bank alerts',
   'capture.alerts.sub': 'Your bank and wallet alerts log themselves',
   'capture.alerts.headline': 'Your bank and wallet alerts log themselves.',
-  'capture.alerts.time': 'About two minutes, once',
+  'capture.alerts.time': 'About a minute, once',
   'capture.alerts.step1': 'In Shortcuts, make an automation for notifications',
   'capture.alerts.step1Chip': 'Automation → Notification',
   'capture.alerts.step2': 'Choose your bank and wallet apps',
@@ -25,10 +25,6 @@ export const enCaptureAlerts = {
   'capture.alerts.tip':
     'Codes, failed payments and promos are skipped. A payment Apple Pay or an email already caught isn’t added twice.',
   'capture.alerts.privacy': 'Alerts are read on your iPhone and never leave it.',
-  'capture.alerts.statusTitle': 'Last alert',
-  'capture.alerts.none': 'Not seen a bank alert yet',
-  'capture.alerts.noneBody': 'Once it’s set up, make a small payment to try it.',
-  'capture.alerts.seenBody': 'The automation is running. What moved waits in your Inbox.',
   'capture.alerts.cameIn': '{amount} in',
   'capture.alerts.skip.code': 'a code, skipped',
   'capture.alerts.skip.failed': 'failed payment, skipped',
@@ -59,7 +55,7 @@ export const enCaptureAlerts = {
     'Pay a little from one of those apps. When its alert arrives, the payment is in your Inbox.',
   'capture.walk.alerts.l1Title': 'Add the 6pm shortcut',
   'capture.walk.alerts.l1Body':
-    'Tap “Get the 6pm shortcut” below, then Add Shortcut. It’s called “Catch bank alerts”.',
+    'Tap “Get the 6pm shortcut” above, then Add Shortcut. It’s called “Catch a bank alert”.',
   'capture.walk.alerts.l2Body':
     'Open it in Shortcuts, tap App at the top and pick your bank, then + for each other bank and wallet.',
   'capture.walk.alerts.mistake1':

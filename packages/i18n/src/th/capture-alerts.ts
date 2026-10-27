@@ -13,7 +13,7 @@ export const thCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.name': 'แจ้งเตือนธนาคาร',
   'capture.alerts.sub': 'แจ้งเตือนธนาคารและอีวอลเล็ตจดลงเองอัตโนมัติ',
   'capture.alerts.headline': 'ธนาคารแจ้งมาเมื่อไหร่ 6pm จดให้ทันที',
-  'capture.alerts.time': 'ราวสองนาที ครั้งเดียว',
+  'capture.alerts.time': 'ราวหนึ่งนาที ครั้งเดียว',
   'capture.alerts.step1': 'ในคำสั่งลัด สร้างระบบอัตโนมัติสำหรับการแจ้งเตือน',
   'capture.alerts.step1Chip': 'ระบบอัตโนมัติ → การแจ้งเตือน',
   'capture.alerts.step2': 'เลือกแอปธนาคารและอีวอลเล็ตของคุณ',
@@ -22,10 +22,6 @@ export const thCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.tip':
     'ข้ามรหัส OTP รายการที่จ่ายไม่สำเร็จ และโปรโมชัน รายการที่จับได้จาก Apple Pay หรืออีเมลแล้วจะไม่ถูกเพิ่มซ้ำ',
   'capture.alerts.privacy': 'แจ้งเตือนถูกอ่านบน iPhone ของคุณ และไม่เคยออกไปจากเครื่อง',
-  'capture.alerts.statusTitle': 'แจ้งเตือนล่าสุด',
-  'capture.alerts.none': 'ยังไม่เห็นแจ้งเตือนธนาคารเลย',
-  'capture.alerts.noneBody': 'ตั้งค่าเสร็จแล้ว ลองจ่ายเงินสักนิดดูนะ',
-  'capture.alerts.seenBody': 'ระบบอัตโนมัติทำงานอยู่ เงินที่เข้าออกรออยู่ใน Inbox ของคุณ',
   'capture.alerts.cameIn': 'เงินเข้า {amount}',
   'capture.alerts.skip.code': 'รหัส OTP ข้ามไปแล้ว',
   'capture.alerts.skip.failed': 'จ่ายไม่สำเร็จ ข้ามไปแล้ว',
@@ -55,7 +51,7 @@ export const thCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
     'จ่ายเงินนิดหน่อยจากแอปใดแอปหนึ่งในนั้น พอแจ้งเตือนเด้งมา รายการนั้นจะอยู่ใน Inbox แล้ว',
   'capture.walk.alerts.l1Title': 'เพิ่มคำสั่งลัดของ 6pm',
   'capture.walk.alerts.l1Body':
-    'แตะ “รับคำสั่งลัดของ 6pm” ด้านล่าง แล้วแตะ เพิ่มคำสั่งลัด คำสั่งลัดนี้ชื่อ “Catch bank alerts”',
+    'แตะ “รับคำสั่งลัดของ 6pm” ด้านบน แล้วแตะ เพิ่มคำสั่งลัด คำสั่งลัดนี้ชื่อ “Catch a bank alert”',
   'capture.walk.alerts.l2Body':
     'เปิดในแอปคำสั่งลัด แตะ แอป ด้านบนแล้วเลือกธนาคารของคุณ จากนั้นแตะ + ทีละธนาคารและอีวอลเล็ต',
   'capture.walk.alerts.mistake1':

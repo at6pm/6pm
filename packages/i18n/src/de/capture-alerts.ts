@@ -13,7 +13,7 @@ export const deCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.name': 'Bankmitteilungen',
   'capture.alerts.sub': 'Mitteilungen von Bank und E-Wallet erfassen sich selbst',
   'capture.alerts.headline': 'Mitteilungen von Bank und E-Wallet erfassen sich selbst.',
-  'capture.alerts.time': 'Etwa zwei Minuten, einmalig',
+  'capture.alerts.time': 'Etwa eine Minute, einmalig',
   'capture.alerts.step1': 'Füge in Kurzbefehle eine Mitteilungs-Automation hinzu',
   'capture.alerts.step1Chip': 'Automation → Mitteilung',
   'capture.alerts.step2': 'Wähl deine Banking- und E-Wallet-Apps',
@@ -22,10 +22,6 @@ export const deCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.tip':
     'Codes, fehlgeschlagene Zahlungen und Werbung werden übersprungen. Was Apple Pay oder eine E-Mail schon erwischt hat, kommt nicht doppelt rein.',
   'capture.alerts.privacy': 'Mitteilungen werden auf deinem iPhone gelesen und verlassen es nie.',
-  'capture.alerts.statusTitle': 'Letzte Mitteilung',
-  'capture.alerts.none': 'Noch keine Bankmitteilung gesehen',
-  'capture.alerts.noneBody': 'Wenn alles eingerichtet ist, mach zum Testen eine kleine Zahlung.',
-  'capture.alerts.seenBody': 'Die Automation läuft. Was sich bewegt hat, wartet in deinem Eingang.',
   'capture.alerts.cameIn': '{amount} eingegangen',
   'capture.alerts.skip.code': 'ein Code, übersprungen',
   'capture.alerts.skip.failed': 'fehlgeschlagene Zahlung, übersprungen',
@@ -55,7 +51,7 @@ export const deCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
     'Bezahl eine Kleinigkeit mit einer dieser Apps. Sobald die Mitteilung kommt, liegt die Zahlung in deinem Eingang.',
   'capture.walk.alerts.l1Title': 'Den 6pm-Kurzbefehl hinzufügen',
   'capture.walk.alerts.l1Body':
-    'Tippe unten auf „6pm-Kurzbefehl holen“, dann auf „Kurzbefehl hinzufügen“. Er heißt „Catch bank alerts“.',
+    'Tippe oben auf „6pm-Kurzbefehl holen“, dann auf „Kurzbefehl hinzufügen“. Er heißt „Catch a bank alert“.',
   'capture.walk.alerts.l2Body':
     'Öffne ihn in Kurzbefehle, tippe oben auf „App“ und wähl deine Bank, dann + für jede weitere Bank und E-Wallet.',
   'capture.walk.alerts.mistake1':

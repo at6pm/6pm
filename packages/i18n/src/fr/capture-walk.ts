@@ -8,11 +8,10 @@ export const frCaptureWalk: { readonly [Key in keyof typeof enCaptureWalk]: Entr
   'capture.walk.next': 'Suivant',
   'capture.walk.back': 'Retour',
   'capture.walk.again': 'Recommencer',
-  'capture.walk.mistakes': 'Erreurs fréquentes',
 
   'capture.walk.wallet.s1Title': 'Ajoute le raccourci 6pm',
   'capture.walk.wallet.s1Body':
-    'Touche « Ajouter le raccourci 6pm » ci-dessous, puis Ajouter un raccourci. Il s’appelle « Log to 6pm ».',
+    'Touche « Ajouter le raccourci 6pm » ci-dessus, puis Ajouter un raccourci. Il s’appelle « Log to 6pm ».',
   'capture.walk.wallet.s2Title': 'Ouvre Automatisation et touche +',
   'capture.walk.wallet.s2Body':
     'Dans Raccourcis, touche Bibliothèque, puis Automatisation, puis +. Si tu vois « Décrire un raccourci », touche Modifier.',

@@ -8,11 +8,10 @@ export const thCaptureWalk: { readonly [Key in keyof typeof enCaptureWalk]: Entr
   'capture.walk.next': 'ถัดไป',
   'capture.walk.back': 'ย้อนกลับ',
   'capture.walk.again': 'เริ่มใหม่',
-  'capture.walk.mistakes': 'จุดที่มักพลาด',
 
   'capture.walk.wallet.s1Title': 'เพิ่มคำสั่งลัดของ 6pm',
   'capture.walk.wallet.s1Body':
-    'แตะ “เพิ่มคำสั่งลัดของ 6pm” ด้านล่าง แล้วแตะ เพิ่มคำสั่งลัด คำสั่งลัดนี้ชื่อ “Log to 6pm”',
+    'แตะ “เพิ่มคำสั่งลัดของ 6pm” ด้านบน แล้วแตะ เพิ่มคำสั่งลัด คำสั่งลัดนี้ชื่อ “Log to 6pm”',
   'capture.walk.wallet.s2Title': 'เปิด ระบบอัตโนมัติ แล้วแตะ +',
   'capture.walk.wallet.s2Body':
     'ในแอปคำสั่งลัด แตะ คลัง แล้ว ระบบอัตโนมัติ แล้ว + ถ้าเห็น “อธิบายคำสั่งลัด” ให้แตะ แก้ไข',

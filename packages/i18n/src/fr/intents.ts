@@ -17,6 +17,7 @@ export const frIntents: { readonly [Key in keyof typeof enIntents]: Entry } = {
 
   'capture.guide.back': 'Réglages',
   'capture.guide.howItWorks': 'Comment ça marche',
+  'capture.guide.trouble': 'Ça ne marche pas ?',
   'capture.guide.lands': 'Ce qui arrive dans ta Boîte de réception',
   'capture.guide.landsNote':
     'Ça t’y attend jusqu’à ce que tu le gardes à la clôture de 18 h. Rien ne compte tant que tu ne l’as pas dit.',

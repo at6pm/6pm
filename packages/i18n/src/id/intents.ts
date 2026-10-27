@@ -17,6 +17,7 @@ export const idIntents: { readonly [Key in keyof typeof enIntents]: Entry } = {
 
   'capture.guide.back': 'Pengaturan',
   'capture.guide.howItWorks': 'Cara kerjanya',
+  'capture.guide.trouble': 'Belum jalan?',
   'capture.guide.lands': 'Yang masuk ke Kotak masuk',
   'capture.guide.landsNote':
     'Menunggu di sana sampai kamu menyimpannya saat tutup hari jam 6 sore. Tidak ada yang dihitung sebelum kamu setuju.',

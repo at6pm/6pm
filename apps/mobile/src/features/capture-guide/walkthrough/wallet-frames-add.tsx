@@ -126,7 +126,7 @@ function AddSheet({
 
 /**
  * The link opens Add Shortcut over All Shortcuts; tapped, the shortcut joins the list: "Log to
- * 6pm" for Wallet taps, "Catch bank alerts" for notifications.
+ * 6pm" for Wallet taps, "Catch a bank alert" for notifications.
  */
 export function AddShortcutFrame({
   t,

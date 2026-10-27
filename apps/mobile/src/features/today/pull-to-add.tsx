@@ -165,8 +165,10 @@ export function PullToAdd({
     const over = Math.max(0, p - PULL_REACH) * 0.32;
     const gone = leave.get();
     const full = TICKET_HEIGHT + EDGE;
+    // Tucked in the slot its shadow would still fall below it: at rest there is no ticket at all.
+    const fed = clamp01((p - 2) / (FEED_FROM - 2));
     return {
-      opacity: 1 - clamp01((gone - 0.55) / 0.45),
+      opacity: fed * (1 - clamp01((gone - 0.55) / 0.45)),
       transform: [
         { translateY: -full + feed * full + over + gone * FALL },
         { rotate: `${sway.get() + gone * 6}deg` },
