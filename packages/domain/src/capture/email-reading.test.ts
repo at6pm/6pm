@@ -232,6 +232,15 @@ describe('a receipt email read by a model', () => {
     expect(spend?.at).toBe('2026-10-26T17:08:38.000Z');
   });
 
+  it('never sends the model an advert, which the law has mark itself [QC]', () => {
+    const advert = {
+      ...shopReceipt,
+      subject: 'Fwd: [QC] Tặng thành viên Vàng voucher 35% + Hoàn 800K Xu',
+    };
+    expect(mayHoldPayment(advert)).toBe(false);
+    expect(mayHoldPayment({ ...advert, subject: 'Quà tặng [QC] cho bạn' })).toBe(true);
+  });
+
   it('gives the model the sender and the email’s lines, not its markup', () => {
     const text = emailModelText(shopReceipt);
     expect(text).toContain('From: Shopee <info@mail.shopee.vn>');

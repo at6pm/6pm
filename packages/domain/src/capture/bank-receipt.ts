@@ -70,7 +70,8 @@ const LABELS: Readonly<Record<Field, string>> = {
   toBank: 'ngan hang nhan, ngan hang huong, ngan hang thu huong, ngan hang, beneficiary bank, bank',
   account:
     'so tai khoan, tai khoan, tai khoan nhan, tai khoan thu huong, tai khoan nguoi huong, ' +
-    'tai khoan nguon, tu tai khoan, so dien thoai, account, account number, from account',
+    'tai khoan nguon, tai khoan trich no, tu tai khoan, so dien thoai, account, account number, ' +
+    'from account, debit account',
   note:
     'noi dung, noi dung chuyen tien, noi dung chuyen khoan, noi dung giao dich, loi nhan, ' +
     'message, description, details, details of payment, payment details, remark, dien giai',
@@ -88,7 +89,7 @@ const LABEL_INDEX = new Map<string, Field>(
 const BALANCE_LABEL = /^ (?:so du|sd|sdc|balance|available balance) /;
 
 /** The field a label names. Bilingual PDF labels ("Số tiền / Amount (VND)") match either part. */
-function labelOf(text: string): Field | null {
+export function labelOf(text: string): Field | null {
   const parts = text.replace(/\(.*?\)/g, ' ').split('/');
   for (const part of parts) {
     const folded = foldWords(part);

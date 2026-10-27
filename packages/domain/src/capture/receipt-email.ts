@@ -1,7 +1,22 @@
 import type { Vnd } from '../money/format';
 import { BANKS } from '../vietqr/bank-catalogue';
-import { cleanMemo, parseBankReceipt, readReceiptTime } from './bank-receipt';
+import { namesRepayment } from './bill-payment';
+import { cleanMemo, parseBankReceipt, readFields, readReceiptTime, toRows } from './bank-receipt';
 import { htmlToLines, readForwarded, textToLines, type EmailSender } from './email-body';
+import { dongIn } from './receipt-amount';
+import {
+  cardMerchant,
+  cleanPayeeName,
+  isAdvert,
+  isFailed,
+  isMailingList,
+  isOwnTransfer,
+  joinBrokenLabels,
+  paidTotal,
+  receiptFrom,
+  subjectIsNotPayment,
+  subjectNamesTransaction,
+} from './receipt-email-signs';
 import { withFullYears } from './receipt-time';
 import { foldWords } from './spoken-spend';
 
@@ -101,6 +116,11 @@ const TOTAL_LABELS = new Set([
   'thanh tien',
   'ban da thanh toan',
   'da thanh toan',
+  'amount charged',
+  'charged',
+  'khoan thanh toan',
+  'gia tri',
+  'gia tri giao dich',
 ]);
 
 const LABEL_AND_VALUE =
@@ -183,6 +203,8 @@ function forwardedTime(value: string | null): string | null {
 
 /** Where an email came from: its body lines, the original sender of a forwarded one, its date. */
 export interface EmailOrigin {
+  /** The subject without the "Fwd:" a forward put before it. */
+  readonly subject: string;
   /** The subject, then the body with any forwarded header taken out. */
   readonly lines: readonly string[];
   readonly sender: EmailSender | null;
@@ -198,6 +220,7 @@ export function emailOrigin(email: ReceiptEmail): EmailOrigin {
   const subject = email.subject.replace(/^(?:\s*(?:fwd?|tr|chuyển tiếp)\s*:)+/iu, '').trim();
   const sender = forwarded.from ?? email.from;
   return {
+    subject,
     lines: [subject, ...forwarded.lines].filter((l) => l !== ''),
     sender,
     bank: bankOf(sender),
@@ -264,33 +287,79 @@ function isRefund(subject: string): boolean {
 }
 
 /**
+ * An amount signed as money out ("GD: -45,000VND"), as balance changes print one: never the second
+ * half of a range ("1,500 - 3,000 USD"), nor in another currency.
+ */
+const DEBIT =
+  /(?:^|[:|(]|(?<![\d.,]\s?)\s)-\s?(?:vnd\s?)?\d{1,3}(?:[.,]\d{3})+(?![.,]?\d|\s?(?:usd|us\$|\$|eur|€))/iu;
+
+/** A payee read from a sentence ("… tới PHO HOA lúc 12:30"): in capitals as banks print one, or short. */
+function sentencePayee(payee: string): string {
+  const name = cleanPayeeName(payee.replace(/\s+on\s+\p{L}{3,}\.?\s+\d.*$/u, ''));
+  return !/\p{Ll}/u.test(name) || name.split(' ').length <= 6 ? name : '';
+}
+
+/**
  * Reads the spend in a bank notification or a shop's e-receipt, forwarded or sent on by a filter,
  * with rules alone: the body (HTML tables or plain text) is turned into lines and read like a
- * shared receipt, with shop totals read as the amount and two-digit years ("27/10/26 12:30") read
- * as this century's. The shop or bank comes from the sender's domain. Money that came in is read
- * the same way and marked `incoming`, or `refund` when the subject says it was given back; no
- * amount, null. The server reads email with a model when it can (`emailSpendOf`); this is what it
- * falls back to.
+ * shared receipt, with shop totals read as the amount (the last total paid, when one is labelled)
+ * and two-digit years ("27/10/26 12:30") read as this century's. The shop or bank comes from the
+ * sender's domain; otherwise who was paid is the shop a card alert names, the labelled payee, who
+ * a receipt is from, or the payee its note names. Money that came in is read the same way and
+ * marked `incoming`, or `refund` when the subject says it was given back.
+ *
+ * Null when it holds no payment: no amount; an advert ("[QC]"), a statement, a survey or a
+ * warning by its subject; a charge that did not go through; a transfer between the person's own
+ * accounts (unless it repays a card); or an amount only found in prose, in an email whose subject
+ * names no transaction or that is sent to a mailing list. The server reads email with a model when
+ * it can (`emailSpendOf`); this is what it falls back to.
  */
 export function parseReceiptEmail(
   email: ReceiptEmail,
   options: ReceiptEmailOptions,
 ): EmailReceipt | null {
   const origin = emailOrigin(email);
-  const lines = origin.lines.map((line) => withTotalsAsAmount(withFullYears(line)));
+  const subject = origin.subject;
+  if (isAdvert(subject) || subjectIsNotPayment(subject)) return null;
+  const printed = joinBrokenLabels(origin.lines.map(withFullYears));
+  if (isFailed(subject, printed)) return null;
+  const lines = printed.map(withTotalsAsAmount);
   const refund = isRefund(email.subject);
   const incoming = refund || isIncoming(lines);
-  const receipt = parseBankReceipt(lines.map((text) => ({ text })));
-  if (!receipt || receipt.amount === null) return null;
+  const receiptLines = lines.map((text) => ({ text }));
+  const receipt = parseBankReceipt(receiptLines);
+  const paid = paidTotal(printed);
+  const amount = paid ?? receipt?.amount ?? null;
+  if (!receipt || amount === null) return null;
+
+  const { fields } = readFields(toRows(receiptLines));
+  const labelledAmount = fields.get('amount');
+  const labelled =
+    paid !== null || (labelledAmount !== undefined && dongIn(labelledAmount.value) !== null);
+  const debit = DEBIT.test(lines.join('\n'));
+  const named = subjectNamesTransaction(subject) && !isMailingList(lines);
+  if (!labelled && !debit && !named) return null;
+
+  const labelledPayee = cleanPayeeName(fields.get('payee')?.value ?? '');
+  const memo = receipt.memo ?? noteIn(lines);
+  if (labelledPayee !== '' && isOwnTransfer(lines, labelledPayee) && !namesRepayment(memo ?? '')) {
+    return null;
+  }
+  const payee =
+    cardMerchant(lines) ||
+    labelledPayee ||
+    receiptFrom(lines) ||
+    payeeInNote(lines) ||
+    sentencePayee(receipt.payee);
   return {
     ...(incoming ? { kind: refund ? ('refund' as const) : ('incoming' as const) } : {}),
-    amount: receipt.amount,
+    amount,
     // For money in, the payee a receipt names is the person themselves: only a shop is said.
-    merchant: shopOf(origin.sender) ?? (incoming ? '' : receipt.payee || payeeInNote(lines)),
+    merchant: shopOf(origin.sender) ?? (incoming ? '' : payee),
     at: emailPaidAt(receipt.at, origin, email, options),
     from: origin.sender?.address ?? null,
     bank: origin.bank ?? receipt.bank,
     code: receipt.code,
-    memo: receipt.memo ?? noteIn(lines),
+    memo,
   };
 }

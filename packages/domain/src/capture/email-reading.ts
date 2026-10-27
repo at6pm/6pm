@@ -2,6 +2,7 @@ import { EMAIL_CATEGORY_IDS, type EmailCategoryId } from '../contracts/receipt-e
 import { currencyCodeSchema, receiptMinorUnits } from '../contracts/receipt-read';
 import { bankNamedIn } from './bank-alert-senders';
 import { cleanMemo } from './bank-receipt';
+import { isAdvert } from './receipt-email-signs';
 import { foldWords } from './spoken-spend';
 import {
   emailOrigin,
@@ -107,10 +108,13 @@ const PRINTED_MONEY = new RegExp(
 
 /**
  * Whether an email's subject or body prints anything that could be an amount paid. One that does
- * not (an alert, a sign-in code, a newsletter) holds no payment, and is never sent to the model.
+ * not (an alert, a sign-in code, a newsletter) holds no payment, and is never sent to the model;
+ * nor is an advert, which Vietnamese law has say so in its subject ("[QC] …").
  */
 export function mayHoldPayment(email: ReceiptEmail): boolean {
-  return emailOrigin(email).lines.some((line) => PRINTED_MONEY.test(line));
+  const origin = emailOrigin(email);
+  if (isAdvert(origin.subject)) return false;
+  return origin.lines.some((line) => PRINTED_MONEY.test(line));
 }
 
 const squash = (text: string) => text.normalize('NFC').replace(/\s+/g, '');
