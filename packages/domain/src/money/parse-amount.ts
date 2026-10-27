@@ -8,6 +8,9 @@ const THOUSAND = /^(k|nghìn|nghin|ngàn|ngan|ng|nghìn đồng|thousand|thousan
 /** Currency marks dropped before reading the number, besides the currency's own code and symbol. */
 const MARKS = /₫|vnd|đồng|usd|eur|gbp|[$€£¥₩₹₱₺₦₪฿]/gu;
 
+/** A space, no-break space, narrow no-break space or apostrophe between thousands. */
+const SPACED_GROUP = /(\d)[ \u00a0\u202f'’](?=\d{3}(?!\d))/gu;
+
 function escape(text: string): string {
   return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
@@ -89,7 +92,13 @@ function parseForeign(text: string, currency: Currency): Money | null {
   if (!word) marks.push(escape(symbol));
   else if (symbol.length > 1) marks.push(`(?<!\\p{L})${escape(symbol)}(?!\\p{L})`);
   const own = new RegExp(marks.join('|'), 'gu');
-  const s = text.toLowerCase().normalize('NFC').replace(own, ' ').replace(MARKS, ' ');
+  const s = text
+    .toLowerCase()
+    .normalize('NFC')
+    .replace(own, ' ')
+    .replace(MARKS, ' ')
+    // Thousands grouped by a space or an apostrophe, as French and Swiss write them: "1 250,00".
+    .replace(SPACED_GROUP, '$1');
   const match =
     /(\d+(?:[.,]\d+)*)\s*(?:(tỷ|tỉ|ty|ti|billions?|bn|triệu|trieu|tr|củ|cu|millions?|mil|m|nghìn|nghin|ngàn|ngan|ng|thousands?|k)(?!\p{L}))?(\d{1,3})?(?:\s*(rưỡi|ruoi)(?!\p{L}))?/u.exec(
       s,

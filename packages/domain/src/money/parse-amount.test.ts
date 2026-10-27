@@ -90,6 +90,14 @@ describe('parseAmount outside đồng', () => {
     expect(parseAmount('1.250.000', currencyOf('KWD'))).toBe(1_250_000_000);
   });
 
+  it('reads thousands grouped by a space or an apostrophe, as French and Swiss write them', () => {
+    expect(parseAmount('1 250,00 €', eur)).toBe(125_000);
+    expect(parseAmount('1\u00a0250,00 €', eur)).toBe(125_000);
+    expect(parseAmount('1\u202f250,00 €', eur)).toBe(125_000);
+    expect(parseAmount("1'250.50", currencyOf('CHF'))).toBe(125_050);
+    expect(parseAmount('12 €', eur)).toBe(1200);
+  });
+
   it('keeps a symbol of letters from eating the units', () => {
     expect(parseAmount('Rp 25.000', currencyOf('IDR'))).toBe(25_000);
     expect(parseAmount('R45k', currencyOf('ZAR'))).toBe(4_500_000);

@@ -264,6 +264,21 @@ describe('a receipt email read by a model', () => {
     expect(read('Cơm Tấm Long Xuyên - Bếp Nhà')).toBe('Cơm Tấm Long Xuyên - Bếp Nhà');
   });
 
+  it('sees an amount in yen, yuan, won and baht, written as each country does', () => {
+    const receipt = (text: string) => ({ ...cardAlert, subject: 'Receipt', text });
+    for (const printed of [
+      '合計 980円',
+      '¥38.50',
+      '实付 38.5元',
+      '결제 12000원',
+      'ยอดรวม 120 บาท',
+      '₩4500',
+    ]) {
+      expect(mayHoldPayment(receipt(printed))).toBe(true);
+    }
+    expect(mayHoldPayment(receipt('회원님, 환영합니다'))).toBe(false);
+  });
+
   it('gives the model the sender and the email’s lines, not its markup', () => {
     const text = emailModelText(shopReceipt);
     expect(text).toContain('From: Shopee <info@mail.shopee.vn>');

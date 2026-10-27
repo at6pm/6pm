@@ -95,7 +95,8 @@ export function emailModelText(
   return [...head, ...origin.lines].join('\n').slice(0, EMAIL_MODEL_TEXT_MAX);
 }
 
-const CURRENCY = '(?:₫|đ|vn[dđ]|us\\$|usd|\\$|idr|rp|eur|€|sgd|s\\$|thb|฿)';
+const CURRENCY =
+  '(?:₫|đ|vn[dđ]|us\\$|usd|\\$|idr|rp|eur|€|sgd|s\\$|thb|฿|บาท|jpy|cny|rmb|¥|円|元|krw|₩|원|gbp|£|₹|₱)';
 /**
  * An amount as payments print one: a currency next to digits ("₫607,790", "(VND) 700,000.00",
  * "99 USD", "10,00 $ USD"), or digits grouped in thousands with no currency ("179.000", as MoMo
