@@ -122,6 +122,8 @@ export function CaptureGuideSheet({ source: asked }: { readonly source: CaptureS
               <CategoryTile icon={guide.icon} hue={guide.hue} size={60} radius={20} glyph={32} />
               <View
                 style={{
+                  flexShrink: 1,
+                  marginLeft: 16,
                   height: 28,
                   paddingLeft: 9,
                   paddingRight: 11,
@@ -140,7 +142,14 @@ export function CaptureGuideSheet({ source: asked }: { readonly source: CaptureS
                     backgroundColor: view.on ? colours.ok : colours.warn,
                   }}
                 />
-                <Text style={{ ...body(12.5, 700), color: view.on ? colours.ok : colours.warn }}>
+                <Text
+                  numberOfLines={1}
+                  style={{
+                    ...body(12.5, 700),
+                    color: view.on ? colours.ok : colours.warn,
+                    flexShrink: 1,
+                  }}
+                >
                   {view.status}
                 </Text>
               </View>

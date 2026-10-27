@@ -16,7 +16,8 @@ struct LogSpendIntent: AppIntent {
     title: LocalizedStringResource("logSpend.amount", table: "Intents"),
     requestValueDialog: IntentDialog(
       LocalizedStringResource("logSpend.askAmount", table: "Intents")))
-  var amount: String
+  /// Optional: Wallet passes no amount at fuel pumps and other pre-authorised charges.
+  var amount: String?
 
   @Parameter(title: LocalizedStringResource("logSpend.merchant", table: "Intents"))
   var merchant: String?
@@ -32,12 +33,13 @@ struct LogSpendIntent: AppIntent {
   func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
     let logged: LoggedSpend
     do {
-      logged = try LoggedSpend.log(amount: amount, merchant: merchant, at: Date())
+      logged = try LoggedSpend.log(amount: amount ?? "", merchant: merchant, at: Date())
     } catch {
       throw Failure.notLogged
     }
-    // Only Siri gets here: Wallet always names a merchant, and its unread amounts still log.
-    if logged.needsAmount {
+    // Only Siri is asked: a Wallet tap names its merchant, and one with no amount is already in the
+    // Inbox waiting for it. Asking there would stop the automation with a prompt.
+    if logged.needsAmount && (merchant ?? "").isEmpty {
       throw $amount.needsValueError(
         IntentDialog(LocalizedStringResource("logSpend.askAmount", table: "Intents")))
     }
