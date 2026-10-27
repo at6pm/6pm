@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { parts, type LocalDate } from '@6pm/domain';
+import { localeOf } from '@6pm/i18n';
 
 import { useI18n } from '../../i18n/i18n';
 
@@ -18,7 +19,7 @@ function monthDate(month: string): Date {
 export function usePlanFormat(today: LocalDate) {
   const { language } = useI18n();
   return useMemo(() => {
-    const locale = language === 'vi' ? 'vi-VN' : 'en-GB';
+    const locale = localeOf(language);
     const f = (o: Intl.DateTimeFormatOptions) =>
       new Intl.DateTimeFormat(locale, { timeZone: 'UTC', ...o });
     const longMonth = f({ month: 'long' });

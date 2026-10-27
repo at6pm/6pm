@@ -21,6 +21,7 @@ import {
   REPAYMENT,
   type SpendRow,
 } from '@6pm/domain';
+import { localeOf } from '@6pm/i18n';
 
 import type { MoneyInPlace } from '../../data/money-in-actions';
 
@@ -176,7 +177,7 @@ export function useClose(givable: readonly GivableSpend[]) {
   );
   const undoTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const weekday = useMemo(
-    () => new Intl.DateTimeFormat(language === 'vi' ? 'vi-VN' : 'en-GB', { weekday: 'short' }),
+    () => new Intl.DateTimeFormat(localeOf(language), { weekday: 'short' }),
     [language],
   );
 

@@ -1,15 +1,26 @@
 import { useState } from 'react';
 import { Text, type TextProps } from 'react-native';
 
-/** Breaks `text` into two lines whose lengths differ least, at a space. */
+/** Chinese and Japanese break after their own commas and stops, as they have no spaces. */
+const WIDE_PUNCTUATION = /[，、；：！？]/u;
+
+/**
+ * Breaks `text` into two lines whose lengths differ least: at a space, or after a Chinese or
+ * Japanese comma.
+ */
 export function balanceTwoLines(text: string): string {
-  const words = text.split(' ');
-  if (words.length < 2) return text;
   let best = text;
   let bestDiff = Infinity;
-  for (let i = 1; i < words.length; i++) {
-    const a = words.slice(0, i).join(' ');
-    const b = words.slice(i).join(' ');
+  for (let i = 1; i < text.length - 1; i++) {
+    const char = text.charAt(i);
+    const split =
+      char === ' '
+        ? [text.slice(0, i), text.slice(i + 1)]
+        : WIDE_PUNCTUATION.test(char)
+          ? [text.slice(0, i + 1), text.slice(i + 1)]
+          : null;
+    if (split === null) continue;
+    const [a = '', b = ''] = split;
     const diff = Math.abs(a.length - b.length);
     if (diff < bestDiff) {
       bestDiff = diff;

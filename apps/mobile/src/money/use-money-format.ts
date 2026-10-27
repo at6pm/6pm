@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { currencyOf, moneyFormat, moneyLocale, type Currency, type MoneyFormat } from '@6pm/domain';
+import type { Language } from '@6pm/i18n';
 
 import { useMoneySelector } from '../data/money-provider';
 import { homeCurrencyCode, type PlanSettings } from '../data/plan-settings';
@@ -13,7 +14,7 @@ export function homeCurrencyOf(plan: PlanSettings | null): Currency {
 }
 
 /** How to write money in a currency, the way this phone writes numbers. */
-export function moneyFormatFor(currency: Currency, language: 'en' | 'vi'): MoneyFormat {
+export function moneyFormatFor(currency: Currency, language: Language): MoneyFormat {
   return moneyFormat(moneyLocale(currency, language, phoneNumberStyle()));
 }
 

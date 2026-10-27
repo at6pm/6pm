@@ -5,13 +5,42 @@ import {
   type MoneyFormat,
   type SpokenSpend,
 } from '@6pm/domain';
-import type { Language } from '@6pm/i18n';
+import { localeOf, type Language } from '@6pm/i18n';
 
+import type { I18n } from '../../i18n/i18n';
 import { symbolCodepoints, type SymbolName } from '../../ui/icons/symbols.generated';
 
+/** The dictation locale for each app language: the phone hears the language the app speaks. */
+const SPEECH_LOCALES: { readonly [L in Language]: string } = {
+  en: 'en-US',
+  vi: 'vi-VN',
+  'zh-Hans': 'zh-CN',
+  ja: 'ja-JP',
+  ko: 'ko-KR',
+  th: 'th-TH',
+  id: 'id-ID',
+  es: 'es-ES',
+  fr: 'fr-FR',
+  de: 'de-DE',
+};
+
 /** The dictation language for the app language. */
-export function speechLocale(language: Language): 'vi-VN' | 'en-US' {
-  return language === 'vi' ? 'vi-VN' : 'en-US';
+export function speechLocale(language: Language): string {
+  return SPEECH_LOCALES[language];
+}
+
+/**
+ * The dictation language's name as a sentence in the same language says it ("tiếng Việt",
+ * "français"): the catalogue's for English and Vietnamese, the system's for the rest, else the
+ * language's own name.
+ */
+export function dictationName(language: Language, t: I18n['t']): string {
+  if (language === 'en' || language === 'vi') return t(`voice.language.${language}`);
+  if (typeof Intl.DisplayNames === 'function') {
+    const name = new Intl.DisplayNames([localeOf(language)], { type: 'language' }).of(language);
+    if (name) return name;
+  }
+  return t('settings.languageName');
 }
 
 /** Whether the recogniser lists the locale ("vi-VN", "vi_VN" and "vi" all count for "vi-VN"). */

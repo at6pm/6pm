@@ -1,0 +1,33 @@
+import type { Entry } from '../catalogue-types';
+import type { enDuo } from '../en-duo';
+
+export const jaDuo: { readonly [Key in keyof typeof enDuo]: Entry } = {
+  'duo.month.steady': 'いいペース。この調子で。',
+  'duo.month.fast': '日数より少し先を行っています。',
+  'duo.month.paceLine': '{month}のお金は{used}%使用、月は{gone}%経過。',
+  'duo.month.daily': '毎日の数字',
+  'duo.day.ofLine': '/ その日の{line}',
+  'duo.day.previous': '前の日',
+  'duo.day.next': '次の日',
+  'duo.ask.title': '{amount}使ったら',
+  'duo.ask.from': '「6pmに聞く」のプレビュー',
+  'duo.ask.spent': '{spent}使用 · あと約{amount}',
+  'duo.ask.left': '残り{left}',
+  'duo.close.kept': '今日ここまで残した額',
+  'duo.close.ofLine': '/ 今日の{line} · まだ{left}使えます',
+  'duo.close.foldLater': 'ひとつずつ決めたら、閉じて今日を締めましょう。',
+  'duo.close.foldNow': '閉じて今日を締めましょう。',
+  'duo.market.title': 'レジで',
+  'duo.market.left': '今日の残り',
+  'duo.market.add': '追加',
+  'duo.market.leave': 'レジを離れる',
+  'duo.scan.camera': '内側のカメラ',
+  'duo.scan.looking': 'QRを探しています',
+  'duo.scan.stand': 'カウンターに立てて、お店のQRを上のほうにかざしてください。',
+  'duo.scan.to': '{payee}へ',
+  'duo.scan.paid': '支払い済み',
+  'duo.drop.title': '銀行の明細行をここにドロップ',
+  'duo.drop.sub': '6pmがお店と金額を読み取って、正しいカテゴリに振り分けます。',
+  'duo.drop.caught': '{merchant} · {amount}をキャッチ。締めで確認します。',
+  'duo.drop.unread': 'その行には金額がありません。',
+};

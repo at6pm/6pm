@@ -55,7 +55,6 @@ export function zineView({
     data.closed.find((r) => r.day === d.day);
   const closedText = `${diary.closed.length}/${diary.days}`;
   const monthName = dates.month(month);
-  const nextName = dates.month(nextMonthStart(month).slice(0, 7));
   const days = (count: number) => t('diary.zine.days', { count });
 
   const headline =
@@ -138,8 +137,8 @@ export function zineView({
     big: ticket(t('diary.zine.big'), diary.biggest),
     everyDay,
     note: t(diary.spare >= 0 ? 'diary.zine.note.spare' : 'diary.zine.note.over', {
-      month: monthName.toLocaleLowerCase(),
-      next: nextName.toLocaleLowerCase(),
+      month: dates.monthInNote(month),
+      next: dates.monthInNote(nextMonthStart(month).slice(0, 7)),
     }),
     share: {
       month: dates.monthShort(month),

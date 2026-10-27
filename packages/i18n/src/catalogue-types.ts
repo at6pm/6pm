@@ -1,11 +1,13 @@
 import type { en } from './en';
 
-export const languages = ['en', 'vi'] as const;
+/** The languages 6pm speaks, as Apple names their `.lproj` folders. */
+export const languages = ['en', 'vi', 'zh-Hans', 'ja', 'ko', 'th', 'id', 'es', 'fr', 'de'] as const;
 export type Language = (typeof languages)[number];
 
 /**
  * A string that changes with a number. `other` is always present; a language adds only the
- * categories its plural rules use (English adds `one`, Vietnamese adds none).
+ * categories its plural rules use (English, Spanish, French and German add `one`; Vietnamese, Chinese,
+ * Japanese, Korean, Thai and Indonesian add none).
  */
 export type PluralForms = { readonly other: string } & {
   readonly [Category in Exclude<Intl.LDMLPluralRule, 'other'>]?: string;

@@ -1,0 +1,33 @@
+import type { Entry } from '../catalogue-types';
+import type { enDuo } from '../en-duo';
+
+export const thDuo: { readonly [Key in keyof typeof enDuo]: Entry } = {
+  'duo.month.steady': 'ตามจังหวะดี ค่อยๆ ไป',
+  'duo.month.fast': 'ใช้เร็วกว่าจำนวนวันไปนิด',
+  'duo.month.paceLine': 'ใช้เงินเดือน{month}ไปแล้ว {used}% เวลาผ่านไปแล้ว {gone}%',
+  'duo.month.daily': 'ยอดรายวัน',
+  'duo.day.ofLine': 'จาก {line} ของวันนั้น',
+  'duo.day.previous': 'วันก่อนหน้า',
+  'duo.day.next': 'วันถัดไป',
+  'duo.ask.title': 'ถ้าคุณใช้ {amount}',
+  'duo.ask.from': 'ตัวอย่างจากถาม 6pm',
+  'duo.ask.spent': 'ใช้ไป {spent} · อีกราว {amount}',
+  'duo.ask.left': 'เหลือ {left}',
+  'duo.close.kept': 'เก็บไว้แล้ววันนี้',
+  'duo.close.ofLine': 'จาก {line} วันนี้ · ยังเป็นของคุณอีก {left}',
+  'duo.close.foldLater': 'ตัดสินใจทีละรายการ แล้วพับเครื่องเพื่อปิดวัน',
+  'duo.close.foldNow': 'พับเครื่องเพื่อปิดวัน',
+  'duo.market.title': 'ที่เคาน์เตอร์',
+  'duo.market.left': 'วันนี้เหลือ',
+  'duo.market.add': 'เพิ่ม',
+  'duo.market.leave': 'ออกจากเคาน์เตอร์',
+  'duo.scan.camera': 'กล้องด้านใน',
+  'duo.scan.looking': 'กำลังหาคิวอาร์',
+  'duo.scan.stand': 'ตั้งเครื่องไว้บนเคาน์เตอร์ แล้วยกคิวอาร์ของร้านขึ้นไว้ครึ่งบน',
+  'duo.scan.to': 'ให้ {payee}',
+  'duo.scan.paid': 'จ่ายแล้ว',
+  'duo.drop.title': 'วางข้อความจากธนาคารตรงนี้',
+  'duo.drop.sub': '6pm จะอ่านชื่อร้านกับยอดเงิน แล้วจัดเข้าหมวดหมู่ที่ถูกต้อง',
+  'duo.drop.caught': 'จับได้ {merchant} · {amount} รอปิดวันอยู่นะ',
+  'duo.drop.unread': 'ข้อความนั้นไม่มียอดเงิน',
+};

@@ -19,6 +19,7 @@ import { useMoneyFormat } from '../../money/use-money-format';
 import { useCompanionForm } from '../../ui/companion/companion-form';
 import type { CompanionMood } from '../../ui/companion/companion-mood';
 import { useTheme } from '../../ui/theme/theme';
+import { modelsWord } from '../api/api-language';
 import { useApi } from '../api/native-api';
 import { factFor, lineKey, withLine, withPick } from './companion-voice';
 import { catalogueLine, slotValues, type SlotWords, type Voice } from './fact-words';
@@ -140,10 +141,13 @@ export function useCompanionLine(
     const voice = readVoice(db);
     writeVoice(db, withPick(voice, now.moment, now.fact, today));
     if (voice.lines[key] !== undefined) return;
+    // The models word English and Vietnamese; every other language says the catalogue's line.
+    const language = now.language;
+    if (!modelsWord(language)) return;
     let live = true;
     const request: WordRequest = {
       surface: now.surface,
-      language: now.language,
+      language,
       persona: now.voiceName,
       companion: {
         name: now.say(`companions.name.${now.form}`),
@@ -188,6 +192,7 @@ export function useCompanionLine(
   if (shown.current?.key !== key) {
     const kept = readVoice(db).lines[key];
     if (kept !== undefined) shown.current = { key, wording: { text: kept.text, mood: kept.mood } };
+    else if (!modelsWord(language)) shown.current = { key, wording: null };
     else if (arrived?.key === key) shown.current = { key, wording: arrived.line };
     else return undefined;
   }

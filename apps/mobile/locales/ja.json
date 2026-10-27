@@ -1,0 +1,10 @@
+{
+  "ios": {
+    "NSCameraUsageDescription": "スキャンしたQRコードやレシートを読み取るためにカメラを使用します。レシートを詳しく読む必要がある場合を除き、写真はiPhoneの外に出ません。",
+    "NSMicrophoneUsageDescription": "支出を声で記録するときにマイクを使用します。音声は文字に起こすため音声認識サービスに送られます。端末内モードではこのiPhoneから出ません。",
+    "NSSpeechRecognitionUsageDescription": "話した内容を金額と名前に変換するために使用します。",
+    "NSPhotoLibraryUsageDescription": "締めのレシートとお金日記を写真に保存するためだけに使用します。ライブラリの中を見ることはありません。",
+    "NSPhotoLibraryAddUsageDescription": "保存を選んだときに、締めのレシートとお金日記を写真に保存します。",
+    "NSLocationWhenInUseUsageDescription": "海外で旅行モードを自動でオンにするため、いまいる国を確認します。"
+  }
+}

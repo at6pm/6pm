@@ -2,6 +2,7 @@ import { Text, View } from 'react-native';
 import Animated, { Keyframe } from 'react-native-reanimated';
 
 import { type CloseMoment, type DailyNumber } from '@6pm/domain';
+import { localeOf } from '@6pm/i18n';
 
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
@@ -92,7 +93,7 @@ export function TonightCard({
             ? t('today.tonight.caughtSoFar', { count: toConfirm })
             : t('today.tonight.nothingYet');
   const icon = moment === 'closed' ? 'task_alt' : moment === 'late' ? 'bedtime' : 'wb_twilight';
-  const locale = language === 'vi' ? 'vi-VN' : 'en-GB';
+  const locale = localeOf(language);
   const letters = new Intl.DateTimeFormat(locale, { weekday: 'narrow' });
   const dayLabel = new Intl.DateTimeFormat(locale, {
     weekday: 'long',

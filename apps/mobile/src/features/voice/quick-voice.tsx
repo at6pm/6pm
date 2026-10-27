@@ -10,6 +10,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
+import type { Language } from '@6pm/i18n';
 import { curves, voiceInk } from '@6pm/theme';
 
 import { useI18n } from '../../i18n/i18n';
@@ -20,7 +21,7 @@ import { body, display, leading, mono } from '../../ui/type/fonts';
 import { ListeningRing } from './listening-ring';
 import { OpenSettingsPill } from './open-settings-pill';
 import { VoiceShimmer } from './voice-shimmer';
-import type { VoiceChip } from './voice-support';
+import { dictationName, type VoiceChip } from './voice-support';
 import { mainAction, type VoiceStage } from './voice-stage';
 import { WaveBars } from './wave-bars';
 
@@ -72,14 +73,13 @@ export function useVoiceSwap(open: boolean) {
 function stuckLine(
   stage: VoiceStage,
   t: ReturnType<typeof useI18n>['t'],
-  language: 'en' | 'vi',
+  language: Language,
 ): string | null {
   if (stage === 'nothing') return t('voice.nothingTap');
   if (stage === 'noAmount') return t('voice.noAmount');
   if (stage === 'denied') return t('voice.denied');
-  if (stage === 'unavailable') {
-    return t('voice.unavailable', { language: t(`voice.language.${language}`) });
-  }
+  if (stage === 'unavailable')
+    return t('voice.unavailable', { language: dictationName(language, t) });
   return null;
 }
 

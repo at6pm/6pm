@@ -1,0 +1,50 @@
+import type { Entry } from '../catalogue-types';
+import type { enCategories } from '../en-categories';
+
+export const frCategories: { readonly [Key in keyof typeof enCategories]: Entry } = {
+  'categories.title': 'Catégories',
+  'categories.intro':
+    'Je devine la catégorie d’après le marchand. Corrige-la une fois et je m’en souviendrai.',
+  'categories.yours': 'Tes catégories',
+  'categories.count': { one: '{count} catégorie', other: '{count} catégories' },
+  'categories.tally': {
+    one: '{count} ce mois-ci · {amount}',
+    other: '{count} ce mois-ci · {amount}',
+  },
+  'categories.tallyNone': 'Rien pour l’instant ce mois-ci',
+  'categories.notDaily': 'Hors quotidien',
+  'categories.new': 'Nouvelle catégorie',
+  'categories.learned': 'Appris de toi',
+  'categories.rulesCount': { one: '{count} règle', other: '{count} règles' },
+  'categories.rule.learned': {
+    one: 'Appris {count} fois',
+    other: 'Appris {count} fois',
+  },
+  'categories.rule.set': 'Défini par toi',
+  'categories.rule.remove': 'Oublier {merchant}',
+  'categories.noRules': 'Rien appris pour l’instant.',
+  'categories.rulesNote':
+    'Quand tu changes une catégorie, je te demande si je dois faire pareil la prochaine fois.',
+  'categories.edit.title': 'Modifier la catégorie',
+  'categories.edit.cancel': 'Annuler',
+  'categories.edit.save': 'Enregistrer',
+  'categories.edit.placeholder': 'Donne-lui un nom',
+  'categories.edit.icon': 'Icône',
+  'categories.edit.iconCount': '{free} gratuites · {more} avec Max',
+  'categories.edit.colour': 'Couleur',
+  'categories.edit.daily': 'Compte dans ton chiffre du jour',
+  'categories.edit.dailySub': 'Désactive-le pour les frais remboursés, comme le travail.',
+  'categories.edit.delete': 'Supprimer · ses dépenses passent dans {name}',
+  'categories.edit.locked': 'Inclus avec 6pm Max',
+  'categories.pack.free': 'Gratuit · {count}',
+  'categories.pack.max': 'MAX',
+  'categories.pack.essentials': 'Essentiels',
+  'categories.pack.street': 'Street food et boissons',
+  'categories.pack.move': 'En déplacement',
+  'categories.pack.home': 'Maison et factures',
+  'categories.pack.shop': 'Shopping et style',
+  'categories.pack.body': 'Corps et esprit',
+  'categories.pack.out': 'Sorties',
+  'categories.pack.people': 'Proches et animaux',
+  'categories.pack.money': 'Argent, cadeaux et Tết',
+};

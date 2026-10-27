@@ -3,6 +3,7 @@ import type { Language } from '@6pm/i18n';
 
 import { micStream } from '../../../modules/mic-stream';
 import type { ApiClient } from '../api/api-client';
+import { apiLanguageOf } from '../api/api-language';
 import {
   openCloudSession,
   type CloudSession,
@@ -41,7 +42,7 @@ export function fetchVoiceToken(
   return request({
     method: 'POST',
     path: '/v1/voice/token',
-    body: { language },
+    body: { language: apiLanguageOf(language) },
     schema: voiceTokenResponseSchema,
     timeoutMs: VOICE_TOKEN_TIMEOUT_MS,
   });

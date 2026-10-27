@@ -1,0 +1,10 @@
+{
+  "ios": {
+    "NSCameraUsageDescription": "6pm 使用相机读取你扫描的二维码和小票。照片会留在你的 iPhone 上，除非某张小票需要更仔细地识别。",
+    "NSMicrophoneUsageDescription": "你说出一笔开销时，6pm 会聆听。你的语音会发送到语音转文字服务进行转写；在设备端模式下，则只留在这台 iPhone 上。",
+    "NSSpeechRecognitionUsageDescription": "6pm 会把你说的话转成金额和名称。",
+    "NSPhotoLibraryUsageDescription": "6pm 只会把你的日结小票和消费日记存到“照片”，绝不会浏览你的图库。",
+    "NSPhotoLibraryAddUsageDescription": "在你需要时，6pm 会把日结小票和消费日记存到“照片”。",
+    "NSLocationWhenInUseUsageDescription": "6pm 会确认你所在的国家或地区，以便你出境时自动开启旅行模式。"
+  }
+}

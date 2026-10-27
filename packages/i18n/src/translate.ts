@@ -7,22 +7,46 @@ import type {
   StringKey,
   Variants,
 } from './catalogue-types';
+import { de, deAndroid } from './de';
 import { en } from './en';
 import { enAndroid } from './en-android';
+import { es, esAndroid } from './es';
+import { fr, frAndroid } from './fr';
+import { id, idAndroid } from './id';
+import { ja, jaAndroid } from './ja';
+import { ko, koAndroid } from './ko';
+import { th, thAndroid } from './th';
 import { vi } from './vi';
 import { viAndroid } from './vi-android';
+import { zhHans, zhHansAndroid } from './zh-hans';
 
-export const catalogues: { readonly [L in Language]: Catalogue } = { en, vi };
+export const catalogues: { readonly [L in Language]: Catalogue } = {
+  en,
+  vi,
+  'zh-Hans': zhHans,
+  ja,
+  ko,
+  th,
+  id,
+  es,
+  fr,
+  de,
+};
 
 const pluralRules = new Map<Language, Intl.PluralRules>();
 
+/** The languages whose `one` takes 1 alone; French's takes 0 too. The rest have only `other`. */
+const ONE_IS_ONE: ReadonlySet<Language> = new Set(['en', 'es', 'de']);
+
 /**
  * The plural category of a number. Uses `Intl.PluralRules`; on an engine that ships without it,
- * falls back to the two rules these languages need (English: one or other; Vietnamese: other).
+ * falls back to the rules these languages need for whole counts: `one` for 1 in English, Spanish
+ * and German, for 0 and 1 in French, and `other` for everything else.
  */
 function pluralCategory(language: Language, count: number): Intl.LDMLPluralRule {
   if (typeof Intl === 'undefined' || typeof Intl.PluralRules !== 'function') {
-    return language === 'en' && count === 1 ? 'one' : 'other';
+    if (language === 'fr') return count === 0 || count === 1 ? 'one' : 'other';
+    return ONE_IS_ONE.has(language) && count === 1 ? 'one' : 'other';
   }
   let rules = pluralRules.get(language);
   if (!rules) {
@@ -36,6 +60,14 @@ function pluralCategory(language: Language, count: number): Intl.LDMLPluralRule 
 export const androidVariants: { readonly [L in Language]: Variants } = {
   en: enAndroid,
   vi: viAndroid,
+  'zh-Hans': zhHansAndroid,
+  ja: jaAndroid,
+  ko: koAndroid,
+  th: thAndroid,
+  id: idAndroid,
+  es: esAndroid,
+  fr: frAndroid,
+  de: deAndroid,
 };
 
 const variantsOf: { readonly [P in Platform]: { readonly [L in Language]: Variants } | null } = {

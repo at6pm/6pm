@@ -1,0 +1,28 @@
+import type { Entry } from '../catalogue-types';
+import type { enSurfaces } from '../en-surfaces';
+
+// Widgets and the Live Activity are small: the shortest natural word wins.
+export const koSurfaces: { readonly [Key in keyof typeof enSurfaces]: Entry } = {
+  'surfaces.scanQr': 'QR 스캔',
+  'surfaces.safeTodayShort': '오늘 쓸 돈',
+  'surfaces.today': '오늘',
+  'surfaces.left': '남음',
+  'surfaces.amountLeft': '{amount} 남음',
+  'surfaces.spent': '{amount} 씀',
+  'surfaces.ofLine': '/ {amount}',
+  'surfaces.brandSafe': '6pm · 오늘 쓸 돈',
+  'surfaces.pending': { other: '{count}건 대기' },
+  'surfaces.more': { other: '+{count}건 더' },
+  'surfaces.listEmpty': '오늘은 아직 쓴 돈이 없어요',
+  'surfaces.openApp': '6pm 열기',
+  'surfaces.setUp': '6pm을 열어 설정하세요',
+  'surfaces.activity.waiting': '대기 중 · 결제하면 탭',
+  'surfaces.activity.to': '{merchant}에 {amount}',
+  'surfaces.activity.toMerchant': '받는 곳: {merchant}',
+  'surfaces.activity.toMerchantBank': '받는 곳: {merchant} · {bank} 열림',
+  'surfaces.activity.waitingBank': '대기 중 · {bank}',
+  'surfaces.activity.paid': '결제 완료',
+  'surfaces.context.today': '오늘',
+  'surfaces.context.yesterday': '어제',
+  'surfaces.context.safeAfter': '이제 오늘 쓸 수 있는 돈은 {amount}',
+};

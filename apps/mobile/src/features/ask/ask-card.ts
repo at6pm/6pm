@@ -11,6 +11,7 @@ import {
 import type { MoneyStore } from '../../data/money-store';
 import type { useI18n } from '../../i18n/i18n';
 import type { ApiClient } from '../api/api-client';
+import { modelsWord } from '../api/api-language';
 import type { useMoneyFormat } from '../../money/use-money-format';
 import type { usePlanFormat } from '../plan/plan-format';
 import { newPotLocked } from '../plan/plan-view';
@@ -101,6 +102,7 @@ export async function cardOf(
   // make the numbers up.
   if (
     answer.kind === 'help' &&
+    modelsWord(now.language) &&
     readAiMode(deps.settings) === 'device' &&
     !asksTheirRecords(question)
   ) {
@@ -156,7 +158,10 @@ export async function cardOf(
     answer as Parameters<typeof describeLedgerAnswer>[0],
     wordsEnv,
   );
-  if (described.wording === null || reading.offline) return { card: described.card, pending: null };
+  // The models word English and Vietnamese only; in another language the catalogue's card stays.
+  if (described.wording === null || reading.offline || !modelsWord(now.language)) {
+    return { card: described.card, pending: null };
+  }
   const request: WordRequest = {
     surface: 'answer',
     language: now.language,

@@ -10,6 +10,7 @@ import {
   tally,
   type GivableSpend,
 } from '@6pm/domain';
+import { localeOf } from '@6pm/i18n';
 
 import { useGivableSpends } from '../data/givable-spends';
 import { useMoney, useMoneyActions } from '../data/money-provider';
@@ -99,7 +100,7 @@ function CloseOpen({ givable }: { readonly givable: readonly GivableSpend[] }) {
 
   if (!day || !snap.plan) return null;
 
-  const locale = language === 'vi' ? 'vi-VN' : 'en-GB';
+  const locale = localeOf(language);
   const closingDate = new Date(`${close.day}T12:00:00`);
 
   const shortDate = (d: Date) =>

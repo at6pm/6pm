@@ -3,6 +3,7 @@ import { useMemo, useRef } from 'react';
 
 import { useI18n } from '../../i18n/i18n';
 import { createApiClient, type ApiClient } from './api-client';
+import { apiLanguageOf } from './api-language';
 import { ApiRequestError } from './api-error';
 import { secureDeviceTokenStore } from './device-token-store';
 
@@ -31,7 +32,7 @@ export function useApi(): ApiClient {
           baseUrl,
           fetch: globalThis.fetch.bind(globalThis),
           tokens: secureDeviceTokenStore,
-          language: () => languageRef.current,
+          language: () => apiLanguageOf(languageRef.current),
         });
   }, []);
 }

@@ -1,0 +1,10 @@
+{
+  "ios": {
+    "NSCameraUsageDescription": "6pm usa la cámara para leer los códigos QR y los tickets que escaneas. Las fotos se quedan en tu iPhone, salvo que un ticket necesite una lectura más detallada.",
+    "NSMicrophoneUsageDescription": "6pm te escucha mientras dices un gasto. Tu voz va a un servicio de voz a texto para transcribirla, o se queda en este iPhone en el modo en el dispositivo.",
+    "NSSpeechRecognitionUsageDescription": "6pm convierte lo que dices en un importe y un nombre.",
+    "NSPhotoLibraryUsageDescription": "6pm solo guarda en Fotos el ticket de tu cierre y tu diario del dinero. Nunca mira tu fototeca.",
+    "NSPhotoLibraryAddUsageDescription": "6pm guarda en Fotos el ticket de tu cierre y tu diario del dinero cuando se lo pides.",
+    "NSLocationWhenInUseUsageDescription": "6pm comprueba en qué país estás para que el modo viaje se active solo en el extranjero."
+  }
+}

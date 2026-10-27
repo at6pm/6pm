@@ -1,0 +1,30 @@
+import type { Entry } from '../catalogue-types';
+import type { enCompanions } from '../en-companions';
+
+export const esCompanions: { readonly [Key in keyof typeof enCompanions]: Entry } = {
+  'companions.title': 'Compañero',
+  'companions.intro': 'Elige quién te hace compañía cada tarde. Todos cumplen la misma promesa.',
+  'companions.name.sun': 'Atardecer',
+  'companions.name.max': 'Sol de Medianoche',
+  'companions.name.nhang': 'Nhang',
+  'companions.name.banhbao': 'Bánh Bao',
+  'companions.name.giot': 'Giọt',
+  'companions.name.hac': 'Hạc Giấy',
+  'companions.gloss.sun': 'el sol que se pone',
+  'companions.gloss.max': 'el sol de Max',
+  'companions.gloss.nhang': 'incienso',
+  'companions.gloss.banhbao': 'bollo al vapor',
+  'companions.gloss.giot': 'gota de lluvia',
+  'companions.gloss.hac': 'grulla de papel',
+  'companions.line.sun': 'Cálido y constante. Se pone contigo a las seis.',
+  'companions.line.max': 'El sol después del anochecer, con un anillo y dos lunas.',
+  'companions.line.nhang': 'Sereno, algo sabio, nunca tiene prisa.',
+  'companions.line.banhbao': 'Achuchable, blandito y siempre pensando en la cena.',
+  'companions.line.giot': 'Pícara y temblona. Salpica cuando está contenta.',
+  'companions.line.hac': 'Elegante y discretamente orgullosa. Doblada con mimo.',
+  'companions.wearing': 'Contigo',
+  'companions.max': 'MAX',
+  'companions.locked': '{name}, incluido en Max',
+  'companions.icon': 'El icono de la app sigue a mi compañero',
+  'companions.iconSub': 'Tu pantalla de inicio muestra a quien elegiste.',
+};

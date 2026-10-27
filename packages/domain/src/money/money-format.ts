@@ -4,8 +4,11 @@ import { formatShort, formatVnd, groupDigits, MINUS } from './format';
 /** How the phone writes money: its currency, separators and where the symbol goes. */
 export interface MoneyLocale {
   readonly currency: Currency;
-  /** The app's language, for the short form's words ("tr" in Vietnamese). */
-  readonly language: 'en' | 'vi';
+  /**
+   * The app's language ("en", "vi", "ja"…), for the short form's words: Vietnamese writes "tr" and
+   * "tỷ", every other language "M" and "B".
+   */
+  readonly language: string;
   /** The decimal mark: "." or ",". */
   readonly decimal: string;
   /** The thousands separator: ",", ".", a space or an apostrophe. */
@@ -83,7 +86,7 @@ export interface PhoneNumberStyle {
 /** The money locale for a currency, written the way the phone writes numbers. */
 export function moneyLocale(
   currency: Currency,
-  language: 'en' | 'vi',
+  language: string,
   phone: PhoneNumberStyle = {},
 ): MoneyLocale {
   const tag = (phone.languageTag ?? '').toLowerCase();
@@ -95,8 +98,8 @@ export function moneyLocale(
   return { currency, language, decimal, group, symbolAfter };
 }
 
-/** The design's own: đồng, written the Vietnamese way in either language. */
-export function vndLocale(language: 'en' | 'vi'): MoneyLocale {
+/** The design's own: đồng, written the Vietnamese way in every language. */
+export function vndLocale(language: string): MoneyLocale {
   return { currency: VND, language, decimal: ',', group: '.', symbolAfter: true };
 }
 
@@ -160,7 +163,7 @@ function shortOf(amount: Money, locale: MoneyLocale): string {
   return (body === '0' ? '' : sign) + prefix + body + suffix;
 }
 
-/** Writes money for one locale. VND keeps the design's exact forms in both languages. */
+/** Writes money for one locale. VND keeps the design's exact forms in every language. */
 export function moneyFormat(locale: MoneyLocale): MoneyFormat {
   const { currency } = locale;
   if (currency.code === 'VND') {

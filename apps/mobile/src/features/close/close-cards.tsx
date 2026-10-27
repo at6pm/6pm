@@ -371,9 +371,13 @@ export function CloseCards(props: CloseCardsProps) {
             {props.accessory}
           </Animated.View>
         ) : (
+          // One line the height of the undo pill it trades places with; a longer language shrinks.
           <Animated.Text
             key={top?.money ? 'money' : 'spend'}
             entering={FadeIn.duration(200)}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.7}
             style={{ ...body(15), lineHeight: 32, color: palette.inkSoft }}
           >
             {top?.money && props.moneyHint ? props.moneyHint : props.hint}

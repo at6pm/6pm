@@ -1,0 +1,55 @@
+import type { Entry } from '../catalogue-types';
+import type { enWidgetsGuide } from '../en-widgets-guide';
+
+// Steps use iOS's own Chinese labels in “ ” (编辑, 添加小组件, 自定, 添加控制, 操作按钮, 实时活动).
+export const zhHansWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: Entry } = {
+  'widgetsGuide.title': '小组件和控制',
+  'widgetsGuide.headline': '6pm，看一眼或按一下就到。',
+  'widgetsGuide.lede': '把今天可以花的数字放在你常看的地方，不用找 App 就能打开扫码或快速记账。',
+  'widgetsGuide.lookMax': '以你的外观绘制。',
+  'widgetsGuide.lookFree': '免费，Golden Hour 配色。有 Max 就会换上你的外观。',
+  'widgetsGuide.howToAdd': '如何添加',
+  'widgetsGuide.whenItShows': '何时显示',
+
+  'widgetsGuide.home.title': '主屏幕小组件',
+  'widgetsGuide.home.what': '今天可以花多少，一眼就知道。轻点即可打开 6pm。',
+  'widgetsGuide.home.small': '小',
+  'widgetsGuide.home.medium': '中',
+  'widgetsGuide.home.large': '大',
+  'widgetsGuide.home.smallWhat': '你今天可以花的数字。',
+  'widgetsGuide.home.mediumWhat': '这个数字，旁边带着扫码和快速记账。',
+  'widgetsGuide.home.largeWhat': '还剩多少，以及今天最新的几笔开销。',
+  'widgetsGuide.home.step1': '按住主屏幕上的空白处，直到 App 开始晃动。',
+  'widgetsGuide.home.step2': '轻点顶部角落的“编辑”，然后轻点“添加小组件”。',
+  'widgetsGuide.home.step3': '搜索 6pm，滑到想要的尺寸，然后轻点“添加小组件”。',
+
+  'widgetsGuide.lock.title': '锁定屏幕小组件',
+  'widgetsGuide.lock.what': '不用解锁，就能看到今天还剩多少。',
+  'widgetsGuide.lock.ring': '圆环',
+  'widgetsGuide.lock.card': '卡片',
+  'widgetsGuide.lock.step1': '按住锁定屏幕，然后轻点“自定”。',
+  'widgetsGuide.lock.step2': '选择“锁定屏幕”，然后轻点时间下方的区域。',
+  'widgetsGuide.lock.step3': '轻点 6pm，然后选择圆环或卡片。',
+
+  'widgetsGuide.control.title': '控制中心',
+  'widgetsGuide.control.what': '向下轻扫，轻点一下，就进入扫码或快速记账。',
+  'widgetsGuide.control.needs': 'iOS 18 或更高版本',
+  'widgetsGuide.control.step1': '从屏幕右上角向下轻扫。',
+  'widgetsGuide.control.step2': '按住空白处，然后轻点“添加控制”。',
+  'widgetsGuide.control.step3': '搜索 6pm，然后选择扫码或快速记账。',
+  'widgetsGuide.control.note': '这两个也可以替换锁定屏幕底部的手电筒或相机。',
+
+  'widgetsGuide.action.title': '操作按钮',
+  'widgetsGuide.action.what': '按住机身侧面的按钮，打开扫码。',
+  'widgetsGuide.action.needs': 'iPhone 15 Pro 及更新机型',
+  'widgetsGuide.action.step1': '打开“设置”，然后轻点“操作按钮”。',
+  'widgetsGuide.action.step2': '滑到“控制”，然后轻点下方的控制名称。',
+  'widgetsGuide.action.step3': '搜索 6pm，然后选择扫码或快速记账。',
+  'widgetsGuide.action.note': '更想用说的？对 Siri 说“用 6pm 记账”，再说出金额。',
+
+  'widgetsGuide.live.title': '实时活动',
+  'widgetsGuide.live.what': '二维码付款等待确认时，以及你旅行时，会自动出现。',
+  'widgetsGuide.live.step1': '扫二维码，在银行 App 里付款。这笔付款会在锁定屏幕上等你。',
+  'widgetsGuide.live.step2': '钱付出去后，轻点“已付”。它会自动关闭。',
+  'widgetsGuide.live.step3': '没有显示？在“设置”里打开 6pm，开启“实时活动”。',
+};

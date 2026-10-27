@@ -4,6 +4,8 @@ import { useDerivedValue, type SharedValue } from 'react-native-reanimated';
 
 import { activityInk } from '@6pm/theme';
 
+import { localeOf } from '@6pm/i18n';
+
 import { useI18n } from '../../i18n/i18n';
 import { body, display } from '../../ui/type/fonts';
 import { Reveal } from '../capture-guide/walkthrough/moving-parts';
@@ -32,7 +34,7 @@ export function LockStage({
     <Stage t={clock} width={width} height={HEIGHT}>
       <View style={{ alignItems: 'center', paddingTop: 58 }}>
         <Text style={{ ...body(20, 600), color: stageInk.whiteSoft }}>
-          {new Date().toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-GB', {
+          {new Date().toLocaleDateString(localeOf(language), {
             weekday: 'long',
             day: 'numeric',
             month: 'long',

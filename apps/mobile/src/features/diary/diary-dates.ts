@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { addDays, type LocalDate } from '@6pm/domain';
+import { localeOf } from '@6pm/i18n';
 
 import { useI18n } from '../../i18n/i18n';
 
@@ -11,7 +12,7 @@ const capitalise = (text: string) => text.charAt(0).toLocaleUpperCase() + text.s
 export function useDiaryDates() {
   const { language } = useI18n();
   return useMemo(() => {
-    const locale = language === 'vi' ? 'vi-VN' : 'en-GB';
+    const locale = localeOf(language);
     const format = (options: Intl.DateTimeFormatOptions) =>
       new Intl.DateTimeFormat(locale, options);
     const weekdayShort = format({ weekday: 'short' });
@@ -40,6 +41,11 @@ export function useDiaryDates() {
       },
       /** "October" */
       month: (key: string) => capitalise(monthLong.format(month(key))),
+      /** "october", for the note's handwriting; German keeps its nouns' capital ("Oktober"). */
+      monthInNote: (key: string) => {
+        const name = monthLong.format(month(key));
+        return language === 'de' ? name : name.toLocaleLowerCase(locale);
+      },
       /** "Oct", "Sept" */
       monthShort: (key: string) => capitalise(monthShort.format(month(key))),
       /** "1 Nov" */

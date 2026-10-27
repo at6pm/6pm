@@ -1,0 +1,33 @@
+import type { Entry } from '../catalogue-types';
+import type { enDuo } from '../en-duo';
+
+export const koDuo: { readonly [Key in keyof typeof enDuo]: Entry } = {
+  'duo.month.steady': '딱 맞는 속도예요. 이대로 천천히.',
+  'duo.month.fast': '날짜보다 조금 빨리 쓰고 있어요.',
+  'duo.month.paceLine': '{month} 돈은 {used}% 썼고, 한 달은 {gone}% 지났어요.',
+  'duo.month.daily': '하루 금액',
+  'duo.day.ofLine': '그날 {line} 중',
+  'duo.day.previous': '전날',
+  'duo.day.next': '다음 날',
+  'duo.ask.title': '{amount} 쓴다면',
+  'duo.ask.from': '묻기에서 미리 보기',
+  'duo.ask.spent': '{spent} 씀 · 약 {amount} 더',
+  'duo.ask.left': '{left} 남음',
+  'duo.close.kept': '오늘 지금까지 확인한 것',
+  'duo.close.ofLine': '오늘 {line} 중 · 아직 {left} 남았어요',
+  'duo.close.foldLater': '하나씩 정한 다음, 폰을 접으면 오늘이 마감돼요.',
+  'duo.close.foldNow': '폰을 접으면 오늘이 마감돼요.',
+  'duo.market.title': '계산대에서',
+  'duo.market.left': '오늘 남은 돈',
+  'duo.market.add': '추가',
+  'duo.market.leave': '계산대 나가기',
+  'duo.scan.camera': '안쪽 카메라',
+  'duo.scan.looking': 'QR 찾는 중',
+  'duo.scan.stand': '저를 계산대에 세우고, 가게 QR을 위쪽 화면에 대 주세요.',
+  'duo.scan.to': '받는 곳: {payee}',
+  'duo.scan.paid': '결제 완료',
+  'duo.drop.title': '은행 알림 문구를 여기에 놓으세요',
+  'duo.drop.sub': '6pm이 가게와 금액을 읽고 알맞은 카테고리에 넣어요.',
+  'duo.drop.caught': '{merchant} · {amount} 잡았어요. 마감 때까지 기다려요.',
+  'duo.drop.unread': '그 문구에는 금액이 없어요.',
+};

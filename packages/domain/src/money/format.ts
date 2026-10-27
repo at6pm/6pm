@@ -20,10 +20,10 @@ export function formatVnd(amount: Vnd): string {
 /**
  * The short form used in labels and companion lines: billions with up to two decimals, millions
  * with one, everything else in thousands. Vietnamese writes billions as "tỷ" and millions as "tr"
- * with a comma decimal ("1,25 tỷ", "17,4tr", "2tr"); English as "B" and "M" with a point ("1.25B",
- * "17.4M", "2M"). Thousands read the same in both ("353k", "0k").
+ * with a comma decimal ("1,25 tỷ", "17,4tr", "2tr"); every other language as "B" and "M" with a
+ * point ("1.25B", "17.4M", "2M"), as English does. Thousands read the same in all ("353k", "0k").
  */
-export function formatShort(amount: Vnd, language: 'en' | 'vi'): string {
+export function formatShort(amount: Vnd, language: string): string {
   const sign = amount < 0 ? MINUS : '';
   const abs = Math.abs(amount);
   // An amount that rounds up to a thousand millions is a billion: "1 tỷ", never "1000tr".

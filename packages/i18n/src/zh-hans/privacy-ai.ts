@@ -1,0 +1,37 @@
+import type { Entry } from '../catalogue-types';
+import type { enPrivacyAi } from '../en-privacy-ai';
+
+export const zhHansPrivacyAi: { readonly [Key in keyof typeof enPrivacyAi]: Entry } = {
+  'privacy.ai.title': '6pm 应该在哪里思考？',
+  'privacy.ai.sub': '你的问题和小伙伴的话在哪里生成。可以随时在“设置”中更改。',
+  'privacy.ai.server.title': '在我们的服务器上，用 Claude',
+  'privacy.ai.server.text':
+    '回答最聪明，语音也能听准越南语。离开手机的只有一个问题或几条信息，从不包括你的支出列表。',
+  'privacy.ai.server.tag': '推荐',
+  'privacy.ai.device.title': '只在这台 iPhone 上',
+  'privacy.ai.device.text': 'AI 相关的内容都不会离开你的手机。模型只需通过无线局域网下载一次。',
+  'privacy.ai.device.unavailable': '这台 iPhone 的内存不够运行自己的模型。',
+  'privacy.ai.models': '模型',
+  'privacy.model.fast': '最快最轻',
+  'privacy.model.words': '措辞最好',
+  'privacy.model.reading': '最会理解问题',
+  'privacy.model.size': '{size} GB',
+  'privacy.model.download': '下载',
+  'privacy.model.downloading': '{percent}%',
+  'privacy.model.verifying': '正在校验',
+  'privacy.model.ready': '已就绪',
+  'privacy.model.failed': '重试',
+  'privacy.model.delete': '删除',
+  'privacy.model.later': '下载时可以继续使用。',
+  'settings.ai': 'AI',
+  'settings.ai.server': '在我们的服务器上',
+  'settings.ai.device': '在这台 iPhone 上',
+  'privacy.leaves.title': '会离开手机的内容',
+  'privacy.leaves.server.ask': '一个问题，连同你的分类和存钱罐名称，用来读懂它',
+  'privacy.leaves.server.lines': '一句小伙伴的话里用到的几条信息',
+  'privacy.leaves.server.receipts': '手机读不出的小票照片',
+  'privacy.leaves.server.voice': '你说话时的声音，用来转成文字',
+  'privacy.leaves.device.none': '不涉及任何 AI。一切都在这台 iPhone 上算好。',
+  'privacy.leaves.device.network': '汇率（只发送日期）、App 更新和购买仍需要联网。',
+  'privacy.leaves.device.emails': '这个模式下，小票邮件功能会关闭。',
+};

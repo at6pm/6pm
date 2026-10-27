@@ -11,7 +11,7 @@ import type { DictationState } from './dictation-state';
 import { MicButton } from './mic-button';
 import { OpenSettingsPill } from './open-settings-pill';
 import { useDictation } from './use-dictation';
-import { contextualStrings, spendIn } from './voice-support';
+import { contextualStrings, dictationName, spendIn } from './voice-support';
 
 /** A press held this long is a hold: lifting the finger stops listening. */
 const HOLD_MS = 450;
@@ -57,7 +57,7 @@ export function CashVoice({ onSaid }: { readonly onSaid: (cash: SaidCash) => voi
 
   const line =
     phase === 'unavailable'
-      ? t('voice.unavailable', { language: t(`voice.language.${language}`) })
+      ? t('voice.unavailable', { language: dictationName(language, t) })
       : phase === 'denied'
         ? t('voice.denied')
         : phase === 'nothing'

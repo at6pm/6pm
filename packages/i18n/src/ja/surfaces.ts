@@ -1,0 +1,28 @@
+import type { Entry } from '../catalogue-types';
+import type { enSurfaces } from '../en-surfaces';
+
+// Widget space is tight: the shortest natural words win.
+export const jaSurfaces: { readonly [Key in keyof typeof enSurfaces]: Entry } = {
+  'surfaces.scanQr': 'QRをスキャン',
+  'surfaces.safeTodayShort': '今日使える',
+  'surfaces.today': '今日',
+  'surfaces.left': '残り',
+  'surfaces.amountLeft': '残り{amount}',
+  'surfaces.spent': '{amount}使用',
+  'surfaces.ofLine': '/ {amount}',
+  'surfaces.brandSafe': '6pm · 今日使えるお金',
+  'surfaces.pending': { other: '未払い{count}件' },
+  'surfaces.more': { other: 'ほか{count}件' },
+  'surfaces.listEmpty': '今日はまだ使っていません',
+  'surfaces.openApp': '6pmを開く',
+  'surfaces.setUp': '6pmを開いて設定',
+  'surfaces.activity.waiting': '支払い待ち · 済んだらタップ',
+  'surfaces.activity.to': '{merchant}へ{amount}',
+  'surfaces.activity.toMerchant': '{merchant}へ',
+  'surfaces.activity.toMerchantBank': '{merchant}へ · {bank}を開きました',
+  'surfaces.activity.waitingBank': '支払い待ち · {bank}',
+  'surfaces.activity.paid': '支払い済み',
+  'surfaces.context.today': '今日',
+  'surfaces.context.yesterday': '昨日',
+  'surfaces.context.safeAfter': '今日使えるお金は{amount}になりました',
+};

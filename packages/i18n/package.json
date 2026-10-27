@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "English and Vietnamese catalogues, translate and completeness",
+  "description": "The catalogues for every language 6pm speaks, translate and completeness",
   "sideEffects": false,
   "exports": {
     ".": "./src/index.ts"

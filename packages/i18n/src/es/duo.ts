@@ -1,0 +1,33 @@
+import type { Entry } from '../catalogue-types';
+import type { enDuo } from '../en-duo';
+
+export const esDuo: { readonly [Key in keyof typeof enDuo]: Entry } = {
+  'duo.month.steady': 'A buen ritmo. Sin prisa.',
+  'duo.month.fast': 'Un poco por delante de los días.',
+  'duo.month.paceLine': 'Usado el {used}% del dinero de {month}, pasado el {gone}% del mes.',
+  'duo.month.daily': 'Números del día',
+  'duo.day.ofLine': 'de {line} ese día',
+  'duo.day.previous': 'Día anterior',
+  'duo.day.next': 'Día siguiente',
+  'duo.ask.title': 'Si gastas {amount}',
+  'duo.ask.from': 'adelanto de Pregunta a 6pm',
+  'duo.ask.spent': '{spent} gastados · ~{amount} más',
+  'duo.ask.left': 'Quedan {left}',
+  'duo.close.kept': 'Guardado hoy por ahora',
+  'duo.close.ofLine': 'de {line} hoy · {left} siguen siendo tuyos',
+  'duo.close.foldLater': 'Decide cada uno y luego pliégalo para cerrar el día.',
+  'duo.close.foldNow': 'Pliégalo para cerrar el día.',
+  'duo.market.title': 'En el mostrador',
+  'duo.market.left': 'Te queda hoy',
+  'duo.market.add': 'Añadir',
+  'duo.market.leave': 'Salir del mostrador',
+  'duo.scan.camera': 'Cámara interior',
+  'duo.scan.looking': 'Buscando un QR',
+  'duo.scan.stand': 'Ponme de pie en el mostrador y acerca su QR a la parte de arriba.',
+  'duo.scan.to': 'a {payee}',
+  'duo.scan.paid': 'Pagado',
+  'duo.drop.title': 'Suelta aquí una línea del banco',
+  'duo.drop.sub': '6pm lee el comercio y el importe y lo pone en la categoría correcta.',
+  'duo.drop.caught': 'Pillado {merchant} · {amount}. Espera al cierre.',
+  'duo.drop.unread': 'Esa línea no tiene importe.',
+};

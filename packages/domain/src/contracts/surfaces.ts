@@ -85,7 +85,8 @@ export type InboxItem = z.infer<typeof inboxItemSchema>;
 /** What the share extension and the shortcuts need to file a spend without the database. */
 export const surfaceContextSchema = z.object({
   v: version,
-  language: z.enum(['en', 'vi']),
+  /** The app's language, as its `.lproj` folder is named: "en", "vi", "zh-Hans"… */
+  language: z.string().min(1).max(16),
   host: z.string().min(1),
   categories: z.array(
     z.object({

@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import type { BackupSnapshot } from '@6pm/domain';
-import type { Language } from '@6pm/i18n';
+import { isLanguage, type Language } from '@6pm/i18n';
 
 import { planSettingsSchema } from '../../data/plan-settings';
 import { useMoneyActions } from '../../data/money-provider';
@@ -35,8 +35,7 @@ export function useApplyRestore(): (settings: BackupSnapshot['settings']) => Pro
     async (settings) => {
       await reload();
       await lookStore.reload();
-      const restored =
-        settings.language === 'en' || settings.language === 'vi' ? settings.language : null;
+      const restored = isLanguage(settings.language) ? settings.language : null;
       setLanguage(restored);
       // The restore does not wait on the permission alert: the reminder follows the answer.
       void remindAfterRestore(settings.plan, restored ?? language);

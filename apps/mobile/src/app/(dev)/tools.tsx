@@ -5,6 +5,7 @@ import { ScrollView, Text } from 'react-native';
 
 import { useMoneyStore } from '../../data/money-provider';
 import { companionModel } from '../../../modules/companion-model';
+import { modelsWord } from '../../features/api/api-language';
 import { seedDesignFriday } from '../../features/dev/design-friday-seed';
 import { useDevLocalModelRows } from '../../features/dev/dev-local-model';
 import { readModelChoice, writeModelChoice } from '../../features/wording/model-choice';
@@ -27,7 +28,9 @@ export default function DeveloperTools() {
   const db = useSQLiteContext();
   const { language } = useI18n();
   const [model, setModel] = useState(() => readModelChoice(db));
-  const onDevice = companionModel?.availability(language) ?? 'not built in';
+  const onDevice = modelsWord(language)
+    ? (companionModel?.availability(language) ?? 'not built in')
+    : 'not this language';
   const localModelRows = useDevLocalModelRows();
   // `sixpm-dev://tools?seed=friday` loads the fixture without a tap, for scripted design checks.
   useEffect(() => {

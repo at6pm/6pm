@@ -1,0 +1,10 @@
+{
+  "ios": {
+    "NSCameraUsageDescription": "6pm menggunakan kamera untuk membaca kode QR dan struk yang kamu pindai. Foto tetap di iPhone-mu kecuali ada struk yang perlu dibaca lebih teliti.",
+    "NSMicrophoneUsageDescription": "6pm mendengarkan saat kamu mengucapkan pengeluaran. Suaramu dikirim ke layanan ucapan-ke-teks untuk ditulis, atau tetap di iPhone ini dalam mode di perangkat.",
+    "NSSpeechRecognitionUsageDescription": "6pm mengubah ucapanmu menjadi jumlah dan nama.",
+    "NSPhotoLibraryUsageDescription": "6pm hanya menyimpan struk tutup hari dan diari uangmu ke Foto. 6pm tidak pernah melihat isi perpustakaanmu.",
+    "NSPhotoLibraryAddUsageDescription": "6pm menyimpan struk tutup hari dan diari uangmu ke Foto saat kamu memintanya.",
+    "NSLocationWhenInUseUsageDescription": "6pm memeriksa kamu sedang di negara mana agar Mode perjalanan bisa menyala sendiri di luar negeri."
+  }
+}

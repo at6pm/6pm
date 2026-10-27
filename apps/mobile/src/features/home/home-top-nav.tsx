@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
 import { lineUsed, type DailyNumber } from '@6pm/domain';
+import { localeOf } from '@6pm/i18n';
 
 import { useMoneySelector } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
@@ -111,7 +112,7 @@ export const HomeTopNav = memo(function HomeTopNav({
     );
   }
 
-  const month = new Intl.DateTimeFormat(language === 'vi' ? 'vi-VN' : 'en-GB', {
+  const month = new Intl.DateTimeFormat(localeOf(language), {
     month: 'long',
     year: 'numeric',
   }).format(dayDate);
