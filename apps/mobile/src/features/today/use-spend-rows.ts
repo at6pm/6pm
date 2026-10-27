@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import type { SpendRow } from '@6pm/domain';
+import { localeOf } from '@6pm/i18n';
 
 import { useMoney } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
@@ -12,7 +13,7 @@ export function useSpendLabels(): Labels {
   const { t, language } = useI18n();
   const money = useMoneyFormat();
   return useMemo(() => {
-    const time = new Intl.DateTimeFormat(language === 'vi' ? 'vi-VN' : 'en-GB', {
+    const time = new Intl.DateTimeFormat(localeOf(language), {
       hour: '2-digit',
       minute: '2-digit',
       hour12: false,

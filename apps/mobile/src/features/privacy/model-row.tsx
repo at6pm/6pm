@@ -1,6 +1,8 @@
 import { Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
+import { localeOf, type Language } from '@6pm/i18n';
+
 import { useI18n } from '../../i18n/i18n';
 import { Symbol } from '../../ui/icons/symbol';
 import { PressScale } from '../../ui/primitives/press-scale';
@@ -18,9 +20,11 @@ export type ModelRowState =
   | { readonly kind: 'failed' };
 
 /** "2.4", "2,4": a size in GB with the language's decimal mark. */
-function gigabytes(bytes: number, language: string): string {
-  const text = (bytes / 1e9).toFixed(1);
-  return language === 'vi' ? text.replace('.', ',') : text;
+function gigabytes(bytes: number, language: Language): string {
+  return new Intl.NumberFormat(localeOf(language), {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  }).format(bytes / 1e9);
 }
 
 function Pill({

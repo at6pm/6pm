@@ -11,6 +11,7 @@ import {
   toMinor,
   type MerchantRuleRow,
 } from '@6pm/domain';
+import { localeOf } from '@6pm/i18n';
 import { moneyInInk } from '@6pm/theme';
 
 import { useMoney, useMoneyActions, useMoneyStore } from '../data/money-provider';
@@ -100,7 +101,7 @@ export default function QuickAdd() {
   const category = snap.categories.find((c) => c.id === categoryId);
   const entry = useTravelEntry(keys);
   const { amount } = entry;
-  const locale = language === 'vi' ? 'vi-VN' : 'en-GB';
+  const locale = localeOf(language);
   const stamp = `${new Intl.DateTimeFormat(locale, { weekday: 'short', day: 'numeric', month: 'short' }).format(now)} · ${new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit', hour12: false }).format(now)}`;
 
   const save = async () => {

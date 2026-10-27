@@ -23,7 +23,7 @@ Rules that never bend:
 | Launch | Fri 6 Nov 2026, 18:00 ICT (Coming Soon page countdown) |
 | Domain | `at6pm.app`: website at `/`, API at `/api/*`, receipt email `{handle}@at6pm.app` (dev `r+{handle}@dev.at6pm.app`). Dev: `dev.at6pm.app`. Changed 15 Oct 2026 from `6pm.oddeggs.studio` (dev `6pm-dev.oddeggs.studio`), which keeps its routes, links and receipt mailbox so builds and forwarding set up before the move keep working |
 | Platforms | iPhone at launch. Android is built and kept green in CI, not released *(default)* |
-| Languages | English and Vietnamese from the first screen; device language, switchable in Settings |
+| Languages | English, Vietnamese, Simplified Chinese, Japanese, Korean, Thai, Indonesian, Spanish, French and German; device language, switchable in Settings. Added 2026-10-27 (founder) |
 | Currency | The phone's currency, read once when the month is first set up and kept in the plan (a plan from before has none and is VND). 6pm works in every country. Amounts are integers in that currency's minor unit (đồng has none, so VND data never changed). Quick add's currency key switches to one other currency (USD, or EUR for a dollar home); Travel mode works from any home: a trip is wherever the money differs from home. Decided 2026-10-15 |
 
 ## 3. Money rules (the domain package implements these, with tests)

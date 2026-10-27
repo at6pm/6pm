@@ -1,0 +1,28 @@
+import type { Entry } from '../catalogue-types';
+import type { enSurfaces } from '../en-surfaces';
+
+// Widget and Live Activity space is tight: the shortest natural words win.
+export const frSurfaces: { readonly [Key in keyof typeof enSurfaces]: Entry } = {
+  'surfaces.scanQr': 'Scanner QR',
+  'surfaces.safeTodayShort': 'à dépenser',
+  'surfaces.today': 'Aujourd’hui',
+  'surfaces.left': 'restant',
+  'surfaces.amountLeft': 'Reste {amount}',
+  'surfaces.spent': '{amount} dépensés',
+  'surfaces.ofLine': 'sur {amount}',
+  'surfaces.brandSafe': '6pm · À dépenser',
+  'surfaces.pending': { one: '{count} en attente', other: '{count} en attente' },
+  'surfaces.more': { one: '+{count} autre', other: '+{count} autres' },
+  'surfaces.listEmpty': 'Aucune dépense pour l’instant',
+  'surfaces.openApp': 'Ouvrir 6pm',
+  'surfaces.setUp': 'Ouvre 6pm pour commencer',
+  'surfaces.activity.waiting': 'En attente · touche une fois payé',
+  'surfaces.activity.to': '{amount} à {merchant}',
+  'surfaces.activity.toMerchant': 'à {merchant}',
+  'surfaces.activity.toMerchantBank': 'à {merchant} · {bank} ouverte',
+  'surfaces.activity.waitingBank': 'En attente · {bank}',
+  'surfaces.activity.paid': 'Payé',
+  'surfaces.context.today': 'Aujourd’hui',
+  'surfaces.context.yesterday': 'Hier',
+  'surfaces.context.safeAfter': 'À dépenser aujourd’hui : {amount}',
+};

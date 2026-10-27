@@ -24,6 +24,7 @@ import { usePlanActions } from '../../data/plan-actions';
 import { useI18n } from '../../i18n/i18n';
 import { phoneNumberStyle } from '../../money/device-money';
 import { useHomeCurrency } from '../../money/use-money-format';
+import { apiLanguageOf } from '../api/api-language';
 import { useApi } from '../api/native-api';
 import { createEnrichShared } from '../capture/enrich-shared';
 import { BILL_CARDS } from '../onboarding/bill-deck';
@@ -156,7 +157,7 @@ export function useReceiptScan() {
           path: '/v1/receipts/read',
           body: {
             image: photo,
-            language,
+            language: apiLanguageOf(language),
             currencyHint: tripCurrency,
             ...(home.code === 'VND' ? {} : { homeCurrency: home.code }),
           },

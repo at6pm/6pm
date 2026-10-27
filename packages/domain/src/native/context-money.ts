@@ -63,7 +63,8 @@ function foreignCurrency(code: string): Currency {
 /** How the phone writes money: the home currency, the app's language and the number style. */
 export interface WritingStyle {
   readonly home: Currency;
-  readonly language: 'en' | 'vi';
+  /** The app's language: "en", "vi", "ja"… */
+  readonly language: string;
   readonly phone?: PhoneNumberStyle;
 }
 

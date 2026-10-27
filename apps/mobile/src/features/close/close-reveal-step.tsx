@@ -1,4 +1,5 @@
 import { addDays, payCycleOn, replanWorded, type DailyNumber, type LocalDate } from '@6pm/domain';
+import { localeOf } from '@6pm/i18n';
 
 import { useMoney } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
@@ -21,7 +22,7 @@ export function CloseRevealStep({
   const snap = useMoney();
   const plan = snap.plan;
   if (!plan) return null;
-  const locale = language === 'vi' ? 'vi-VN' : 'en-GB';
+  const locale = localeOf(language);
   const on = new Date(`${day}T12:00:00`);
   const tomorrow = new Date(`${addDays(day, 1)}T12:00:00`);
   const monthName = new Intl.DateTimeFormat(locale, { month: 'long' }).format(on);

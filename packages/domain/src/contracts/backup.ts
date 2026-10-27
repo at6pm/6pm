@@ -90,7 +90,7 @@ export const deleteBackupResponseSchema = z.object({ deleted: z.literal(true) })
 
 /**
  * The settings rows a backup carries, by key. Each value is the stored text (JSON for plan, look
- * and wallets; 'en' or 'vi' for language), so the readers that already check them on every launch
+ * and wallets; a language 6pm speaks, such as 'en', 'vi' or 'ja'), so the readers that already check them on every launch
  * stay the only ones that know their shapes. Everything else in `settings` is this phone's own and is never sent: what the
  * store said about purchases, and where backup itself stands.
  */

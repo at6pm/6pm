@@ -1,12 +1,13 @@
 import { getLocales } from 'expo-localization';
 import { useMemo } from 'react';
-import { Text, View } from 'react-native';
+import { ScrollView, Text, useWindowDimensions, View } from 'react-native';
 
 import { languages, pickLanguage, t as translate, type Language } from '@6pm/i18n';
 
 import { RowCheck, type PickerInks } from '../features/banks/bank-picker-parts';
 import { CardSheet } from '../features/diary/card-sheet';
 import { useI18n } from '../i18n/i18n';
+import { useDesignInsets } from '../ui/layout/design-insets';
 import { haptics } from '../ui/haptics';
 import { PressScale } from '../ui/primitives/press-scale';
 import { useTheme } from '../ui/theme/theme';
@@ -15,11 +16,14 @@ import { body } from '../ui/type/fonts';
 /** A language by its own name, the same in every language: "English", "Tiếng Việt". */
 const ownName = (language: Language) => translate(language, 'settings.languageName');
 
+/** The sheet's own height above its rows: the grabber, the title row and the margins. */
+const SHEET_CHROME = 120;
+
 /**
- * Settings → Language, in the floating card sheet (three rows need no full-height sheet): follow
- * the phone, or keep one of the languages 6pm speaks. A choice is saved at once and the sheet
- * stays, already in the new language. The reminder's words follow the
- * language on their own.
+ * Settings → Language, in the floating card sheet: follow the phone, or keep one of the languages
+ * 6pm speaks, each named in its own words. A choice is saved at once and the sheet stays, already
+ * in the new language. The rows scroll when a short phone cannot show them all. The reminder's
+ * words follow the language on their own.
  */
 export default function LanguageSheet() {
   const { palette } = useTheme();
@@ -38,6 +42,9 @@ export default function LanguageSheet() {
     }),
     [palette],
   );
+  const { height } = useWindowDimensions();
+  const { insets } = useDesignInsets();
+  const rowsMax = height - insets.top - insets.bottom - SHEET_CHROME;
   const phone = pickLanguage(getLocales().map((l) => l.languageTag));
   const pick = (next: Language | null) => {
     if (next === chosen) return;
@@ -68,25 +75,28 @@ export default function LanguageSheet() {
               backgroundColor: palette.cell,
               boxShadow: palette.cardShadow,
               overflow: 'hidden',
+              maxHeight: rowsMax,
             }}
           >
-            <LanguageRow
-              first
-              label={t('settings.languagePhone')}
-              sub={ownName(phone)}
-              on={chosen === null}
-              inks={inks}
-              onPress={() => pick(null)}
-            />
-            {languages.map((language) => (
+            <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
               <LanguageRow
-                key={language}
-                label={ownName(language)}
-                on={chosen === language}
+                first
+                label={t('settings.languagePhone')}
+                sub={ownName(phone)}
+                on={chosen === null}
                 inks={inks}
-                onPress={() => pick(language)}
+                onPress={() => pick(null)}
               />
-            ))}
+              {languages.map((language) => (
+                <LanguageRow
+                  key={language}
+                  label={ownName(language)}
+                  on={chosen === language}
+                  inks={inks}
+                  onPress={() => pick(language)}
+                />
+              ))}
+            </ScrollView>
           </View>
         </>
       )}

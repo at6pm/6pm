@@ -8,6 +8,7 @@ import {
   type SpendSightingRow,
   type TogetherMoveRow,
 } from '@6pm/domain';
+import { isLanguage } from '@6pm/i18n';
 
 import { openMoneyTables } from './money-tables';
 import { planSettingsSchema } from './plan-settings';
@@ -178,7 +179,7 @@ function checkSettings(settings: BackupSnapshot['settings']): void {
       throw new SnapshotRefused(`${name} is not JSON`);
     }
   }
-  if (language !== undefined && language !== 'en' && language !== 'vi') {
+  if (language !== undefined && !isLanguage(language)) {
     throw new SnapshotRefused('the language is not one 6pm speaks');
   }
 }

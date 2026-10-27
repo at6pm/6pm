@@ -246,7 +246,7 @@ describe('the snapshot of the phone', () => {
     for (const settings of [
       { ...snapshot.settings, plan: 'not json' },
       { ...snapshot.settings, plan: '{"income":-1}' },
-      { ...snapshot.settings, language: 'fr' },
+      { ...snapshot.settings, language: 'pt' },
       { ...snapshot.settings, wallets: '{' },
     ]) {
       await expect(restoreSnapshot(phone, { ...snapshot, settings })).rejects.toBeInstanceOf(

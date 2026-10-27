@@ -58,4 +58,10 @@ export const viNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.intents.scan.description': 'Mở Quét để trả trong 6pm.',
   'native.intents.quickAdd.title': 'Thêm nhanh',
   'native.intents.quickAdd.description': 'Mở Thêm nhanh trong 6pm.',
+  // Siri has no Vietnamese, so these are never written for iOS; they read as a Vietnamese would say them.
+  'native.appShortcuts.logIn': 'Ghi vào ${applicationName}',
+  'native.appShortcuts.logSpend': 'Ghi một khoản chi vào ${applicationName}',
+  'native.appShortcuts.scan': 'Quét QR trong ${applicationName}',
+  'native.appShortcuts.scanToPay': 'Quét để trả trong ${applicationName}',
+  'native.appShortcuts.quickAdd': 'Thêm nhanh trong ${applicationName}',
 };

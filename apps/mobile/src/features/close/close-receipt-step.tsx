@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ComponentRef } from 'react';
 import type { View } from 'react-native';
 
 import type { LocalDate } from '@6pm/domain';
+import { localeOf } from '@6pm/i18n';
 
 import { notDailyOf } from '../../data/diary-queries';
 import { useMoney, useMoneyActions } from '../../data/money-provider';
@@ -35,7 +36,7 @@ export function CloseReceiptStep({
   const { t, language } = useI18n();
   const snap = useMoney();
   const actions = useMoneyActions();
-  const locale = language === 'vi' ? 'vi-VN' : 'en-GB';
+  const locale = localeOf(language);
   // Until the count comes back, the days in view give the number (right unless history is older).
   const [before, setBefore] = useState<number | null>(null);
   useEffect(() => {

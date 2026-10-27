@@ -10,6 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { clockOf, hourOf, type DailyNumber } from '@6pm/domain';
+import { localeOf } from '@6pm/i18n';
 
 import { useMoney, useMoneyActions } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
@@ -67,7 +68,7 @@ export function TodayPage({
   const shown = useHomePageShown();
   const view = todayView(snap, closeHour, day.spent, useSpendLabels());
   const spreadYesterday = spreadYesterdayOf(snap);
-  const monthName = new Intl.DateTimeFormat(language === 'vi' ? 'vi-VN' : 'en-GB', {
+  const monthName = new Intl.DateTimeFormat(localeOf(language), {
     month: 'long',
   }).format(dayDate);
   const showDiary = (target: string) => {

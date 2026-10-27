@@ -1,0 +1,27 @@
+import type { Entry } from '../catalogue-types';
+import type { enSurfaces } from '../en-surfaces';
+
+export const thSurfaces: { readonly [Key in keyof typeof enSurfaces]: Entry } = {
+  'surfaces.scanQr': 'สแกนคิวอาร์',
+  'surfaces.safeTodayShort': 'วันนี้ใช้ได้',
+  'surfaces.today': 'วันนี้',
+  'surfaces.left': 'เหลือ',
+  'surfaces.amountLeft': 'เหลือ {amount}',
+  'surfaces.spent': 'ใช้ไป {amount}',
+  'surfaces.ofLine': 'จาก {amount}',
+  'surfaces.brandSafe': '6pm · วันนี้ใช้ได้',
+  'surfaces.pending': { other: 'รอ {count} รายการ' },
+  'surfaces.more': { other: '+อีก {count} รายการ' },
+  'surfaces.listEmpty': 'วันนี้ยังไม่ได้ใช้เงินเลย',
+  'surfaces.openApp': 'เปิด 6pm',
+  'surfaces.setUp': 'เปิด 6pm เพื่อตั้งค่า',
+  'surfaces.activity.waiting': 'กำลังรอ · แตะเมื่อจ่ายแล้ว',
+  'surfaces.activity.to': '{amount} ให้ {merchant}',
+  'surfaces.activity.toMerchant': 'ให้ {merchant}',
+  'surfaces.activity.toMerchantBank': 'ให้ {merchant} · เปิด {bank} แล้ว',
+  'surfaces.activity.waitingBank': 'กำลังรอ · {bank}',
+  'surfaces.activity.paid': 'จ่ายแล้ว',
+  'surfaces.context.today': 'วันนี้',
+  'surfaces.context.yesterday': 'เมื่อวาน',
+  'surfaces.context.safeAfter': 'ตอนนี้วันนี้ใช้ได้ {amount}',
+};

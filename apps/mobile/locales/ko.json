@@ -1,0 +1,10 @@
+{
+  "ios": {
+    "NSCameraUsageDescription": "6pm은 스캔하는 QR 코드와 영수증을 읽기 위해 카메라를 사용해요. 영수증을 더 자세히 봐야 할 때가 아니면 사진은 iPhone 밖으로 나가지 않아요.",
+    "NSMicrophoneUsageDescription": "6pm은 지출을 말로 입력하는 동안 음성을 들어요. 음성은 텍스트로 바꾸기 위해 음성 인식 서비스로 전송되며, 기기 내 모드에서는 이 iPhone에만 남아요.",
+    "NSSpeechRecognitionUsageDescription": "6pm은 말한 내용을 금액과 이름으로 바꿔요.",
+    "NSPhotoLibraryUsageDescription": "6pm은 마감 영수증과 머니 다이어리를 사진에 저장하기만 해요. 사진 보관함을 들여다보지 않아요.",
+    "NSPhotoLibraryAddUsageDescription": "요청하면 6pm이 마감 영수증과 머니 다이어리를 사진에 저장해요.",
+    "NSLocationWhenInUseUsageDescription": "해외에서 여행 모드가 알아서 켜지도록, 6pm이 지금 어느 나라에 있는지 확인해요."
+  }
+}

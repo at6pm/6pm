@@ -1,5 +1,7 @@
 import { Platform, type TextStyle } from 'react-native';
 
+import type { Language } from '@6pm/i18n';
+
 import { faceOf, variableFamily, type Face } from './faces';
 import { FONT_LINE_HEIGHT } from './font-metrics.generated';
 
@@ -22,6 +24,34 @@ const SYSTEM_CSS = '-apple-system';
 
 let currentDisplay: Face = faceOf(BRICOLAGE_CSS, 'display');
 let currentUi: Face = faceOf(SYSTEM_CSS, 'ui');
+
+/**
+ * The line height in ems a language's script needs whatever face draws it. Thai stacks a tone mark
+ * over a vowel above the letter (นี้), higher than a Latin face's line reaches, and iOS cuts it off
+ * when a heading is set tighter than that, as `leading` describes; every other script fits the
+ * face's own line.
+ */
+const SCRIPT_LINE_HEIGHT: { readonly [L in Language]?: number } = { th: 1.4 };
+
+/**
+ * The tightest a heading's lines may sit, in ems, for scripts whose letters fill the whole em:
+ * Chinese, Japanese and Korean set at a Latin heading's tight leading touch the line above.
+ */
+const SCRIPT_MIN_LEADING: { readonly [L in Language]?: number } = {
+  'zh-Hans': 1.15,
+  ja: 1.15,
+  ko: 1.15,
+  th: 1.25,
+};
+
+let scriptLineHeight = 0;
+let scriptMinLeading = 0;
+
+/** Sets the interface language's script, for `leading`. The language provider calls it as it renders. */
+export function setScriptLanguage(language: Language) {
+  scriptLineHeight = SCRIPT_LINE_HEIGHT[language] ?? 0;
+  scriptMinLeading = SCRIPT_MIN_LEADING[language] ?? 0;
+}
 
 /**
  * Sets the display face to the look's (`palette.dispFont`). The theme calls it as it renders, so
@@ -143,11 +173,13 @@ const SYSTEM_LINE_HEIGHT = 1.1934;
  * so its lines stay `lineHeight` apart; `oneLine` text is set at the face's own line height
  * instead, so a row aligned on baselines still finds its baseline (iOS leaves padding out of it).
  */
-export function leading(style: TextStyle, lineHeight: number, oneLine = false): TextStyle {
-  const em =
+export function leading(style: TextStyle, designed: number, oneLine = false): TextStyle {
+  const lineHeight = Math.max(designed, (style.fontSize ?? 14) * scriptMinLeading);
+  const faceEm =
     style.fontFamily === undefined
       ? SYSTEM_LINE_HEIGHT
       : (FONT_LINE_HEIGHT[style.fontFamily] ?? SYSTEM_LINE_HEIGHT);
+  const em = Math.max(faceEm, scriptLineHeight);
   const natural = (style.fontSize ?? 14) * em;
   const lost = natural - lineHeight;
   if (Platform.OS !== 'ios' || lost <= 0) return { ...style, lineHeight };

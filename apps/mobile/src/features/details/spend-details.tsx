@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 
 import type { SpendRow } from '@6pm/domain';
+import { localeOf } from '@6pm/i18n';
 import { oklchSrgbHex } from '@6pm/theme';
 
 import { useMoney, useMoneyActions } from '../../data/money-provider';
@@ -80,7 +81,7 @@ export function SpendDetails({
     spend.merchant,
     category && isSymbolName(category.icon) ? category.icon : 'payments',
   );
-  const locale = language === 'vi' ? 'vi-VN' : 'en-GB';
+  const locale = localeOf(language);
   const when = new Intl.DateTimeFormat(locale, {
     weekday: 'long',
     day: 'numeric',

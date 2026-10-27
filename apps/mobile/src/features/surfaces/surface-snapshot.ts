@@ -12,6 +12,7 @@ import {
   type SpendRow,
   type SurfaceSnapshot,
 } from '@6pm/domain';
+import type { Language } from '@6pm/i18n';
 
 import { dayOf, waitingOf, type MoneySnapshot } from '../../data/money-store';
 import type { I18n } from '../../i18n/i18n';
@@ -126,7 +127,7 @@ export interface SnapshotInput {
   /** Money in the home currency, the app's language and the phone's number style. */
   readonly format?: MoneyFormat;
   /** Without a `format`, đồng in this language. */
-  readonly language?: 'en' | 'vi';
+  readonly language?: Language;
   readonly writtenAt: Date;
 }
 

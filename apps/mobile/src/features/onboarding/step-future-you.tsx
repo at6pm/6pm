@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import { Text, View } from 'react-native';
 import { useDerivedValue, useSharedValue, withTiming } from 'react-native-reanimated';
 
+import { localeOf } from '@6pm/i18n';
+
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { FitWidth } from '../../ui/layout/fit-width';
@@ -93,10 +95,11 @@ export function StepFutureYou({
 }) {
   const { t, language } = useI18n();
   const money = useMoneyFormat();
+  // Vietnamese says the month by its number ("tháng 10"); the others by name, as their locale has it.
   const month =
     language === 'vi'
       ? String(new Date().getMonth() + 1)
-      : new Intl.DateTimeFormat('en-GB', { month: 'long' }).format(new Date());
+      : new Intl.DateTimeFormat(localeOf(language), { month: 'long' }).format(new Date());
   return (
     <View style={{ flex: 1, gap: 14 }}>
       <StepHeading

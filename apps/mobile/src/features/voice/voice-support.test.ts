@@ -18,6 +18,9 @@ describe('speechLocale', () => {
   it('follows the app language', () => {
     expect(speechLocale('vi')).toBe('vi-VN');
     expect(speechLocale('en')).toBe('en-US');
+    expect(speechLocale('zh-Hans')).toBe('zh-CN');
+    expect(speechLocale('ja')).toBe('ja-JP');
+    expect(speechLocale('de')).toBe('de-DE');
   });
 });
 

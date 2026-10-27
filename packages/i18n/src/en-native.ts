@@ -60,4 +60,10 @@ export const enNative = {
   'native.intents.scan.description': 'Open Scan to pay in 6pm.',
   'native.intents.quickAdd.title': 'Quick add',
   'native.intents.quickAdd.description': 'Open Quick add in 6pm.',
+  // What Siri listens for, in the languages Siri speaks: the English phrase is the table's key.
+  'native.appShortcuts.logIn': 'Log in ${applicationName}',
+  'native.appShortcuts.logSpend': 'Log a spend in ${applicationName}',
+  'native.appShortcuts.scan': 'Scan QR in ${applicationName}',
+  'native.appShortcuts.scanToPay': 'Scan to pay in ${applicationName}',
+  'native.appShortcuts.quickAdd': 'Quick add in ${applicationName}',
 } as const;

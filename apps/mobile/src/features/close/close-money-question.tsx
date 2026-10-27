@@ -9,6 +9,7 @@ import {
   type MoneyInAsk,
   type SpendRow,
 } from '@6pm/domain';
+import { localeOf } from '@6pm/i18n';
 
 import { useMoney, useMoneyActions } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
@@ -48,7 +49,7 @@ export function MoneyQuestionStep({
   const ask = card ? asks[card.id] : undefined;
   if (!card || !spend || !ask || !snap.plan) return null;
   const { plan } = snap;
-  const locale = language === 'vi' ? 'vi-VN' : 'en-GB';
+  const locale = localeOf(language);
   const clock = (at: string) =>
     new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit', hour12: false }).format(
       new Date(at),

@@ -1,0 +1,67 @@
+import type { Entry } from '../catalogue-types';
+import type { enNative } from '../en-native';
+
+// Permission prompts read like iOS's own Korean strings, in 해요체. Siri phrases are short spoken
+// commands; 에 and 에서 after the app's name read the same whatever its last sound.
+export const koNative: { readonly [Key in keyof typeof enNative]: Entry } = {
+  'native.permission.camera':
+    '6pm은 스캔하는 QR 코드와 영수증을 읽기 위해 카메라를 사용해요. 영수증을 더 자세히 봐야 할 때가 아니면 사진은 iPhone 밖으로 나가지 않아요.',
+  'native.permission.microphone':
+    '6pm은 지출을 말로 입력하는 동안 음성을 들어요. 음성은 텍스트로 바꾸기 위해 음성 인식 서비스로 전송되며, 기기 내 모드에서는 이 iPhone에만 남아요.',
+  'native.permission.speech': '6pm은 말한 내용을 금액과 이름으로 바꿔요.',
+  'native.permission.photos':
+    '6pm은 마감 영수증과 머니 다이어리를 사진에 저장하기만 해요. 사진 보관함을 들여다보지 않아요.',
+  'native.permission.photosAdd': '요청하면 6pm이 마감 영수증과 머니 다이어리를 사진에 저장해요.',
+  'native.permission.location':
+    '해외에서 여행 모드가 알아서 켜지도록, 6pm이 지금 어느 나라에 있는지 확인해요.',
+  'native.surfaces.safeToday.name': '오늘 쓸 수 있는 돈',
+  'native.surfaces.safeToday.description': '오늘 쓸 수 있는 돈을 한눈에.',
+  'native.surfaces.setUp': '6pm을 열어 설정하세요',
+  'native.surfaces.markPaid.title': '결제 완료',
+  'native.surfaces.todayList.name': '오늘',
+  'native.surfaces.todayList.description': '오늘 쓴 돈, 최신순으로.',
+  'native.share.title': '6pm에 추가',
+  'native.share.readFromBank': '{bank} 영수증을 이 iPhone에서 읽었어요',
+  'native.share.readHere': '영수증을 이 iPhone에서 읽었어요',
+  'native.share.unreadable': '이 영수증을 읽지 못했어요. 금액을 입력해 주세요.',
+  'native.share.to': '받는 곳',
+  'native.share.when': '언제',
+  'native.share.code': '코드',
+  'native.share.category': '카테고리',
+  'native.share.unsure': '이름이 확실하지 않아요. 탭해서 확인해 주세요.',
+  'native.share.checkName': '이름 확인',
+  'native.share.amountHint': '금액',
+  'native.share.nameHint': '누구에게 냈나요',
+  'native.share.chooseCategory': '선택',
+  'native.share.edit': '수정',
+  'native.share.done': '완료',
+  'native.share.confirm': '확인',
+  'native.share.currency': '통화',
+  'native.share.currencyUnsure': '영수증에 통화가 적혀 있지 않아요. 탭해서 확인해 주세요.',
+  'native.share.checkCurrency': '통화 확인',
+  'native.share.inDong': '약 {amount}',
+  'native.share.noRate': '아직 환율이 없어요. 환율이 들어오면 6pm이 그날 환율로 계산해요.',
+  'native.share.unknownCurrency': '통화를 알 수 없어요. 금액을 동 단위로 입력해 주세요.',
+  'native.share.unknownCurrencyIn': '통화를 알 수 없어요. 금액을 {currency} 단위로 입력해 주세요.',
+  'native.share.looking': '더 자세히 읽는 중…',
+  'native.share.step': '{total}개 중 {n}',
+  'native.share.skip': '건너뛰기',
+  'native.intents.logSpend.title': '6pm에 기록',
+  'native.intents.logSpend.amount': '금액',
+  'native.intents.logSpend.merchant': '어디서',
+  'native.intents.logSpend.description':
+    '6pm에 지출을 기록해요. 지갑의 Apple Pay 결제나 Siri에게 말한 내용을요.',
+  'native.intents.logSpend.short': '지출 기록',
+  'native.intents.logSpend.askAmount': '얼마였어요?',
+  'native.intents.logSpend.logged': '기록했어요.',
+  'native.intents.logSpend.failed': '6pm에 기록하지 못했어요. 6pm을 열고 빠른 추가로 해 보세요.',
+  'native.intents.scan.title': 'QR 스캔',
+  'native.intents.scan.description': '6pm에서 스캔해서 결제를 열어요.',
+  'native.intents.quickAdd.title': '빠른 추가',
+  'native.intents.quickAdd.description': '6pm에서 빠른 추가를 열어요.',
+  'native.appShortcuts.logIn': '${applicationName}에 기록해',
+  'native.appShortcuts.logSpend': '${applicationName}에 지출 기록해',
+  'native.appShortcuts.scan': '${applicationName}에서 QR 스캔해',
+  'native.appShortcuts.scanToPay': '${applicationName}에서 스캔해서 결제해',
+  'native.appShortcuts.quickAdd': '${applicationName}에서 빠른 추가',
+};

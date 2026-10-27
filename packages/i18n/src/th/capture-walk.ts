@@ -1,0 +1,163 @@
+import type { Entry } from '../catalogue-types';
+import type { enCaptureWalk } from '../en-capture-walk';
+
+// The labels inside the pictured screens are the Thai iOS and Gmail ones. “Log to 6pm” is the shared
+// shortcut's own name and stays as it is.
+export const thCaptureWalk: { readonly [Key in keyof typeof enCaptureWalk]: Entry } = {
+  'capture.walk.stepOf': 'ขั้นที่ {step} จาก {total}',
+  'capture.walk.next': 'ถัดไป',
+  'capture.walk.back': 'ย้อนกลับ',
+  'capture.walk.again': 'เริ่มใหม่',
+  'capture.walk.mistakes': 'จุดที่มักพลาด',
+
+  'capture.walk.wallet.s1Title': 'เพิ่มคำสั่งลัดของ 6pm',
+  'capture.walk.wallet.s1Body':
+    'แตะ “เพิ่มคำสั่งลัดของ 6pm” ด้านล่าง แล้วแตะ เพิ่มคำสั่งลัด คำสั่งลัดนี้ชื่อ “Log to 6pm”',
+  'capture.walk.wallet.s2Title': 'เปิด ระบบอัตโนมัติ แล้วแตะ +',
+  'capture.walk.wallet.s2Body':
+    'ในแอปคำสั่งลัด แตะ คลัง แล้ว ระบบอัตโนมัติ แล้ว + ถ้าเห็น “อธิบายคำสั่งลัด” ให้แตะ แก้ไข',
+  'capture.walk.wallet.s3Title': 'เพิ่มตัวเรียกจากกระเป๋าสตางค์',
+  'capture.walk.wallet.s3Body':
+    'ที่แผงด้านล่าง แตะ ระบบอัตโนมัติ แล้ว กระเป๋าสตางค์ การ์ด “เมื่อบัตรใดก็ได้ถูกแตะ” จะปรากฏขึ้น',
+  'capture.walk.wallet.s4Title': 'เรียกใช้ “Log to 6pm”',
+  'capture.walk.wallet.s4Body':
+    'แตะ ค้นหา พิมพ์ “เรียกใช้คำสั่งลัด” แล้วแตะ จากนั้นแตะ คำสั่งลัด แล้วเลือก “Log to 6pm”',
+  'capture.walk.wallet.s5Title': 'ปิด แสดงเมื่อเรียกใช้ แล้วย้อนกลับ',
+  'capture.walk.wallet.s5Body':
+    'เปิดระบบอัตโนมัติไว้ ย้อนกลับก็บันทึกแล้ว ถ้าอยากจับเฉพาะบางบัตร แตะ บัตรใดก็ได้ แล้วเลือกบัตร',
+  'capture.walk.wallet.s6Title': 'ลองดู',
+  'capture.walk.wallet.s6Body':
+    'จ่ายอะไรสักอย่างด้วย Apple Pay บน iPhone เครื่องนี้ แล้วเปิด 6pm รายการที่แตะจ่ายจะอยู่ใน Inbox',
+  'capture.walk.wallet.mistake1':
+    'คำสั่งลัดที่ไม่มีการ์ด “เมื่อบัตรใดก็ได้ถูกแตะ” อยู่ด้านบน มันจะทำงานเฉพาะตอนที่คุณกดเรียกใช้เอง',
+  'capture.walk.wallet.mistake2':
+    'ใส่ เรียกใช้คำสั่งลัด ไว้แต่ไม่ได้เลือกคำสั่งลัด แตะ คำสั่งลัด แล้วเลือก “Log to 6pm” ไม่อย่างนั้นแตะจ่ายไปก็ไม่ถูกบันทึก',
+  'capture.walk.wallet.mistake3':
+    'เปิด แสดงเมื่อเรียกใช้ ทิ้งไว้ ทุกครั้งที่แตะจ่ายจะหยุดโชว์การ์ดแทนที่จะบันทึกเงียบๆ',
+  'capture.walk.wallet.olderTitle': 'บน iOS 26',
+  'capture.walk.wallet.older1': 'ในแอปคำสั่งลัด เปิดแท็บ ระบบอัตโนมัติ แล้วแตะ +',
+  'capture.walk.wallet.older2': 'แตะ กระเป๋าสตางค์ เลือกบัตร เลือก เรียกใช้ทันที แล้วแตะ ถัดไป',
+  'capture.walk.wallet.older3': 'เลือก “Log to 6pm” จากคำสั่งลัดของคุณ แล้วแตะ เสร็จสิ้น',
+  'capture.walk.wallet.handTitle': 'อยากสร้างเอง?',
+  'capture.walk.wallet.hand1':
+    'แทนที่จะใช้ เรียกใช้คำสั่งลัด ให้เพิ่ม “จดใน 6pm” แล้วปิด แสดงเมื่อเรียกใช้',
+  'capture.walk.wallet.hand2':
+    'ตั้ง ยอดเงิน เป็น ธุรกรรม › จำนวน และ ที่ไหน เป็น ธุรกรรม › ร้านค้า',
+
+  'capture.walk.email.s1Title': 'เปิดการตั้งค่า Gmail บนคอมพิวเตอร์',
+  'capture.walk.email.s1Body':
+    'ตั้งการส่งต่อในแอป Gmail ไม่ได้ เปิด Gmail บนเว็บ คลิกรูปเฟือง แล้ว ดูการตั้งค่าทั้งหมด',
+  'capture.walk.email.s2Title': 'การส่งต่อและ POP/IMAP',
+  'capture.walk.email.s2Body': 'เปิดแท็บนั้น แล้วคลิก เพิ่มที่อยู่สำหรับการส่งต่อ',
+  'capture.walk.email.s3Title': 'วางที่อยู่ 6pm ของคุณ',
+  'capture.walk.email.s3Body': 'คัดลอกด้วยปุ่มด้านล่าง วางลงไป แล้วคลิก ถัดไป และ ดำเนินการต่อ',
+  'capture.walk.email.s4Title': 'ใส่รหัสที่ 6pm แสดงให้',
+  'capture.walk.email.s4Body':
+    'Gmail จะส่งอีเมลยืนยันไปที่ที่อยู่ 6pm ของคุณ แล้ว 6pm จะแสดงรหัสให้ พิมพ์รหัสข้างปุ่ม ยืนยัน',
+  'capture.walk.email.s5Title': 'สร้างตัวกรองสำหรับใบเสร็จ',
+  'capture.walk.email.s5Body':
+    'อย่าส่งต่อทุกฉบับ เปิดตัวเลือกการค้นหา แล้วใส่ผู้ส่งใบเสร็จของคุณในช่อง จาก',
+  'capture.walk.email.s6Title': 'ส่งต่อไปที่ 6pm',
+  'capture.walk.email.s6Body':
+    'คลิก สร้างตัวกรอง ติ๊ก ส่งต่อไปยัง เลือกที่อยู่ 6pm ของคุณ แล้วคลิก สร้างตัวกรอง อีกครั้ง',
+  'capture.walk.email.otherTitle': 'อีเมลอื่น',
+  'capture.walk.email.outlook': 'Outlook.com',
+  'capture.walk.email.outlook1': 'บนเว็บ เปิด การตั้งค่า แล้ว จดหมาย แล้ว กฎ',
+  'capture.walk.email.outlook2':
+    'เพิ่มกฎใหม่: ถ้ามาจากผู้ส่งใบเสร็จของคุณ ให้ส่งต่อไปที่ที่อยู่ 6pm',
+  'capture.walk.email.outlook3': 'บันทึก Outlook อาจขอให้ลงชื่อเข้าใช้อีกครั้งก่อน',
+  'capture.walk.email.icloud': 'iCloud Mail',
+  'capture.walk.email.icloud1': 'บน icloud.com/mail เปิด การตั้งค่า แล้ว กฎ แล้ว +',
+  'capture.walk.email.icloud2': 'ถ้าข้อความมาจากผู้ส่งใบเสร็จ ให้ส่งต่อไปที่ที่อยู่ 6pm ของคุณ',
+  'capture.walk.email.icloud3': 'ตั้งหนึ่งกฎต่อหนึ่งผู้ส่ง อาจใช้เวลา 15 นาทีกว่าจะเริ่มทำงาน',
+
+  'capture.walk.share.s1Title': 'เปิดใบเสร็จในแอปธนาคาร',
+  'capture.walk.share.s1Body': 'หน้าจอหลังโอนเงิน หรือรายการในประวัติก็ได้ แล้วแตะ แชร์',
+  'capture.walk.share.s2Title': 'แตะ 6pm',
+  'capture.walk.share.s2Body':
+    'ถ้าไม่เห็น ให้เลื่อนแถวแอปดู จะแชร์รูปใบเสร็จรูปเดียวหรือหลายรูปก็ได้',
+  'capture.walk.share.s3Title': 'ตรวจดูแล้วยืนยัน',
+  'capture.walk.share.s3Body': 'เราอ่านยอดเงินและผู้รับให้ ยืนยันแล้วรายการจะอยู่ใน Inbox',
+  'capture.walk.share.inInbox': 'อยู่ใน Inbox แล้ว',
+
+  'capture.walk.bank.done': 'โอนเงินสำเร็จ',
+  'capture.walk.bank.from': 'จาก',
+  'capture.walk.bank.yourBank': 'ธนาคารของคุณ',
+  'capture.walk.bank.share': 'แชร์',
+  'capture.walk.bank.home': 'หน้าหลัก',
+
+  'capture.walk.test.paid': 'เสร็จ',
+  'capture.walk.test.inbox': 'Inbox',
+  'capture.walk.test.row': 'Apple Pay · รอตรวจ',
+
+  'capture.walk.ios.library': 'คลัง',
+  'capture.walk.ios.allShortcuts': 'คำสั่งลัดทั้งหมด',
+  'capture.walk.ios.shareSheet': 'แผ่นงานแชร์',
+  'capture.walk.ios.gallery': 'แกลเลอรี',
+  'capture.walk.ios.automation': 'ระบบอัตโนมัติ',
+  'capture.walk.ios.apps': 'แอป',
+  'capture.walk.ios.edit': 'แก้ไข',
+  'capture.walk.ios.noAutomations': 'ไม่มีระบบอัตโนมัติ',
+  'capture.walk.ios.noAutomationsSub': 'ทำให้คำสั่งลัดทำงานโดยอัตโนมัติ',
+  'capture.walk.ios.newShortcut': 'คำสั่งลัดใหม่',
+  'capture.walk.ios.describe': 'อธิบายคำสั่งลัด',
+  'capture.walk.ios.addActions': 'เพิ่มการทำงานจากด้านล่างเพื่อสร้างคำสั่งลัด',
+  'capture.walk.ios.search': 'ค้นหา',
+  'capture.walk.ios.scripting': 'การเขียนสคริปต์',
+  'capture.walk.ios.sendMessage': 'ส่งข้อความ',
+  'capture.walk.ios.openApp': 'เปิดแอป',
+  'capture.walk.ios.playMusic': 'เล่นเพลง',
+  'capture.walk.ios.app': 'แอป',
+  'capture.walk.ios.appEx': '“เมื่อเปิดหรือปิดสภาพอากาศ”',
+  'capture.walk.ios.wallet': 'กระเป๋าสตางค์',
+  'capture.walk.ios.walletEx': '“เมื่อฉันแตะบัตรหรือพาสในกระเป๋าสตางค์”',
+  'capture.walk.ios.screenshot': 'ภาพหน้าจอ',
+  'capture.walk.ios.screenshotEx': '“เมื่อบันทึกภาพหน้าจอ”',
+  'capture.walk.ios.when': 'เมื่อ',
+  'capture.walk.ios.isTapped': 'ถูกแตะ',
+  'capture.walk.ios.anyCard': 'บัตรใดก็ได้',
+  'capture.walk.ios.showWhenRun': 'แสดงเมื่อเรียกใช้',
+  'capture.walk.ios.addShortcut': 'เพิ่มคำสั่งลัด',
+  'capture.walk.ios.dontAdd': 'ไม่เพิ่ม',
+  'capture.walk.ios.runShortcut': 'เรียกใช้คำสั่งลัด',
+  'capture.walk.ios.run': 'เรียกใช้',
+  'capture.walk.ios.shortcut': 'คำสั่งลัด',
+  'capture.walk.ios.shortcutA': 'เวลาถึงบ้าน',
+  'capture.walk.ios.shortcutB': 'จับเวลาซักผ้า',
+  'capture.walk.ios.personal': 'ส่วนตัว',
+  'capture.walk.ios.walletSummary': 'เมื่อฉันแตะพาสหรือบัตรชำระเงินในกระเป๋าสตางค์',
+  'capture.walk.ios.messages': 'ข้อความ',
+  'capture.walk.ios.mail': 'เมล',
+  'capture.walk.ios.image': 'รูปภาพ',
+  'capture.walk.ios.copy': 'คัดลอก',
+  'capture.walk.ios.saveImage': 'บันทึกรูปภาพ',
+
+  'capture.walk.gmail.searchMail': 'ค้นหาในจดหมาย',
+  'capture.walk.gmail.quickSettings': 'การตั้งค่าด่วน',
+  'capture.walk.gmail.seeAll': 'ดูการตั้งค่าทั้งหมด',
+  'capture.walk.gmail.settings': 'การตั้งค่า',
+  'capture.walk.gmail.general': 'ทั่วไป',
+  'capture.walk.gmail.labels': 'ป้ายกำกับ',
+  'capture.walk.gmail.filters': 'ตัวกรองและที่อยู่ที่ถูกบล็อก',
+  'capture.walk.gmail.forwarding': 'การส่งต่อและ POP/IMAP',
+  'capture.walk.gmail.forwardingHead': 'การส่งต่อ:',
+  'capture.walk.gmail.addAddress': 'เพิ่มที่อยู่สำหรับการส่งต่อ',
+  'capture.walk.gmail.enterAddress': 'โปรดป้อนที่อยู่อีเมลใหม่สำหรับการส่งต่อ:',
+  'capture.walk.gmail.next': 'ถัดไป',
+  'capture.walk.gmail.cancel': 'ยกเลิก',
+  'capture.walk.gmail.proceed': 'ดำเนินการต่อ',
+  'capture.walk.gmail.forwardTo': 'ส่งต่อสำเนาอีเมลขาเข้าไปยัง',
+  'capture.walk.gmail.verify': 'ยืนยัน',
+  'capture.walk.gmail.code': 'รหัสยืนยัน',
+  'capture.walk.gmail.disable': 'ปิดใช้การส่งต่อ',
+  'capture.walk.gmail.from': 'จาก',
+  'capture.walk.gmail.subject': 'เรื่อง',
+  'capture.walk.gmail.hasWords': 'มีคำ',
+  'capture.walk.gmail.createFilter': 'สร้างตัวกรอง',
+  'capture.walk.gmail.search': 'ค้นหา',
+  'capture.walk.gmail.whenArrives': 'เมื่อข้อความตรงกับเกณฑ์การค้นหาของคุณทุกประการ:',
+  'capture.walk.gmail.skipInbox': 'ข้ามกล่องจดหมาย (เก็บถาวร)',
+  'capture.walk.gmail.markRead': 'ทำเครื่องหมายว่าอ่านแล้ว',
+  'capture.walk.gmail.forwardIt': 'ส่งต่อไปยัง:',
+  'capture.walk.gmail.inbox': 'กล่องจดหมาย',
+};

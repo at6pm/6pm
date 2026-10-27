@@ -1,0 +1,50 @@
+import type { Entry } from '../catalogue-types';
+import type { enCategories } from '../en-categories';
+
+export const deCategories: { readonly [Key in keyof typeof enCategories]: Entry } = {
+  'categories.title': 'Kategorien',
+  'categories.intro':
+    'Ich errate die Kategorie am Händler. Korrigier sie einmal, und ich merke sie mir.',
+  'categories.yours': 'Deine Kategorien',
+  'categories.count': { one: '{count} Kategorie', other: '{count} Kategorien' },
+  'categories.tally': {
+    one: '{count} diesen Monat · {amount}',
+    other: '{count} diesen Monat · {amount}',
+  },
+  'categories.tallyNone': 'Diesen Monat noch nichts',
+  'categories.notDaily': 'Nicht täglich',
+  'categories.new': 'Neue Kategorie',
+  'categories.learned': 'Von dir gelernt',
+  'categories.rulesCount': { one: '{count} Regel', other: '{count} Regeln' },
+  'categories.rule.learned': {
+    one: 'Nach {count} Korrektur gelernt',
+    other: 'Nach {count} Korrekturen gelernt',
+  },
+  'categories.rule.set': 'Von dir festgelegt',
+  'categories.rule.remove': '{merchant} vergessen',
+  'categories.noRules': 'Noch nichts gelernt.',
+  'categories.rulesNote':
+    'Wenn du eine Kategorie änderst, frage ich, ob ich das beim nächsten Mal auch so machen soll.',
+  'categories.edit.title': 'Kategorie bearbeiten',
+  'categories.edit.cancel': 'Abbrechen',
+  'categories.edit.save': 'Sichern',
+  'categories.edit.placeholder': 'Name eingeben',
+  'categories.edit.icon': 'Symbol',
+  'categories.edit.iconCount': '{free} gratis · {more} mit Max',
+  'categories.edit.colour': 'Farbe',
+  'categories.edit.daily': 'Zählt zu deiner Tageszahl',
+  'categories.edit.dailySub': 'Aus für Kosten, die du erstattet bekommst, etwa für die Arbeit.',
+  'categories.edit.delete': 'Löschen · Ausgaben wandern zu {name}',
+  'categories.edit.locked': 'Gibt’s mit 6pm Max',
+  'categories.pack.free': 'Gratis · {count}',
+  'categories.pack.max': 'MAX',
+  'categories.pack.essentials': 'Das Wichtigste',
+  'categories.pack.street': 'Streetfood & Getränke',
+  'categories.pack.move': 'Unterwegs',
+  'categories.pack.home': 'Wohnen & Rechnungen',
+  'categories.pack.shop': 'Shopping & Style',
+  'categories.pack.body': 'Körper & Geist',
+  'categories.pack.out': 'Ausgehen',
+  'categories.pack.people': 'Menschen & Haustiere',
+  'categories.pack.money': 'Geld, Geschenke & Tết',
+};

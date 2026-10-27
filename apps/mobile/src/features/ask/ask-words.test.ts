@@ -8,7 +8,7 @@ import {
   type AskIntent,
   type DailyNumber,
 } from '@6pm/domain';
-import { t, type Language } from '@6pm/i18n';
+import { t } from '@6pm/i18n';
 
 import { describeAnswer, type AskWordsEnv } from './ask-words';
 
@@ -34,21 +34,23 @@ const ctx: AskContext = {
   pots: [{ name: 'Tết', goal: 3_000_000, saved: 1_200_000, monthly: 450_000 }],
 };
 
-const names: Record<Language, { weekday: Record<string, string>; month: string; payday: string }> =
-  {
-    en: {
-      weekday: { '2026-10-10': 'Saturday', '2026-10-11': 'Sunday' },
-      month: 'February 2027',
-      payday: '31 October',
-    },
-    vi: {
-      weekday: { '2026-10-10': 'Thứ Bảy', '2026-10-11': 'Chủ Nhật' },
-      month: 'tháng 2 năm 2027',
-      payday: '31 tháng 10',
-    },
-  };
+const names: Record<
+  'en' | 'vi',
+  { weekday: Record<string, string>; month: string; payday: string }
+> = {
+  en: {
+    weekday: { '2026-10-10': 'Saturday', '2026-10-11': 'Sunday' },
+    month: 'February 2027',
+    payday: '31 October',
+  },
+  vi: {
+    weekday: { '2026-10-10': 'Thứ Bảy', '2026-10-11': 'Chủ Nhật' },
+    month: 'tháng 2 năm 2027',
+    payday: '31 tháng 10',
+  },
+};
 
-const envFor = (language: Language): AskWordsEnv => ({
+const envFor = (language: 'en' | 'vi'): AskWordsEnv => ({
   t: (key, ...params) => t(language, key, ...params),
   language,
   money: moneyFormat(vndLocale(language)),
@@ -59,7 +61,7 @@ const envFor = (language: Language): AskWordsEnv => ({
 
 const words = (
   intent: AskIntent,
-  language: Language = 'en',
+  language: 'en' | 'vi' = 'en',
   from: AskContext = ctx,
   offline = false,
 ) => describeAnswer(answerAsk(intent, from), from, { offline }, envFor(language));

@@ -207,7 +207,18 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     package: variant.bundleIdentifier,
   },
   // Permission prompts in each language, generated from `@6pm/i18n`.
-  locales: { en: './locales/en.json', vi: './locales/vi.json' },
+  locales: {
+    en: './locales/en.json',
+    vi: './locales/vi.json',
+    'zh-Hans': './locales/zh-Hans.json',
+    ja: './locales/ja.json',
+    ko: './locales/ko.json',
+    th: './locales/th.json',
+    id: './locales/id.json',
+    es: './locales/es.json',
+    fr: './locales/fr.json',
+    de: './locales/de.json',
+  },
   plugins: [
     'expo-router',
     ['expo-sqlite', { useSQLCipher: true }],
@@ -217,7 +228,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       { backgroundColor: LAUNCH_BACKGROUND, dark: { backgroundColor: LAUNCH_BACKGROUND } },
     ],
     ['expo-build-properties', { android: { compileSdkVersion: 37, targetSdkVersion: 36 } }],
-    ['expo-localization', { supportedLocales: ['en', 'vi'] }],
+    [
+      'expo-localization',
+      { supportedLocales: ['en', 'vi', 'zh-Hans', 'ja', 'ko', 'th', 'id', 'es', 'fr', 'de'] },
+    ],
     // Scan reads QR codes and receipts and never records; the microphone is voice's, and both plugins
     // write the same prompt so neither replaces the other's.
     [

@@ -3,13 +3,15 @@ import { useSQLiteContext } from 'expo-sqlite';
 import { createContext, use, useMemo, useState, type ReactNode } from 'react';
 
 import {
+  localeOf,
   isLanguage,
-  pickLanguage,
   type Language,
   type ParamsArgument,
+  pickLanguage,
   type StringKey,
 } from '@6pm/i18n';
 
+import { setScriptLanguage } from '../ui/type/fonts';
 import { translate } from './translate';
 
 export interface I18n {
@@ -33,7 +35,7 @@ const KEY = 'language';
 const I18nContext = createContext<I18n | null>(null);
 
 function make(language: Language, chosen: Language | null, setLanguage: I18n['setLanguage']): I18n {
-  const locale = language === 'vi' ? 'vi-VN' : 'en-GB';
+  const locale = localeOf(language);
   const weekday = new Intl.DateTimeFormat(locale, { weekday: 'long' });
   const dayMonth = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long' });
   const weekdayDate = new Intl.DateTimeFormat(locale, {
@@ -68,6 +70,7 @@ export function I18nProvider({ children }: { readonly children: ReactNode }) {
     stored,
   );
   const chosen = isLanguage(stored) ? stored : null;
+  setScriptLanguage(language);
   const value = useMemo(
     () =>
       make(language, chosen, (next) => {
