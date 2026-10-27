@@ -81,6 +81,8 @@ export const enToday = {
   'quick.cancel': 'Cancel',
   'quick.title': 'New spend',
   'quick.ticket': '6pm · Nº {no}',
+  'today.pull.add': 'Pull to add',
+  'today.pull.release': 'Let go to add',
   'quick.hint': 'Type 45 then k, or tap the mic',
   'quick.hintKeys': 'Type 45 then k for {amount}',
   'quick.what': 'What was it?',

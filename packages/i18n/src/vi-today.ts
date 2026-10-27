@@ -77,6 +77,8 @@ export const viToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'quick.cancel': 'Huỷ',
   'quick.title': 'Khoản chi mới',
   'quick.ticket': '6pm · Số {no}',
+  'today.pull.add': 'Kéo để thêm',
+  'today.pull.release': 'Thả ra để thêm',
   'quick.hint': 'Gõ 45 rồi k, hoặc chạm micrô',
   'quick.hintKeys': 'Gõ 45 rồi k thành {amount}',
   'quick.what': 'Khoản gì vậy?',

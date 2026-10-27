@@ -1,5 +1,6 @@
 import { useRouter, type Href } from 'expo-router';
 import { useEffect } from 'react';
+import { View } from 'react-native';
 import Animated, {
   ReduceMotion,
   useAnimatedStyle,
@@ -21,6 +22,7 @@ import { useHomePageShown } from '../home/home-page';
 import { useHomePageScroll, useHomeScroll } from '../home/home-scroll';
 import { CompanionGreeting } from './companion-greeting';
 import { requestDiaryDay } from './diary-request';
+import { PullToAdd, usePullToAdd } from './pull-to-add';
 import { TodayHero } from './today-hero';
 import { TodayList } from './today-list';
 import { spreadYesterdayOf, todayView, type WeekDay } from './today-view';
@@ -60,7 +62,8 @@ export function TodayPage({
   const offerUndo = useOfferUndo();
   const { t, language } = useI18n();
   const parked = useParkedClose(snap.today);
-  const onScroll = useHomePageScroll('today');
+  const { pulling, leave } = usePullToAdd(onQuickAdd);
+  const onScroll = useHomePageScroll('today', pulling);
   const shown = useHomePageShown();
   const view = todayView(snap, closeHour, day.spent, useSpendLabels());
   const spreadYesterday = spreadYesterdayOf(snap);
@@ -97,91 +100,100 @@ export function TodayPage({
   const sheetFade = useAnimatedStyle(() => ({ opacity: sheetShown.get() }));
 
   return (
-    <Animated.ScrollView
-      ref={scrollRef}
-      onScroll={onScroll}
-      scrollEventThrottle={16}
-      scrollsToTop={shown}
-      contentInsetAdjustmentBehavior="never"
-      showsVerticalScrollIndicator={false}
-    >
-      <Animated.View style={parallax}>
-        <TodayHero day={day} onSettings={onSettings} onQuickAdd={onQuickAdd} />
-      </Animated.View>
-      <Animated.View
-        style={[
-          {
-            minHeight: 540,
-            borderTopLeftRadius: 40,
-            borderTopRightRadius: 40,
-            backgroundColor: palette.sheet,
-            boxShadow: 'inset 0 1px 0 rgba(255,255,255,.06)',
-            // The companion's greeting keeps its own room under it.
-            paddingTop: snap.plan ? 20 : 92,
-            paddingHorizontal: 16,
-            paddingBottom: 128,
-            gap: 28,
-          },
-          sheetFade,
-        ]}
+    <View style={{ flex: 1 }}>
+      <Animated.ScrollView
+        ref={scrollRef}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+        scrollsToTop={shown}
+        contentInsetAdjustmentBehavior="never"
+        showsVerticalScrollIndicator={false}
       >
-        {snap.plan ? (
-          <CompanionGreeting
-            day={day}
-            plan={snap.plan}
-            spread={spreadYesterday}
-            event={
-              view.moment === 'closed'
-                ? 'closedIdle'
-                : parked
-                  ? 'paused'
-                  : view.moment === 'late'
-                    ? 'late'
-                    : day.overspent && day.spent > 0
-                      ? 'pastPlan'
-                      : day.safe < 0
-                        ? 'replan'
-                        : 'idle'
-            }
-            onPress={() => openAsk()}
-          />
-        ) : null}
-        <TonightCard
-          moment={view.moment}
-          closeAt={snap.plan?.closeAt ?? '18:00'}
-          toConfirm={view.queue.length}
-          day={day}
-          week={view.week}
-          closedThisMonth={view.closedThisMonth}
-          daysThisMonth={view.daysThisMonth}
-          paused={parked === null ? null : parked.state.step === 'cards' ? 'cards' : 'later'}
-          closedStamp={view.closedAt === null ? null : clockOf(hourOf(new Date(view.closedAt)))}
-          monthName={monthName}
-          onClose={() => router.push('/close')}
-          onOpenDay={openWeekDay}
-          onOpenReceipt={() => showDiary(snap.today)}
-        />
-        <TodayList
-          rows={view.rows}
-          waiting={view.queue.length}
-          spentLabel={view.spentLabel}
-          onOpenInbox={() => router.push('/inbox')}
-          onOpenSpend={openSpend}
-          onConfirm={(id) => void run(() => actions.setStatus(id, 'kept'))}
-          onDelete={(id) => {
-            const name = snap.cycleSpends.find((s) => s.id === id)?.merchant ?? '';
-            void run(() => actions.setStatus(id, 'deleted')).then((saved) => {
-              if (saved) {
-                offerUndo(
-                  t('undo.deleted', { name }),
-                  t('undo.action'),
-                  () => void run(() => actions.undo(id)),
-                );
+        <Animated.View style={parallax}>
+          <TodayHero day={day} onSettings={onSettings} onQuickAdd={onQuickAdd} />
+        </Animated.View>
+        <Animated.View
+          style={[
+            {
+              minHeight: 540,
+              borderTopLeftRadius: 40,
+              borderTopRightRadius: 40,
+              backgroundColor: palette.sheet,
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,.06)',
+              // The companion's greeting keeps its own room under it.
+              paddingTop: snap.plan ? 20 : 92,
+              paddingHorizontal: 16,
+              paddingBottom: 128,
+              gap: 28,
+            },
+            sheetFade,
+          ]}
+        >
+          {snap.plan ? (
+            <CompanionGreeting
+              day={day}
+              plan={snap.plan}
+              spread={spreadYesterday}
+              event={
+                view.moment === 'closed'
+                  ? 'closedIdle'
+                  : parked
+                    ? 'paused'
+                    : view.moment === 'late'
+                      ? 'late'
+                      : day.overspent && day.spent > 0
+                        ? 'pastPlan'
+                        : day.safe < 0
+                          ? 'replan'
+                          : 'idle'
               }
-            });
-          }}
-        />
-      </Animated.View>
-    </Animated.ScrollView>
+              onPress={() => openAsk()}
+            />
+          ) : null}
+          <TonightCard
+            moment={view.moment}
+            closeAt={snap.plan?.closeAt ?? '18:00'}
+            toConfirm={view.queue.length}
+            day={day}
+            week={view.week}
+            closedThisMonth={view.closedThisMonth}
+            daysThisMonth={view.daysThisMonth}
+            paused={parked === null ? null : parked.state.step === 'cards' ? 'cards' : 'later'}
+            closedStamp={view.closedAt === null ? null : clockOf(hourOf(new Date(view.closedAt)))}
+            monthName={monthName}
+            onClose={() => router.push('/close')}
+            onOpenDay={openWeekDay}
+            onOpenReceipt={() => showDiary(snap.today)}
+          />
+          <TodayList
+            rows={view.rows}
+            waiting={view.queue.length}
+            spentLabel={view.spentLabel}
+            onOpenInbox={() => router.push('/inbox')}
+            onOpenSpend={openSpend}
+            onConfirm={(id) => void run(() => actions.setStatus(id, 'kept'))}
+            onDelete={(id) => {
+              const name = snap.cycleSpends.find((s) => s.id === id)?.merchant ?? '';
+              void run(() => actions.setStatus(id, 'deleted')).then((saved) => {
+                if (saved) {
+                  offerUndo(
+                    t('undo.deleted', { name }),
+                    t('undo.action'),
+                    () => void run(() => actions.undo(id)),
+                  );
+                }
+              });
+            }}
+          />
+        </Animated.View>
+      </Animated.ScrollView>
+      <PullToAdd
+        pull={pulling.pull}
+        leave={leave}
+        heading={t('quick.ticket', { no: String(snap.cycleSpends.length + 1).padStart(3, '0') })}
+        pullLabel={t('today.pull.add')}
+        releaseLabel={t('today.pull.release')}
+      />
+    </View>
   );
 }
