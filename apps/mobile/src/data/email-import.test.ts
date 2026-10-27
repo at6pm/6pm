@@ -80,6 +80,27 @@ describe('importEmailCaptures', () => {
     });
   });
 
+  it('saves money that came in as money in, a refund marked for the close to ask about', async () => {
+    const pay = receipt({
+      id: 'cGF5cmVjZWlwdDAxMjM0NTY3ODlhYmNk',
+      kind: 'incoming',
+      merchant: 'Mây Xanh JSC',
+      amount: 19_500_000,
+    });
+    const back = receipt({ id: 'cmVmdW5kcmVjZWlwdDAxMjM0NTY3ODk', kind: 'refund', amount: 38_000 });
+    await run(server([pay, back, receipt()]).source);
+    expect(await store.tables.spends.get(pay.id)).toMatchObject({
+      direction: 'in',
+      moneyIn: null,
+      status: 'caught',
+    });
+    expect(await store.tables.spends.get(back.id)).toMatchObject({
+      direction: 'in',
+      moneyIn: 'refund',
+    });
+    expect((await store.tables.spends.get(receipt().id))?.direction ?? null).toBeNull();
+  });
+
   it('files a receipt paid before 04:00 under the day before', async () => {
     const late = receipt({ at: new Date(2026, 9, 11, 2, 15).toISOString() });
     await run(server([late]).source);

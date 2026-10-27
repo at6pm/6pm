@@ -22,6 +22,8 @@ export interface SpokenSpend {
   readonly amount: Money | null;
   /** The starter category the words point to, when one does. */
   readonly categoryHint: StarterCategoryId | null;
+  /** `in` when it was money coming in ("mẹ cho 500k", "got paid 18 million"); absent for a spend. */
+  readonly direction?: 'in';
 }
 
 /**
@@ -145,15 +147,45 @@ function nameFrom(rest: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+/** "Got paid …", "nhận …", "lương …": money in said with what it was; the verb is dropped. */
+const INCOME_VERB =
+  /^(?:i\s+)?(?:got\s+paid|got\s+back|received|receive|refunded|nhận\s+được|nhận|được\s+trả|hoàn\s+tiền)(?!\p{L})\s*/iu;
+/** "Lương …", "thưởng …", "bonus …", "salary …": money in, named by the word. */
+const INCOME_NAME =
+  /^(?:lương|thưởng|tiền\s+lương|tiền\s+thưởng|salary|bonus|pay\s*cheque|paycheck)(?!\p{L})/iu;
+/**
+ * Someone giving the money: "mẹ cho 500k", "anh Nam chuyển 2 triệu", "mom sent me 50". The giver
+ * is the name.
+ */
+const GIVER =
+  /^((?:mẹ|má|ba|bố|cha|anh|chị|em|ông|bà|cô|chú|dì|cậu|mợ|bạn|sếp|vợ|chồng|con|mom|mum|dad|my\s+\p{L}+)(?:\s+\p{L}+)?)\s+(?:cho|gửi|chuyển|lì\s+xì|gave(?:\s+me)?|sent(?:\s+me)?|paid\s+me(?:\s+back)?)(?!\p{L})\s*/iu;
+
+/** Money in said out loud, its words rearranged so what is left reads as its name; null for a spend. */
+function moneyInWords(text: string): string | null {
+  const giver = GIVER.exec(text);
+  if (giver) return `${giver[1] ?? ''} ${text.slice(giver[0].length)}`;
+  const verb = INCOME_VERB.exec(text);
+  if (verb) return text.slice(verb[0].length);
+  return INCOME_NAME.test(text) ? text : null;
+}
+
 /**
  * Reads a spend said out loud: "trà sữa with pearls, forty-five k" is Trà sữa · 45.000₫ · drinks;
  * "veggies and eggs at the market, thirty-five k" is Veggies & eggs · 35.000₫ · groceries. The
  * amount is the last number said with a unit, else the last number said; the name is what is left
  * before any place or detail. Amounts are in `currency` (đồng unless told), as Quick add reads
- * them: "forty-five" is 45.000₫ in Vietnam, $45 in the US.
+ * them: "forty-five" is 45.000₫ in Vietnam, $45 in the US. Money coming in ("mẹ cho 500k" is Mẹ ·
+ * 500.000₫ in; "got paid 18 million") is read the same way, with `direction: 'in'`.
  */
 export function parseSpokenSpend(text: string, currency: Currency = VND): SpokenSpend {
-  const s = text.normalize('NFC').trim();
+  const said = text.normalize('NFC').trim();
+  const money = moneyInWords(said);
+  const spend = parseSpendWords(money ?? said, currency);
+  return money === null ? spend : { ...spend, categoryHint: null, direction: 'in' };
+}
+
+/** The name, amount and category hint of what was said, money in or out. */
+function parseSpendWords(s: string, currency: Currency): SpokenSpend {
   const numbers = readSpokenNumbers(s);
   const spoken = [...numbers].reverse().find((n) => n.scaled) ?? numbers[numbers.length - 1];
   if (!spoken) return { name: nameFrom(s), amount: null, categoryHint: categoryHintOf(s) };

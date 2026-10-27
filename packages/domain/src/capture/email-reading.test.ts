@@ -95,8 +95,18 @@ describe('a receipt email read by a model', () => {
     expect(emailSpendOf(madeUp, shopReceipt, options)).toBeNull();
   });
 
-  it('drops anything that is not a payment out', () => {
-    for (const kind of ['own_transfer', 'refund', 'failed', 'order_update', 'promo'] as const) {
+  it('keeps a refund and incoming money as money in, marked as such', () => {
+    for (const kind of ['refund', 'incoming'] as const) {
+      const reading = payment({ kind, amount: '₫607,790', currency: 'VND' });
+      expect(emailSpendOf(reading, shopReceipt, options)).toMatchObject({ kind, amount: 607_790 });
+    }
+    expect(
+      emailSpendOf(payment({ amount: '₫607,790', currency: 'VND' }), shopReceipt, options),
+    ).not.toHaveProperty('kind');
+  });
+
+  it('drops anything that is not money moving', () => {
+    for (const kind of ['own_transfer', 'failed', 'order_update', 'promo'] as const) {
       const reading = payment({ kind, amount: '₫607,790', currency: 'VND' });
       expect(emailSpendOf(reading, shopReceipt, options)).toBeNull();
     }

@@ -104,3 +104,45 @@ describe('foldWords', () => {
     expect(foldWords('')).toBe(' ');
   });
 });
+
+describe('money in said out loud', () => {
+  it('reads someone giving money, named after the giver', () => {
+    expect(parseSpokenSpend('mẹ cho 500k')).toEqual({
+      name: 'Mẹ',
+      amount: 500_000,
+      categoryHint: null,
+      direction: 'in',
+    });
+    expect(parseSpokenSpend('anh Nam chuyển 2 triệu')).toMatchObject({
+      name: 'Anh Nam',
+      amount: 2_000_000,
+      direction: 'in',
+    });
+    expect(parseSpokenSpend('mom sent me fifty k')).toMatchObject({
+      name: 'Mom',
+      amount: 50_000,
+      direction: 'in',
+    });
+  });
+
+  it('reads pay and bonuses, by verb or by name', () => {
+    expect(parseSpokenSpend('got paid 18 million')).toMatchObject({
+      amount: 18_000_000,
+      direction: 'in',
+    });
+    expect(parseSpokenSpend('lương tháng mười 18 triệu')).toMatchObject({
+      name: 'Lương tháng mười',
+      amount: 18_000_000,
+      direction: 'in',
+    });
+    expect(parseSpokenSpend('nhận được 300k tiền thưởng')).toMatchObject({
+      amount: 300_000,
+      direction: 'in',
+    });
+  });
+
+  it('leaves spending alone, a gift bought for someone included', () => {
+    expect(parseSpokenSpend('mua quà cho mẹ 200k')).not.toHaveProperty('direction');
+    expect(parseSpokenSpend('trà sữa 45k')).not.toHaveProperty('direction');
+  });
+});

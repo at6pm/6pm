@@ -136,7 +136,6 @@ export const enPlan = {
   'plan.sincePayday.save': 'Save',
   'plan.month.edit': 'Edit income and payday',
   'plan.month.title': 'Your month',
-  'plan.month.income': 'Money in each month',
   'plan.month.save': 'Save',
   'plan.bills.edit': 'Edit {name}',
   'plan.bill.add': 'Add a bill',

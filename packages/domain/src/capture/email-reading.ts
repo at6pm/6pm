@@ -15,7 +15,7 @@ import {
  * the email, and is converted by `receiptMinorUnits`, never worked out by the model.
  */
 
-/** What an email can be. Only a payment becomes a spend. */
+/** What an email can be. A payment becomes a spend; a refund or incoming money, money in. */
 export const EMAIL_KINDS = [
   'payment',
   'own_transfer',
@@ -95,15 +95,18 @@ const isCategory = (id: string): id is EmailCategoryId =>
   (EMAIL_CATEGORY_IDS as readonly string[]).includes(id);
 
 /**
- * The spend a model's reading describes, or null when it is not a payment out or its amount
- * cannot be trusted: not printed in the email, no currency, or not a positive amount.
+ * The spend (or money in) a model's reading describes, or null when it is neither a payment, a
+ * refund nor money that came in, or its amount cannot be trusted: not printed in the email, no
+ * currency, or not a positive amount.
  */
 export function emailSpendOf(
   reading: EmailModelReading,
   email: ReceiptEmail,
   options: ReceiptEmailOptions,
 ): EmailSpend | null {
-  if (reading.kind !== 'payment' || reading.amount === null) return null;
+  const moving =
+    reading.kind === 'payment' || reading.kind === 'incoming' || reading.kind === 'refund';
+  if (!moving || reading.amount === null) return null;
   const currency = currencyCodeSchema.safeParse(reading.currency?.trim().toUpperCase());
   if (!currency.success) return null;
   const origin = emailOrigin(email);
@@ -115,6 +118,7 @@ export function emailSpendOf(
   const at = reading.at?.trim() ?? '';
   const category = reading.category?.trim().toLowerCase() ?? '';
   return {
+    ...(reading.kind === 'payment' ? {} : { kind: reading.kind }),
     amount,
     currency: currency.data,
     category: isCategory(category) ? category : null,

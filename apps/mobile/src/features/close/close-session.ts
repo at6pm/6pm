@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react';
 
-import type { CloseState, LocalDate } from '@6pm/domain';
+import type { CloseState, LocalDate, MoneyInAsk } from '@6pm/domain';
 
 import type { CashChip } from './close-steps';
 
@@ -18,6 +18,8 @@ export interface CloseSession {
   readonly queueIds: readonly string[];
   /** Cash added so far, shown again on the cash step. */
   readonly cash: readonly CashChip[];
+  /** What the close asks about each money in it opened with, by spend id. */
+  readonly moneyAsks: Readonly<Record<string, MoneyInAsk>>;
 }
 
 let session: CloseSession | null = null;

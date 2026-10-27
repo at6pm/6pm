@@ -30,6 +30,8 @@ export interface EmailReceipt {
   readonly code: string | null;
   /** The transfer's own words ("Nội dung: Thanh toan the tin dung"); null when it printed none. */
   readonly memo: string | null;
+  /** Money that came in, or a refund of a spend; absent for a payment out. */
+  readonly kind?: 'incoming' | 'refund';
 }
 
 export interface ReceiptEmailOptions {
@@ -231,7 +233,7 @@ export function emailPaidAt(
  * Reads the spend in a bank notification or a shop's e-receipt, forwarded or sent on by a filter,
  * with rules alone: the body (HTML tables or plain text) is turned into lines and read like a
  * shared receipt, with shop totals read as the amount. The shop or bank comes from the sender's
- * domain. Returns null for anything that is not a payment out: no amount, or money that came in.
+ * domain. Money that came in is read the same way and marked `incoming`; no amount, null.
  * The server reads email with a model when it can (`emailSpendOf`); this is what it falls back to.
  */
 export function parseReceiptEmail(
@@ -240,12 +242,14 @@ export function parseReceiptEmail(
 ): EmailReceipt | null {
   const origin = emailOrigin(email);
   const lines = origin.lines.map(withTotalsAsAmount);
-  if (isIncoming(lines)) return null;
+  const incoming = isIncoming(lines);
   const receipt = parseBankReceipt(lines.map((text) => ({ text })));
   if (!receipt || receipt.amount === null) return null;
   return {
+    ...(incoming ? { kind: 'incoming' as const } : {}),
     amount: receipt.amount,
-    merchant: shopOf(origin.sender) ?? (receipt.payee || payeeInNote(lines)),
+    // For money in, the payee a receipt names is the person themselves: only a shop is said.
+    merchant: shopOf(origin.sender) ?? (incoming ? '' : receipt.payee || payeeInNote(lines)),
     at: emailPaidAt(receipt.at, origin, email, options),
     from: origin.sender?.address ?? null,
     bank: origin.bank ?? receipt.bank,

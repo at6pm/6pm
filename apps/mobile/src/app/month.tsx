@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
@@ -24,7 +24,9 @@ const DEFAULT_SAME_DAY = 25;
 
 /**
  * Money in and payday, as onboarding asked for them: a raise or a new payday is entered here. The
- * daily number follows at once; the cycle that is running moves to its new start.
+ * daily number follows at once; the cycle that is running moves to its new start. Money in is what
+ * the person can count on: anything above it comes in through the close. Opened from a pay that
+ * came in bigger, it starts at that pay (`income`).
  */
 export default function MonthSheet() {
   const router = useRouter();
@@ -33,7 +35,11 @@ export default function MonthSheet() {
   const run = useRunAction();
   const { plan } = useMoney();
   const actions = usePlanActions();
-  const [income, setIncome] = useState(plan?.income ?? 0);
+  const params = useLocalSearchParams<{ income?: string }>();
+  const offered = Number(params.income);
+  const [income, setIncome] = useState(
+    Number.isSafeInteger(offered) && offered > 0 ? offered : (plan?.income ?? 0),
+  );
   const [payday, setPayday] = useState<Payday>(plan?.payday ?? { kind: 'lastDay' });
   const [sameDay, setSameDay] = useState(
     plan?.payday.kind === 'sameDay' ? plan.payday.day : DEFAULT_SAME_DAY,
@@ -74,8 +80,11 @@ export default function MonthSheet() {
       >
         <PotCard>
           <View style={{ paddingVertical: 16, paddingHorizontal: 16, gap: 6 }}>
-            <Text style={{ ...body(15, 650), color: palette.ink }}>{t('plan.month.income')}</Text>
+            <Text style={{ ...body(15, 650), color: palette.ink }}>{t('plan.month.countOn')}</Text>
             <IncomeWheels income={income} onIncome={setIncome} colours={colours} />
+            <Text style={{ ...body(13), lineHeight: 18.85, color: palette.inkSoft }}>
+              {t('plan.month.countOnHelp')}
+            </Text>
           </View>
         </PotCard>
         <PotCard>

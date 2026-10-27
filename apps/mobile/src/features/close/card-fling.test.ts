@@ -25,4 +25,10 @@ describe('cardFling', () => {
   it('sends an upward fling home', () => {
     expect(cardFling(20, -60, 0, -1500)).toBeNull();
   });
+
+  it('sends money that came in up when it can go there, and only mostly upward', () => {
+    expect(cardFling(20, -60, 0, -1500, undefined, true)).toBe('up');
+    expect(cardFling(0, -40, 0, 0, undefined, true)).toBeNull();
+    expect(cardFling(140, -100, 0, 0, undefined, true)).toBe('kept');
+  });
 });

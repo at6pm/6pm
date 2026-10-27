@@ -139,7 +139,6 @@ export const viPlan: { readonly [Key in keyof typeof enPlan]: Entry } = {
   'plan.sincePayday.save': 'Lưu',
   'plan.month.edit': 'Sửa thu nhập và ngày lương',
   'plan.month.title': 'Tháng của bạn',
-  'plan.month.income': 'Tiền vào mỗi tháng',
   'plan.month.save': 'Lưu',
   'plan.bills.edit': 'Sửa {name}',
   'plan.bill.add': 'Thêm hoá đơn',
