@@ -131,11 +131,12 @@ export function WorkQuestionStep({
         style={{
           alignSelf: 'flex-start',
           transform: [{ rotate: '-1.5deg' }],
-          boxShadow: '0 10px 18px rgba(20,6,30,.3)',
         }}
       >
         <View
           style={{
+            // The paper casts the shadow, not its torn edge, which would show it between the teeth.
+            boxShadow: '0 10px 18px rgba(20,6,30,.3)',
             gap: 8,
             paddingTop: 12,
             paddingHorizontal: 16,
@@ -151,7 +152,7 @@ export function WorkQuestionStep({
             </>
           ) : null}
         </View>
-        <PaperEdge color="#f7f2e8" height={7} step={10} radius={4.75} />
+        <PaperEdge color="#f7f2e8" />
       </View>
       <Text style={{ ...leading(display(44, 500, -0.01), 45.8), color: palette.ink }}>{title}</Text>
       <Text style={{ ...body(16), lineHeight: 23.2, color: palette.inkSoft }}>{sub}</Text>

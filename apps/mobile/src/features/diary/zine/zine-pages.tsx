@@ -81,11 +81,12 @@ function Ticket({ ticket, tilt }: { readonly ticket: ZineTicket; readonly tilt: 
       style={{
         flex: 1,
         transform: [{ rotate: `${tilt}deg` }],
-        boxShadow: '0 8px 14px rgba(40,10,30,.18)',
       }}
     >
       <View
         style={{
+          // The paper casts the shadow, not its torn edge, which would show it between the teeth.
+          boxShadow: '0 8px 14px rgba(40,10,30,.18)',
           backgroundColor: paper.sheet,
           padding: 12,
           paddingBottom: 14,
@@ -115,7 +116,7 @@ function Ticket({ ticket, tilt }: { readonly ticket: ZineTicket; readonly tilt: 
           </Text>
         ) : null}
       </View>
-      <PaperEdge color={paper.sheet} height={8} step={10} radius={4.75} />
+      <PaperEdge color={paper.sheet} />
     </View>
   );
 }

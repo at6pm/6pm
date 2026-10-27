@@ -10,6 +10,7 @@ enum ThemeTokens {
     static let rule = Color(.sRGB, red: 0.1686, green: 0.1451, blue: 0.1882, opacity: 0.3500)
     static let hand = Color(.sRGB, red: 0.2902, green: 0.2078, blue: 0.3137, opacity: 1.0000)
     static let stamp = Color(.sRGB, red: 0.7529, green: 0.2667, blue: 0.2275, opacity: 1.0000)
+    static let edgeShadow = Color(.sRGB, red: 0.1176, green: 0.0588, blue: 0.1569, opacity: 0.1600)
   }
   enum PlainDay {
     static let sheetSolid = Color(.sRGB, red: 0.1294, green: 0.1020, blue: 0.1647, opacity: 1.0000)

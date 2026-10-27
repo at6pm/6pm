@@ -52,15 +52,14 @@ export function QuickTicket({
 }) {
   const { palette } = useTheme();
   return (
-    <Animated.View
-      entering={FadeInDown.delay(50).duration(450)}
-      style={{ marginHorizontal: 4, boxShadow: '0 16px 24px rgba(20,10,30,.22)' }}
-    >
+    <Animated.View entering={FadeInDown.delay(50).duration(450)} style={{ marginHorizontal: 4 }}>
       <View style={{ transform: [{ scaleY: -1 }] }}>
         <PaperEdge color={PAPER} />
       </View>
       <View
         style={{
+          // The paper casts the shadow, not its torn edges, which would show it between the teeth.
+          boxShadow: '0 16px 24px rgba(20,10,30,.22)',
           backgroundColor: PAPER,
           paddingTop: 8,
           paddingHorizontal: 18,
