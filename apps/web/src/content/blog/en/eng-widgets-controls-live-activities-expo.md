@@ -6,7 +6,7 @@ lang: en
 pubDate: 2026-10-21
 tags: [engineering, expo, widgetkit, app intents, live activities]
 related: [eng-native-feel-expo-reanimated, eng-why-we-open-sourced-our-money-app, eng-reading-vietqr-on-device]
-cta: "Read the Swift and TypeScript on GitHub, or try the widgets in the public beta."
+cta: "Read the Swift and TypeScript on GitHub, or try the widgets in the app."
 hero: [lock-widgets]
 ---
 
@@ -346,4 +346,4 @@ No. The app starts, updates and ends it locally with `pushType: nil`, and the "P
 
 ## Try it
 
-The code is on GitHub under Apache 2.0: [github.com/at6pm/6pm](https://github.com/at6pm/6pm) (start in `apps/mobile/targets` and `apps/mobile/modules/surfaces`). The widgets, controls and Live Activity are in the public beta on TestFlight: [testflight.apple.com/join/a8UrvT5P](https://testflight.apple.com/join/a8UrvT5P). 6pm arrives on the App Store on Friday 6 November 2026 at 18:00 ICT (6:00 a.m. Eastern). More at [at6pm.app](https://at6pm.app).
+The code is on GitHub under Apache 2.0: [github.com/at6pm/6pm](https://github.com/at6pm/6pm) (start in `apps/mobile/targets` and `apps/mobile/modules/surfaces`). The widgets, controls and Live Activity are in the app, on [the App Store](https://apps.apple.com/app/id6504689878). More at [at6pm.app](https://at6pm.app).

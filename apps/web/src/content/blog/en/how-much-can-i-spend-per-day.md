@@ -137,6 +137,6 @@ Yes, as bills, so they’re set aside before your daily number is worked out. Ca
 
 ## Try 6pm
 
-6pm arrives on the App Store on Friday 6 November 2026 at 18:00 Vietnam time (6:00 a.m. Eastern). Want it now? Join the public TestFlight beta: [testflight.apple.com/join/a8UrvT5P](https://testflight.apple.com/join/a8UrvT5P). Everything else lives at [at6pm.app](https://at6pm.app).
+6pm is on [the App Store](https://apps.apple.com/app/id6504689878). Everything else lives at [at6pm.app](https://at6pm.app).
 
 Every spend, caught.

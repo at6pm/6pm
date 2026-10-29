@@ -6,7 +6,7 @@ lang: en
 pubDate: 2026-10-21
 tags: [expense tracker, budget apps, iphone, app comparison, ynab]
 related: [app-quan-ly-chi-tieu-tot-nhat-2026, ynab-alternatives-for-people-who-hate-budgeting, track-spending-automatically-iphone, how-much-can-i-spend-per-day]
-cta: "Get 6pm on the App Store from 6 Nov, or join the public beta today."
+cta: "Get 6pm on the App Store. The close and every way to capture are free."
 hero: [today, close-receipt]
 ---
 
@@ -33,7 +33,7 @@ Three questions sort most people:
 | **Monarch** | Core $14.99/mo or $99.99/yr; Plus $199.99/yr | No (7-day trial) | Yes | iOS, Android, web | 4.9 (~115K) |
 | **Rocket Money** | Free; Premium tiers in-app | Yes | Yes | iOS, Android, web | 4.5 (401K) |
 | **Spendee** | Plus $1.99/mo, Premium $5.99/mo on spendee.com (in-app prices vary) | Yes (1 wallet, 1 budget) | Yes | iOS, Android, web | 4.6 (6.3K) |
-| **6pm** | Max $4.99/mo or $34.99/yr | Yes: the close, every capture, Budget together | No, by design | iPhone (Android later) | Not yet rated (launches 6 Nov) |
+| **6pm** | Max $4.99/mo or $34.99/yr | Yes: the close, every capture, Budget together | No, by design | iPhone (Android later) | Not yet rated (new) |
 
 Prices and ratings were checked on 21 October 2026 and change often. Check the store before you subscribe.
 
@@ -95,7 +95,7 @@ At 6pm (or the time you pick) you swipe through the day: Keep, Edit or Not mine.
 
 The free tier is the whole ritual: the close, every way to capture, Budget together (shared pots for two). 6pm Max ($4.99/month or $34.99/year, 7-day trial) adds looks, unlimited Ask and pots, Travel mode, Year book and encrypted backup.
 
-**Where 6pm is weaker, plainly:** no bank sync, so a card swipe you never photograph, forward or tap with Apple Pay has to be typed. No Android yet, no web or Mac. No investments or net worth. Light on reports. And it has not launched yet: it reaches the App Store on 6 November 2026.
+**Where 6pm is weaker, plainly:** no bank sync, so a card swipe you never photograph, forward or tap with Apple Pay has to be typed. No Android yet, no web or Mac. No investments or net worth. Light on reports. And it is new, with no App Store ratings yet.
 
 <!-- media: close-swipe-clip -->
 
@@ -130,11 +130,11 @@ Yes. 6pm works in English and Vietnamese and uses your phone's currency, so a US
 
 ### Is 6pm on Android?
 
-Not yet. It launches on iPhone on Friday 6 November 2026; Android comes later.
+Not yet. It is on iPhone; Android comes later.
 
 ## Try 6pm
 
-6pm arrives on the App Store on Friday 6 November 2026 at 18:00 Vietnam time (6:00 a.m. Eastern). Want it now? Join the public beta on TestFlight: [testflight.apple.com/join/a8UrvT5P](https://testflight.apple.com/join/a8UrvT5P). More at [at6pm.app](https://at6pm.app).
+6pm is on [the App Store](https://apps.apple.com/app/id6504689878). More at [at6pm.app](https://at6pm.app).
 
 Every spend, caught.
 

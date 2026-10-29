@@ -267,7 +267,7 @@ export const siteCopyEn: SiteCopy = {
         'What if I miss a close?',
         'Nothing breaks. Missed days wait for you, and what you spent already counts.',
       ],
-      ['Is it on Android?', 'iPhone first, from 6 November. Android follows.'],
+      ['Is it on Android?', 'iPhone first. Android follows.'],
     ],
   },
   final: {

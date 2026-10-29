@@ -6,7 +6,7 @@ lang: en
 pubDate: 2026-10-21
 tags: [engineering, react native, skia, shaders, reanimated]
 related: [eng-native-feel-expo-reanimated, eng-widgets-controls-live-activities-expo, eng-why-we-open-sourced-our-money-app]
-cta: "Read the sky code on GitHub, or watch it change through the day in the beta."
+cta: "Read the sky code on GitHub, or watch it change through the day in the app."
 hero: [today]
 ---
 
@@ -253,4 +253,4 @@ It costs more than a static one, so 6pm steps slow motion at 30 Hz, stops the fr
 
 ## Try it
 
-The sky is open source under Apache 2.0: [github.com/at6pm/6pm](https://github.com/at6pm/6pm) (start at `apps/mobile/src/ui/sky/sky.tsx`). Watch it shift through the day in the public beta on TestFlight: [testflight.apple.com/join/a8UrvT5P](https://testflight.apple.com/join/a8UrvT5P). 6pm arrives on the App Store on Friday 6 November 2026 at 18:00 ICT (6:00 a.m. Eastern). More at [at6pm.app](https://at6pm.app).
+The sky is open source under Apache 2.0: [github.com/at6pm/6pm](https://github.com/at6pm/6pm) (start at `apps/mobile/src/ui/sky/sky.tsx`). Watch it shift through the day: 6pm is on [the App Store](https://apps.apple.com/app/id6504689878). More at [at6pm.app](https://at6pm.app).

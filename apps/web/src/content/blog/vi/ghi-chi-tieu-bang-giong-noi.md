@@ -121,6 +121,6 @@ Sửa ngay trên thẻ trước khi lưu, hoặc sửa lúc chốt ngày lúc 18
 
 ## Thử 6pm
 
-6pm lên App Store lúc 18:00 thứ Sáu, 6/11/2026. Muốn nói thử "trà sữa 45k" ngay hôm nay? Tham gia bản thử nghiệm công khai trên TestFlight: [testflight.apple.com/join/a8UrvT5P](https://testflight.apple.com/join/a8UrvT5P). Xem thêm tại [at6pm.app/vi](https://at6pm.app/vi).
+Muốn nói thử "trà sữa 45k" ngay hôm nay? 6pm đã có trên [App Store](https://apps.apple.com/app/id6504689878). Xem thêm tại [at6pm.app/vi](https://at6pm.app/vi).
 
 Tiêu tới đâu, tự ghi tới đó.

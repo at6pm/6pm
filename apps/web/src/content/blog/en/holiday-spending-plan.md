@@ -119,6 +119,6 @@ Nothing breaks. Missed days wait until you’re back, and everything you spent s
 
 ## Try 6pm
 
-6pm arrives on the App Store on Friday 6 November 2026 at 18:00 Vietnam time (6:00 a.m. Eastern), in time to plan the holidays. Want it now? Join the public TestFlight beta: [testflight.apple.com/join/a8UrvT5P](https://testflight.apple.com/join/a8UrvT5P). More at [at6pm.app](https://at6pm.app).
+6pm is on [the App Store](https://apps.apple.com/app/id6504689878), in time to plan the holidays. More at [at6pm.app](https://at6pm.app).
 
 Every spend, caught.

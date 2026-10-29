@@ -111,6 +111,6 @@ Call your bank's hotline straight away and ask for the transaction to be traced,
 
 ## Try 6pm
 
-6pm arrives on the App Store at 18:00 on Friday 6 November 2026 (Vietnam time), in time for 11.11. Want it sooner? Join the public TestFlight beta: [testflight.apple.com/join/a8UrvT5P](https://testflight.apple.com/join/a8UrvT5P). More at [at6pm.app](https://at6pm.app).
+6pm is on [the App Store](https://apps.apple.com/app/id6504689878), in time for 11.11. More at [at6pm.app](https://at6pm.app).
 
 Every spend, caught.

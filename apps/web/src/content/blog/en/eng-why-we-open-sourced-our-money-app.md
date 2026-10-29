@@ -6,7 +6,7 @@ lang: en
 pubDate: 2026-10-21
 tags: [engineering, open source, privacy, sqlcipher, cloudflare workers]
 related: [eng-reading-vietqr-on-device, eng-one-camera-qr-and-receipts, eng-widgets-controls-live-activities-expo]
-cta: "Read the code on GitHub, then try the public beta."
+cta: "Read the code on GitHub, then try the app."
 hero: [close-receipt]
 ---
 
@@ -179,4 +179,4 @@ Read `CLAUDE.md` first; it is the working contract for anyone, human or agent, c
 
 ## Try it
 
-Read the code at [github.com/at6pm/6pm](https://github.com/at6pm/6pm). The iPhone app is in public beta on TestFlight: [testflight.apple.com/join/a8UrvT5P](https://testflight.apple.com/join/a8UrvT5P), and arrives on the App Store on Friday 6 November 2026 at 18:00 ICT (6:00 a.m. Eastern). More at [at6pm.app](https://at6pm.app).
+Read the code at [github.com/at6pm/6pm](https://github.com/at6pm/6pm). The iPhone app is on [the App Store](https://apps.apple.com/app/id6504689878). More at [at6pm.app](https://at6pm.app).

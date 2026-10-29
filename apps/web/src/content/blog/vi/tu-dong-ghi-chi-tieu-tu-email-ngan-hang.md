@@ -121,6 +121,6 @@ Không. Địa chỉ email gắn với mã thiết bị ẩn danh, không gắn 
 
 ## Thử 6pm
 
-6pm lên App Store lúc 18:00 thứ Sáu, 6/11/2026. Muốn dùng trước? Tham gia bản beta công khai trên TestFlight: [testflight.apple.com/join/a8UrvT5P](https://testflight.apple.com/join/a8UrvT5P). Xem thêm tại [at6pm.app/vi](https://at6pm.app/vi), và các cách ghi khác trong bài [ghi chi tiêu tự động trên iPhone](/vi/blog/cach-ghi-chi-tieu-tu-dong-tren-iphone).
+6pm đã có trên [App Store](https://apps.apple.com/app/id6504689878). Xem thêm tại [at6pm.app/vi](https://at6pm.app/vi), và các cách ghi khác trong bài [ghi chi tiêu tự động trên iPhone](/vi/blog/cach-ghi-chi-tieu-tu-dong-tren-iphone).
 
 Nguồn: [Techcombank chuyển thông báo biến động số dư sang app](https://techcombank.com/thong-tin/thong-bao/techcombank-chuyen-doi-hinh-thuc-thong-bao-bien-dong-so-du-qua-ung-dung-fst-mobile-thay-the-cho-tin-nhan-sms), [Techcombank chuyển thông báo giao dịch thẻ tín dụng sang app](https://techcombank.com/thong-tin/thong-bao/chuyen-doi-hinh-thuc-thong-bao-giao-dich-the-tin-dung-qua-techcombank-mobile-thay-the-tin-nhan-sms), [Biến động số dư miễn phí trong App MBBank](https://thitruongtaichinhtiente.vn/cach-nhan-bien-dong-so-du-tai-khoan-voi-muc-phi-0-dong-tai-mb-39391.html), [Vietcombank: thông báo số dư bằng giọng nói và OTT](https://vnba.org.vn/vi/vietcombank-ra-mat-tinh-nang--thong-bao-so-du-bang-giong-noi-16850.htm), [Chính sách quyền riêng tư của 6pm](https://at6pm.app/vi/privacy).

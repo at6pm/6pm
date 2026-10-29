@@ -6,7 +6,7 @@ lang: vi
 pubDate: 2026-10-21
 tags: [money lover, misa moneykeeper, sổ thu chi, so sánh app, quản lý chi tiêu]
 related: [ynab-alternatives-for-people-who-hate-budgeting, app-quan-ly-chi-tieu-tot-nhat-2026, quet-vietqr-tu-ghi-chi-tieu, quy-tac-6-chiec-lo-hay-mot-con-so]
-cta: "Thử 6pm miễn phí trên iPhone từ 6/11, hoặc vào bản beta ngay."
+cta: "Thử 6pm miễn phí trên iPhone."
 hero: [today, close-caught]
 ---
 
@@ -40,7 +40,7 @@ Bài này do đội 6pm viết. Thông tin về Money Lover và MISA lấy từ 
 | Quét VietQR để trả và ghi | Không thấy trên trang | Không thấy trên trang | Có |
 | Ngân sách | Theo danh mục, nhiều danh mục | Hạn mức theo danh mục | Một con số mỗi ngày |
 | Dùng chung | Ví chung có ngân sách | Sổ chung cho gia đình | Hũ chung cho hai người, miễn phí |
-| Đánh giá App Store VN | 4,7 (khoảng 27 nghìn) | 4,7 (khoảng 45 nghìn) | Chưa có (ra mắt 6/11) |
+| Đánh giá App Store VN | 4,7 (khoảng 27 nghìn) | 4,7 (khoảng 45 nghìn) | Chưa có (app mới) |
 
 "Không thấy trên trang" nghĩa là trang App Store và website của họ không nhắc tới, chứ không khẳng định là không có.
 
@@ -93,7 +93,7 @@ Không app nào ghi được 100% mà không cần bạn. Khác biệt là bạn
 - Chưa có Android, chưa có bản web hay máy tính.
 - Không liên kết ngân hàng: khoản quẹt thẻ mà bạn không chụp, không chuyển email, không qua Apple Pay thì phải tự ghi.
 - Ít báo cáo theo danh mục hơn hai app kia; trọng tâm là con số mỗi ngày.
-- App chưa ra mắt (lên App Store ngày 6/11/2026), chưa có nhiều năm đánh giá như Money Lover hay MISA.
+- App còn mới trên App Store, chưa có nhiều năm đánh giá như Money Lover hay MISA.
 
 Nếu bạn đang dùng tốt Money Lover hoặc MISA, cứ giữ. Đổi app chỉ đáng khi cách hiện tại không còn chạy.
 
@@ -121,6 +121,6 @@ Có. Chốt ngày, mọi cách ghi chi tiêu, Hôm nay, Kế hoạch, Nhật ký
 
 ## Thử 6pm
 
-6pm lên App Store lúc 18:00 thứ Sáu, 6/11/2026. Muốn dùng trước? Tham gia bản beta công khai trên TestFlight: [testflight.apple.com/join/a8UrvT5P](https://testflight.apple.com/join/a8UrvT5P). Xem thêm ở [at6pm.app/vi](https://at6pm.app/vi), và bảng so sánh rộng hơn trong bài [App quản lý chi tiêu tốt nhất 2026 cho iPhone](/vi/blog/app-quan-ly-chi-tieu-tot-nhat-2026).
+6pm đã có trên [App Store](https://apps.apple.com/app/id6504689878). Xem thêm ở [at6pm.app/vi](https://at6pm.app/vi), và bảng so sánh rộng hơn trong bài [App quản lý chi tiêu tốt nhất 2026 cho iPhone](/vi/blog/app-quan-ly-chi-tieu-tot-nhat-2026).
 
 Nguồn (kiểm tra ngày 21/10/2026): [Money Lover trên App Store VN](https://apps.apple.com/vn/app/money-lover-s%E1%BB%95-thu-chi/id486312413?l=vi), [moneylover.me](https://moneylover.me/), [Sổ Thu Chi MISA trên App Store VN](https://apps.apple.com/vn/app/s%E1%BB%95-thu-chi-misa-qu%E1%BA%A3n-l%C3%BD-ti%E1%BB%81n/id865818973?l=vi), [moneykeeper.misa.vn](https://moneykeeper.misa.vn/).

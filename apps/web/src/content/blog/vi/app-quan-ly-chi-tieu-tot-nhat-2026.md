@@ -6,7 +6,7 @@ lang: vi
 pubDate: 2026-10-21
 tags: [app quản lý chi tiêu, so sánh app, iphone, sổ thu chi, money lover]
 related: [best-expense-tracker-apps-iphone-2026, money-lover-vs-misa-moneykeeper-vs-6pm, cach-ghi-chi-tieu-tu-dong-tren-iphone, luong-10-trieu-ha-noi-moi-ngay-tieu-bao-nhieu]
-cta: "Tải 6pm trên App Store từ 18:00 ngày 6/11, hoặc thử bản beta ngay hôm nay."
+cta: "Tải 6pm trên App Store. Chốt ngày và mọi cách ghi đều miễn phí."
 hero: [today, close-receipt]
 ---
 
@@ -37,7 +37,7 @@ Trước khi xem bảng, hỏi mình ba câu:
 | Ghi bằng giọng nói | Có | Có (Siri, Apple Watch) | Có | Không thấy trên trang |
 | Ngân sách chung | Hũ chung cho 2 người, miễn phí | Ví chung | Sổ chung cho gia đình | Ví chung |
 | Cách nhìn tiền | Một con số mỗi ngày | Ngân sách theo danh mục | Hạn mức theo danh mục | Ngân sách theo danh mục |
-| Đánh giá App Store VN | Chưa có (ra mắt 6/11) | 4,7 (khoảng 27 nghìn lượt) | 4,7 (khoảng 45 nghìn lượt) | 4,8 (khoảng 1,6 nghìn lượt) |
+| Đánh giá App Store VN | Chưa có (app mới) | 4,7 (khoảng 27 nghìn lượt) | 4,7 (khoảng 45 nghìn lượt) | 4,8 (khoảng 1,6 nghìn lượt) |
 
 "Không thấy trên trang" nghĩa là trang App Store và website của họ không nhắc tới, không có nghĩa chắc chắn là không có. Giá, đánh giá và tính năng được kiểm tra ngày 21/10/2026 và thay đổi thường xuyên, hãy kiểm tra lại trước khi mua.
 
@@ -60,7 +60,7 @@ Cách ghi là thứ 6pm đầu tư nhiều nhất:
 
 Con số mỗi ngày được tính từ lương, trừ hoá đơn, trừ phần cho **bạn của tương lai** và các hũ, rồi chia đều cho số ngày đến kỳ lương. Bạn hỏi được luôn: "Thứ Bảy tiêu 2tr được không?" và **Hỏi 6pm** trả lời từ chính số liệu của bạn.
 
-**Điểm yếu, nói thật:** chưa có Android, bản web hay máy tính. Không liên kết ngân hàng, nên khoản nào không quét, không chia sẻ, không qua email thì phải tự ghi. Ít báo cáo theo danh mục. Và 6pm chưa ra mắt: app lên App Store ngày 6/11/2026.
+**Điểm yếu, nói thật:** chưa có Android, bản web hay máy tính. Không liên kết ngân hàng, nên khoản nào không quét, không chia sẻ, không qua email thì phải tự ghi. Ít báo cáo theo danh mục. Và 6pm còn mới, chưa có đánh giá trên App Store.
 
 <!-- media: close-swipe-clip -->
 
@@ -117,7 +117,7 @@ Không. Đó là cùng một app của MISA; "Sổ Thu Chi MISA" là tên trên 
 
 ### 6pm có bản Android không?
 
-Chưa. 6pm sẽ ra mắt trên iPhone ngày 6/11/2026, Android sẽ đến sau.
+Chưa. 6pm có trên iPhone trước, Android sẽ đến sau.
 
 ### 6pm có an toàn không?
 
@@ -125,7 +125,7 @@ Chưa. 6pm sẽ ra mắt trên iPhone ngày 6/11/2026, Android sẽ đến sau.
 
 ## Thử 6pm
 
-6pm lên App Store lúc 18:00 thứ Sáu, 6/11/2026. Muốn dùng trước? Tham gia bản beta công khai trên TestFlight: [testflight.apple.com/join/a8UrvT5P](https://testflight.apple.com/join/a8UrvT5P). Xem thêm tại [at6pm.app/vi](https://at6pm.app/vi).
+6pm đã có trên [App Store](https://apps.apple.com/app/id6504689878). Xem thêm tại [at6pm.app/vi](https://at6pm.app/vi).
 
 Tiêu tới đâu, tự ghi tới đó.
 

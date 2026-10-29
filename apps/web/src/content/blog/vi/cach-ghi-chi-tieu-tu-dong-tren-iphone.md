@@ -118,6 +118,6 @@ Chúng tôi không lưu giao dịch của bạn; chúng nằm trên iPhone của
 
 ## Thử 6pm
 
-6pm lên App Store lúc 18:00 thứ Sáu, 6/11/2026. Muốn dùng trước? Tham gia bản thử nghiệm công khai trên TestFlight: [testflight.apple.com/join/a8UrvT5P](https://testflight.apple.com/join/a8UrvT5P). Xem thêm tại [at6pm.app/vi](https://at6pm.app/vi).
+6pm đã có trên [App Store](https://apps.apple.com/app/id6504689878). Xem thêm tại [at6pm.app/vi](https://at6pm.app/vi).
 
 Tiêu tới đâu, tự ghi tới đó.
