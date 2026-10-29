@@ -2,7 +2,7 @@
  * What the home page asks visitors to do: join the launch list until the app is out, then download
  * it. Flip to `store` on launch day and redeploy.
  */
-export const ctaMode: 'waitlist' | 'store' = 'waitlist';
+export const ctaMode: 'waitlist' | 'store' = 'store';
 
 /** 6pm's App Store page, without a storefront so each visitor lands in their own. */
 export const appStoreUrl = 'https://apps.apple.com/app/id6504689878';

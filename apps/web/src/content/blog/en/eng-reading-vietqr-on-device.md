@@ -6,7 +6,7 @@ lang: en
 pubDate: 2026-10-21
 tags: [engineering, vietqr, emvco, typescript, ios]
 related: [eng-one-camera-qr-and-receipts, eng-why-we-open-sourced-our-money-app, eng-widgets-controls-live-activities-expo]
-cta: "Read the parser on GitHub, or scan a VietQR with the public beta."
+cta: "Read the parser on GitHub, or scan a VietQR with 6pm."
 hero: [vietqr]
 ---
 
@@ -258,4 +258,4 @@ It is plain TypeScript with no React Native dependency, under Apache 2.0, in `pa
 
 ## Try it
 
-The code is at [github.com/at6pm/6pm](https://github.com/at6pm/6pm). The iPhone app is in public beta on TestFlight: [testflight.apple.com/join/a8UrvT5P](https://testflight.apple.com/join/a8UrvT5P), and arrives on the App Store on Friday 6 November 2026 at 18:00 ICT (6:00 a.m. Eastern). More at [at6pm.app](https://at6pm.app).
+The code is at [github.com/at6pm/6pm](https://github.com/at6pm/6pm). The iPhone app is on [the App Store](https://apps.apple.com/app/id6504689878). More at [at6pm.app](https://at6pm.app).

@@ -6,7 +6,7 @@ lang: en
 pubDate: 2026-10-21
 tags: [ynab alternative, budgeting apps, expense tracker, app comparison]
 related: [money-lover-vs-misa-moneykeeper-vs-6pm, best-expense-tracker-apps-iphone-2026, envelope-budgeting-vs-one-daily-number, why-expense-tracking-fails]
-cta: "Try 6pm free on iPhone from 6 Nov, or join the public beta now."
+cta: "Try 6pm free on iPhone."
 hero: [close-tomorrow]
 ---
 
@@ -92,7 +92,7 @@ Spends are caught for you all day: Apple Pay taps through a Shortcuts automation
 
 Before a big purchase, ask: "Can I afford $350 on Saturday?" **Ask 6pm** works out the answer on your phone from your own numbers and tells you what your days become.
 
-**Where 6pm is weaker than YNAB:** no bank import, so a card swipe you never tap, photograph or forward needs typing. No web, Mac or Android yet. No loan planner, net worth or investment view. And 6pm has not launched yet (it reaches the App Store on 6 November 2026); YNAB has a long track record.
+**Where 6pm is weaker than YNAB:** no bank import, so a card swipe you never tap, photograph or forward needs typing. No web, Mac or Android yet. No loan planner, net worth or investment view. And 6pm is new to the App Store; YNAB has a long track record.
 
 **What it costs:** the close, every capture method and Budget together (shared pots for two) are free. 6pm Max is $4.99 a month or $34.99 a year with a 7-day trial, for looks, unlimited Ask and pots, Travel mode, Year book and encrypted backup.
 
@@ -132,7 +132,7 @@ No. It never asks for a bank login and cannot move money. We never store your tr
 
 ## Try 6pm
 
-6pm arrives on the App Store on Friday 6 November 2026 at 18:00 Vietnam time (6:00 a.m. Eastern). Want it now? Join the public beta on TestFlight: [testflight.apple.com/join/a8UrvT5P](https://testflight.apple.com/join/a8UrvT5P). More at [at6pm.app](https://at6pm.app).
+6pm is on [the App Store](https://apps.apple.com/app/id6504689878). More at [at6pm.app](https://at6pm.app).
 
 Every spend, caught.
 

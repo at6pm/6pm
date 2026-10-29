@@ -112,6 +112,6 @@ Either person can leave. Leaving deletes the shared copy from the server, and ea
 
 ## Try 6pm
 
-6pm arrives on the App Store on Friday 6 November 2026 at 18:00 Vietnam time (6:00 a.m. Eastern), with the close and every way to capture free. Want it now? Join the public TestFlight beta: [testflight.apple.com/join/a8UrvT5P](https://testflight.apple.com/join/a8UrvT5P). More at [at6pm.app](https://at6pm.app).
+6pm is on [the App Store](https://apps.apple.com/app/id6504689878), with the close and every way to capture free. More at [at6pm.app](https://at6pm.app).
 
 Sources: [Monarch for couples](https://www.monarch.com/for-couples)

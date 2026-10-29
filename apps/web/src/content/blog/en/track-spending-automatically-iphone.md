@@ -133,6 +133,6 @@ iPhone first. Android comes later.
 
 ## Try 6pm
 
-6pm arrives on the App Store on Friday 6 November 2026 at 18:00 Vietnam time (6:00 a.m. Eastern). Want in now? Join the public TestFlight beta: [testflight.apple.com/join/a8UrvT5P](https://testflight.apple.com/join/a8UrvT5P). Everything else is at [at6pm.app](https://at6pm.app).
+6pm is on [the App Store](https://apps.apple.com/app/id6504689878). Everything else is at [at6pm.app](https://at6pm.app).
 
 Every spend, caught.

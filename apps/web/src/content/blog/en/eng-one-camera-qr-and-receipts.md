@@ -6,7 +6,7 @@ lang: en
 pubDate: 2026-10-21
 tags: [engineering, ios, apple vision, ocr, android]
 related: [eng-reading-vietqr-on-device, eng-native-feel-expo-reanimated, eng-why-we-open-sourced-our-money-app]
-cta: "Read the camera module on GitHub, or point the beta at a receipt."
+cta: "Read the camera module on GitHub, or point 6pm at a receipt."
 hero: [scan-receipt]
 ---
 
@@ -228,8 +228,8 @@ Scan needs QR codes and receipts in one live view, with its own outline and auto
 
 ### Is the Android version released?
 
-No. 6pm launches on iPhone. The Android camera module is in the repo and builds in CI.
+No. 6pm is on iPhone. The Android camera module is in the repo and builds in CI.
 
 ## Try it
 
-The code is at [github.com/at6pm/6pm](https://github.com/at6pm/6pm): `apps/mobile/modules/scan-camera` and `packages/domain/src/capture`. The iPhone app is in public beta on TestFlight: [testflight.apple.com/join/a8UrvT5P](https://testflight.apple.com/join/a8UrvT5P), and arrives on the App Store on Friday 6 November 2026 at 18:00 ICT (6:00 a.m. Eastern). More at [at6pm.app](https://at6pm.app).
+The code is at [github.com/at6pm/6pm](https://github.com/at6pm/6pm): `apps/mobile/modules/scan-camera` and `packages/domain/src/capture`. The iPhone app is on [the App Store](https://apps.apple.com/app/id6504689878). More at [at6pm.app](https://at6pm.app).

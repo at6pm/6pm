@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 
 import { blogPath, isEngineering, postsIn, type Post } from '../data/blog';
-import { maxPrices, repoUrl, testFlightUrl } from '../data/site/config';
+import { appStoreUrl, maxPrices, repoUrl } from '../data/site/config';
 import { absolute } from '../data/structured-data';
 
 const line = (post: Post) =>
@@ -20,8 +20,7 @@ export const GET: APIRoute = async () => {
     '- 6pm never asks for a bank login and never moves money; it only counts. Transactions live on the phone, encrypted.',
     '- Capture, the daily close and privacy are free. 6pm Max (US $' +
       `${maxPrices.en.month}/month or $${maxPrices.en.year}/year; Vietnam ${maxPrices.vi.month.toLocaleString('vi-VN')}₫/month or ${maxPrices.vi.year.toLocaleString('vi-VN')}₫/year, 7 days free) adds every look, unlimited Ask and pots, Travel mode, and encrypted backup and export.`,
-    '- On the App Store from Friday 6 November 2026, 18:00 Vietnam time. Public TestFlight beta: ' +
-      testFlightUrl,
+    '- On the App Store: ' + appStoreUrl,
     '',
     '## Guides (English)',
     '',

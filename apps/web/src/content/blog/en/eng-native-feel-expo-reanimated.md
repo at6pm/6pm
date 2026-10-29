@@ -6,7 +6,7 @@ lang: en
 pubDate: 2026-10-21
 tags: [engineering, expo, react native, reanimated, gestures]
 related: [eng-sky-shaders-react-native-skia, eng-widgets-controls-live-activities-expo, eng-why-we-open-sourced-our-money-app]
-cta: "Read the motion code on GitHub, or feel it in the public beta."
+cta: "Read the motion code on GitHub, or feel it in the app."
 hero: [close-caught, close-tomorrow]
 ---
 
@@ -280,4 +280,4 @@ Project the release velocity with UIScrollView's deceleration rate, add it to th
 
 ## Try it
 
-All of this is open source under Apache 2.0: [github.com/at6pm/6pm](https://github.com/at6pm/6pm) (see `apps/mobile/src/ui/motion`, `apps/mobile/src/features/close` and `packages/theme/src/motion.ts`). Swipe the close yourself in the public beta on TestFlight: [testflight.apple.com/join/a8UrvT5P](https://testflight.apple.com/join/a8UrvT5P). 6pm arrives on the App Store on Friday 6 November 2026 at 18:00 ICT (6:00 a.m. Eastern). More at [at6pm.app](https://at6pm.app).
+All of this is open source under Apache 2.0: [github.com/at6pm/6pm](https://github.com/at6pm/6pm) (see `apps/mobile/src/ui/motion`, `apps/mobile/src/features/close` and `packages/theme/src/motion.ts`). Swipe the close yourself: 6pm is on [the App Store](https://apps.apple.com/app/id6504689878). More at [at6pm.app](https://at6pm.app).

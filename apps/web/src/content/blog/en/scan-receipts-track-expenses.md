@@ -108,6 +108,6 @@ Yes. Scan, every other capture method and the daily close are free forever.
 
 ## Try 6pm
 
-6pm arrives on the App Store on Friday 6 November 2026 at 18:00 Vietnam time (6:00 a.m. Eastern). Got a receipt in your wallet right now? Join the public TestFlight beta and scan it: [testflight.apple.com/join/a8UrvT5P](https://testflight.apple.com/join/a8UrvT5P). More at [at6pm.app](https://at6pm.app).
+Got a receipt in your wallet right now? Get 6pm on [the App Store](https://apps.apple.com/app/id6504689878) and scan it. More at [at6pm.app](https://at6pm.app).
 
 Every spend, caught.

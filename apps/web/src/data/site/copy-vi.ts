@@ -270,7 +270,7 @@ export const siteCopyVi: SiteCopy = {
         'Quên chốt ngày thì sao?',
         'Không sao. Ngày bị lỡ sẽ chờ bạn, và những gì đã tiêu vẫn được tính.',
       ],
-      ['Có bản Android không?', 'iPhone trước, từ 6 tháng 11. Android sẽ đến sau.'],
+      ['Có bản Android không?', 'iPhone trước. Android sẽ đến sau.'],
     ],
   },
   final: {
