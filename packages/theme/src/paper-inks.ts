@@ -155,6 +155,9 @@ export const shareCardInk = {
   scrim: 'rgba(10,6,18,.28)',
 } as const;
 
+/** The dim behind a keypad sheet laid over a screen, the same in every look. */
+export const sheetScrim = 'rgba(10,6,18,.45)';
+
 /**
  * Voice's fixed inks, the same in every look: the status dot once a spend is heard, and the glow
  * under the microphone while it listens.

@@ -20,8 +20,6 @@ import { PressScale } from '../ui/primitives/press-scale';
 import { useTheme } from '../ui/theme/theme';
 import { body } from '../ui/type/fonts';
 
-const DEFAULT_SAME_DAY = 25;
-
 /**
  * Money in and payday, as onboarding asked for them: a raise or a new payday is entered here. The
  * daily number follows at once; the cycle that is running moves to its new start. Money in is what
@@ -41,17 +39,12 @@ export default function MonthSheet() {
     Number.isSafeInteger(offered) && offered > 0 ? offered : (plan?.income ?? 0),
   );
   const [payday, setPayday] = useState<Payday>(plan?.payday ?? { kind: 'lastDay' });
-  const [sameDay, setSameDay] = useState(
-    plan?.payday.kind === 'sameDay' ? plan.payday.day : DEFAULT_SAME_DAY,
-  );
   const [working, setWorking] = useState(false);
   const busy = useRef(false);
   const colours: PickerInk = {
     ink: palette.ink,
     inkSoft: palette.inkSoft,
     chipBg: palette.chipBg,
-    segOn: palette.cell,
-    segShadow: '0 1px 3px rgba(0,0,0,.12)',
   };
 
   const save = async () => {
@@ -92,15 +85,7 @@ export default function MonthSheet() {
             <Text style={{ ...body(15, 650), color: palette.ink }}>
               {t('onboarding.payday.title')}
             </Text>
-            <PaydayPicker
-              payday={payday}
-              sameDay={sameDay}
-              onPayday={(next) => {
-                if (next.kind === 'sameDay') setSameDay(next.day);
-                setPayday(next);
-              }}
-              colours={colours}
-            />
+            <PaydayPicker payday={payday} onPayday={setPayday} colours={colours} />
           </View>
         </PotCard>
         <PressScale

@@ -15,7 +15,7 @@ import {
   type DeckItem,
 } from './bill-deck';
 import { DayOfMonthWheel } from './money-in-controls';
-import type { OnboardingPalette } from './onboarding-palette';
+import { keypadInksOf, type OnboardingPalette } from './onboarding-palette';
 import { WheelBand } from './step-parts';
 
 /** Two digits at the wheel's size: narrow, so three wheels fit a phone's card in one row. */
@@ -131,7 +131,13 @@ export function BillAmountFace({
           gap: item.option?.ends ? 4 : 8,
         }}
       >
-        <AmountWheels value={value} ink={pal.ink} band={pal.chipBg} onValue={setValue} />
+        <AmountWheels
+          value={value}
+          ink={pal.ink}
+          band={pal.chipBg}
+          onValue={setValue}
+          keypadInks={keypadInksOf(pal)}
+        />
         <Labelled label={t('onboarding.bills.dueDay')} ink={pal.inkSoft}>
           <DayOfMonthWheel
             day={dueDay}

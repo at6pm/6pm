@@ -10,6 +10,8 @@ export const curves = {
   enter: [0.2, 0.9, 0.2, 1],
   /** Wheel pickers snapping to a row. */
   snap: [0.2, 0.9, 0.25, 1],
+  /** A gesture guide's ghost finger and the wheels it rolls. */
+  guide: [0.32, 0.72, 0, 1],
 } as const satisfies Record<string, readonly [number, number, number, number]>;
 
 export const durations = {
@@ -23,6 +25,8 @@ export const durations = {
   odometerBase: 1000,
   odometerStep: 80,
   stamp: 520,
+  /** One loop of a gesture guide. */
+  guideLoop: 6000,
 } as const;
 
 /** Reanimated `withSpring` configs. */

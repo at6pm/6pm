@@ -124,6 +124,15 @@ export function incomeOf(
   return Math.max(millionOf(c), Math.min(incomeMax(c), amount));
 }
 
+/**
+ * An amount typed for money in, as the wheels can hold it: to the nearest step of the last wheel
+ * (100.000₫, $100), within what the wheels set.
+ */
+export function incomeFromTyped(amount: Money, c: Currency = VND): Money {
+  const unit = hundredOf(c);
+  return Math.max(millionOf(c), Math.min(incomeMax(c), Math.round(amount / unit) * unit));
+}
+
 export function billDigits(
   amount: Money,
   c: Currency = VND,
@@ -137,6 +146,32 @@ export function billDigits(
 
 export function billOf(millions: number, hundreds: number, tens: number, c: Currency = VND): Money {
   return millions * millionOf(c) + hundreds * hundredOf(c) + tens * tenOf(c);
+}
+
+/** A bill typed on the keypad, to the nearest step of its last wheel (10.000₫, $10), up to 99.990.000₫. */
+export function billFromTyped(amount: Money, c: Currency = VND): Money {
+  const unit = tenOf(c);
+  const most = billOf(99, 9, 9, c);
+  return Math.max(0, Math.min(most, Math.round(amount / unit) * unit));
+}
+
+/** The payday strip: the days 1 to 31, then the last day, then "it varies". */
+export const PAYDAY_CELLS = 33;
+const LAST_DAY_CELL = 31;
+const VARIES_CELL = 32;
+
+/** The strip cell a payday sits on. */
+export function paydayCell(payday: Payday): number {
+  if (payday.kind === 'lastDay') return LAST_DAY_CELL;
+  if (payday.kind === 'varies') return VARIES_CELL;
+  return Math.min(31, Math.max(1, payday.day)) - 1;
+}
+
+/** The payday a strip cell stands for. */
+export function paydayOfCell(cell: number): Payday {
+  if (cell >= VARIES_CELL) return { kind: 'varies' };
+  if (cell === LAST_DAY_CELL) return { kind: 'lastDay' };
+  return { kind: 'sameDay', day: Math.max(0, cell) + 1 };
 }
 
 /** Future you each payday: the percentage of money in, to the nearest 100.000₫ ($100). */

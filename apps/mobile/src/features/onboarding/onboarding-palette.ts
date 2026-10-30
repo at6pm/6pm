@@ -86,9 +86,16 @@ export function onboardingPalette(step: number) {
     btnFg: dark ? '#26182f' : '#fbf4ec',
     cell: dark ? mixHex(sky[2], '#2b2138', 0.8) : '#fffdf9',
     chipBg: dark ? 'rgba(255,255,255,.09)' : 'rgba(70,45,30,.06)',
-    /** The payday segment that is on. */
+    /** The catch rail's segment that is on. */
     segOn: dark ? 'rgba(255,255,255,.16)' : '#ffffff',
     segShadow: '0 1px 3px rgba(0,0,0,.12)',
+    /** A gesture hint pill at rest; lit, it takes the button's inks. */
+    hintBg: dark ? 'rgba(255,255,255,.08)' : 'rgba(27,30,46,.06)',
+    hintInk: dark ? 'rgba(251,244,236,.6)' : 'rgba(27,30,46,.55)',
+    /** The gesture guide's ghost finger. */
+    finger: 'rgba(255,255,255,.62)',
+    fingerRing: 'rgba(27,30,46,.28)',
+    fingerShadow: '0 6px 18px rgba(27,30,46,.18)',
     cardShadow: dark
       ? 'inset 0 1px 0 rgba(255,255,255,.05), 0 10px 26px rgba(4,0,10,.28)'
       : '0 1px 2px rgba(70,45,30,.06), 0 10px 26px rgba(70,45,30,.08)',
@@ -115,6 +122,17 @@ export function onboardingPalette(step: number) {
 }
 
 export type OnboardingPalette = ReturnType<typeof onboardingPalette>;
+
+/** The money keypad's sheet in onboarding's inks: the card's colour, its ink and chips. */
+export function keypadInksOf(pal: OnboardingPalette) {
+  return {
+    sheet: pal.cell,
+    ink: pal.ink,
+    key: pal.chipBg,
+    button: pal.btnBg,
+    buttonInk: pal.btnFg,
+  };
+}
 
 /** The tile behind an icon: two tints of a hue at 155° with the glyph in its deep tint. */
 export function tileOf(hue: number): { background: string; glyph: string } {
