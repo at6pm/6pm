@@ -23,45 +23,55 @@ import { StepFutureYou } from './step-future-you';
 import { StepMoneyIn } from './step-money-in';
 import { ordinalDay } from './step-parts';
 import { StepPayWith } from './step-pay-with';
+import { StepPrivacy } from './step-privacy';
 import { StepWelcome } from './step-welcome';
 import {
   AI_STEP,
   BILLS_STEP,
+  CATCH_STEP,
   CLOSE_STEP,
+  FUTURE_STEP,
   LAST_STEP,
+  MONEY_IN_STEP,
+  PAY_WITH_STEP,
+  PRIVACY_STEP,
   useOnboarding,
+  WELCOME_STEP,
   type Onboarding,
 } from './use-onboarding';
 
-/** The companion's line for the step, from what has been answered so far. */
+/**
+ * The companion's line for the step, from what has been answered so far. The welcome and the
+ * privacy promise have none: the companion is already the picture on both.
+ */
 function stepLine(o: Onboarding, i18n: I18n, mode: AiMode): string | null {
   const { t } = i18n;
   switch (o.step) {
-    case 1:
+    case MONEY_IN_STEP:
       return o.payday.kind === 'varies'
         ? t('onboarding.line.paydayVaries')
         : o.payday.kind === 'lastDay'
           ? t('onboarding.line.paydayLast')
           : t('onboarding.line.paydayDay', { day: ordinalDay(i18n, o.payday.day) });
-    case 2:
+    case BILLS_STEP:
       return o.nav.index >= o.deck.length
         ? t('onboarding.line.billsDone')
         : o.bills.length
           ? t('onboarding.line.billsSoFar', { count: o.bills.length })
           : t('onboarding.line.billsStart');
-    case 3:
+    case FUTURE_STEP:
       return o.percent === 0
         ? t('onboarding.line.futureNone')
         : o.percent >= 20
           ? t('onboarding.line.futureBig')
           : t('onboarding.line.future');
-    case 4:
+    case PAY_WITH_STEP:
       return o.wallets.length === 0
         ? t('onboarding.line.walletsNone')
         : t('onboarding.line.wallets', { count: o.wallets.length });
     case AI_STEP:
       return t(mode === 'device' ? 'onboarding.line.aiDevice' : 'onboarding.line.aiServer');
-    case 6: {
+    case CATCH_STEP: {
       const ways = catchWaysFor(o.currency, mode, nativeReach);
       return t('onboarding.line.catch', { count: readyWays(ways), total: ways.length });
     }
@@ -73,8 +83,8 @@ function stepLine(o: Onboarding, i18n: I18n, mode: AiMode): string | null {
 }
 
 function stepMood(o: Onboarding): CompanionMood {
-  if (o.step === 1) return 'think';
-  if (o.step === 3 && o.percent >= 20) return 'happy';
+  if (o.step === MONEY_IN_STEP) return 'think';
+  if (o.step === FUTURE_STEP && o.percent >= 20) return 'happy';
   return o.step === LAST_STEP ? 'happy' : 'calm';
 }
 
@@ -95,8 +105,9 @@ function ctaFor(o: Onboarding, { t }: I18n) {
 }
 
 /**
- * Onboarding: eight steps from morning to dusk that set up the month (money in, payday, bills,
- * Future you, banks, close time) and end on the first real number.
+ * Onboarding: from morning to dusk, the welcome and the privacy promise, then the steps that set up
+ * the month (money in, payday, bills, Future you, banks, where AI runs, catching, close time),
+ * ending on the first real number.
  */
 export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number }) {
   const o = useOnboarding(startStep);
@@ -111,9 +122,11 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
 
   const body = (() => {
     switch (o.step) {
-      case 0:
-        return <StepWelcome pal={pal} onStart={() => o.go(1)} />;
-      case 1:
+      case WELCOME_STEP:
+        return <StepWelcome pal={pal} onStart={() => o.go(PRIVACY_STEP)} />;
+      case PRIVACY_STEP:
+        return <StepPrivacy pal={pal} onNext={o.next} />;
+      case MONEY_IN_STEP:
         return (
           <StepMoneyIn
             pal={pal}
@@ -137,7 +150,7 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
             onGo={o.billGo}
           />
         );
-      case 3:
+      case FUTURE_STEP:
         return (
           <StepFutureYou
             pal={pal}
@@ -147,11 +160,11 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
             onPercent={o.setPercent}
           />
         );
-      case 4:
+      case PAY_WITH_STEP:
         return <StepPayWith pal={pal} wallets={o.wallets} onToggle={o.toggleWallet} />;
       case AI_STEP:
         return <StepAi pal={pal} />;
-      case 6:
+      case CATCH_STEP:
         return (
           <StepCatching
             pal={pal}
@@ -181,7 +194,9 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
   })();
 
   // The welcome rises and the reveal fades in on their own; every other step slides in.
-  const ownEntrance = o.step === 0 || o.step === LAST_STEP;
+  const ownEntrance = o.step === WELCOME_STEP || o.step === LAST_STEP;
+  // The welcome and the privacy promise carry their own button.
+  const ownButton = o.step === WELCOME_STEP || o.step === PRIVACY_STEP;
 
   return (
     <View style={{ flex: 1 }}>
@@ -198,7 +213,7 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
         <OnboardingHeader
           step={o.step}
           pal={pal}
-          showSkip={o.step >= BILLS_STEP && o.step <= 5}
+          showSkip={o.step >= BILLS_STEP && o.step <= AI_STEP}
           onBack={o.back}
           onSkip={o.skip}
         />
@@ -212,7 +227,7 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
         >
           {body}
         </Animated.View>
-        {o.step >= 1 ? (
+        {ownButton ? null : (
           <OnboardingCta
             label={cta.label}
             icon={cta.icon}
@@ -220,7 +235,7 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
             pal={pal}
             onPress={o.next}
           />
-        ) : null}
+        )}
       </View>
       {o.leaving ? <LeavingOverlay step={o.step} line={o.first.line} pal={pal} /> : null}
     </View>

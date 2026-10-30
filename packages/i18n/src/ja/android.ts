@@ -77,4 +77,7 @@ export const jaAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'startup.failedSub':
     'データは失われていません。もう一度試して、それでも続くならスマホを再起動してください。',
   'voice.unavailable': '音声入力には、このスマホで{language}の音声入力が使える必要があります',
+
+  'onboarding.privacy.phone': 'このスマホの中だけ',
+  'onboarding.privacy.backupSub': 'このスマホから出ない鍵でロック',
 };

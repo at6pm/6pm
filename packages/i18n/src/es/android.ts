@@ -83,4 +83,7 @@ export const esAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'startup.failedSub':
     'No se ha perdido nada. Inténtalo de nuevo y, si sigue pasando, reinicia el teléfono.',
   'voice.unavailable': 'La voz necesita el dictado en {language} en este teléfono',
+
+  'onboarding.privacy.phone': 'Solo en este teléfono',
+  'onboarding.privacy.backupSub': 'Cerradas con una clave que nunca sale de este teléfono',
 };

@@ -15,6 +15,17 @@ export const zhHansOnboarding: { readonly [Key in keyof typeof enOnboarding]: En
   'onboarding.welcome.wake': '醒来只看一个数字',
   'onboarding.welcome.start': '开始吧',
 
+  'onboarding.privacy.title': '你的钱，只留在你的手机上。',
+  'onboarding.privacy.sub': '6pm 不保留你任何支出的副本。没有广告，什么都不卖。',
+  'onboarding.privacy.phone': '只在这台 iPhone 上',
+  'onboarding.privacy.phoneSub': '不用建账户，也不用注册',
+  'onboarding.privacy.backup': '只有你能打开的备份',
+  'onboarding.privacy.backupSub': '用你 iCloud 钥匙串里的密钥锁住',
+  'onboarding.privacy.source': '开源',
+  'onboarding.privacy.sourceSub': '在 GitHub 上看每一行代码',
+  'onboarding.privacy.foot': '转发的小票邮件和“问问 6pm”的问题会经过我们的服务器读取，读完就删除。',
+  'onboarding.privacy.cta': '知道了',
+
   'onboarding.income.title': '进账',
   'onboarding.income.sub': '每月税后大约到手多少。转动来设置。',
   'onboarding.income.daily': '每天约 {amount}，未扣账单',

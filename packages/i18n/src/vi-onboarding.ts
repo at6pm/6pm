@@ -15,6 +15,19 @@ export const viOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.welcome.wake': 'Sáng ra chỉ cần nhìn một con số',
   'onboarding.welcome.start': 'Bắt đầu thôi',
 
+  'onboarding.privacy.title': 'Tiền của bạn, chỉ trên máy bạn.',
+  'onboarding.privacy.sub':
+    '6pm không giữ bản sao chi tiêu nào. Không quảng cáo, không bán dữ liệu.',
+  'onboarding.privacy.phone': 'Chỉ trên iPhone này',
+  'onboarding.privacy.phoneSub': 'Không tạo tài khoản, không đăng ký gì cả',
+  'onboarding.privacy.backup': 'Sao lưu chỉ bạn mở được',
+  'onboarding.privacy.backupSub': 'Khoá bằng chìa trong iCloud Keychain của bạn',
+  'onboarding.privacy.source': 'Mã nguồn mở',
+  'onboarding.privacy.sourceSub': 'Xem từng dòng code trên GitHub',
+  'onboarding.privacy.foot':
+    'Email hoá đơn chuyển tiếp và câu hỏi cho Ask chỉ đi qua máy chủ để đọc, rồi bị xoá.',
+  'onboarding.privacy.cta': 'Đã hiểu',
+
   'onboarding.income.title': 'Tiền vào',
   'onboarding.income.sub': 'Mỗi tháng nhận về khoảng bao nhiêu, sau thuế. Xoay để chỉnh.',
   'onboarding.income.daily': 'Khoảng {amount} mỗi ngày, chưa trừ hoá đơn',

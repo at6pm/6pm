@@ -24,9 +24,15 @@ const START = { payday: 25, percent: 12 } as const;
 /** "Open 6pm" holds the closing sky this long before Home takes over. */
 const LEAVE_MS = 1100;
 export const LAST_STEP = STEP_COUNT - 1;
-export const BILLS_STEP = 2;
-export const AI_STEP = 5;
-export const CLOSE_STEP = 7;
+export const WELCOME_STEP = 0;
+export const PRIVACY_STEP = 1;
+export const MONEY_IN_STEP = 2;
+export const BILLS_STEP = 3;
+export const FUTURE_STEP = 4;
+export const PAY_WITH_STEP = 5;
+export const AI_STEP = 6;
+export const CATCH_STEP = 7;
+export const CLOSE_STEP = 8;
 
 /** Onboarding's answers and moves, and what follows from them. */
 export function useOnboarding(startStep = 0) {

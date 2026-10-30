@@ -80,4 +80,7 @@ export const deAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'startup.failedSub':
     'Nichts ist verloren. Versuch es noch mal, und wenn es wieder passiert, starte dein Handy neu.',
   'voice.unavailable': 'Spracheingabe braucht {language} als Diktiersprache auf diesem Handy',
+
+  'onboarding.privacy.phone': 'Nur auf diesem Handy',
+  'onboarding.privacy.backupSub': 'Verschlossen mit einem Schlüssel, der dieses Handy nie verlässt',
 };

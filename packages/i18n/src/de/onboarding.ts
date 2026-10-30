@@ -14,6 +14,19 @@ export const deOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.welcome.wake': 'Aufwachen mit einer einzigen Zahl',
   'onboarding.welcome.start': 'Los geht’s',
 
+  'onboarding.privacy.title': 'Dein Geld bleibt auf deinem Handy.',
+  'onboarding.privacy.sub':
+    '6pm behält keine Kopie deiner Ausgaben. Keine Werbung, nichts wird verkauft.',
+  'onboarding.privacy.phone': 'Nur auf diesem iPhone',
+  'onboarding.privacy.phoneSub': 'Kein Konto anlegen, nirgends anmelden',
+  'onboarding.privacy.backup': 'Backups, die nur du öffnen kannst',
+  'onboarding.privacy.backupSub': 'Verschlossen mit einem Schlüssel in deinem iCloud-Schlüsselbund',
+  'onboarding.privacy.source': 'Quelloffen',
+  'onboarding.privacy.sourceSub': 'Lies jede Zeile auf GitHub',
+  'onboarding.privacy.foot':
+    'Weitergeleitete Beleg-E-Mails und Fragen an „Frag 6pm“ laufen über unseren Server, damit sie gelesen werden, und werden danach gelöscht.',
+  'onboarding.privacy.cta': 'Verstanden',
+
   'onboarding.income.title': 'Einnahmen',
   'onboarding.income.sub':
     'Ungefähr das, was jeden Monat netto reinkommt. Dreh, um es einzustellen.',

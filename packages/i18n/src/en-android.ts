@@ -78,4 +78,8 @@ export const enAndroid = {
 
   'startup.failedSub': 'Nothing is lost. Try again, and if it keeps happening, restart your phone.',
   'voice.unavailable': 'Voice needs {language} dictation on this phone',
+
+  // The privacy promise: this phone, and a backup key that stays on it.
+  'onboarding.privacy.phone': 'Only on this phone',
+  'onboarding.privacy.backupSub': 'Locked with a key that never leaves this phone',
 } as const satisfies Variants;

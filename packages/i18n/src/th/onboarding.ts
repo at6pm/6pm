@@ -15,6 +15,18 @@ export const thOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.welcome.wake': 'ตื่นมาเจอตัวเลขเดียว',
   'onboarding.welcome.start': 'เริ่มเลย',
 
+  'onboarding.privacy.title': 'เงินของคุณอยู่บนโทรศัพท์ของคุณเท่านั้น',
+  'onboarding.privacy.sub': '6pm ไม่เก็บสำเนารายจ่ายของคุณไว้เลย ไม่มีโฆษณา ไม่ขายอะไรทั้งนั้น',
+  'onboarding.privacy.phone': 'บน iPhone เครื่องนี้เท่านั้น',
+  'onboarding.privacy.phoneSub': 'ไม่ต้องสร้างบัญชี ไม่ต้องสมัครอะไร',
+  'onboarding.privacy.backup': 'ข้อมูลสำรองที่คุณเปิดได้คนเดียว',
+  'onboarding.privacy.backupSub': 'ล็อกด้วยกุญแจในพวงกุญแจ iCloud ของคุณ',
+  'onboarding.privacy.source': 'โอเพนซอร์ส',
+  'onboarding.privacy.sourceSub': 'อ่านโค้ดทุกบรรทัดได้บน GitHub',
+  'onboarding.privacy.foot':
+    'อีเมลใบเสร็จที่ส่งต่อมาและคำถามที่ถาม 6pm จะผ่านเซิร์ฟเวอร์ของเราเพื่ออ่าน แล้วก็ถูกลบทิ้ง',
+  'onboarding.privacy.cta': 'เข้าใจแล้ว',
+
   'onboarding.income.title': 'เงินเข้า',
   'onboarding.income.sub': 'แต่ละเดือนได้รับประมาณเท่าไหร่ หลังหักภาษี หมุนเพื่อตั้งค่า',
   'onboarding.income.daily': 'ราววันละ {amount} ก่อนหักบิล',
