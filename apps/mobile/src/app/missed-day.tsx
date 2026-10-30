@@ -28,6 +28,7 @@ import { haptics } from '../ui/haptics';
 import { PressScale } from '../ui/primitives/press-scale';
 import { useTheme } from '../ui/theme/theme';
 import { body, display, leading, mono, tabular } from '../ui/type/fonts';
+import { WordFitText } from '../ui/type/word-fit-text';
 
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -112,9 +113,11 @@ export default function MissedDay() {
               <Text style={{ ...mono(11, 400, 0.14), color: palette.inkSoft }}>
                 {day ? t('diary.missed.kicker', { date: dates.stamp(day) }) : ''}
               </Text>
-              <Text style={{ ...leading(display(27, 500, -0.01), 29.2), color: palette.ink }}>
+              <WordFitText
+                style={{ ...leading(display(27, 500, -0.01), 29.2), color: palette.ink }}
+              >
                 {t('diary.missed.title')}
-              </Text>
+              </WordFitText>
             </View>
           </View>
           <Text style={body15}>

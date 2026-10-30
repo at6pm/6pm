@@ -19,14 +19,16 @@ const STAGE = 4096;
  * the space it has, as a long amount does in a hero number. The scale is a transform, so the
  * glyphs never re-lay out; it settles with the entrance curve when the child grows or shrinks,
  * and is set at once on the first layout so nothing ever draws past the edge. Centred, it sits in
- * the middle of its room at any scale, as the Close's and onboarding's big numbers do.
+ * the middle of its room at any scale, as the Close's and onboarding's big numbers do. A child that
+ * grows taller than `height` (a larger text size) gets its own height, so it never runs into what
+ * sits below.
  */
 export function FitWidth({
   height,
   align = 'left',
   children,
 }: {
-  /** The child's natural height, in points: the box shrinks with the scale. */
+  /** The child's natural height at the design's text size, in points: the box shrinks with the scale. */
   readonly height: number;
   readonly align?: 'left' | 'center';
   readonly children: ReactNode;
@@ -35,6 +37,7 @@ export function FitWidth({
   // The room left beside the scaled child, halved when centred; read on the UI thread.
   const roomWidth = useSharedValue(0);
   const naturalWidth = useSharedValue(0);
+  const naturalHeight = useSharedValue(0);
   const room = useRef(0);
   const natural = useRef(0);
   const placed = useRef(false);
@@ -57,10 +60,13 @@ export function FitWidth({
   const onNatural = (e: LayoutChangeEvent) => {
     natural.current = e.nativeEvent.layout.width;
     naturalWidth.value = natural.current;
+    naturalHeight.value = e.nativeEvent.layout.height;
     refit();
   };
 
-  const box = useAnimatedStyle(() => ({ height: height * scale.value }));
+  const box = useAnimatedStyle(() => ({
+    height: Math.max(height, naturalHeight.value) * scale.value,
+  }));
   const centred = align === 'center';
   const content = useAnimatedStyle(() => ({
     transform: [

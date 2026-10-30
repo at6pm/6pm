@@ -13,6 +13,7 @@ import { Companion } from '../../ui/companion/companion';
 import { haptics } from '../../ui/haptics';
 import { FitWidth } from '../../ui/layout/fit-width';
 import { Odometer } from '../../ui/odometer';
+import { FitText } from '../../ui/type/fit-text';
 import { body, display, leading } from '../../ui/type/fonts';
 import type { FirstDay } from './onboarding-maths';
 import {
@@ -281,7 +282,9 @@ export function LeavingOverlay({
         {t('onboarding.leave.kicker')}
       </Text>
       <Animated.View entering={riseEntering(500, 100, reduceMotion)}>
-        <Text style={{ ...display(56, 500, -0.03), color: pal.light }}>{money.short(line)}</Text>
+        <FitText style={{ ...display(56, 500, -0.03), color: pal.light }}>
+          {money.short(line)}
+        </FitText>
       </Animated.View>
     </Animated.View>
   );

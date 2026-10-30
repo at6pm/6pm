@@ -4,6 +4,7 @@ import Animated, { Easing, useAnimatedStyle, withTiming } from 'react-native-rea
 
 import { Symbol } from '../../../ui/icons/symbol';
 import { PressScale } from '../../../ui/primitives/press-scale';
+import { FitText } from '../../../ui/type/fit-text';
 import { body, display, leading, mono } from '../../../ui/type/fonts';
 import { zineInk } from '../diary-colours';
 
@@ -17,6 +18,9 @@ export const zineCardTilt = {
   shadow: { y: 24, blur: 44, color: 'rgba(40,10,30,.35)' },
 } as const;
 const { shadow } = zineCardTilt;
+/** The card is a picture of a fixed size, shared as an image: its type never grows past the
+ * design's with the reader's text size, or it would run out of the card. */
+const ON_CARD = { maxFontSizeMultiplier: 1 } as const;
 
 /** The design's switch: a white knob that springs across a green track. */
 function AmountsSwitch({ on, onToggle }: { readonly on: boolean; readonly onToggle: () => void }) {
@@ -101,17 +105,26 @@ export function ZineShare(props: {
             gap: 8,
           }}
         >
-          <Text style={{ ...mono(9, 400, 0.16), color: zineInk.light, opacity: 0.6 }}>
+          <Text {...ON_CARD} style={{ ...mono(9, 400, 0.16), color: zineInk.light, opacity: 0.6 }}>
             {props.brand}
           </Text>
-          <Text style={{ ...leading(display(52, 500, -0.04), 47.8), color: props.tint }}>
+          <FitText
+            {...ON_CARD}
+            style={{ ...leading(display(52, 500, -0.04), 47.8), color: props.tint }}
+          >
             {props.month}
-          </Text>
+          </FitText>
           <View style={{ flex: 1 }} />
-          <Text style={{ ...leading(display(54, 500, -0.03), 54), color: zineInk.light }}>
+          <FitText
+            {...ON_CARD}
+            style={{ ...leading(display(54, 500, -0.03), 54), color: zineInk.light }}
+          >
             {props.closed}
-          </Text>
-          <Text style={{ ...body(12.5), marginTop: -2, color: zineInk.light, opacity: 0.7 }}>
+          </FitText>
+          <Text
+            {...ON_CARD}
+            style={{ ...body(12.5), marginTop: -2, color: zineInk.light, opacity: 0.7 }}
+          >
             {props.daysLabel}
           </Text>
           <View
@@ -136,10 +149,11 @@ export function ZineShare(props: {
               />
             ))}
           </View>
-          <Text style={{ ...body(13.5, 650), lineHeight: 17.5, color: zineInk.light }}>
+          <Text {...ON_CARD} style={{ ...body(13.5, 650), lineHeight: 17.5, color: zineInk.light }}>
             {props.stat}
           </Text>
           <Text
+            {...ON_CARD}
             style={{ ...mono(8.5, 400, 0.16), paddingTop: 4, color: zineInk.light, opacity: 0.45 }}
           >
             {props.footer}

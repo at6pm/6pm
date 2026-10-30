@@ -1,6 +1,6 @@
 import { randomUUID } from 'expo-crypto';
 
-import { addDays, parts, payCycleOn, type LocalDate } from '@6pm/domain';
+import { addDays, currencyOf, parts, payCycleOn, VND, type LocalDate } from '@6pm/domain';
 
 import type { MoneyStore } from '../../data/money-store';
 import { seedDesignFriday } from './design-friday-seed';
@@ -19,10 +19,21 @@ const NOTES = ['Bún chả with Linh', 'Rainy, stayed in', 'Birthday dinner', 'N
 /**
  * Developer tool: the prototype's Friday, plus every earlier day back to 1 January last year
  * closed (one in nine missed), with two or three spends each, so the shelf has full years and the
- * year book has months to bind. Replaces everything in the money tables.
+ * year book has months to bind. Replaces everything in the money tables. `scale` multiplies every
+ * earlier day's spends (long amounts for checking that they fit), and `code` sets the currency,
+ * every amount worth about the same in it.
  */
-export async function seedDesignYear(store: MoneyStore, today: LocalDate): Promise<void> {
-  await seedDesignFriday(store, today);
+export async function seedDesignYear(
+  store: MoneyStore,
+  today: LocalDate,
+  { code = 'VND', scale = 1 }: { readonly code?: string; readonly scale?: number } = {},
+): Promise<void> {
+  await seedDesignFriday(store, today, code);
+  const currency = currencyOf(code);
+  const worth = (dong: number) =>
+    currency.code === 'VND'
+      ? Math.round(dong)
+      : Math.round((dong / VND.perUsd) * currency.perUsd * currency.minorPerMajor);
   const { db, tables } = store;
   const iso = new Date().toISOString();
   const cycle = payCycleOn(today, { kind: 'sameDay', day: 31 });
@@ -35,7 +46,7 @@ export async function seedDesignYear(store: MoneyStore, today: LocalDate): Promi
       let spent = 0;
       for (let k = 0; k < count; k++) {
         const [merchant, categoryId, base] = PLACES[(n * 3 + k) % PLACES.length] ?? PLACES[0];
-        const amount = base + ((n * 7 + k * 13) % 9) * 10_000;
+        const amount = worth((base + ((n * 7 + k * 13) % 9) * 10_000) * scale);
         spent += amount;
         const at = new Date(year, month - 1, dd, 9 + k * 4, 15).toISOString();
         await tables.spends.put({
@@ -62,8 +73,8 @@ export async function seedDesignYear(store: MoneyStore, today: LocalDate): Promi
         closedAt: new Date(year, month - 1, dd, 18, 20).toISOString(),
         late: false,
         spent,
-        line: 340_000,
-        tomorrow: 340_000,
+        line: worth(340_000 * scale),
+        tomorrow: worth(340_000 * scale),
         note: n % 11 === 0 ? (NOTES[n % NOTES.length] ?? null) : null,
       });
     }

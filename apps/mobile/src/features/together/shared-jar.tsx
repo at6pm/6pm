@@ -27,6 +27,7 @@ import { haptics } from '../../ui/haptics';
 import { isSymbolName, Symbol } from '../../ui/icons/symbol';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
+import { FitText } from '../../ui/type/fit-text';
 import { body, display, leading } from '../../ui/type/fonts';
 import { useCompanionToast } from '../companion/use-companion-toast';
 import { jarTint, type PlanColours } from '../plan/plan-colours';
@@ -177,9 +178,15 @@ export function SharedJar({
           </View>
           <View style={{ gap: 3 }}>
             <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 4 }}>
-              <Text style={{ ...leading(display(30, 500, -0.02), 30, true), color: palette.ink }}>
+              <FitText
+                style={{
+                  ...leading(display(30, 500, -0.02), 30, true),
+                  color: palette.ink,
+                  flexShrink: 1,
+                }}
+              >
                 {short(progress.saved)}
-              </Text>
+              </FitText>
               <Text style={{ ...body(12.5, 600), color: palette.inkSoft }}>
                 {t('plan.occasions.of', { amount: short(pot.goal) })}
               </Text>

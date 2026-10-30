@@ -9,6 +9,7 @@ import { Symbol } from '../../ui/icons/symbol';
 import type { SymbolName } from '../../ui/icons/symbols.generated';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
+import { FitText } from '../../ui/type/fit-text';
 import { body, display, leading, mono, tabular } from '../../ui/type/fonts';
 
 export type CardPress = 'kept' | 'edit' | 'notMine';
@@ -75,11 +76,11 @@ export const CloseLedger = memo(function CloseLedger({
         >
           {t('duo.close.kept')}
         </Text>
-        <Text
+        <FitText
           style={{ ...leading(display(64, 500, -0.03), 64, true), ...tabular, color: palette.ink }}
         >
           {money.short(kept)}
-        </Text>
+        </FitText>
         <Text style={{ ...body(14), color: palette.inkSoft }}>
           {t('duo.close.ofLine', {
             line: money.short(day.line),

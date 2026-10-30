@@ -196,9 +196,12 @@ export function CloseCard({
               </View>
             </View>
           )}
-          {/* The prototype's inline `<span style="font-size:.42em; margin-left:4px">₫</span>`. */}
+          {/* The prototype's inline `<span style="font-size:.42em; margin-left:4px">₫</span>`.
+              The card is a fixed height and its amount the biggest type on it, so the amount
+              keeps the design's size at any text size, as the day's hero number does. */}
           <FitWidth height={72}>
             <AmountText
+              maxFontSizeMultiplier={1}
               parts={
                 moneyIn
                   ? { ...money.parts(content.amount), sign: '+' }

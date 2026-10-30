@@ -11,6 +11,7 @@ import { SheetFrame } from '../../ui/navigation/sheet-frame';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading } from '../../ui/type/fonts';
+import { WordFitText } from '../../ui/type/word-fit-text';
 import { ActionStage } from './action-stage';
 import { ControlStage } from './control-stage';
 import { HomeStage } from './home-stage';
@@ -100,9 +101,9 @@ export function WidgetsGuideSheet() {
             style={{ gap: 12, paddingTop: 6, paddingHorizontal: 4, paddingBottom: 8 }}
           >
             <CategoryTile icon="widgets" hue={200} size={60} radius={20} glyph={32} />
-            <Text style={{ ...leading(display(31, 500, -0.015), 33.5), color: palette.ink }}>
+            <WordFitText style={{ ...leading(display(31, 500, -0.015), 33.5), color: palette.ink }}>
               {t('widgetsGuide.headline')}
-            </Text>
+            </WordFitText>
             <Text style={{ ...body(16), lineHeight: 22, color: palette.inkSoft }}>
               {t('widgetsGuide.lede')}
             </Text>

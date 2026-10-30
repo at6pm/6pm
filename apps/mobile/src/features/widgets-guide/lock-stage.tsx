@@ -7,6 +7,7 @@ import { activityInk } from '@6pm/theme';
 import { localeOf } from '@6pm/i18n';
 
 import { useI18n } from '../../i18n/i18n';
+import { FitText } from '../../ui/type/fit-text';
 import { body, display } from '../../ui/type/fonts';
 import { Reveal } from '../capture-guide/walkthrough/moving-parts';
 import { stage } from '../capture-guide/walkthrough/timeline';
@@ -154,12 +155,11 @@ function Card({ preview }: { readonly preview: WidgetPreview }) {
           >
             {preview.strings['brandSafe']}
           </Text>
-          <Text
-            numberOfLines={1}
+          <FitText
             style={{ ...display(28, 500, 0, preview.palette.dispFont), color: activityInk.ink }}
           >
             {entry.safeShort}
-          </Text>
+          </FitText>
           {entry.pendingText ? (
             <Text style={{ ...body(12, 600), color: activityInk.ink, opacity: 0.75 }}>
               {entry.pendingText}
