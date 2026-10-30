@@ -15,6 +15,19 @@ export const esOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.welcome.wake': 'Despierta con un solo número',
   'onboarding.welcome.start': 'Empezar',
 
+  'onboarding.privacy.title': 'Tu dinero se queda en tu teléfono.',
+  'onboarding.privacy.sub':
+    '6pm no guarda ninguna copia de tus gastos. Sin anuncios, nada se vende.',
+  'onboarding.privacy.phone': 'Solo en este iPhone',
+  'onboarding.privacy.phoneSub': 'Sin cuenta que crear ni nada a lo que apuntarse',
+  'onboarding.privacy.backup': 'Copias que solo tú puedes abrir',
+  'onboarding.privacy.backupSub': 'Cerradas con una clave en tu Llavero de iCloud',
+  'onboarding.privacy.source': 'Código abierto',
+  'onboarding.privacy.sourceSub': 'Lee cada línea en GitHub',
+  'onboarding.privacy.foot':
+    'Los tickets que reenvías por correo y las preguntas a Pregunta a 6pm pasan por nuestro servidor para leerlos, y después se borran.',
+  'onboarding.privacy.cta': 'Entendido',
+
   'onboarding.income.title': 'Dinero que entra',
   'onboarding.income.sub':
     'Más o menos lo que te llega al mes, ya sin impuestos. Gira para ajustarlo.',

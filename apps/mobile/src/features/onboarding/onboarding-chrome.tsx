@@ -37,7 +37,7 @@ function Segment({ filled, pal }: { readonly filled: boolean; readonly pal: Onbo
   );
 }
 
-/** Back, the eight-dash progress and Skip, in one 44 pt row. Hidden controls keep their place. */
+/** Back, a dash per step and Skip, in one 44 pt row. Hidden controls keep their place. */
 export function OnboardingHeader({
   step,
   pal,

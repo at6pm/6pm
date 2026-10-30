@@ -63,4 +63,7 @@ export const zhHansAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } 
 
   'startup.failedSub': '什么都没丢。再试一次，如果还是这样，就重启手机。',
   'voice.unavailable': '语音需要这台手机支持{language}听写',
+
+  'onboarding.privacy.phone': '只在这台手机上',
+  'onboarding.privacy.backupSub': '用只留在这台手机上的密钥锁住',
 };

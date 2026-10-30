@@ -68,4 +68,7 @@ export const viAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
 
   'startup.failedSub': 'Không mất gì đâu. Thử lại nhé, nếu vẫn vậy thì khởi động lại điện thoại.',
   'voice.unavailable': 'Giọng nói cần tính năng đọc chính tả {language} trên điện thoại này',
+
+  'onboarding.privacy.phone': 'Chỉ trên điện thoại này',
+  'onboarding.privacy.backupSub': 'Khoá bằng chìa không bao giờ rời máy này',
 };

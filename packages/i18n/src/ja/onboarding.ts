@@ -15,6 +15,18 @@ export const jaOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.welcome.wake': '朝は数字ひとつだけ',
   'onboarding.welcome.start': 'はじめる',
 
+  'onboarding.privacy.title': 'お金のデータは、あなたのスマホの中だけ。',
+  'onboarding.privacy.sub': '6pmは支出のコピーを持ちません。広告なし、何も売りません。',
+  'onboarding.privacy.phone': 'このiPhoneの中だけ',
+  'onboarding.privacy.phoneSub': 'アカウント作成も登録もいりません',
+  'onboarding.privacy.backup': 'あなたにしか開けないバックアップ',
+  'onboarding.privacy.backupSub': 'iCloudキーチェーンの鍵でロック',
+  'onboarding.privacy.source': 'オープンソース',
+  'onboarding.privacy.sourceSub': 'GitHubで全行を読めます',
+  'onboarding.privacy.foot':
+    '転送したレシートメールと「6pmに聞く」の質問は、読むためにサーバーを通り、そのあと削除されます。',
+  'onboarding.privacy.cta': 'わかった',
+
   'onboarding.income.title': '入金',
   'onboarding.income.sub': '毎月の手取りはだいたいいくら？ 回して設定してください。',
   'onboarding.income.daily': '1日あたり約{amount}（固定費の前）',

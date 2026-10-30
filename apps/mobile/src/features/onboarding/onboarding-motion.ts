@@ -25,6 +25,8 @@ export const ease = {
   fling: Easing.bezier(0.4, 0, 0.6, 1),
   /** The speech bubble: `cubic-bezier(.2,1.3,.4,1)`. */
   bubble: Easing.bezier(0.2, 1.3, 0.4, 1),
+  /** The privacy promise's rise and its bubble's rim: `cubic-bezier(.32,.72,0,1)`. */
+  settle: Easing.bezier(0.32, 0.72, 0, 1),
   css: Easing.bezier(0.25, 0.1, 0.25, 1),
   cssIn: Easing.bezier(0.42, 0, 1, 1),
   cssInOut: Easing.bezier(0.42, 0, 0.58, 1),
@@ -44,12 +46,18 @@ export function stepEntering(direction: 1 | -1, reduceMotion: boolean) {
     .reduceMotion(ReduceMotion.Never);
 }
 
-/** `rise`: up 16 pt and in, after `delay` ms. */
-export function riseEntering(duration: number, delay: number, reduceMotion: boolean) {
+/** `rise`: up `distance` pt (16 unless given) and in, after `delay` ms. */
+export function riseEntering(
+  duration: number,
+  delay: number,
+  reduceMotion: boolean,
+  distance = 16,
+  easing: typeof ease.css = ease.css,
+) {
   if (reduceMotion) return reducedFade;
   return new Keyframe({
-    0: { opacity: 0, transform: [{ translateY: 16 }] },
-    100: { opacity: 1, transform: [{ translateY: 0 }], easing: ease.css },
+    0: { opacity: 0, transform: [{ translateY: distance }] },
+    100: { opacity: 1, transform: [{ translateY: 0 }], easing },
   })
     .duration(duration)
     .delay(delay)

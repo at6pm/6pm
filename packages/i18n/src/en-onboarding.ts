@@ -1,4 +1,7 @@
-/** Onboarding: welcome, money in, bills, Future you, pay with, catching spending, close time. */
+/**
+ * Onboarding: welcome, the privacy promise, money in, bills, Future you, pay with, catching
+ * spending, close time.
+ */
 export const enOnboarding = {
   'onboarding.back': 'Back',
   'onboarding.skip': 'Skip',
@@ -10,6 +13,18 @@ export const enOnboarding = {
   'onboarding.welcome.swipe': 'At six, swipe through your day',
   'onboarding.welcome.wake': 'Wake up to one number',
   'onboarding.welcome.start': 'Get started',
+
+  'onboarding.privacy.title': 'Your money stays on your phone.',
+  'onboarding.privacy.sub': '6pm keeps no copy of your spending. No ads, nothing sold.',
+  'onboarding.privacy.phone': 'Only on this iPhone',
+  'onboarding.privacy.phoneSub': 'No account to make, nothing to sign up for',
+  'onboarding.privacy.backup': 'Backups only you can open',
+  'onboarding.privacy.backupSub': 'Locked with a key in your iCloud Keychain',
+  'onboarding.privacy.source': 'Open source',
+  'onboarding.privacy.sourceSub': 'Read every line on GitHub',
+  'onboarding.privacy.foot':
+    'Forwarded receipts and Ask questions pass through our server to be read, then they’re deleted.',
+  'onboarding.privacy.cta': 'Got it',
 
   'onboarding.income.title': 'Money in',
   'onboarding.income.sub': 'Roughly what lands each month, after tax. Spin to set it.',

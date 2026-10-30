@@ -4,8 +4,8 @@ import { parseColor } from '../../ui/sky/css-values';
 
 /**
  * Onboarding's own sky and inks, exactly as the onboarding prototype computes them: its sky runs
- * from a pale morning to dusk across the eight steps (`t` = step ÷ 7), and the screen turns dark
- * once `t` passes 0.7. These are not a look: onboarding happens before a look is chosen.
+ * from a pale morning to dusk across the steps (`t` = step ÷ the last step), and the screen turns
+ * dark once `t` passes 0.7. These are not a look: onboarding happens before a look is chosen.
  */
 const SKY_STOPS: readonly (readonly [number, string, string, string])[] = [
   [0, '#9fb3d4', '#d9dce8', '#f3dccb'],
@@ -21,7 +21,9 @@ const SKY_RGBA: readonly (readonly number[][])[] = SKY_STOPS.map(([, ...colours]
 );
 const SKY_AT: readonly number[] = SKY_STOPS.map(([at]) => at);
 
-export const STEP_COUNT = 9;
+export const STEP_COUNT = 10;
+/** The first step the sun is up on: the welcome and the privacy promise have none. */
+export const SUNRISE_STEP = 2;
 
 export function stepProgress(step: number): number {
   return step / (STEP_COUNT - 1);
@@ -175,6 +177,41 @@ export const HORIZON = [
   { inset: '28%', top: 36, color: 'rgba(255,226,200,.5)' },
   { inset: '38%', top: 54, color: 'rgba(255,226,200,.4)' },
 ] as const;
+
+/**
+ * The privacy promise's art: its two horizon lines, the glass bubble the companion sits in, and
+ * the small inks of its card. The step always sits in the morning sky, so none of it turns dark.
+ */
+export const PRIVACY = {
+  lines: [
+    { inset: '12%', top: 96, color: 'rgba(255,226,200,.75)' },
+    { inset: '26%', top: 112, color: 'rgba(255,226,200,.6)' },
+  ],
+  /** `radial-gradient(circle at 34% 26%, …)` stops and where they sit. */
+  domeStops: [
+    'rgba(255,255,255,.78)',
+    'rgba(255,255,255,.34)',
+    'rgba(255,250,244,.16)',
+    'rgba(255,244,232,.32)',
+  ],
+  domeStopAt: [0, 0.34, 0.62, 1],
+  domeShadow: '0 18px 44px rgba(60,60,120,.14)',
+  /** The inner rim, and how much brighter it gets as a tile arrives (.75 → .95). */
+  rim: 'rgba(255,255,255,.75)',
+  rimLit: 'rgba(255,255,255,.8)',
+  /** The inner glow at the bubble's foot (.4 → .5). */
+  glow: 'rgba(255,255,255,.4)',
+  glowLit: 'rgba(255,255,255,.17)',
+  /** The warm ring that spreads 7 pt out of the rim as a tile arrives. */
+  halo: 'rgba(255,236,210,.45)',
+  specular: 'rgba(255,255,255,.7)',
+  lockShadow: '0 6px 14px rgba(40,90,60,.22)',
+  tileShadow: '0 6px 14px rgba(60,40,80,.14), inset 0 1px 0 rgba(255,255,255,.5)',
+  detail: 'rgba(27,30,46,.62)',
+  foot: 'rgba(27,30,46,.56)',
+  arrow: 'rgba(27,30,46,.4)',
+  rule: 'rgba(27,30,46,.07)',
+} as const;
 
 /** The leaving overlay: the sky's top to bottom colour at that step. */
 export function leaveGradient(step: number): string {

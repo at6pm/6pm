@@ -68,4 +68,7 @@ export const koAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
 
   'startup.failedSub': '사라진 건 없어요. 다시 시도해 보고, 계속 이러면 폰을 다시 시작하세요.',
   'voice.unavailable': '음성 입력에는 이 폰의 {language} 받아쓰기가 필요해요',
+
+  'onboarding.privacy.phone': '이 폰에만',
+  'onboarding.privacy.backupSub': '이 폰을 떠나지 않는 키로 잠가요',
 };

@@ -15,6 +15,19 @@ export const idOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.welcome.wake': 'Bangun dengan satu angka',
   'onboarding.welcome.start': 'Mulai',
 
+  'onboarding.privacy.title': 'Uangmu tetap di ponselmu.',
+  'onboarding.privacy.sub':
+    '6pm tidak menyimpan salinan pengeluaranmu. Tanpa iklan, tak ada yang dijual.',
+  'onboarding.privacy.phone': 'Hanya di iPhone ini',
+  'onboarding.privacy.phoneSub': 'Tanpa akun, tanpa daftar apa pun',
+  'onboarding.privacy.backup': 'Cadangan yang hanya bisa kamu buka',
+  'onboarding.privacy.backupSub': 'Dikunci dengan kunci di Rantai Kunci iCloud-mu',
+  'onboarding.privacy.source': 'Sumber terbuka',
+  'onboarding.privacy.sourceSub': 'Baca setiap barisnya di GitHub',
+  'onboarding.privacy.foot':
+    'Struk yang diteruskan lewat email dan pertanyaan Tanya 6pm lewat server kami untuk dibaca, lalu dihapus.',
+  'onboarding.privacy.cta': 'Mengerti',
+
   'onboarding.income.title': 'Uang masuk',
   'onboarding.income.sub': 'Kira-kira yang masuk tiap bulan, setelah pajak. Putar untuk mengatur.',
   'onboarding.income.daily': 'Sekitar {amount} sehari, sebelum tagihan',

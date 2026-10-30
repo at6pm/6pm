@@ -15,6 +15,19 @@ export const koOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.welcome.wake': '아침엔 숫자 하나만 보면 돼요',
   'onboarding.welcome.start': '시작하기',
 
+  'onboarding.privacy.title': '내 돈은 내 폰에만 있어요.',
+  'onboarding.privacy.sub':
+    '6pm은 지출 기록을 복사해 두지 않아요. 광고도 없고, 아무것도 팔지 않아요.',
+  'onboarding.privacy.phone': '이 iPhone에만',
+  'onboarding.privacy.phoneSub': '계정을 만들 필요도, 가입할 필요도 없어요',
+  'onboarding.privacy.backup': '나만 열 수 있는 백업',
+  'onboarding.privacy.backupSub': '내 iCloud 키체인의 키로 잠가요',
+  'onboarding.privacy.source': '오픈 소스',
+  'onboarding.privacy.sourceSub': 'GitHub에서 코드 한 줄까지 읽어 보세요',
+  'onboarding.privacy.foot':
+    '전달한 영수증 이메일과 6pm에게 묻기 질문은 읽기 위해 서버를 거친 뒤 삭제돼요.',
+  'onboarding.privacy.cta': '알겠어요',
+
   'onboarding.income.title': '들어온 돈',
   'onboarding.income.sub': '세후로 매달 대략 얼마 들어오나요? 돌려서 맞춰요.',
   'onboarding.income.daily': '고정비 빼기 전, 하루 약 {amount}',

@@ -68,4 +68,7 @@ export const thAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
 
   'startup.failedSub': 'ไม่มีอะไรหายนะ ลองใหม่อีกครั้ง ถ้ายังเป็นอยู่ ให้รีสตาร์ทโทรศัพท์',
   'voice.unavailable': 'การพูดต้องใช้การพิมพ์ด้วยเสียง{language}บนโทรศัพท์เครื่องนี้',
+
+  'onboarding.privacy.phone': 'บนโทรศัพท์เครื่องนี้เท่านั้น',
+  'onboarding.privacy.backupSub': 'ล็อกด้วยกุญแจที่ไม่เคยออกจากโทรศัพท์เครื่องนี้',
 };

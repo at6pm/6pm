@@ -75,4 +75,7 @@ export const idAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'startup.failedSub':
     'Tidak ada yang hilang. Coba lagi, dan kalau terus terjadi, mulai ulang ponselmu.',
   'voice.unavailable': 'Suara butuh dikte {language} di ponsel ini',
+
+  'onboarding.privacy.phone': 'Hanya di ponsel ini',
+  'onboarding.privacy.backupSub': 'Dikunci dengan kunci yang tak pernah meninggalkan ponsel ini',
 };
