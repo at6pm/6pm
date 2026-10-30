@@ -157,6 +157,18 @@ const PROMO =
 const STATEMENT =
   / (?:sao ke|ky sao ke|statement|du no|han thanh toan|den han|nhac no|thanh toan toi thieu|minimum payment|payment due|is due|bill is ready|so du hien tai cua|so du tai khoan|your balance|balance is|available balance is) /;
 
+/**
+ * A recap of spending over a while (a bank's monthly or weekly statistics, "Bạn đã chi tiêu
+ * 5.142.790 VND cho danh mục Ăn uống trong tháng 10", "You spent $420 on Dining this month"):
+ * a total of payments already caught, never one of its own.
+ */
+const SUMMARY =
+  / (?:tong chi tieu|thong ke|tong ket|bao cao chi tieu|chi tieu (?:trong |cua )?(?:thang|tuan)|spending summary|spending report|spending recap|monthly summary|weekly summary|monthly recap|weekly recap|month in review|week in review|total spending|total spent|spent so far) /;
+
+/** A while a recap covers: the month or the week, this one or the last. */
+const SUMMARY_PERIOD =
+  / (?:trong (?:thang|tuan)(?: nay| qua| truoc| \d{1,2})?|(?:thang|tuan) (?:nay|qua|truoc|vua qua)|this month|this week|last month|last week|so far this|month to date|in the past (?:week|month)) /;
+
 /** A sign-in, a new device, a password or a setting changed. */
 const SECURITY =
   / (?:dang nhap|thiet bi moi|thiet bi la|mat khau|doi mat khau|kich hoat|cai dat|bao mat|sign in|signed in|sign on|log in|logged in|login|new device|password|security alert|unusual activity) /;
@@ -320,7 +332,8 @@ function withoutWarnings(text: string): string {
  * Reads one notification into money that moved, or why it is skipped.
  *
  * - Codes (OTP, verification), payments that failed or were declined, promotions, balance and
- *   statement notices, and sign-in or security notices are skipped.
+ *   statement notices, recaps of spending over a month or a week, and sign-in or security
+ *   notices are skipped (a recap as a balance notice).
  * - The amount is the one signed `+` or `-`, else the one after a label ("GD:", "PS:", "Số
  *   tiền"), else the first with a currency mark; a balance ("SD:", "Số dư", "Balance") never.
  *   Unmarked, it is in the home currency.
@@ -345,6 +358,8 @@ export function readBankAlert(input: BankAlertInput, home: Currency = VND): Bank
   const plain = foldWords(withoutWarnings(told));
   if (CODE.test(plain)) return skip('code');
   if (FAILED.test(plain)) return skip('failed');
+  // A recap's own words ("Tổng chi tiêu", "Thống kê", "weekly recap") say so whatever it prints.
+  if (SUMMARY.test(plain)) return skip('balance');
 
   const found = amountsIn(told, home);
   const amount = movedAmount(found);
@@ -357,6 +372,8 @@ export function readBankAlert(input: BankAlertInput, home: Currency = VND): Bank
     return skip('unread');
   }
   if (amount.signed === null && STATEMENT.test(plain)) return skip('balance');
+  // A while a recap covers says so only of an unsigned total: a payment's own sign wins.
+  if (amount.signed === null && SUMMARY_PERIOD.test(plain)) return skip('balance');
   const way = wayOf(told, amount);
   if (way === null) return skip('unread');
   const memo = cleanMemo(memoFound?.memo);

@@ -5,6 +5,7 @@ import {
   findDuplicate,
   learnedRule,
   mayBeSamePayment,
+  mergedNaming,
   mergedStatus,
   merchantKeyOf,
   moneyDayOf,
@@ -136,7 +137,8 @@ export function moneyActions(store: MoneyStore) {
     const next: SpendRow = {
       ...twin,
       status: mergedStatus(twin.status, input.status),
-      merchant: twin.merchant || input.merchant,
+      // The name that says most about who was paid, whichever sighting came first.
+      ...mergedNaming(twin, input),
       note: twin.note ?? input.note ?? null,
       wallet: twin.wallet ?? input.wallet ?? null,
       memo: twin.memo ?? input.memo ?? null,

@@ -363,3 +363,31 @@ export function parseReceiptEmail(
     memo,
   };
 }
+
+/** What a bank's transfer email says under its labels about who was paid. */
+export interface LabelledTransfer {
+  /** Who it went to, as labelled ("Người thụ hưởng", "Beneficiary"); empty when no label says. */
+  readonly payee: string;
+  /** The transfer's own words, as printed; null when it printed none. */
+  readonly memo: string | null;
+  /**
+   * The person's own accounts on both sides (the account it left is in the payee's name), and
+   * not a card's repayment.
+   */
+  readonly own: boolean;
+}
+
+/**
+ * The payee a transfer email labels, and whether the transfer was between the person's own
+ * accounts, read with rules as `parseReceiptEmail` reads them, for a model's reading to be
+ * checked against.
+ */
+export function labelledTransfer(email: ReceiptEmail): LabelledTransfer {
+  const printed = joinBrokenLabels(emailOrigin(email).lines.map(withFullYears));
+  const lines = printed.map(withTotalsAsAmount);
+  const receiptLines = lines.map((text) => ({ text }));
+  const payee = cleanPayeeName(readFields(toRows(receiptLines)).fields.get('payee')?.value ?? '');
+  const memo = parseBankReceipt(receiptLines)?.memo ?? noteIn(lines);
+  const own = payee !== '' && isOwnTransfer(lines, payee) && !namesRepayment(memo ?? '');
+  return { payee, memo, own };
+}

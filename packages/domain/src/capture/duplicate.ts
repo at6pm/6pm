@@ -1,4 +1,5 @@
 import type { SpendDirection, SpendSource, SpendStatus } from '../spend/spend';
+import { withoutBankNames } from './bank-alert-senders';
 import { foldWords } from './spoken-spend';
 
 /** Two sightings of one payment arrive within this long of each other. */
@@ -33,6 +34,14 @@ export const FEE_SLACK_RATIO = 0.01;
  * and only when both name the same payee.
  */
 export const FX_SLACK_RATIO = 0.05;
+
+/**
+ * A charge abroad told of twice by notices from two witnesses (the card's bank and the shop's own
+ * receipt) can be hours apart: a shop emails its receipt when it bills, a bank when the charge
+ * posts. Two such notices with the same amount to the cent in the currency paid, both naming the
+ * same payee, are one payment up to this long apart.
+ */
+export const ABROAD_NOTICE_WINDOW_MS = 6 * 60 * 60_000;
 
 /**
  * Sources 6pm hears about a payment from. Two of these seeing one payment are two witnesses of it;
@@ -210,6 +219,16 @@ function noticeAfter(first: Sighting, notice: Sighting): boolean {
   return after >= 0 && after <= NOTICE_LATE_WINDOW_MS;
 }
 
+/**
+ * Two notices (emails or alerts) of one charge abroad: the same amount to the cent in the same
+ * currency, and both name the payee and agree on it.
+ */
+function sameChargeAbroad(spend: SightedSpend, incoming: NewSighting): boolean {
+  if (!spend.foreignAmount || !incoming.foreignAmount) return false;
+  if (!NOTICE.has(spend.source) || !NOTICE.has(incoming.source)) return false;
+  return sameAmount(spend, incoming) && namesMatch(spend, incoming);
+}
+
 /** Whether two sightings from different capture sources are close enough to be one payment. */
 function closeEnough(a: Sighting, b: Sighting): boolean {
   return (
@@ -233,7 +252,9 @@ function closeEnough(a: Sighting, b: Sighting): boolean {
  * second payment, unless it sends the same amount stamped the same second (an invoice and its
  * confirmation). A charge abroad priced at the day's rate matches the bank's home-currency debit
  * of it within `FX_SLACK_RATIO` when both name the payee; an exact amount wins over a fee apart,
- * and a fee apart over a converted one. Skipped and deleted spends never absorb a capture. A
+ * and a fee apart over a converted one. Two notices (emails or alerts) of a charge abroad, with
+ * the same amount to the cent in the currency paid and the same payee named, are matched up to
+ * `ABROAD_NOTICE_WINDOW_MS` apart, either way round. Skipped and deleted spends never absorb a capture. A
  * spend the user typed (Quick add, voice, cash) is never merged with anything: each was entered on
  * purpose, and no other source can have seen cash. Money in and money out of the same amount are
  * two movements, never one.
@@ -269,7 +290,8 @@ export function findDuplicate(
       !exact && !fee && convertedApart(spend, incoming) && namesMatch(spend, incoming);
     if (!exact && !fee && !converted) continue;
     const gap = Math.abs(seen.at - at);
-    if (!echo && !closeEnough(seen, arriving)) continue;
+    const abroad = exact && gap <= ABROAD_NOTICE_WINDOW_MS && sameChargeAbroad(spend, incoming);
+    if (!echo && !abroad && !closeEnough(seen, arriving)) continue;
     if (exact && gap < bestGap) {
       best = spend;
       bestGap = gap;
@@ -287,4 +309,108 @@ export function findDuplicate(
 /** What a merged spend becomes: confirmed if either sighting was, otherwise as it was. */
 export function mergedStatus(existing: SpendStatus, incoming: SpendStatus): SpendStatus {
   return existing === 'kept' || incoming === 'kept' ? 'kept' : existing;
+}
+
+/** Words a payee's name can hold that only say how money moved: a transfer, a QR code, a card. */
+const PAYMENT_WORDS: ReadonlySet<string> = new Set([
+  'qr',
+  'vietqr',
+  'napas',
+  'ibft',
+  'ck',
+  'ct',
+  'mbct',
+  'tt',
+  'gd',
+  'chuyen',
+  'khoan',
+  'tien',
+  'thanh',
+  'toan',
+  'giao',
+  'dich',
+  'nap',
+  'rut',
+  'tk',
+  'tai',
+  'cho',
+  'den',
+  'tu',
+  'qua',
+  'ngan',
+  'hang',
+  'the',
+  'bank',
+  'banking',
+  'card',
+  'visa',
+  'mastercard',
+  'debit',
+  'credit',
+  'transfer',
+  'payment',
+  'pay',
+]);
+
+/**
+ * A name that says nothing about who was paid: blank, or only bank and wallet names and words for
+ * how money moved ("Techcombank QR", "MBCT", "Chuyen tien").
+ */
+export function namesNoPayee(name: string): boolean {
+  return withoutBankNames(name)
+    .trim()
+    .split(' ')
+    .every((word) => word === '' || PAYMENT_WORDS.has(word) || !/[a-z]/.test(word));
+}
+
+/** How a sighting names a payment, and the category it filed it under. */
+export interface Naming {
+  readonly merchant: string;
+  readonly categoryId: string;
+  readonly source: SpendSource;
+}
+
+/**
+ * How much a name says about who was paid: nothing, then a bank alert's (who a transfer went to,
+ * or its memo), then any other source's (a receipt's, a shop's code, Wallet's, or the payee an
+ * email's reader named).
+ */
+function nameWeight({ merchant, source }: Naming): number {
+  if (namesNoPayee(merchant)) return 0;
+  return source === 'alert' ? 1 : 2;
+}
+
+/** Written all in capitals, as a bank's card line prints a shop ("CLOUDFLARE"). */
+function inCapitals(name: string): boolean {
+  return /\p{Lu}/u.test(name) && !/\p{Ll}/u.test(name);
+}
+
+/**
+ * What a payment seen a second way is called and filed under, whichever sighting came first: the
+ * name that says most about who was paid (a named payee over a blank or a bank's or transfer's
+ * label, any other source's name over a bank alert's), with the category that came with it,
+ * unless the user already kept the spend. Between two names of one payee that say as much, the
+ * shop's own spelling replaces a bank's capitals ("Cloudflare" for "CLOUDFLARE"), the category
+ * kept.
+ */
+export function mergedNaming(
+  existing: Naming & { readonly status: SpendStatus },
+  incoming: Naming,
+): { readonly merchant: string; readonly categoryId: string } {
+  const named = incoming.merchant.trim();
+  const before = nameWeight(existing);
+  const after = nameWeight(incoming);
+  if (after > before) {
+    return {
+      merchant: named,
+      categoryId: existing.status === 'kept' ? existing.categoryId : incoming.categoryId,
+    };
+  }
+  const respelt =
+    after === before &&
+    after > 0 &&
+    inCapitals(existing.merchant) &&
+    !inCapitals(named) &&
+    namesAgree(existing.merchant, named);
+  return { merchant: respelt ? named : existing.merchant, categoryId: existing.categoryId };
 }

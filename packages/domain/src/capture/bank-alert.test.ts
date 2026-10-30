@@ -458,6 +458,39 @@ describe('readBankAlert: what is skipped', () => {
       'balance',
     ],
     [
+      'a month’s spending in one category',
+      {
+        app: 'Techcombank',
+        body: 'Bạn đã chi tiêu 5.142.790 VND cho danh mục Ăn uống trong tháng 10',
+      },
+      'skipped',
+      'balance',
+    ],
+    [
+      'a month’s total spending',
+      { body: 'Tổng chi tiêu tháng 10 của bạn là 12.345.000đ, tăng 8% so với tháng trước' },
+      'skipped',
+      'balance',
+    ],
+    [
+      'a week’s statistics',
+      { app: 'MoMo', body: 'Thống kê chi tiêu tuần qua: 1.200.000đ cho 14 giao dịch' },
+      'skipped',
+      'balance',
+    ],
+    [
+      'spending this month, in English',
+      { body: 'You spent $1,250.40 on Dining this month' },
+      'skipped',
+      'balance',
+    ],
+    [
+      'a weekly recap',
+      { title: 'Your weekly recap', body: 'You spent RM 420.00 across 12 purchases' },
+      'skipped',
+      'balance',
+    ],
+    [
       'a sign-in on a new device',
       { body: 'Tài khoản của bạn vừa đăng nhập trên thiết bị mới iPhone 18' },
       'skipped',
@@ -494,6 +527,21 @@ describe('readBankAlert: what is skipped', () => {
         body: 'Số dư TK VCB 0011000123456 -150,000 VND lúc 27-10-2026 12:30:05. Số dư 1,200,000 VND. Quý khách không cung cấp OTP cho bất kỳ ai.',
       }),
     ).toMatchObject({ kind: 'moved', direction: 'out', amount: 150_000 });
+  });
+
+  it('still reads a payment that names the category it was filed in', () => {
+    expect(
+      read({
+        app: 'MoMo',
+        body: 'Bạn đã thanh toán 45.000đ cho Phúc Long. Giao dịch đã được xếp vào danh mục Ăn uống.',
+      }),
+    ).toMatchObject({ kind: 'moved', direction: 'out', amount: 45_000, counterparty: 'Phúc Long' });
+    expect(
+      read({
+        app: 'MB Bank',
+        body: 'TK 0123xxx456|GD: -1,850,000VND 28/10/26 09:15|SD: 3,234,567VND|ND: HOC PHI TRONG THANG 10',
+      }),
+    ).toMatchObject({ kind: 'moved', direction: 'out', amount: 1_850_000 });
   });
 
   it('reads a cashback that was credited, which no promotion words', () => {

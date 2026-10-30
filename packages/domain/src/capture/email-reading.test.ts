@@ -52,6 +52,35 @@ const payment = (over: Partial<EmailModelReading>): EmailModelReading => ({
   ...over,
 });
 
+/** MB's transfer email, each label broken over two lines as its table cells wrap them. */
+const mbTransfer = (payee: string, memo: string): ReceiptEmail => ({
+  from: { name: 'MB', address: 'mbebanking@mbbank.com.vn' },
+  subject: 'Thong bao giao dich thanh cong',
+  date: '2026-10-28T05:33:12.000Z',
+  text: [
+    'MB xin thông báo giao dịch của Quý khách đã được thực hiện như sau:',
+    'Ngày,',
+    'giờ giao dịch',
+    '28-10-2026 12:33:05',
+    'Tài',
+    'khoản trích nợ',
+    'TRAN VAN AN - 1000000000000 (VND)',
+    'Người',
+    'thụ hưởng',
+    payee,
+    'Số',
+    'tiền giao dịch',
+    '(VND) 40,000.00',
+    'Nội',
+    'dung chuyển tiền',
+    memo,
+    'Tình',
+    'trạng',
+    'Giao dịch thành công',
+  ].join('\n'),
+  html: null,
+});
+
 describe('a receipt email read by a model', () => {
   it('keeps a foreign card charge in its own currency, at the time the bank printed', () => {
     const spend = emailSpendOf(
@@ -277,6 +306,40 @@ describe('a receipt email read by a model', () => {
       expect(mayHoldPayment(receipt(printed))).toBe(true);
     }
     expect(mayHoldPayment(receipt('회원님, 환영합니다'))).toBe(false);
+  });
+
+  it('names who an MB transfer paid, not the transfer’s own words', () => {
+    const read = (payee: string, memo: string, merchant: string | null) =>
+      emailSpendOf(
+        payment({ amount: '(VND) 40,000.00', currency: 'VND', merchant, note: memo }),
+        mbTransfer(payee, memo),
+        options,
+      )?.merchant;
+    const shop = 'CONG TY TNHH VONG TRON DO - MD0617000000';
+    expect(read(shop, 'Techcombank QR', 'Techcombank QR')).toBe('CONG TY TNHH VONG TRON DO');
+    expect(read(shop, 'Techcombank QR', null)).toBe('CONG TY TNHH VONG TRON DO');
+    expect(read('LUSINE - PMC2600000', 'TRAN VAN AN chuyen tien', 'TRAN VAN AN')).toBe('LUSINE');
+    const memo = 'an.tran2 dong phi lam lai the';
+    expect(read('DO THI LAN - 0560000000', memo, memo)).toBe('DO THI LAN');
+    // A name the model gave that is not the memo is its own.
+    expect(read(shop, 'Techcombank QR', 'Vòng Tròn Đỏ')).toBe('Vòng Tròn Đỏ');
+  });
+
+  it('skips a transfer between the person’s own accounts, whatever the model called it', () => {
+    const own = mbTransfer('TRAN VAN AN - 1028000000', 'TRAN VAN AN chuyen tien');
+    for (const kind of ['payment', 'incoming'] as const) {
+      const reading = payment({
+        kind,
+        amount: '(VND) 40,000.00',
+        currency: 'VND',
+        merchant: 'TRAN VAN AN',
+      });
+      expect(emailSpendOf(reading, own, options)).toBeNull();
+    }
+    // Paying off one's own card is still a payment.
+    const card = mbTransfer('TRAN VAN AN - 1028000000', 'Thanh toan the tin dung');
+    const reading = payment({ amount: '(VND) 40,000.00', currency: 'VND' });
+    expect(emailSpendOf(reading, card, options)?.amount).toBe(40_000);
   });
 
   it('gives the model the sender and the email’s lines, not its markup', () => {

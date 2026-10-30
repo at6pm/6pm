@@ -217,8 +217,9 @@ export function logSpend(
 /**
  * Reads one bank or wallet notification the Shortcuts automation passed: the app it came from
  * (its name or bundle id, empty when unknown), its title, subtitle and body, and `dateIso`, when
- * iOS delivered it (empty for none). Returns `BankAlertResult`: the inbox item with a fresh
- * lower-case UUID v4, null for an alert that is skipped, and the `last` status line.
+ * iOS delivered it (empty for none). Returns `BankAlertResult`: the inbox item with a lower-case
+ * UUID that starts with the notification's fingerprint (`heardAlertId`), null for an alert that is
+ * skipped, and the `last` status line.
  */
 export function logBankAlert(
   app: string,

@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
+import { heardKeyOf } from '../capture/alert-repeat';
 import { bankAlertResultSchema, type SurfaceContext } from '../contracts/surfaces';
 import { logBankAlert } from './entry';
 
-const UUID_V4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+const UUID_V8 = /^[0-9a-f]{8}-[0-9a-f]{4}-8[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 
 const category = (id: string, name: string) => ({
   id,
@@ -49,7 +50,7 @@ describe('logBankAlert', () => {
       receipt: { bank: 'MoMo', namingLines: [] },
       direction: 'out',
     });
-    expect(item?.id).toMatch(UUID_V4);
+    expect(item?.id).toMatch(UUID_V8);
     expect(last).toEqual({
       v: 1,
       at: now,
@@ -101,6 +102,18 @@ describe('logBankAlert', () => {
   it('takes the clock when the printed time is ahead of it', () => {
     const { item } = caught('TK 0123xxx456|GD: -50,000VND 30/10/26 12:30|SD: 1,234,567VND');
     expect(item?.at).toBe(now);
+  });
+
+  it('gives the same notification caught twice the same fingerprint, and another payment its own', () => {
+    const body =
+      'TK 0123xxx456|GD: -40,000VND 27/10/26 12:33|SD: 1,234,567VND|ND: MBCT Techcombank';
+    const first = caught(body, { app: 'MB Bank' }).item;
+    const again = caught(body, { app: 'MB Bank' }).item;
+    const next = caught(body.replace('1,234,567', '1,194,567'), { app: 'MB Bank' }).item;
+    expect(first?.id).not.toBe(again?.id);
+    expect(heardKeyOf(first?.id)).not.toBeNull();
+    expect(heardKeyOf(again?.id)).toBe(heardKeyOf(first?.id));
+    expect(heardKeyOf(next?.id)).not.toBe(heardKeyOf(first?.id));
   });
 
   it('answers well-formed for anything unreadable', () => {
