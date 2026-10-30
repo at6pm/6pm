@@ -82,4 +82,18 @@ export const enAndroid = {
   // The privacy promise: this phone, and a backup key that stays on it.
   'onboarding.privacy.phone': 'Only on this phone',
   'onboarding.privacy.backupSub': 'Locked with a key that never leaves this phone',
+
+  // Bank alerts: read by the notification listener, turned on under Notification access.
+  'capture.alerts.time': 'Ten seconds, once',
+  'capture.alerts.step1': 'Turn on 6pm under Notification access',
+  'capture.alerts.step1Chip': 'Notification access → 6pm',
+  'capture.alerts.step2': 'Keep your bank and wallet apps’ notifications on',
+  'capture.alerts.step3': 'Each payment waits in your Inbox for the close',
+  'capture.alerts.step3Chip': 'Inbox',
+  'capture.alerts.tip':
+    'Codes, failed payments and promos are skipped. A payment an email already caught isn’t added twice.',
+  'capture.alerts.privacy':
+    'Read on this phone and never sent anywhere. 6pm reads only your banks’ and wallets’ notifications.',
+  'capture.alerts.actionAdd': 'Allow notification access',
+  'capture.alerts.actionOpen': 'Notification access settings',
 } as const satisfies Variants;

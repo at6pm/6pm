@@ -25,4 +25,13 @@ export const frSurfaces: { readonly [Key in keyof typeof enSurfaces]: Entry } = 
   'surfaces.context.today': 'Aujourd’hui',
   'surfaces.context.yesterday': 'Hier',
   'surfaces.context.safeAfter': 'À dépenser aujourd’hui : {amount}',
+  'surfaces.context.alertCaught': '{amount} · {name} repéré',
+  'surfaces.context.alertCaughtNoName': '{amount} repéré',
+  'surfaces.context.alertCameIn': 'Reçu : {amount} · {name}',
+  'surfaces.context.alertCameInNoName': 'Reçu : {amount}',
+  'surfaces.context.alertFrom': 'Depuis ton alerte {bank} · lue sur ce téléphone',
+  'surfaces.context.alertFromNoBank': 'Depuis une alerte bancaire · lue sur ce téléphone',
+  'surfaces.context.alertConfirm': 'Confirmer',
+  'surfaces.context.alertEdit': 'Modifier',
+  'surfaces.context.alertChannel': 'Paiements repérés',
 };

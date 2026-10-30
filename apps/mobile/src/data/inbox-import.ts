@@ -9,6 +9,7 @@ import {
   receiptDetail,
   repeatsAlert,
   type AlertSighting,
+  type InboxKept,
   type InboxPaid,
   type InboxSpend,
   type SpendRow,
@@ -46,8 +47,8 @@ export interface InboxImportResult {
 }
 
 /**
- * Saves what the share extension, the shortcuts and the Live Activity left in the inbox, oldest
- * first, through the same capture as every other source (rules, duplicate merge, the money day
+ * Saves what the share extension, the shortcuts, the Live Activity and Android's bank alert
+ * listener left in the inbox, oldest first, through the same capture as every other source (rules, duplicate merge, the money day
  * of when it happened). A file is removed only after what it said is committed, and importing
  * the same file twice changes nothing: its id is the spend's, or its sighting is already there.
  */
@@ -69,6 +70,8 @@ export async function importInbox(deps: InboxImportDeps): Promise<InboxImportRes
     const item = parsed.data;
     if (item.kind === 'paid') {
       if (await markPaid(deps, item)) saved += 1;
+    } else if (item.kind === 'kept') {
+      if (await markKept(deps, item)) saved += 1;
     } else if ((await saveInboxSpend(deps, item)) !== null) {
       saved += 1;
     }
@@ -197,6 +200,25 @@ async function repeatsSavedAlert(
 async function markPaid(deps: InboxImportDeps, item: InboxPaid): Promise<boolean> {
   const row = await deps.store.tables.spends.get(item.spendId);
   if (row?.status !== 'pending') return false;
+  await deps.actions.update(row.id, { status: 'kept' });
+  return true;
+}
+
+/**
+ * A caught payment confirmed from Android's notification. Its capture may have merged into a
+ * payment seen another way first, which is then the one kept; anything already answered stays.
+ */
+async function markKept(deps: InboxImportDeps, item: InboxKept): Promise<boolean> {
+  const own = await deps.store.tables.spends.get(item.spendId);
+  const merged = own
+    ? []
+    : await deps.store.db.getAllAsync<{ spend_id: string }>(
+        'SELECT spend_id FROM spend_sightings WHERE capture_id = ? LIMIT 1',
+        [item.spendId],
+      );
+  const into = merged[0]?.spend_id;
+  const row = own ?? (into ? await deps.store.tables.spends.get(into) : null);
+  if (row?.status !== 'caught') return false;
   await deps.actions.update(row.id, { status: 'kept' });
   return true;
 }

@@ -24,4 +24,13 @@ export const thSurfaces: { readonly [Key in keyof typeof enSurfaces]: Entry } = 
   'surfaces.context.today': 'วันนี้',
   'surfaces.context.yesterday': 'เมื่อวาน',
   'surfaces.context.safeAfter': 'ตอนนี้วันนี้ใช้ได้ {amount}',
+  'surfaces.context.alertCaught': 'จับได้ {amount} · {name}',
+  'surfaces.context.alertCaughtNoName': 'จับได้ {amount}',
+  'surfaces.context.alertCameIn': 'เงินเข้า {amount} · {name}',
+  'surfaces.context.alertCameInNoName': 'เงินเข้า {amount}',
+  'surfaces.context.alertFrom': 'จากแจ้งเตือน {bank} ของคุณ · อ่านบนเครื่องนี้',
+  'surfaces.context.alertFromNoBank': 'จากแจ้งเตือนธนาคาร · อ่านบนเครื่องนี้',
+  'surfaces.context.alertConfirm': 'ยืนยัน',
+  'surfaces.context.alertEdit': 'แก้ไข',
+  'surfaces.context.alertChannel': 'รายการที่จับได้',
 };

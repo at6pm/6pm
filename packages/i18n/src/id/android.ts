@@ -78,4 +78,17 @@ export const idAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
 
   'onboarding.privacy.phone': 'Hanya di ponsel ini',
   'onboarding.privacy.backupSub': 'Dikunci dengan kunci yang tak pernah meninggalkan ponsel ini',
+
+  'capture.alerts.time': 'Sepuluh detik, sekali',
+  'capture.alerts.step1': 'Nyalakan 6pm di Akses notifikasi',
+  'capture.alerts.step1Chip': 'Akses notifikasi → 6pm',
+  'capture.alerts.step2': 'Biarkan notifikasi aplikasi bank dan dompetmu tetap menyala',
+  'capture.alerts.step3': 'Tiap pembayaran menunggu di Kotak masuk sampai tutup hari',
+  'capture.alerts.step3Chip': 'Kotak masuk',
+  'capture.alerts.tip':
+    'Kode, pembayaran gagal, dan promo dilewati. Pembayaran yang sudah tertangkap lewat email tidak ditambahkan dua kali.',
+  'capture.alerts.privacy':
+    'Dibaca di ponsel ini dan tidak dikirim ke mana pun. 6pm hanya membaca notifikasi bank dan dompetmu.',
+  'capture.alerts.actionAdd': 'Izinkan akses notifikasi',
+  'capture.alerts.actionOpen': 'Setelan akses notifikasi',
 };

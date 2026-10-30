@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Material Symbols' wb_twilight: the sun setting at six, as the design's notification shows it. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+  android:width="24dp"
+  android:height="24dp"
+  android:viewportWidth="24"
+  android:viewportHeight="24">
+  <path
+    android:fillColor="#FFFFFFFF"
+    android:pathData="M16.955,8.662l2.12,-2.122l1.416,1.414l-2.121,2.122zM2,18h20v2H2zM11,4h2v3h-2zM3.543,7.925l1.414,-1.414l2.121,2.122l-1.414,1.414zM5,16h14c0,-3.87 -3.13,-7 -7,-7s-7,3.13 -7,7z" />
+</vector>

@@ -25,4 +25,13 @@ export const koSurfaces: { readonly [Key in keyof typeof enSurfaces]: Entry } = 
   'surfaces.context.today': '오늘',
   'surfaces.context.yesterday': '어제',
   'surfaces.context.safeAfter': '이제 오늘 쓸 수 있는 돈은 {amount}',
+  'surfaces.context.alertCaught': '{amount} · {name} 잡았어요',
+  'surfaces.context.alertCaughtNoName': '{amount} 잡았어요',
+  'surfaces.context.alertCameIn': '{amount} 입금 · {name}',
+  'surfaces.context.alertCameInNoName': '{amount} 입금',
+  'surfaces.context.alertFrom': '{bank} 알림에서 · 이 폰 안에서 읽었어요',
+  'surfaces.context.alertFromNoBank': '은행 알림에서 · 이 폰 안에서 읽었어요',
+  'surfaces.context.alertConfirm': '확인',
+  'surfaces.context.alertEdit': '수정',
+  'surfaces.context.alertChannel': '잡힌 결제',
 };

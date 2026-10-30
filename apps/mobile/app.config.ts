@@ -227,7 +227,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'expo-splash-screen',
       { backgroundColor: LAUNCH_BACKGROUND, dark: { backgroundColor: LAUNCH_BACKGROUND } },
     ],
-    ['expo-build-properties', { android: { compileSdkVersion: 37, targetSdkVersion: 36 } }],
+    // Android 8 at least: bank alerts are read in Android's JavaScript sandbox, which needs it.
+    [
+      'expo-build-properties',
+      { android: { compileSdkVersion: 37, targetSdkVersion: 36, minSdkVersion: 26 } },
+    ],
     [
       'expo-localization',
       { supportedLocales: ['en', 'vi', 'zh-Hans', 'ja', 'ko', 'th', 'id', 'es', 'fr', 'de'] },

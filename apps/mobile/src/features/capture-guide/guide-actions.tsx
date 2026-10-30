@@ -9,6 +9,8 @@ import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body } from '../../ui/type/fonts';
 import { useCompanionToast } from '../companion/use-companion-toast';
+import { nativeReach } from '../surfaces/native-reach';
+import { openAlertAccess } from './alert-access';
 import { BANK_ALERT_SHORTCUT_URL } from './bank-alert-shortcut';
 import { captureColours } from './capture-colours';
 import type { CaptureSource } from './source-status';
@@ -161,6 +163,16 @@ function useGuideActions(
       ];
     }
     case 'alerts': {
+      // Android: the one switch under Notification access, still offered once it is on.
+      if (nativeReach.alertListener) {
+        return [
+          {
+            label: t(on ? 'capture.alerts.actionOpen' : 'capture.alerts.actionAdd'),
+            accent: !on,
+            run: openAlertAccess,
+          },
+        ];
+      }
       const shortcuts: GuideAction = {
         label: t('capture.alerts.actionOpen'),
         accent: false,

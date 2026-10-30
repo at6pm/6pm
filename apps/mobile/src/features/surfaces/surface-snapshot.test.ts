@@ -263,12 +263,22 @@ describe('surfaceSnapshot', () => {
 
 describe('surfaceContext', () => {
   it('keeps {amount} in the safe-after line for the domain to fill', () => {
-    expect(contextStrings(en)).toEqual({
+    expect(contextStrings(en)).toMatchObject({
       today: 'Today',
       yesterday: 'Yesterday',
       safeAfter: 'Safe today is now {amount}',
     });
     expect(contextStrings(vi)['safeAfter']).toContain('{amount}');
+  });
+
+  it('keeps the placeholders the alert listener fills in its caught notification', () => {
+    const strings = contextStrings(vi);
+    expect(strings['alertCaught']).toContain('{amount}');
+    expect(strings['alertCaught']).toContain('{name}');
+    expect(strings['alertCameIn']).toContain('{name}');
+    expect(strings['alertCaughtNoName']).toContain('{amount}');
+    expect(strings['alertFrom']).toContain('{bank}');
+    expect(contextStrings(en)['alertConfirm']).toBe('Confirm');
   });
 
   it('reads the host from the API base', () => {

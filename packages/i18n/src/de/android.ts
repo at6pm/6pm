@@ -83,4 +83,17 @@ export const deAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
 
   'onboarding.privacy.phone': 'Nur auf diesem Handy',
   'onboarding.privacy.backupSub': 'Verschlossen mit einem Schlüssel, der dieses Handy nie verlässt',
+
+  'capture.alerts.time': 'Zehn Sekunden, einmal',
+  'capture.alerts.step1': 'Schalte 6pm unter Benachrichtigungszugriff ein',
+  'capture.alerts.step1Chip': 'Benachrichtigungszugriff → 6pm',
+  'capture.alerts.step2': 'Lass die Mitteilungen deiner Bank- und Wallet-Apps an',
+  'capture.alerts.step3': 'Jede Zahlung wartet im Eingang auf den Tagesabschluss',
+  'capture.alerts.step3Chip': 'Eingang',
+  'capture.alerts.tip':
+    'Codes, fehlgeschlagene Zahlungen und Werbung werden übersprungen. Eine Zahlung, die schon per E-Mail erwischt wurde, kommt nicht doppelt.',
+  'capture.alerts.privacy':
+    'Auf diesem Handy gelesen und nirgendwohin geschickt. 6pm liest nur die Mitteilungen deiner Banken und Wallets.',
+  'capture.alerts.actionAdd': 'Benachrichtigungszugriff erlauben',
+  'capture.alerts.actionOpen': 'Einstellungen für Benachrichtigungszugriff',
 };

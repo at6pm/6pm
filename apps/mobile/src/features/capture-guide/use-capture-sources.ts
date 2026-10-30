@@ -8,6 +8,7 @@ import { useReceiptAddress } from '../receipt-email/receipt-address';
 import { nativeReach } from '../surfaces/native-reach';
 import { useSpendLabels } from '../today/use-spend-rows';
 import { GUIDES, type GuideContent } from './guide-content';
+import { useAlertAccess } from './alert-access';
 import { lastAlertLine, useLastAlert } from './last-alert';
 import { onCount, sourceStatuses, type CaptureSource, type SourceStatus } from './source-status';
 
@@ -47,6 +48,7 @@ export function useCaptureSources(): {
   const labels = useSpendLabels();
   const home = useHomeCurrency();
   const lastAlert = useLastAlert();
+  const alertAccess = useAlertAccess();
   return useMemo(() => {
     const statuses = sourceStatuses([...cycleSpends, ...waitingBefore], home.code).filter(
       (status) => NEEDS[status.source] !== false,
@@ -61,10 +63,20 @@ export function useCaptureSources(): {
         const off = t('receiptEmail.deviceMode');
         return { ...status, on: false, guide, name: t(guide.name), sub: off, status: off };
       }
-      // The shortcut notes every alert it reads, even one it skips: that alone says it runs.
+      // On Android the alerts are on exactly while Notification access is.
+      if (status.source === 'alerts' && alertAccess === false) {
+        const off = t('capture.status.off');
+        return { ...status, on: false, guide, name: t(guide.name), sub: t(guide.sub), status: off };
+      }
+      // The shortcut, or Android's listener, notes every alert it reads, even one it skips: that
+      // alone says it runs.
       if (status.source === 'alerts' && lastAlert !== null) {
         const line = lastAlertLine(lastAlert, t, labels.time);
         return { ...status, on: true, guide, name: t(guide.name), sub: line, status: line };
+      }
+      if (status.source === 'alerts' && alertAccess === true) {
+        const on = t('capture.status.on');
+        return { ...status, on: true, guide, name: t(guide.name), sub: t(guide.sub), status: on };
       }
       return {
         ...status,
@@ -79,7 +91,17 @@ export function useCaptureSources(): {
       total: sources.length,
     });
     return { sources, summary, emailAddress, emailAvailable };
-  }, [cycleSpends, waitingBefore, t, labels, emailAddress, emailAvailable, home, lastAlert]);
+  }, [
+    cycleSpends,
+    waitingBefore,
+    t,
+    labels,
+    emailAddress,
+    emailAvailable,
+    home,
+    lastAlert,
+    alertAccess,
+  ]);
 }
 
 type T = ReturnType<typeof useI18n>['t'];

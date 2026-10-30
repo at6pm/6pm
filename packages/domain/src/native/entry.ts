@@ -9,6 +9,7 @@ import {
 import { receiptReadingOrder } from '../capture/bank-receipt';
 import { currencyAt } from '../capture/photo-place';
 import { readReceipt } from '../capture/read-receipt';
+import { BANKS } from '../vietqr/bank-catalogue';
 import { contextMoney } from './context-money';
 import { buildBankAlert } from './log-bank-alert';
 import { buildLogSpend } from './log-spend';
@@ -248,4 +249,14 @@ export function logBankAlert(
     };
     return JSON.stringify(nothing);
   }
+}
+
+/**
+ * The Android packages whose notifications are read as bank and wallet alerts, as a JSON array:
+ * every bank and wallet in the catalogue with an app on Google Play. Android's notification
+ * listener reads nothing from any other app.
+ */
+export function alertApps(): string {
+  const packages = BANKS.flatMap((bank) => (bank.android ? [bank.android.package] : []));
+  return JSON.stringify([...new Set(packages)]);
 }

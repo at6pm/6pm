@@ -24,4 +24,13 @@ export const esSurfaces: { readonly [Key in keyof typeof enSurfaces]: Entry } = 
   'surfaces.context.today': 'Hoy',
   'surfaces.context.yesterday': 'Ayer',
   'surfaces.context.safeAfter': 'Ahora puedes gastar {amount} hoy',
+  'surfaces.context.alertCaught': 'Pillado {amount} · {name}',
+  'surfaces.context.alertCaughtNoName': 'Pillado {amount}',
+  'surfaces.context.alertCameIn': 'Entran {amount} · {name}',
+  'surfaces.context.alertCameInNoName': 'Entran {amount}',
+  'surfaces.context.alertFrom': 'De tu aviso de {bank} · leído en este teléfono',
+  'surfaces.context.alertFromNoBank': 'De un aviso del banco · leído en este teléfono',
+  'surfaces.context.alertConfirm': 'Confirmar',
+  'surfaces.context.alertEdit': 'Editar',
+  'surfaces.context.alertChannel': 'Pagos pillados',
 };

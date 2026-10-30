@@ -71,4 +71,17 @@ export const viAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
 
   'onboarding.privacy.phone': 'Chỉ trên điện thoại này',
   'onboarding.privacy.backupSub': 'Khoá bằng chìa không bao giờ rời máy này',
+
+  'capture.alerts.time': 'Mười giây, một lần',
+  'capture.alerts.step1': 'Bật 6pm trong Quyền truy cập thông báo',
+  'capture.alerts.step1Chip': 'Quyền truy cập thông báo → 6pm',
+  'capture.alerts.step2': 'Để thông báo của ứng dụng ngân hàng và ví luôn bật',
+  'capture.alerts.step3': 'Mỗi khoản chờ trong Hộp thư đến lúc chốt',
+  'capture.alerts.step3Chip': 'Hộp thư',
+  'capture.alerts.tip':
+    'Mã OTP, giao dịch không thành công và khuyến mãi được bỏ qua. Khoản đã bắt qua email sẽ không bị ghi hai lần.',
+  'capture.alerts.privacy':
+    'Đọc ngay trên máy và không gửi đi đâu cả. 6pm chỉ đọc thông báo của ngân hàng và ví của bạn.',
+  'capture.alerts.actionAdd': 'Cho phép truy cập thông báo',
+  'capture.alerts.actionOpen': 'Cài đặt truy cập thông báo',
 };

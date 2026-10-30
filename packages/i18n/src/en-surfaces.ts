@@ -22,4 +22,13 @@ export const enSurfaces = {
   'surfaces.context.today': 'Today',
   'surfaces.context.yesterday': 'Yesterday',
   'surfaces.context.safeAfter': 'Safe today is now {amount}',
+  'surfaces.context.alertCaught': 'Caught {amount} · {name}',
+  'surfaces.context.alertCaughtNoName': 'Caught {amount}',
+  'surfaces.context.alertCameIn': '{amount} in · {name}',
+  'surfaces.context.alertCameInNoName': '{amount} in',
+  'surfaces.context.alertFrom': 'From your {bank} notification · read on this phone',
+  'surfaces.context.alertFromNoBank': 'From a bank notification · read on this phone',
+  'surfaces.context.alertConfirm': 'Confirm',
+  'surfaces.context.alertEdit': 'Edit',
+  'surfaces.context.alertChannel': 'Caught payments',
 } as const;

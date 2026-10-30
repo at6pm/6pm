@@ -27,10 +27,16 @@ interface SurfacesNative {
   startActivity(kind: ActivityKind, key: string, stateJson: string): Promise<string | null>;
   updateActivity(id: string, stateJson: string): Promise<void>;
   endActivity(id: string, finalStateJson: string | null): Promise<void>;
+  /** Android: whether this phone can read bank alerts (its WebView runs the domain sandbox). */
+  alertsSupported?(): boolean;
+  /** Android: whether 6pm is turned on under Notification access. */
+  alertAccess?(): boolean;
+  /** Android: opens Notification access at 6pm's switch. */
+  openAlertAccess?(): Promise<void>;
 }
 
 /**
- * The App Group bridge (`modules/surfaces/ios`), or null where it is not built in: tests, and
- * a platform without the extensions.
+ * The App Group bridge (`modules/surfaces/ios`), or on Android the files the bank alert listener
+ * shares with the app (`modules/surfaces/android`); null where it is not built in: tests, and web.
  */
 export const surfaces = requireOptionalNativeModule<SurfacesNative>('Surfaces');

@@ -1,6 +1,7 @@
 import type { StringKey } from '@6pm/i18n';
 
 import { useI18n } from '../../i18n/i18n';
+import { nativeReach } from '../surfaces/native-reach';
 import { BANK_ALERT_SHORTCUT_URL } from './bank-alert-shortcut';
 import type { CaptureSource } from './source-status';
 import { AlertTestFrame, CatchActionFrame, ChooseAppsFrame } from './walkthrough/alert-frames';
@@ -34,7 +35,9 @@ interface StepPlan {
 export type WalkedSource = Extract<CaptureSource, 'wallet' | 'email' | 'share' | 'alerts'>;
 
 export function isWalked(source: CaptureSource): source is WalkedSource {
-  return source === 'wallet' || source === 'email' || source === 'share' || source === 'alerts';
+  // Android's listener is one switch in its settings: three short steps say it.
+  if (source === 'alerts') return !nativeReach.alertListener;
+  return source === 'wallet' || source === 'email' || source === 'share';
 }
 
 /**

@@ -24,4 +24,13 @@ export const viSurfaces: { readonly [Key in keyof typeof enSurfaces]: Entry } = 
   'surfaces.context.today': 'Hôm nay',
   'surfaces.context.yesterday': 'Hôm qua',
   'surfaces.context.safeAfter': 'Hôm nay giờ còn tiêu được {amount}',
+  'surfaces.context.alertCaught': 'Đã bắt {amount} · {name}',
+  'surfaces.context.alertCaughtNoName': 'Đã bắt {amount}',
+  'surfaces.context.alertCameIn': '{amount} vào · {name}',
+  'surfaces.context.alertCameInNoName': '{amount} vào',
+  'surfaces.context.alertFrom': 'Từ thông báo {bank} của bạn · đọc ngay trên máy',
+  'surfaces.context.alertFromNoBank': 'Từ một thông báo ngân hàng · đọc ngay trên máy',
+  'surfaces.context.alertConfirm': 'Xác nhận',
+  'surfaces.context.alertEdit': 'Sửa',
+  'surfaces.context.alertChannel': 'Khoản đã bắt',
 };

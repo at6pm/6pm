@@ -86,4 +86,17 @@ export const esAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
 
   'onboarding.privacy.phone': 'Solo en este teléfono',
   'onboarding.privacy.backupSub': 'Cerradas con una clave que nunca sale de este teléfono',
+
+  'capture.alerts.time': 'Diez segundos, una vez',
+  'capture.alerts.step1': 'Activa 6pm en Acceso a notificaciones',
+  'capture.alerts.step1Chip': 'Acceso a notificaciones → 6pm',
+  'capture.alerts.step2': 'Deja activadas las notificaciones de tus apps de banco y billetera',
+  'capture.alerts.step3': 'Cada pago espera en tu Bandeja hasta el cierre',
+  'capture.alerts.step3Chip': 'Bandeja',
+  'capture.alerts.tip':
+    'Los códigos, los pagos fallidos y las promos se saltan. Un pago que ya pilló un correo no se añade dos veces.',
+  'capture.alerts.privacy':
+    'Se leen en este teléfono y no se envían a ningún sitio. 6pm solo lee las notificaciones de tus bancos y billeteras.',
+  'capture.alerts.actionAdd': 'Permitir acceso a notificaciones',
+  'capture.alerts.actionOpen': 'Ajustes de acceso a notificaciones',
 };

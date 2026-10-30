@@ -16,14 +16,26 @@ export function hostOf(apiBase: unknown): string | null {
 }
 
 /**
- * The words the domain bundle fills in for the extensions' cards, in the app's language.
- * `safeAfter` keeps its `{amount}` for the domain to fill.
+ * The words the domain bundle fills in for the extensions' cards, in the app's language, and
+ * those of Android's caught notification. `safeAfter` keeps its `{amount}` for the domain to
+ * fill; the notification's keep `{amount}`, `{name}` and `{bank}` for the alert listener.
  */
 export function contextStrings(t: I18n['t']): SurfaceContext['strings'] {
+  const amount = '{amount}';
+  const name = '{name}';
   return {
     today: t('surfaces.context.today'),
     yesterday: t('surfaces.context.yesterday'),
-    safeAfter: t('surfaces.context.safeAfter', { amount: '{amount}' }),
+    safeAfter: t('surfaces.context.safeAfter', { amount }),
+    alertCaught: t('surfaces.context.alertCaught', { amount, name }),
+    alertCaughtNoName: t('surfaces.context.alertCaughtNoName', { amount }),
+    alertCameIn: t('surfaces.context.alertCameIn', { amount, name }),
+    alertCameInNoName: t('surfaces.context.alertCameInNoName', { amount }),
+    alertFrom: t('surfaces.context.alertFrom', { bank: '{bank}' }),
+    alertFromNoBank: t('surfaces.context.alertFromNoBank'),
+    alertConfirm: t('surfaces.context.alertConfirm'),
+    alertEdit: t('surfaces.context.alertEdit'),
+    alertChannel: t('surfaces.context.alertChannel'),
   };
 }
 
