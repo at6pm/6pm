@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-import type { InboxItem, InboxSpend } from '@6pm/domain';
+import { heardAlertId, type InboxItem, type InboxSpend } from '@6pm/domain';
 
 import { openMemoryDb } from '../features/backup/test/memory-db';
 import { importInbox, type InboxImportDeps } from './inbox-import';
@@ -320,5 +320,129 @@ describe('importInbox: bank alerts', () => {
     await run([item]);
     await run([item]);
     expect(store.getSnapshot().cycleSpends).toHaveLength(1);
+  });
+
+  const notice = (balance: string) => ({
+    app: 'MB Bank',
+    body: `TK 0123xxx456|GD: -45,000VND 11/10/26 12:30|SD: ${balance}VND|ND: Thanh toan QR PHO HOA`,
+  });
+  const heard = (balance: string, ms: number) =>
+    alert({
+      id: heardAlertId(notice(balance), crypto.randomUUID()),
+      at: new Date(new Date(2026, 9, 11, 12, 30, 21, 374).getTime() + ms).toISOString(),
+    });
+
+  it('keeps one spend when one notification is caught twice, a minute apart', async () => {
+    await run([heard('1,234,567', 0), heard('1,234,567', 61_000)]);
+    expect(store.getSnapshot().cycleSpends).toHaveLength(1);
+    // Caught again on a later open, it is still the one already saved.
+    await run([heard('1,234,567', 30_000)]);
+    expect(store.getSnapshot().cycleSpends).toHaveLength(1);
+  });
+
+  it('keeps two payments of the same amount a moment apart, told apart by the balance', async () => {
+    await run([heard('1,234,567', 0), heard('1,189,567', 20_000)]);
+    expect(store.getSnapshot().cycleSpends).toHaveLength(2);
+  });
+
+  it('knows an alert caught twice before ids carried a fingerprint, by its instant', async () => {
+    const delivered = new Date(2026, 9, 11, 12, 30, 21, 374).toISOString();
+    await run([alert({ at: delivered }), alert({ at: delivered })]);
+    expect(store.getSnapshot().cycleSpends).toHaveLength(1);
+  });
+
+  it('adds no second sighting when an alert merged into an email comes again', async () => {
+    const emailed = await actions.addSpend({
+      amount: 45_000,
+      categoryId: 'food',
+      merchant: 'Phở Hòa',
+      source: 'email',
+      status: 'caught',
+      detail: 'mbebanking@mbbank.com.vn',
+      at: new Date(2026, 9, 11, 12, 30, 5),
+    });
+    await run([heard('1,234,567', 0)]);
+    await run([heard('1,234,567', 45_000)]);
+    expect(store.getSnapshot().cycleSpends.map((s) => s.id)).toEqual([emailed.id]);
+    const trail = await actions.sightings(emailed.id);
+    expect(trail.map((s) => s.source)).toEqual(['email', 'alert']);
+  });
+
+  const transfer = (bank: string, direction: 'in' | 'out', seconds: number) =>
+    alert({
+      merchant: 'TRAN VAN AN chuyen tien',
+      amount: 1_000_000,
+      receipt: { bank, namingLines: [] },
+      direction,
+      at: new Date(2026, 9, 11, 15, 23, seconds).toISOString(),
+    });
+  const statuses = () =>
+    store
+      .getSnapshot()
+      .cycleSpends.map((s) => s.status)
+      .sort();
+
+  it('sets aside money moved between two of the person’s own banks, either order', async () => {
+    await run([transfer('MB Bank', 'out', 0), transfer('Techcombank', 'in', 5)]);
+    expect(statuses()).toEqual(['skipped', 'skipped']);
+    const rows = store.getSnapshot().cycleSpends;
+    expect(rows.every((s) => s.previousStatus === 'caught')).toBe(true);
+  });
+
+  it('pairs the second alert on a later open too, in money-in-first order', async () => {
+    await run([transfer('Techcombank', 'in', 0)]);
+    await run([transfer('MB Bank', 'out', 30)]);
+    expect(statuses()).toEqual(['skipped', 'skipped']);
+  });
+
+  it('keeps both when the alerts are a minute and a second apart', async () => {
+    await run([transfer('MB Bank', 'out', 0), transfer('Techcombank', 'in', 61)]);
+    expect(statuses()).toEqual(['caught', 'caught']);
+  });
+
+  it('keeps both when one bank says money went out and came in', async () => {
+    await run([transfer('MB Bank', 'out', 0), transfer('MB Bank', 'in', 5)]);
+    expect(statuses()).toEqual(['caught', 'caught']);
+  });
+
+  it('never changes an alert the user already kept', async () => {
+    const first = transfer('MB Bank', 'out', 0);
+    await run([first]);
+    await actions.setStatus(first.id, 'kept');
+    await run([transfer('Techcombank', 'in', 5)]);
+    expect(statuses()).toEqual(['caught', 'kept']);
+  });
+
+  it('names a payment by the email’s payee and category when the alert came first', async () => {
+    await store.tables.categories.put({
+      id: 'shopping',
+      name: 'shopping',
+      icon: 'bag',
+      hue: 200,
+      countsDaily: true,
+      sort: 1,
+      archivedAt: null,
+    });
+    await store.load(TODAY);
+    const memo = { bank: 'MB Bank', namingLines: [], memo: 'Techcombank QR' };
+    const first = alert({ merchant: 'Techcombank QR', receipt: memo, at: at(0) });
+    await run([first]);
+    await actions.captureSpend({
+      amount: 45_000,
+      categoryId: 'shopping',
+      merchant: 'CONG TY TNHH VONG TRON DO',
+      source: 'email',
+      status: 'caught',
+      detail: 'mbebanking@mbbank.com.vn',
+      at: new Date(at(1)),
+    });
+    const rows = store.getSnapshot().cycleSpends;
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({
+      id: first.id,
+      source: 'alert',
+      merchant: 'CONG TY TNHH VONG TRON DO',
+      categoryId: 'shopping',
+    });
   });
 });

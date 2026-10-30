@@ -1,11 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  ABROAD_NOTICE_WINDOW_MS,
   DUPLICATE_WINDOW_MS,
   FEE_SLACK_RATIO,
   findDuplicate,
   mayBeSamePayment,
+  mergedNaming,
   mergedStatus,
+  namesNoPayee,
   NOTICE_LATE_WINDOW_MS,
   QR_RECEIPT_WINDOW_MS,
   type SightedSpend,
@@ -339,6 +342,46 @@ describe('findDuplicate', () => {
     expect(findDuplicate({ ...receipt, merchant: 'Grok' }, [debit])).toBeNull();
   });
 
+  it('matches the card’s email and the shop’s receipt for a charge abroad hours apart', () => {
+    // The bank's card email at 18:37, Cloudflare's own receipt at 19:44.
+    const card = {
+      ...base,
+      source: 'email' as const,
+      status: 'caught' as const,
+      amount: 0,
+      foreignAmount: { currency: 'USD', amount: 19.98 },
+      merchant: 'CLOUDFLARE +18889935273 US',
+      detail: 'info@info.vietcombank.com.vn',
+    };
+    const receipt = {
+      amount: 0,
+      source: 'email' as const,
+      at: at(67 * 60_000),
+      foreignAmount: { currency: 'USD', amount: 19.98 },
+      merchant: 'Cloudflare',
+      detail: 'noreply@notify.cloudflare.com',
+    };
+    expect(findDuplicate(receipt, [card])?.id).toBe('a');
+    // Either way round, and up to six hours apart.
+    const shop = { ...card, ...receipt, id: 'b', at: base.at, status: 'caught' as const };
+    expect(findDuplicate({ ...card, at: at(67 * 60_000) }, [shop])?.id).toBe('b');
+    expect(findDuplicate({ ...receipt, at: at(-ABROAD_NOTICE_WINDOW_MS) }, [card])?.id).toBe('a');
+    expect(findDuplicate({ ...receipt, at: at(ABROAD_NOTICE_WINDOW_MS + 1) }, [card])).toBeNull();
+    // Only when both name one payee, to the cent, in the same currency, from two senders.
+    expect(findDuplicate({ ...receipt, merchant: '' }, [card])).toBeNull();
+    expect(findDuplicate({ ...receipt, merchant: 'Vercel' }, [card])).toBeNull();
+    const cents = { currency: 'USD', amount: 19.99 };
+    expect(findDuplicate({ ...receipt, foreignAmount: cents }, [card])).toBeNull();
+    const euros = { currency: 'EUR', amount: 19.98 };
+    expect(findDuplicate({ ...receipt, foreignAmount: euros }, [card])).toBeNull();
+    expect(findDuplicate({ ...receipt, detail: card.detail }, [card])).toBeNull();
+    // A charge at home keeps the bank's fifteen minutes.
+    const home = { ...card, amount: 499_000, foreignAmount: null };
+    expect(findDuplicate({ ...receipt, amount: 499_000, foreignAmount: null }, [home])).toBeNull();
+    // A shared receipt is not a notice: its own windows apply.
+    expect(findDuplicate({ ...receipt, source: 'shared' }, [card])).toBeNull();
+  });
+
   it('never merges cash, which no other source can have seen', () => {
     expect(findDuplicate({ amount: 45_000, source: 'cash', at: at(0) }, [base])).toBeNull();
     const cash = { ...base, source: 'cash' as const, status: 'kept' as const };
@@ -359,6 +402,118 @@ describe('findDuplicate', () => {
       findDuplicate({ amount: 0, source: 'email', at: at(0) }, [{ ...base, amount: 0 }]),
     ).toBeNull();
     expect(findDuplicate({ amount: 45_000, source: 'email', at: 'nope' }, [base])).toBeNull();
+  });
+});
+
+describe('namesNoPayee', () => {
+  it('says a blank, a bank or a transfer label names nobody', () => {
+    for (const name of [
+      '',
+      '  ',
+      'Techcombank QR',
+      'MBCT',
+      'MB Bank',
+      'Chuyển tiền',
+      'CK 123456',
+    ]) {
+      expect(namesNoPayee(name)).toBe(true);
+    }
+  });
+  it('says a shop or a person is a payee', () => {
+    for (const name of [
+      'Cloudflare',
+      'Phúc Long',
+      'BUI QUOC KHANH',
+      'MBCT tang ban',
+      'Cake House',
+    ]) {
+      expect(namesNoPayee(name)).toBe(false);
+    }
+  });
+});
+
+describe('mergedNaming', () => {
+  const alert = {
+    merchant: '',
+    categoryId: 'food',
+    source: 'alert' as const,
+    status: 'caught' as const,
+  };
+  const email = { merchant: 'Cloudflare', categoryId: 'shopping', source: 'email' as const };
+
+  it('takes the email’s payee and category over an alert that named nobody, alert first', () => {
+    expect(mergedNaming(alert, email)).toEqual({ merchant: 'Cloudflare', categoryId: 'shopping' });
+    expect(mergedNaming({ ...alert, merchant: 'MBCT Techcombank' }, email)).toEqual({
+      merchant: 'Cloudflare',
+      categoryId: 'shopping',
+    });
+  });
+
+  it('takes a receipt’s name over the payee an alert read', () => {
+    const read = { ...alert, merchant: 'PHUC LONG', categoryId: 'food' };
+    expect(
+      mergedNaming(read, {
+        merchant: 'Phúc Long Coffee & Tea',
+        categoryId: 'drinks',
+        source: 'email',
+      }),
+    ).toEqual({ merchant: 'Phúc Long Coffee & Tea', categoryId: 'drinks' });
+  });
+
+  it('keeps the email’s payee and category when the alert comes second', () => {
+    const first = { ...email, status: 'caught' as const };
+    expect(mergedNaming(first, alert)).toEqual({ merchant: 'Cloudflare', categoryId: 'shopping' });
+    expect(mergedNaming(first, { ...alert, merchant: 'Techcombank QR' })).toEqual({
+      merchant: 'Cloudflare',
+      categoryId: 'shopping',
+    });
+    expect(mergedNaming(first, { ...alert, merchant: 'CLOUDFLARE' })).toEqual({
+      merchant: 'Cloudflare',
+      categoryId: 'shopping',
+    });
+  });
+
+  it('names a spend already kept, without moving it from the category the user kept it in', () => {
+    expect(mergedNaming({ ...alert, status: 'kept' }, email)).toEqual({
+      merchant: 'Cloudflare',
+      categoryId: 'food',
+    });
+  });
+
+  it('spells the payee as the shop does, keeping the category', () => {
+    const card = { ...email, merchant: 'CLOUDFLARE +18889935273 US', status: 'caught' as const };
+    expect(mergedNaming(card, { ...email, categoryId: 'fun' })).toEqual({
+      merchant: 'Cloudflare',
+      categoryId: 'shopping',
+    });
+    // A name in capitals for another payee is not respelt.
+    expect(mergedNaming(card, { ...email, merchant: 'Vercel' })).toEqual({
+      merchant: 'CLOUDFLARE +18889935273 US',
+      categoryId: 'shopping',
+    });
+  });
+
+  it('names money in by the shop that gave it back, whichever came first', () => {
+    const alert = {
+      merchant: 'MBVCB.16785000.012345.KHO TAI KHOAN',
+      categoryId: 'food',
+      source: 'alert' as const,
+    };
+    const refund = { merchant: 'Kho Tài Khoản', categoryId: 'shopping', source: 'email' as const };
+    expect(mergedNaming({ ...alert, status: 'caught' }, refund).merchant).toBe('Kho Tài Khoản');
+    expect(mergedNaming({ ...refund, status: 'caught' }, alert).merchant).toBe('Kho Tài Khoản');
+  });
+
+  it('keeps what it had between two blanks or two names that say as much', () => {
+    expect(mergedNaming(alert, { ...alert, categoryId: 'fun' })).toEqual({
+      merchant: '',
+      categoryId: 'food',
+    });
+    const named = { ...email, merchant: 'Highlands Coffee', status: 'caught' as const };
+    expect(mergedNaming(named, email)).toEqual({
+      merchant: 'Highlands Coffee',
+      categoryId: 'shopping',
+    });
   });
 });
 

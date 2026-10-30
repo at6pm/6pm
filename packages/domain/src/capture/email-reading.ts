@@ -2,12 +2,15 @@ import { EMAIL_CATEGORY_IDS, type EmailCategoryId } from '../contracts/receipt-e
 import { currencyCodeSchema, receiptMinorUnits } from '../contracts/receipt-read';
 import { bankNamedIn } from './bank-alert-senders';
 import { cleanMemo } from './bank-receipt';
+import { namesNoPayee } from './duplicate';
 import { cleanPayeeName, isAdvert, subjectIsNotPayment } from './receipt-email-signs';
 import { foldWords } from './spoken-spend';
 import {
   emailOrigin,
   emailPaidAt,
+  labelledTransfer,
   parseReceiptEmail,
+  type LabelledTransfer,
   type EmailReceipt,
   type ReceiptEmail,
   type ReceiptEmailOptions,
@@ -166,6 +169,24 @@ function payeeNotTitle(
   if (named) return rest;
   return parseReceiptEmail(email, options)?.merchant ?? '';
 }
+/**
+ * For a payment, the payee a transfer email labels ("Người thụ hưởng"), in place of a name the
+ * model left blank, gave as only a bank's or a transfer's label, or copied from the transfer's
+ * own words ("BUI VAN AN chuyen tien"). Any other name is kept as the model gave it.
+ */
+function payeeOverMemo(
+  merchant: string,
+  reading: EmailModelReading,
+  transfer: LabelledTransfer,
+): string {
+  if (reading.kind !== 'payment' || transfer.payee === '') return merchant;
+  const name = foldWords(merchant);
+  const memos = [reading.note, transfer.memo].map((memo) => foldWords(memo ?? ''));
+  // The memo itself, or its first words (the sender's own name before "chuyen tien").
+  const fromMemo = name.trim() !== '' && memos.some((memo) => memo.startsWith(name));
+  return namesNoPayee(merchant) || fromMemo ? transfer.payee : merchant;
+}
+
 const printedLocalTime = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/;
 const isCategory = (id: string): id is EmailCategoryId =>
   (EMAIL_CATEGORY_IDS as readonly string[]).includes(id);
@@ -173,7 +194,9 @@ const isCategory = (id: string): id is EmailCategoryId =>
 /**
  * The spend (or money in) a model's reading describes, or null when it is neither a payment, a
  * refund nor money that came in, or its amount cannot be trusted: not printed in the email, no
- * currency, or not a positive amount.
+ * currency, or not a positive amount. A transfer whose labels show the person's own accounts on
+ * both sides is null too, and a payment's payee is the one the transfer labels when the model
+ * named only the transfer's words (`payeeOverMemo`).
  */
 export function emailSpendOf(
   reading: EmailModelReading,
@@ -190,6 +213,10 @@ export function emailSpendOf(
   if (printed === '' || !squash(origin.lines.join('\n')).includes(printed)) return null;
   const amount = receiptMinorUnits(reading.amount, currency.data);
   if (amount === null || amount <= 0) return null;
+  // The rules know a transfer between the person's own accounts by the names on both sides,
+  // whatever the model made of it.
+  const transfer = labelledTransfer(email);
+  if (transfer.own) return null;
 
   // A time that is the email's own UTC timestamp was copied from its header, not printed in it.
   const copied = email.date !== null && reading.at?.trim() === email.date.slice(0, 19);
@@ -206,10 +233,11 @@ export function emailSpendOf(
     amount,
     currency: currency.data,
     category: isCategory(category) ? category : null,
-    merchant: cleanPayeeName(payeeNotTitle(reading.merchant?.trim() ?? '', email, options)).slice(
-      0,
-      120,
-    ),
+    merchant: payeeOverMemo(
+      cleanPayeeName(payeeNotTitle(reading.merchant?.trim() ?? '', email, options)),
+      reading,
+      transfer,
+    ).slice(0, 120),
     at: paidAt,
     from: origin.sender?.address ?? null,
     bank: origin.bank,

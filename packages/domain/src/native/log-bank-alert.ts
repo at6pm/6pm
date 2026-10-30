@@ -1,3 +1,4 @@
+import { heardAlertId } from '../capture/alert-repeat';
 import { readBankAlert, type BankAlertInput } from '../capture/bank-alert';
 import {
   SURFACES_VERSION,
@@ -21,7 +22,9 @@ const FUTURE_SLACK_MS = 5 * 60_000;
  * words. Money in is filed under no category: the close asks what it was. An amount in another
  * currency than home is priced at the app's last rate, or waits for one, as a Wallet tap does.
  * A skipped alert (a code, a failed payment, a promotion, a balance or security notice) leaves
- * no item. Either way `last` says what was read, for Settings to show.
+ * no item. Either way `last` says what was read, for Settings to show. The item's id carries the
+ * notification's fingerprint (`heardAlertId`, the rest from `id`), so the app knows the same
+ * notification caught twice.
  */
 export function buildBankAlert(
   input: BankAlertInput,
@@ -82,7 +85,7 @@ export function buildBankAlert(
   return {
     item: {
       v: SURFACES_VERSION,
-      id,
+      id: heardAlertId(input, id),
       kind: 'spend',
       source: 'alert',
       status: 'caught',

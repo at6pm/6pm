@@ -29,6 +29,8 @@ export * from './close/close-flow';
 export * from './close/close-queue';
 export * from './capture/bill-payment';
 export * from './capture/duplicate';
+export * from './capture/alert-repeat';
+export * from './capture/own-transfer';
 export * from './capture/merchant-rule';
 export * from './capture/inbox';
 export * from './capture/needs-a-look';

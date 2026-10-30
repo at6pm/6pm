@@ -74,3 +74,12 @@ export function bankNamedIn(text: string): BankInfo | null {
   }
   return found?.bank ?? null;
 }
+
+/** Some text folded (`foldWords`) with every bank and wallet name taken out, word for word. */
+export function withoutBankNames(text: string): string {
+  let folded = foldWords(text);
+  for (const [name] of NAMES) {
+    while (folded.includes(` ${name} `)) folded = folded.replace(` ${name} `, ' ');
+  }
+  return folded;
+}

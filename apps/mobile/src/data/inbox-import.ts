@@ -1,11 +1,17 @@
 import {
+  ALERT_REPEAT_WINDOW_MS,
   inboxItemSchema,
   inboxItemToNewSpend,
   isRepeatTap,
   isSameReceipt,
   likelyCategoriesAt,
+  ownTransferPair,
+  receiptDetail,
+  repeatsAlert,
+  type AlertSighting,
   type InboxPaid,
   type InboxSpend,
+  type SpendRow,
   type SpendSource,
 } from '@6pm/domain';
 
@@ -112,6 +118,7 @@ export async function saveInboxSpend(
   const snap = store.getSnapshot();
   const recent = [...snap.cycleSpends, ...snap.waitingBefore].filter((s) => s.status !== 'deleted');
   if (recent.some((s) => isRepeatTap(incoming, s) || isSameReceipt(incoming, s))) return null;
+  if (await repeatsSavedAlert(store, incoming, recent)) return null;
 
   const item = incoming.source === 'shared' ? await deps.enrich(incoming) : incoming;
   const categoryIds = new Set(snap.categories.map((c) => c.id));
@@ -123,7 +130,67 @@ export async function saveInboxSpend(
     categoryIds,
     ...(deps.home ? { home: deps.home } : {}),
   });
-  return (await actions.captureSpend(draft)).row.id;
+  const pair = ownTransferPair(
+    {
+      source: draft.source,
+      at: draft.at.toISOString(),
+      amount: draft.amount,
+      detail: draft.detail,
+      direction: draft.direction,
+      foreignAmount: draft.foreignAmount,
+    },
+    recent,
+  );
+  const captured = await actions.captureSpend(draft);
+  // Money moved between the person's own accounts: both alerts are set aside as not spending
+  // and not money in, struck through where the day lists them, and undone like "Not mine".
+  const other = pair ? await store.tables.spends.get(pair.id) : null;
+  if (other?.status === 'caught' && !captured.merged && captured.row.status === 'caught') {
+    await actions.setStatus(captured.row.id, 'skipped');
+    await actions.setStatus(other.id, 'skipped');
+  }
+  return captured.row.id;
+}
+
+/**
+ * A bank notification caught a second time (`repeatsAlert`): the same as an alert saved as a
+ * spend, or as a sighting on a payment seen another way first.
+ */
+async function repeatsSavedAlert(
+  store: MoneyStore,
+  incoming: InboxSpend,
+  recent: readonly SpendRow[],
+): Promise<boolean> {
+  if (incoming.source !== 'alert') return false;
+  const arriving: AlertSighting = {
+    source: incoming.source,
+    id: incoming.id,
+    at: incoming.at,
+    detail: receiptDetail(incoming.receipt),
+    amount: incoming.amount,
+  };
+  if (recent.some((s) => repeatsAlert(arriving, s))) return true;
+  const at = Date.parse(incoming.at);
+  if (Number.isNaN(at)) return false;
+  const around = (ms: number) => new Date(at + ms).toISOString();
+  const seen = await store.db.getAllAsync<{
+    capture_id: string | null;
+    seen_at: string;
+    detail: string | null;
+  }>(
+    `SELECT s.capture_id, s.seen_at, s.detail FROM spend_sightings s
+      JOIN spends p ON p.id = s.spend_id
+      WHERE s.source = 'alert' AND p.status != 'deleted' AND s.seen_at BETWEEN ? AND ?`,
+    [around(-ALERT_REPEAT_WINDOW_MS), around(ALERT_REPEAT_WINDOW_MS)],
+  );
+  return seen.some((row) =>
+    repeatsAlert(arriving, {
+      source: 'alert',
+      id: row.capture_id,
+      at: row.seen_at,
+      detail: row.detail,
+    }),
+  );
 }
 
 /** A waiting payment the Live Activity says went through; anything already answered stays. */
