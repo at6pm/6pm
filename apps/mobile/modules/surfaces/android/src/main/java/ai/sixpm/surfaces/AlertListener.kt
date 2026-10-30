@@ -42,9 +42,21 @@ class AlertListener : NotificationListenerService() {
 
     fun component(context: Context) = ComponentName(context, AlertListener::class.java)
 
+    /**
+     * The notifications already read, by key and post time: Android can hand one notification to
+     * the listener twice (a second binding after the app is updated or access is switched again),
+     * and it is read once. An update to a notification posts again with a new time and is read.
+     */
+    private val seen = object : LinkedHashMap<String, Unit>(SEEN_KEPT, 0.75f, false) {
+      override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, Unit>?) =
+        size > SEEN_KEPT
+    }
+    private const val SEEN_KEPT = 64
+
     private fun handle(context: Context, sbn: StatusBarNotification) {
       val apps = watched ?: loadWatched(context) ?: return
       if (sbn.packageName !in apps) return
+      if (seen.put("${sbn.key}@${sbn.postTime}", Unit) != null) return
       val notification = sbn.notification ?: return
       val flags = notification.flags
       // A group's summary repeats its alerts; an ongoing one is a download or a call, not money.

@@ -47,7 +47,7 @@ export const zhHansAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } 
   'max.welcome.win.more': '存钱罐、旅行和年度纪念册',
 
   'privacy.ai.device.title': '只在这台手机上',
-  'privacy.ai.device.unavailable': '这台手机的内存不够运行自己的模型。',
+  'privacy.ai.device.unavailable': '在 Android 上，6pm 没有可在手机上运行的模型。',
   'settings.ai.device': '在这台手机上',
   'privacy.leaves.device.none': '不涉及任何 AI。一切都在这台手机上算好。',
   'receiptEmail.deviceMode': 'AI 只在这台手机上运行时关闭',

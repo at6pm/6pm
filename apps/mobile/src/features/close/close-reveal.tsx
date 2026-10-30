@@ -82,6 +82,9 @@ export function CloseReveal(props: {
         <Text
           style={{
             ...leading({ ...display(25), marginTop: 6 }, 30),
+            // The column's width, not the text's own: Android measures the display face's tight
+            // tracking short, so a hugging line that wraps would keep one line's height.
+            width: '100%',
             maxWidth: 310,
             textAlign: 'center',
             color: palette.ink,

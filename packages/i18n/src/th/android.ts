@@ -51,7 +51,7 @@ export const thAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'max.welcome.win.more': 'กระปุก โหมดเดินทาง และสมุดประจำปี',
 
   'privacy.ai.device.title': 'บนโทรศัพท์เครื่องนี้เท่านั้น',
-  'privacy.ai.device.unavailable': 'โทรศัพท์เครื่องนี้มีหน่วยความจำไม่พอสำหรับโมเดลของตัวเอง',
+  'privacy.ai.device.unavailable': 'บน Android 6pm ไม่มีโมเดลที่รันบนเครื่องได้',
   'settings.ai.device': 'บนโทรศัพท์เครื่องนี้',
   'privacy.leaves.device.none': 'ไม่มีอะไรด้าน AI ทุกอย่างคำนวณบนโทรศัพท์เครื่องนี้',
   'receiptEmail.deviceMode': 'ปิดอยู่ขณะที่ AI ทำงานบนโทรศัพท์เครื่องนี้',

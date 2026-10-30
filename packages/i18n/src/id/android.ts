@@ -57,7 +57,7 @@ export const idAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'max.welcome.win.more': 'Celengan, perjalanan, dan Buku tahunan',
 
   'privacy.ai.device.title': 'Hanya di ponsel ini',
-  'privacy.ai.device.unavailable': 'Memori ponsel ini tidak cukup untuk model sendiri.',
+  'privacy.ai.device.unavailable': 'Di Android, 6pm tidak punya model yang berjalan di ponsel.',
   'settings.ai.device': 'Di ponsel ini',
   'privacy.leaves.device.none': 'Tidak ada AI. Semuanya dihitung di ponsel ini.',
   'receiptEmail.deviceMode': 'Mati selama AI tetap di ponsel ini',

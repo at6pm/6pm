@@ -60,7 +60,7 @@ export const enAndroid = {
 
   // Where AI runs, and privacy.
   'privacy.ai.device.title': 'Only on this phone',
-  'privacy.ai.device.unavailable': 'This phone doesn’t have the memory for a model of its own.',
+  'privacy.ai.device.unavailable': 'On Android, 6pm has no model to run on the phone.',
   'settings.ai.device': 'On this phone',
   'privacy.leaves.device.none': 'Nothing AI. Everything is worked out on this phone.',
   'receiptEmail.deviceMode': 'Off while AI stays on this phone',

@@ -50,7 +50,7 @@ export const viAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'max.welcome.win.more': 'Hũ, du lịch và Sách năm',
 
   'privacy.ai.device.title': 'Chỉ trên điện thoại này',
-  'privacy.ai.device.unavailable': 'Điện thoại này không đủ bộ nhớ để chạy mô hình riêng.',
+  'privacy.ai.device.unavailable': 'Trên Android, 6pm không có mô hình chạy ngay trên máy.',
   'settings.ai.device': 'Trên điện thoại này',
   'privacy.leaves.device.none':
     'Không gì liên quan AI. Mọi thứ được tính ngay trên điện thoại này.',

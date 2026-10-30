@@ -59,7 +59,7 @@ export const jaAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'max.welcome.win.more': '貯金箱、旅行、イヤーブック',
 
   'privacy.ai.device.title': 'このスマホの中だけで',
-  'privacy.ai.device.unavailable': 'このスマホには、専用モデルを動かすだけのメモリがありません。',
+  'privacy.ai.device.unavailable': 'Androidでは、6pmにはスマホの中で動くモデルがありません。',
   'settings.ai.device': 'このスマホ',
   'privacy.leaves.device.none': 'AIのためには何も出ません。すべてこのスマホの中で処理します。',
   'receiptEmail.deviceMode': 'AIがこのスマホの中だけの間はオフ',
