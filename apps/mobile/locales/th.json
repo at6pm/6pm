@@ -6,5 +6,9 @@
     "NSPhotoLibraryUsageDescription": "6pm บันทึกเฉพาะใบเสร็จปิดวันและไดอารี่เงินของคุณลงในรูปภาพ และจะไม่เปิดดูคลังรูปภาพของคุณ",
     "NSPhotoLibraryAddUsageDescription": "6pm บันทึกใบเสร็จปิดวันและไดอารี่เงินของคุณลงในรูปภาพเมื่อคุณสั่ง",
     "NSLocationWhenInUseUsageDescription": "6pm ตรวจสอบว่าคุณอยู่ประเทศไหน เพื่อให้โหมดเดินทางเปิดเองเมื่ออยู่ต่างประเทศ"
+  },
+  "android": {
+    "sixpm_shortcut_scan": "สแกนคิวอาร์",
+    "sixpm_shortcut_quick_add": "เพิ่มด่วน"
   }
 }

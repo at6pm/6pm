@@ -106,3 +106,8 @@ allowBuilds:
   esbuild: true
   sharp: false
   workerd: true
+
+# Patches to dependencies, kept as small as the fix. expo-notifications: on Android without exact
+# alarms, the close reminder comes within ten minutes of its time instead of up to an hour late.
+patchedDependencies:
+  expo-notifications@58.1.4: patches/expo-notifications@58.1.4.patch

@@ -1,4 +1,6 @@
 import { closeRemindersAhead, DEFAULT_CLOSE_AT, type LocalDate } from '@6pm/domain';
+import { Platform } from 'react-native';
+
 import { t, type Language } from '@6pm/i18n';
 
 /**
@@ -35,7 +37,7 @@ export function closeReminderText(language: Language, closeAt: string): string {
 }
 
 /**
- * Asks iOS for permission to send the daily close reminder. Shows the system alert the first time;
+ * Asks the phone for permission to send the daily close reminder. Shows the system alert the first time;
  * afterwards returns what the user already chose without asking again.
  */
 export async function askForReminders(): Promise<boolean> {
@@ -50,6 +52,26 @@ export async function askForReminders(): Promise<boolean> {
 }
 
 type NotificationsModule = Awaited<ReturnType<typeof notifications>>;
+
+/** Android's channel for the close reminder, its name in the app's language. */
+const CLOSE_CHANNEL = 'close';
+
+/**
+ * On Android the reminder rings and shows as a banner, in a channel of its own the person can
+ * tune apart from 6pm's quiet caught notifications. Null on the iPhone, which has no channels.
+ */
+async function closeChannel(
+  Notifications: NotificationsModule,
+  language: Language,
+): Promise<string | null> {
+  if (Platform.OS !== 'android') return null;
+  await Notifications.setNotificationChannelAsync(CLOSE_CHANNEL, {
+    name: t(language, 'reminder.close.channel'),
+    // No sound named: the channel rings with the phone's own notification sound.
+    importance: Notifications.AndroidImportance.HIGH,
+  });
+  return CLOSE_CHANNEL;
+}
 
 async function cancelAll(Notifications: NotificationsModule): Promise<void> {
   const pending = await Notifications.getAllScheduledNotificationsAsync();
@@ -77,11 +99,16 @@ export function scheduleCloseReminder(
     const Notifications = await notifications();
     await cancelAll(Notifications);
     const body = closeReminderText(language, closeAt);
+    const channelId = await closeChannel(Notifications, language);
     for (const slot of closeRemindersAhead(new Date(), closeAt, closed)) {
       await Notifications.scheduleNotificationAsync({
         identifier: `${CLOSE_REMINDER_PREFIX}${slot.day}`,
         content: { body, sound: 'default' },
-        trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: slot.at },
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.DATE,
+          date: slot.at,
+          ...(channelId ? { channelId } : {}),
+        },
       });
     }
   });

@@ -6,5 +6,9 @@
     "NSPhotoLibraryUsageDescription": "締めのレシートとお金日記を写真に保存するためだけに使用します。ライブラリの中を見ることはありません。",
     "NSPhotoLibraryAddUsageDescription": "保存を選んだときに、締めのレシートとお金日記を写真に保存します。",
     "NSLocationWhenInUseUsageDescription": "海外で旅行モードを自動でオンにするため、いまいる国を確認します。"
+  },
+  "android": {
+    "sixpm_shortcut_scan": "QRをスキャン",
+    "sixpm_shortcut_quick_add": "クイック追加"
   }
 }

@@ -6,5 +6,9 @@
     "NSPhotoLibraryUsageDescription": "6pm chỉ lưu biên lai cuối ngày và nhật ký tiêu tiền vào Ảnh. 6pm không bao giờ xem thư viện ảnh của bạn.",
     "NSPhotoLibraryAddUsageDescription": "6pm lưu biên lai cuối ngày và nhật ký tiêu tiền vào Ảnh khi bạn yêu cầu.",
     "NSLocationWhenInUseUsageDescription": "6pm kiểm tra bạn đang ở nước nào để chế độ Du lịch tự bật khi bạn ra nước ngoài."
+  },
+  "android": {
+    "sixpm_shortcut_scan": "Quét QR",
+    "sixpm_shortcut_quick_add": "Thêm nhanh"
   }
 }

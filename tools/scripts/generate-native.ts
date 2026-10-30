@@ -21,7 +21,8 @@ import {
  * - `targets/_shared/<lang>.lproj/<Table>.strings`: i18n keys `native.<table>.*`; the
  *   `AppShortcuts` table goes to the target whose shortcut says it (`targets/intents`, or
  *   `targets/_app` for the app's own), keyed by the English phrase as Siri looks it up
- * - `locales/<lang>.json`: the permission prompts, i18n keys `native.permission.*`
+ * - `locales/<lang>.json`: the permission prompts, i18n keys `native.permission.*`, and the
+ *   Android launcher shortcuts' labels
  * - `targets/_shared/ThemeTokens.swift`: the fixed colours extensions draw with
  * - `targets/widgets/SurfaceAttributes.swift`: the Live Activity type, copied from the module
  * - `targets/_shared/GroupFiles.swift`: the App Group files, copied from the module
@@ -67,14 +68,27 @@ function text(catalogue: Catalogue, key: string): string {
   return value;
 }
 
+/** Android string resources, by name, and the i18n key each one reads. */
+const ANDROID_STRINGS: Readonly<Record<string, string>> = {
+  sixpm_shortcut_scan: 'native.intents.scan.title',
+  sixpm_shortcut_quick_add: 'native.intents.quickAdd.title',
+};
+
 function permissionLocale(catalogue: Catalogue): string {
   const entries = Object.entries(PERMISSION_KEYS).map(([name, plistKey]): [string, string] => [
     plistKey,
     text(catalogue, `native.permission.${name}`),
   ]);
-  // Under `ios` only: Android has its own permission wording, and these keys copied into its
-  // per-language strings with no default fail the release build's lint.
-  return `${JSON.stringify({ ios: Object.fromEntries(entries) }, null, 2)}\n`;
+  // The prompts go under `ios` only: Android has its own permission wording, and these keys copied
+  // into its per-language strings with no default fail the release build's lint. Under `android`,
+  // the launcher shortcuts' labels, whose English default `plugins/with-android-shortcuts` writes.
+  const android = Object.fromEntries(
+    Object.entries(ANDROID_STRINGS).map(([name, key]): [string, string] => [
+      name,
+      text(catalogue, key),
+    ]),
+  );
+  return `${JSON.stringify({ ios: Object.fromEntries(entries), android }, null, 2)}\n`;
 }
 
 const stringsLiteral = (value: string) =>

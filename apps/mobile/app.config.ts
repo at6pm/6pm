@@ -106,6 +106,9 @@ const COMPANION_ICONS = [
 /** The page colour behind the first frame: the Golden Hour night sheet, so launch never flashes. */
 const LAUNCH_BACKGROUND = '#1a0f1c';
 
+/** Golden Hour's accent (`@6pm/theme`), which this config cannot import. */
+const NOTIFICATION_ACCENT = '#ff8552';
+
 /** Every font file in assets/fonts, embedded natively so the first frame already has them. */
 const FONTS = [
   'BricolageGrotesque-Variable',
@@ -205,6 +208,27 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   android: {
     package: variant.bundleIdentifier,
+    // The icon's sky and sun behind the launcher's mask, and its outline for themed icons.
+    adaptiveIcon: {
+      foregroundImage: './assets/android/adaptive-foreground.png',
+      backgroundImage: './assets/android/adaptive-background.png',
+      monochromeImage: './assets/android/adaptive-monochrome.png',
+    },
+    // No Android cloud backup: it would copy the encrypted database without its Keystore key, which
+    // never leaves the phone, so a restore could not open it. 6pm Max's backup is the way across.
+    allowBackup: false,
+    // The close reminder rings at the close time on the dot where Android lets an app ask; from
+    // Android 14 that is the person's choice, and without it the reminder comes within minutes.
+    permissions: ['android.permission.SCHEDULE_EXACT_ALARM'],
+    // 6pm only adds pictures to the gallery and never reads it: Scan chooses one through the system
+    // Photo Picker. No overlay is ever drawn over other apps.
+    blockedPermissions: [
+      'android.permission.READ_MEDIA_IMAGES',
+      'android.permission.READ_MEDIA_VIDEO',
+      'android.permission.READ_MEDIA_AUDIO',
+      'android.permission.READ_MEDIA_VISUAL_USER_SELECTED',
+      'android.permission.SYSTEM_ALERT_WINDOW',
+    ],
   },
   // Permission prompts in each language, generated from `@6pm/i18n`.
   locales: {
@@ -296,7 +320,17 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     // The App Shortcuts that open the app (Scan QR, Quick add), which the app itself declares.
     './plugins/with-app-intents',
     // Local reminders only (the close at six); no remote push yet.
-    ['expo-notifications', { enableBackgroundRemoteNotifications: false }],
+    // Android's status bar draws the sun setting, in the default look's accent.
+    [
+      'expo-notifications',
+      {
+        enableBackgroundRemoteNotifications: false,
+        icon: './assets/android/notification-icon.png',
+        color: NOTIFICATION_ACCENT,
+      },
+    ],
+    // Long-press 6pm's icon on Android: Scan QR and Quick add, the iPhone's App Shortcuts.
+    ['./plugins/with-android-shortcuts', { background: LAUNCH_BACKGROUND }],
   ],
   experiments: {
     typedRoutes: true,

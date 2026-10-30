@@ -6,5 +6,9 @@
     "NSPhotoLibraryUsageDescription": "6pm enregistre uniquement ton ticket de clôture et ton journal d’argent dans Photos. Il ne parcourt jamais ta photothèque.",
     "NSPhotoLibraryAddUsageDescription": "6pm enregistre ton ticket de clôture et ton journal d’argent dans Photos quand tu le lui demandes.",
     "NSLocationWhenInUseUsageDescription": "6pm vérifie dans quel pays tu te trouves pour que le Mode voyage s’active tout seul à l’étranger."
+  },
+  "android": {
+    "sixpm_shortcut_scan": "Scanner QR",
+    "sixpm_shortcut_quick_add": "Ajout rapide"
   }
 }

@@ -6,5 +6,9 @@
     "NSPhotoLibraryUsageDescription": "6pm hanya menyimpan struk tutup hari dan diari uangmu ke Foto. 6pm tidak pernah melihat isi perpustakaanmu.",
     "NSPhotoLibraryAddUsageDescription": "6pm menyimpan struk tutup hari dan diari uangmu ke Foto saat kamu memintanya.",
     "NSLocationWhenInUseUsageDescription": "6pm memeriksa kamu sedang di negara mana agar Mode perjalanan bisa menyala sendiri di luar negeri."
+  },
+  "android": {
+    "sixpm_shortcut_scan": "Pindai QR",
+    "sixpm_shortcut_quick_add": "Tambah cepat"
   }
 }

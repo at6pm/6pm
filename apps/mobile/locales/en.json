@@ -6,5 +6,9 @@
     "NSPhotoLibraryUsageDescription": "6pm only saves your close receipt and money diary to Photos. It never looks through your library.",
     "NSPhotoLibraryAddUsageDescription": "6pm saves your close receipt and money diary to Photos when you ask it to.",
     "NSLocationWhenInUseUsageDescription": "6pm checks which country you are in so Travel mode can turn on by itself abroad."
+  },
+  "android": {
+    "sixpm_shortcut_scan": "Scan QR",
+    "sixpm_shortcut_quick_add": "Quick add"
   }
 }
