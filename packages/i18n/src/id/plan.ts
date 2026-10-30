@@ -35,6 +35,12 @@ export const idPlan: { readonly [Key in keyof typeof enPlan]: Entry } = {
   'plan.whatIf.same': 'Itu rencanamu. Geser untuk merasakan untung-ruginya.',
   'plan.whatIf.less': 'Menabung {amount} lebih sedikit menambah {daily} tiap hari.',
   'plan.whatIf.more': 'Menabung {amount} lebih banyak mengurangi {daily} sehari.',
+  'plan.whatIf.moreOver':
+    'Menabung {amount} lebih banyak bikin siklus ini lewat {over} dari rencana.',
+  'plan.whatIf.lessOver':
+    'Menabung {amount} lebih sedikit, siklus ini masih lewat {over} dari rencana.',
+  'plan.whatIf.atPayday':
+    'Kamu di masa depan mulai saat gajian, jadi hari-hari sampai saat itu tetap sama.',
   'plan.bills.title': 'Tagihan',
   'plan.bills.paidOf': '{paid} dari {total} lunas',
   'plan.bills.paidCount': { other: '{count} lunas' },

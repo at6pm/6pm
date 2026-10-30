@@ -41,6 +41,10 @@ export const dePlan: { readonly [Key in keyof typeof enPlan]: Entry } = {
   'plan.whatIf.same': 'Das ist dein Plan. Schieb, um den Unterschied zu spüren.',
   'plan.whatIf.less': '{amount} weniger sparen bringt jedem Tag {daily} mehr.',
   'plan.whatIf.more': '{amount} mehr sparen kostet {daily} pro Tag.',
+  'plan.whatIf.moreOver': 'Mit {amount} mehr sparen liegt dieser Zyklus {over} über dem Plan.',
+  'plan.whatIf.lessOver':
+    'Mit {amount} weniger sparen liegt dieser Zyklus noch {over} über dem Plan.',
+  'plan.whatIf.atPayday': 'Zukunfts-Ich startet am Zahltag, bis dahin bleiben die Tage gleich.',
   'plan.bills.title': 'Fixkosten',
   'plan.bills.paidOf': '{paid} von {total} bezahlt',
   'plan.bills.paidCount': { one: '{count} bezahlt', other: '{count} bezahlt' },

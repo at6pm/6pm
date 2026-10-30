@@ -41,6 +41,10 @@ export const esPlan: { readonly [Key in keyof typeof enPlan]: Entry } = {
   'plan.whatIf.same': 'Ese es tu plan. Desliza para notar la diferencia.',
   'plan.whatIf.less': 'Ahorrar {amount} menos suma {daily} a cada día.',
   'plan.whatIf.more': 'Ahorrar {amount} más cuesta {daily} al día.',
+  'plan.whatIf.moreOver': 'Ahorrando {amount} más, este ciclo va {over} por encima del plan.',
+  'plan.whatIf.lessOver': 'Ahorrando {amount} menos, este ciclo sigue {over} por encima del plan.',
+  'plan.whatIf.atPayday':
+    'Tu yo del futuro empieza el día de cobro, así que hasta entonces los días no cambian.',
   'plan.bills.title': 'Facturas',
   'plan.bills.paidOf': '{paid} de {total} pagadas',
   'plan.bills.paidCount': { one: '{count} pagada', other: '{count} pagadas' },
