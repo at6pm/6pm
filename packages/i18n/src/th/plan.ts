@@ -34,6 +34,10 @@ export const thPlan: { readonly [Key in keyof typeof enPlan]: Entry } = {
   'plan.whatIf.same': 'นี่คือแผนของคุณ ลองเลื่อนดูว่าได้อะไรเสียอะไร',
   'plan.whatIf.less': 'เก็บน้อยลง {amount} ทุกวันจะได้เพิ่ม {daily}',
   'plan.whatIf.more': 'เก็บเพิ่ม {amount} ทุกวันจะลดลง {daily}',
+  'plan.whatIf.moreOver': 'เก็บเพิ่ม {amount} รอบนี้จะเกินแผนไป {over}',
+  'plan.whatIf.lessOver': 'เก็บน้อยลง {amount} รอบนี้ก็ยังเกินแผนอยู่ {over}',
+  'plan.whatIf.atPayday':
+    'ตัวคุณในอนาคตจะเริ่มในวันเงินเดือนออก วันที่เหลือก่อนหน้านั้นจึงเท่าเดิม',
   'plan.bills.title': 'บิลประจำ',
   'plan.bills.paidOf': 'จ่ายแล้ว {paid} จาก {total}',
   'plan.bills.paidCount': { other: 'จ่ายแล้ว {count}' },

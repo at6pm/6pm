@@ -35,6 +35,10 @@ export const jaPlan: { readonly [Key in keyof typeof enPlan]: Entry } = {
   'plan.whatIf.same': 'いまのプランです。スライドして差を感じてみて。',
   'plan.whatIf.less': '貯金を{amount}減らすと、毎日{daily}増えます。',
   'plan.whatIf.more': '貯金を{amount}増やすと、1日{daily}減ります。',
+  'plan.whatIf.moreOver': '貯金を{amount}増やすと、今回のサイクルはプランを{over}超えます。',
+  'plan.whatIf.lessOver':
+    '貯金を{amount}減らしても、今回のサイクルはまだプランを{over}超えています。',
+  'plan.whatIf.atPayday': '未来の自分は給料日から始まるので、それまでの毎日は変わりません。',
   'plan.bills.title': '固定費',
   'plan.bills.paidOf': '{total}のうち{paid}支払い済み',
   'plan.bills.paidCount': { other: '{count}件支払い済み' },

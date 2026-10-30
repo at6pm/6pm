@@ -12,7 +12,9 @@ import {
   dayBarFraction,
   dayBarScale,
   whatIfDaily,
+  whatIfNote,
   whatIfOver,
+  whatIfRange,
   type DailyNumberInput,
 } from '@6pm/domain';
 import { curves } from '@6pm/theme';
@@ -27,7 +29,7 @@ import { body, display, leading, mono, tabular } from '../../ui/type/fonts';
 import type { PlanColours } from './plan-colours';
 import type { PlanFormat } from './plan-format';
 import { PlanCard } from './plan-parts';
-import { barDays, sliderMax, whatIfStep } from './plan-view';
+import { barDays } from './plan-view';
 import { WhatIfSlider } from './what-if-slider';
 
 const enter = Easing.bezier(...curves.enter);
@@ -92,22 +94,26 @@ export function DailyCard({
   const daily = whatIfDaily(input, candidate);
   // Past the plan, the card says by how much rather than "0 a day" until payday.
   const over = whatIfOver(input, candidate);
-  const change = daily - whatIfDaily(input, baseline);
   const scale = dayBarScale(input);
   const fraction = dayBarFraction(daily, scale);
-  const delta = baseline - candidate;
+  // Up to 80% of the income, and never short of what the plan or the tab started with, so
+  // sliding down does not take the amount set in onboarding out of reach.
+  const range = whatIfRange(input.plan.income, Math.max(committed, baseline), money.currency);
+  const said = whatIfNote(input, baseline, candidate);
   const note =
-    delta === 0
+    said.kind === 'same'
       ? t('plan.whatIf.same')
-      : delta > 0
-        ? t('plan.whatIf.less', {
-            amount: money.short(delta),
-            daily: money.short(change),
-          })
-        : t('plan.whatIf.more', {
-            amount: money.short(-delta),
-            daily: money.short(-change),
-          });
+      : said.kind === 'atPayday'
+        ? t('plan.whatIf.atPayday')
+        : 'over' in said
+          ? t(said.kind === 'moreOver' ? 'plan.whatIf.moreOver' : 'plan.whatIf.lessOver', {
+              amount: money.short(said.amount),
+              over: money.short(said.over),
+            })
+          : t(said.kind === 'more' ? 'plan.whatIf.more' : 'plan.whatIf.less', {
+              amount: money.short(said.amount),
+              daily: money.short(said.daily),
+            });
 
   return (
     <PlanCard padding={{ top: 18, side: 18, bottom: 18 }} gap={14}>
@@ -164,8 +170,8 @@ export function DailyCard({
       </View>
       <WhatIfSlider
         value={candidate}
-        max={sliderMax(committed, money.currency)}
-        step={whatIfStep(money.currency)}
+        max={range.max}
+        step={range.step}
         colours={colours}
         label={t('plan.whatIf.title')}
         onStep={(v) => {
