@@ -5,8 +5,8 @@ import { formatShort, formatVnd, groupDigits, MINUS } from './format';
 export interface MoneyLocale {
   readonly currency: Currency;
   /**
-   * The app's language ("en", "vi", "ja"…), for the short form's words: Vietnamese writes "tr" and
-   * "tỷ", every other language "M" and "B".
+   * The app's language ("en", "vi", "ja"…), for the short form's words: "17,4tr" in Vietnamese,
+   * "35.3万" in Japanese, "1,2 Mio." in German.
    */
   readonly language: string;
   /** The decimal mark: "." or ",". */
@@ -34,7 +34,7 @@ export interface MoneyFormat {
   readonly currency: Currency;
   /** Full amount with its symbol: "49.000₫", "$1,234.50", "12,50 €". */
   full(amount: Money): string;
-  /** The short form for labels and companion lines: "353k", "17,4tr", "$353", "$17.4k". */
+  /** The short form for labels and companion lines: "353k", "17,4tr", "$17.4k", "¥35.3万". */
   short(amount: Money): string;
   /** `full` in pieces. */
   parts(amount: Money): MoneyParts;
@@ -131,34 +131,81 @@ function partsOf(amount: Money, locale: MoneyLocale): MoneyParts {
   return { sign, prefix: symbol + (spaced(symbol) ? ' ' : ''), number, suffix: '' };
 }
 
-function oneDecimal(value: number, decimal: string): string {
-  return (Math.round(value * 10) / 10).toString().replace('.', decimal);
+const NBSP = '\u00a0';
+
+/** One step of a language's short form: "k" for a thousand, "万" for ten thousand. */
+interface ShortScale {
+  readonly size: number;
+  /** The word after the number, with its space where the language puts one. */
+  readonly word: string;
+}
+
+function thousands(thousand: string | null, million: string, billion?: string): ShortScale[] {
+  const scales: ShortScale[] = [];
+  if (thousand !== null) scales.push({ size: 1e3, word: thousand });
+  scales.push({ size: 1e6, word: million });
+  if (billion !== undefined) scales.push({ size: 1e9, word: billion });
+  return scales;
+}
+
+function myriads(tenThousand: string, hundredMillion: string): ShortScale[] {
+  return [
+    { size: 1e4, word: tenThousand },
+    { size: 1e8, word: hundredMillion },
+  ];
 }
 
 /**
- * The short form outside đồng: whole steps below ten thousand ("$353", "¥3,530"), thousands as k
- * ("$17.4k", "₩353k"), millions as M ("$1.2M"; "tr" in Vietnamese), billions as B ("$1.25B";
- * "tỷ" in Vietnamese).
+ * How each language shortens money, after its own phone's compact numbers. Chinese, Japanese and
+ * Korean count in ten thousands; German leaves thousands whole; Spanish counts thousands of
+ * millions in millions. English keeps the design's lowercase "k", as Thai does.
+ */
+const SHORT_SCALES: Readonly<Record<string, readonly ShortScale[]>> = {
+  vi: thousands('k', 'tr', NBSP + 'tỷ'),
+  de: thousands(null, NBSP + 'Mio.', NBSP + 'Mrd.'),
+  es: thousands(NBSP + 'mil', NBSP + 'M'),
+  fr: thousands(NBSP + 'k', NBSP + 'M', NBSP + 'Md'),
+  id: thousands(NBSP + 'rb', NBSP + 'jt', NBSP + 'M'),
+  ja: myriads('万', '億'),
+  'zh-Hans': myriads('万', '亿'),
+  ko: myriads('만', '억'),
+};
+const ENGLISH_SCALES = thousands('k', 'M', 'B');
+
+/**
+ * The amount in the language's scales. Each step carries one decimal ("17.4k") and drops it from a
+ * hundred ("353k"); the last carries two ("1.25B"). An amount that rounds up to the next step is
+ * written in it: "$1M", never "1000k".
+ */
+function scaled(major: number, scales: readonly ShortScale[], decimal: string): string {
+  for (let level = 0; ; level++) {
+    const scale = scales[level];
+    if (!scale) return '';
+    const next = scales[level + 1];
+    const units = major / scale.size;
+    const digits = units >= 100 ? 0 : next ? 1 : 2;
+    const rounded = Math.round(units * 10 ** digits) / 10 ** digits;
+    if (next && rounded >= next.size / scale.size) continue;
+    return rounded.toString().replace('.', decimal) + scale.word;
+  }
+}
+
+/**
+ * The short form outside đồng: whole steps below ten thousand, or below the language's first scale
+ * ("$353", "¥3,530", "17.400 €"), then the language's scales ("$17.4k", "¥35.3万", "₩125만",
+ * "Rp 353 rb", "1,2 Mio. €", "$1.2tr" in Vietnamese).
  */
 function shortOf(amount: Money, locale: MoneyLocale): string {
   const { currency, decimal } = locale;
   const sign = amount < 0 ? MINUS : '';
   const major = Math.abs(amount) / currency.minorPerMajor;
   const stepMajor = currency.step / currency.minorPerMajor;
-  let body: string;
-  if (Math.round(major / 100_000) >= 10_000) {
-    const billions = (Math.round(major / 10_000_000) / 100).toString().replace('.', decimal);
-    body = billions + (locale.language === 'vi' ? '\u00a0tỷ' : 'B');
-  } else if (Math.round(major / 1000) >= 1000) {
-    // An amount that rounds up to a thousand thousands is a million: "$1M", never "1000k".
-    body = oneDecimal(major / 1_000_000, decimal) + (locale.language === 'vi' ? 'tr' : 'M');
-  } else if (Math.round(major / stepMajor) * stepMajor >= 10_000) {
-    const thousands = major / 1000;
-    body =
-      (thousands >= 100 ? Math.round(thousands).toString() : oneDecimal(thousands, decimal)) + 'k';
-  } else {
-    body = grouped(Math.round(major / stepMajor) * stepMajor, locale.group);
-  }
+  const scales = SHORT_SCALES[locale.language] ?? ENGLISH_SCALES;
+  const whole = Math.round(major / stepMajor) * stepMajor;
+  const body =
+    whole < Math.max(10_000, scales[0]?.size ?? 0)
+      ? grouped(whole, locale.group)
+      : scaled(major, scales, decimal);
   const { prefix, suffix } = partsOf(1, locale);
   return (body === '0' ? '' : sign) + prefix + body + suffix;
 }

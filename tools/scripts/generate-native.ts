@@ -19,7 +19,8 @@ import {
  *
  * - `targets/_shared/domain-native.js`: `@6pm/domain`'s native entry for JavaScriptCore
  * - `targets/_shared/<lang>.lproj/<Table>.strings`: i18n keys `native.<table>.*`; the
- *   `AppShortcuts` table goes to `targets/intents`, keyed by the English phrase as Siri looks it up
+ *   `AppShortcuts` table goes to the target whose shortcut says it (`targets/intents`, or
+ *   `targets/_app` for the app's own), keyed by the English phrase as Siri looks it up
  * - `locales/<lang>.json`: the permission prompts, i18n keys `native.permission.*`
  * - `targets/_shared/ThemeTokens.swift`: the fixed colours extensions draw with
  * - `targets/widgets/SurfaceAttributes.swift`: the Live Activity type, copied from the module
@@ -79,9 +80,13 @@ function permissionLocale(catalogue: Catalogue): string {
 const stringsLiteral = (value: string) =>
   `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n')}"`;
 
+/** The phrases of shortcuts that open the app, which the app itself declares. */
+const APP_SHORTCUTS = new Set(['scan', 'scanToPay', 'quickAdd']);
+
 /**
- * `native.surfaces.safeToday.name` → table `Surfaces`, key `safeToday.name`. `native.appShortcuts.*`
- * → table `AppShortcuts`, keyed by the English phrase, only in a language Siri speaks.
+ * `native.surfaces.safeToday.name` → `_shared/<lang>.lproj/Surfaces.strings`, key
+ * `safeToday.name`. `native.appShortcuts.*` → `AppShortcuts.strings` of the target that declares
+ * the shortcut, keyed by the English phrase, only in a language Siri speaks.
  */
 function stringsTables(lang: string, catalogue: Catalogue): Map<string, string> {
   const tables = new Map<string, string[]>();
@@ -90,7 +95,12 @@ function stringsTables(lang: string, catalogue: Catalogue): Map<string, string> 
     if (scope !== 'native' || table === undefined || table === 'permission') continue;
     const shortcut = table === 'appShortcuts';
     if (shortcut && !SIRI_LANGUAGES.has(lang)) continue;
-    const name = table.charAt(0).toUpperCase() + table.slice(1);
+    const titled = table.charAt(0).toUpperCase() + table.slice(1);
+    // Only the target with the shortcut takes its phrases; another would warn about them.
+    const dir = !shortcut
+      ? shared
+      : path.join(mobile, APP_SHORTCUTS.has(rest.join('.')) ? 'targets/_app' : 'targets/intents');
+    const name = path.join(dir, `${lang}.lproj/${titled}.strings`);
     const lines = tables.get(name) ?? [];
     const id = shortcut ? text(catalogues.en, key) : rest.join('.');
     lines.push(`${stringsLiteral(id)} = ${stringsLiteral(text(catalogue, key))};`);
@@ -202,11 +212,7 @@ async function outputs(): Promise<Map<string, string>> {
   files.set(path.join(shared, 'GroupFiles.swift'), moduleCopy('GroupFiles.swift'));
   for (const [lang, catalogue] of Object.entries(catalogues)) {
     files.set(path.join(mobile, `locales/${lang}.json`), permissionLocale(catalogue));
-    for (const [table, body] of stringsTables(lang, catalogue)) {
-      // Only the intents extension has App Shortcuts; another target would warn about the phrases.
-      const dir = table === 'AppShortcuts' ? path.join(mobile, 'targets/intents') : shared;
-      files.set(path.join(dir, `${lang}.lproj/${table}.strings`), body);
-    }
+    for (const [file, body] of stringsTables(lang, catalogue)) files.set(file, body);
   }
   return files;
 }

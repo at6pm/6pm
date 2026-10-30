@@ -289,6 +289,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ],
     // The companion picker's app icons.
     ['./plugins/with-alternate-icons', { icons: COMPANION_ICONS }],
+    // The App Shortcuts that open the app (Scan QR, Quick add), which the app itself declares.
+    './plugins/with-app-intents',
     // Local reminders only (the close at six); no remote push yet.
     ['expo-notifications', { enableBackgroundRemoteNotifications: false }],
   ],
