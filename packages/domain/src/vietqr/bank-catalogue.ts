@@ -5,9 +5,13 @@ import { WORLD_DIRECTORY } from './world-banks';
  * The link a bank's app takes to open a transfer already filled in.
  * - `qrPay`: `<scheme><path>?targetPage=QRPay&qrContent=<VietQR>`, the form most banks share.
  * - `namABank`: `<scheme>ops.namabank.com.vn/?data=<base64 JSON of account, amount, note>`.
+ * - `momoP2P`: `momo://app?action=p2p&extra=<JSON whose dataExtract is base64 JSON of phone,
+ *   amount, note>`, MoMo's own transfer link, which reaches only a MoMo wallet by its phone number.
  */
 export type HandoffLink =
-  { readonly kind: 'qrPay'; readonly path: string } | { readonly kind: 'namABank' };
+  | { readonly kind: 'qrPay'; readonly path: string }
+  | { readonly kind: 'namABank' }
+  | { readonly kind: 'momoP2P' };
 
 /** How to open a bank's iOS app for hand-off. */
 export interface IosApp {
@@ -95,8 +99,9 @@ function linked(scheme: string, appStoreId: string, link: HandoffLink = QR_PAY):
  * MB is the one bank seen to open filled in that way, with a transfer completed. Vietcombank and Agribank take only a token their partner issues, so they
  * open as is. Apps outside that list keep their VietQR hand-off scheme
  * (https://api.vietqr.io/v2/ios-app-deeplinks, 2026-10-10); the banks that list sends only to its
- * own pages open as is, with the scheme those pages open (2026-10-17). MoMo and ZaloPay open as is
- * by the schemes their payment SDKs query; ViettelMoney and VNPT Money publish none.
+ * own pages open as is, with the scheme those pages open (2026-10-17). MoMo and ZaloPay open by the
+ * schemes their payment SDKs query: MoMo with its own transfer link for a code that pays a MoMo
+ * wallet (2026-10-30), ZaloPay as is; ViettelMoney and VNPT Money publish none.
  */
 const IOS_APPS: Readonly<Record<string, IosApp>> = {
   MB: linked('mbbank://', '1205807363'),
@@ -139,7 +144,7 @@ const IOS_APPS: Readonly<Record<string, IosApp>> = {
   BVB: plain('baovietmobile://', '1504422967'),
   COOPBANK: plain('coopbankmobile://', '1578445811'),
   PBVN: plain('publicbankmobile://', '1573736472'),
-  MOMO: plain('momo://', '918751511'),
+  MOMO: linked('momo://', '918751511', { kind: 'momoP2P' }),
   ZALOPAY: plain('zalopay://', '1112407590'),
 };
 
