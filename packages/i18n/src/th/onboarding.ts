@@ -131,6 +131,11 @@ export const thOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.catch.wallet.body':
     'ตั้งการทำงานอัตโนมัติในคำสั่งลัดครั้งเดียว ทุกครั้งที่แตะจ่ายด้วยกระเป๋าสตางค์จะจดเองพร้อมชื่อร้าน',
   'onboarding.catch.wallet.logged': 'จด {merchant} · {amount} แล้ว',
+  'onboarding.catch.alerts.tab': 'แจ้งเตือน',
+  'onboarding.catch.alerts.title': 'แจ้งเตือนธนาคาร',
+  'onboarding.catch.alerts.body':
+    'แจ้งเตือนจากธนาคารและวอลเล็ตบันทึกเงินที่เคลื่อนไหวให้เอง อ่านบนเครื่องนี้และไม่ส่งไปที่ไหน',
+  'onboarding.catch.alerts.alert': 'ชำระเงิน −{amount} · {merchant}',
   'onboarding.catch.email.tab': 'อีเมล',
   'onboarding.catch.email.title': 'ส่งต่ออีเมลใบเสร็จ',
   'onboarding.catch.email.body':

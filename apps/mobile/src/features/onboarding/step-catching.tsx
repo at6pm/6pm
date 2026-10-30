@@ -11,6 +11,7 @@ import { scheduleOnRN } from 'react-native-worklets';
 import { useI18n } from '../../i18n/i18n';
 import { useHomeCurrency } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
+import { openAlertAccess, useAlertAccess } from '../capture-guide/alert-access';
 import { useAiMode } from '../privacy/use-ai-mode';
 import { nativeReach } from '../surfaces/native-reach';
 import { CatchCard, type CatchAction, type CatchStatus } from './catch-card';
@@ -18,6 +19,7 @@ import { useSampleMoney } from './catch-demo-kit';
 import { ScanDemo, ShareDemo } from './catch-demos';
 import { EmailDemo, LockDemo } from './catch-demos-mail-lock';
 import { VoiceDemo, WalletDemo } from './catch-demos-tap-voice';
+import { AlertsDemo } from './catch-demos-alerts';
 import { CatchRail } from './catch-rail';
 import { CatchSetupSheet } from './catch-setup-sheet';
 import { catchWaysFor, type CatchWay, type WalkedWay } from './catch-ways';
@@ -32,7 +34,8 @@ const SIDE = 20;
 /**
  * How 6pm catches spending: a tab per way above swipeable cards, each card a small live picture,
  * a line on what it does, and whether it works already. The two that need a minute outside 6pm
- * (the Wallet automation, mail forwarding) and sharing open their drawn walkthrough in a sheet.
+ * (the Wallet automation, mail forwarding) and sharing open their drawn walkthrough in a sheet;
+ * Android's bank alerts open its Notification access switch.
  */
 export function StepCatching({
   pal,
@@ -51,6 +54,7 @@ export function StepCatching({
   const aiMode = useAiMode();
   const ways = catchWaysFor(useHomeCurrency(), aiMode, nativeReach);
   const sample = useSampleMoney();
+  const alertAccess = useAlertAccess();
   const bodyOf = (way: CatchWay) =>
     way === 'add'
       ? t('onboarding.catch.add.body', { amount: sample.saidWords })
@@ -111,6 +115,22 @@ export function StepCatching({
           status: { label: t('capture.wallet.time'), ready: false },
           action: setUp('wallet'),
         };
+      case 'alerts':
+        // One switch in Android's settings, opened straight from here; ready once it is on.
+        return alertAccess === true
+          ? { demo: <AlertsDemo />, status: ready(t('onboarding.catch.ready')) }
+          : {
+              demo: <AlertsDemo />,
+              status: { label: t('capture.alerts.time'), ready: false },
+              action: {
+                label: t('onboarding.catch.setUp'),
+                accent: true,
+                onPress: () => {
+                  haptics.tap();
+                  openAlertAccess();
+                },
+              },
+            };
       case 'email':
         return {
           demo: <EmailDemo />,

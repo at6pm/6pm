@@ -136,6 +136,11 @@ export const idOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.catch.wallet.body':
     'Satu otomatisasi di Pintasan, dan setiap tap di Dompet tercatat sendiri dengan nama tokonya.',
   'onboarding.catch.wallet.logged': 'Tercatat {merchant} · {amount}',
+  'onboarding.catch.alerts.tab': 'Notifikasi',
+  'onboarding.catch.alerts.title': 'Notifikasi bank',
+  'onboarding.catch.alerts.body':
+    'Notifikasi bank dan dompetmu mencatat uang yang bergerak, dibaca di ponsel ini dan tidak dikirim ke mana pun.',
+  'onboarding.catch.alerts.alert': 'Pembayaran −{amount} · {merchant}',
   'onboarding.catch.email.tab': 'Email',
   'onboarding.catch.email.title': 'Teruskan email struk',
   'onboarding.catch.email.body':

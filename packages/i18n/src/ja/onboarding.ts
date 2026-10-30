@@ -134,6 +134,11 @@ export const jaOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.catch.wallet.body':
     'ショートカットにオートメーションをひとつ。ウォレットでタッチするたびに、お店の名前つきで記録されます。',
   'onboarding.catch.wallet.logged': '{merchant}を記録 · {amount}',
+  'onboarding.catch.alerts.tab': '通知',
+  'onboarding.catch.alerts.title': '銀行の通知',
+  'onboarding.catch.alerts.body':
+    '銀行やウォレットの通知から、動いたお金を記録します。このスマホの中で読み取り、どこにも送りません。',
+  'onboarding.catch.alerts.alert': '支払い −{amount} · {merchant}',
   'onboarding.catch.email.tab': 'メール',
   'onboarding.catch.email.title': 'レシートメールを転送',
   'onboarding.catch.email.body':

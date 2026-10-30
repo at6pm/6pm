@@ -134,6 +134,11 @@ export const viOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.catch.wallet.body':
     'Một tự động hoá trong Phím tắt là mỗi lần chạm Ví tự được ghi, có luôn tên quán.',
   'onboarding.catch.wallet.logged': 'Đã ghi {merchant} · {amount}',
+  'onboarding.catch.alerts.tab': 'Thông báo',
+  'onboarding.catch.alerts.title': 'Thông báo ngân hàng',
+  'onboarding.catch.alerts.body':
+    'Thông báo của ngân hàng và ví tự ghi lại khoản tiền đi, đọc ngay trên máy và không gửi đi đâu cả.',
+  'onboarding.catch.alerts.alert': 'Thanh toán −{amount} · {merchant}',
   'onboarding.catch.email.tab': 'Email',
   'onboarding.catch.email.title': 'Chuyển tiếp email biên lai',
   'onboarding.catch.email.body':

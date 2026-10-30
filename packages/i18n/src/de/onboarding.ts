@@ -141,6 +141,11 @@ export const deOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.catch.wallet.body':
     'Eine Automation in Kurzbefehle, und jede Wallet-Zahlung erfasst sich selbst mit dem Namen des Geschäfts.',
   'onboarding.catch.wallet.logged': '{merchant} · {amount} erfasst',
+  'onboarding.catch.alerts.tab': 'Mitteilungen',
+  'onboarding.catch.alerts.title': 'Bankmitteilungen',
+  'onboarding.catch.alerts.body':
+    'Die Mitteilungen deiner Bank und Wallet halten fest, was sich bewegt hat, auf diesem Handy gelesen und nirgendwohin geschickt.',
+  'onboarding.catch.alerts.alert': 'Zahlung −{amount} · {merchant}',
   'onboarding.catch.email.tab': 'E-Mail',
   'onboarding.catch.email.title': 'Beleg-Mails weiterleiten',
   'onboarding.catch.email.body':

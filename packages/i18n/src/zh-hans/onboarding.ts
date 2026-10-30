@@ -126,6 +126,11 @@ export const zhHansOnboarding: { readonly [Key in keyof typeof enOnboarding]: En
   'onboarding.catch.wallet.body':
     '在“快捷指令”里设一个自动化，“钱包”的每次付款都会自动记下，连店名一起。',
   'onboarding.catch.wallet.logged': '已记下 {merchant} · {amount}',
+  'onboarding.catch.alerts.tab': '通知',
+  'onboarding.catch.alerts.title': '银行通知',
+  'onboarding.catch.alerts.body':
+    '银行和钱包的通知会自动记下每笔钱的进出，只在这台手机上读取，不会发送到任何地方。',
+  'onboarding.catch.alerts.alert': '付款 −{amount} · {merchant}',
   'onboarding.catch.email.tab': '邮件',
   'onboarding.catch.email.title': '转发小票邮件',
   'onboarding.catch.email.body': 'Grab、Shopee 和银行的邮件，转发到你专属的 6pm 地址就会自动记下。',

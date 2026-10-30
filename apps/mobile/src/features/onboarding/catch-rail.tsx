@@ -20,6 +20,7 @@ const TAB = {
   scan: 'onboarding.catch.scan.tab',
   share: 'onboarding.catch.share.tab',
   wallet: 'onboarding.catch.wallet.tab',
+  alerts: 'onboarding.catch.alerts.tab',
   email: 'onboarding.catch.email.tab',
   add: 'onboarding.catch.add.tab',
   lock: 'onboarding.catch.lock.tab',

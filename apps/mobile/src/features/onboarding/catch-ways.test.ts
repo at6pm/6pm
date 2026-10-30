@@ -18,10 +18,24 @@ describe('the ways onboarding shows', () => {
   });
 
   it('leaves out the ways a phone without their native piece cannot do', () => {
-    const android = { scan: false, share: false, wallet: false, widgets: false };
-    const ways = catchWaysFor(VND, 'server', android);
+    const bare = { scan: false, share: false, wallet: false, widgets: false, alertListener: false };
+    const ways = catchWaysFor(VND, 'server', bare);
     expect(ways).toEqual(['email', 'add']);
     expect(readyWays(ways)).toBe(1);
-    expect(catchWaysFor(VND, 'device', android)).toEqual(['add']);
+    expect(catchWaysFor(VND, 'device', bare)).toEqual(['add']);
+  });
+
+  it('offers bank alerts where Android’s notification listener reads them, set up once', () => {
+    const android = {
+      scan: true,
+      share: false,
+      wallet: false,
+      widgets: false,
+      alertListener: true,
+    };
+    const ways = catchWaysFor(VND, 'server', android);
+    expect(ways).toEqual(['scan', 'alerts', 'email', 'add']);
+    expect(readyWays(ways)).toBe(2);
+    expect(catchWaysFor(VND)).not.toContain('alerts');
   });
 });

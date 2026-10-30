@@ -133,6 +133,11 @@ export const koOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.catch.wallet.body':
     '단축어에 자동화 하나만 만들면, 지갑으로 결제할 때마다 가게 이름까지 알아서 기록돼요.',
   'onboarding.catch.wallet.logged': '{merchant} · {amount} 기록됨',
+  'onboarding.catch.alerts.tab': '알림',
+  'onboarding.catch.alerts.title': '은행 알림',
+  'onboarding.catch.alerts.body':
+    '은행과 지갑 알림이 오간 돈을 기록해요. 이 폰 안에서 읽고 어디로도 보내지 않아요.',
+  'onboarding.catch.alerts.alert': '결제 −{amount} · {merchant}',
   'onboarding.catch.email.tab': '이메일',
   'onboarding.catch.email.title': '영수증 메일 전달',
   'onboarding.catch.email.body':

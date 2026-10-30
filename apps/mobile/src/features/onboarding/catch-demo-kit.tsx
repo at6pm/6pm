@@ -15,8 +15,8 @@ import { DEMO } from './onboarding-palette';
 export const W = 280;
 export const H = 176;
 /**
- * Sample merchants for the pictures: what a scanned code, two receipt emails, an Apple Pay tap
- * and a spoken spend look like.
+ * Sample merchants for the pictures: what a scanned code, two receipt emails, an Apple Pay tap,
+ * a bank alert and a spoken spend look like.
  */
 export const SAMPLE = {
   qrMerchant: 'Bún chả Cô Lan',
@@ -26,6 +26,9 @@ export const SAMPLE = {
   shopee: 249_000,
   tapMerchant: 'Highlands Coffee',
   tap: 59_000,
+  alertBank: 'MB Bank',
+  alertMerchant: 'Phở Hòa',
+  alert: 45_000,
   said: 35_000,
 };
 
