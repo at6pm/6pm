@@ -17,6 +17,7 @@ import { pinCompanionForm } from './dev-companion-form';
 import { CUSTOMER_KEY, serializeCustomer } from '../purchases/customer-memory';
 import { FREE_CUSTOMER } from '../purchases/purchases-port';
 import { seedDesignFriday } from './design-friday-seed';
+import { useI18n } from '../../i18n/i18n';
 import { seedDesignMoneyIn } from './design-money-in-seed';
 import { useYearBook } from '../year-book/use-year-book';
 import { seedDesignYear } from './design-year-seed';
@@ -73,6 +74,7 @@ const DEV_MAX = {
 export function DevCommands() {
   const router = useRouter();
   const store = useMoneyStore();
+  const { language } = useI18n();
   const { today } = useClock();
   const toast = useToast();
   const { bind: bindYear } = useYearBook();
@@ -115,7 +117,7 @@ export function DevCommands() {
         pin.setHours(h, m, 0, 0);
         pinClock(at === '' ? null : pin);
       }
-      if (seed === 'friday') await seedDesignFriday(store, today, currency);
+      if (seed === 'friday') await seedDesignFriday(store, today, currency, language);
       if (seed === 'year')
         await seedDesignYear(store, today, {
           ...(currency ? { code: currency } : {}),
@@ -136,7 +138,7 @@ export function DevCommands() {
       if (state === 'active') void run();
     });
     return () => subscription.remove();
-  }, [router, store, today, toast, bindYear, lookStore, db]);
+  }, [router, store, today, toast, bindYear, lookStore, db, language]);
 
   return null;
 }

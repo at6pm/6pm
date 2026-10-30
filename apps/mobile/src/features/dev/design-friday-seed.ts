@@ -2,6 +2,8 @@ import { randomUUID } from 'expo-crypto';
 
 import { addDays, currencyOf, diffDays, parts, payCycleOn, VND, type LocalDate } from '@6pm/domain';
 
+import { t, type Language } from '@6pm/i18n';
+
 import type { MoneyStore } from '../../data/money-store';
 import { writePlan } from '../../data/plan-settings';
 
@@ -10,12 +12,14 @@ import { writePlan } from '../../data/plan-settings';
  * four bills, a 750k-a-month occasion, 2.365.000₫ spent earlier this cycle and the six spends of
  * the day) placed on today's date, so every screen can be compared with the design renders.
  * Replaces everything in the money tables.
- * With another currency, every amount is worth about the same in it (17,4tr is about $670).
+ * With another currency, every amount is worth about the same in it (17,4tr is about $670). The
+ * categories are named in `language`, as onboarding names a new install's.
  */
 export async function seedDesignFriday(
   store: MoneyStore,
   today: LocalDate,
   code = 'VND',
+  language: Language = 'en',
 ): Promise<void> {
   const currency = currencyOf(code);
   const worth = (dong: number) =>
@@ -47,17 +51,17 @@ export async function seedDesignFriday(
       currency: currency.code,
     });
     const categories = [
-      ['food', 'Food', 'restaurant', 45],
-      ['drinks', 'Drinks', 'local_cafe', 25],
-      ['transport', 'Transport', 'two_wheeler', 245],
-      ['groceries', 'Groceries', 'shopping_basket', 140],
-      ['shopping', 'Shopping', 'local_mall', 300],
-      ['gifts', 'Gifts', 'redeem', 350],
+      ['food', 'restaurant', 45],
+      ['drinks', 'local_cafe', 25],
+      ['transport', 'two_wheeler', 245],
+      ['groceries', 'shopping_basket', 140],
+      ['shopping', 'local_mall', 300],
+      ['gifts', 'redeem', 350],
     ] as const;
-    for (const [i, [id, name, icon, hue]] of categories.entries()) {
+    for (const [i, [id, icon, hue]] of categories.entries()) {
       await tables.categories.put({
         id,
-        name,
+        name: t(language, `onboarding.category.${id}`),
         icon,
         hue,
         countsDaily: true,
