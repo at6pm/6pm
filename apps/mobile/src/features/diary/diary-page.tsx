@@ -7,6 +7,7 @@ import { useI18n } from '../../i18n/i18n';
 import { useDesignInsets } from '../../ui/layout/design-insets';
 import { useTheme } from '../../ui/theme/theme';
 import { body } from '../../ui/type/fonts';
+import { useHeaderMeasure, type HeaderShape } from '../home/header-measure';
 import { useHomePageShown } from '../home/home-page';
 import { useHomePageScroll, useHomeScroll } from '../home/home-scroll';
 import { useEntitlement } from '../purchases/purchases-provider';
@@ -25,6 +26,14 @@ import { useOpenAsk } from '../duo/spread-pane';
  * Diary: the week recap, the month's calendar of receipts, the selected day's receipt, the way
  * into Ask 6pm and the shelf of money diaries. The title fades and drifts as the page scrolls.
  */
+/** The Diary's header, for the sky to keep the look's art clear of it. */
+const HEADER: HeaderShape = {
+  parents: { eyebrow: 'block', title: 'block' },
+  texts: ['eyebrow', 'title'],
+  title: 'title',
+  padRight: 6,
+};
+
 export function DiaryPage({ scrollRef }: { readonly scrollRef: AnimatedRef<Animated.ScrollView> }) {
   const router = useRouter();
   const { palette } = useTheme();
@@ -56,6 +65,7 @@ export function DiaryPage({ scrollRef }: { readonly scrollRef: AnimatedRef<Anima
   }, [toPage, receipt, before, after, select]);
   useEffect(() => () => toPage?.(null), [toPage]);
   const { max } = useEntitlement();
+  const measure = useHeaderMeasure('diary', HEADER);
   const header = useAnimatedStyle(() => ({
     opacity: Math.max(0, Math.min(1, 1 - y.value / 70)),
     transform: [{ translateY: Math.min(y.value, 80) * 0.3 }],
@@ -76,8 +86,13 @@ export function DiaryPage({ scrollRef }: { readonly scrollRef: AnimatedRef<Anima
         gap: 26,
       }}
     >
-      <Animated.View style={[{ paddingHorizontal: 6, gap: 2 }, header]}>
+      <Animated.View
+        onLayout={measure.layout('block')}
+        style={[{ paddingHorizontal: 6, gap: 2 }, header]}
+      >
         <Text
+          onLayout={measure.layout('eyebrow')}
+          onTextLayout={measure.lines('eyebrow')}
           style={{
             ...body(13, 600, 0.06),
             textTransform: 'uppercase',
@@ -86,7 +101,13 @@ export function DiaryPage({ scrollRef }: { readonly scrollRef: AnimatedRef<Anima
         >
           {diary.kicker}
         </Text>
-        <Text style={{ ...body(34, 700, -0.03), color: palette.ink }}>{t('diary.title')}</Text>
+        <Text
+          onLayout={measure.layout('title')}
+          onTextLayout={measure.lines('title')}
+          style={{ ...body(34, 700, -0.03), color: palette.ink }}
+        >
+          {t('diary.title')}
+        </Text>
       </Animated.View>
 
       <WeekRecapCard recap={diary.recap} kicker={diary.recapKicker} letters={diary.letters} />

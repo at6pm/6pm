@@ -20,6 +20,7 @@ import { useDesignInsets } from '../../ui/layout/design-insets';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body } from '../../ui/type/fonts';
+import { useHeaderMeasure, type HeaderShape } from '../home/header-measure';
 import { useHomePageScroll } from '../home/home-scroll';
 import { useEntitlement } from '../purchases/purchases-provider';
 import { nativeReach } from '../surfaces/native-reach';
@@ -50,6 +51,15 @@ import { usePlanSections, type PlanSectionsHandle } from './use-plan-sections';
 
 export type { PlanSectionsHandle } from './use-plan-sections';
 export { PLAN_SECTIONS } from './use-plan-sections';
+
+/** Plan's header, for the sky to keep the look's art clear of it. */
+const HEADER: HeaderShape = {
+  parents: { eyebrow: 'block', row: 'block', title: 'row', button: 'row', lede: 'block' },
+  texts: ['eyebrow', 'title', 'lede'],
+  title: 'title',
+  button: 'button',
+  padRight: 6,
+};
 
 export interface PlanPageProps {
   readonly scrollRef: AnimatedRef<Animated.ScrollView>;
@@ -142,6 +152,7 @@ function PlanContent({
   const format = usePlanFormat(snap.today);
   const colours = planColours(palette);
   const topUps = useCycleTopUps(snap);
+  const measure = useHeaderMeasure('plan', HEADER);
   // The header drifts down at a third of the scroll and is gone by 70 pt, as in the prototype.
   const header = useAnimatedStyle(() => ({
     opacity: Math.min(1, Math.max(0, 1 - y.value / 70)),
@@ -159,17 +170,31 @@ function PlanContent({
 
   return (
     <>
-      <Animated.View style={[{ paddingHorizontal: 6, gap: 2 }, header]}>
-        <Text style={{ ...body(13, 600, 0.06), textTransform: 'uppercase', color: inkSoft }}>
+      <Animated.View
+        onLayout={measure.layout('block')}
+        style={[{ paddingHorizontal: 6, gap: 2 }, header]}
+      >
+        <Text
+          onLayout={measure.layout('eyebrow')}
+          onTextLayout={measure.lines('eyebrow')}
+          style={{ ...body(13, 600, 0.06), textTransform: 'uppercase', color: inkSoft }}
+        >
           {t('plan.kicker', { month: format.month(today), payday: format.dayMonth(cycle.payday) })}
         </Text>
         <View
+          onLayout={measure.layout('row')}
           style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
         >
-          <Text accessibilityRole="header" style={{ ...body(34, 700, -0.03), color: ink }}>
+          <Text
+            accessibilityRole="header"
+            onLayout={measure.layout('title')}
+            onTextLayout={measure.lines('title')}
+            style={{ ...body(34, 700, -0.03), color: ink }}
+          >
             {t('tabs.plan')}
           </Text>
           <PressScale
+            onLayout={measure.layout('button')}
             accessibilityRole="button"
             accessibilityLabel={t('plan.month.edit')}
             hitSlop={6}
@@ -189,7 +214,13 @@ function PlanContent({
             <Symbol name="edit" size={19} color={ink} />
           </PressScale>
         </View>
-        <PlanLede input={input} day={day} color={inkSoft} />
+        <PlanLede
+          input={input}
+          day={day}
+          color={inkSoft}
+          onLayout={measure.layout('lede')}
+          onTextLayout={measure.lines('lede')}
+        />
       </Animated.View>
 
       <View onLayout={sections.sectionLayout(0)}>

@@ -2,6 +2,7 @@ import type { SharedValue } from 'react-native-reanimated';
 
 import type { LookConfig, LookId, Palette } from '@6pm/theme';
 
+import type { SkyHeader } from '../sky-header';
 import type { SceneMotion } from './boxes/scene-motion';
 
 /**
@@ -25,6 +26,8 @@ export interface SceneProps {
   readonly scrollY: SharedValue<number>;
   /** The phone's tilt, swing and stillness, for the living scenes that sense it. */
   readonly motion: SceneMotion;
+  /** The page header the scene keeps clear of (none on Today). */
+  readonly header: SkyHeader;
 }
 
 /**
