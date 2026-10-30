@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ScrollView, Text, useWindowDimensions, View } from 'react-native';
+import { Text, useWindowDimensions, View } from 'react-native';
 
 import { monthOf, needsReview, sumCounted } from '@6pm/domain';
 
@@ -14,7 +14,7 @@ import {
 } from '../data/diary-queries';
 import { useMoney, useMoneyActions, useMoneyStore } from '../data/money-provider';
 import type { MoneyStore } from '../data/money-store';
-import { CardSheet } from '../features/diary/card-sheet';
+import { CardSheet, CardSheetScroll } from '../features/diary/card-sheet';
 import { useDiaryDates } from '../features/diary/diary-dates';
 import { toRowViews } from '../features/today/today-view';
 import { useSpendLabels } from '../features/today/use-spend-rows';
@@ -136,7 +136,7 @@ export default function MissedDay() {
                 maxHeight: height * 0.4,
               }}
             >
-              <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
+              <CardSheetScroll bounces={false} showsVerticalScrollIndicator={false}>
                 {rows.map((row) => (
                   <View
                     key={row.id}
@@ -162,7 +162,7 @@ export default function MissedDay() {
                     </Text>
                   </View>
                 ))}
-              </ScrollView>
+              </CardSheetScroll>
             </View>
           ) : null}
           <View style={{ gap: 8 }}>
