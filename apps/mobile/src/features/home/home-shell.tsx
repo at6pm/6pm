@@ -18,6 +18,7 @@ import { useTheme } from '../../ui/theme/theme';
 import { DiaryPage } from '../diary/diary-page';
 import { PlanPage, type PlanSectionsHandle } from '../plan/plan-page';
 import { TodayPage } from '../today/today-page';
+import { HeaderMeasureProvider, useHeaderGeoms } from './header-measure';
 import { HomeNavProvider, type HomeNav } from './home-nav';
 import { HomePage } from './home-page';
 import { HomeScrollProvider, useHomeScroll } from './home-scroll';
@@ -36,6 +37,7 @@ import { DayPane } from '../duo/day-pane';
 import { useFoldForm } from '../../ui/layout/fold';
 import { TabBar, TabBarRow } from './tab-bar';
 import { useHomePager } from './use-home-pager';
+import { useSkyHeader } from './use-sky-header';
 
 /** Plan and Diary are built after Today has been on screen for a while, one after the other. */
 const PREMOUNT_PLAN_MS = 600;
@@ -103,6 +105,8 @@ function Shell({ day, initialTab }: { readonly day: DailyNumber; readonly initia
     onCommit: commitTab,
   });
   const sunShown = useDerivedValue(() => tabIndex.get() === 0);
+  const geoms = useHeaderGeoms();
+  const skyHeader = useSkyHeader({ position, tabIndex, geoms, scroll: y });
 
   const goToTab = useCallback((next: HomeTab) => goTo(HOME_TABS.indexOf(next)), [goTo]);
   const homeNav = useMemo<HomeNav>(() => ({ tabIndex, goToTab }), [tabIndex, goToTab]);
@@ -149,6 +153,7 @@ function Shell({ day, initialTab }: { readonly day: DailyNumber; readonly initia
                   scrollY={y}
                   showSun={sun}
                   active={homeVisible}
+                  header={skyHeader}
                 />
                 <GestureDetector gesture={pan}>
                   <View
@@ -291,7 +296,9 @@ export function HomeShell({
 }) {
   return (
     <HomeScrollProvider>
-      <Shell day={day} initialTab={initialTab} />
+      <HeaderMeasureProvider>
+        <Shell day={day} initialTab={initialTab} />
+      </HeaderMeasureProvider>
     </HomeScrollProvider>
   );
 }

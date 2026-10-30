@@ -7,6 +7,7 @@ import { curves } from '@6pm/theme';
 
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
+import { useHeaderMeasure, type HeaderShape } from '../home/header-measure';
 import { useHomeNav } from '../home/home-nav';
 import { TravelPill } from '../travel/travel-pill';
 import { Symbol } from '../../ui/icons/symbol';
@@ -21,6 +22,15 @@ import { body, tabular } from '../../ui/type/fonts';
 import { pinnedOpticalSize, textShadows } from '../../ui/type/text-shadow';
 
 const meterEase = Easing.bezier(...curves.enter);
+
+/** Today's date and buttons, for the sky to clear its textures from under the words. */
+const HEADER: HeaderShape = {
+  parents: { row: 'block', date: 'row', weekday: 'date', day: 'date', buttons: 'row' },
+  texts: ['weekday', 'day'],
+  title: 'day',
+  button: 'buttons',
+  padRight: 22,
+};
 
 /**
  * The top of Today: the date, the two glass buttons, and the one number with its meter. Measures
@@ -45,6 +55,7 @@ export function TodayHero({
   const { goToTab } = useHomeNav();
   // On the iPhone Duo, Settings and Add live in the side rail.
   const { top, rail } = useDesignInsets();
+  const measure = useHeaderMeasure('today', HEADER);
 
   // A day over its line is covered by the days after it, unless the cycle's free money is gone:
   // then the meter says how far past the plan the cycle is, and only a spend today fills it.
@@ -72,6 +83,7 @@ export function TodayHero({
 
   return (
     <View
+      onLayout={measure.layout('block')}
       style={{
         height: top(400),
         paddingTop: top(60),
@@ -80,9 +92,14 @@ export function TodayHero({
         justifyContent: 'space-between',
       }}
     >
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <View style={{ gap: 1 }}>
+      <View
+        onLayout={measure.layout('row')}
+        style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
+      >
+        <View onLayout={measure.layout('date')} style={{ gap: 1 }}>
           <Text
+            onLayout={measure.layout('weekday')}
+            onTextLayout={measure.lines('weekday')}
             style={{
               ...body(13, 600, 0.06),
               textTransform: 'uppercase',
@@ -91,11 +108,17 @@ export function TodayHero({
           >
             {weekday(dayDate)}
           </Text>
-          <Text style={{ ...body(22, 700, -0.02), color: palette.ink }}>{dayMonth(dayDate)}</Text>
+          <Text
+            onLayout={measure.layout('day')}
+            onTextLayout={measure.lines('day')}
+            style={{ ...body(22, 700, -0.02), color: palette.ink }}
+          >
+            {dayMonth(dayDate)}
+          </Text>
           <TravelPill />
         </View>
         {rail > 0 ? null : (
-          <View style={{ flexDirection: 'row', gap: 8 }}>
+          <View onLayout={measure.layout('buttons')} style={{ flexDirection: 'row', gap: 8 }}>
             <GlassButton icon="tune" label={t('home.settings')} onPress={onSettings} />
             <GlassButton icon="add" iconSize={26} label={t('home.quickAdd')} onPress={onQuickAdd} />
           </View>

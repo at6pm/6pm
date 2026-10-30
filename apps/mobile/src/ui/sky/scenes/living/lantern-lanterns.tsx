@@ -32,9 +32,14 @@ interface Props {
   readonly time: SharedValue<number>;
   /** The phone's pendulum swing (`--pend`). */
   readonly pend: SharedValue<number>;
+  /**
+   * By index: how much longer each lantern's cord is than drawn (it hangs lower), or, below 0, how
+   * far the whole lantern is drawn up.
+   */
+  readonly drops: SharedValue<number[]>;
 }
 
-function LanternShape({ lantern, index, values, time, pend }: Props) {
+function LanternShape({ lantern, index, values, time, pend, drops }: Props) {
   const { x, y, w, h, cord, tassel, opacity, stops, rib, sway, pendDeg } = lantern;
   const at = index * LANTERN_VALUES;
   const bodyTop = cord + CAP_HEIGHT;
@@ -51,7 +56,7 @@ function LanternShape({ lantern, index, values, time, pend }: Props) {
     // Hangs from the top of its cord, swinging about it.
     return [
       { translateX: x + w / 2 },
-      { translateY: y },
+      { translateY: y + Math.min(0, drops.value[index] ?? 0) },
       { rotate: swing },
       { translateX: -w / 2 },
     ];
@@ -77,53 +82,58 @@ function LanternShape({ lantern, index, values, time, pend }: Props) {
     : '';
   const ribs = usePath(ribsD);
   const tint = rib ? [...rib.ink] : [0, 0, 0, 0];
+  const drop = useDerivedValue(() => drops.value[index] ?? 0);
+  const cordLength = useDerivedValue(() => cord + Math.max(0, drop.value));
+  const hung = useDerivedValue(() => [{ translateY: Math.max(0, drop.value) }]);
   if (!body) return null;
 
   return (
     <Group transform={transform} opacity={opacity}>
-      <Rect x={(w - 1) / 2} y={0} width={1} height={cord} color={CORD_COLOR} />
-      <RoundedRect
-        x={(w - capW) / 2}
-        y={cord}
-        width={capW}
-        height={CAP_HEIGHT}
-        r={CAP_HEIGHT / 2}
-        color={CAP_COLOR}
-      />
-      <Group clip={body} invertClip>
-        <RoundedRect x={glowX} y={glowY} width={glowW} height={glowH} r={glowR} color={glowColor}>
-          <BlurMask blur={sigma} style="normal" respectCTM />
-        </RoundedRect>
-      </Group>
-      <Path path={body}>
-        <RadialGradient
-          c={vec(w / 2, bodyTop + 0.46 * h)}
-          r={Math.hypot(w / 2, 0.54 * h)}
-          colors={silk}
-          positions={stops as number[]}
+      <Rect x={(w - 1) / 2} y={0} width={1} height={cordLength} color={CORD_COLOR} />
+      <Group transform={hung}>
+        <RoundedRect
+          x={(w - capW) / 2}
+          y={cord}
+          width={capW}
+          height={CAP_HEIGHT}
+          r={CAP_HEIGHT / 2}
+          color={CAP_COLOR}
         />
-      </Path>
-      {rib && ribs && (
-        <Group clip={body}>
-          <Path path={ribs} color={tint} />
+        <Group clip={body} invertClip>
+          <RoundedRect x={glowX} y={glowY} width={glowW} height={glowH} r={glowR} color={glowColor}>
+            <BlurMask blur={sigma} style="normal" respectCTM />
+          </RoundedRect>
         </Group>
-      )}
-      <RoundedRect
-        x={(w - capW) / 2}
-        y={bodyTop + h}
-        width={capW}
-        height={CAP_HEIGHT}
-        r={CAP_HEIGHT / 2}
-        color={CAP_COLOR}
-      />
-      <RoundedRect
-        x={(w - TASSEL_WIDTH) / 2}
-        y={bodyTop + h + CAP_HEIGHT}
-        width={TASSEL_WIDTH}
-        height={tassel}
-        r={TASSEL_WIDTH / 2}
-        color={[...lantern.tasselColor]}
-      />
+        <Path path={body}>
+          <RadialGradient
+            c={vec(w / 2, bodyTop + 0.46 * h)}
+            r={Math.hypot(w / 2, 0.54 * h)}
+            colors={silk}
+            positions={stops as number[]}
+          />
+        </Path>
+        {rib && ribs && (
+          <Group clip={body}>
+            <Path path={ribs} color={tint} />
+          </Group>
+        )}
+        <RoundedRect
+          x={(w - capW) / 2}
+          y={bodyTop + h}
+          width={capW}
+          height={CAP_HEIGHT}
+          r={CAP_HEIGHT / 2}
+          color={CAP_COLOR}
+        />
+        <RoundedRect
+          x={(w - TASSEL_WIDTH) / 2}
+          y={bodyTop + h + CAP_HEIGHT}
+          width={TASSEL_WIDTH}
+          height={tassel}
+          r={TASSEL_WIDTH / 2}
+          color={[...lantern.tasselColor]}
+        />
+      </Group>
     </Group>
   );
 }
@@ -133,14 +143,23 @@ interface LanternsProps {
   readonly values: SharedValue<number[]>;
   readonly time: SharedValue<number>;
   readonly pend: SharedValue<number>;
+  readonly drops: SharedValue<number[]>;
 }
 
 /** Silk lanterns hung from the strings, each swinging on its own period and with the phone. */
-export function Lanterns({ lanterns, values, time, pend }: LanternsProps) {
+export function Lanterns({ lanterns, values, time, pend, drops }: LanternsProps) {
   return (
     <>
       {lanterns.map((lantern, i) => (
-        <LanternShape key={i} lantern={lantern} index={i} values={values} time={time} pend={pend} />
+        <LanternShape
+          key={i}
+          lantern={lantern}
+          index={i}
+          values={values}
+          time={time}
+          pend={pend}
+          drops={drops}
+        />
       ))}
     </>
   );

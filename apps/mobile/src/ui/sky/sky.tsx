@@ -12,6 +12,7 @@ import {
 
 import { configFor, lookById, type LookConfig, type LookId } from '@6pm/theme';
 
+import { HeaderMask, useStillHeader, useSwungPend } from './header-art';
 import { SkyBlooms } from './sky-blooms';
 import { SkyBokeh } from './sky-bokeh';
 import { SkyFlare } from './sky-flare';
@@ -22,12 +23,13 @@ import { SkyHalftone } from './sky-halftone';
 import type { SkyLayerProps } from './sky-layer-props';
 import { SkyLeak } from './sky-leak';
 import { useSkyClock } from './sky-motion';
-import { SkySign } from './sky-sign';
+import type { SkyHeader } from './sky-header';
+import { SIGN, SkySign } from './sky-sign';
 import { SLOT } from './sky-slots';
 import { SkySun, SUN_PARALLAX } from './sky-sun';
 import { SkyVignette } from './sky-vignette';
 import { useSwitchedTween } from './use-switched-tween';
-import { AtmBoxes, BoxMoon, BoxSun } from './scenes/boxes/box-scene';
+import { BoxMoon, BoxSun, HeaderBoxes } from './scenes/boxes/box-scene';
 import { SceneMotionDriver, useSceneMotionValues } from './scenes/boxes/scene-motion';
 import { LivingBackdrop } from './scenes/living/living-backdrop';
 import { LivingMiddle } from './scenes/living/living-middle';
@@ -67,6 +69,11 @@ export interface SkyProps {
   readonly preview?: { readonly width: number; readonly height: number };
   /** The canvas, for a still picture of the sky (a look card flying to the try-on). */
   readonly canvasRef?: RefObject<CanvasRef | null>;
+  /**
+   * The header of the page over the sky, when it has one (Plan, Diary): the look's art moves out
+   * of its way. Without it the sky is drawn as the look draws it on Today.
+   */
+  readonly header?: SkyHeader;
 }
 
 /**
@@ -108,6 +115,11 @@ function useSunSwitch(showSun: boolean | SunFlag): SunFlag & { readonly on: bool
   return { flag, initial, on: given ? mirrored : typeof showSun === 'boolean' ? showSun : true };
 }
 
+/** Neon Alley's tube under the sign: 15 pt in, 159.5 to 169.5 pt down, 184 pt long. */
+const TUBE = { left: 15, top: 159.5, right: 199, bottom: 169.5 } as const;
+/** Room over the sign's line for its marks (the hook of ở, the accent of ử). */
+const SIGN_MARKS = 7;
+
 function useParallax(scrollY: SharedValue<number>, rate: number) {
   return useDerivedValue(() => [{ translateY: -rate * scrollY.value }]);
 }
@@ -131,6 +143,7 @@ function SkyView({
   active,
   preview,
   canvasRef,
+  header,
 }: SkyProps) {
   const { width, height } = useWindowDimensions();
   const scale = preview ? preview.width / width : 1;
@@ -163,7 +176,25 @@ function SkyView({
   const moonOp = useDerivedValue(() => frame.value[SLOT.moonOp] ?? 0);
 
   const lookConfig = useMemo(() => configFor(look, config), [look, config]);
-  const motion = useSceneMotionValues();
+  const sensed = useSceneMotionValues();
+  const noHeader = useStillHeader();
+  const clear = header ?? noHeader;
+  // Hung things (lanterns, paper clouds) get a push each time a tab is shown.
+  const pend = useSwungPend(sensed.pend, clear.enter);
+  const motion = useMemo(
+    () => ({ tx: sensed.tx, ty: sensed.ty, pend, exp: sensed.exp }),
+    [sensed.tx, sensed.ty, pend, sensed.exp],
+  );
+  const [signWidth, setSignWidth] = useState(150);
+  const signUnit = useMemo(
+    () => ({
+      x: TUBE.left,
+      y: SIGN.top - SIGN_MARKS,
+      w: Math.max(TUBE.right, SIGN.left + signWidth) - TUBE.left,
+      h: TUBE.bottom - SIGN.top + SIGN_MARKS,
+    }),
+    [signWidth],
+  );
   const senses =
     !preview && !serious && lookById(look).tier === 'premium' && lookConfig['sense'] === true;
 
@@ -194,8 +225,10 @@ function SkyView({
     time,
     scrollY: scroll,
     motion,
+    header: clear,
   };
   const boxes = { width, height, time, motion };
+  const atmBoxes = { look, header: clear, corner: signUnit, ...boxes };
 
   return (
     <View
@@ -206,7 +239,7 @@ function SkyView({
         styles.passThrough,
       ]}
     >
-      {senses ? <SceneMotionDriver motion={motion} time={time} /> : null}
+      {senses ? <SceneMotionDriver motion={sensed} time={time} /> : null}
       <Canvas
         {...(canvasRef ? { ref: canvasRef } : {})}
         style={preview ? { width: preview.width, height: preview.height } : StyleSheet.absoluteFill}
@@ -214,18 +247,20 @@ function SkyView({
         <Group transform={shrink}>
           <SkyGradient frame={frame} width={width} height={height} />
           <LivingBackdrop {...scene} />
-          <AtmBoxes raw={current.atm.back} {...boxes} />
+          <HeaderBoxes raw={current.atm.back} layer="back" {...atmBoxes} />
           {shown.blooms && <SkyBlooms {...props} />}
           <Group transform={sunLift}>
             {shown.sun && <SkySun frame={frame} width={width} />}
             {shown.flare && <SkyFlare frame={frame} layout={layout} width={width} />}
           </Group>
           <BoxSun look={look} sun={current.sun} lift={sunLift} {...boxes} />
-          {shown.moon && <BoxMoon atm={current.atm} opacity={moonOp} {...boxes} />}
+          {shown.moon && <BoxMoon atm={current.atm} opacity={moonOp} header={clear} {...boxes} />}
           {shown.bokeh && (
-            <Group transform={bokehLift}>
-              <SkyBokeh frame={frame} layout={layout} time={time} width={width} />
-            </Group>
+            <HeaderMask header={clear} blend="screen">
+              <Group transform={bokehLift}>
+                <SkyBokeh frame={frame} layout={layout} time={time} width={width} />
+              </Group>
+            </HeaderMask>
           )}
           {shown.dots && (
             <Group transform={sunLift}>
@@ -236,7 +271,7 @@ function SkyView({
           <WeatherMiddle {...scene} />
           <SurfaceMiddle {...scene} />
           <LivingMiddle {...scene} />
-          <AtmBoxes raw={current.atm.front} {...boxes} />
+          <HeaderBoxes raw={current.atm.front} layer="front" {...atmBoxes} />
           {shown.vignette && (
             <SkyVignette frame={frame} layout={layout} width={width} height={height} />
           )}
@@ -249,7 +284,13 @@ function SkyView({
           <SkySign atm={current.atm} dispFont={current.palette.dispFont} />
         </View>
       ) : (
-        <SkySign atm={current.atm} dispFont={current.palette.dispFont} />
+        <SkySign
+          atm={current.atm}
+          dispFont={current.palette.dispFont}
+          header={clear}
+          unit={signUnit}
+          onWidth={setSignWidth}
+        />
       )}
     </View>
   );
