@@ -79,7 +79,24 @@ export const inboxPaidSchema = z.object({
 });
 export type InboxPaid = z.infer<typeof inboxPaidSchema>;
 
-export const inboxItemSchema = z.discriminatedUnion('kind', [inboxSpendSchema, inboxPaidSchema]);
+/**
+ * Confirm, tapped on Android's caught notification: the payment it names is kept. Written after
+ * the payment, so it is applied after it when both are waiting.
+ */
+export const inboxKeptSchema = z.object({
+  v: version,
+  id: z.uuid(),
+  kind: z.literal('kept'),
+  spendId: id,
+  at: instant,
+});
+export type InboxKept = z.infer<typeof inboxKeptSchema>;
+
+export const inboxItemSchema = z.discriminatedUnion('kind', [
+  inboxSpendSchema,
+  inboxPaidSchema,
+  inboxKeptSchema,
+]);
 export type InboxItem = z.infer<typeof inboxItemSchema>;
 
 /** What the share extension and the shortcuts need to file a spend without the database. */

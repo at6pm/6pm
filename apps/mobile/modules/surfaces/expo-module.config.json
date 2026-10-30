@@ -1,6 +1,9 @@
 {
-  "platforms": ["apple"],
+  "platforms": ["apple", "android"],
   "apple": {
     "modules": ["SurfacesModule"]
+  },
+  "android": {
+    "modules": ["ai.sixpm.surfaces.SurfacesModule"]
   }
 }

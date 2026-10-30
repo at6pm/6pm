@@ -25,4 +25,13 @@ export const zhHansSurfaces: { readonly [Key in keyof typeof enSurfaces]: Entry 
   'surfaces.context.today': '今天',
   'surfaces.context.yesterday': '昨天',
   'surfaces.context.safeAfter': '今天可以花的钱变为 {amount}',
+  'surfaces.context.alertCaught': '记下了 {amount} · {name}',
+  'surfaces.context.alertCaughtNoName': '记下了 {amount}',
+  'surfaces.context.alertCameIn': '进账 {amount} · {name}',
+  'surfaces.context.alertCameInNoName': '进账 {amount}',
+  'surfaces.context.alertFrom': '来自你的 {bank} 通知 · 在这台手机上读取',
+  'surfaces.context.alertFromNoBank': '来自一条银行通知 · 在这台手机上读取',
+  'surfaces.context.alertConfirm': '确认',
+  'surfaces.context.alertEdit': '修改',
+  'surfaces.context.alertChannel': '记下的付款',
 };

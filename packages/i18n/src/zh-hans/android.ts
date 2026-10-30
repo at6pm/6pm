@@ -66,4 +66,16 @@ export const zhHansAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } 
 
   'onboarding.privacy.phone': '只在这台手机上',
   'onboarding.privacy.backupSub': '用只留在这台手机上的密钥锁住',
+
+  'capture.alerts.time': '十秒钟，设置一次',
+  'capture.alerts.step1': '在“通知使用权”中打开 6pm',
+  'capture.alerts.step1Chip': '通知使用权 → 6pm',
+  'capture.alerts.step2': '保持银行和钱包 App 的通知开启',
+  'capture.alerts.step3': '每笔付款都在收件箱里等日结',
+  'capture.alerts.step3Chip': '收件箱',
+  'capture.alerts.tip': '验证码、失败的付款和促销会被跳过。邮件已经记下的付款不会重复添加。',
+  'capture.alerts.privacy':
+    '只在这台手机上读取，不会发送到任何地方。6pm 只读取你的银行和钱包的通知。',
+  'capture.alerts.actionAdd': '允许通知使用权',
+  'capture.alerts.actionOpen': '通知使用权设置',
 };

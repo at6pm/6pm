@@ -25,4 +25,13 @@ export const idSurfaces: { readonly [Key in keyof typeof enSurfaces]: Entry } = 
   'surfaces.context.today': 'Hari ini',
   'surfaces.context.yesterday': 'Kemarin',
   'surfaces.context.safeAfter': 'Aman hari ini sekarang {amount}',
+  'surfaces.context.alertCaught': '{amount} · {name} tertangkap',
+  'surfaces.context.alertCaughtNoName': '{amount} tertangkap',
+  'surfaces.context.alertCameIn': '{amount} masuk · {name}',
+  'surfaces.context.alertCameInNoName': '{amount} masuk',
+  'surfaces.context.alertFrom': 'Dari notifikasi {bank}-mu · dibaca di ponsel ini',
+  'surfaces.context.alertFromNoBank': 'Dari notifikasi bank · dibaca di ponsel ini',
+  'surfaces.context.alertConfirm': 'Konfirmasi',
+  'surfaces.context.alertEdit': 'Ubah',
+  'surfaces.context.alertChannel': 'Pembayaran tertangkap',
 };

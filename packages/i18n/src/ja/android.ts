@@ -80,4 +80,17 @@ export const jaAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
 
   'onboarding.privacy.phone': 'このスマホの中だけ',
   'onboarding.privacy.backupSub': 'このスマホから出ない鍵でロック',
+
+  'capture.alerts.time': '最初に10秒だけ',
+  'capture.alerts.step1': '「通知へのアクセス」で6pmをオンにする',
+  'capture.alerts.step1Chip': '通知へのアクセス → 6pm',
+  'capture.alerts.step2': '銀行やウォレットのアプリの通知をオンのままにする',
+  'capture.alerts.step3': '支払いはインボックスで締めを待ちます',
+  'capture.alerts.step3Chip': 'インボックス',
+  'capture.alerts.tip':
+    '認証コード、失敗した支払い、プロモーションはスキップします。メールでキャッチ済みの支払いは二重に追加されません。',
+  'capture.alerts.privacy':
+    'このスマホの中で読み取り、どこにも送りません。6pmが読むのは銀行とウォレットの通知だけです。',
+  'capture.alerts.actionAdd': '通知へのアクセスを許可',
+  'capture.alerts.actionOpen': '通知へのアクセスの設定',
 };

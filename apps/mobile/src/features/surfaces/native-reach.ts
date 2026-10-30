@@ -20,9 +20,12 @@ export interface NativeReach {
   readonly appleSignIn: boolean;
   /**
    * Bank and wallet alerts: iOS 27's Shortcuts automation on an app's notifications, running the
-   * "Catch a bank alert" action of a build that has it.
+   * "Catch a bank alert" action of a build that has it; on Android, the notification listener,
+   * where the phone's WebView can run the domain bundle that reads them.
    */
   readonly bankAlerts: boolean;
+  /** Bank alerts come through Android's notification listener, not a Shortcuts automation. */
+  readonly alertListener: boolean;
   /** "Log in 6pm" said to Siri: App Shortcuts list it from iOS 17.4. */
   readonly siri: boolean;
   /** Back Tap opening Quick add: the Quick add shortcut exists from iOS 18. */
@@ -38,13 +41,18 @@ function iosVersion(): number {
   return Number(major) + Number(minor) / 100;
 }
 
+const bankAlerts = ios
+  ? iosVersion() >= 27 && typeof surfaces?.readStatus === 'function'
+  : surfaces?.alertsSupported?.() === true;
+
 export const nativeReach: NativeReach = {
   scan: scanCamera !== null,
   share: ios,
   wallet: ios,
-  widgets: surfaces !== null,
+  widgets: ios && surfaces !== null,
   appleSignIn: ios,
-  bankAlerts: iosVersion() >= 27 && typeof surfaces?.readStatus === 'function',
+  bankAlerts,
+  alertListener: !ios && bankAlerts,
   siri: iosVersion() >= 17.04,
   backTap: iosVersion() >= 18,
 };

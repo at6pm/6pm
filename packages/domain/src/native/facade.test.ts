@@ -10,7 +10,7 @@ import {
 import mbbank from '../capture/fixtures/receipts/synthetic-mbbank.json';
 import momo from '../capture/fixtures/receipts/synthetic-momo.json';
 import textShare from '../capture/fixtures/receipts/synthetic-text-share.json';
-import { NATIVE_API_VERSION, logSpend, shareCard, shareItem } from './entry';
+import { NATIVE_API_VERSION, alertApps, logSpend, shareCard, shareItem } from './entry';
 
 const UUID_V4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 
@@ -51,6 +51,16 @@ const logged = (amount: string, merchant: string | null, ctx = contextJson) =>
 describe('the native entry', () => {
   it('is the version the extensions were written against', () => {
     expect(NATIVE_API_VERSION).toBe(4);
+  });
+});
+
+describe('alertApps', () => {
+  it('lists each bank and wallet app on Google Play once, and nothing else', () => {
+    const apps = JSON.parse(alertApps()) as string[];
+    expect(apps).toContain('com.mbmobile');
+    expect(apps).toContain('com.mservice.momotransfer');
+    expect(new Set(apps).size).toBe(apps.length);
+    expect(apps.every((app) => /^[a-z][\w]*(\.[a-z_][\w]*)+$/i.test(app))).toBe(true);
   });
 });
 

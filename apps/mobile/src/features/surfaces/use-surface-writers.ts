@@ -15,6 +15,7 @@ import { useEntitlement } from '../purchases/purchases-provider';
 import { useTravel } from '../travel/travel-provider';
 import { renderCompanions } from './companion-images';
 import { contextStrings, hostOf, surfaceContext } from './surface-context';
+import { nativeReach } from './native-reach';
 import { widgetLook } from './surface-palette';
 import { snapshotKey, surfaceSnapshot } from './surface-snapshot';
 import { useLiveActivity } from './use-live-activity';
@@ -129,7 +130,8 @@ function useCompanionImages(serious: boolean, written: () => void) {
   const form = useMemberCompanionForm();
   useEffect(() => {
     const native = surfaces;
-    if (!native || serious) return;
+    // Only the iPhone's widgets and Live Activity draw the companion.
+    if (!native || serious || !nativeReach.widgets) return;
     const handle = setTimeout(() => {
       const write = async () => {
         for (const image of renderCompanions(form)) {

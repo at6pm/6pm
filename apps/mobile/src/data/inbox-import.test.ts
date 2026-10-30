@@ -286,6 +286,39 @@ describe('importInbox: bank alerts', () => {
     });
   });
 
+  const kept = (spendId: string): InboxItem => ({
+    v: 1,
+    id: crypto.randomUUID(),
+    kind: 'kept',
+    spendId,
+    at: at(5),
+  });
+
+  it('keeps an alert confirmed from its notification, in the same run or a later one', async () => {
+    const first = alert({ at: at(0) });
+    await run([first, kept(first.id)]);
+    expect((await store.tables.spends.get(first.id))?.status).toBe('kept');
+
+    const second = alert({ at: at(30), amount: 60_000 });
+    await run([second]);
+    await run([kept(second.id)]);
+    expect((await store.tables.spends.get(second.id))?.status).toBe('kept');
+  });
+
+  it('keeps the payment a confirmed alert merged into, and leaves an answered one', async () => {
+    const paid = tap({ at: at(0) });
+    const heard = alert({ at: at(1) });
+    await run([paid, heard]);
+    await run([kept(heard.id)]);
+    expect((await store.tables.spends.get(paid.id))?.status).toBe('kept');
+
+    const other = alert({ at: at(60), amount: 70_000 });
+    await run([other]);
+    await actions.setStatus(other.id, 'skipped');
+    await run([kept(other.id)]);
+    expect((await store.tables.spends.get(other.id))?.status).toBe('skipped');
+  });
+
   it('merges an alert, an Apple Pay tap and a receipt email of one payment into one spend', async () => {
     const paid = tap({ at: at(0) });
     await run([paid]);

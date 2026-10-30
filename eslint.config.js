@@ -46,6 +46,8 @@ export default defineConfig([
     '**/coverage/',
     'apps/mobile/ios/',
     'apps/mobile/android/',
+    // Gradle's output for the app's own native modules.
+    'apps/mobile/modules/*/android/build/',
     'design/',
     'docs/',
     'plans/',

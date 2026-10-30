@@ -13,6 +13,7 @@ import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading } from '../../ui/type/fonts';
 import { WordFitText } from '../../ui/type/word-fit-text';
+import { nativeReach } from '../surfaces/native-reach';
 import { captureColours } from './capture-colours';
 import { GuideActions } from './guide-actions';
 import { HowItWorks } from './guide-how';
@@ -47,7 +48,8 @@ export function CaptureGuideSheet({ source: asked }: { readonly source: CaptureS
   const emailOff = source === 'email' && !emailAvailable;
   const colours = captureColours(palette);
   // The ways that live in Shortcuts: their walkthrough shows what lands, so nothing repeats it.
-  const shortcut = source === 'wallet' || source === 'alerts';
+  // Android's bank alerts are a switch in its settings instead, shown like the other ways.
+  const shortcut = source === 'wallet' || (source === 'alerts' && !nativeReach.alertListener);
   // Receipt email's first step shows the address itself; tapping it offers the share sheet.
   const addressChip: LiveChip | null =
     source === 'email' && emailAddress !== null

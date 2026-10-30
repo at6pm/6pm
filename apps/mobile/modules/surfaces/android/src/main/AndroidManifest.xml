@@ -1,0 +1,23 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+  <application>
+    <!-- Bank and wallet alerts, read on the phone. Android lists it under Notification access,
+         where only the person can turn it on. -->
+    <service
+      android:name="ai.sixpm.surfaces.AlertListener"
+      android:exported="true"
+      android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+      <intent-filter>
+        <action android:name="android.service.notification.NotificationListenerService" />
+      </intent-filter>
+      <meta-data
+        android:name="android.service.notification.default_filter_types"
+        android:value="conversations|alerting|silent" />
+    </service>
+
+    <receiver
+      android:name="ai.sixpm.surfaces.CaughtActionReceiver"
+      android:exported="false" />
+  </application>
+</manifest>

@@ -25,4 +25,13 @@ export const jaSurfaces: { readonly [Key in keyof typeof enSurfaces]: Entry } = 
   'surfaces.context.today': '今日',
   'surfaces.context.yesterday': '昨日',
   'surfaces.context.safeAfter': '今日使えるお金は{amount}になりました',
+  'surfaces.context.alertCaught': '{amount} · {name}をキャッチ',
+  'surfaces.context.alertCaughtNoName': '{amount}をキャッチ',
+  'surfaces.context.alertCameIn': '{amount}の入金 · {name}',
+  'surfaces.context.alertCameInNoName': '{amount}の入金',
+  'surfaces.context.alertFrom': '{bank}の通知から · このスマホの中で読み取り',
+  'surfaces.context.alertFromNoBank': '銀行の通知から · このスマホの中で読み取り',
+  'surfaces.context.alertConfirm': '確認',
+  'surfaces.context.alertEdit': '編集',
+  'surfaces.context.alertChannel': 'キャッチした支払い',
 };

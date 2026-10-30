@@ -71,4 +71,17 @@ export const koAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
 
   'onboarding.privacy.phone': '이 폰에만',
   'onboarding.privacy.backupSub': '이 폰을 떠나지 않는 키로 잠가요',
+
+  'capture.alerts.time': '처음 한 번, 10초',
+  'capture.alerts.step1': '알림 접근 권한에서 6pm 켜기',
+  'capture.alerts.step1Chip': '알림 접근 권한 → 6pm',
+  'capture.alerts.step2': '은행과 지갑 앱의 알림을 켜 두기',
+  'capture.alerts.step3': '결제마다 수신함에서 마감을 기다려요',
+  'capture.alerts.step3Chip': '수신함',
+  'capture.alerts.tip':
+    '인증번호, 실패한 결제, 프로모션은 건너뛰어요. 이메일로 이미 잡힌 결제는 두 번 들어가지 않아요.',
+  'capture.alerts.privacy':
+    '이 폰 안에서 읽고 어디로도 보내지 않아요. 6pm은 은행과 지갑의 알림만 읽어요.',
+  'capture.alerts.actionAdd': '알림 접근 허용',
+  'capture.alerts.actionOpen': '알림 접근 설정',
 };

@@ -24,4 +24,13 @@ export const deSurfaces: { readonly [Key in keyof typeof enSurfaces]: Entry } = 
   'surfaces.context.today': 'Heute',
   'surfaces.context.yesterday': 'Gestern',
   'surfaces.context.safeAfter': 'Heute verfügbar: jetzt {amount}',
+  'surfaces.context.alertCaught': '{amount} · {name} erwischt',
+  'surfaces.context.alertCaughtNoName': '{amount} erwischt',
+  'surfaces.context.alertCameIn': '{amount} eingegangen · {name}',
+  'surfaces.context.alertCameInNoName': '{amount} eingegangen',
+  'surfaces.context.alertFrom': 'Aus deiner {bank}-Mitteilung · auf diesem Handy gelesen',
+  'surfaces.context.alertFromNoBank': 'Aus einer Bankmitteilung · auf diesem Handy gelesen',
+  'surfaces.context.alertConfirm': 'Bestätigen',
+  'surfaces.context.alertEdit': 'Ändern',
+  'surfaces.context.alertChannel': 'Erwischte Zahlungen',
 };

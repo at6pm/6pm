@@ -71,4 +71,17 @@ export const thAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
 
   'onboarding.privacy.phone': 'บนโทรศัพท์เครื่องนี้เท่านั้น',
   'onboarding.privacy.backupSub': 'ล็อกด้วยกุญแจที่ไม่เคยออกจากโทรศัพท์เครื่องนี้',
+
+  'capture.alerts.time': 'สิบวินาที ครั้งเดียว',
+  'capture.alerts.step1': 'เปิด 6pm ในการเข้าถึงการแจ้งเตือน',
+  'capture.alerts.step1Chip': 'การเข้าถึงการแจ้งเตือน → 6pm',
+  'capture.alerts.step2': 'เปิดการแจ้งเตือนของแอปธนาคารและวอลเล็ตไว้',
+  'capture.alerts.step3': 'ทุกรายการรอใน Inbox จนถึงตอนปิดวัน',
+  'capture.alerts.step3Chip': 'Inbox',
+  'capture.alerts.tip':
+    'รหัส OTP การจ่ายที่ไม่สำเร็จ และโปรโมชันจะถูกข้าม รายการที่อีเมลจับได้แล้วจะไม่ถูกเพิ่มซ้ำ',
+  'capture.alerts.privacy':
+    'อ่านบนเครื่องนี้และไม่ส่งไปที่ไหน 6pm อ่านเฉพาะการแจ้งเตือนจากธนาคารและวอลเล็ตของคุณ',
+  'capture.alerts.actionAdd': 'อนุญาตการเข้าถึงการแจ้งเตือน',
+  'capture.alerts.actionOpen': 'ตั้งค่าการเข้าถึงการแจ้งเตือน',
 };
