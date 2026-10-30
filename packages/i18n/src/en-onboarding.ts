@@ -135,6 +135,11 @@ export const enOnboarding = {
   'onboarding.catch.wallet.body':
     'One automation in Shortcuts, and every Wallet tap logs itself with the shop’s name.',
   'onboarding.catch.wallet.logged': 'Logged {merchant} · {amount}',
+  'onboarding.catch.alerts.tab': 'Alerts',
+  'onboarding.catch.alerts.title': 'Bank alerts',
+  'onboarding.catch.alerts.body':
+    'Your bank and wallet notifications log what moved, read on this phone and never sent anywhere.',
+  'onboarding.catch.alerts.alert': 'Payment −{amount} · {merchant}',
   'onboarding.catch.email.tab': 'Email',
   'onboarding.catch.email.title': 'Forward receipt emails',
   'onboarding.catch.email.body':

@@ -5,33 +5,50 @@ import type { AiMode } from '../privacy/ai-mode';
 import type { NativeReach } from '../surfaces/native-reach';
 
 /** The ways onboarding shows spending being caught, in the order of its cards. */
-export const CATCH_WAYS = ['scan', 'share', 'wallet', 'email', 'add', 'lock'] as const;
+export const CATCH_WAYS = ['scan', 'share', 'wallet', 'alerts', 'email', 'add', 'lock'] as const;
 export type CatchWay = (typeof CATCH_WAYS)[number];
 
-/** The ways set up once outside 6pm: the Wallet automation in Shortcuts, and mail forwarding. */
-export type SetupWay = Extract<CatchWay, 'wallet' | 'email'>;
+/**
+ * The ways set up once outside 6pm: the Wallet automation in Shortcuts, Android's Notification
+ * access for bank alerts, and mail forwarding.
+ */
+export type SetupWay = Extract<CatchWay, 'wallet' | 'alerts' | 'email'>;
 
 export function needsSetup(way: CatchWay): way is SetupWay {
-  return way === 'wallet' || way === 'email';
+  return way === 'wallet' || way === 'alerts' || way === 'email';
 }
 
-/** The ways that have a drawn walkthrough to open: the two set-ups, and sharing a receipt. */
-export type WalkedWay = SetupWay | 'share';
+/**
+ * The ways that have a drawn walkthrough to open: the Wallet and mail set-ups, and sharing a
+ * receipt. Android's bank alerts open its own settings instead.
+ */
+export type WalkedWay = Extract<CatchWay, 'wallet' | 'email' | 'share'>;
 
 export function walkedWay(way: CatchWay): WalkedWay | null {
   return way === 'wallet' || way === 'email' || way === 'share' ? way : null;
 }
 
 /** The native pieces the ways lean on; a phone without one is not shown that way. */
-export type CatchReach = Pick<NativeReach, 'scan' | 'share' | 'wallet' | 'widgets'>;
+export type CatchReach = Pick<
+  NativeReach,
+  'scan' | 'share' | 'wallet' | 'widgets' | 'alertListener'
+>;
 
-const FULL_REACH: CatchReach = { scan: true, share: true, wallet: true, widgets: true };
+/** The iPhone's: bank alerts there are a Shortcuts automation, set up later from Settings. */
+const FULL_REACH: CatchReach = {
+  scan: true,
+  share: true,
+  wallet: true,
+  widgets: true,
+  alertListener: false,
+};
 
 /** The native piece each way needs, if any. */
 const NEEDS: Readonly<Partial<Record<CatchWay, keyof CatchReach>>> = {
   scan: 'scan',
   share: 'share',
   wallet: 'wallet',
+  alerts: 'alertListener',
   lock: 'widgets',
 };
 
@@ -39,7 +56,8 @@ const NEEDS: Readonly<Partial<Record<CatchWay, keyof CatchReach>>> = {
  * The ways shown for a home currency, an AI mode and what the phone can do. Scan to pay reads
  * VietQR, which only Vietnamese banks print, so it is left out when home is not đồng. Receipt
  * email exists only in server mode, so it is left out in on-device mode. A way whose native piece
- * the phone lacks (Android has no share extension, Wallet or widgets) is left out.
+ * the phone lacks (Android has no share extension, Wallet or widgets) is left out, and bank alerts
+ * are shown only where Android's notification listener reads them.
  */
 export function catchWaysFor(
   home: Currency,
@@ -62,6 +80,7 @@ export const WAY_ICON: Readonly<Record<CatchWay, SymbolName>> = {
   scan: 'qr_code_scanner',
   share: 'ios_share',
   wallet: 'contactless',
+  alerts: 'notifications',
   email: 'alternate_email',
   add: 'mic',
   lock: 'widgets',

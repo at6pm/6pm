@@ -185,6 +185,9 @@ export const DEMO = {
   walletCardShadow: '0 10px 24px rgba(0,0,0,.45)',
   bannerBg: 'rgba(246,242,248,.95)',
   bannerShadow: '0 6px 18px rgba(0,0,0,.3)',
+  /** The bank's own notification icon in the alerts picture: a bank's blue, its initials in white. */
+  alertBank: '#1d3f94',
+  alertBankInk: '#ffffff',
   voiceBg: '#efe8f1',
   voiceBubble: '#ffffff',
 } as const;

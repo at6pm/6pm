@@ -144,6 +144,11 @@ export const frOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.catch.wallet.body':
     'Une automatisation dans Raccourcis, et chaque paiement avec Cartes se note tout seul avec le nom du commerce.',
   'onboarding.catch.wallet.logged': 'Noté : {merchant} · {amount}',
+  'onboarding.catch.alerts.tab': 'Alertes',
+  'onboarding.catch.alerts.title': 'Alertes bancaires',
+  'onboarding.catch.alerts.body':
+    'Les alertes de ta banque et de ton portefeuille notent ce qui a bougé, lues sur ce téléphone et envoyées nulle part.',
+  'onboarding.catch.alerts.alert': 'Paiement −{amount} · {merchant}',
   'onboarding.catch.email.tab': 'E-mail',
   'onboarding.catch.email.title': 'Transférer les tickets par e-mail',
   'onboarding.catch.email.body':

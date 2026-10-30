@@ -144,6 +144,11 @@ export const esOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.catch.wallet.body':
     'Una automatización en Atajos y cada pago con Cartera se apunta solo, con el nombre de la tienda.',
   'onboarding.catch.wallet.logged': 'Apuntado {merchant} · {amount}',
+  'onboarding.catch.alerts.tab': 'Avisos',
+  'onboarding.catch.alerts.title': 'Avisos del banco',
+  'onboarding.catch.alerts.body':
+    'Los avisos de tu banco y tu billetera anotan lo que se movió, leídos en este teléfono y sin enviarse a ningún sitio.',
+  'onboarding.catch.alerts.alert': 'Pago −{amount} · {merchant}',
   'onboarding.catch.email.tab': 'Email',
   'onboarding.catch.email.title': 'Reenvía emails de tickets',
   'onboarding.catch.email.body':
