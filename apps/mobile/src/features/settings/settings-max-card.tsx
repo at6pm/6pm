@@ -66,8 +66,9 @@ function MaxBadge({ size }: { readonly size: 'card' | 'tile' }) {
 }
 
 /**
- * The top of Settings: a member sees the dark Max card with when it renews; everyone else a cell
- * with the skies tile and "Try 6pm Max free". Both open the Max sheet.
+ * Settings' Max card: a member sees the dark Max card with when it renews, under the Look card;
+ * everyone else, at the top, a cell with the skies tile and "Try 6pm Max free". Both open the Max
+ * sheet.
  */
 export function SettingsMaxCard({ onPress }: { readonly onPress: () => void }) {
   const { palette } = useTheme();

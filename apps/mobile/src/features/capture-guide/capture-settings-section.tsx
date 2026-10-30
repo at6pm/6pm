@@ -1,5 +1,4 @@
 import { Text, View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { useI18n } from '../../i18n/i18n';
 import { Symbol } from '../../ui/icons/symbol';
@@ -11,8 +10,8 @@ import type { CaptureSource } from './source-status';
 import { useCaptureSources, type CaptureSourceView } from './use-capture-sources';
 
 /**
- * Settings' "How spending gets caught": the Apple Pay banner while the Wallet automation is off,
- * then one row per way, each opening its guide.
+ * Settings' "How spending gets caught": one row per way, each opening its guide (the Wallet
+ * automation's row is where Apple Pay is set up).
  */
 export function CaptureSettingsSection({
   onOpen,
@@ -21,7 +20,7 @@ export function CaptureSettingsSection({
 }) {
   const { palette } = useTheme();
   const { t } = useI18n();
-  const { sources, summary, walletOn } = useCaptureSources();
+  const { sources, summary } = useCaptureSources();
   return (
     <View style={{ gap: 8 }}>
       <View
@@ -40,7 +39,6 @@ export function CaptureSettingsSection({
         </Text>
         <Text style={{ ...body(13), color: palette.inkSoft }}>{summary}</Text>
       </View>
-      {walletOn ? null : <WalletBanner onSetUp={() => onOpen('wallet')} />}
       <View
         style={{
           borderRadius: 26,
@@ -59,61 +57,6 @@ export function CaptureSettingsSection({
         ))}
       </View>
     </View>
-  );
-}
-
-function WalletBanner({ onSetUp }: { readonly onSetUp: () => void }) {
-  const { palette } = useTheme();
-  const { t } = useI18n();
-  const colours = captureColours(palette);
-  return (
-    <Animated.View
-      entering={FadeIn.duration(250)}
-      exiting={FadeOut.duration(150)}
-      style={{
-        borderRadius: 22,
-        paddingVertical: 14,
-        paddingLeft: 16,
-        paddingRight: 14,
-        backgroundColor: colours.fixBg,
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 12,
-      }}
-    >
-      <View
-        style={{
-          width: 38,
-          height: 38,
-          borderRadius: 12,
-          backgroundColor: palette.accent,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Symbol name="contactless" size={21} color={colours.onAccent} />
-      </View>
-      <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
-        <Text style={{ ...body(15, 650), color: palette.ink }}>{t('capture.fix.title')}</Text>
-        <Text style={{ ...body(13), lineHeight: 17.5, color: palette.inkSoft }}>
-          {t('capture.fix.body')}
-        </Text>
-      </View>
-      <PressScale
-        accessibilityRole="button"
-        onPress={onSetUp}
-        style={{
-          height: 36,
-          paddingHorizontal: 14,
-          borderRadius: 99,
-          backgroundColor: palette.btnBg,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Text style={{ ...body(13, 650), color: palette.btnFg }}>{t('capture.fix.action')}</Text>
-      </PressScale>
-    </Animated.View>
   );
 }
 

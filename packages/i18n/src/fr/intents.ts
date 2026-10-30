@@ -6,9 +6,6 @@ import type { enIntents } from '../en-intents';
 export const frIntents: { readonly [Key in keyof typeof enIntents]: Entry } = {
   'capture.settings.title': 'Comment tes dépenses sont repérées',
   'capture.settings.summary': '{on} sur {total} activés',
-  'capture.fix.title': 'Repère aussi les paiements Apple Pay',
-  'capture.fix.body': 'Une automatisation Raccourcis. À régler une seule fois.',
-  'capture.fix.action': 'Configurer',
   'capture.status.on': 'Activé',
   'capture.status.off': 'Désactivé',
   'capture.settings.widgets': 'Widgets',

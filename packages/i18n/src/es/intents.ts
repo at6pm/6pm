@@ -6,9 +6,6 @@ import type { enIntents } from '../en-intents';
 export const esIntents: { readonly [Key in keyof typeof enIntents]: Entry } = {
   'capture.settings.title': 'Cómo se pillan los gastos',
   'capture.settings.summary': '{on} de {total} activados',
-  'capture.fix.title': 'Pilla también los pagos con Apple Pay',
-  'capture.fix.body': 'Una automatización de Atajos. Se configura una vez.',
-  'capture.fix.action': 'Configurar',
   'capture.status.on': 'Sí',
   'capture.status.off': 'No',
   'capture.settings.widgets': 'Widgets',

@@ -6,9 +6,6 @@ import type { enIntents } from '../en-intents';
 export const deIntents: { readonly [Key in keyof typeof enIntents]: Entry } = {
   'capture.settings.title': 'Wie Ausgaben erwischt werden',
   'capture.settings.summary': '{on} von {total} an',
-  'capture.fix.title': 'Auch Apple Pay-Zahlungen erwischen',
-  'capture.fix.body': 'Eine Automation in Kurzbefehle. Einmal einrichten.',
-  'capture.fix.action': 'Einrichten',
   'capture.status.on': 'An',
   'capture.status.off': 'Aus',
   'capture.settings.widgets': 'Widgets',

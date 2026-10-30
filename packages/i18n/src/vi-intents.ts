@@ -4,9 +4,6 @@ import type { enIntents } from './en-intents';
 export const viIntents: { readonly [Key in keyof typeof enIntents]: Entry } = {
   'capture.settings.title': 'Cách 6pm bắt khoản chi',
   'capture.settings.summary': '{on}/{total} đang bật',
-  'capture.fix.title': 'Bắt cả các lần chạm Apple Pay',
-  'capture.fix.body': 'Một tự động hoá trong Phím tắt. Cài một lần.',
-  'capture.fix.action': 'Cài đặt',
   'capture.status.on': 'Bật',
   'capture.status.off': 'Tắt',
   'capture.settings.widgets': 'Tiện ích',

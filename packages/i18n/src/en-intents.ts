@@ -2,9 +2,6 @@
 export const enIntents = {
   'capture.settings.title': 'How spending gets caught',
   'capture.settings.summary': '{on} of {total} on',
-  'capture.fix.title': 'Catch Apple Pay taps too',
-  'capture.fix.body': 'One Shortcuts automation. Set it once.',
-  'capture.fix.action': 'Set up',
   'capture.status.on': 'On',
   'capture.status.off': 'Off',
   'capture.settings.widgets': 'Widgets',
