@@ -33,6 +33,7 @@ export function transferLink(app: IosApp, qr: VietQR, amount: Vnd): string | nul
     const content = encodeURIComponent(payloadFor(qr, amount));
     return `${app.scheme}${link.path}?targetPage=QRPay&qrContent=${content}`;
   }
+  if (link.kind === 'momoP2P') return momoTransferLink(app, qr, amount);
   // Nam A takes the fields, not the code, so a shop's code (with fields of its own) cannot go.
   if (qr.service === 'merchant') return null;
   const data = {
@@ -45,6 +46,25 @@ export function transferLink(app: IosApp, qr: VietQR, amount: Vnd): string | nul
     partnerId: '',
   };
   return `${app.scheme}ops.namabank.com.vn/?data=${encodeURIComponent(base64(JSON.stringify(data)))}`;
+}
+
+/**
+ * A Vietnamese mobile number as MoMo names a wallet: ten digits from 03, 05, 07, 08 or 09. MoMo
+ * also takes the retired eleven-digit 01x numbers; those, and +84 or 84 forms, open MoMo at its home.
+ */
+const MOBILE = /^0[35789]\d{8}$/;
+
+/**
+ * MoMo's transfer link, which opens its transfer screen filled in for a MoMo wallet named by its
+ * phone number, so it serves only a code for an account at MoMo that is such a number. A bank
+ * account, a card or a shop has no MoMo link. The fields go as base64 JSON inside a JSON `extra`,
+ * the whole of it percent-encoded: MoMo cuts a query value at its first raw `=`.
+ */
+function momoTransferLink(app: IosApp, qr: VietQR, amount: Vnd): string | null {
+  if (qr.service !== 'account' || qr.bank?.id !== 'MOMO' || !MOBILE.test(qr.account)) return null;
+  const data = { userId: qr.account, amount, message: qr.note ?? '' };
+  const extra = JSON.stringify({ dataExtract: base64(JSON.stringify(data)) });
+  return `${app.scheme}app?action=p2p&extra=${encodeURIComponent(extra)}`;
 }
 
 /** What 6pm opens: the filled-in transfer when the bank's form is known, else the app's home. */

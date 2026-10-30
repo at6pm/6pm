@@ -28,6 +28,9 @@ const transfer = scan(
 );
 const open = scan(encodeVietQR({ bin: '970403', account: '060101453998', note: 'an trua' }));
 const shop: VietQR = { ...transfer, service: 'merchant' };
+const wallet = scan(
+  encodeVietQR({ bin: '971025', account: '0901234567', amount: 50_000, note: 'cơm trưa' }),
+);
 
 describe('payloadFor', () => {
   it('passes the scanned code on untouched when it already asks for this amount', () => {
@@ -85,6 +88,42 @@ describe('transferLink', () => {
   it('gives Nam A no link for a shop code', () => {
     expect(transferLink(app('NAB'), shop, 10_000)).toBeNull();
   });
+
+  it('opens MoMo filled in for a code that pays a MoMo wallet, accents intact', () => {
+    const link = transferLink(app('MOMO'), wallet, 50_000);
+    expect(link?.startsWith('momo://app?action=p2p&extra=')).toBe(true);
+    // A raw `=` would cut the value short in MoMo, so the whole of `extra` is percent-encoded.
+    expect(link?.slice('momo://app?action=p2p&extra='.length)).not.toMatch(/[=&{}"+/]/);
+    // {"userId":"0901234567","amount":50000,"message":"cơm trưa"} as UTF-8, in base64.
+    expect(JSON.parse(param(link ?? '', 'extra') ?? '')).toEqual({
+      dataExtract:
+        'eyJ1c2VySWQiOiIwOTAxMjM0NTY3IiwiYW1vdW50Ijo1MDAwMCwibWVzc2FnZSI6ImPGoW0gdHLGsGEifQ==',
+    });
+  });
+
+  it('sends MoMo the amount typed for an open code, and an empty note when there is none', () => {
+    const blank = scan(encodeVietQR({ bin: '971025', account: '0901234567' }));
+    // {"userId":"0901234567","amount":45000,"message":""} in base64.
+    expect(
+      JSON.parse(param(transferLink(app('MOMO'), blank, 45_000) ?? '', 'extra') ?? ''),
+    ).toEqual({
+      dataExtract: 'eyJ1c2VySWQiOiIwOTAxMjM0NTY3IiwiYW1vdW50Ijo0NTAwMCwibWVzc2FnZSI6IiJ9',
+    });
+  });
+
+  it('gives MoMo no link for a bank account, a non-phone MoMo account or a shop code', () => {
+    expect(transferLink(app('MOMO'), transfer, 10_000)).toBeNull();
+    const alias = scan(encodeVietQR({ bin: '971025', account: 'P2P0123456789', amount: 10_000 }));
+    expect(transferLink(app('MOMO'), alias, 10_000)).toBeNull();
+    expect(transferLink(app('MOMO'), { ...wallet, service: 'merchant' }, 10_000)).toBeNull();
+  });
+
+  it('gives MoMo a link only for a ten-digit mobile number', () => {
+    for (const account of ['84901234567', '0201234567', '01291234567', '090123456']) {
+      const other = scan(encodeVietQR({ bin: '971025', account, amount: 10_000 }));
+      expect(transferLink(app('MOMO'), other, 10_000)).toBeNull();
+    }
+  });
 });
 
 describe('handoffUrl', () => {
@@ -102,6 +141,10 @@ describe('handoffUrl', () => {
 
   it('opens the home of a bank with no link', () => {
     expect(handoffUrl(app('VCB'), transfer, 10_000)).toBe('vietcombankmobile://');
+  });
+
+  it("opens MoMo's home for a code it cannot be handed", () => {
+    expect(handoffUrl(app('MOMO'), transfer, 10_000)).toBe('momo://');
   });
 });
 
@@ -129,6 +172,17 @@ describe('handoffPlan', () => {
         'market://details?id=com.mbmobile',
         'https://play.google.com/store/apps/details?id=com.mbmobile',
       ],
+    });
+  });
+
+  it('opens MoMo filled in on iOS for a MoMo wallet, and at its home on Android', () => {
+    expect(handoffPlan(findBank('MOMO'), 'ios', wallet, 50_000)).toMatchObject({
+      open: transferLink(app('MOMO'), wallet, 50_000),
+      filledIn: true,
+    });
+    expect(handoffPlan(findBank('MOMO'), 'android', wallet, 50_000)).toMatchObject({
+      open: 'momo://',
+      filledIn: false,
     });
   });
 
