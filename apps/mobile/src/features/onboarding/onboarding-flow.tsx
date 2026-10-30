@@ -132,10 +132,11 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
             pal={pal}
             income={o.income}
             payday={o.payday}
-            sameDay={o.sameDay}
             dailyHint={o.dailyHint}
+            guide={o.wheelGuide}
             onIncome={o.setIncome}
             onPayday={o.setPayday}
+            onGuideDone={o.endWheelGuide}
           />
         );
       case BILLS_STEP:

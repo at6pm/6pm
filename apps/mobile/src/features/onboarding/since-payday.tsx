@@ -11,7 +11,7 @@ import { PressScale } from '../../ui/primitives/press-scale';
 import { body } from '../../ui/type/fonts';
 import { IncomeWheels } from './money-in-controls';
 import { riseEntering } from './onboarding-motion';
-import type { OnboardingPalette } from './onboarding-palette';
+import { keypadInksOf, type OnboardingPalette } from './onboarding-palette';
 
 /** A local day as the phone's date formatter reads it. */
 export function dateOf(day: LocalDate): Date {
@@ -101,7 +101,12 @@ export function SincePaydayEditor({
         gap: 10,
       }}
     >
-      <IncomeWheels income={amount} onIncome={onAmount} colours={pal} />
+      <IncomeWheels
+        income={amount}
+        onIncome={onAmount}
+        colours={pal}
+        keypadInks={keypadInksOf(pal)}
+      />
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
         <Text style={{ ...body(12.5), lineHeight: 17.5, color: pal.inkSoft, flex: 1 }}>
           {t('onboarding.reveal.sincePaydayHint')}

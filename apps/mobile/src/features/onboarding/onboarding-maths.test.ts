@@ -5,12 +5,14 @@ import { currencyOf } from '@6pm/domain';
 import { billTotal, chosenBills, dealDeck, NO_BILL_ANSWERS, type BillAnswers } from './bill-deck';
 import {
   billDigits,
+  billFromTyped,
   billOf,
   CLOSE_HOURS,
   CLOSE_MINUTES,
   firstDay,
   futureYouOf,
   incomeDigits,
+  incomeFromTyped,
   incomeLeads,
   incomeMax,
   incomeMillionsItems,
@@ -18,6 +20,9 @@ import {
   billMillionsItems,
   markAfter,
   millionsPlace,
+  PAYDAY_CELLS,
+  paydayCell,
+  paydayOfCell,
   startingIncome,
   zerosBelow,
 } from './onboarding-maths';
@@ -42,6 +47,37 @@ describe('onboarding maths', () => {
     expect(incomeOf(10, 0, 0)).toBe(1_000_000_000);
     expect(incomeOf(10, 42, 7)).toBe(1_000_000_000);
     expect(incomeDigits(2_000_000_000)).toEqual({ lead: 10, millions: 0, hundreds: 0 });
+  });
+
+  it('sets the wheels to a typed amount, to the nearest step they hold', () => {
+    expect(incomeFromTyped(15_350_000)).toBe(15_400_000);
+    expect(incomeFromTyped(15_320_000)).toBe(15_300_000);
+    expect(incomeDigits(incomeFromTyped(15_960_000))).toEqual({
+      lead: 0,
+      millions: 16,
+      hundreds: 0,
+    });
+    expect(incomeFromTyped(200_000)).toBe(1_000_000);
+    expect(incomeFromTyped(5_000_000_000)).toBe(1_000_000_000);
+    expect(incomeFromTyped(1_234_567, USD)).toBe(1_230_000);
+    expect(billFromTyped(1_234_567)).toBe(1_230_000);
+    expect(billFromTyped(4_000)).toBe(0);
+    expect(billFromTyped(250_000_000)).toBe(99_990_000);
+    expect(billFromTyped(12_345, USD)).toBe(12_000);
+  });
+
+  it('lays payday on one strip: the days, then the last day, then it varies', () => {
+    expect(paydayCell({ kind: 'sameDay', day: 5 })).toBe(4);
+    expect(paydayCell({ kind: 'sameDay', day: 31 })).toBe(30);
+    expect(paydayCell({ kind: 'lastDay' })).toBe(31);
+    expect(paydayCell({ kind: 'varies' })).toBe(32);
+    expect(PAYDAY_CELLS).toBe(33);
+    for (let cell = 0; cell < PAYDAY_CELLS; cell++) {
+      expect(paydayCell(paydayOfCell(cell))).toBe(cell);
+    }
+    expect(paydayOfCell(0)).toEqual({ kind: 'sameDay', day: 1 });
+    expect(paydayOfCell(31)).toEqual({ kind: 'lastDay' });
+    expect(paydayOfCell(32)).toEqual({ kind: 'varies' });
   });
 
   it('rounds Future you to the nearest 100.000₫', () => {

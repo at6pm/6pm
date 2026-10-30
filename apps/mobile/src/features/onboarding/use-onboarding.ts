@@ -45,7 +45,8 @@ export function useOnboarding(startStep = 0) {
   const [step, setStep] = useState(startStep);
   const [direction, setDirection] = useState<1 | -1>(1);
   const [income, setIncome] = useState<number>(() => startingIncome(currency));
-  const [sameDay, setSameDay] = useState<number>(START.payday);
+  // Money in's gesture guide plays the first time through, until the wheels are touched.
+  const [wheelGuide, setWheelGuide] = useState(true);
   const [payday, setPaydayState] = useState<Payday>({ kind: 'sameDay', day: START.payday });
   const [percent, setPercent] = useState<number>(START.percent);
   const [answers, setAnswers] = useState<BillAnswers>(NO_BILL_ANSWERS);
@@ -118,6 +119,7 @@ export function useOnboarding(startStep = 0) {
     const next = Math.max(0, target);
     haptics.tap();
     setDirection(next >= step ? 1 : -1);
+    if (step === 1 && next !== 1) setWheelGuide(false);
     // Coming back to the deck shows its top card without replaying the last fling.
     if (next === BILLS_STEP) setNav((n) => ({ ...n, from: null }));
     setStep(next);
@@ -142,7 +144,7 @@ export function useOnboarding(startStep = 0) {
     today,
     income,
     payday,
-    sameDay,
+    wheelGuide,
     percent,
     answers,
     nav,
@@ -160,11 +162,9 @@ export function useOnboarding(startStep = 0) {
     back: () => go(step - 1),
     skip: () => go(step + 1),
     setIncome,
-    setPayday: (next: Payday) => {
-      if (next.kind === 'sameDay') setSameDay(next.day);
-      if (next.kind !== payday.kind) haptics.tap();
-      setPaydayState(next);
-    },
+    // The strip ticks as each day passes, so a new kind of payday needs no haptic of its own.
+    setPayday: setPaydayState,
+    endWheelGuide: () => setWheelGuide(false),
     setPercent,
     setAnswers,
     billGo: (index: number, dir: 1 | -1) => {

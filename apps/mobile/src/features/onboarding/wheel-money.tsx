@@ -77,6 +77,8 @@ export function WheelSymbol({
     opacity: 0.55,
     alignSelf: 'flex-start',
     marginTop: offset,
+    // The wheels' touch strips reach over it.
+    pointerEvents: 'none',
     ...(side === 'after' ? { marginLeft: 4 } : { marginRight: 4 }),
   };
   return <Text style={style}>{symbol}</Text>;

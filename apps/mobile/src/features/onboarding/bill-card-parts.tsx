@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
-import { Text, View } from 'react-native';
+import { useState, type ReactNode } from 'react';
+import { Text, View, type LayoutChangeEvent } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 import { Symbol } from '../../ui/icons/symbol';
@@ -8,9 +8,13 @@ import { PressScale } from '../../ui/primitives/press-scale';
 import { BalancedText } from '../../ui/type/balanced-text';
 import { body, display, leading, mono } from '../../ui/type/fonts';
 import { Wheel } from '../../ui/wheel/wheel';
+import { touchReach } from '../../ui/wheel/wheel-maths';
+import { useI18n } from '../../i18n/i18n';
+import { AmountKeypadSheet, type KeypadSheetInks } from '../quick-add/amount-keypad-sheet';
 import { BILL_CARDS, type DeckItem } from './bill-deck';
 import {
   billDigits,
+  billFromTyped,
   billMillionsItems,
   billOf,
   DIGITS,
@@ -24,6 +28,9 @@ import { useWheelMoney, WheelSymbol } from './wheel-money';
 /** The bill millions wheel's width, and what a group mark inside its two digits adds. */
 const MILLIONS_WIDTH = 54;
 const INNER_MARK_WIDTH = 8;
+const DIGIT_WIDTH = 19;
+/** The strips reach a little above and below the wheels. */
+const REACH_Y = { top: 6, bottom: 6 } as const;
 
 /** The pieces a bills card is made of: buttons, the icon row, the question, the amount wheels. */
 
@@ -130,25 +137,51 @@ export function Question({
   );
 }
 
+/**
+ * A bill's amount on three wheels: millions, hundred thousands and ten thousands. Each answers in
+ * its own strip, sharing the gaps between them: a tap above or below the centre steps it, a hold
+ * rolls it, and a tap on the centre types the amount on Quick add's keypad.
+ */
 export function AmountWheels({
   value,
   ink,
   band,
   onValue,
+  keypadInks,
 }: {
   readonly value: number;
   readonly ink: string;
   /** The soft band behind the chosen row. */
   readonly band: string;
   readonly onValue: (value: number) => void;
+  /** The keypad sheet's inks, where the screen has its own palette. */
+  readonly keypadInks?: KeypadSheetInks;
 }) {
+  const { t } = useI18n();
   const w = useWheelMoney();
   const c = w.currency;
   const { millions, hundreds, tens } = billDigits(value, c);
-  const number = { ...display(30, 600, -0.03), color: ink };
+  // Text between the wheels never takes a touch, so the strips over it reach the wheels.
+  const number = { ...display(30, 600, -0.03), color: ink, pointerEvents: 'none' } as const;
   const innerMark = markAfter(w.place + 1, w.mark) !== '';
   const afterMillions = markAfter(w.place, w.mark);
   const afterHundreds = markAfter(w.place - 1, w.mark);
+  const millionsWidth = MILLIONS_WIDTH + (innerMark ? INNER_MARK_WIDTH : 0);
+  const [marks, setMarks] = useState({ first: 0, second: 0 });
+  const [typing, setTyping] = useState(false);
+  const reaches = touchReach([
+    { x: 0, width: millionsWidth },
+    { x: millionsWidth + marks.first, width: DIGIT_WIDTH },
+    { x: millionsWidth + marks.first + DIGIT_WIDTH + marks.second, width: DIGIT_WIDTH },
+  ]);
+  const strip = (k: number) => ({
+    reach: { ...(reaches[k] ?? { left: 0, right: 0 }), ...REACH_Y },
+    onType: () => setTyping(true),
+  });
+  const measure = (key: 'first' | 'second') => (e: LayoutChangeEvent) => {
+    const width = e.nativeEvent.layout.width;
+    setMarks((m) => (m[key] === width ? m : { ...m, [key]: width }));
+  };
   return (
     <View style={{ alignItems: 'center', justifyContent: 'center' }}>
       <WheelBand height={44} radius={14} color={band} />
@@ -162,10 +195,15 @@ export function AmountWheels({
           padX={0}
           align="flex-end"
           ink={ink}
-          width={MILLIONS_WIDTH + (innerMark ? INNER_MARK_WIDTH : 0)}
+          width={millionsWidth}
           label={w.label('millions', 'onboarding.bills.millions')}
+          touch={strip(0)}
         />
-        {afterMillions === '' ? null : <Text style={number}>{afterMillions}</Text>}
+        {afterMillions === '' ? null : (
+          <Text style={number} onLayout={measure('first')}>
+            {afterMillions}
+          </Text>
+        )}
         <Wheel
           items={DIGITS}
           index={hundreds}
@@ -173,10 +211,15 @@ export function AmountWheels({
           size={30}
           padX={0}
           ink={ink}
-          width={19}
+          width={DIGIT_WIDTH}
           label={w.label('hundreds', 'onboarding.bills.hundreds')}
+          touch={strip(1)}
         />
-        {afterHundreds === '' ? null : <Text style={number}>{afterHundreds}</Text>}
+        {afterHundreds === '' ? null : (
+          <Text style={number} onLayout={measure('second')}>
+            {afterHundreds}
+          </Text>
+        )}
         <Wheel
           items={DIGITS}
           index={tens}
@@ -184,12 +227,21 @@ export function AmountWheels({
           size={30}
           padX={0}
           ink={ink}
-          width={19}
+          width={DIGIT_WIDTH}
           label={w.label('tens', 'onboarding.bills.tens')}
+          touch={strip(2)}
         />
         {w.place - 2 > 0 ? <Text style={number}>{zerosBelow(w.place - 2, w.mark)}</Text> : null}
         <WheelSymbol symbol={w.after} size={15} offset={48} ink={ink} side="after" />
       </View>
+      {typing ? (
+        <AmountKeypadSheet
+          title={t('onboarding.wheel.type')}
+          inks={keypadInks}
+          onAmount={(amount) => onValue(billFromTyped(amount, c))}
+          onClose={() => setTyping(false)}
+        />
+      ) : null}
     </View>
   );
 }
