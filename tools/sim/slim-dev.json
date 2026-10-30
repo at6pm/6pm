@@ -1,0 +1,6 @@
+{
+  "name": "6pm-dev",
+  "description": "6pm development: universal links, the photo picker, App Intents, widgets and Live Activities stay on",
+  "except": ["web", "photos"],
+  "keep": ["com.apple.siriactionsd", "com.apple.liveactivitiesd", "com.apple.chronod"]
+}
