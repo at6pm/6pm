@@ -51,7 +51,7 @@ export const koAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'max.welcome.win.more': '저금통, 여행, 이어북',
 
   'privacy.ai.device.title': '이 폰에서만',
-  'privacy.ai.device.unavailable': '이 폰은 자체 모델을 돌릴 메모리가 부족해요.',
+  'privacy.ai.device.unavailable': 'Android에서는 6pm이 폰 안에서 돌릴 모델이 없어요.',
   'settings.ai.device': '이 폰에서',
   'privacy.leaves.device.none': 'AI로 나가는 건 없어요. 모든 처리는 이 폰에서 해요.',
   'receiptEmail.deviceMode': 'AI를 이 폰에서만 쓰는 동안 꺼짐',

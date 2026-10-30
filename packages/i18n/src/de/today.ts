@@ -140,7 +140,7 @@ export const deToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'settings.remindersOff': 'Aus',
   'settings.language': 'Sprache',
   'settings.languageName': 'Deutsch',
-  'settings.languagePhone': 'Wie auf deinem iPhone',
+  'settings.languagePhone': 'Wie auf deinem Handy',
   'settings.yourData': 'Deine Daten',
   'settings.privacy': 'Datenschutz',
   'settings.privacyBody':

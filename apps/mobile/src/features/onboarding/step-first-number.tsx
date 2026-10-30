@@ -171,10 +171,13 @@ export function StepFirstNumber({
         </Animated.View>
       ) : null}
       {editing ? null : (
-        <Animated.View layout={reflow}>
+        <Animated.View layout={reflow} style={{ alignSelf: 'stretch', alignItems: 'center' }}>
+          {/* The column's width, not the text's own: Android measures the display face's tight
+              tracking short, so a hugging line that wraps would keep one line's height. */}
           <Text
             style={{
               ...leading(display(21, 500), 25.2),
+              width: '100%',
               maxWidth: 300,
               textAlign: 'center',
               color: pal.ink,

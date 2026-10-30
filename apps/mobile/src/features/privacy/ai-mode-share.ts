@@ -1,18 +1,22 @@
 import Constants from 'expo-constants';
 import { Directory, File, Paths } from 'expo-file-system';
+import { Platform } from 'react-native';
 
 import type { AiMode } from './ai-mode';
 
 /**
- * A copy of the AI mode in the App Group, at `surfaces/ai.json` (`{"mode":"device"}`), for what
- * cannot read the app's database: the share extension, which skips the server's look at a
- * receipt photo in on-device mode, and the app itself before its database has opened, so crash
- * reports are never started in on-device mode. The database stays the source of truth: the copy
+ * A copy of the AI mode in the App Group (on Android, the app's documents), at `surfaces/ai.json`
+ * (`{"mode":"device"}`), for what cannot read the app's database: the share extension, which skips
+ * the server's look at a receipt photo in on-device mode, and the app itself before its database
+ * has opened, so crash reports are never started in on-device mode. The database stays the source of truth: the copy
  * is written whenever the mode is, and again at every launch.
  */
 export const SHARED_AI_MODE_FILE = 'ai.json';
 
 function sharedFolder(): Directory | null {
+  // Android has no App Group and no extension to share with: the app's own documents keep the copy
+  // its next launch reads.
+  if (Platform.OS === 'android') return new Directory(Paths.document, 'surfaces');
   const group: unknown = Constants.expoConfig?.extra?.['appGroup'];
   if (typeof group !== 'string' || group === '') return null;
   const container = Paths.appleSharedContainers[group];

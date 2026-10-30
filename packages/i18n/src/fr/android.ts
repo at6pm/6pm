@@ -63,7 +63,8 @@ export const frAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'max.welcome.win.more': 'Cagnottes, voyages et l’Album de l’année',
 
   'privacy.ai.device.title': 'Uniquement sur ce téléphone',
-  'privacy.ai.device.unavailable': 'Ce téléphone n’a pas assez de mémoire pour un modèle à lui.',
+  'privacy.ai.device.unavailable':
+    'Sur Android, 6pm n’a pas de modèle qui tourne sur le téléphone.',
   'settings.ai.device': 'Sur ce téléphone',
   'privacy.leaves.device.none': 'Rien côté IA. Tout est calculé sur ce téléphone.',
   'receiptEmail.deviceMode': 'Désactivé tant que l’IA reste sur ce téléphone',

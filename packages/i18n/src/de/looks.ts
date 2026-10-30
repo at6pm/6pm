@@ -26,7 +26,7 @@ export const deLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   'looks.card.customise': 'Anpassen',
   'looks.card.tryOn': 'Anprobieren',
   'looks.card.tryOnPrice': 'Anprobieren · {price}',
-  'looks.card.moves': 'Bewegt sich mit deinem iPhone',
+  'looks.card.moves': 'Bewegt sich mit deinem Handy',
   'looks.card.position': '{name}, {index} von {total}',
   'looks.day.title': 'Tageszeit',
   'looks.day.sub': 'Jeder Look folgt deiner Uhr',
@@ -181,7 +181,7 @@ export const deLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   'looks.name.expo': 'Langzeitbelichtung',
   'looks.name.paper': 'Papier-Diorama',
   'looks.name.lantern': 'Laternenfluss',
-  'looks.tag.basic': 'Nur das System. Schrift, Farben und Hell- oder Dunkelmodus deines iPhone.',
+  'looks.tag.basic': 'Nur das System. Schrift, Farben und Hell- oder Dunkelmodus deines Handys.',
   'looks.tag.golden':
     'Das Original. Filmkorn, Lens Flare und ein Sonnenuntergang, der es ernst meint.',
   'looks.tag.lacquer': 'Schwarzer Lack und Blattgold, von Hand geschliffen, bis es leuchtet.',
@@ -245,7 +245,7 @@ export const deLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   'looks.ctl.expo.traffic.sub': 'Scheinwerfer und Rücklichter quer durchs Bild',
   'looks.ctl.expo.sense.label': 'Stillhalten zum Belichten',
   'looks.ctl.expo.sense.sub':
-    'Die Spuren wachsen, solange dein iPhone ruhig liegt. Neig es, um dich umzusehen.',
+    'Die Spuren wachsen, solange dein Handy ruhig liegt. Neig es, um dich umzusehen.',
   'looks.ctl.paper.par.label': 'Parallaxe',
   'looks.ctl.paper.par.sub': 'Ebenen gleiten in verschiedenen Tiefen',
   'looks.ctl.paper.clouds.label': 'Hängende Wolken',

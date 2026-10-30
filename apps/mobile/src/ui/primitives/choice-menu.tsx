@@ -1,4 +1,3 @@
-import { BlurView } from 'expo-blur';
 import { useRef, useState, type ComponentRef, type ReactNode } from 'react';
 import { Modal, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -203,7 +202,9 @@ function MenuSheet({
             menu,
           ]}
         >
-          <BlurView intensity={80} tint="systemChromeMaterial" style={StyleSheet.absoluteFill} />
+          {/* No blur reaches behind a modal window on Android: the look's own sheet, which its
+              ink is made to read on, in every look and at every hour. */}
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: palette.sheet }]} />
           <GestureDetector gesture={slide}>
             <View style={{ flex: 1, paddingVertical: PAD }}>
               {choices.map((c, k) => (

@@ -62,7 +62,7 @@ export const deAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'max.welcome.win.more': 'Spartöpfe, Reisemodus und das Jahrbuch',
 
   'privacy.ai.device.title': 'Nur auf diesem Handy',
-  'privacy.ai.device.unavailable': 'Dieses Handy hat nicht genug Speicher für ein eigenes Modell.',
+  'privacy.ai.device.unavailable': 'Auf Android hat 6pm kein Modell, das auf dem Handy läuft.',
   'settings.ai.device': 'Auf diesem Handy',
   'privacy.leaves.device.none': 'Nichts für die KI. Alles wird auf diesem Handy berechnet.',
   'receiptEmail.deviceMode': 'Aus, solange die KI auf diesem Handy bleibt',

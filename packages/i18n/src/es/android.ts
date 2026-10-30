@@ -65,7 +65,8 @@ export const esAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'max.welcome.win.more': 'Huchas, viajes y el Anuario',
 
   'privacy.ai.device.title': 'Solo en este teléfono',
-  'privacy.ai.device.unavailable': 'Este teléfono no tiene memoria para un modelo propio.',
+  'privacy.ai.device.unavailable':
+    'En Android, 6pm no tiene un modelo que funcione en el teléfono.',
   'settings.ai.device': 'En este teléfono',
   'privacy.leaves.device.none': 'Nada de IA. Todo se calcula en este teléfono.',
   'receiptEmail.deviceMode': 'Desactivado mientras la IA siga en este teléfono',

@@ -1,4 +1,5 @@
 import { createContext, use, useMemo, type ReactNode } from 'react';
+import { Platform } from 'react-native';
 import {
   Easing,
   ReduceMotion,
@@ -58,6 +59,9 @@ export function useHomeScroll(): HomeScroll {
 }
 
 const barEase = Easing.bezier(0.2, 0.9, 0.25, 1.1);
+
+/** iOS runs a scroll view past its top, so the offset is the pull; Android stops at the top. */
+const fromScroll = Platform.OS === 'ios';
 const BAR_MS = 350;
 
 /** A page that opens something when pulled down past its top (Today opens Quick add). */
@@ -87,12 +91,15 @@ export function useHomePageScroll(tab: HomeTab, pulling?: HomePull) {
   const release = pulling?.onRelease;
   return useAnimatedScrollHandler({
     onEndDrag: (event) => {
-      if (release && tabIndex.get() === index && -event.contentOffset.y >= reach) {
+      if (release && fromScroll && tabIndex.get() === index && -event.contentOffset.y >= reach) {
         scheduleOnRN(release);
       }
     },
     onScroll: (event) => {
-      if (pull && tabIndex.get() === index) pull.set(Math.max(0, -event.contentOffset.y));
+      // Android's scroll view never runs past its top: `useOverscrollPull` reads the finger there.
+      if (pull && fromScroll && tabIndex.get() === index) {
+        pull.set(Math.max(0, -event.contentOffset.y));
+      }
       const offset = Math.max(0, event.contentOffset.y);
       // A page left behind can still coast; only the page on screen drives the shared chrome.
       if (tabIndex.get() !== index) {

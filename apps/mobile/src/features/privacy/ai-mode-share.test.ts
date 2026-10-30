@@ -49,12 +49,15 @@ jest.mock('expo-file-system', () => {
     Directory,
     File,
     Paths: {
+      document: { uri: 'file:///documents' },
       get appleSharedContainers() {
         return { 'group.ai.sixpm.app.dev': { uri: 'file:///group' } };
       },
     },
   };
 });
+
+import { Platform } from 'react-native';
 
 import { readSharedAiMode, shareAiMode } from './ai-mode-share';
 
@@ -86,5 +89,17 @@ describe('the AI mode the extensions read', () => {
     expect(shareAiMode('device')).toBe(false);
     expect(readSharedAiMode()).toBeNull();
     expect(mockFiles.size).toBe(0);
+  });
+
+  it('keeps the copy in the app’s documents on Android, which has no App Group', () => {
+    mockGroup.id = undefined;
+    const os = jest.replaceProperty(Platform, 'OS', 'android');
+    try {
+      expect(shareAiMode('device')).toBe(true);
+      expect(mockFiles.get('file:///documents/surfaces/ai.json')).toBe('{"mode":"device"}');
+      expect(readSharedAiMode()).toBe('device');
+    } finally {
+      os.restore();
+    }
   });
 });

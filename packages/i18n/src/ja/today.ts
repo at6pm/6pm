@@ -129,7 +129,7 @@ export const jaToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'settings.remindersOff': 'オフ',
   'settings.language': '言語',
   'settings.languageName': '日本語',
-  'settings.languagePhone': 'iPhoneの設定と同じ',
+  'settings.languagePhone': 'スマホの設定と同じ',
   'settings.yourData': 'あなたのデータ',
   'settings.privacy': 'プライバシー',
   'settings.privacyBody':
