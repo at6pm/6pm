@@ -22,23 +22,5 @@ struct SixpmShortcuts: AppShortcutsProvider {
       shortTitle: LocalizedStringResource("logSpend.short", table: "Intents"),
       systemImageName: "plus.circle"
     )
-    // Opening a screen from the extension takes `OpenURLIntent`, which iOS 17 does not have.
-    if #available(iOS 18.0, *) {
-      AppShortcut(
-        intent: OpenScanIntent(),
-        phrases: [
-          "Scan QR in \(.applicationName)",
-          "Scan to pay in \(.applicationName)",
-        ],
-        shortTitle: LocalizedStringResource("scan.title", table: "Intents"),
-        systemImageName: "qrcode.viewfinder"
-      )
-      AppShortcut(
-        intent: OpenQuickAddIntent(),
-        phrases: ["Quick add in \(.applicationName)"],
-        shortTitle: LocalizedStringResource("quickAdd.title", table: "Intents"),
-        systemImageName: "plus"
-      )
-    }
   }
 }
