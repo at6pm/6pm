@@ -6,9 +6,6 @@ import type { enIntents } from '../en-intents';
 export const idIntents: { readonly [Key in keyof typeof enIntents]: Entry } = {
   'capture.settings.title': 'Cara pengeluaran tertangkap',
   'capture.settings.summary': '{on} dari {total} menyala',
-  'capture.fix.title': 'Tangkap juga ketukan Apple Pay',
-  'capture.fix.body': 'Satu otomatisasi Pintasan. Atur sekali saja.',
-  'capture.fix.action': 'Atur',
   'capture.status.on': 'Nyala',
   'capture.status.off': 'Mati',
   'capture.settings.widgets': 'Widget',

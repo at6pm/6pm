@@ -35,8 +35,6 @@ export interface CaptureSourceView extends SourceStatus {
 export function useCaptureSources(): {
   readonly sources: readonly CaptureSourceView[];
   readonly summary: string;
-  /** Whether the Wallet automation is on, or not offered on this phone: no banner asks for it. */
-  readonly walletOn: boolean;
   /** This phone's receipt email address, once the server has given one. */
   readonly emailAddress: string | null;
   /** Receipt email exists only in server mode: in on-device mode it is shown as off. */
@@ -80,8 +78,7 @@ export function useCaptureSources(): {
       on: onCount(sources),
       total: sources.length,
     });
-    const walletOn = !nativeReach.wallet || statuses.some((s) => s.source === 'wallet' && s.on);
-    return { sources, summary, walletOn, emailAddress, emailAvailable };
+    return { sources, summary, emailAddress, emailAvailable };
   }, [cycleSpends, waitingBefore, t, labels, emailAddress, emailAvailable, home, lastAlert]);
 }
 

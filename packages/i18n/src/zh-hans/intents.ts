@@ -6,9 +6,6 @@ import type { enIntents } from '../en-intents';
 export const zhHansIntents: { readonly [Key in keyof typeof enIntents]: Entry } = {
   'capture.settings.title': '支出是怎么记下的',
   'capture.settings.summary': '已开启 {on}/{total}',
-  'capture.fix.title': '把 Apple Pay 付款也记下',
-  'capture.fix.body': '一个快捷指令自动化，设置一次就好。',
-  'capture.fix.action': '设置',
   'capture.status.on': '开',
   'capture.status.off': '关',
   'capture.settings.widgets': '小组件',

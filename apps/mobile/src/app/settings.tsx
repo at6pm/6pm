@@ -19,11 +19,11 @@ import { AiSettingsRow } from '../features/privacy/ai-settings-row';
 import { CaptureSettingsSection } from '../features/capture-guide/capture-settings-section';
 import { useDeleteBackup } from '../features/backup/use-backup';
 import { ExportRow } from '../features/export/export-row';
+import { usePurchases } from '../features/purchases/purchases-provider';
 import { useCompanionSettingsStore } from '../features/companion/companion-settings-provider';
 import { useLookSettingsStore } from '../features/looks/look-settings-provider';
 import { CloseTimePicker } from '../features/settings/close-time-picker';
 import { CompanionCard } from '../features/settings/companion-card';
-import { SettingsCompanionRow } from '../features/settings/settings-companion-row';
 import { SettingsLookCard } from '../features/settings/settings-look-card';
 import { SettingsMaxCard } from '../features/settings/settings-max-card';
 import { SettingRow, SettingsSection } from '../features/settings/setting-rows';
@@ -54,6 +54,7 @@ export default function Settings() {
   const lookStore = useLookSettingsStore();
   const companionStore = useCompanionSettingsStore();
   const deleteBackup = useDeleteBackup();
+  const member = usePurchases().customer.max.active;
   const plan = snap.plan ?? DEFAULT_PLAN;
   const [privacyOpen, setPrivacyOpen] = useState(false);
   const [armed, setArmed] = useState(false);
@@ -90,6 +91,7 @@ export default function Settings() {
       .catch(() => toast(t('settings.deleteFailed')))
       .finally(() => setDeleting(false));
   };
+  const openMax = () => router.push({ pathname: '/max', params: { from: 'looks' } });
   const askOrOpenSettings = () => {
     haptics.tick();
     if (reminders === 'ask') {
@@ -103,8 +105,13 @@ export default function Settings() {
 
   return (
     <SheetScreen title={t('home.settings')} gap={26}>
-      <SettingsMaxCard
-        onPress={() => router.push({ pathname: '/max', params: { from: 'looks' } })}
+      {/* A member's card sits under the look it dresses; everyone else is offered Max first. */}
+      {member ? null : <SettingsMaxCard onPress={openMax} />}
+      <CaptureSettingsSection
+        onOpen={(source) => {
+          haptics.tick();
+          router.push({ pathname: '/capture-guide', params: { source } });
+        }}
       />
       <CompanionCard
         persona={plan.persona}
@@ -112,23 +119,9 @@ export default function Settings() {
         onPersona={(persona) => void actions.updatePlan({ persona })}
         onSerious={(serious) => void actions.updatePlan({ serious })}
       />
-      <CaptureSettingsSection
-        onOpen={(source) => {
-          haptics.tick();
-          router.push({ pathname: '/capture-guide', params: { source } });
-        }}
-      />
-      {/* Serious mode has no companion to pick. */}
-      {plan.serious ? null : (
-        <SettingsCompanionRow
-          onPress={() => {
-            haptics.tick();
-            router.push('/companions');
-          }}
-        />
-      )}
       {/* Replace, not push: the shop and its try-on stand in for Settings, so the app shows behind. */}
       <SettingsLookCard onPress={() => router.replace('/looks')} />
+      {member ? <SettingsMaxCard onPress={openMax} /> : null}
 
       <SettingsSection title={t('settings.yourDay')}>
         <SettingRow

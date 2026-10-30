@@ -7,9 +7,6 @@ import type { enIntents } from '../en-intents';
 export const koIntents: { readonly [Key in keyof typeof enIntents]: Entry } = {
   'capture.settings.title': '지출을 잡는 방법',
   'capture.settings.summary': '{total}개 중 {on}개 켜짐',
-  'capture.fix.title': 'Apple Pay 결제도 잡기',
-  'capture.fix.body': '단축어 자동화 하나면 돼요. 한 번만 설정하세요.',
-  'capture.fix.action': '설정',
   'capture.status.on': '켬',
   'capture.status.off': '끔',
   'capture.settings.widgets': '위젯',

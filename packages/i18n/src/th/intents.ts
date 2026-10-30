@@ -6,9 +6,6 @@ import type { enIntents } from '../en-intents';
 export const thIntents: { readonly [Key in keyof typeof enIntents]: Entry } = {
   'capture.settings.title': '6pm จับรายจ่ายได้ยังไง',
   'capture.settings.summary': 'เปิดอยู่ {on} จาก {total}',
-  'capture.fix.title': 'จับการแตะจ่าย Apple Pay ด้วย',
-  'capture.fix.body': 'ระบบอัตโนมัติหนึ่งตัวในคำสั่งลัด ตั้งครั้งเดียวจบ',
-  'capture.fix.action': 'ตั้งค่า',
   'capture.status.on': 'เปิด',
   'capture.status.off': 'ปิด',
   'capture.settings.widgets': 'วิดเจ็ต',

@@ -6,9 +6,6 @@ import type { enIntents } from '../en-intents';
 export const jaIntents: { readonly [Key in keyof typeof enIntents]: Entry } = {
   'capture.settings.title': '支出をキャッチする方法',
   'capture.settings.summary': '{total}個中{on}個がオン',
-  'capture.fix.title': 'Apple Payのタップもキャッチ',
-  'capture.fix.body': 'ショートカットのオートメーションをひとつ。設定は一度だけ。',
-  'capture.fix.action': '設定する',
   'capture.status.on': 'オン',
   'capture.status.off': 'オフ',
   'capture.settings.widgets': 'ウィジェット',
