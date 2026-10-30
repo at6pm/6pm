@@ -6,5 +6,9 @@
     "NSPhotoLibraryUsageDescription": "6pm sichert nur deinen Tagesbeleg und dein Geldtagebuch in Fotos. Deine Mediathek wird nie durchsucht.",
     "NSPhotoLibraryAddUsageDescription": "6pm sichert deinen Tagesbeleg und dein Geldtagebuch in Fotos, wenn du das möchtest.",
     "NSLocationWhenInUseUsageDescription": "6pm prüft, in welchem Land du bist, damit sich der Reisemodus im Ausland von selbst einschaltet."
+  },
+  "android": {
+    "sixpm_shortcut_scan": "QR scannen",
+    "sixpm_shortcut_quick_add": "Schnell erfassen"
   }
 }

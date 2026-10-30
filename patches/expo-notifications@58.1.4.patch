@@ -1,0 +1,26 @@
+diff --git a/android/src/main/java/expo/modules/notifications/service/delegates/ExpoSchedulingDelegate.kt b/android/src/main/java/expo/modules/notifications/service/delegates/ExpoSchedulingDelegate.kt
+index 439df8abd8f03ab47170581f3a9b801edea8d92b..f6fe88abcb68ebacfdf170279d2991ae197fd23b 100644
+--- a/android/src/main/java/expo/modules/notifications/service/delegates/ExpoSchedulingDelegate.kt
++++ b/android/src/main/java/expo/modules/notifications/service/delegates/ExpoSchedulingDelegate.kt
+@@ -110,10 +110,13 @@ class ExpoSchedulingDelegate(protected val context: Context) : SchedulingDelegat
+   private fun setupAlarm(triggerAtMillis: Long, operation: PendingIntent, alarmClock: Boolean) {
+     val canScheduleExact = Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarmManager.canScheduleExactAlarms()
+     when {
+-      !canScheduleExact -> AlarmManagerCompat.setAndAllowWhileIdle(
+-        alarmManager,
++      // Without exact alarms (Android 14+ unless the person allows them), an inexact alarm may come
++      // up to an hour late. A window from the trigger time needs no permission and comes within
++      // ten minutes of it.
++      !canScheduleExact -> alarmManager.setWindow(
+         AlarmManager.RTC_WAKEUP,
+         triggerAtMillis,
++        INEXACT_WINDOW_MS,
+         operation
+       )
+       // setAlarmClock() alarms are never adjusted by the system. OEM battery policies defer
+@@ -141,3 +144,5 @@ class ExpoSchedulingDelegate(protected val context: Context) : SchedulingDelegat
+     )
+   }
+ }
++
++private const val INEXACT_WINDOW_MS = 10 * 60 * 1000L

@@ -156,6 +156,7 @@ export const zhHansOnboarding: { readonly [Key in keyof typeof enOnboarding]: En
   'onboarding.close.minute': '日结分',
   'reminder.close.six': '六点了。该结束今天了。',
   'reminder.close.at': '{time} 了。该结束今天了。',
+  'reminder.close.channel': '日结提醒',
 
   'onboarding.reveal.kicker': '每天可以花',
   'onboarding.reveal.seeYou': '就这样。{time} 见。',

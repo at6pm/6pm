@@ -166,6 +166,7 @@ export const jaOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.close.minute': '締めの分',
   'reminder.close.six': '6時です。今日を締めましょう。',
   'reminder.close.at': '{time}です。今日を締めましょう。',
+  'reminder.close.channel': '締めのリマインダー',
 
   'onboarding.reveal.kicker': '1日に使えるお金',
   'onboarding.reveal.seeYou': 'これで完了。{time}にまた会いましょう。',

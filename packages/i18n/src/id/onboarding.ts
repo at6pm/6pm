@@ -169,6 +169,7 @@ export const idOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.close.minute': 'Menit tutup hari',
   'reminder.close.six': 'Sudah jam enam. Saatnya tutup harimu.',
   'reminder.close.at': 'Sudah jam {time}. Saatnya tutup harimu.',
+  'reminder.close.channel': 'Pengingat tutup hari',
 
   'onboarding.reveal.kicker': 'Aman dipakai tiap hari',
   'onboarding.reveal.seeYou': 'Sudah, itu saja. Sampai jumpa jam {time}.',

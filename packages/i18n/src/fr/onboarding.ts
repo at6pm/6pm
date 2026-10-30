@@ -178,6 +178,7 @@ export const frOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.close.minute': 'Minute de clôture',
   'reminder.close.six': 'Il est 18 h. L’heure de clôturer ta journée.',
   'reminder.close.at': 'Il est {time}. L’heure de clôturer ta journée.',
+  'reminder.close.channel': 'Rappel de clôture',
 
   'onboarding.reveal.kicker': 'À dépenser chaque jour',
   'onboarding.reveal.seeYou': 'C’est tout. Rendez-vous à {time}.',

@@ -6,5 +6,9 @@
     "NSPhotoLibraryUsageDescription": "6pm solo guarda en Fotos el ticket de tu cierre y tu diario del dinero. Nunca mira tu fototeca.",
     "NSPhotoLibraryAddUsageDescription": "6pm guarda en Fotos el ticket de tu cierre y tu diario del dinero cuando se lo pides.",
     "NSLocationWhenInUseUsageDescription": "6pm comprueba en qué país estás para que el modo viaje se active solo en el extranjero."
+  },
+  "android": {
+    "sixpm_shortcut_scan": "Escanear QR",
+    "sixpm_shortcut_quick_add": "Añadir rápido"
   }
 }

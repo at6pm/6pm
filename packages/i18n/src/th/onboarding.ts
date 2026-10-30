@@ -162,6 +162,7 @@ export const thOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.close.minute': 'นาทีที่ปิดวัน',
   'reminder.close.six': 'หกโมงแล้ว ได้เวลาปิดวัน',
   'reminder.close.at': '{time} แล้ว ได้เวลาปิดวัน',
+  'reminder.close.channel': 'เตือนปิดวัน',
 
   'onboarding.reveal.kicker': 'ใช้ได้ในแต่ละวัน',
   'onboarding.reveal.seeYou': 'แค่นี้เอง เจอกันตอน {time}',

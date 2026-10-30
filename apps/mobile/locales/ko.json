@@ -6,5 +6,9 @@
     "NSPhotoLibraryUsageDescription": "6pm은 마감 영수증과 머니 다이어리를 사진에 저장하기만 해요. 사진 보관함을 들여다보지 않아요.",
     "NSPhotoLibraryAddUsageDescription": "요청하면 6pm이 마감 영수증과 머니 다이어리를 사진에 저장해요.",
     "NSLocationWhenInUseUsageDescription": "해외에서 여행 모드가 알아서 켜지도록, 6pm이 지금 어느 나라에 있는지 확인해요."
+  },
+  "android": {
+    "sixpm_shortcut_scan": "QR 스캔",
+    "sixpm_shortcut_quick_add": "빠른 추가"
   }
 }

@@ -6,5 +6,9 @@
     "NSPhotoLibraryUsageDescription": "6pm 只会把你的日结小票和消费日记存到“照片”，绝不会浏览你的图库。",
     "NSPhotoLibraryAddUsageDescription": "在你需要时，6pm 会把日结小票和消费日记存到“照片”。",
     "NSLocationWhenInUseUsageDescription": "6pm 会确认你所在的国家或地区，以便你出境时自动开启旅行模式。"
+  },
+  "android": {
+    "sixpm_shortcut_scan": "扫码",
+    "sixpm_shortcut_quick_add": "快速记账"
   }
 }

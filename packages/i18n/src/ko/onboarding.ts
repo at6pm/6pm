@@ -165,6 +165,7 @@ export const koOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.close.minute': '마감 분',
   'reminder.close.six': '여섯 시예요. 오늘을 마감할 시간이에요.',
   'reminder.close.at': '벌써 {time}. 오늘을 마감할 시간이에요.',
+  'reminder.close.channel': '마감 알림',
 
   'onboarding.reveal.kicker': '하루에 쓸 수 있는 돈',
   'onboarding.reveal.seeYou': '끝이에요. {time}에 만나요.',

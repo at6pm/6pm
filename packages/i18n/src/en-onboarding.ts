@@ -167,6 +167,7 @@ export const enOnboarding = {
   'onboarding.close.minute': 'Close minute',
   'reminder.close.six': 'It’s six. Time to close your day.',
   'reminder.close.at': 'It’s {time}. Time to close your day.',
+  'reminder.close.channel': 'Close reminder',
 
   'onboarding.reveal.kicker': 'Safe to spend each day',
   'onboarding.reveal.seeYou': 'That’s it. See you at {time}.',

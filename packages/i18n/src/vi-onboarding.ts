@@ -166,6 +166,7 @@ export const viOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.close.minute': 'Phút chốt ngày',
   'reminder.close.six': 'Sáu giờ rồi. Chốt ngày thôi.',
   'reminder.close.at': '{time} rồi. Chốt ngày thôi.',
+  'reminder.close.channel': 'Nhắc chốt ngày',
 
   'onboarding.reveal.kicker': 'Mỗi ngày tiêu được',
   'onboarding.reveal.seeYou': 'Vậy thôi đó. Hẹn bạn lúc {time}.',

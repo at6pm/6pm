@@ -175,6 +175,7 @@ export const deOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.close.minute': 'Minute des Abschlusses',
   'reminder.close.six': 'Es ist sechs. Zeit, deinen Tag abzuschließen.',
   'reminder.close.at': 'Es ist {time}. Zeit, deinen Tag abzuschließen.',
+  'reminder.close.channel': 'Erinnerung an den Tagesabschluss',
 
   'onboarding.reveal.kicker': 'Jeden Tag verfügbar',
   'onboarding.reveal.seeYou': 'Das war’s. Bis {time}.',
