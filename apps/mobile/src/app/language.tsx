@@ -1,11 +1,11 @@
 import { getLocales } from 'expo-localization';
 import { useMemo } from 'react';
-import { ScrollView, Text, useWindowDimensions, View } from 'react-native';
+import { Text, useWindowDimensions, View } from 'react-native';
 
 import { languages, pickLanguage, t as translate, type Language } from '@6pm/i18n';
 
 import { RowCheck, type PickerInks } from '../features/banks/bank-picker-parts';
-import { CardSheet } from '../features/diary/card-sheet';
+import { CardSheet, CardSheetScroll } from '../features/diary/card-sheet';
 import { useI18n } from '../i18n/i18n';
 import { useDesignInsets } from '../ui/layout/design-insets';
 import { haptics } from '../ui/haptics';
@@ -78,7 +78,7 @@ export default function LanguageSheet() {
               maxHeight: rowsMax,
             }}
           >
-            <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
+            <CardSheetScroll bounces={false} showsVerticalScrollIndicator={false}>
               <LanguageRow
                 first
                 label={t('settings.languagePhone')}
@@ -96,7 +96,7 @@ export default function LanguageSheet() {
                   onPress={() => pick(language)}
                 />
               ))}
-            </ScrollView>
+            </CardSheetScroll>
           </View>
         </>
       )}
