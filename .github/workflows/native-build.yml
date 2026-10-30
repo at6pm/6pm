@@ -4,7 +4,8 @@ name: native-build
 # native-build-job.yml for where each build goes, and e2e/README.md for the secrets it needs.
 #   gh workflow run native-build.yml -f ref=<branch> -f profile=e2e-test
 #   gh workflow run native-build.yml -f ref=<branch> -f profile=dev -f submit=true
-#   git tag testflight/<anything> && git push origin --tags   (the signed prd build, to TestFlight)
+#   git tag -a testflight/<anything> -F notes.txt && git push origin --tags   (the signed prd
+#   build, to TestFlight; an annotated tag's message is the build's "What to Test")
 # A tag works before this file reaches the default branch, which manual dispatch needs.
 on:
   push:
@@ -25,6 +26,11 @@ on:
         required: false
         type: boolean
         default: false
+      what_to_test:
+        description: TestFlight "What to Test" for a submitted build
+        required: false
+        type: string
+        default: ''
 
 run-name: native build ${{ inputs.profile || 'prd' }} at ${{ inputs.ref || github.ref_name }}
 
@@ -46,6 +52,7 @@ jobs:
       ref: ${{ inputs.ref || github.ref }}
       profile: ${{ inputs.profile || 'prd' }}
       submit: ${{ github.event_name == 'push' || inputs.submit }}
+      what_to_test: ${{ inputs.what_to_test || '' }}
     secrets:
       EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
       EXPO_ASC_API_KEY_P8: ${{ secrets.EXPO_ASC_API_KEY_P8 }}
