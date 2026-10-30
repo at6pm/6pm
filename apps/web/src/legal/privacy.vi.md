@@ -2,7 +2,7 @@
 title: Chính sách quyền riêng tư
 description: Những gì 6pm giữ trên điện thoại của bạn, phần rất nhỏ rời khỏi máy, và ai xử lý chúng.
 lede: 6pm giữ tiền của bạn ngay trên điện thoại. Trang này nói rõ chúng tôi làm gì với phần rất nhỏ rời khỏi máy.
-updated: '2026-10-27'
+updated: '2026-10-31'
 ---
 
 ## Tóm tắt
@@ -17,7 +17,7 @@ updated: '2026-10-27'
 
 6pm do {{OWNER}} ("chúng tôi") thực hiện. Bạn có thể liên hệ qua số [{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}}).
 
-Chính sách này áp dụng cho ứng dụng 6pm trên iPhone và trang web at6pm.app.
+Chính sách này áp dụng cho ứng dụng 6pm trên iPhone và Android, và trang web at6pm.app. Những chỗ ứng dụng Android hoạt động khác đi được nói ở mục "Trên Android" bên dưới.
 
 ## Những gì ở lại trên điện thoại
 
@@ -39,9 +39,9 @@ Không thứ nào trong số này gắn với tên, email hay bất cứ điều
 
 ### Mua hàng
 
-Apple thu tiền. Chúng tôi không bao giờ thấy thẻ hay thông tin thanh toán của bạn.
+Apple, hoặc Google Play trên Android, thu tiền. Chúng tôi không bao giờ thấy thẻ hay thông tin thanh toán của bạn.
 
-Để biết bạn đã mở khoá những gì, 6pm dùng RevenueCat, dịch vụ ghi lại trạng thái mua hàng. RevenueCat biết từ Apple bạn đã mua giao diện hay gói nào, khi nào, và bản dùng thử hay gói đăng ký còn hiệu lực không. Thông tin này gắn với một mã người dùng ẩn danh, không phải tên hay email của bạn. Như hầu hết công cụ mua hàng, RevenueCat cũng nhận một số thông tin kỹ thuật cơ bản từ điện thoại: phiên bản ứng dụng, kiểu máy và phiên bản hệ điều hành, quốc gia và ngôn ngữ, và địa chỉ IP.
+Để biết bạn đã mở khoá những gì, 6pm dùng RevenueCat, dịch vụ ghi lại trạng thái mua hàng. RevenueCat biết từ Apple hoặc Google bạn đã mua giao diện hay gói nào, khi nào, và bản dùng thử hay gói đăng ký còn hiệu lực không. Thông tin này gắn với một mã người dùng ẩn danh, không phải tên hay email của bạn. Như hầu hết công cụ mua hàng, RevenueCat cũng nhận một số thông tin kỹ thuật cơ bản từ điện thoại: phiên bản ứng dụng, kiểu máy và phiên bản hệ điều hành, quốc gia và ngôn ngữ, và địa chỉ IP.
 
 Nhờ vậy Max và các giao diện của bạn luôn được mở khoá, và "Khôi phục giao dịch mua" hoạt động được.
 
@@ -124,7 +124,20 @@ Trang web này không đặt cookie. Trang đếm lượt truy cập bằng Clou
 - **Tiện ích, Hoạt động trực tiếp và Siri.** Tiện ích (widget), Hoạt động trực tiếp (Live Activity), phím tắt và nút điều khiển đọc và ghi qua một thư mục chung trên điện thoại. Không thứ gì trong đó đi qua máy chủ của chúng tôi.
 - **Bộ nhớ tạm (clipboard).** Khi bạn chuyển khoản sang ứng dụng ngân hàng, 6pm sao chép số tiền để bạn dán vào. 6pm chỉ ghi vào bộ nhớ tạm, không bao giờ đọc những gì đang có trong đó.
 - **Ứng dụng ngân hàng.** Ứng dụng kiểm tra ngay trên máy xem một số ứng dụng ngân hàng đã được cài chưa, rồi mở ứng dụng bạn chọn, hoặc trang của nó trên App Store. Chúng tôi không gửi gì cho ngân hàng. Khi bạn đã ở trong ứng dụng của ngân hàng, chính sách của ngân hàng đó được áp dụng.
+- **Thông báo của ngân hàng và ví.** Chỉ khi bạn cài đặt, 6pm mới đọc các thông báo mà ứng dụng ngân hàng và ví gửi khi có tiền đi hoặc đến, để ghi lại khoản đó giúp bạn. Trên iPhone, một tự động hoá trong Phím tắt do bạn tạo sẽ chuyển cho 6pm từng thông báo của các ứng dụng bạn chọn. Trên Android, 6pm chỉ đọc sau khi bạn bật 6pm trong Quyền truy cập thông báo, và chỉ đọc thông báo của những ứng dụng ngân hàng và ví mà 6pm biết; thông báo của mọi ứng dụng khác được bỏ qua mà không đọc. Dù trên máy nào, mỗi thông báo đều được đọc ngay trên điện thoại. Khoản tiền đã đi hoặc đến được lưu trong Hộp thư, trên điện thoại của bạn; mã OTP, giao dịch không thành công, khuyến mãi và thông báo số dư được bỏ qua và không lưu ở đâu cả. Không gì từ thông báo được gửi cho chúng tôi hay bất kỳ ai. Trên Android, sau đó 6pm hiện một thông báo yên lặng của riêng mình, nói đã bắt được gì. Bạn có thể tắt bất cứ lúc nào: trên iPhone bằng cách xoá tự động hoá, trên Android trong Quyền truy cập thông báo.
 - **Thông báo.** Lời nhắc hằng ngày vào giờ chốt ngày được đặt ngay trên điện thoại. Không có thông báo đẩy từ xa, và không có mã thông báo nào được gửi cho chúng tôi.
+
+## Trên Android
+
+Ứng dụng Android hoạt động như mô tả ở trên, với những điểm khác sau:
+
+- **Khoá dữ liệu** được khoá bằng Android Keystore trên điện thoại, thay cho Keychain của iOS. Tính năng tự sao lưu ứng dụng lên đám mây của Android được tắt với 6pm, nên dữ liệu của bạn không bao giờ bị sao chép vào tài khoản Google.
+- **Sao lưu** giữ khoá ngay trên điện thoại, không ở Chuỗi khoá iCloud, nên bản sao lưu chỉ mở được trên chính điện thoại đã tạo ra nó.
+- **Mua hàng** đi qua Google Play. Google nhận thanh toán, và RevenueCat biết trạng thái mua hàng của bạn từ Google.
+- **Chế độ trên máy** không có trên Android: 6pm không có mô hình chạy được ngay trên điện thoại Android.
+- **Nhận dạng giọng nói trên máy**, khi không dùng dịch vụ chuyển giọng nói thành chữ (không có mạng, hoặc quá 10 lần mỗi ngày khi không có 6pm Max), là tính năng nhận dạng trên máy của Android, và chỉ cho ngôn ngữ đã được tải về điện thoại, nên âm thanh không bao giờ rời khỏi máy.
+- **Ảnh.** Chức năng Quét chọn ảnh qua trình chọn ảnh của chính Android, chỉ đưa cho 6pm đúng tấm ảnh bạn chọn. 6pm không bao giờ đọc thư viện ảnh của bạn.
+- **Cùng chia ngân sách**, tiện ích, Hoạt động trực tiếp và Siri không có trong ứng dụng Android.
 
 ## Những điều chúng tôi không làm
 
@@ -140,6 +153,7 @@ Nếu bạn chọn chia sẻ dữ liệu phân tích với nhà phát triển tr
 Các công ty này vận hành những phần của dịch vụ đã nêu ở trên. Họ có thể xử lý dữ liệu của bạn ở nước khác, kể cả Hoa Kỳ và Trung Quốc.
 
 - **Apple** xử lý thanh toán, Chuỗi khoá iCloud và Đăng nhập bằng Apple. [Chính sách quyền riêng tư của Apple](https://www.apple.com/legal/privacy/).
+- **Google** xử lý thanh toán qua Google Play trên Android. [Chính sách quyền riêng tư của Google](https://policies.google.com/privacy).
 - **RevenueCat** ghi lại trạng thái mua hàng. [Chính sách quyền riêng tư của RevenueCat](https://www.revenuecat.com/privacy).
 - **Cloudflare** lưu trữ trang web và máy chủ của chúng tôi, và đếm lượt truy cập trang web. [Chính sách quyền riêng tư của Cloudflare](https://www.cloudflare.com/privacypolicy/).
 - **Sentry** nhận báo cáo lỗi. [Chính sách quyền riêng tư của Sentry](https://sentry.io/privacy/).
@@ -163,7 +177,7 @@ Chúng tôi chỉ dùng họ cho những mục đích này.
 - **Sao lưu.** Cho đến khi bạn xoá. Khi bạn xoá, chúng tôi xoá dữ liệu mã hoá khỏi máy chủ.
 - **Cùng chia ngân sách.** Hũ chung cho đến khi một trong hai người rời đi; đăng nhập và tên của bạn cho đến khi bạn xoá tài khoản Cùng chia ngân sách. Cả hai việc đều xoá dữ liệu khỏi máy chủ ngay lập tức.
 - **Danh sách chờ.** Cho đến khi bạn yêu cầu xoá email của mình.
-- **Hồ sơ mua hàng.** Apple và RevenueCat lưu theo chính sách của họ và theo quy định pháp luật.
+- **Hồ sơ mua hàng.** Apple, Google và RevenueCat lưu theo chính sách của họ và theo quy định pháp luật.
 
 ## Lựa chọn và quyền của bạn
 
