@@ -93,6 +93,7 @@ function DigitColumn({
     <View style={{ marginTop: -bleed }}>
       {glows.map((glow, i) => (
         <Animated.Text
+          allowFontScaling={false}
           key={i}
           style={[
             textStyle,
@@ -116,7 +117,11 @@ function DigitColumn({
       <View style={{ height, overflow: 'hidden' }}>
         <Animated.View style={[{ alignItems: 'center' }, rolling]}>
           {DIGITS.map((d) => (
-            <Text key={d} style={[textStyle, { height, lineHeight: height }]}>
+            <Text
+              allowFontScaling={false}
+              key={d}
+              style={[textStyle, { height, lineHeight: height }]}
+            >
               {d}
             </Text>
           ))}
@@ -132,7 +137,9 @@ function DigitColumn({
  * ₫ and "12,50 €", before it for "$"). Columns are keyed by position from the right, so a number
  * that grows a digit keeps its other columns rolling smoothly, and the column it gains opens and
  * rolls in (the one it loses closes) while the rest glide aside. The amount is drawn without its
- * sign; a hero puts it in `FitWidth` so a long one shrinks to its row.
+ * sign; a hero puts it in `FitWidth` so a long one shrinks to its row. Its columns are cut to the
+ * digit's height in points, so the digits keep the design's size whatever the reader's text size:
+ * grown, they would be cut off by their own columns (the number is the screen's biggest type).
  */
 export function Odometer({
   value,
@@ -194,7 +201,11 @@ export function Odometer({
     >
       <LayoutAnimationConfig skipEntering skipExiting>
         {before ? (
-          <Animated.Text layout={slide} style={[symbol, { marginRight: size * 0.05 }]}>
+          <Animated.Text
+            allowFontScaling={false}
+            layout={slide}
+            style={[symbol, { marginRight: size * 0.05 }]}
+          >
             {before}
           </Animated.Text>
         ) : null}
@@ -231,7 +242,11 @@ export function Odometer({
           );
         })}
         {after ? (
-          <Animated.Text layout={slide} style={[symbol, { marginLeft: size * 0.05 }]}>
+          <Animated.Text
+            allowFontScaling={false}
+            layout={slide}
+            style={[symbol, { marginLeft: size * 0.05 }]}
+          >
             {after}
           </Animated.Text>
         ) : null}
@@ -258,6 +273,7 @@ function Separator({
     <View style={{ marginTop: -bleed }}>
       {glows.map((glow, g) => (
         <Text
+          allowFontScaling={false}
           key={g}
           style={[
             textStyle,
@@ -275,7 +291,9 @@ function Separator({
           {char}
         </Text>
       ))}
-      <Text style={[textStyle, { height, lineHeight: height }]}>{char}</Text>
+      <Text allowFontScaling={false} style={[textStyle, { height, lineHeight: height }]}>
+        {char}
+      </Text>
     </View>
   );
 }

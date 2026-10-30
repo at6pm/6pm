@@ -12,6 +12,7 @@ import { SheetFrame } from '../../ui/navigation/sheet-frame';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading } from '../../ui/type/fonts';
+import { WordFitText } from '../../ui/type/word-fit-text';
 import { captureColours } from './capture-colours';
 import { GuideActions } from './guide-actions';
 import { HowItWorks } from './guide-how';
@@ -154,9 +155,9 @@ export function CaptureGuideSheet({ source: asked }: { readonly source: CaptureS
                 </Text>
               </View>
             </View>
-            <Text style={{ ...leading(display(31, 500, -0.015), 33.5), color: palette.ink }}>
+            <WordFitText style={{ ...leading(display(31, 500, -0.015), 33.5), color: palette.ink }}>
               {t(guide.headline)}
-            </Text>
+            </WordFitText>
           </View>
 
           <GuideActions

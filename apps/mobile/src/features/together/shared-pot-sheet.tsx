@@ -23,6 +23,7 @@ import { SheetScreen } from '../../ui/navigation/sheet-screen';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { useToast } from '../../ui/toast/toast-host';
+import { FitText } from '../../ui/type/fit-text';
 import { body, display } from '../../ui/type/fonts';
 import { BackupButton, BackupNote } from '../backup/backup-parts';
 import { usePlanFormat } from '../plan/plan-format';
@@ -94,10 +95,10 @@ export function SharedPotSheet() {
           radius={22}
           glyph={34}
         />
-        <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 6 }}>
-          <Text style={{ ...display(40, 500, -0.02), color: palette.ink }}>
+        <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 6, maxWidth: '100%' }}>
+          <FitText style={{ ...display(40, 500, -0.02), color: palette.ink, flexShrink: 1 }}>
             {short(progress.saved)}
-          </Text>
+          </FitText>
           <Text style={{ ...body(15, 600), color: palette.inkSoft }}>
             {t('plan.occasions.of', { amount: short(pot.goal) })}
           </Text>

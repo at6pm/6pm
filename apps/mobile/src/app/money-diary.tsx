@@ -76,7 +76,7 @@ export default function MoneyDiary() {
           justifyContent: 'space-between',
         }}
       >
-        <Text style={{ ...mono(11, 400, 0.16), color: zineInk.ink, opacity: 0.6 }}>
+        <Text style={{ ...mono(11, 400, 0.16), color: zineInk.ink, opacity: 0.6, flexShrink: 1 }}>
           {zine ? t('diary.zine.kicker', { no: zine.no }) : ''}
         </Text>
         <PressScale

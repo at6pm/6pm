@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import { Companion } from '../../ui/companion/companion';
 import { CategoryTile } from '../../ui/category-tile';
 import { Symbol } from '../../ui/icons/symbol';
+import { FitText } from '../../ui/type/fit-text';
 import { body, display } from '../../ui/type/fonts';
 import type { WidgetPreview } from './preview-data';
 
@@ -204,12 +205,11 @@ function Large({ preview }: { readonly preview: WidgetPreview }) {
           }}
         >
           <Text style={{ ...body(15, 700), color: ink }}>{preview.strings['today']}</Text>
-          <Text
-            numberOfLines={1}
-            style={{ ...display(24, 500, 0, preview.palette.dispFont), color: ink }}
+          <FitText
+            style={{ ...display(24, 500, 0, preview.palette.dispFont), color: ink, flexShrink: 1 }}
           >
             {entry.safeText}
-          </Text>
+          </FitText>
         </View>
         {entry.list.length === 0 ? (
           <Line ink={ink}>

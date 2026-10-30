@@ -1,7 +1,11 @@
 import { Text, View } from 'react-native';
 
+import { FitText } from '../../../ui/type/fit-text';
 import { body, display, leading, mono } from '../../../ui/type/fonts';
+import { WordFitText } from '../../../ui/type/word-fit-text';
 import { paper, zineInk } from '../diary-colours';
+
+const STAMP_MAX_SCALE = 1.5;
 
 export interface ZineStat {
   readonly key: string;
@@ -27,13 +31,14 @@ export function ZineCover({
   return (
     <>
       <View style={{ gap: 14 }}>
-        <Text
-          numberOfLines={1}
-          adjustsFontSizeToFit
+        {/* The masthead is the page's biggest type already: it keeps the design's size at any text
+            size, as a shrunk line would keep a grown line's height. */}
+        <FitText
+          maxFontSizeMultiplier={1}
           style={{ ...leading(display(68, 500, -0.045), 61.2, true), color: zineInk.ink }}
         >
           {title}
-        </Text>
+        </FitText>
         <View
           style={{
             flexDirection: 'row',
@@ -42,15 +47,16 @@ export function ZineCover({
             gap: 16,
           }}
         >
-          <Text
+          <WordFitText
             style={{
               ...leading(display(27, 500, -0.015), 29.7),
               maxWidth: 230,
+              flexShrink: 1,
               color: zineInk.ink,
             }}
           >
             {headline}
-          </Text>
+          </WordFitText>
           <View
             style={{
               paddingTop: 6,
@@ -64,7 +70,10 @@ export function ZineCover({
               mixBlendMode: 'multiply',
             }}
           >
+            {/* A rubber stamp drawn on the page: it grows with the reader's text size only so far,
+                leaving the headline beside it room for its words. */}
             <Text
+              maxFontSizeMultiplier={STAMP_MAX_SCALE}
               style={{
                 ...mono(12, 600, 0.14),
                 lineHeight: 14.4,
@@ -95,7 +104,7 @@ export function ZineCover({
               gap: 4,
             }}
           >
-            <Text
+            <WordFitText
               style={{
                 ...mono(10, 400, 0.12),
                 textTransform: 'uppercase',
@@ -104,10 +113,10 @@ export function ZineCover({
               }}
             >
               {s.key}
-            </Text>
-            <Text style={{ ...leading(display(30, 500, -0.02), 30), color: paper.ink }}>
+            </WordFitText>
+            <FitText style={{ ...leading(display(30, 500, -0.02), 30), color: paper.ink }}>
               {s.value}
-            </Text>
+            </FitText>
             <Text style={{ ...body(12.5), color: paper.ink, opacity: 0.65 }}>{s.sub}</Text>
           </View>
         ))}

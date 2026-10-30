@@ -4,6 +4,7 @@ import { CategoryTile } from '../../../ui/category-tile';
 import { Companion } from '../../../ui/companion/companion';
 import type { SymbolName } from '../../../ui/icons/symbols.generated';
 import { PaperEdge } from '../../../ui/paper-edge';
+import { FitText } from '../../../ui/type/fit-text';
 import { body, display, families, leading, mono } from '../../../ui/type/fonts';
 import { paper, zineInk } from '../diary-colours';
 
@@ -48,7 +49,7 @@ export function ZinePlaces({
               >
                 {p.name} <Text style={{ ...body(15, 500), opacity: 0.6 }}>· {p.sub}</Text>
               </Text>
-              <Text style={{ ...display(19, 500), color: zineInk.ink }}>{p.amount}</Text>
+              <FitText style={{ ...display(19, 500), color: zineInk.ink }}>{p.amount}</FitText>
             </View>
             <View style={{ height: 4, borderRadius: 4, backgroundColor: zineInk.track }}>
               <View
@@ -99,9 +100,11 @@ function Ticket({ ticket, tilt }: { readonly ticket: ZineTicket; readonly tilt: 
           {ticket.label}
         </Text>
         <Text style={{ ...mono(11, 600), color: paper.ink }}>{ticket.date}</Text>
-        <Text style={{ ...leading({ ...display(26, 500), paddingTop: 2 }, 26), color: paper.ink }}>
+        <FitText
+          style={{ ...leading({ ...display(26, 500), paddingTop: 2 }, 26), color: paper.ink }}
+        >
           {ticket.amount}
-        </Text>
+        </FitText>
         {ticket.note ? (
           <Text
             style={{
@@ -188,10 +191,16 @@ export function ZineDays({
                 <Text style={{ ...mono(7.5, 400, 0.06), color: paper.ink, opacity: 0.55 }}>
                   {d.dow}
                 </Text>
-                <Text style={{ ...leading(display(18, 500), 18), color: paper.ink }}>{d.day}</Text>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
+                <FitText style={{ ...leading(display(18, 500), 18), color: paper.ink }}>
+                  {d.day}
+                </FitText>
+                <View
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: 3, maxWidth: '100%' }}
+                >
                   <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: d.dot }} />
-                  <Text style={{ ...mono(8.5, 600), color: paper.ink }}>{d.total}</Text>
+                  <FitText style={{ ...mono(8.5, 600), color: paper.ink, flexShrink: 1 }}>
+                    {d.total}
+                  </FitText>
                 </View>
               </View>
             ))}

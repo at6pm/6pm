@@ -30,11 +30,13 @@ import { seedDesignYear } from './design-year-seed';
  */
 const commandSchema = z.object({
   seed: z.enum(['friday', 'year', 'moneyIn']).optional(),
-  /** The friday seed's currency (ISO 4217); đồng when not given. */
+  /** The friday or year seed's currency (ISO 4217); đồng when not given. */
   currency: z
     .string()
     .regex(/^[A-Z]{3}$/)
     .optional(),
+  /** Multiplies the year seed's earlier days, for long amounts. */
+  scale: z.number().positive().optional(),
   /** Pin the clock to today at HH:MM; "" unpins. */
   at: z
     .string()
@@ -87,6 +89,7 @@ export function DevCommands() {
       const {
         seed,
         currency,
+        scale,
         at,
         route,
         toast: line,
@@ -113,7 +116,11 @@ export function DevCommands() {
         pinClock(at === '' ? null : pin);
       }
       if (seed === 'friday') await seedDesignFriday(store, today, currency);
-      if (seed === 'year') await seedDesignYear(store, today);
+      if (seed === 'year')
+        await seedDesignYear(store, today, {
+          ...(currency ? { code: currency } : {}),
+          ...(scale ? { scale } : {}),
+        });
       if (seed === 'moneyIn') await seedDesignMoneyIn(store, today);
       // Over Home, so sheets present as sheets.
       if (route) {

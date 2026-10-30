@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { Text, type TextProps } from 'react-native';
+import { Text, type TextProps, type TextStyle } from 'react-native';
+
+import { useWordFit } from './word-fit-text';
 
 /** Chinese and Japanese break after their own commas and stops, as they have no spaces. */
 const WIDE_PUNCTUATION = /[，、；：！？]/u;
@@ -32,19 +34,30 @@ export function balanceTwoLines(text: string): string {
 
 /**
  * Text that wraps like CSS `text-wrap: balance` for headings: when it would take two lines, the
- * break moves so both lines are about as long, instead of leaving one word alone.
+ * break moves so both lines are about as long, instead of leaving one word alone. It wraps only
+ * between words: a word too wide for its line shrinks the heading instead (`useWordFit`).
  */
-export function BalancedText({ children, ...props }: TextProps & { readonly children: string }) {
+export function BalancedText({
+  children,
+  style,
+  ...props
+}: Omit<TextProps, 'style'> & { readonly children: string; readonly style: TextStyle }) {
   const [twoLines, setTwoLines] = useState(false);
+  const fit = useWordFit(children, style, undefined, props);
   return (
-    <Text
-      {...props}
-      onTextLayout={(e) => {
-        if (!twoLines && e.nativeEvent.lines.length === 2) setTwoLines(true);
-        props.onTextLayout?.(e);
-      }}
-    >
-      {twoLines ? balanceTwoLines(children) : children}
-    </Text>
+    <>
+      <Text
+        {...props}
+        style={fit.style}
+        onTextLayout={(e) => {
+          if (!twoLines && e.nativeEvent.lines.length === 2) setTwoLines(true);
+          fit.onTextLayout(e);
+          props.onTextLayout?.(e);
+        }}
+      >
+        {twoLines ? balanceTwoLines(children) : children}
+      </Text>
+      {fit.probe}
+    </>
   );
 }

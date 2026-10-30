@@ -23,6 +23,7 @@ import { PressScale } from '../ui/primitives/press-scale';
 import { useClock } from '../ui/theme/clock';
 import { useTheme } from '../ui/theme/theme';
 import { body, display } from '../ui/type/fonts';
+import { WordFitText } from '../ui/type/word-fit-text';
 import { Companion } from '../ui/companion/companion';
 import { UndoHost, useOfferUndo } from '../ui/undo/undo-host';
 
@@ -159,7 +160,9 @@ function InboxSheet() {
             style={{ alignItems: 'center', gap: 10, paddingVertical: 60, paddingHorizontal: 20 }}
           >
             {serious ? null : <Companion size={76} mood="happy" />}
-            <Text style={{ ...display(34), color: palette.ink }}>{t('inbox.empty.title')}</Text>
+            <WordFitText style={{ ...display(34), color: palette.ink }}>
+              {t('inbox.empty.title')}
+            </WordFitText>
             <Text style={{ ...body(15), color: palette.inkSoft, textAlign: 'center' }}>
               {t('inbox.empty.sub')}
             </Text>

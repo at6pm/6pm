@@ -7,6 +7,7 @@ import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
+import { FitText } from '../../ui/type/fit-text';
 import { body, mono, tabular } from '../../ui/type/fonts';
 import { PageButton } from './calendar-page-button';
 import { dots, inkWash, paper } from './diary-colours';
@@ -74,7 +75,15 @@ function ClosedCell({
         <Text style={{ ...body(14, 650), ...tabular, lineHeight: 14, color: paper.ink }}>
           {Number(cell.day.slice(8))}
         </Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3, opacity: 0.8 }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 3,
+            opacity: 0.8,
+            maxWidth: '100%',
+          }}
+        >
           <View
             style={{
               width: 5,
@@ -83,9 +92,9 @@ function ClosedCell({
               backgroundColor: cell.dot === 'under' ? dots.under : dots.over,
             }}
           />
-          <Text style={{ ...mono(9.5, 500), lineHeight: 9.5, color: paper.ink }}>
+          <FitText style={{ ...mono(9.5, 500), lineHeight: 9.5, color: paper.ink, flexShrink: 1 }}>
             {money.short(cell.spent)}
-          </Text>
+          </FitText>
         </View>
       </PressScale>
     </Animated.View>
