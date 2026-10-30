@@ -9,7 +9,8 @@
 # lives in the runner's temp folder and is removed when the script ends.
 #
 # Env: EXPO_TOKEN, ASC_API_KEY_P8 (the key file's contents), EXPO_ASC_KEY_ID, EXPO_ASC_ISSUER_ID,
-# ASC_APP_ID, EAS_CLI (the pinned eas-cli package).
+# ASC_APP_ID, EAS_CLI (the pinned eas-cli package); WHAT_TO_TEST (optional), the build's
+# "What to Test" in TestFlight.
 set -euo pipefail
 
 profile=$1
@@ -36,8 +37,10 @@ mv eas.json.new eas.json
 # The same key lets eas-cli check the app's TestFlight setup without an Apple ID login.
 export EXPO_ASC_API_KEY_PATH=$key_file
 export EXPO_APPLE_TEAM_ID=YFND2EEW8S EXPO_APPLE_TEAM_TYPE=INDIVIDUAL
+notes=()
+[ -z "${WHAT_TO_TEST:-}" ] || notes=(--what-to-test "$WHAT_TO_TEST")
 npx --yes "${EAS_CLI:?}" submit --profile "$profile" --platform ios --path "$ipa" \
-  --non-interactive --wait
+  --non-interactive --wait ${notes[@]+"${notes[@]}"}
 
 echo "Apple accepted the \`$profile\` build of \`$(git rev-parse --short=12 HEAD)\`; it appears in TestFlight when processing ends." \
   >>"${GITHUB_STEP_SUMMARY:-/dev/stdout}"

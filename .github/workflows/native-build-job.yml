@@ -23,6 +23,11 @@ on:
         required: false
         type: boolean
         default: false
+      what_to_test:
+        description: TestFlight "What to Test"; empty takes a testflight/* tag's annotation
+        required: false
+        type: string
+        default: ''
     secrets:
       EXPO_TOKEN:
         description: Expo access token (every build)
@@ -162,7 +167,20 @@ jobs:
           EXPO_ASC_ISSUER_ID: ${{ secrets.EXPO_ASC_ISSUER_ID }}
           ASC_APP_ID: ${{ inputs.profile == 'dev' && vars.ASC_DEV_APP_ID || vars.ASC_APP_ID }}
           ARTIFACT: ${{ steps.build.outputs.artifact }}
-        run: tools/scripts/native-submit-ios.sh "$PROFILE" "$ARTIFACT"
+          WHAT_TO_TEST: ${{ inputs.what_to_test }}
+          TAG_REF: ${{ github.ref }}
+        run: |
+          # A build pushed by an annotated testflight/* tag tells testers what changed in the tag's
+          # message; a lightweight tag (or a commit's message) is never used.
+          if [ -z "$WHAT_TO_TEST" ] && [[ "$TAG_REF" == refs/tags/testflight/* ]]; then
+            tag=${TAG_REF#refs/tags/}
+            git fetch --quiet --force origin "+refs/tags/$tag:refs/tags/$tag"
+            if [ "$(git cat-file -t "refs/tags/$tag")" = tag ]; then
+              WHAT_TO_TEST=$(git tag -l --format='%(contents)' "$tag")
+            fi
+          fi
+          export WHAT_TO_TEST
+          tools/scripts/native-submit-ios.sh "$PROFILE" "$ARTIFACT"
       - name: Remove the signed build
         if: always() && inputs.profile != 'e2e-test'
         run: rm -rf "$RUNNER_TEMP/native" "$RUNNER_TEMP/asc-api-key.p8"
