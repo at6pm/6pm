@@ -2,7 +2,7 @@
 title: Privacy Policy
 description: What 6pm keeps on your phone, the little that leaves it, and who handles it.
 lede: 6pm keeps your money on your phone. This page says exactly what we do with the little that leaves it.
-updated: '2026-10-27'
+updated: '2026-10-31'
 ---
 
 ## The short version
@@ -17,7 +17,7 @@ updated: '2026-10-27'
 
 6pm is made by {{OWNER}} ("we", "us"). You can reach us on [{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}}).
 
-This policy covers the 6pm app for iPhone and the website at at6pm.app.
+This policy covers the 6pm app for iPhone and Android and the website at at6pm.app. Where the Android app works differently, "On Android" below says how.
 
 ## What stays on your phone
 
@@ -39,9 +39,9 @@ None of this is linked to your name, your email or anything in your money. We us
 
 ### Purchases
 
-Apple takes the payment. We never see your card or your payment details.
+Apple, or Google Play on Android, takes the payment. We never see your card or your payment details.
 
-To know what you have unlocked, 6pm uses RevenueCat, a service that records purchase status. RevenueCat learns from Apple which looks and plans you have bought, when, and whether a trial or subscription is active. It ties this to an anonymous app user ID, not to your name or email. Like most purchase tools, it also receives basic technical details from your phone: app version, device model and system version, country and language, and your IP address.
+To know what you have unlocked, 6pm uses RevenueCat, a service that records purchase status. RevenueCat learns from Apple or Google which looks and plans you have bought, when, and whether a trial or subscription is active. It ties this to an anonymous app user ID, not to your name or email. Like most purchase tools, it also receives basic technical details from your phone: app version, device model and system version, country and language, and your IP address.
 
 This is how Max and your looks stay unlocked, and how "Restore purchases" works.
 
@@ -124,7 +124,20 @@ This website sets no cookies. It counts visits with Cloudflare Web Analytics, wh
 - **Widgets, Live Activities and Siri.** Your widgets, Live Activities, shortcuts and controls read and write through a shared folder on your phone. Nothing in them goes through our server.
 - **Clipboard.** When you hand a payment to your bank app, 6pm copies the amount so you can paste it. 6pm writes to the clipboard. It never reads what is on it.
 - **Bank apps.** The app checks on your phone whether certain bank apps are installed, and opens the one you choose, or its App Store page. We send nothing to the bank. Your bank's own policy applies once you are in its app.
+- **Bank and wallet notifications.** Only if you set it up, 6pm reads the notifications your bank and wallet apps send when money moves, to log the payment for you. On iPhone, a Shortcuts automation you build hands 6pm each notification from the apps you choose. On Android, 6pm reads them only after you turn it on under Notification access, and only those from the bank and wallet apps 6pm knows; every other app's notification is let go without being read. Either way each one is read on your phone. Money that moved is saved in your Inbox, on your phone; codes, failed payments, promotions and balance notices are skipped and kept nowhere. Nothing from a notification is sent to us or anyone else. On Android, 6pm then shows a quiet notification of its own saying what it caught. You can turn it off at any time: on iPhone by deleting the automation, on Android under Notification access.
 - **Notifications.** The daily reminder at your close time is set on your phone. There is no remote push, and no notification token is sent to us.
+
+## On Android
+
+The Android app works as described above, with these differences:
+
+- **Your data's key** is locked by the Android Keystore on your phone instead of the iOS Keychain. Android's own cloud backup of apps is turned off for 6pm, so your data is never copied to your Google account.
+- **Backup** keeps its key on your phone, not in iCloud Keychain, so a backup can be opened only on the phone that made it.
+- **Purchases** go through Google Play. Google takes the payment, and RevenueCat learns your purchase status from Google.
+- **On-device mode** is not offered: 6pm has no model to run on an Android phone.
+- **Speech on your phone**, when the speech-to-text service is not used (offline, or after 10 a day without 6pm Max), is Android's on-device speech recognition, and only for a language already downloaded to your phone, so the sound never leaves it.
+- **Photos.** Scan picks a picture through Android's own photo picker, which hands 6pm only the picture you choose. 6pm never reads your gallery.
+- **Budget together**, widgets, Live Activities and Siri are not in the Android app.
 
 ## What we do not do
 
@@ -140,6 +153,7 @@ If you choose to share analytics with app developers in iOS Settings, Apple may 
 These companies run the parts of the service described above. They may handle your data in other countries, including the United States and China.
 
 - **Apple** processes payments, iCloud Keychain and Sign in with Apple. [Apple's privacy policy](https://www.apple.com/legal/privacy/).
+- **Google** processes payments through Google Play on Android. [Google's privacy policy](https://policies.google.com/privacy).
 - **RevenueCat** records purchase status. [RevenueCat's privacy policy](https://www.revenuecat.com/privacy).
 - **Cloudflare** hosts our website and server, and counts visits to the website. [Cloudflare's privacy policy](https://www.cloudflare.com/privacypolicy/).
 - **Sentry** receives crash reports. [Sentry's privacy policy](https://sentry.io/privacy/).
@@ -163,7 +177,7 @@ We use them only for these purposes.
 - **Backup.** Until you delete it. When you do, we delete the encrypted data from our server.
 - **Budget together.** Shared pots until either of you leaves; your sign-in and name until you delete your Budget together account. Either one deletes the data from our server at once.
 - **Launch list.** Until you ask us to remove your email.
-- **Purchase records.** Apple and RevenueCat keep these under their own policies and the law.
+- **Purchase records.** Apple, Google and RevenueCat keep these under their own policies and the law.
 
 ## Your choices and rights
 
