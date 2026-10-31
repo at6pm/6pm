@@ -46,6 +46,7 @@
     "expo-splash-screen": "catalog:",
     "expo-sqlite": "catalog:",
     "expo-status-bar": "catalog:",
+    "expo-store-review": "catalog:",
     "expo-system-ui": "catalog:",
     "expo-updates": "catalog:",
     "react": "catalog:",

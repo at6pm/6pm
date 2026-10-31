@@ -61,6 +61,7 @@ catalog:
   expo-splash-screen: 58.0.9
   expo-sqlite: 58.0.13
   expo-status-bar: 58.0.3
+  expo-store-review: 58.0.2
   expo-system-ui: 58.0.5
   expo-updates: 58.0.16
   fast-check: 4.10.2
