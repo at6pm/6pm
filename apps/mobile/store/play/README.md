@@ -1,6 +1,8 @@
 # Google Play listing
 
-What the Play Console asks for before a build can go to a testing track, for `ai.sixpm.app`. The text
+What the Play Console asks for before a build can go to a testing track, for `app.at6pm` (the dev
+build is `app.at6pm.dev`). Android cannot use the iOS id: `ai.sixpm.app` is held on Play by a
+developer account that was closed, and Play never frees a package name. The text
 follows the App Store listing (`../README.md`, `store.config.json`), less what Android does not have
 (Apple Pay, widgets, Siri, Budget together, the companion's Home Screen icon, on-device models) and
 with what it has instead (bank and wallet notifications).
@@ -21,7 +23,7 @@ pinned at 18:07 (`dev-command.json`: `{"seed":"friday","at":"18:07","route":"/cl
 en-US and đồng for vi; its categories take the app's language). The screen is set to the 2:1 Play
 allows (`adb shell wm size 1080x2160`), with the dev Tools button off and Android's demo status bar at
 18:07 (`com.android.systemui.demo`). The app language follows Android's per-app language
-(`cmd locale set-app-locales ai.sixpm.app.dev --locales vi-VN`).
+(`cmd locale set-app-locales app.at6pm.dev --locales vi-VN`).
 
 ## Text
 
