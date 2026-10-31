@@ -4,7 +4,7 @@ What the Play Console asks for before a build can go to a testing track, for `ap
 build is `app.at6pm.dev`). Android cannot use the iOS id: `ai.sixpm.app` is held on Play by a
 developer account that was closed, and Play never frees a package name. The text
 follows the App Store listing (`../README.md`, `store.config.json`), less what Android does not have
-(Apple Pay, widgets, Siri, Budget together, the companion's Home Screen icon, on-device models) and
+(Apple Pay, widgets, Siri, Budget together, the companion's Home Screen icon, on-device mode) and
 with what it has instead (bank and wallet notifications).
 
 ## Graphics
@@ -13,16 +13,16 @@ with what it has instead (bank and wallet notifications).
 | --- | --- | --- |
 | `icon-512.png` | App icon | 512 × 512 |
 | `{en-US,vi}/feature-graphic.png` | Feature graphic | 1024 × 500, the App Store header creative cropped to its middle |
-| `{en-US,vi}/screenshots/*.png` | Phone screenshots | 1080 × 2160 (Play takes at most 2:1) |
+| `{en-US,vi}/screenshots/*.png` | Phone screenshots | 1080 × 1920 (Play takes only 9:16) |
 
 ### Screenshots
 
 Real captures of the developer build on the Android emulator (`sixpm-pixel`), in order: Today, the
 Close, Bank alerts, the Inbox, Quick add, Plan and Diary. Each is the Friday fixture with the clock
 pinned at 18:07 (`dev-command.json`: `{"seed":"friday","at":"18:07","route":"/close"}`, in dollars for
-en-US and đồng for vi; its categories take the app's language). The screen is set to the 2:1 Play
-allows (`adb shell wm size 1080x2160`), with the dev Tools button off and Android's demo status bar at
-18:07 (`com.android.systemui.demo`). The app language follows Android's per-app language
+en-US and đồng for vi; its categories take the app's language). The screen is set to 2:1 (`adb shell wm size 1080x2160`), with the dev Tools button off and Android's demo status bar at
+18:07 (`com.android.systemui.demo`); each is then scaled to 1920 tall and its own side edges extended to
+1080 wide, since Play takes only 9:16. The app language follows Android's per-app language
 (`cmd locale set-app-locales app.at6pm.dev --locales vi-VN`).
 
 ## Text
@@ -63,7 +63,7 @@ LOOKS AND COMPANIONS
 Eleven looks, from Sơn Mài lacquer to Neon Alley, that follow your real clock from dawn to midnight. Six companions keep you company.
 
 PRIVATE BY DESIGN
-No bank login, ever. Your money stays encrypted on your phone. On-device mode keeps everything on this phone. 6pm is open source.
+No bank login, ever. Your money stays encrypted on your phone. 6pm is open source.
 
 6pm is free. 6pm Max adds every look, unlimited Ask and pots, Travel mode, the Year book, and encrypted backup and export.
 
@@ -109,7 +109,7 @@ GIAO DIỆN VÀ BẠN ĐỒNG HÀNH
 Mười một giao diện, từ Sơn Mài đến Neon Alley, đổi theo giờ thật từ bình minh đến nửa đêm. Sáu bạn đồng hành ở bên bạn.
 
 RIÊNG TƯ TỪ ĐẦU
-Không bao giờ hỏi mật khẩu ngân hàng. Dữ liệu được mã hoá trên điện thoại. Chế độ trên máy giữ mọi thứ ở lại điện thoại. 6pm là mã nguồn mở.
+Không bao giờ hỏi mật khẩu ngân hàng. Dữ liệu được mã hoá trên điện thoại. 6pm là mã nguồn mở.
 
 6pm miễn phí. 6pm Max mở mọi giao diện, Hỏi và hũ không giới hạn, chế độ Du lịch, Sổ năm, sao lưu mã hoá và xuất dữ liệu.
 
@@ -126,7 +126,7 @@ Chính sách quyền riêng tư: https://at6pm.app/vi/privacy
 | Form | Answer |
 | --- | --- |
 | Privacy policy | https://at6pm.app/privacy (covers Android once the Android section is deployed) |
-| App access | All functionality is available without special access: no account, no login |
+| App access | No account or login, but 6pm Max is paid: the form wants a way into every paid feature, so a Max promo code goes in once the products exist (Target audience waits on this form) |
 | Ads | No ads |
 | Content rating | IARC questionnaire, category Utility/Productivity: no violence, sexuality, language, drugs, gambling or user-generated content shared with others; users do not interact; no location shared with others; digital purchases: yes |
 | Target audience | 18 and over (the policy says not made for children under 16) |
@@ -143,13 +143,18 @@ Data **collected** (leaves the phone):
 
 | Data type | Collected | Shared | Why | Optional |
 | --- | --- | --- | --- | --- |
-| App info and performance → Crash logs, Diagnostics | Yes | No | App functionality (crash reports, Sentry; off in on-device mode) | Yes (on-device mode) |
+| App info and performance → Crash logs, Diagnostics | Yes | No | Analytics (crash reports, Sentry; Android has no on-device mode to turn them off) | No |
 | Device or other IDs | Yes | No | App functionality, fraud prevention (anonymous device token, stored hashed) | No |
 | Financial info → Purchase history | Yes | No | App functionality (RevenueCat purchase status) | No |
-| Financial info → Other financial info | Yes | No | App functionality: forwarded bank emails, read and deleted once collected; receipt photos the phone cannot read | Yes |
+| Financial info → Other financial info | Yes | No | App functionality: what a forwarded bank email holds, kept until the phone collects it; receipt photos the phone cannot read | Yes |
+| Messages → Emails | Yes | No | App functionality: forwarded bank emails, read and not stored | Yes |
 | Photos | Yes | No | App functionality: a receipt photo the phone cannot read, sent once to be read, not stored | Yes |
 | Audio → Voice or sound recordings | Yes | No | App functionality: streamed to speech-to-text while you speak, not stored | Yes |
 | Messages → Other in-app messages | Yes | No | App functionality: questions asked to Ask 6pm, not stored | Yes |
+
+None is marked as processed ephemerally: Anthropic keeps requests for up to 30 days. No account
+creation (Budget together, the only sign-in, is not in the Android app). Data deletion link:
+https://at6pm.app/privacy#your-choices-and-rights.
 
 Processors (Anthropic, Deepgram, ElevenLabs, RevenueCat, Sentry, Cloudflare) act for 6pm, so this is
 "collected", not "shared". Data is encrypted in transit. Users can ask for deletion (the policy's contact).
@@ -167,10 +172,24 @@ encrypted, so Play counts it as not collected.
 | `CAMERA`, `RECORD_AUDIO`, coarse and fine location | Scan, voice, Travel mode (foreground only) |
 | No `READ_MEDIA_*` | Scan uses the system Photo Picker; saving pictures needs no read access |
 
-## Before the first release
+## Billing
 
-- **RevenueCat**: the Android app in RevenueCat and `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY` in the `prd`
-  profile, plus the Play subscription and in-app products (ids as on the App Store; subscriptions
-  with a `yearly`/`monthly` base plan). Until then Max and looks show as unavailable on Android.
+- **RevenueCat**: the app "6pm (Play Store)" in the 6pm project, package `app.at6pm`; its public key is
+  `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY` in the `prd` profile. Purchases are read with the service
+  account `sixpm-revenuecat@sixpm-play.iam.gserviceaccount.com` (Google Cloud project `sixpm-play`),
+  which has view, financial data and order permissions on this app only in the Play Console, and
+  Pub/Sub Admin and Monitoring Viewer in its project. Real-time notifications go through
+  `projects/sixpm-play/topics/Play-Store-Notifications`.
+- **Products**: Play shows its products page only once the account has a payments profile (merchant
+  account). Then the subscriptions `ai.sixpm.app.max.monthly` and `ai.sixpm.app.max.yearly` (base plans
+  `monthly` and `yearly`, 99.000₫ and 799.000₫, $4.99 and $34.99, a 7-day free trial) and the one-time
+  looks `ai.sixpm.app.look.<id>` (49.000₫ classic, 99.000₫ living scenes), the ids the App Store uses,
+  are imported into RevenueCat and attached to the `max` entitlement and the offerings. Until then
+  Max and looks show as unavailable on Android.
+
+## Releases
+
 - **Upload**: Play takes the first build of a new app only through the Console. Later builds can go by
   `eas submit -p android --profile prd` once a Google service account key is added in EAS.
+- **Internal testing**: the first build, versionCode 2 (2.1.0), went to internal testing on 31 Oct
+  2026 for the account's "Internal" testers list.
