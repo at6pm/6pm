@@ -6,11 +6,13 @@ import type { DailyNumber } from '@6pm/domain';
 import { readDayNumber } from '../../data/diary-queries';
 import { useMoneyActions, useMoneyStore } from '../../data/money-provider';
 import { haptics } from '../../ui/haptics';
+import { askForRatingAfterClose } from '../rating/rating-ask';
 import type { useClose } from './use-close';
 
 /**
  * Closes the day and leaves the Close: from the reveal's Done, or by folding the iPhone Duo shut.
- * Runs once; a failed save lets it be tried again.
+ * Runs once; a failed save lets it be tried again. A good close may then ask for a store rating,
+ * once the Close has finished leaving.
  */
 export function useFinishClose(close: ReturnType<typeof useClose>, day: DailyNumber | null) {
   const router = useRouter();
@@ -23,10 +25,12 @@ export function useFinishClose(close: ReturnType<typeof useClose>, day: DailyNum
   return useCallback(async () => {
     if (finishing.current || !day) return;
     finishing.current = true;
+    let filed: DailyNumber = day;
     const saved = await run(async () => {
       // Worked out for the closed day itself, with the cash just added, so a close that crossed
       // 04:00 still files that day's receipt.
       const number = (await readDayNumber(store, store.getSnapshot(), closing)) ?? day;
+      filed = number;
       await actions.closeDay({
         day: closing,
         closedAt: new Date().toISOString(),
@@ -43,6 +47,11 @@ export function useFinishClose(close: ReturnType<typeof useClose>, day: DailyNum
     }
     settle();
     haptics.success();
+    askForRatingAfterClose({
+      db: store.db,
+      number: filed,
+      closedDays: async () => (await actions.closedBefore(closing)) + 1,
+    });
     router.back();
   }, [day, run, settle, closing, store, actions, router]);
 }

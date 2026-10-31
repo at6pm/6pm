@@ -27,6 +27,7 @@ export * from './contracts/surfaces';
 export * from './vietqr';
 export * from './close/close-flow';
 export * from './close/close-queue';
+export * from './close/rating-ask';
 export * from './capture/bill-payment';
 export * from './capture/duplicate';
 export * from './capture/alert-repeat';

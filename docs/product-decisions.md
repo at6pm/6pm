@@ -25,6 +25,7 @@ Rules that never bend:
 | Platforms | iPhone at launch. Android is built and kept green in CI, not released *(default)* |
 | Languages | English, Vietnamese, Simplified Chinese, Japanese, Korean, Thai, Indonesian, Spanish, French and German; device language, switchable in Settings. Added 2026-10-27 (founder) |
 | Currency | The phone's currency, read once when the month is first set up and kept in the plan (a plan from before has none and is VND). 6pm works in every country. Amounts are integers in that currency's minor unit (đồng has none, so VND data never changed). Quick add's currency key switches to one other currency (USD, or EUR for a dollar home); Travel mode works from any home: a trip is wherever the money differs from home. Decided 2026-10-15 |
+| Store rating | Apple's (Play's on Android) own rating prompt, never a pre-prompt of ours. Asked only as a finished 6pm Close leaves, after its fade settles, when the day ended inside its number (spent ≤ the day's line, in a cycle not overspent) and from the third closed day on. At most once per app version and never within 120 days of the last ask (kept on the phone, not in the backup); the system's own yearly cap holds below that. Never after a day that went over, a missed day's filing or onboarding. Added 2026-11-01 (founder) |
 
 ## 3. Money rules (the domain package implements these, with tests)
 

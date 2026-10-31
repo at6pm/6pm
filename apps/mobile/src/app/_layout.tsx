@@ -12,6 +12,7 @@ import { BackupHost } from '../features/backup/backup-host';
 import { CloseNudge } from '../features/companion/close-nudge';
 import { DevCommands } from '../features/dev/dev-commands';
 import { CloseReminderSync } from '../features/reminders/close-reminder-sync';
+import { ratingAskSettled } from '../features/rating/rating-ask';
 import { ReminderTap } from '../features/reminders/reminder-tap';
 import { SurfacesSync } from '../features/surfaces/surfaces-sync';
 import { LookSettingsProvider, useThemeLook } from '../features/looks/look-settings-provider';
@@ -57,6 +58,13 @@ function Screens() {
         screenOptions={{
           headerShown: false,
           contentStyle: { backgroundColor: palette.sheetSolid },
+        }}
+        // A screen finished appearing, with no transition under way: the moment a good close,
+        // just faded out, may bring up the store's rating prompt.
+        screenListeners={{
+          transitionEnd: (event) => {
+            if (!event.data.closing) ratingAskSettled();
+          },
         }}
       >
         <Stack.Screen name="index" />
