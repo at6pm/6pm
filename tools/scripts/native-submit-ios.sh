@@ -10,7 +10,7 @@
 #
 # Env: EXPO_TOKEN, ASC_API_KEY_P8 (the key file's contents), EXPO_ASC_KEY_ID, EXPO_ASC_ISSUER_ID,
 # ASC_APP_ID, EAS_CLI (the pinned eas-cli package); WHAT_TO_TEST (optional), the build's
-# "What to Test" in TestFlight.
+# "What to Test" in TestFlight, set by testflight-notes.ts once Apple has the build.
 set -euo pipefail
 
 profile=$1
@@ -37,10 +37,26 @@ mv eas.json.new eas.json
 # The same key lets eas-cli check the app's TestFlight setup without an Apple ID login.
 export EXPO_ASC_API_KEY_PATH=$key_file
 export EXPO_APPLE_TEAM_ID=YFND2EEW8S EXPO_APPLE_TEAM_TYPE=INDIVIDUAL
-notes=()
-[ -z "${WHAT_TO_TEST:-}" ] || notes=(--what-to-test "$WHAT_TO_TEST")
 npx --yes "${EAS_CLI:?}" submit --profile "$profile" --platform ios --path "$ipa" \
-  --non-interactive --wait ${notes[@]+"${notes[@]}"}
+  --non-interactive --wait
 
 echo "Apple accepted the \`$profile\` build of \`$(git rev-parse --short=12 HEAD)\`; it appears in TestFlight when processing ends." \
   >>"${GITHUB_STEP_SUMMARY:-/dev/stdout}"
+
+# "What to Test" goes through App Store Connect itself (EAS sends it on its Enterprise plan only).
+# The build is already with Apple, so a note that cannot be set only warns.
+# `set -e` does not reach inside a function run before `||`, so each step returns on failure.
+set_notes() {
+  local plist version build
+  plist=$(mktemp) || return 1
+  unzip -p "$ipa" 'Payload/*.app/Info.plist' >"$plist" || return 1
+  version=$(plutil -extract CFBundleShortVersionString raw "$plist") || return 1
+  build=$(plutil -extract CFBundleVersion raw "$plist") || return 1
+  rm -f "$plist"
+  ASC_KEY_PATH=$key_file node "$repo_root/tools/scripts/testflight-notes.ts" "$version" "$build" ||
+    return 1
+  echo "\"What to Test\" is set on $version ($build)." >>"${GITHUB_STEP_SUMMARY:-/dev/stdout}"
+}
+if [ -n "${WHAT_TO_TEST:-}" ]; then
+  set_notes || echo "::warning::\"What to Test\" was not set; add it in App Store Connect."
+fi
