@@ -119,14 +119,16 @@ Không bao giờ hỏi mật khẩu ngân hàng. Dữ liệu được mã hoá t
 Chính sách quyền riêng tư: https://at6pm.app/vi/privacy
 ```
 
-**Category**: Finance. **Tags**: Budgeting, Personal finance. **Contact**: the studio's support email; website https://at6pm.app.
+**Category**: Finance. **Tags**: Budgeting, Personal finance. **Contact**: k7m2qx@at6pm.app (the
+privacy policy's contact); website https://at6pm.app. **AI asset label**: none (the screenshots are
+captures and the feature graphic is rendered from HTML).
 
 ## App content (Policy → App content)
 
 | Form | Answer |
 | --- | --- |
 | Privacy policy | https://at6pm.app/privacy (covers Android once the Android section is deployed) |
-| App access | No account or login, but 6pm Max is paid: the form wants a way into every paid feature, so a Max promo code goes in once the products exist (Target audience waits on this form) |
+| App access | No account or login, but 6pm Max is paid and reviewers can't buy or use a trial, so the sign in details give three one-time promo codes from the promotion "App review: 6pm Max" (Max yearly free for 90 days, redeemed in the Play Store, until 30 Apr 2027) |
 | Ads | No ads |
 | Content rating | IARC questionnaire, category Utility/Productivity: no violence, sexuality, language, drugs, gambling or user-generated content shared with others; users do not interact; no location shared with others; digital purchases: yes |
 | Target audience | 18 and over (the policy says not made for children under 16) |
@@ -180,16 +182,26 @@ encrypted, so Play counts it as not collected.
   which has view, financial data and order permissions on this app only in the Play Console, and
   Pub/Sub Admin and Monitoring Viewer in its project. Real-time notifications go through
   `projects/sixpm-play/topics/Play-Store-Notifications`.
-- **Products**: Play shows its products page only once the account has a payments profile (merchant
-  account). Then the subscriptions `ai.sixpm.app.max.monthly` and `ai.sixpm.app.max.yearly` (base plans
-  `monthly` and `yearly`, 99.000₫ and 799.000₫, $4.99 and $34.99, a 7-day free trial) and the one-time
-  looks `ai.sixpm.app.look.<id>` (49.000₫ classic, 99.000₫ living scenes), the ids the App Store uses,
-  are imported into RevenueCat and attached to the `max` entitlement and the offerings. Until then
-  Max and looks show as unavailable on Android.
+- **Subscriptions**: `ai.sixpm.app.max.monthly` and `ai.sixpm.app.max.yearly`, base plans `monthly` and
+  `yearly` (auto-renewing, 7-day grace period), $4.99 and $34.99 with Play's conversion elsewhere and
+  99.000₫ and 799.000₫ in Vietnam. Each has the offer `free-trial`: 7 days, for anyone who never had a
+  subscription in the app (the App Store's one trial per group). `yearly` is the backwards compatible
+  plan, which promo codes need.
+- **Looks**: one-time products `ai.sixpm.app.look.<id>` with the purchase option `buy`, priced in đồng
+  (49.000₫ classic, 99.000₫ living scenes) and converted by Play elsewhere, as the App Store does.
+- **RevenueCat**: the 11 products are imported (non-consumable looks); both Max plans are attached to
+  `max` and each look to its `look_<id>`. The app asks for products by id, so no offering is needed.
 
 ## Releases
 
 - **Upload**: Play takes the first build of a new app only through the Console. Later builds can go by
   `eas submit -p android --profile prd` once a Google service account key is added in EAS.
 - **Internal testing**: the first build, versionCode 2 (2.1.0), went to internal testing on 31 Oct
-  2026 for the account's "Internal" testers list.
+  2026 for the account's "Internal" testers list. It was built before the RevenueCat Android key was
+  in `prd`, so Max and looks are unavailable in it.
+- **Closed testing**: the "Alpha" track, every country, versionCode 4 (2.1.0, with the key; 3 was a
+  failed local build), sent for review with the app content on 1 Nov 2026. Testers come from the
+  "Internal" list until a Google Group is added. Production needs 12 or more testers opted in for 14
+  days in a row.
+- **Local builds**: `eas build --local` needs `ANDROID_HOME` set (the SDK is at
+  `~/Library/Android/sdk`); every attempt takes the next versionCode, failed or not.
