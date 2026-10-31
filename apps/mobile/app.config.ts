@@ -9,6 +9,11 @@ type AppVariant = 'dev' | 'prd' | 'e2e-test';
 interface VariantConfig {
   name: string;
   bundleIdentifier: string;
+  /**
+   * The Android package. Not the iOS id: `ai.sixpm.app` is held on Google Play by a developer
+   * account that was closed, and Play never frees a package name (31 Oct 2026).
+   */
+  androidPackage: string;
   /** Shared by the app and its extensions (widgets, share, Live Activity). */
   appGroup: string;
   scheme: string;
@@ -34,6 +39,7 @@ const IOS_DEPLOYMENT_TARGET = '17.0';
 const DEV: VariantConfig = {
   name: '6pm Dev',
   bundleIdentifier: 'ai.sixpm.app.dev',
+  androidPackage: 'app.at6pm.dev',
   appGroup: 'group.ai.sixpm.app.dev',
   scheme: 'sixpm-dev',
   host: 'dev.at6pm.app',
@@ -48,6 +54,7 @@ const VARIANTS: Record<AppVariant, VariantConfig> = {
   prd: {
     name: '6pm',
     bundleIdentifier: 'ai.sixpm.app',
+    androidPackage: 'app.at6pm',
     appGroup: 'group.ai.sixpm.app',
     scheme: 'sixpm',
     host: 'at6pm.app',
@@ -207,7 +214,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
   },
   android: {
-    package: variant.bundleIdentifier,
+    package: variant.androidPackage,
     // The icon's sky and sun behind the launcher's mask, and its outline for themed icons.
     adaptiveIcon: {
       foregroundImage: './assets/android/adaptive-foreground.png',
