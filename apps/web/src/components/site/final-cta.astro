@@ -16,9 +16,13 @@ const store = ctaMode === 'store';
 
 <section id="join" class="final" data-hour="23.9">
   <div data-reveal="0"><Buddy size={88} mood="sleepy" /></div>
-  <span class="mono kick" data-reveal="0" data-countdown={store ? undefined : ''}>
-    {store ? t.storeKicker : hero.kickWait}
-  </span>
+  {
+    !store && (
+      <span class="mono kick" data-reveal="0" data-countdown="">
+        {hero.kickWait}
+      </span>
+    )
+  }
   <h2 data-reveal="60">{t.a} <span class="accent">{t.b}</span></h2>
   <p data-reveal="90">{t.sub}</p>
   <div class="cta" data-reveal="120">
@@ -67,7 +71,8 @@ const store = ctaMode === 'store';
   }
   .cta {
     width: 100%;
-    max-width: 460px;
+    /* Room for the App Store badge and the Android button side by side. */
+    max-width: 560px;
     display: flex;
     flex-direction: column;
     align-items: center;

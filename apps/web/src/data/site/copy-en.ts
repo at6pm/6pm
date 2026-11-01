@@ -23,7 +23,6 @@ export const siteCopyEn: SiteCopy = {
   },
   hero: {
     kickWait: 'For iPhone · Arrives 6 Nov, 18:00',
-    kickStore: 'For iPhone · Free on the App Store',
     a: 'Close your day',
     b: 'at six.',
     sub: 'Spend like you normally do. At six, one swipe settles the day, and tomorrow starts with one number you can trust.',
@@ -37,7 +36,9 @@ export const siteCopyEn: SiteCopy = {
     note: 'One email on launch day. That’s all.',
     beta: 'Can’t wait? Try the public beta on TestFlight',
     android: {
-      open: 'On Android? Join the beta on Google Play',
+      button: 'Join the Android beta',
+      title: 'Join the Android beta',
+      close: 'Close',
       how: 'The Android app is in a closed test on Google Play. Anyone can join, in two steps.',
       group: 'Join the tester group',
       groupNote: 'Tap “Join group”. This is what lets you into the test.',
@@ -45,7 +46,6 @@ export const siteCopyEn: SiteCopy = {
       testNote: 'Then tap “Become a tester” on Google Play:',
       install: 'Install 6pm: Safe to Spend from Google Play.',
       sameAccount: 'Use the same Google account for both steps, the one on your Play Store.',
-      stay: 'Please keep it and close a few days for two weeks: Google opens 6pm to everyone on Play once enough testers have stayed 14 days.',
     },
   },
   phone: {
@@ -289,7 +289,6 @@ export const siteCopyEn: SiteCopy = {
     a: 'See you',
     b: 'at six.',
     sub: 'Tomorrow, around six, your phone will nudge you. One minute, and the day is done.',
-    storeKicker: '6pm · iPhone',
   },
   foot: {
     tag: 'Close your day at six.',

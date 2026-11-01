@@ -14,9 +14,14 @@ const t = siteCopy[lang].hero;
 
 <section id="top" class="hero" data-hour="9">
   <div class="copy">
-    <div class="kicker mono">
-      <span class="dot"></span><span>{ctaMode === 'store' ? t.kickStore : t.kickWait}</span>
-    </div>
+    {
+      ctaMode === 'waitlist' && (
+        <div class="kicker mono">
+          <span class="dot" />
+          <span>{t.kickWait}</span>
+        </div>
+      )
+    }
     <h1>{t.a} <span class="accent">{t.b}</span></h1>
     <p class="sub">{t.sub}</p>
     <JoinCta lang={lang} size="hero" />

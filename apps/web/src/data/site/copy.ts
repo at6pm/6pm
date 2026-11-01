@@ -57,7 +57,6 @@ export interface SiteCopy {
   };
   readonly hero: {
     readonly kickWait: string;
-    readonly kickStore: string;
     readonly a: string;
     readonly b: string;
     readonly sub: string;
@@ -72,13 +71,16 @@ export interface SiteCopy {
     /** The public beta, offered under the waitlist until the app is out. */
     readonly beta: string;
     /**
-     * The Android closed test on Google Play, under the App Store badge: two steps a person takes
-     * alone with one Google account (join the tester group, then become a tester), then the
-     * install. The links come from `config.ts`.
+     * The Android closed test on Google Play: a button beside the App Store badge opens a dialog
+     * with two steps a person takes alone with one Google account (join the tester group, then
+     * become a tester), then the install. The links come from `config.ts`.
      */
     readonly android: {
-      /** The line that opens the panel. */
-      readonly open: string;
+      /** The button beside the App Store badge that opens the dialog. */
+      readonly button: string;
+      /** The dialog's title, and its close button's label. */
+      readonly title: string;
+      readonly close: string;
       /** What the test is, before the steps. */
       readonly how: string;
       /** Step one: the button to the tester group, and what to tap there. */
@@ -91,8 +93,6 @@ export interface SiteCopy {
       readonly install: string;
       /** Both steps need the same Google account. */
       readonly sameAccount: string;
-      /** The ask that gets 6pm onto Google Play for everyone. */
-      readonly stay: string;
     };
   };
   /** The hero phone: Today at nine in the morning. */
@@ -214,7 +214,6 @@ export interface SiteCopy {
     readonly a: string;
     readonly b: string;
     readonly sub: string;
-    readonly storeKicker: string;
   };
   readonly foot: {
     readonly tag: string;

@@ -1,7 +1,7 @@
 ---
 import { appStoreUrl, ctaMode, testFlightUrl } from '../../data/site/config';
 import { siteCopy, type SiteLang } from '../../data/site/copy';
-import AndroidBeta from './android-beta.astro';
+import AndroidBetaButton from './android-beta-button.astro';
 
 interface Props {
   lang: SiteLang;
@@ -29,7 +29,7 @@ const id = `email-${size}`;
           <span class="badge-name">App Store</span>
         </span>
       </a>
-      <AndroidBeta lang={lang} size={size} />
+      <AndroidBetaButton lang={lang} size={size} />
     </div>
   ) : (
     <div class:list={['join', size]} data-join>
@@ -190,15 +190,29 @@ const id = `email-${size}`;
     font-size: 16px;
     text-decoration: none;
   }
+  /* The App Store badge and the Android button side by side; on a narrow phone, stacked full width. */
   .store {
-    width: 100%;
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 18px;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
   }
   .store.final {
-    align-items: center;
+    justify-content: center;
+  }
+  @media (max-width: 480px) {
+    .store {
+      width: 100%;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .store .badge {
+      align-self: stretch;
+      justify-content: center;
+    }
+    .store :global(.android-btn) {
+      justify-content: center;
+    }
   }
   .badge {
     align-self: flex-start;

@@ -23,7 +23,6 @@ export const siteCopyVi: SiteCopy = {
   },
   hero: {
     kickWait: 'Cho iPhone · Ra mắt 18:00, 6/11',
-    kickStore: 'Cho iPhone · Miễn phí trên App Store',
     a: 'Chốt ngày',
     b: 'lúc sáu giờ.',
     sub: 'Cứ tiêu như mọi ngày. Sáu giờ, vuốt một lần là xong ngày, và sáng mai bắt đầu bằng một con số bạn tin được.',
@@ -37,7 +36,9 @@ export const siteCopyVi: SiteCopy = {
     note: 'Một email vào ngày ra mắt. Vậy thôi.',
     beta: 'Muốn dùng ngay? Thử bản beta công khai trên TestFlight',
     android: {
-      open: 'Dùng Android? Tham gia bản thử trên Google Play',
+      button: 'Thử bản Android',
+      title: 'Tham gia bản thử Android',
+      close: 'Đóng',
       how: 'Bản Android đang thử kín trên Google Play. Ai cũng tham gia được, chỉ hai bước.',
       group: 'Vào nhóm người thử',
       groupNote: 'Bấm “Tham gia nhóm”. Đây là bước cho bạn vào bản thử.',
@@ -46,7 +47,6 @@ export const siteCopyVi: SiteCopy = {
       install: 'Cài 6pm: Safe to Spend từ Google Play.',
       sameAccount:
         'Dùng cùng một tài khoản Google cho cả hai bước, là tài khoản trên Play Store của bạn.',
-      stay: 'Nhờ bạn giữ app và chốt vài ngày trong hai tuần: Google chỉ mở 6pm cho mọi người trên Play khi đủ người thử ở lại 14 ngày.',
     },
   },
   phone: {
@@ -293,7 +293,6 @@ export const siteCopyVi: SiteCopy = {
     a: 'Hẹn bạn',
     b: 'lúc sáu giờ.',
     sub: 'Mai, khoảng sáu giờ, điện thoại sẽ nhắc bạn. Một phút, và ngày khép lại.',
-    storeKicker: '6pm · iPhone',
   },
   foot: {
     tag: 'Chốt ngày lúc sáu giờ.',
