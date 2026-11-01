@@ -130,8 +130,8 @@ function useCompanionImages(serious: boolean, written: () => void) {
   const form = useMemberCompanionForm();
   useEffect(() => {
     const native = surfaces;
-    // Only the iPhone's widgets and Live Activity draw the companion.
-    if (!native || serious || !nativeReach.widgets) return;
+    // The Home Screen widgets (and the iPhone's Live Activity) draw the companion.
+    if (!native || serious || !nativeReach.homeWidgets) return;
     const handle = setTimeout(() => {
       const write = async () => {
         for (const image of renderCompanions(form)) {

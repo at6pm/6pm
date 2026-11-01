@@ -9,6 +9,11 @@
   },
   "android": {
     "sixpm_shortcut_scan": "Pindai QR",
-    "sixpm_shortcut_quick_add": "Tambah cepat"
+    "sixpm_shortcut_quick_add": "Tambah cepat",
+    "sixpm_widget_safe_name": "Aman hari ini",
+    "sixpm_widget_safe_description": "Yang bisa kamu pakai hari ini, sekali lirik.",
+    "sixpm_widget_today_name": "Hari ini",
+    "sixpm_widget_today_description": "Pengeluaranmu hari ini, yang terbaru di atas.",
+    "sixpm_widget_set_up": "Buka 6pm untuk mengatur"
   }
 }

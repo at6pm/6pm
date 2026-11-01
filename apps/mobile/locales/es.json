@@ -9,6 +9,11 @@
   },
   "android": {
     "sixpm_shortcut_scan": "Escanear QR",
-    "sixpm_shortcut_quick_add": "Añadir rápido"
+    "sixpm_shortcut_quick_add": "Añadir rápido",
+    "sixpm_widget_safe_name": "Puedes gastar hoy",
+    "sixpm_widget_safe_description": "Lo que puedes gastar hoy, de un vistazo.",
+    "sixpm_widget_today_name": "Hoy",
+    "sixpm_widget_today_description": "Lo que has gastado hoy, lo más reciente primero.",
+    "sixpm_widget_set_up": "Abre 6pm para configurarlo"
   }
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Safe today, small: the picture, and a tap area over the drawn Scan QR button (36 dp, 16 dp in
+     from the top right corner), a little larger than the button so it is easy to hit. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@android:id/background"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+  <ImageView
+    android:id="@+id/sixpm_widget_picture"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scaleType="fitXY" />
+  <FrameLayout
+    android:id="@+id/sixpm_widget_scan"
+    android:layout_width="52dp"
+    android:layout_height="52dp"
+    android:layout_gravity="top|end"
+    android:layout_margin="8dp" />
+</FrameLayout>

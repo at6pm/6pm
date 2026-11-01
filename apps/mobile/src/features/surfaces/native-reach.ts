@@ -16,6 +16,11 @@ export interface NativeReach {
   readonly wallet: boolean;
   /** Home and Lock Screen widgets, controls and Live Activities. */
   readonly widgets: boolean;
+  /**
+   * A Home Screen widget that draws the snapshot the app writes, with its companion: the iPhone's,
+   * and Android's Home screen widgets (which have no guide and no Lock Screen).
+   */
+  readonly homeWidgets: boolean;
   /** Sign in with Apple, which Budget together pairs with. */
   readonly appleSignIn: boolean;
   /**
@@ -50,6 +55,7 @@ export const nativeReach: NativeReach = {
   share: ios,
   wallet: ios,
   widgets: ios && surfaces !== null,
+  homeWidgets: surfaces !== null,
   appleSignIn: ios,
   bankAlerts,
   alertListener: !ios && bankAlerts,

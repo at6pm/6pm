@@ -9,7 +9,7 @@ export const viAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'capture.wallet.headline':
     'Điện thoại này không có Apple Pay. Chuyển tiếp email biên lai của thẻ là chúng tự xuất hiện.',
   'capture.widgets.headline':
-    'Điện thoại này không có tiện ích 6pm. Giữ nút quét là Thêm nhanh mở ra.',
+    'Giữ một chỗ trống trên màn hình chính, chạm Tiện ích rồi thêm 6pm. Quét QR và Thêm nhanh cũng có ô trong Cài đặt nhanh.',
 
   'backup.row.on': 'Đã mã hoá, {when}',
   'backup.status.sub': { other: '{count} mục · đã mã hóa. 6pm vẫn chạy tốt khi không có nó.' },

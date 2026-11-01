@@ -9,6 +9,11 @@
   },
   "android": {
     "sixpm_shortcut_scan": "Scan QR",
-    "sixpm_shortcut_quick_add": "Quick add"
+    "sixpm_shortcut_quick_add": "Quick add",
+    "sixpm_widget_safe_name": "Safe today",
+    "sixpm_widget_safe_description": "What you can spend today, at a glance.",
+    "sixpm_widget_today_name": "Today",
+    "sixpm_widget_today_description": "What you spent today, newest first.",
+    "sixpm_widget_set_up": "Open 6pm to set up"
   }
 }

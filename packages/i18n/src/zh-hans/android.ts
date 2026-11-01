@@ -9,7 +9,8 @@ export const zhHansAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } 
   'capture.share.headline': '把小票存成图片，然后在“扫码”里选中它。我会读出金额。',
   'capture.wallet.headline':
     '这台手机记不到刷卡付款。把银行卡的消费邮件转发过来，它们就会自己出现。',
-  'capture.widgets.headline': '这台手机上没有 6pm 的桌面组件。长按扫码按钮，就能打开快速记账。',
+  'capture.widgets.headline':
+    '长按主屏幕空白处，点“微件”，添加 6pm。扫码和快速记账也能放进快捷设置。',
 
   'backup.row.on': '已加密 · {when}',
   'backup.status.sub': { other: '{count} 项 · 已加密。没有它，6pm 也照常运行。' },

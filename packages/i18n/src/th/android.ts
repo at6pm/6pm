@@ -10,7 +10,7 @@ export const thAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'capture.wallet.headline':
     'โทรศัพท์เครื่องนี้ไม่มี Apple Pay ส่งต่ออีเมลใบเสร็จของบัตรมา แล้วรายการจะโผล่ขึ้นมาเอง',
   'capture.widgets.headline':
-    'โทรศัพท์เครื่องนี้ไม่มีวิดเจ็ตของ 6pm กดปุ่มสแกนค้างไว้ เพิ่มด่วนจะเปิดขึ้นมา',
+    'กดค้างที่ว่างบนหน้าจอหลัก แตะวิดเจ็ต แล้วเพิ่ม 6pm สแกนคิวอาร์และเพิ่มด่วนก็วางไว้ในการตั้งค่าด่วนได้ด้วย',
 
   'backup.row.on': 'เข้ารหัสแล้ว · {when}',
   'backup.status.sub': {

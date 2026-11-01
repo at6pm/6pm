@@ -9,6 +9,11 @@
   },
   "android": {
     "sixpm_shortcut_scan": "Quét QR",
-    "sixpm_shortcut_quick_add": "Thêm nhanh"
+    "sixpm_shortcut_quick_add": "Thêm nhanh",
+    "sixpm_widget_safe_name": "Hôm nay tiêu được",
+    "sixpm_widget_safe_description": "Số tiền bạn có thể tiêu hôm nay, nhìn là thấy.",
+    "sixpm_widget_today_name": "Hôm nay",
+    "sixpm_widget_today_description": "Những khoản đã tiêu hôm nay, mới nhất trước.",
+    "sixpm_widget_set_up": "Mở 6pm để cài đặt"
   }
 }

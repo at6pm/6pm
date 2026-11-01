@@ -2,8 +2,8 @@ import type { Variants } from './catalogue-types';
 
 /**
  * How Android reads the keys that are not true there as the catalogue writes them: "this phone"
- * for "this iPhone", Google Play for the App Store, a backup key that stays on the phone, and no
- * share sheet, Apple Pay, widgets or Siri to point at.
+ * for "this iPhone", Google Play for the App Store, a backup key that stays on the phone, no share
+ * sheet, Apple Pay or Siri to point at, and Android's own way to add widgets.
  */
 export const enAndroid = {
   // Ask: the ways in that this phone has, and what to do instead of the ones it lacks.
@@ -14,7 +14,7 @@ export const enAndroid = {
   'capture.wallet.headline':
     'Apple Pay isn’t on this phone. Forward your card’s receipt emails and they turn up on their own.',
   'capture.widgets.headline':
-    'There are no 6pm widgets on this phone. Hold the scan button and Quick add opens.',
+    'Hold an empty spot on your Home screen, tap Widgets and add 6pm. Scan QR and Quick add are Quick Settings tiles too.',
 
   // Backup: the key is kept on this phone only, so a backup opens only here.
   'backup.row.on': 'Encrypted · {when}',
