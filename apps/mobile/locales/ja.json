@@ -9,6 +9,11 @@
   },
   "android": {
     "sixpm_shortcut_scan": "QRをスキャン",
-    "sixpm_shortcut_quick_add": "クイック追加"
+    "sixpm_shortcut_quick_add": "クイック追加",
+    "sixpm_widget_safe_name": "今日使えるお金",
+    "sixpm_widget_safe_description": "今日使えるお金がひと目で分かります。",
+    "sixpm_widget_today_name": "今日",
+    "sixpm_widget_today_description": "今日の支出を新しい順に表示します。",
+    "sixpm_widget_set_up": "6pmを開いて設定"
   }
 }

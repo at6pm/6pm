@@ -9,6 +9,11 @@
   },
   "android": {
     "sixpm_shortcut_scan": "สแกนคิวอาร์",
-    "sixpm_shortcut_quick_add": "เพิ่มด่วน"
+    "sixpm_shortcut_quick_add": "เพิ่มด่วน",
+    "sixpm_widget_safe_name": "วันนี้ใช้ได้",
+    "sixpm_widget_safe_description": "ยอดที่คุณใช้ได้วันนี้ ดูได้ในพริบตา",
+    "sixpm_widget_today_name": "วันนี้",
+    "sixpm_widget_today_description": "รายจ่ายวันนี้ ล่าสุดอยู่บนสุด",
+    "sixpm_widget_set_up": "เปิด 6pm เพื่อตั้งค่า"
   }
 }

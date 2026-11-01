@@ -72,6 +72,11 @@ function text(catalogue: Catalogue, key: string): string {
 const ANDROID_STRINGS: Readonly<Record<string, string>> = {
   sixpm_shortcut_scan: 'native.intents.scan.title',
   sixpm_shortcut_quick_add: 'native.intents.quickAdd.title',
+  sixpm_widget_safe_name: 'native.surfaces.safeToday.name',
+  sixpm_widget_safe_description: 'native.surfaces.safeToday.description',
+  sixpm_widget_today_name: 'native.surfaces.todayList.name',
+  sixpm_widget_today_description: 'native.surfaces.todayList.description',
+  sixpm_widget_set_up: 'native.surfaces.setUp',
 };
 
 function permissionLocale(catalogue: Catalogue): string {
@@ -81,7 +86,8 @@ function permissionLocale(catalogue: Catalogue): string {
   ]);
   // The prompts go under `ios` only: Android has its own permission wording, and these keys copied
   // into its per-language strings with no default fail the release build's lint. Under `android`,
-  // the launcher shortcuts' labels, whose English default `plugins/with-android-shortcuts` writes.
+  // the launcher shortcuts' labels and the widgets' names, whose English default
+  // `plugins/with-android-shortcuts` writes.
   const android = Object.fromEntries(
     Object.entries(ANDROID_STRINGS).map(([name, key]): [string, string] => [
       name,

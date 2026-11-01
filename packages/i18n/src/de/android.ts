@@ -10,7 +10,7 @@ export const deAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'capture.wallet.headline':
     'Kartenzahlungen am Handy kann 6pm hier nicht mitlesen. Leite die Beleg-E-Mails deiner Karte weiter, dann kommen sie von selbst an.',
   'capture.widgets.headline':
-    'Auf diesem Handy gibt es keine 6pm-Widgets. Halte die Scan-Taste gedrückt, dann öffnet sich „Schnell erfassen“.',
+    'Halte eine freie Stelle auf dem Startbildschirm gedrückt, tippe auf „Widgets“ und füge 6pm hinzu. „QR scannen“ und „Schnell erfassen“ gibt es auch als Kacheln in den Schnelleinstellungen.',
 
   'backup.row.on': 'Verschlüsselt · {when}',
   'backup.status.sub': {

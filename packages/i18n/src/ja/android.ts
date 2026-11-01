@@ -11,7 +11,7 @@ export const jaAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'capture.wallet.headline':
     'このスマホにはApple Payがありません。カードのレシートメールを転送すれば、自動で届きます。',
   'capture.widgets.headline':
-    'このスマホには6pmのウィジェットがありません。スキャンボタンを長押しするとクイック追加が開きます。',
+    'ホーム画面の空いている所を長押しし、「ウィジェット」から6pmを追加。QRをスキャンとクイック追加は、クイック設定のタイルにもなります。',
 
   'backup.row.on': '暗号化済み · {when}',
   'backup.status.sub': {

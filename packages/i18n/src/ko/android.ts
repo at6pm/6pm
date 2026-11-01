@@ -11,7 +11,7 @@ export const koAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'capture.wallet.headline':
     '이 폰에는 Apple Pay가 없어요. 카드 영수증 이메일을 전달하면 알아서 들어와요.',
   'capture.widgets.headline':
-    '이 폰에는 6pm 위젯이 없어요. 스캔 버튼을 길게 누르면 빠른 추가가 열려요.',
+    '홈 화면 빈 곳을 길게 누르고 위젯에서 6pm을 추가해요. QR 스캔과 빠른 추가는 빠른 설정 타일로도 있어요.',
 
   'backup.row.on': '암호화됨 · {when}',
   'backup.status.sub': { other: '{count}개 항목 · 암호화됨. 백업 없이도 6pm은 잘 돌아가요.' },

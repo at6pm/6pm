@@ -1,5 +1,6 @@
 package ai.sixpm.surfaces
 
+import ai.sixpm.surfaces.widgets.Widgets
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -25,6 +26,8 @@ class SurfacesModule : Module() {
 
     AsyncFunction("writeSurface") { name: String, json: String ->
       SurfaceFiles.writeSurface(context, name, json)
+      // The widgets draw what the app last wrote.
+      if (name == "snapshot") Widgets.refresh(context)
     }
 
     AsyncFunction("writeSurfaceImage") { name: String, pngBase64: String ->

@@ -338,6 +338,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ],
     // Long-press 6pm's icon on Android: Scan QR and Quick add, the iPhone's App Shortcuts.
     ['./plugins/with-android-shortcuts', { background: LAUNCH_BACKGROUND }],
+    // Home screen widgets and Quick Settings tiles, drawn by modules/surfaces.
+    './plugins/with-android-widgets',
   ],
   experiments: {
     typedRoutes: true,

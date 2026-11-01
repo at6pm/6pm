@@ -11,7 +11,7 @@ export const idAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'capture.wallet.headline':
     'Apple Pay tidak ada di ponsel ini. Teruskan email struk dari kartumu, dan semuanya muncul sendiri.',
   'capture.widgets.headline':
-    'Ponsel ini tidak punya widget 6pm. Tahan tombol pindai, dan Tambah cepat terbuka.',
+    'Tahan bagian kosong di layar utama, ketuk Widget, lalu tambahkan 6pm. Pindai QR dan Tambah cepat juga ada di Setelan Cepat.',
 
   'backup.row.on': 'Terenkripsi · {when}',
   'backup.status.sub': {

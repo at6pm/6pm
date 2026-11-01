@@ -11,7 +11,7 @@ export const esAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'capture.wallet.headline':
     'Este teléfono no tiene Apple Pay. Reenvía los correos de recibos de tu tarjeta y aparecerán solos.',
   'capture.widgets.headline':
-    'No hay widgets de 6pm en este teléfono. Mantén pulsado el botón de escanear y se abre Añadir rápido.',
+    'Mantén pulsado un espacio vacío de la pantalla de inicio, toca Widgets y añade 6pm. Escanear QR y Añadir rápido también están en Ajustes rápidos.',
 
   'backup.row.on': 'Cifrada · {when}',
   'backup.status.sub': {

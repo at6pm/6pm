@@ -10,7 +10,7 @@ export const frAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'capture.wallet.headline':
     'Apple Pay n’existe pas sur ce téléphone. Transfère les e-mails de tickets de ta carte, et ils arrivent tout seuls.',
   'capture.widgets.headline':
-    'Pas de widgets 6pm sur ce téléphone. Maintiens le bouton de scan, et Ajout rapide s’ouvre.',
+    'Maintiens un espace vide de l’écran d’accueil, touche Widgets et ajoute 6pm. Scanner QR et Ajout rapide sont aussi des blocs des Réglages rapides.',
 
   'backup.row.on': 'Chiffrée · {when}',
   'backup.status.sub': {

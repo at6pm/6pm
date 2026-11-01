@@ -9,6 +9,11 @@
   },
   "android": {
     "sixpm_shortcut_scan": "扫码",
-    "sixpm_shortcut_quick_add": "快速记账"
+    "sixpm_shortcut_quick_add": "快速记账",
+    "sixpm_widget_safe_name": "今天可以花",
+    "sixpm_widget_safe_description": "今天还能花多少，一眼就知道。",
+    "sixpm_widget_today_name": "今天",
+    "sixpm_widget_today_description": "今天花了哪些钱，最新的在前。",
+    "sixpm_widget_set_up": "打开 6pm 进行设置"
   }
 }
