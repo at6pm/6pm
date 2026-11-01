@@ -1,11 +1,13 @@
 import type { TextStyle } from 'react-native';
 
 import { MISSING_CURRENCY_GLYPHS } from './currency-glyphs.generated';
+import { axesOf, familyOf } from './font-axes';
 
 /** The weight a display style asks for: its variable `wght`, else 500 as `display` defaults. */
 function weightOf(style: TextStyle): number {
-  const axes = style.fontVariationSettings;
-  if (axes && typeof axes === 'object' && 'wght' in axes) return Number(axes.wght);
+  const own = style.fontVariationSettings;
+  if (own && typeof own === 'object' && 'wght' in own) return Number(own.wght);
+  const axes = axesOf(style);
   const wght = typeof axes === 'string' ? /'wght'\s+(\d+)/.exec(axes)?.[1] : undefined;
   return wght ? Number(wght) : 500;
 }
@@ -13,7 +15,7 @@ function weightOf(style: TextStyle): number {
 /** Whether a text style's face can draw every character of a currency symbol. */
 export function faceDraws(style: TextStyle, symbol: string): boolean {
   // Keyed by family name; Android draws a variable file by its file name (`variableFamily`).
-  const family = style.fontFamily?.replace(/-Variable$/, '');
+  const family = familyOf(style)?.replace(/-Variable$/, '');
   const missing = family ? MISSING_CURRENCY_GLYPHS[family] : undefined;
   if (!missing) return true;
   return ![...symbol].some((c) => missing.includes(c));

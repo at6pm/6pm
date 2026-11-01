@@ -8,6 +8,7 @@ import {
   type Palette,
 } from '@6pm/theme';
 
+import { familyOf } from '../../ui/type/font-axes';
 import { display } from '../../ui/type/fonts';
 
 /** The look the widgets wear: the user's own with Max, else Golden Hour as it ships. */
@@ -81,7 +82,7 @@ export const SYSTEM_DISPLAY = 'system';
  */
 export function displayFamily(look: WidgetLook): string {
   const palette = paletteFor({ look: look.look, hour: 12, serious: look.serious });
-  return display(44, 500, 0, palette.dispFont).fontFamily ?? SYSTEM_DISPLAY;
+  return familyOf(display(44, 500, 0, palette.dispFont)) ?? SYSTEM_DISPLAY;
 }
 
 /** A category tile's colours by hue, as `tile.<hue>.from|to|glyph` entries Swift looks up. */
