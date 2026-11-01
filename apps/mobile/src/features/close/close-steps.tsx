@@ -1,4 +1,5 @@
-import { Text, View } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { ScrollView, Text, View, type ScrollViewInstance } from 'react-native';
 import Animated, { FadeIn, FadeInDown, ZoomIn } from 'react-native-reanimated';
 
 import { useMoneyFormat } from '../../money/use-money-format';
@@ -126,87 +127,103 @@ export function CashStep({
   const { palette } = useTheme();
   const money = useMoneyFormat();
   const total = added.reduce((sum, c) => sum + c.amount, 0);
+  // A cash spend just added shows its line, even when the list runs below the fold.
+  const scroll = useRef<ScrollViewInstance>(null);
+  const shown = useRef(added.length);
+  useEffect(() => {
+    if (added.length > shown.current) scroll.current?.scrollToEnd({ animated: true });
+    shown.current = added.length;
+  }, [added.length]);
   return (
     <Animated.View entering={FadeInDown.duration(450)} style={{ flex: 1, gap: 20, paddingTop: 22 }}>
-      <View style={{ gap: 6 }}>
-        <WordFitText style={{ ...leading(display(40, 500, -0.01), 40.8), color: palette.ink }}>
-          {title}
-        </WordFitText>
-        <Text style={{ ...body(15), lineHeight: 21.75, color: palette.inkSoft, paddingTop: 4 }}>
-          {sub}
-        </Text>
-      </View>
-      <CashVoice
-        onSaid={(said) =>
-          onSaid({ key: said.categoryHint ?? 'food', name: said.name, amount: said.amount })
-        }
-      />
-      <Animated.View
-        layout={glide}
-        style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}
+      {/* A phone shorter than the design, or a long list of cash, scrolls here: the total and the
+          button stay where the thumb is. */}
+      <ScrollView
+        ref={scroll}
+        style={{ flex: 1 }}
+        contentContainerStyle={{ gap: 20 }}
+        showsVerticalScrollIndicator={false}
+        alwaysBounceVertical={false}
       >
-        {chips.map((chip) => (
+        <View style={{ gap: 6 }}>
+          <WordFitText style={{ ...leading(display(40, 500, -0.01), 40.8), color: palette.ink }}>
+            {title}
+          </WordFitText>
+          <Text style={{ ...body(15), lineHeight: 21.75, color: palette.inkSoft, paddingTop: 4 }}>
+            {sub}
+          </Text>
+        </View>
+        <CashVoice
+          onSaid={(said) =>
+            onSaid({ key: said.categoryHint ?? 'food', name: said.name, amount: said.amount })
+          }
+        />
+        <Animated.View
+          layout={glide}
+          style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}
+        >
+          {chips.map((chip) => (
+            <PressScale
+              key={chip.key}
+              onPress={() => onAdd(chip)}
+              style={{
+                height: 44,
+                paddingHorizontal: 16,
+                borderRadius: 99,
+                borderWidth: 0.5,
+                borderColor: palette.glassBorder,
+                backgroundColor: palette.glass,
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 8,
+              }}
+            >
+              <Text style={{ ...body(15, 600), color: palette.ink }}>{chip.name}</Text>
+              <Text style={{ ...body(15, 500), color: palette.ink, opacity: 0.6 }}>
+                {money.short(chip.amount)}
+              </Text>
+            </PressScale>
+          ))}
           <PressScale
-            key={chip.key}
-            onPress={() => onAdd(chip)}
+            onPress={onOther}
+            accessibilityRole="button"
             style={{
               height: 44,
-              paddingHorizontal: 16,
+              paddingLeft: 12,
+              paddingRight: 16,
               borderRadius: 99,
               borderWidth: 0.5,
               borderColor: palette.glassBorder,
-              backgroundColor: palette.glass,
+              borderStyle: 'dashed',
               flexDirection: 'row',
               alignItems: 'center',
-              gap: 8,
+              gap: 6,
             }}
           >
-            <Text style={{ ...body(15, 600), color: palette.ink }}>{chip.name}</Text>
-            <Text style={{ ...body(15, 500), color: palette.ink, opacity: 0.6 }}>
-              {money.short(chip.amount)}
-            </Text>
+            <Symbol name="add" size={20} color={palette.ink} />
+            <Text style={{ ...body(15, 600), color: palette.ink }}>{otherLabel}</Text>
           </PressScale>
-        ))}
-        <PressScale
-          onPress={onOther}
-          accessibilityRole="button"
-          style={{
-            height: 44,
-            paddingLeft: 12,
-            paddingRight: 16,
-            borderRadius: 99,
-            borderWidth: 0.5,
-            borderColor: palette.glassBorder,
-            borderStyle: 'dashed',
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 6,
-          }}
-        >
-          <Symbol name="add" size={20} color={palette.ink} />
-          <Text style={{ ...body(15, 600), color: palette.ink }}>{otherLabel}</Text>
-        </PressScale>
-      </Animated.View>
-      <Animated.View layout={glide} style={{ gap: 6 }}>
-        {added.map((chip, i) => (
-          <Animated.View
-            key={`${chip.key}-${i}`}
-            entering={FadeInDown.duration(300)}
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingVertical: 6,
-              paddingHorizontal: 4,
-            }}
-          >
-            <Text style={{ ...mono(13, 400, 0.04), color: palette.ink }}>+ {chip.name}</Text>
-            <Text style={{ ...mono(13), ...tabular, color: palette.ink }}>
-              {money.number(chip.amount)}
-            </Text>
-          </Animated.View>
-        ))}
-      </Animated.View>
-      <View style={{ flex: 1 }} />
+        </Animated.View>
+        <Animated.View layout={glide} style={{ gap: 6 }}>
+          {added.map((chip, i) => (
+            <Animated.View
+              key={`${chip.key}-${i}`}
+              entering={FadeInDown.duration(300)}
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                paddingVertical: 6,
+                paddingHorizontal: 4,
+              }}
+            >
+              <Text style={{ ...mono(13, 400, 0.04), color: palette.ink }}>+ {chip.name}</Text>
+              <Text style={{ ...mono(13), ...tabular, color: palette.ink }}>
+                {money.number(chip.amount)}
+              </Text>
+            </Animated.View>
+          ))}
+        </Animated.View>
+      </ScrollView>
       <DashedRule color={palette.inkSoft} />
       <View
         style={{

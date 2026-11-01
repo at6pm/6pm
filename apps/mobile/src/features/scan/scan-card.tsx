@@ -10,6 +10,7 @@ import Animated, {
 
 import { Symbol } from '../../ui/icons/symbol';
 import type { SymbolName } from '../../ui/icons/symbols.generated';
+import { useDesignInsets } from '../../ui/layout/design-insets';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { body } from '../../ui/type/fonts';
 import { scanColours as c } from './scan-colours';
@@ -25,7 +26,10 @@ export function sheetUp(values: EntryAnimationsValues): LayoutAnimation {
   };
 }
 
-/** The frosted paper card Scan raises over the camera: 8 pt from the edges, 44 pt corners. */
+/**
+ * The frosted paper card Scan raises over the camera: 8 pt from the edges, 44 pt corners. The
+ * bottom follows the safe area, so on Android it clears the three-button bar.
+ */
 export function ScanCard({
   children,
   onLayout,
@@ -33,6 +37,7 @@ export function ScanCard({
   readonly children: ReactNode;
   readonly onLayout?: (event: LayoutChangeEvent) => void;
 }) {
+  const { bottom } = useDesignInsets();
   return (
     <Animated.View
       entering={sheetUp}
@@ -41,7 +46,7 @@ export function ScanCard({
         position: 'absolute',
         left: 8,
         right: 8,
-        bottom: 8,
+        bottom: bottom(8),
         borderRadius: 44,
         overflow: 'hidden',
       }}

@@ -113,7 +113,11 @@ export function CompanionGreeting({
           <Companion size={62} mood={mood} />
         </PressScale>
         {own === undefined && told === null ? null : (
-          <Animated.View entering={FadeInDown.delay(150).duration(500).springify().damping(18)}>
+          // Narrower than the design's phone, the bubble gives up width beside the companion.
+          <Animated.View
+            entering={FadeInDown.delay(150).duration(500).springify().damping(18)}
+            style={{ flexShrink: 1, minWidth: 0 }}
+          >
             <PressScale
               inScroll
               onPress={onPress}

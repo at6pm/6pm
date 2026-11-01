@@ -17,6 +17,7 @@ import type { ScannedReceipt } from '../../../modules/scan-camera';
 import { useMoney } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
+import { useDesignInsets } from '../../ui/layout/design-insets';
 import { CategoryTile } from '../../ui/category-tile';
 import { haptics } from '../../ui/haptics';
 import { isSymbolName } from '../../ui/icons/symbol';
@@ -140,6 +141,7 @@ export function ReceiptCard({
   // A text field takes the face, not every text style `body` carries.
   const shop = body(18, 650, -0.02);
   const rise = useAnimatedStyle(() => ({ transform: [{ translateY: keyboard.height.value }] }));
+  const { bottom } = useDesignInsets();
 
   return (
     <Animated.View style={[{ position: 'absolute', inset: 0 }, rise]} pointerEvents="box-none">
@@ -152,7 +154,8 @@ export function ReceiptCard({
             top: top + 56,
             left: 32,
             right: 32,
-            bottom: cardHeight + 28,
+            // 20 pt above the card, which stands on the safe area (`ScanCard`).
+            bottom: cardHeight + bottom(8) + 20,
             alignItems: 'center',
             justifyContent: 'center',
           }}

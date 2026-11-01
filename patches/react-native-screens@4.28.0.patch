@@ -1,0 +1,38 @@
+diff --git a/android/src/main/java/com/swmansion/rnscreens/bottomsheet/SheetDelegate.kt b/android/src/main/java/com/swmansion/rnscreens/bottomsheet/SheetDelegate.kt
+index 800407998ed12d559a6fde732dde1a6ae8b3f172..bd15ba5a8149c8fc2d0c36f6b536069b18d8a891 100644
+--- a/android/src/main/java/com/swmansion/rnscreens/bottomsheet/SheetDelegate.kt
++++ b/android/src/main/java/com/swmansion/rnscreens/bottomsheet/SheetDelegate.kt
+@@ -8,6 +8,7 @@ import android.view.WindowManager
+ import android.view.inputmethod.InputMethodManager
+ import androidx.coordinatorlayout.widget.CoordinatorLayout
+ import androidx.core.view.OnApplyWindowInsetsListener
++import androidx.core.view.ViewCompat
+ import androidx.core.view.WindowInsetsCompat
+ import androidx.lifecycle.Lifecycle
+ import androidx.lifecycle.LifecycleEventObserver
+@@ -393,7 +394,24 @@ class SheetDelegate(
+      * This method tries to resolve the maximum height available for the sheet content,
+      * accounting for the system top inset.
+      */
+-    private fun tryResolveSafeAreaSpaceForSheet(): Int? = tryResolveContainerHeight()?.let { it - lastTopInset }
++    private fun tryResolveSafeAreaSpaceForSheet(): Int? = tryResolveContainerHeight()?.let { it - topInset() }
++
++    /**
++     * The top inset last dispatched, or, for a sheet presented after the window last dispatched
++     * insets (a second sheet over a first), the window's current one: without it such a sheet
++     * would size itself to the whole window and sit under the status bar.
++     */
++    private fun topInset(): Int {
++        if (lastTopInset > 0) return lastTopInset
++        val root =
++            ViewCompat.getRootWindowInsets(screen)
++                ?: screen.reactContext.currentActivity?.window?.decorView?.let { ViewCompat.getRootWindowInsets(it) }
++                ?: return 0
++        val systemBars = root.getInsets(WindowInsetsCompat.Type.systemBars())
++        val cutout = root.getInsets(WindowInsetsCompat.Type.displayCutout())
++        lastTopInset = maxOf(systemBars.top, cutout.top)
++        return lastTopInset
++    }
+ 
+     /**
+      * This method might return slightly different values depending on code path,

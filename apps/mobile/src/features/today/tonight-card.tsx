@@ -9,6 +9,7 @@ import { useMoneyFormat } from '../../money/use-money-format';
 import { Symbol } from '../../ui/icons/symbol';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
+import { FitText } from '../../ui/type/fit-text';
 import { body, display, leading, mono } from '../../ui/type/fonts';
 import type { WeekDay } from './today-view';
 
@@ -246,12 +247,12 @@ export function TonightCard({
           })}
         </View>
         <View style={{ flex: 1, minWidth: 0, alignItems: 'flex-end' }}>
-          <Text style={{ ...body(13, 650), lineHeight: 17.5, color: palette.ink }}>
+          <FitText style={{ ...body(13, 650), lineHeight: 17.5, color: palette.ink }}>
             {t('today.week.closed', { closed: closedThisMonth, days: daysThisMonth })}
-          </Text>
-          <Text style={{ ...body(13), lineHeight: 17.5, color: palette.inkSoft }}>
+          </FitText>
+          <FitText style={{ ...body(13), lineHeight: 17.5, color: palette.inkSoft }}>
             {t('today.week.closedSub')}
-          </Text>
+          </FitText>
         </View>
       </View>
     </View>
