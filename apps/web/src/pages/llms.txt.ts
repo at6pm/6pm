@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 
 import { blogPath, isEngineering, postsIn, type Post } from '../data/blog';
-import { appStoreUrl, maxPrices, repoUrl } from '../data/site/config';
+import { appStoreUrl, playTestUrl, maxPrices, repoUrl } from '../data/site/config';
 import { absolute } from '../data/structured-data';
 
 const line = (post: Post) =>
@@ -21,6 +21,8 @@ export const GET: APIRoute = async () => {
     '- Capture, the daily close and privacy are free. 6pm Max (US $' +
       `${maxPrices.en.month}/month or $${maxPrices.en.year}/year; Vietnam ${maxPrices.vi.month.toLocaleString('vi-VN')}₫/month or ${maxPrices.vi.year.toLocaleString('vi-VN')}₫/year, 7 days free) adds every look, unlimited Ask and pots, Travel mode, and encrypted backup and export.`,
     '- On the App Store: ' + appStoreUrl,
+    '- On Android: a closed test on Google Play (6pm: Safe to Spend). Testers leave their Google account on the home page and are added by hand, then opt in at ' +
+      playTestUrl,
     '',
     '## Guides (English)',
     '',

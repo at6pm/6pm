@@ -35,6 +35,21 @@ export const siteCopyEn: SiteCopy = {
     emailLabel: 'Your email',
     note: 'One email on launch day. That’s all.',
     beta: 'Can’t wait? Try the public beta on TestFlight',
+    android: {
+      open: 'On Android? Join the beta on Google Play',
+      how: 'The Android app is in a closed test on Google Play. Leave the Google account you use on the Play Store and we’ll add you to the testers by hand.',
+      emailLabel: 'Your Google account email',
+      emailPh: 'you@gmail.com',
+      send: 'Add me',
+      sentTitle: 'You’re on the tester list.',
+      sentSteps: [
+        'We add you to the testers by hand.',
+        'Then open the link below on that Google account and tap “Become a tester”.',
+        'Install 6pm: Safe to Spend from Google Play.',
+      ],
+      stay: 'Please keep it and close a few days for two weeks: Google opens 6pm to everyone on Play once enough testers have stayed 14 days.',
+      optIn: 'Already added? Become a tester here:',
+    },
   },
   phone: {
     day: 'Friday',
@@ -267,7 +282,10 @@ export const siteCopyEn: SiteCopy = {
         'What if I miss a close?',
         'Nothing breaks. Missed days wait for you, and what you spent already counts.',
       ],
-      ['Is it on Android?', 'iPhone first. Android follows.'],
+      [
+        'Is it on Android?',
+        'Yes, in a closed test on Google Play. Leave your Google account email at the top of this page and we’ll add you, then become a tester at https://play.google.com/apps/testing/app.at6pm. Scan, bank alerts, receipt email, voice, the close and Ask are all there; Home screen widgets and Quick Settings tiles are on the way.',
+      ],
     ],
   },
   final: {

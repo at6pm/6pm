@@ -71,6 +71,26 @@ export interface SiteCopy {
     readonly note: string;
     /** The public beta, offered under the waitlist until the app is out. */
     readonly beta: string;
+    /**
+     * The Android closed test on Google Play, under the App Store badge: a Google account is left
+     * here, the founder adds it to the testers by hand, then the person opts in with the link.
+     */
+    readonly android: {
+      /** The line that opens the signup. */
+      readonly open: string;
+      /** What happens, before the field. */
+      readonly how: string;
+      readonly emailLabel: string;
+      readonly emailPh: string;
+      readonly send: string;
+      /** After the signup: what to do next. */
+      readonly sentTitle: string;
+      readonly sentSteps: readonly string[];
+      /** The ask that gets 6pm onto Google Play for everyone. */
+      readonly stay: string;
+      /** For people already added: before the opt-in link, which is shown in full. */
+      readonly optIn: string;
+    };
   };
   /** The hero phone: Today at nine in the morning. */
   readonly phone: {

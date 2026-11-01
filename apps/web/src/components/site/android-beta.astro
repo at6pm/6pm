@@ -1,0 +1,223 @@
+---
+import { playTestUrl } from '../../data/site/config';
+import { siteCopy, type SiteLang } from '../../data/site/copy';
+
+interface Props {
+  lang: SiteLang;
+  /** `hero` sits left-aligned in the morning; `final` is centred at midnight. */
+  size: 'hero' | 'final';
+}
+
+const { lang, size } = Astro.props;
+const t = siteCopy[lang].cta.android;
+const id = `android-email-${size}`;
+---
+
+<details class:list={['android', size]} data-android>
+  <summary>
+    <span class="words">{t.open}</span><span class="sym" aria-hidden="true">arrow_forward</span>
+  </summary>
+  <div class="panel">
+    <p class="how">{t.how}</p>
+    <form class="form" novalidate data-android-form>
+      <label class="sr-only" for={id}>{t.emailLabel}</label>
+      <input
+        id={id}
+        type="email"
+        name="email"
+        autocomplete="email"
+        placeholder={t.emailPh}
+        required
+        data-android-email
+      />
+      <button class="pill-btn" type="submit">{t.send}</button>
+    </form>
+    <span class="note" aria-live="polite" data-android-note></span>
+    <div class="sent" role="status" hidden data-android-sent>
+      <p class="sent-title">
+        <span class="sym" aria-hidden="true">check_circle</span><span>{t.sentTitle}</span>
+      </p>
+      <ol>
+        {t.sentSteps.map((step) => <li>{step}</li>)}
+      </ol>
+    </div>
+    <p class="stay">{t.stay}</p>
+    <p class="opt-in">
+      <span>{t.optIn}</span>
+      <a href={playTestUrl} rel="noopener">{playTestUrl}</a>
+    </p>
+  </div>
+</details>
+
+<style>
+  .android {
+    width: 100%;
+    max-width: 460px;
+    text-align: left;
+  }
+  summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+    list-style: none;
+  }
+  .words {
+    text-decoration: underline;
+    text-decoration-color: var(--sun);
+    text-underline-offset: 4px;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary:hover {
+    color: var(--sun);
+  }
+  summary .sym {
+    flex-shrink: 0;
+    font-size: 16px;
+    transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .android[open] summary .sym {
+    transform: rotate(90deg);
+  }
+  .final {
+    align-self: center;
+  }
+  .final summary {
+    display: flex;
+    justify-content: center;
+  }
+  .panel {
+    margin-top: 14px;
+    padding: 18px;
+    border-radius: 22px;
+    border: 0.5px solid var(--line);
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .final .panel {
+    background: rgba(10, 8, 18, 0.78);
+    backdrop-filter: none;
+  }
+  .how,
+  .stay {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: var(--ink2);
+  }
+  .stay {
+    font-size: 13.5px;
+  }
+  .form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .form[hidden] {
+    display: none;
+  }
+  input {
+    flex: 1 1 200px;
+    min-width: 0;
+    height: 50px;
+    box-sizing: border-box;
+    padding: 0 18px;
+    border-radius: 99px;
+    border: 0.5px solid var(--line);
+    background: var(--glass);
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 16px;
+    outline: none;
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
+  }
+  .final input {
+    background: rgba(10, 8, 18, 0.45);
+  }
+  input:focus,
+  input:focus-visible {
+    border-color: var(--sun);
+    box-shadow: 0 0 0 3px rgba(255, 133, 82, 0.28);
+    outline: none;
+  }
+  button {
+    height: 50px;
+    padding: 0 22px;
+    font-size: 15px;
+  }
+  button[aria-busy='true'] {
+    opacity: 0.7;
+    cursor: progress;
+  }
+  .note {
+    font-size: 13.5px;
+    color: var(--error);
+  }
+  .note:empty {
+    display: none;
+  }
+  .sent[hidden] {
+    display: none;
+  }
+  .sent-title {
+    margin: 0 0 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .sent-title .sym {
+    font-size: 22px;
+    color: var(--acc);
+  }
+  .final .sent-title .sym {
+    color: var(--sun);
+  }
+  ol {
+    margin: 0;
+    padding-left: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 14.5px;
+    line-height: 1.45;
+    color: var(--ink);
+  }
+  .opt-in {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--ink2);
+  }
+  .opt-in a {
+    font-weight: 600;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+    text-decoration: underline;
+    text-decoration-color: var(--sun);
+    text-underline-offset: 4px;
+  }
+  .opt-in a:hover {
+    color: var(--sun);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    summary .sym {
+      transition: none;
+    }
+  }
+</style>

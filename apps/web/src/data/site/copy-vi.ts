@@ -35,6 +35,21 @@ export const siteCopyVi: SiteCopy = {
     emailLabel: 'Email của bạn',
     note: 'Một email vào ngày ra mắt. Vậy thôi.',
     beta: 'Muốn dùng ngay? Thử bản beta công khai trên TestFlight',
+    android: {
+      open: 'Dùng Android? Tham gia bản thử trên Google Play',
+      how: 'Bản Android đang thử kín trên Google Play. Để lại tài khoản Google bạn dùng cho Play Store, chúng mình sẽ tự tay thêm bạn vào danh sách người thử.',
+      emailLabel: 'Email tài khoản Google của bạn',
+      emailPh: 'ban@gmail.com',
+      send: 'Thêm mình',
+      sentTitle: 'Bạn đã có tên trong danh sách thử.',
+      sentSteps: [
+        'Chúng mình tự tay thêm bạn vào danh sách người thử.',
+        'Sau đó mở đường dẫn bên dưới bằng tài khoản Google đó và bấm “Trở thành người thử nghiệm”.',
+        'Cài 6pm: Safe to Spend từ Google Play.',
+      ],
+      stay: 'Nhờ bạn giữ app và chốt vài ngày trong hai tuần: Google chỉ mở 6pm cho mọi người trên Play khi đủ người thử ở lại 14 ngày.',
+      optIn: 'Đã được thêm? Đăng ký người thử tại đây:',
+    },
   },
   phone: {
     day: 'Thứ Sáu',
@@ -270,7 +285,10 @@ export const siteCopyVi: SiteCopy = {
         'Quên chốt ngày thì sao?',
         'Không sao. Ngày bị lỡ sẽ chờ bạn, và những gì đã tiêu vẫn được tính.',
       ],
-      ['Có bản Android không?', 'iPhone trước. Android sẽ đến sau.'],
+      [
+        'Có bản Android không?',
+        'Có, đang thử kín trên Google Play. Để lại email tài khoản Google ở đầu trang, chúng mình sẽ thêm bạn, rồi bạn đăng ký thử tại https://play.google.com/apps/testing/app.at6pm. Đã có quét mã, thông báo ngân hàng, email hoá đơn, nhập bằng giọng nói, chốt ngày và Hỏi; widget màn hình chính và ô Cài đặt nhanh sắp có.',
+      ],
     ],
   },
   final: {

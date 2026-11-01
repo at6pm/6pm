@@ -1,5 +1,6 @@
 import { liveLines } from '../../data/site/live-lines';
 import type { SiteLang } from '../../data/site/copy';
+import { startAndroidForms } from './android-forms';
 import { startAsk } from './ask';
 import { startCapture } from './capture';
 import { startClock } from './clock';
@@ -25,6 +26,7 @@ export function startSite(): void {
   startMotion(root);
   startClock(root, lines);
   startJoinForms(root, lang, lines);
+  startAndroidForms(root, lang, lines);
   startCapture(root);
   startClose(root);
   startAsk(root);
