@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
+import { Platform } from 'react-native';
 
 import { DEFAULT_CLOSE_AT, type Payday } from '@6pm/domain';
 
@@ -33,6 +34,20 @@ export const PAY_WITH_STEP = 5;
 export const AI_STEP = 6;
 export const CATCH_STEP = 7;
 export const CLOSE_STEP = 8;
+
+/**
+ * Steps a platform leaves out. Android has no model to run on the phone, so where 6pm thinks is
+ * not a choice there: the server it already uses stays.
+ */
+const LEFT_OUT: readonly number[] = Platform.OS === 'android' ? [AI_STEP] : [];
+
+/** How many steps this phone shows, for the progress bar. */
+export const SHOWN_STEPS = STEP_COUNT - LEFT_OUT.length;
+
+/** A step's place among the steps this phone shows. */
+export function shownIndex(step: number): number {
+  return step - LEFT_OUT.filter((s) => s < step).length;
+}
 
 /** Onboarding's answers and moves, and what follows from them. */
 export function useOnboarding(startStep = 0) {
@@ -116,7 +131,8 @@ export function useOnboarding(startStep = 0) {
       void finish();
       return;
     }
-    const next = Math.max(0, target);
+    let next = Math.max(0, target);
+    while (LEFT_OUT.includes(next)) next += target >= step ? 1 : -1;
     haptics.tap();
     setDirection(next >= step ? 1 : -1);
     if (step === 1 && next !== 1) setWheelGuide(false);
