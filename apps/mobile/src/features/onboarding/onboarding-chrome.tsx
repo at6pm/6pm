@@ -15,7 +15,8 @@ import type { SymbolName } from '../../ui/icons/symbols.generated';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { body } from '../../ui/type/fonts';
 import { ease } from './onboarding-motion';
-import { STEP_COUNT, type OnboardingPalette } from './onboarding-palette';
+import type { OnboardingPalette } from './onboarding-palette';
+import { shownIndex, SHOWN_STEPS } from './use-onboarding';
 
 function Segment({ filled, pal }: { readonly filled: boolean; readonly pal: OnboardingPalette }) {
   const fill = useAnimatedStyle(() => ({
@@ -83,11 +84,14 @@ export function OnboardingHeader({
       <View
         accessible
         accessibilityRole="progressbar"
-        accessibilityLabel={t('onboarding.progress', { step: step + 1, total: STEP_COUNT })}
+        accessibilityLabel={t('onboarding.progress', {
+          step: shownIndex(step) + 1,
+          total: SHOWN_STEPS,
+        })}
         style={{ flex: 1, flexDirection: 'row', gap: 4 }}
       >
-        {Array.from({ length: STEP_COUNT }, (_, k) => (
-          <Segment key={k} filled={k <= step} pal={pal} />
+        {Array.from({ length: SHOWN_STEPS }, (_, k) => (
+          <Segment key={k} filled={k <= shownIndex(step)} pal={pal} />
         ))}
       </View>
       <Animated.View style={skip} pointerEvents={showSkip ? 'auto' : 'none'}>
