@@ -2,6 +2,7 @@ import { Platform, type TextStyle } from 'react-native';
 
 import type { Language } from '@6pm/i18n';
 
+import { axesOf, familyOf, withAxes } from './font-axes';
 import { faceOf, variableFamily, type Face } from './faces';
 import { FONT_LINE_HEIGHT } from './font-metrics.generated';
 
@@ -103,10 +104,10 @@ function setIn(face: Face, size: number, weight: number): TextStyle {
     case 'variable': {
       const wght = Math.min(face.wght[1], Math.max(face.wght[0], weight));
       const opsz = face.opsz ? Math.min(face.opsz[1], Math.max(face.opsz[0], size)) : null;
-      return {
-        fontFamily: face.family,
-        fontVariationSettings: opsz === null ? `'wght' ${wght}` : `'opsz' ${opsz}, 'wght' ${wght}`,
-      };
+      return withAxes(
+        face.family,
+        opsz === null ? `'wght' ${wght}` : `'opsz' ${opsz}, 'wght' ${wght}`,
+      );
     }
   }
 }
@@ -157,9 +158,10 @@ export function body(
  * serif keeps its weight at hero size). Faces without the axis, and `null`, are left alone.
  */
 export function withOpticalSize(style: TextStyle, opsz: number | null): TextStyle {
-  const axes = style.fontVariationSettings;
-  if (opsz === null || typeof axes !== 'string' || !axes.includes("'opsz'")) return style;
-  return { ...style, fontVariationSettings: axes.replace(/'opsz' [\d.]+/, `'opsz' ${opsz}`) };
+  const axes = axesOf(style);
+  const family = familyOf(style);
+  if (opsz === null || !family || !axes?.includes("'opsz'")) return style;
+  return { ...style, ...withAxes(family, axes.replace(/'opsz' [\d.]+/, `'opsz' ${opsz}`)) };
 }
 
 /** SF Pro's line height in ems, as `UIFont.systemFont(ofSize:).lineHeight` gives it. */
@@ -175,10 +177,9 @@ const SYSTEM_LINE_HEIGHT = 1.1934;
  */
 export function leading(style: TextStyle, designed: number, oneLine = false): TextStyle {
   const lineHeight = Math.max(designed, (style.fontSize ?? 14) * scriptMinLeading);
+  const family = familyOf(style);
   const faceEm =
-    style.fontFamily === undefined
-      ? SYSTEM_LINE_HEIGHT
-      : (FONT_LINE_HEIGHT[style.fontFamily] ?? SYSTEM_LINE_HEIGHT);
+    family === undefined ? SYSTEM_LINE_HEIGHT : (FONT_LINE_HEIGHT[family] ?? SYSTEM_LINE_HEIGHT);
   const em = Math.max(faceEm, scriptLineHeight);
   const natural = (style.fontSize ?? 14) * em;
   const lost = natural - lineHeight;

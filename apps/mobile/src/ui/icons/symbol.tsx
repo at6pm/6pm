@@ -1,5 +1,6 @@
 import { Text, type StyleProp, type TextStyle } from 'react-native';
 
+import { withAxes } from '../type/font-axes';
 import { families } from '../type/fonts';
 import { symbolCodepoints, type SymbolName } from './symbols.generated';
 
@@ -37,14 +38,13 @@ export function Symbol({ name, size = 24, color, fill = 0, weight = 400, style }
       allowFontScaling={false}
       style={[
         {
-          fontFamily: families.symbols,
+          ...withAxes(families.symbols, `'FILL' ${fill}, 'opsz' ${opsz}, 'wght' ${weight}`),
           fontSize: size,
           lineHeight: size * LINE,
           width: size,
           height: size * LINE,
           marginVertical: -size * SPARE,
           textAlign: 'center',
-          fontVariationSettings: `'FILL' ${fill}, 'opsz' ${opsz}, 'wght' ${weight}`,
           ...(color ? { color } : {}),
         },
         style,
