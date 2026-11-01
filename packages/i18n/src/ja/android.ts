@@ -93,4 +93,14 @@ export const jaAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
     'このスマホの中で読み取り、どこにも送りません。6pmが読むのは銀行とウォレットの通知だけです。',
   'capture.alerts.actionAdd': '通知へのアクセスを許可',
   'capture.alerts.actionOpen': '通知へのアクセスの設定',
+
+  'widgetsGuide.title': 'ウィジェットとタイル',
+  'widgetsGuide.home.title': 'ホーム画面のウィジェット',
+  'widgetsGuide.home.largeWhat':
+    '残りの金額と今日の最新の支出、それに「QRをスキャン」と「クイック追加」。',
+  'widgetsGuide.home.step1': 'ホーム画面の空いている所を長押しします。',
+  'widgetsGuide.home.step2': '「ウィジェット」をタップして6pmを探します。',
+  'widgetsGuide.home.step3':
+    '「今日使えるお金」か「今日」を長押しして好きな場所へドラッグ。「今日使えるお金」は横に広げると「QRをスキャン」と「クイック追加」が付きます。',
+  'capture.settings.widgetsValue': 'ホームとタイル',
 };

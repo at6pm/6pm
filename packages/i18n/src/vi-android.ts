@@ -84,4 +84,14 @@ export const viAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
     'Đọc ngay trên máy và không gửi đi đâu cả. 6pm chỉ đọc thông báo của ngân hàng và ví của bạn.',
   'capture.alerts.actionAdd': 'Cho phép truy cập thông báo',
   'capture.alerts.actionOpen': 'Cài đặt truy cập thông báo',
+
+  'widgetsGuide.title': 'Tiện ích & ô nhanh',
+  'widgetsGuide.home.title': 'Tiện ích màn hình chính',
+  'widgetsGuide.home.largeWhat':
+    'Số còn lại, các khoản mới nhất hôm nay, kèm Quét QR và Thêm nhanh.',
+  'widgetsGuide.home.step1': 'Chạm và giữ một chỗ trống trên màn hình chính.',
+  'widgetsGuide.home.step2': 'Chạm Tiện ích, rồi tìm 6pm.',
+  'widgetsGuide.home.step3':
+    'Giữ Hôm nay tiêu được hoặc Hôm nay rồi kéo vào chỗ. Kéo rộng Hôm nay tiêu được là có thêm Quét QR và Thêm nhanh.',
+  'capture.settings.widgetsValue': 'Màn hình & ô nhanh',
 };

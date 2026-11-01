@@ -100,4 +100,14 @@ export const esAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
     'Se leen en este teléfono y no se envían a ningún sitio. 6pm solo lee las notificaciones de tus bancos y billeteras.',
   'capture.alerts.actionAdd': 'Permitir acceso a notificaciones',
   'capture.alerts.actionOpen': 'Ajustes de acceso a notificaciones',
+
+  'widgetsGuide.title': 'Widgets y recuadros',
+  'widgetsGuide.home.title': 'Widgets para la pantalla de inicio',
+  'widgetsGuide.home.largeWhat':
+    'Lo que queda, los gastos más nuevos de hoy, y Escanear QR y Añadir rápido.',
+  'widgetsGuide.home.step1': 'Mantén pulsado un espacio vacío de la pantalla de inicio.',
+  'widgetsGuide.home.step2': 'Toca Widgets y busca 6pm.',
+  'widgetsGuide.home.step3':
+    'Mantén pulsado Puedes gastar hoy o Hoy y arrástralo a su sitio. Ensancha Puedes gastar hoy para tener Escanear QR y Añadir rápido.',
+  'capture.settings.widgetsValue': 'Inicio y recuadros',
 };

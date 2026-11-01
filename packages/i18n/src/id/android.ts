@@ -91,4 +91,14 @@ export const idAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
     'Dibaca di ponsel ini dan tidak dikirim ke mana pun. 6pm hanya membaca notifikasi bank dan dompetmu.',
   'capture.alerts.actionAdd': 'Izinkan akses notifikasi',
   'capture.alerts.actionOpen': 'Setelan akses notifikasi',
+
+  'widgetsGuide.title': 'Widget & kartu',
+  'widgetsGuide.home.title': 'Widget layar utama',
+  'widgetsGuide.home.largeWhat':
+    'Sisa hari ini, pengeluaran terbaru hari ini, plus Pindai QR dan Tambah cepat.',
+  'widgetsGuide.home.step1': 'Sentuh lama bagian kosong di layar utama.',
+  'widgetsGuide.home.step2': 'Ketuk Widget, lalu cari 6pm.',
+  'widgetsGuide.home.step3':
+    'Tahan Aman hari ini atau Hari ini lalu seret ke tempatnya. Lebarkan Aman hari ini untuk mendapat Pindai QR dan Tambah cepat.',
+  'capture.settings.widgetsValue': 'Layar & kartu',
 };

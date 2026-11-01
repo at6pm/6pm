@@ -58,4 +58,19 @@ export const esWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
     'Escanea un QR y paga en la app de tu banco. El pago espera en tu pantalla de bloqueo.',
   'widgetsGuide.live.step2': 'Toca Pagado cuando haya salido el dinero. Se cierra sola.',
   'widgetsGuide.live.step3': '¿No aparece? En Ajustes, abre 6pm y activa Actividades en vivo.',
+
+  'widgetsGuide.home.addSafe': 'Añadir Puedes gastar hoy',
+  'widgetsGuide.home.addToday': 'Añadir Hoy',
+  'widgetsGuide.tiles.title': 'Recuadros de Ajustes rápidos',
+  'widgetsGuide.tiles.what':
+    'Desliza hacia abajo, toca una vez y entras en Escanear QR o Añadir rápido.',
+  'widgetsGuide.tiles.step1':
+    'Desliza dos veces hacia abajo desde la parte superior de la pantalla.',
+  'widgetsGuide.tiles.step2': 'Toca el lápiz para editar tus recuadros.',
+  'widgetsGuide.tiles.step3':
+    'Busca Escanear QR y Añadir rápido de 6pm y arrástralos hacia arriba.',
+  'widgetsGuide.tiles.addScan': 'Añadir el recuadro Escanear QR',
+  'widgetsGuide.tiles.addQuickAdd': 'Añadir el recuadro Añadir rápido',
+  'widgetsGuide.tiles.scanIn': 'Escanear QR ya está en Ajustes rápidos',
+  'widgetsGuide.tiles.quickAddIn': 'Añadir rápido ya está en Ajustes rápidos',
 };

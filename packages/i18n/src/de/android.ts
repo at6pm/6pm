@@ -96,4 +96,14 @@ export const deAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
     'Auf diesem Handy gelesen und nirgendwohin geschickt. 6pm liest nur die Mitteilungen deiner Banken und Wallets.',
   'capture.alerts.actionAdd': 'Benachrichtigungszugriff erlauben',
   'capture.alerts.actionOpen': 'Einstellungen für Benachrichtigungszugriff',
+
+  'widgetsGuide.title': 'Widgets & Kacheln',
+  'widgetsGuide.home.title': 'Widgets auf dem Startbildschirm',
+  'widgetsGuide.home.largeWhat':
+    'Was übrig ist, die neuesten Ausgaben von heute, dazu „QR scannen“ und „Schnell erfassen“.',
+  'widgetsGuide.home.step1': 'Halte eine freie Stelle auf dem Startbildschirm gedrückt.',
+  'widgetsGuide.home.step2': 'Tippe auf „Widgets“ und such nach 6pm.',
+  'widgetsGuide.home.step3':
+    'Halte „Heute verfügbar“ oder „Heute“ gedrückt und zieh es an seinen Platz. Zieh „Heute verfügbar“ breiter für „QR scannen“ und „Schnell erfassen“.',
+  'capture.settings.widgetsValue': 'Start & Kacheln',
 };

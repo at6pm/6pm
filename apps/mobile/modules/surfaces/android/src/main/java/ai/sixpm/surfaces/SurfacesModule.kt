@@ -1,5 +1,6 @@
 package ai.sixpm.surfaces
 
+import ai.sixpm.surfaces.widgets.Pins
 import ai.sixpm.surfaces.widgets.Widgets
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -7,15 +8,17 @@ import android.content.Intent
 import android.os.Build
 import android.provider.Settings
 import android.util.Base64
+import expo.modules.kotlin.Promise
 import expo.modules.kotlin.exception.CodedException
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 
 /**
  * The app's side of its background pieces on Android: the capture inbox the bank alert listener
- * fills, the context it reads alerts with, and the last alert it read. The same contract as the
- * iOS module, so the app imports and shows them the same way. Android has no Live Activities, so
- * those calls do nothing.
+ * fills, the context it reads alerts with, and the last alert it read; the widgets it draws, and
+ * the requests to add them and the Quick Settings tiles. The same contract as the iOS module, so
+ * the app imports and shows them the same way. Android has no Live Activities, so those calls do
+ * nothing.
  */
 class SurfacesModule : Module() {
   private val context: Context
@@ -63,6 +66,20 @@ class SurfacesModule : Module() {
 
     /** Opens Notification access, at 6pm's own switch where Android allows it. */
     AsyncFunction("openAlertAccess") { openAlertAccess() }
+
+    /** Whether the launcher can pin a widget from inside the app. */
+    Function("canPinWidgets") { Pins.canPinWidgets(context) }
+
+    /** Shows the launcher's sheet to add a widget (`safe`, `today`); false when it would not. */
+    AsyncFunction("pinWidget") { kind: String -> Pins.pinWidget(context, kind) }
+
+    /** Whether Android can add a Quick Settings tile from inside the app (13 and later). */
+    Function("canAddTiles") { Pins.canAddTiles() }
+
+    /** Shows the system's dialog to add a tile (`scan`, `add`), and says what came of it. */
+    AsyncFunction("addTile") { kind: String, promise: Promise ->
+      Pins.addTile(context, kind) { result -> promise.resolve(result) }
+    }
   }
 
   private fun openAlertAccess() {

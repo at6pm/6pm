@@ -96,4 +96,14 @@ export const enAndroid = {
     'Read on this phone and never sent anywhere. 6pm reads only your banks’ and wallets’ notifications.',
   'capture.alerts.actionAdd': 'Allow notification access',
   'capture.alerts.actionOpen': 'Notification access settings',
+
+  // The widgets guide: Android's Home screen widgets and Quick Settings tiles.
+  'widgetsGuide.title': 'Widgets & tiles',
+  'widgetsGuide.home.title': 'Home screen widgets',
+  'widgetsGuide.home.largeWhat': 'What’s left, today’s newest spends, and Scan QR and Quick add.',
+  'widgetsGuide.home.step1': 'Touch and hold an empty spot on your Home screen.',
+  'widgetsGuide.home.step2': 'Tap Widgets, then find 6pm.',
+  'widgetsGuide.home.step3':
+    'Hold Safe today or Today and drag it into place. Stretch Safe today wider for Scan QR and Quick add.',
+  'capture.settings.widgetsValue': 'Home & tiles',
 } as const satisfies Variants;

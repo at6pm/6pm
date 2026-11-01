@@ -52,4 +52,16 @@ export const zhHansWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]
   'widgetsGuide.live.step1': '扫二维码，在银行 App 里付款。这笔付款会在锁定屏幕上等你。',
   'widgetsGuide.live.step2': '钱付出去后，轻点“已付”。它会自动关闭。',
   'widgetsGuide.live.step3': '没有显示？在“设置”里打开 6pm，开启“实时活动”。',
+
+  'widgetsGuide.home.addSafe': '添加“今天可以花”',
+  'widgetsGuide.home.addToday': '添加“今天”',
+  'widgetsGuide.tiles.title': '快捷设置图块',
+  'widgetsGuide.tiles.what': '下拉一次、点一下，就能进入扫码或快速记账。',
+  'widgetsGuide.tiles.step1': '从屏幕顶部向下滑动两次。',
+  'widgetsGuide.tiles.step2': '点铅笔图标编辑图块。',
+  'widgetsGuide.tiles.step3': '找到 6pm 的“扫码”和“快速记账”，拖到上面。',
+  'widgetsGuide.tiles.addScan': '添加“扫码”图块',
+  'widgetsGuide.tiles.addQuickAdd': '添加“快速记账”图块',
+  'widgetsGuide.tiles.scanIn': '“扫码”已在快捷设置里',
+  'widgetsGuide.tiles.quickAddIn': '“快速记账”已在快捷设置里',
 };

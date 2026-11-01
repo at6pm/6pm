@@ -53,4 +53,16 @@ export const enWidgetsGuide = {
     'Scan a QR and pay in your bank app. The payment waits on your Lock Screen.',
   'widgetsGuide.live.step2': 'Tap Paid once the money has gone. It closes by itself.',
   'widgetsGuide.live.step3': 'Not showing? In Settings, open 6pm and turn on Live Activities.',
+
+  'widgetsGuide.home.addSafe': 'Add Safe today',
+  'widgetsGuide.home.addToday': 'Add Today',
+  'widgetsGuide.tiles.title': 'Quick Settings tiles',
+  'widgetsGuide.tiles.what': 'Swipe down, tap once, and you’re in Scan QR or Quick add.',
+  'widgetsGuide.tiles.step1': 'Swipe down twice from the top of the screen.',
+  'widgetsGuide.tiles.step2': 'Tap the pencil to edit your tiles.',
+  'widgetsGuide.tiles.step3': 'Find 6pm’s Scan QR and Quick add, then drag them up.',
+  'widgetsGuide.tiles.addScan': 'Add the Scan QR tile',
+  'widgetsGuide.tiles.addQuickAdd': 'Add the Quick add tile',
+  'widgetsGuide.tiles.scanIn': 'Scan QR is in Quick Settings',
+  'widgetsGuide.tiles.quickAddIn': 'Quick add is in Quick Settings',
 } as const;

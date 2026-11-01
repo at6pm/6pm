@@ -61,4 +61,18 @@ export const jaWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.live.step2': 'お金が出たら「支払い済み」をタップ。自動で閉じます。',
   'widgetsGuide.live.step3':
     '表示されない？ 設定で6pmを開き、「ライブアクティビティ」をオンにしてください。',
+
+  'widgetsGuide.home.addSafe': '「今日使えるお金」を追加',
+  'widgetsGuide.home.addToday': '「今日」を追加',
+  'widgetsGuide.tiles.title': 'クイック設定のタイル',
+  'widgetsGuide.tiles.what':
+    '下にスワイプして一度タップすれば、QRをスキャンかクイック追加が開きます。',
+  'widgetsGuide.tiles.step1': '画面の上から2回下にスワイプします。',
+  'widgetsGuide.tiles.step2': '鉛筆アイコンをタップしてタイルを編集します。',
+  'widgetsGuide.tiles.step3':
+    '6pmの「QRをスキャン」と「クイック追加」を見つけて、上にドラッグします。',
+  'widgetsGuide.tiles.addScan': '「QRをスキャン」タイルを追加',
+  'widgetsGuide.tiles.addQuickAdd': '「クイック追加」タイルを追加',
+  'widgetsGuide.tiles.scanIn': '「QRをスキャン」はクイック設定にあります',
+  'widgetsGuide.tiles.quickAddIn': '「クイック追加」はクイック設定にあります',
 };

@@ -79,4 +79,13 @@ export const zhHansAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } 
     '只在这台手机上读取，不会发送到任何地方。6pm 只读取你的银行和钱包的通知。',
   'capture.alerts.actionAdd': '允许通知使用权',
   'capture.alerts.actionOpen': '通知使用权设置',
+
+  'widgetsGuide.title': '微件和图块',
+  'widgetsGuide.home.title': '主屏幕微件',
+  'widgetsGuide.home.largeWhat': '还剩多少、今天最新的支出，还有扫码和快速记账。',
+  'widgetsGuide.home.step1': '长按主屏幕上的空白处。',
+  'widgetsGuide.home.step2': '点“微件”，找到 6pm。',
+  'widgetsGuide.home.step3':
+    '长按“今天可以花”或“今天”，拖到想放的位置。把“今天可以花”拉宽，就会多出扫码和快速记账。',
+  'capture.settings.widgetsValue': '主屏幕和图块',
 };
