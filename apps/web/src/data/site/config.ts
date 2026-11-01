@@ -7,6 +7,20 @@ export const ctaMode: 'waitlist' | 'store' = 'store';
 /** 6pm's App Store page, without a storefront so each visitor lands in their own. */
 export const appStoreUrl = 'https://apps.apple.com/app/id6504689878';
 
+/**
+ * The Google Group that is the Android closed test's tester list on Google Play: anyone can join
+ * it, and joining is what lets a Google account into the test. The founder confirms the group's
+ * final name before this goes live; every page reads the link and address from here.
+ */
+export const androidBetaGroupUrl = 'https://groups.google.com/g/6pm-android-beta';
+export const androidBetaGroupEmail = '6pm-android-beta@googlegroups.com';
+
+/**
+ * The Android closed test's opt-in page on Google Play. It lets in the Google accounts that joined
+ * the tester group; the same account then installs 6pm from Play.
+ */
+export const playTestUrl = 'https://play.google.com/apps/testing/app.at6pm';
+
 /** The public TestFlight beta, open to anyone with the link until and after the launch. */
 export const testFlightUrl = 'https://testflight.apple.com/join/a8UrvT5P';
 

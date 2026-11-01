@@ -57,7 +57,8 @@ export interface SiteCopy {
   };
   readonly hero: {
     readonly kickWait: string;
-    readonly kickStore: string;
+    /** The home social card's kicker once the app is out; the page itself shows none. */
+    readonly kickCard: string;
     readonly a: string;
     readonly b: string;
     readonly sub: string;
@@ -71,6 +72,30 @@ export interface SiteCopy {
     readonly note: string;
     /** The public beta, offered under the waitlist until the app is out. */
     readonly beta: string;
+    /**
+     * The Android closed test on Google Play: a button beside the App Store badge opens a dialog
+     * with two steps a person takes alone with one Google account (join the tester group, then
+     * become a tester), then the install. The links come from `config.ts`.
+     */
+    readonly android: {
+      /** The button beside the App Store badge that opens the dialog. */
+      readonly button: string;
+      /** The dialog's title, and its close button's label. */
+      readonly title: string;
+      readonly close: string;
+      /** What the test is, before the steps. */
+      readonly how: string;
+      /** Step one: the button to the tester group, and what to tap there. */
+      readonly group: string;
+      readonly groupNote: string;
+      /** Step two: the button to Play's opt-in page, and what to tap there. */
+      readonly test: string;
+      readonly testNote: string;
+      /** Step three: the install. */
+      readonly install: string;
+      /** Both steps need the same Google account. */
+      readonly sameAccount: string;
+    };
   };
   /** The hero phone: Today at nine in the morning. */
   readonly phone: {
@@ -191,7 +216,6 @@ export interface SiteCopy {
     readonly a: string;
     readonly b: string;
     readonly sub: string;
-    readonly storeKicker: string;
   };
   readonly foot: {
     readonly tag: string;

@@ -1,3 +1,4 @@
+import { androidBetaGroupUrl, playTestUrl } from './config';
 import type { SiteCopy } from './copy';
 import { duoCopyEn } from './duo-copy-en';
 import { surfacesCopy } from './surfaces-copy';
@@ -22,7 +23,7 @@ export const siteCopyEn: SiteCopy = {
   },
   hero: {
     kickWait: 'For iPhone · Arrives 6 Nov, 18:00',
-    kickStore: 'For iPhone · Free on the App Store',
+    kickCard: 'Free on the App Store',
     a: 'Close your day',
     b: 'at six.',
     sub: 'Spend like you normally do. At six, one swipe settles the day, and tomorrow starts with one number you can trust.',
@@ -35,6 +36,18 @@ export const siteCopyEn: SiteCopy = {
     emailLabel: 'Your email',
     note: 'One email on launch day. That’s all.',
     beta: 'Can’t wait? Try the public beta on TestFlight',
+    android: {
+      button: 'Join the Android beta',
+      title: 'Join the Android beta',
+      close: 'Close',
+      how: 'The Android app is in a closed test on Google Play. Anyone can join, in two steps.',
+      group: 'Join the tester group',
+      groupNote: 'Tap “Join group”. This is what lets you into the test.',
+      test: 'Become a tester',
+      testNote: 'Then tap “Become a tester” on Google Play:',
+      install: 'Install 6pm: Safe to Spend from Google Play.',
+      sameAccount: 'Use the same Google account for both steps, the one on your Play Store.',
+    },
   },
   phone: {
     day: 'Friday',
@@ -267,14 +280,16 @@ export const siteCopyEn: SiteCopy = {
         'What if I miss a close?',
         'Nothing breaks. Missed days wait for you, and what you spent already counts.',
       ],
-      ['Is it on Android?', 'iPhone first. Android follows.'],
+      [
+        'Is it on Android?',
+        `Yes, in a closed test on Google Play that anyone can join. With one Google account, join the tester group at ${androidBetaGroupUrl}, then become a tester at ${playTestUrl}. Scan, bank alerts, receipt email, voice, the close and Ask are all there; Home screen widgets and Quick Settings tiles are on the way.`,
+      ],
     ],
   },
   final: {
     a: 'See you',
     b: 'at six.',
     sub: 'Tomorrow, around six, your phone will nudge you. One minute, and the day is done.',
-    storeKicker: '6pm · iPhone',
   },
   foot: {
     tag: 'Close your day at six.',

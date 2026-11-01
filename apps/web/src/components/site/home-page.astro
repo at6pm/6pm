@@ -6,6 +6,7 @@ import { blogPath, ogImagePath } from '../../data/blog';
 import { homePath, siteCopy, type SiteLang } from '../../data/site/copy';
 import { homeLd, ldJson } from '../../data/structured-data';
 import PageLayout from '../../layouts/page-layout.astro';
+import AndroidBetaDialog from './android-beta-dialog.astro';
 import Ask from './ask.astro';
 import BankStrip from './bank-strip.astro';
 import Beliefs from './beliefs.astro';
@@ -79,6 +80,7 @@ const { meta, capture } = siteCopy[lang];
       <FinalCta lang={lang} />
     </main>
     <SiteFoot lang={lang} />
+    <AndroidBetaDialog lang={lang} />
   </div>
 </PageLayout>
 

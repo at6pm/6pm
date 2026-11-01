@@ -1,3 +1,4 @@
+import { androidBetaGroupUrl, playTestUrl } from './config';
 import type { SiteCopy } from './copy';
 import { duoCopyVi } from './duo-copy-vi';
 import { surfacesCopy } from './surfaces-copy';
@@ -22,7 +23,7 @@ export const siteCopyVi: SiteCopy = {
   },
   hero: {
     kickWait: 'Cho iPhone · Ra mắt 18:00, 6/11',
-    kickStore: 'Cho iPhone · Miễn phí trên App Store',
+    kickCard: 'Miễn phí trên App Store',
     a: 'Chốt ngày',
     b: 'lúc sáu giờ.',
     sub: 'Cứ tiêu như mọi ngày. Sáu giờ, vuốt một lần là xong ngày, và sáng mai bắt đầu bằng một con số bạn tin được.',
@@ -35,6 +36,19 @@ export const siteCopyVi: SiteCopy = {
     emailLabel: 'Email của bạn',
     note: 'Một email vào ngày ra mắt. Vậy thôi.',
     beta: 'Muốn dùng ngay? Thử bản beta công khai trên TestFlight',
+    android: {
+      button: 'Thử bản Android',
+      title: 'Tham gia bản thử Android',
+      close: 'Đóng',
+      how: 'Bản Android đang thử kín trên Google Play. Ai cũng tham gia được, chỉ hai bước.',
+      group: 'Vào nhóm người thử',
+      groupNote: 'Bấm “Tham gia nhóm”. Đây là bước cho bạn vào bản thử.',
+      test: 'Trở thành người thử',
+      testNote: 'Rồi bấm “Trở thành người thử nghiệm” trên Google Play:',
+      install: 'Cài 6pm: Safe to Spend từ Google Play.',
+      sameAccount:
+        'Dùng cùng một tài khoản Google cho cả hai bước, là tài khoản trên Play Store của bạn.',
+    },
   },
   phone: {
     day: 'Thứ Sáu',
@@ -270,14 +284,16 @@ export const siteCopyVi: SiteCopy = {
         'Quên chốt ngày thì sao?',
         'Không sao. Ngày bị lỡ sẽ chờ bạn, và những gì đã tiêu vẫn được tính.',
       ],
-      ['Có bản Android không?', 'iPhone trước. Android sẽ đến sau.'],
+      [
+        'Có bản Android không?',
+        `Có, đang thử kín trên Google Play và ai cũng tham gia được. Dùng một tài khoản Google, vào nhóm người thử tại ${androidBetaGroupUrl}, rồi đăng ký thử tại ${playTestUrl}. Đã có quét mã, thông báo ngân hàng, email hoá đơn, nhập bằng giọng nói, chốt ngày và Hỏi; widget màn hình chính và ô Cài đặt nhanh sắp có.`,
+      ],
     ],
   },
   final: {
     a: 'Hẹn bạn',
     b: 'lúc sáu giờ.',
     sub: 'Mai, khoảng sáu giờ, điện thoại sẽ nhắc bạn. Một phút, và ngày khép lại.',
-    storeKicker: '6pm · iPhone',
   },
   foot: {
     tag: 'Chốt ngày lúc sáu giờ.',

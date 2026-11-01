@@ -1,0 +1,277 @@
+---
+import { androidBetaGroupEmail, androidBetaGroupUrl, playTestUrl } from '../../data/site/config';
+import { siteCopy, type SiteLang } from '../../data/site/copy';
+
+interface Props {
+  lang: SiteLang;
+}
+
+const { lang } = Astro.props;
+const t = siteCopy[lang].cta.android;
+---
+
+<!--
+  How to join the Android closed test, opened by the Android button beside either App Store badge.
+  One per page: a bottom sheet on a phone, a centred card wider than that.
+-->
+<dialog
+  id="android-dialog"
+  class="android-dialog"
+  aria-labelledby="android-dialog-title"
+  data-android-dialog
+>
+  <div class="sheet">
+    <div class="head">
+      <h2 id="android-dialog-title">{t.title}</h2>
+      <button class="close" type="button" aria-label={t.close} data-android-close>
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path
+            d="M6 6l12 12M18 6L6 18"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            fill="none"></path>
+        </svg>
+      </button>
+    </div>
+    <p class="how">{t.how}</p>
+    <p class="same">{t.sameAccount}</p>
+    <ol class="steps">
+      <li>
+        <a class="pill-btn step-btn" href={androidBetaGroupUrl} rel="noopener">{t.group}</a>
+        <p class="note">{t.groupNote}</p>
+        <p class="link mono">{androidBetaGroupEmail}</p>
+      </li>
+      <li>
+        <a class="pill-btn step-btn" href={playTestUrl} rel="noopener">{t.test}</a>
+        <p class="note">{t.testNote}</p>
+        <a class="link" href={playTestUrl} rel="noopener">{playTestUrl}</a>
+      </li>
+      <li>
+        <p class="note install">{t.install}</p>
+      </li>
+    </ol>
+  </div>
+</dialog>
+
+<style>
+  /* The page stays put behind the open dialog. */
+  :global(html:has(.android-dialog[open])) {
+    overflow: hidden;
+    /* Keeps the scrollbar's room, so the page does not shift sideways as it locks. */
+    scrollbar-gutter: stable;
+  }
+  /* Paper at any hour: the sky retints the page's inks as it scrolls, never this card's. */
+  .android-dialog {
+    --ink: #1b1e2e;
+    --ink2: rgba(27, 30, 46, 0.72);
+    --line: rgba(27, 30, 46, 0.16);
+    box-sizing: border-box;
+    width: min(100% - 32px, 480px);
+    max-height: min(100dvh - 48px, 760px);
+    margin: auto;
+    padding: 0;
+    border: none;
+    border-radius: 28px;
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: 0 30px 80px -20px rgba(10, 8, 18, 0.55);
+    overflow: auto;
+    overscroll-behavior: contain;
+    opacity: 0;
+    scale: 0.96;
+    transition:
+      opacity 0.18s cubic-bezier(0.4, 0, 1, 1),
+      scale 0.18s cubic-bezier(0.4, 0, 1, 1),
+      translate 0.18s cubic-bezier(0.4, 0, 1, 1),
+      overlay 0.18s allow-discrete,
+      display 0.18s allow-discrete;
+  }
+  .android-dialog[open] {
+    opacity: 1;
+    scale: 1;
+    transition:
+      opacity 0.32s cubic-bezier(0.2, 0.8, 0.2, 1),
+      scale 0.32s cubic-bezier(0.2, 0.8, 0.2, 1),
+      translate 0.32s cubic-bezier(0.2, 0.8, 0.2, 1),
+      overlay 0.32s allow-discrete,
+      display 0.32s allow-discrete;
+  }
+  @starting-style {
+    .android-dialog[open] {
+      opacity: 0;
+      scale: 0.96;
+    }
+  }
+  .android-dialog::backdrop {
+    background: rgba(10, 8, 18, 0);
+    transition:
+      background 0.18s cubic-bezier(0.4, 0, 1, 1),
+      overlay 0.18s allow-discrete,
+      display 0.18s allow-discrete;
+  }
+  .android-dialog[open]::backdrop {
+    background: rgba(10, 8, 18, 0.5);
+    transition:
+      background 0.32s cubic-bezier(0.2, 0.8, 0.2, 1),
+      overlay 0.32s allow-discrete,
+      display 0.32s allow-discrete;
+  }
+  @starting-style {
+    .android-dialog[open]::backdrop {
+      background: rgba(10, 8, 18, 0);
+    }
+  }
+  /* On a phone it rises from the bottom edge as a sheet. */
+  @media (max-width: 560px) {
+    .android-dialog {
+      width: 100%;
+      max-width: 100%;
+      max-height: calc(100dvh - 40px);
+      margin: auto 0 0;
+      border-radius: 28px 28px 0 0;
+      opacity: 1;
+      scale: 1;
+      translate: 0 100%;
+    }
+    .android-dialog[open] {
+      translate: 0 0;
+    }
+    @starting-style {
+      .android-dialog[open] {
+        opacity: 1;
+        scale: 1;
+        translate: 0 100%;
+      }
+    }
+    .sheet {
+      padding-bottom: calc(24px + env(safe-area-inset-bottom));
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .android-dialog,
+    .android-dialog[open],
+    .android-dialog::backdrop,
+    .android-dialog[open]::backdrop {
+      transition: none;
+    }
+  }
+  .sheet {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 26px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .close {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    margin: -6px -6px 0 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(27, 30, 46, 0.07);
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .close:hover {
+    background: rgba(27, 30, 46, 0.13);
+  }
+  p {
+    margin: 0;
+  }
+  .how,
+  .same {
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: var(--ink2);
+  }
+  .same {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .steps {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    font-size: 14.5px;
+    font-weight: 600;
+  }
+  .steps li {
+    position: relative;
+    padding-left: 38px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    counter-increment: step;
+  }
+  /* The step's number in a small round chip, level with its button (or its line, for the last). */
+  .steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 11px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 0.5px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .steps li:last-child::before {
+    top: -4px;
+  }
+  .step-btn {
+    height: 48px;
+    padding: 0 22px;
+    font-size: 15px;
+  }
+  .note {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.45;
+    color: var(--ink2);
+  }
+  .install {
+    color: var(--ink);
+  }
+  .link {
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.45;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+  a.link {
+    text-decoration: underline;
+    text-decoration-color: var(--sun);
+    text-underline-offset: 4px;
+  }
+  a.link:hover {
+    color: var(--acc);
+  }
+</style>
