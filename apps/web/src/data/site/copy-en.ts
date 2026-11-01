@@ -8,7 +8,7 @@ export const siteCopyEn: SiteCopy = {
   meta: {
     title: '6pm: close your day at six',
     description:
-      'Spend like you normally do. At six, one swipe settles the day, and tomorrow starts with one number you can trust. For iPhone, private by design.',
+      'Spend like you normally do. At six, one swipe settles the day, and tomorrow starts with one number you can trust. Private by design.',
   },
   nav: {
     capture: 'Capture',

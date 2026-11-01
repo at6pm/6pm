@@ -8,7 +8,7 @@ export const siteCopyVi: SiteCopy = {
   meta: {
     title: '6pm: chốt ngày lúc sáu giờ',
     description:
-      'Cứ tiêu như mọi ngày. Sáu giờ, vuốt một lần là xong ngày, và sáng mai bắt đầu bằng một con số bạn tin được. Cho iPhone, riêng tư từ gốc.',
+      'Cứ tiêu như mọi ngày. Sáu giờ, vuốt một lần là xong ngày, và sáng mai bắt đầu bằng một con số bạn tin được. Riêng tư từ gốc.',
   },
   nav: {
     capture: 'Ghi chi tiêu',
