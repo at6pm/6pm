@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { View, type TextStyle } from 'react-native';
+import { Platform, View, type TextStyle } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   cancelAnimation,
@@ -127,9 +127,12 @@ function Row({
       style={[{ height: rowHeight, justifyContent: 'center', paddingHorizontal: padX }, look]}
     >
       {/* The text spans the row and aligns inside it: text sized to its own width is measured
-          short on Android under negative tracking, and cut to an ellipsis. */}
+          short on Android under negative tracking, and cut to an ellipsis. Android still finds a
+          digit a hair wider than a digit's column and ellipsizes it, though it draws inside, so
+          there the row clips instead. */}
       <Animated.Text
         numberOfLines={1}
+        ellipsizeMode={Platform.OS === 'android' ? 'clip' : 'tail'}
         allowFontScaling={false}
         style={[textStyle, { textAlign: TEXT_ALIGN[align ?? 'center'] }]}
       >

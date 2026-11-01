@@ -33,12 +33,17 @@ export const sheet: ScreenOptions = {
  * than `sheet`, and drags and dismisses with the same physics. iOS draws its corners and offers no
  * grabber or corner options here (react-native-screens applies `sheetCornerRadius` and
  * `sheetGrabberVisible` to form sheets only), so the screen paints its own colour and grabber.
+ * Android has no page sheet: it would open the screen full screen under the status bar, so there
+ * it is the form sheet the other sheets are, below the status bar and dragged down to close.
  */
-export const pageSheet: ScreenOptions = {
-  presentation: 'pageSheet',
-  headerShown: false,
-  contentStyle: { backgroundColor: 'transparent' },
-};
+export const pageSheet: ScreenOptions =
+  Platform.OS === 'android'
+    ? sheet
+    : {
+        presentation: 'pageSheet',
+        headerShown: false,
+        contentStyle: { backgroundColor: 'transparent' },
+      };
 
 /**
  * Sheets the native sheet cannot draw, which draw themselves over a transparent modal: the
