@@ -57,6 +57,8 @@ export interface SiteCopy {
   };
   readonly hero: {
     readonly kickWait: string;
+    /** The home social card's kicker once the app is out; the page itself shows none. */
+    readonly kickCard: string;
     readonly a: string;
     readonly b: string;
     readonly sub: string;

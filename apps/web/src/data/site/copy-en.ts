@@ -23,6 +23,7 @@ export const siteCopyEn: SiteCopy = {
   },
   hero: {
     kickWait: 'For iPhone · Arrives 6 Nov, 18:00',
+    kickCard: 'Free on the App Store',
     a: 'Close your day',
     b: 'at six.',
     sub: 'Spend like you normally do. At six, one swipe settles the day, and tomorrow starts with one number you can trust.',

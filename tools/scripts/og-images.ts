@@ -68,7 +68,7 @@ function cards(): Card[] {
   for (const lang of ['en', 'vi'] as const) {
     const t = blogCopy[lang];
     const hero = siteCopy[lang].hero;
-    const kicker = ctaMode === 'store' ? hero.kickStore : hero.kickWait;
+    const kicker = ctaMode === 'store' ? hero.kickCard : hero.kickWait;
     list.push({
       lang,
       name: 'home',

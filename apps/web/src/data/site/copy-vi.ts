@@ -23,6 +23,7 @@ export const siteCopyVi: SiteCopy = {
   },
   hero: {
     kickWait: 'Cho iPhone · Ra mắt 18:00, 6/11',
+    kickCard: 'Miễn phí trên App Store',
     a: 'Chốt ngày',
     b: 'lúc sáu giờ.',
     sub: 'Cứ tiêu như mọi ngày. Sáu giờ, vuốt một lần là xong ngày, và sáng mai bắt đầu bằng một con số bạn tin được.',
