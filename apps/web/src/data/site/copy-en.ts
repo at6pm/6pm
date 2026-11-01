@@ -1,3 +1,4 @@
+import { androidBetaGroupUrl, playTestUrl } from './config';
 import type { SiteCopy } from './copy';
 import { duoCopyEn } from './duo-copy-en';
 import { surfacesCopy } from './surfaces-copy';
@@ -37,18 +38,14 @@ export const siteCopyEn: SiteCopy = {
     beta: 'Can’t wait? Try the public beta on TestFlight',
     android: {
       open: 'On Android? Join the beta on Google Play',
-      how: 'The Android app is in a closed test on Google Play. Leave the Google account you use on the Play Store and we’ll add you to the testers by hand.',
-      emailLabel: 'Your Google account email',
-      emailPh: 'you@gmail.com',
-      send: 'Add me',
-      sentTitle: 'You’re on the tester list.',
-      sentSteps: [
-        'We add you to the testers by hand.',
-        'Then open the link below on that Google account and tap “Become a tester”.',
-        'Install 6pm: Safe to Spend from Google Play.',
-      ],
+      how: 'The Android app is in a closed test on Google Play. Anyone can join, in two steps.',
+      group: 'Join the tester group',
+      groupNote: 'Tap “Join group”. This is what lets you into the test.',
+      test: 'Become a tester',
+      testNote: 'Then tap “Become a tester” on Google Play:',
+      install: 'Install 6pm: Safe to Spend from Google Play.',
+      sameAccount: 'Use the same Google account for both steps, the one on your Play Store.',
       stay: 'Please keep it and close a few days for two weeks: Google opens 6pm to everyone on Play once enough testers have stayed 14 days.',
-      optIn: 'Already added? Become a tester here:',
     },
   },
   phone: {
@@ -284,7 +281,7 @@ export const siteCopyEn: SiteCopy = {
       ],
       [
         'Is it on Android?',
-        'Yes, in a closed test on Google Play. Leave your Google account email at the top of this page and we’ll add you, then become a tester at https://play.google.com/apps/testing/app.at6pm. Scan, bank alerts, receipt email, voice, the close and Ask are all there; Home screen widgets and Quick Settings tiles are on the way.',
+        `Yes, in a closed test on Google Play that anyone can join. With one Google account, join the tester group at ${androidBetaGroupUrl}, then become a tester at ${playTestUrl}. Scan, bank alerts, receipt email, voice, the close and Ask are all there; Home screen widgets and Quick Settings tiles are on the way.`,
       ],
     ],
   },

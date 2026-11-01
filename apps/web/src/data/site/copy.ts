@@ -72,24 +72,27 @@ export interface SiteCopy {
     /** The public beta, offered under the waitlist until the app is out. */
     readonly beta: string;
     /**
-     * The Android closed test on Google Play, under the App Store badge: a Google account is left
-     * here, the founder adds it to the testers by hand, then the person opts in with the link.
+     * The Android closed test on Google Play, under the App Store badge: two steps a person takes
+     * alone with one Google account (join the tester group, then become a tester), then the
+     * install. The links come from `config.ts`.
      */
     readonly android: {
-      /** The line that opens the signup. */
+      /** The line that opens the panel. */
       readonly open: string;
-      /** What happens, before the field. */
+      /** What the test is, before the steps. */
       readonly how: string;
-      readonly emailLabel: string;
-      readonly emailPh: string;
-      readonly send: string;
-      /** After the signup: what to do next. */
-      readonly sentTitle: string;
-      readonly sentSteps: readonly string[];
+      /** Step one: the button to the tester group, and what to tap there. */
+      readonly group: string;
+      readonly groupNote: string;
+      /** Step two: the button to Play's opt-in page, and what to tap there. */
+      readonly test: string;
+      readonly testNote: string;
+      /** Step three: the install. */
+      readonly install: string;
+      /** Both steps need the same Google account. */
+      readonly sameAccount: string;
       /** The ask that gets 6pm onto Google Play for everyone. */
       readonly stay: string;
-      /** For people already added: before the opt-in link, which is shown in full. */
-      readonly optIn: string;
     };
   };
   /** The hero phone: Today at nine in the morning. */

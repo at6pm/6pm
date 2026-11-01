@@ -1,5 +1,5 @@
 ---
-import { playTestUrl } from '../../data/site/config';
+import { androidBetaGroupEmail, androidBetaGroupUrl, playTestUrl } from '../../data/site/config';
 import { siteCopy, type SiteLang } from '../../data/site/copy';
 
 interface Props {
@@ -10,42 +10,31 @@ interface Props {
 
 const { lang, size } = Astro.props;
 const t = siteCopy[lang].cta.android;
-const id = `android-email-${size}`;
 ---
 
-<details class:list={['android', size]} data-android>
+<details class:list={['android', size]}>
   <summary>
     <span class="words">{t.open}</span><span class="sym" aria-hidden="true">arrow_forward</span>
   </summary>
   <div class="panel">
     <p class="how">{t.how}</p>
-    <form class="form" novalidate data-android-form>
-      <label class="sr-only" for={id}>{t.emailLabel}</label>
-      <input
-        id={id}
-        type="email"
-        name="email"
-        autocomplete="email"
-        placeholder={t.emailPh}
-        required
-        data-android-email
-      />
-      <button class="pill-btn" type="submit">{t.send}</button>
-    </form>
-    <span class="note" aria-live="polite" data-android-note></span>
-    <div class="sent" role="status" hidden data-android-sent>
-      <p class="sent-title">
-        <span class="sym" aria-hidden="true">check_circle</span><span>{t.sentTitle}</span>
-      </p>
-      <ol>
-        {t.sentSteps.map((step) => <li>{step}</li>)}
-      </ol>
-    </div>
+    <p class="same">{t.sameAccount}</p>
+    <ol class="steps">
+      <li>
+        <a class="pill-btn step-btn" href={androidBetaGroupUrl} rel="noopener">{t.group}</a>
+        <p class="note">{t.groupNote}</p>
+        <p class="link mono">{androidBetaGroupEmail}</p>
+      </li>
+      <li>
+        <a class="pill-btn step-btn" href={playTestUrl} rel="noopener">{t.test}</a>
+        <p class="note">{t.testNote}</p>
+        <a class="link" href={playTestUrl} rel="noopener">{playTestUrl}</a>
+      </li>
+      <li>
+        <p class="note install">{t.install}</p>
+      </li>
+    </ol>
     <p class="stay">{t.stay}</p>
-    <p class="opt-in">
-      <span>{t.optIn}</span>
-      <a href={playTestUrl} rel="noopener">{playTestUrl}</a>
-    </p>
   </div>
 </details>
 
@@ -100,119 +89,100 @@ const id = `android-email-${size}`;
     backdrop-filter: blur(12px);
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
   }
   .final .panel {
     background: rgba(10, 8, 18, 0.78);
     backdrop-filter: none;
   }
-  .how,
-  .stay {
+  p {
     margin: 0;
+  }
+  .how,
+  .same,
+  .stay {
     font-size: 14.5px;
     line-height: 1.5;
     color: var(--ink2);
   }
+  .same {
+    color: var(--ink);
+    font-weight: 600;
+  }
   .stay {
     font-size: 13.5px;
   }
-  .form {
+  .steps {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  .form[hidden] {
-    display: none;
-  }
-  input {
-    flex: 1 1 200px;
-    min-width: 0;
-    height: 50px;
-    box-sizing: border-box;
-    padding: 0 18px;
-    border-radius: 99px;
-    border: 0.5px solid var(--line);
-    background: var(--glass);
+    flex-direction: column;
+    gap: 16px;
     color: var(--ink);
-    font-family: inherit;
-    font-size: 16px;
-    outline: none;
-    transition:
-      border-color 0.2s,
-      box-shadow 0.2s;
+    font-size: 14.5px;
+    font-weight: 600;
   }
-  .final input {
-    background: rgba(10, 8, 18, 0.45);
+  .steps li {
+    position: relative;
+    padding-left: 38px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    counter-increment: step;
   }
-  input:focus,
-  input:focus-visible {
-    border-color: var(--sun);
-    box-shadow: 0 0 0 3px rgba(255, 133, 82, 0.28);
-    outline: none;
-  }
-  button {
-    height: 50px;
-    padding: 0 22px;
-    font-size: 15px;
-  }
-  button[aria-busy='true'] {
-    opacity: 0.7;
-    cursor: progress;
-  }
-  .note {
-    font-size: 13.5px;
-    color: var(--error);
-  }
-  .note:empty {
-    display: none;
-  }
-  .sent[hidden] {
-    display: none;
-  }
-  .sent-title {
-    margin: 0 0 6px;
+  /* The step's number in a small round chip, level with its button (or its line, for the last). */
+  .steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 0.5px solid var(--line);
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 16px;
+    justify-content: center;
+    font-size: 13px;
     font-weight: 600;
     color: var(--ink);
   }
-  .sent-title .sym {
-    font-size: 22px;
-    color: var(--acc);
+  .steps li:last-child::before {
+    top: -4px;
   }
-  .final .sent-title .sym {
-    color: var(--sun);
+  .step-btn {
+    display: inline-flex;
+    align-items: center;
+    height: 48px;
+    padding: 0 22px;
+    font-size: 15px;
+    text-decoration: none;
   }
-  ol {
-    margin: 0;
-    padding-left: 22px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    font-size: 14.5px;
-    line-height: 1.45;
-    color: var(--ink);
-  }
-  .opt-in {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+  .note {
     font-size: 14px;
+    font-weight: 400;
     line-height: 1.45;
     color: var(--ink2);
   }
-  .opt-in a {
+  .install {
+    color: var(--ink);
+  }
+  .link {
+    font-size: 13.5px;
     font-weight: 600;
+    line-height: 1.45;
     color: var(--ink);
     overflow-wrap: anywhere;
+  }
+  a.link {
     text-decoration: underline;
     text-decoration-color: var(--sun);
     text-underline-offset: 4px;
   }
-  .opt-in a:hover {
+  a.link:hover {
     color: var(--sun);
   }
   @media (prefers-reduced-motion: reduce) {
