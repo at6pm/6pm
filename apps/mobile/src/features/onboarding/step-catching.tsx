@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useWindowDimensions, View } from 'react-native';
+import { ScrollView, useWindowDimensions } from 'react-native';
 import Animated, {
   scrollTo,
   useAnimatedRef,
@@ -147,8 +147,15 @@ export function StepCatching({
     }
   };
 
+  // A phone shorter than the design (or a larger text size) scrolls the step up from under the
+  // Continue button rather than hiding the card's foot behind it.
   return (
-    <View style={{ gap: 14 }}>
+    <ScrollView
+      style={{ flex: 1, marginHorizontal: -SIDE }}
+      contentContainerStyle={{ gap: 14, paddingHorizontal: SIDE }}
+      showsVerticalScrollIndicator={false}
+      alwaysBounceVertical={false}
+    >
       <StepHeading
         title={t('onboarding.catch.title')}
         sub={t('onboarding.catch.sub', { time: closeAt })}
@@ -190,6 +197,6 @@ export function StepCatching({
         })}
       </Animated.ScrollView>
       <CatchSetupSheet way={setup} onClose={() => setSetup(null)} />
-    </View>
+    </ScrollView>
   );
 }
