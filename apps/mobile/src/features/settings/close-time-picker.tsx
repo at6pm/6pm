@@ -32,19 +32,23 @@ export function CloseTimePicker({
   const rowHeight = wheelRowHeight(SIZE);
   return (
     <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: 6 }}>
+      {/* Centred by filling the wheel's height: Yoga takes `top: '50%'` from the content height
+          but measures it from the padding edge, a padding above the chosen row. */}
       <View
         pointerEvents="none"
         style={{
           position: 'absolute',
           left: 40,
           right: 40,
-          top: '50%',
-          height: rowHeight + 8,
-          marginTop: -(rowHeight + 8) / 2,
-          borderRadius: 14,
-          backgroundColor: palette.chipBg,
+          top: 0,
+          bottom: 0,
+          justifyContent: 'center',
         }}
-      />
+      >
+        <View
+          style={{ height: rowHeight + 8, borderRadius: 14, backgroundColor: palette.chipBg }}
+        />
+      </View>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Wheel
           items={CLOSE_HOURS}

@@ -53,7 +53,11 @@ export function Card({
   );
 }
 
-/** The soft band behind a wheel's chosen row. */
+/**
+ * The soft band behind a wheel's chosen row. It fills its parent's height and centres itself in
+ * that: Yoga takes `top: '50%'` of an absolute view from the parent's content height but measures
+ * it from the padding edge, which in a padded parent puts the band a padding above the row.
+ */
 export function WheelBand({
   height,
   radius,
@@ -72,13 +76,13 @@ export function WheelBand({
         position: 'absolute',
         left: inset,
         right: inset,
-        top: '50%',
-        height,
-        marginTop: -height / 2,
-        borderRadius: radius,
-        backgroundColor: color,
+        top: 0,
+        bottom: 0,
+        justifyContent: 'center',
       }}
-    />
+    >
+      <View style={{ height, borderRadius: radius, backgroundColor: color }} />
+    </View>
   );
 }
 

@@ -20,6 +20,13 @@ export const families = {
   symbols: variableFamily('MaterialSymbolsRounded'),
 } as const;
 
+/**
+ * Text set on the face's own ascent and descent, as iOS sets it. Android pads a text's box by how
+ * far the face's tallest glyph rises above its ascent (Vietnamese stacked marks: a fifth of an em
+ * in Be Vietnam Pro, 0.4 em in Grandstander), which drops text below the middle of a pill or row.
+ */
+export const UNPADDED = { includeFontPadding: false } as const satisfies TextStyle;
+
 const BRICOLAGE_CSS = "'Bricolage Grotesque', ui-rounded, system-ui, sans-serif";
 const SYSTEM_CSS = '-apple-system';
 
@@ -123,7 +130,12 @@ export function display(
   cssFont?: string,
 ): TextStyle {
   const face = cssFont === undefined ? currentDisplay : faceOf(cssFont, 'display');
-  return { ...setIn(face, size, weight), fontSize: size, letterSpacing: letterSpacingEm * size };
+  return {
+    ...setIn(face, size, weight),
+    ...UNPADDED,
+    fontSize: size,
+    letterSpacing: letterSpacingEm * size,
+  };
 }
 
 type BodyWeight = 400 | 500 | 550 | 600 | 650 | 700 | 800;
@@ -148,9 +160,19 @@ export function body(
           : weight >= 500
             ? families.bodyMedium
             : families.body;
-    return { fontFamily: family, fontSize: size, letterSpacing: letterSpacingEm * size };
+    return {
+      fontFamily: family,
+      ...UNPADDED,
+      fontSize: size,
+      letterSpacing: letterSpacingEm * size,
+    };
   }
-  return { ...setIn(face, size, weight), fontSize: size, letterSpacing: letterSpacingEm * size };
+  return {
+    ...setIn(face, size, weight),
+    ...UNPADDED,
+    fontSize: size,
+    letterSpacing: letterSpacingEm * size,
+  };
 }
 
 /**

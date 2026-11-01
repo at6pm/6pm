@@ -32,20 +32,27 @@ export function StepCloseTime({
     <View style={{ flex: 1, gap: 14 }}>
       <StepHeading title={t('onboarding.close.title')} sub={t('onboarding.close.sub')} pal={pal} />
       <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: 6 }}>
+        {/* Centred by filling the wheel's height, as `WheelBand` is. */}
         <View
           pointerEvents="none"
           style={{
             position: 'absolute',
             left: 40,
             right: 40,
-            top: '50%',
-            height: 72,
-            marginTop: -36,
-            borderRadius: 22,
-            backgroundColor: pal.cell,
-            boxShadow: pal.cardShadow,
+            top: 0,
+            bottom: 0,
+            justifyContent: 'center',
           }}
-        />
+        >
+          <View
+            style={{
+              height: 72,
+              borderRadius: 22,
+              backgroundColor: pal.cell,
+              boxShadow: pal.cardShadow,
+            }}
+          />
+        </View>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Wheel
             items={CLOSE_HOURS}
