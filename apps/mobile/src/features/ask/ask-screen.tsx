@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useEffect, useRef } from 'react';
-import { Text, type TextInputInstance, View } from 'react-native';
+import { Platform, Text, type TextInputInstance, View } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import {
   KeyboardChatScrollView,
@@ -91,7 +91,16 @@ export function AskScreen({
   }, [question]);
 
   return (
-    <View style={{ flex: 1, experimental_backgroundImage: palette.skyDeep }}>
+    // On Android the sheet colour sits under the look's deep sky: a look without a gradient (Basic)
+    // sets the sky as a plain colour, which is no background image, and Android's sheet would show
+    // the page behind where iOS's page sheet paints its own background.
+    <View
+      style={{
+        flex: 1,
+        ...(Platform.OS === 'android' ? { backgroundColor: palette.sheetSolid } : {}),
+        experimental_backgroundImage: palette.skyDeep,
+      }}
+    >
       {/* A native sheet like the others: the grabber on top, Done on the right, and a drag down
           anywhere or from the top of the conversation puts it away. */}
       <View
