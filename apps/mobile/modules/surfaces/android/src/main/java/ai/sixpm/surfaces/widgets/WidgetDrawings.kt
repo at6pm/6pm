@@ -124,11 +124,24 @@ class WidgetDrawings(private val context: Context, private val faces: WidgetFace
     canvas.centred(label, rect.centerX(), y + glyphBox + 4 + top(words), words, rect.width() - 8)
   }
 
+  /** A pill along Today's foot: a 20 dp glyph and a 13 dp label side by side, centred. */
+  private fun pill(canvas: WidgetCanvas, rect: RectF, glyph: String, label: String, background: Int, foreground: Int) {
+    canvas.roundRect(rect, rect.height() / 2, background)
+    val symbol = canvas.ink(faces.symbol(20f), 20f, foreground)
+    val words = canvas.ink(faces.body(650), 13f, foreground)
+    val glyphBox = 20f
+    val labelWidth = words.measureText(label).coerceAtMost(rect.width() - glyphBox - 6 - 24)
+    val x = rect.centerX() - (glyphBox + 6 + labelWidth) / 2
+    canvas.glyph(glyph, RectF(x, rect.centerY() - glyphBox / 2, x + glyphBox, rect.centerY() + glyphBox / 2), symbol)
+    val baseline = rect.centerY() - (words.fontMetrics.ascent + words.fontMetrics.descent) / 2
+    canvas.text(label, x + glyphBox + 6, baseline, words, labelWidth)
+  }
+
   /**
-   * Today (large): what is left, the day's spend against its line, then today's newest three
-   * spends and "+N more" with what they add up to.
+   * Today: what is left, the day's spend against its line, today's newest spends and "+N more"
+   * with what they add up to, as many as fit above Scan QR and Quick add along its foot.
    */
-  fun list(canvas: WidgetCanvas, moment: WidgetMoment, day: WidgetDay, darkScreen: Boolean) {
+  fun list(canvas: WidgetCanvas, moment: WidgetMoment, day: WidgetDay, darkScreen: Boolean): WidgetTargets {
     val dark = darkScreen && !moment.inLook
     val ink = if (dark) WidgetInk.PlainNight.ink else color(moment, "cardInk")
     canvas.fill(if (dark) WidgetInk.PlainNight.sheetSolid else color(moment, "cardBg"))
@@ -169,13 +182,18 @@ class WidgetDrawings(private val context: Context, private val faces: WidgetFace
       y += 6 + lineHeight(faint) + 6
     }
     val pendingInk = color(moment, if (dark) "pendingInkDark" else "pendingInk")
+    // The pills along the foot, as `sixpm_widget_today` lays out their tap areas.
+    val pillTop = canvas.height - 14 - 40
+    val scan = RectF(side, pillTop, canvas.width / 2 - 4, pillTop + 40)
+    val add = RectF(canvas.width / 2 + 4, pillTop, canvas.width - side, pillTop + 40)
+    val floor = pillTop - 6
     for (row in day.list) {
-      if (y + 38 > canvas.height) break
+      if (y + 38 > floor) break
       canvas.line(side, y, canvas.width - side, 0.5f, rule)
       spendRow(canvas, moment, row, RectF(side, y + 6, canvas.width - side, y + 32), body, ink, pendingInk)
       y += 38
     }
-    if (day.moreText.isNotEmpty() && y + 30 <= canvas.height) {
+    if (day.moreText.isNotEmpty() && y + 30 <= floor) {
       canvas.line(side, y, canvas.width - side, 0.5f, rule)
       val faint = canvas.ink(faces.body(400), 14f, WidgetInk.faded(ink, 0.55))
       val baseline = y + 7 + top(faint)
@@ -183,11 +201,17 @@ class WidgetDrawings(private val context: Context, private val faces: WidgetFace
       canvas.text(day.moreAmountText.orEmpty(), canvas.width - side, baseline, faint, canvas.width / 2, alignEnd = true)
       y = baseline + faint.fontMetrics.descent + 7
     }
-    if (moment.state == WidgetMoment.State.STALE && y + 30 <= canvas.height) {
+    if (moment.state == WidgetMoment.State.STALE && y + 30 <= floor) {
       canvas.line(side, y, canvas.width - side, 0.5f, rule)
       val open = canvas.ink(faces.body(600), 14f, ink)
       canvas.text(moment.text("openApp"), side, y + 7 + top(open), open, canvas.width - side * 2)
     }
+
+    val accent = if (dark) WidgetInk.PlainNight.accent else color(moment, "accent")
+    val onAccent = color(moment, "onAccent")
+    pill(canvas, scan, moment.text("glyph.scan"), moment.text("scanQr"), accent, onAccent)
+    pill(canvas, add, moment.text("glyph.add"), moment.text("quickAdd"), WidgetInk.faded(ink, 0.08), ink)
+    return WidgetTargets(scan = scan, add = add)
   }
 
   /** One spend: its 26 dp tile, the name (and PENDING while it waits), the amount. */

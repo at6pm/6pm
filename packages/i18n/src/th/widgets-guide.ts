@@ -54,4 +54,16 @@ export const thWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.live.step1': 'สแกนคิวอาร์แล้วจ่ายในแอปธนาคาร รายการจะรออยู่บนหน้าจอล็อค',
   'widgetsGuide.live.step2': 'แตะจ่ายแล้วเมื่อเงินออกไปแล้ว มันจะปิดไปเอง',
   'widgetsGuide.live.step3': 'ไม่ขึ้น? เข้าการตั้งค่า เปิด 6pm แล้วเปิดกิจกรรมสด',
+
+  'widgetsGuide.home.addSafe': 'เพิ่ม วันนี้ใช้ได้',
+  'widgetsGuide.home.addToday': 'เพิ่ม วันนี้',
+  'widgetsGuide.tiles.title': 'ไทล์ในการตั้งค่าด่วน',
+  'widgetsGuide.tiles.what': 'ปัดลง แตะครั้งเดียว ก็เข้าสแกนคิวอาร์หรือเพิ่มด่วนได้เลย',
+  'widgetsGuide.tiles.step1': 'ปัดลงจากขอบบนของหน้าจอสองครั้ง',
+  'widgetsGuide.tiles.step2': 'แตะรูปดินสอเพื่อแก้ไขไทล์',
+  'widgetsGuide.tiles.step3': 'หาสแกนคิวอาร์และเพิ่มด่วนของ 6pm แล้วลากขึ้นไป',
+  'widgetsGuide.tiles.addScan': 'เพิ่มไทล์สแกนคิวอาร์',
+  'widgetsGuide.tiles.addQuickAdd': 'เพิ่มไทล์เพิ่มด่วน',
+  'widgetsGuide.tiles.scanIn': 'สแกนคิวอาร์อยู่ในการตั้งค่าด่วนแล้ว',
+  'widgetsGuide.tiles.quickAddIn': 'เพิ่มด่วนอยู่ในการตั้งค่าด่วนแล้ว',
 };

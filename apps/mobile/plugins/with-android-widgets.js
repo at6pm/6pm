@@ -23,23 +23,31 @@ const {
 
 const PACKAGE = 'ai.sixpm.surfaces.widgets';
 
-/** Each widget: its receiver, provider file, cells, size and words. */
+/**
+ * Each widget: its receiver, provider file, cells, size (and the least it resizes to), words, and
+ * the picture the widget picker shows (`modules/surfaces` draws them in English and Vietnamese at dusk).
+ */
 const WIDGETS = [
   {
     receiver: 'SafeTodayWidget',
     info: 'sixpm_widget_safe',
-    cells: [2, 2],
-    min: [110, 110],
+    // Added medium, as its picture shows; it shrinks to the small layout below 250 dp.
+    cells: [4, 2],
+    min: [250, 110],
+    resize: [110, 110],
     name: 'sixpm_widget_safe_name',
     description: 'sixpm_widget_safe_description',
+    preview: 'sixpm_widget_safe_preview',
   },
   {
     receiver: 'TodayListWidget',
     info: 'sixpm_widget_today',
     cells: [4, 3],
     min: [250, 250],
+    resize: [250, 250],
     name: 'sixpm_widget_today_name',
     description: 'sixpm_widget_today_description',
+    preview: 'sixpm_widget_today_preview',
   },
 ];
 
@@ -53,19 +61,21 @@ const TILES = [
 function providerXml(widget) {
   const [cellsWide, cellsHigh] = widget.cells;
   const [minWidth, minHeight] = widget.min;
+  const [resizeWidth, resizeHeight] = widget.resize;
   // Drawn again every half hour, the most Android allows, so the colours follow the hour.
   return `<?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
   android:minWidth="${minWidth}dp"
   android:minHeight="${minHeight}dp"
-  android:minResizeWidth="${minWidth}dp"
-  android:minResizeHeight="${minHeight}dp"
+  android:minResizeWidth="${resizeWidth}dp"
+  android:minResizeHeight="${resizeHeight}dp"
   android:targetCellWidth="${cellsWide}"
   android:targetCellHeight="${cellsHigh}"
   android:resizeMode="horizontal|vertical"
   android:widgetCategory="home_screen"
   android:updatePeriodMillis="1800000"
   android:initialLayout="@layout/sixpm_widget_loading"
+  android:previewImage="@drawable/${widget.preview}"
   android:description="@string/${widget.description}" />
 `;
 }

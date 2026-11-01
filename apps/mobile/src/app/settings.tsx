@@ -168,7 +168,7 @@ export default function Settings() {
             router.push('/language');
           }}
         />
-        {nativeReach.widgets ? (
+        {nativeReach.homeWidgets ? (
           <SettingRow
             icon="widgets"
             label={t('capture.settings.widgets')}

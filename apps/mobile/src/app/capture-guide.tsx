@@ -13,6 +13,6 @@ import { WidgetsGuideSheet } from '../features/widgets-guide/widgets-guide-sheet
 export default function CaptureGuide() {
   const { source } = useLocalSearchParams<{ source?: string | string[] }>();
   const way = captureSourceOf(source);
-  if (way === 'widgets' && nativeReach.widgets) return <WidgetsGuideSheet />;
+  if (way === 'widgets' && nativeReach.homeWidgets) return <WidgetsGuideSheet />;
   return <CaptureGuideSheet source={way} />;
 }

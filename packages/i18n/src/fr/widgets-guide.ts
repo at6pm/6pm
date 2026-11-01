@@ -63,4 +63,18 @@ export const frWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.live.step2': 'Touche Payé une fois l’argent parti. Elle se ferme toute seule.',
   'widgetsGuide.live.step3':
     'Elle ne s’affiche pas ? Dans Réglages, ouvre 6pm et active Activités en direct.',
+
+  'widgetsGuide.home.addSafe': 'Ajouter À dépenser aujourd’hui',
+  'widgetsGuide.home.addToday': 'Ajouter Aujourd’hui',
+  'widgetsGuide.tiles.title': 'Blocs des Réglages rapides',
+  'widgetsGuide.tiles.what':
+    'Glisse vers le bas, touche une fois, et tu es dans Scanner QR ou Ajout rapide.',
+  'widgetsGuide.tiles.step1': 'Glisse deux fois vers le bas depuis le haut de l’écran.',
+  'widgetsGuide.tiles.step2': 'Touche le crayon pour modifier tes blocs.',
+  'widgetsGuide.tiles.step3':
+    'Trouve Scanner QR et Ajout rapide de 6pm, puis fais-les glisser vers le haut.',
+  'widgetsGuide.tiles.addScan': 'Ajouter le bloc Scanner QR',
+  'widgetsGuide.tiles.addQuickAdd': 'Ajouter le bloc Ajout rapide',
+  'widgetsGuide.tiles.scanIn': 'Scanner QR est dans les Réglages rapides',
+  'widgetsGuide.tiles.quickAddIn': 'Ajout rapide est dans les Réglages rapides',
 };

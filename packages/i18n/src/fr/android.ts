@@ -98,4 +98,14 @@ export const frAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
     'Lues sur ce téléphone et envoyées nulle part. 6pm ne lit que les notifications de tes banques et portefeuilles.',
   'capture.alerts.actionAdd': 'Autoriser l’accès aux notifications',
   'capture.alerts.actionOpen': 'Réglages d’accès aux notifications',
+
+  'widgetsGuide.title': 'Widgets et blocs',
+  'widgetsGuide.home.title': 'Widgets pour l’écran d’accueil',
+  'widgetsGuide.home.largeWhat':
+    'Ce qui reste, les dépenses les plus récentes du jour, avec Scanner QR et Ajout rapide.',
+  'widgetsGuide.home.step1': 'Maintiens un espace vide de l’écran d’accueil.',
+  'widgetsGuide.home.step2': 'Touche Widgets, puis cherche 6pm.',
+  'widgetsGuide.home.step3':
+    'Maintiens À dépenser aujourd’hui ou Aujourd’hui et fais-le glisser à sa place. Élargis À dépenser aujourd’hui pour avoir Scanner QR et Ajout rapide.',
+  'capture.settings.widgetsValue': 'Accueil et blocs',
 };

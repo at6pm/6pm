@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { ScrollView, Text, useWindowDimensions, View } from 'react-native';
+import { Platform, ScrollView, Text, useWindowDimensions, View } from 'react-native';
 import Animated, { Easing, Keyframe } from 'react-native-reanimated';
 
 import { curves } from '@6pm/theme';
@@ -13,6 +13,7 @@ import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading } from '../../ui/type/fonts';
 import { WordFitText } from '../../ui/type/word-fit-text';
 import { ActionStage } from './action-stage';
+import { AndroidSurfaces } from './android-surfaces';
 import { ControlStage } from './control-stage';
 import { HomeStage } from './home-stage';
 import { LiveStage } from './live-stage';
@@ -33,8 +34,9 @@ const screenIn = new Keyframe({
 
 /**
  * Widgets & controls: every place 6pm lives outside the app (the Home Screen and Lock Screen
- * widgets, the Control Center controls, the Action button and the Live Activity), each drawn as
- * it looks with the person's own numbers, said in a line, and with how to add it.
+ * widgets, the Control Center controls, the Action button and the Live Activity; on Android the
+ * Home screen widgets and the Quick Settings tiles), each drawn as it looks with the person's own
+ * numbers, said in a line, and with how to add it.
  */
 export function WidgetsGuideSheet() {
   const { palette } = useTheme();
@@ -115,84 +117,90 @@ export function WidgetsGuideSheet() {
             </View>
           </Animated.View>
 
-          <SurfaceCard
-            index={1}
-            icon="widgets"
-            title={t('widgetsGuide.home.title')}
-            what={t('widgetsGuide.home.what')}
-            stepsTitle={t('widgetsGuide.howToAdd')}
-            steps={[
-              t('widgetsGuide.home.step1'),
-              t('widgetsGuide.home.step2'),
-              t('widgetsGuide.home.step3'),
-            ]}
-          >
-            <HomeStage preview={preview} width={stageWidth} />
-          </SurfaceCard>
+          {Platform.OS === 'android' ? (
+            <AndroidSurfaces preview={preview} stageWidth={stageWidth} />
+          ) : (
+            <>
+              <SurfaceCard
+                index={1}
+                icon="widgets"
+                title={t('widgetsGuide.home.title')}
+                what={t('widgetsGuide.home.what')}
+                stepsTitle={t('widgetsGuide.howToAdd')}
+                steps={[
+                  t('widgetsGuide.home.step1'),
+                  t('widgetsGuide.home.step2'),
+                  t('widgetsGuide.home.step3'),
+                ]}
+              >
+                <HomeStage preview={preview} width={stageWidth} />
+              </SurfaceCard>
 
-          <SurfaceCard
-            index={2}
-            icon="lock"
-            title={t('widgetsGuide.lock.title')}
-            what={t('widgetsGuide.lock.what')}
-            stepsTitle={t('widgetsGuide.howToAdd')}
-            steps={[
-              t('widgetsGuide.lock.step1'),
-              t('widgetsGuide.lock.step2'),
-              t('widgetsGuide.lock.step3'),
-            ]}
-          >
-            <LockStage preview={preview} width={stageWidth} />
-          </SurfaceCard>
+              <SurfaceCard
+                index={2}
+                icon="lock"
+                title={t('widgetsGuide.lock.title')}
+                what={t('widgetsGuide.lock.what')}
+                stepsTitle={t('widgetsGuide.howToAdd')}
+                steps={[
+                  t('widgetsGuide.lock.step1'),
+                  t('widgetsGuide.lock.step2'),
+                  t('widgetsGuide.lock.step3'),
+                ]}
+              >
+                <LockStage preview={preview} width={stageWidth} />
+              </SurfaceCard>
 
-          <SurfaceCard
-            index={3}
-            icon="tune"
-            title={t('widgetsGuide.control.title')}
-            needs={t('widgetsGuide.control.needs')}
-            what={t('widgetsGuide.control.what')}
-            stepsTitle={t('widgetsGuide.howToAdd')}
-            steps={[
-              t('widgetsGuide.control.step1'),
-              t('widgetsGuide.control.step2'),
-              t('widgetsGuide.control.step3'),
-            ]}
-            note={{ icon: 'flashlight_on', text: t('widgetsGuide.control.note') }}
-          >
-            <ControlStage width={stageWidth} />
-          </SurfaceCard>
+              <SurfaceCard
+                index={3}
+                icon="tune"
+                title={t('widgetsGuide.control.title')}
+                needs={t('widgetsGuide.control.needs')}
+                what={t('widgetsGuide.control.what')}
+                stepsTitle={t('widgetsGuide.howToAdd')}
+                steps={[
+                  t('widgetsGuide.control.step1'),
+                  t('widgetsGuide.control.step2'),
+                  t('widgetsGuide.control.step3'),
+                ]}
+                note={{ icon: 'flashlight_on', text: t('widgetsGuide.control.note') }}
+              >
+                <ControlStage width={stageWidth} />
+              </SurfaceCard>
 
-          <SurfaceCard
-            index={4}
-            icon="radio_button_checked"
-            title={t('widgetsGuide.action.title')}
-            needs={t('widgetsGuide.action.needs')}
-            what={t('widgetsGuide.action.what')}
-            stepsTitle={t('widgetsGuide.howToAdd')}
-            steps={[
-              t('widgetsGuide.action.step1'),
-              t('widgetsGuide.action.step2'),
-              t('widgetsGuide.action.step3'),
-            ]}
-            note={{ icon: 'mic', text: t('widgetsGuide.action.note') }}
-          >
-            <ActionStage width={stageWidth} />
-          </SurfaceCard>
+              <SurfaceCard
+                index={4}
+                icon="radio_button_checked"
+                title={t('widgetsGuide.action.title')}
+                needs={t('widgetsGuide.action.needs')}
+                what={t('widgetsGuide.action.what')}
+                stepsTitle={t('widgetsGuide.howToAdd')}
+                steps={[
+                  t('widgetsGuide.action.step1'),
+                  t('widgetsGuide.action.step2'),
+                  t('widgetsGuide.action.step3'),
+                ]}
+                note={{ icon: 'mic', text: t('widgetsGuide.action.note') }}
+              >
+                <ActionStage width={stageWidth} />
+              </SurfaceCard>
 
-          <SurfaceCard
-            index={5}
-            icon="notifications"
-            title={t('widgetsGuide.live.title')}
-            what={t('widgetsGuide.live.what')}
-            stepsTitle={t('widgetsGuide.whenItShows')}
-            steps={[
-              t('widgetsGuide.live.step1'),
-              t('widgetsGuide.live.step2'),
-              t('widgetsGuide.live.step3'),
-            ]}
-          >
-            <LiveStage preview={preview} width={stageWidth} />
-          </SurfaceCard>
+              <SurfaceCard
+                index={5}
+                icon="notifications"
+                title={t('widgetsGuide.live.title')}
+                what={t('widgetsGuide.live.what')}
+                stepsTitle={t('widgetsGuide.whenItShows')}
+                steps={[
+                  t('widgetsGuide.live.step1'),
+                  t('widgetsGuide.live.step2'),
+                  t('widgetsGuide.live.step3'),
+                ]}
+              >
+                <LiveStage preview={preview} width={stageWidth} />
+              </SurfaceCard>
+            </>
+          )}
         </View>
       </ScrollView>
     </SheetFrame>

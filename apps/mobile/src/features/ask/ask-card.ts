@@ -151,7 +151,8 @@ export async function cardOf(
     return describeAction(action, wordsEnv, {
       categoryId,
       potLocked: newPotLocked(snap.pots, deps.max),
-      reach: nativeReach,
+      // The widgets guide answers for Android's widgets and tiles too.
+      reach: { ...nativeReach, widgets: nativeReach.homeWidgets },
     });
   }
   const described = describeLedgerAnswer(

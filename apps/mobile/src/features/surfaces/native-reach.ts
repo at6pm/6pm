@@ -17,8 +17,9 @@ export interface NativeReach {
   /** Home and Lock Screen widgets, controls and Live Activities. */
   readonly widgets: boolean;
   /**
-   * A Home Screen widget that draws the snapshot the app writes, with its companion: the iPhone's,
-   * and Android's Home screen widgets (which have no guide and no Lock Screen).
+   * A Home Screen widget that draws the snapshot the app writes, with its companion, and the
+   * Widgets & controls guide: the iPhone's, and Android's Home screen widgets and Quick Settings
+   * tiles (no Lock Screen).
    */
   readonly homeWidgets: boolean;
   /** Sign in with Apple, which Budget together pairs with. */

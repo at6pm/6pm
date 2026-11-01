@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Text, View } from 'react-native';
+import { Platform, Text, View } from 'react-native';
 
 import { Companion } from '../../ui/companion/companion';
 import { CategoryTile } from '../../ui/category-tile';
@@ -19,7 +19,8 @@ const RADIUS = 26;
 
 /**
  * The 6pm Home Screen widgets, drawn from the same snapshot and measures their SwiftUI views use
- * (`SafeTodayWidget.swift`, `TodayListWidget.swift`), so the miniature is the widget itself.
+ * (`SafeTodayWidget.swift`, `TodayListWidget.swift`) and Android's drawings (`WidgetDrawings.kt`),
+ * so the miniature is the widget itself.
  */
 export function HomeWidget({
   size,
@@ -188,7 +189,10 @@ function ActionTile({
   );
 }
 
-/** Large: what is left, then today's newest three spends and "+N more". */
+/**
+ * Large: what is left, then today's newest three spends and "+N more"; on Android, Scan QR and
+ * Quick add along its foot.
+ */
 function Large({ preview }: { readonly preview: WidgetPreview }) {
   const ink = preview.ink['cardInk'];
   const entry = preview.entry;
@@ -240,7 +244,78 @@ function Large({ preview }: { readonly preview: WidgetPreview }) {
           </Line>
         ) : null}
       </View>
+      {Platform.OS === 'android' ? (
+        <View
+          style={{
+            position: 'absolute',
+            left: 16,
+            right: 16,
+            bottom: 14,
+            height: 40,
+            flexDirection: 'row',
+            gap: 8,
+          }}
+        >
+          <FootPill
+            glyph="qr_code_scanner"
+            label={preview.strings['scanQr'] ?? ''}
+            background={preview.ink['accent']}
+            foreground={preview.ink['onAccent']}
+          />
+          <FootPill
+            glyph="add"
+            label={preview.strings['quickAdd'] ?? ''}
+            background={ink}
+            veil
+            foreground={ink}
+          />
+        </View>
+      ) : null}
     </Shell>
+  );
+}
+
+/** A pill along Today's foot on Android: a 20 pt glyph and a 13 pt label side by side. */
+function FootPill({
+  glyph,
+  label,
+  background,
+  veil = false,
+  foreground,
+}: {
+  readonly glyph: 'qr_code_scanner' | 'add';
+  readonly label: string;
+  readonly background: string | undefined;
+  /** The ink at 8 %, as the Quick add pill wears it. */
+  readonly veil?: boolean;
+  readonly foreground: string | undefined;
+}) {
+  return (
+    <View
+      style={{
+        flex: 1,
+        borderRadius: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 6,
+        paddingHorizontal: 12,
+      }}
+    >
+      <View
+        style={{
+          position: 'absolute',
+          inset: 0,
+          borderRadius: 20,
+          backgroundColor: background,
+          opacity: veil ? 0.08 : 1,
+        }}
+      />
+      <Symbol name={glyph} size={20} {...(foreground ? { color: foreground } : {})} />
+      <Text numberOfLines={1} style={{ ...body(13, 650), color: foreground, flexShrink: 1 }}>
+        {label}
+      </Text>
+    </View>
   );
 }
 

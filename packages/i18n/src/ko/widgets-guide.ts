@@ -56,4 +56,16 @@ export const koWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.live.step1': 'QR을 스캔하고 은행 앱에서 결제하세요. 결제가 잠금 화면에서 기다려요.',
   'widgetsGuide.live.step2': '돈이 나가면 결제 완료를 탭하세요. 알아서 닫혀요.',
   'widgetsGuide.live.step3': '안 보이나요? 설정에서 6pm을 열고 실시간 현황을 켜세요.',
+
+  'widgetsGuide.home.addSafe': '오늘 쓸 수 있는 돈 추가',
+  'widgetsGuide.home.addToday': '오늘 추가',
+  'widgetsGuide.tiles.title': '빠른 설정 타일',
+  'widgetsGuide.tiles.what': '아래로 쓸어내리고 한 번 탭하면 QR 스캔이나 빠른 추가가 열려요.',
+  'widgetsGuide.tiles.step1': '화면 위에서 아래로 두 번 쓸어내리세요.',
+  'widgetsGuide.tiles.step2': '연필 아이콘을 탭해 타일을 편집하세요.',
+  'widgetsGuide.tiles.step3': '6pm의 QR 스캔과 빠른 추가를 찾아 위로 끌어 올리세요.',
+  'widgetsGuide.tiles.addScan': 'QR 스캔 타일 추가',
+  'widgetsGuide.tiles.addQuickAdd': '빠른 추가 타일 추가',
+  'widgetsGuide.tiles.scanIn': 'QR 스캔이 빠른 설정에 있어요',
+  'widgetsGuide.tiles.quickAddIn': '빠른 추가가 빠른 설정에 있어요',
 };

@@ -73,11 +73,11 @@ object Widgets {
     views.setImageViewBitmap(R.id.sixpm_widget_picture, canvas.bitmap)
     views.setContentDescription(R.id.sixpm_widget_picture, "${day.safeShort} ${moment.text("safeTodayShort")}")
     views.setOnClickPendingIntent(android.R.id.background, open(context, id, null))
-    views.setOnClickPendingIntent(R.id.sixpm_widget_scan, open(context, id, "scan"))
-    views.setContentDescription(R.id.sixpm_widget_scan, moment.text("scanQr"))
     if (medium) {
-      views.setOnClickPendingIntent(R.id.sixpm_widget_add, open(context, id, "quick-add"))
-      views.setContentDescription(R.id.sixpm_widget_add, moment.text("quickAdd"))
+      taps(context, views, id, moment)
+    } else {
+      views.setOnClickPendingIntent(R.id.sixpm_widget_scan, open(context, id, "scan"))
+      views.setContentDescription(R.id.sixpm_widget_scan, moment.text("scanQr"))
     }
     manager.updateAppWidget(id, views)
   }
@@ -90,10 +90,24 @@ object Widgets {
     val drawings = WidgetDrawings(context, WidgetFaces(context))
     if (day == null) {
       drawings.setUp(canvas, moment, string(context, "sixpm_widget_set_up"))
-    } else {
-      drawings.list(canvas, moment, day, darkScreen(context))
+      manager.updateAppWidget(id, picture(context, canvas, id, moment.text("setUp")))
+      return
     }
-    manager.updateAppWidget(id, picture(context, canvas, id, day?.safeText ?: moment.text("setUp")))
+    drawings.list(canvas, moment, day, darkScreen(context))
+    val views = RemoteViews(context.packageName, R.layout.sixpm_widget_today)
+    views.setImageViewBitmap(R.id.sixpm_widget_picture, canvas.bitmap)
+    views.setContentDescription(R.id.sixpm_widget_picture, day.safeText)
+    views.setOnClickPendingIntent(android.R.id.background, open(context, id, null))
+    taps(context, views, id, moment)
+    manager.updateAppWidget(id, views)
+  }
+
+  /** Scan QR and Quick add over their drawn buttons. */
+  private fun taps(context: Context, views: RemoteViews, id: Int, moment: WidgetMoment) {
+    views.setOnClickPendingIntent(R.id.sixpm_widget_scan, open(context, id, "scan"))
+    views.setContentDescription(R.id.sixpm_widget_scan, moment.text("scanQr"))
+    views.setOnClickPendingIntent(R.id.sixpm_widget_add, open(context, id, "quick-add"))
+    views.setContentDescription(R.id.sixpm_widget_add, moment.text("quickAdd"))
   }
 
   private fun picture(context: Context, canvas: WidgetCanvas, id: Int, description: String): RemoteViews =

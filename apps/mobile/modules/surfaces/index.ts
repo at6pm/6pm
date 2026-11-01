@@ -33,6 +33,14 @@ interface SurfacesNative {
   alertAccess?(): boolean;
   /** Android: opens Notification access at 6pm's switch. */
   openAlertAccess?(): Promise<void>;
+  /** Android: whether the launcher can pin a widget from inside the app. */
+  canPinWidgets?(): boolean;
+  /** Android: shows the launcher's sheet to add a widget; false when it would not. */
+  pinWidget?(kind: 'safe' | 'today'): Promise<boolean>;
+  /** Android: whether a Quick Settings tile can be added from inside the app (13 and later). */
+  canAddTiles?(): boolean;
+  /** Android: shows the system's dialog to add a tile, and says what came of it. */
+  addTile?(kind: 'scan' | 'add'): Promise<'added' | 'already' | 'no' | 'failed'>;
 }
 
 /**

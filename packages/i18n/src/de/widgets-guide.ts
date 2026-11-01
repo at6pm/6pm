@@ -62,4 +62,18 @@ export const deWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
     'Tippe auf „Bezahlt“, sobald das Geld raus ist. Sie schließt sich von selbst.',
   'widgetsGuide.live.step3':
     'Wird nicht angezeigt? Öffne in den Einstellungen 6pm und aktiviere „Live-Aktivitäten“.',
+
+  'widgetsGuide.home.addSafe': '„Heute verfügbar“ hinzufügen',
+  'widgetsGuide.home.addToday': '„Heute“ hinzufügen',
+  'widgetsGuide.tiles.title': 'Kacheln in den Schnelleinstellungen',
+  'widgetsGuide.tiles.what':
+    'Runterwischen, einmal tippen, und du bist in „QR scannen“ oder „Schnell erfassen“.',
+  'widgetsGuide.tiles.step1': 'Wische zweimal vom oberen Bildschirmrand nach unten.',
+  'widgetsGuide.tiles.step2': 'Tippe auf den Stift, um deine Kacheln zu bearbeiten.',
+  'widgetsGuide.tiles.step3':
+    'Such „QR scannen“ und „Schnell erfassen“ von 6pm und zieh sie nach oben.',
+  'widgetsGuide.tiles.addScan': 'Kachel „QR scannen“ hinzufügen',
+  'widgetsGuide.tiles.addQuickAdd': 'Kachel „Schnell erfassen“ hinzufügen',
+  'widgetsGuide.tiles.scanIn': '„QR scannen“ ist in den Schnelleinstellungen',
+  'widgetsGuide.tiles.quickAddIn': '„Schnell erfassen“ ist in den Schnelleinstellungen',
 };

@@ -84,4 +84,13 @@ export const thAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
     'อ่านบนเครื่องนี้และไม่ส่งไปที่ไหน 6pm อ่านเฉพาะการแจ้งเตือนจากธนาคารและวอลเล็ตของคุณ',
   'capture.alerts.actionAdd': 'อนุญาตการเข้าถึงการแจ้งเตือน',
   'capture.alerts.actionOpen': 'ตั้งค่าการเข้าถึงการแจ้งเตือน',
+
+  'widgetsGuide.title': 'วิดเจ็ตและไทล์',
+  'widgetsGuide.home.title': 'วิดเจ็ตบนหน้าจอหลัก',
+  'widgetsGuide.home.largeWhat': 'ยอดที่เหลือ รายจ่ายล่าสุดของวันนี้ พร้อมสแกนคิวอาร์และเพิ่มด่วน',
+  'widgetsGuide.home.step1': 'แตะค้างที่ที่ว่างบนหน้าจอหลัก',
+  'widgetsGuide.home.step2': 'แตะวิดเจ็ต แล้วหา 6pm',
+  'widgetsGuide.home.step3':
+    'แตะค้าง วันนี้ใช้ได้ หรือ วันนี้ แล้วลากไปวาง ขยาย วันนี้ใช้ได้ ให้กว้างขึ้นเพื่อให้มีสแกนคิวอาร์และเพิ่มด่วน',
+  'capture.settings.widgetsValue': 'หน้าจอหลักและไทล์',
 };

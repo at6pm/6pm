@@ -6,7 +6,9 @@ import { curves } from '@6pm/theme';
 
 import { Symbol } from '../../ui/icons/symbol';
 import type { SymbolName } from '../../ui/icons/symbols.generated';
+import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
+import { FitText } from '../../ui/type/fit-text';
 import { body } from '../../ui/type/fonts';
 
 /** The prototype's `screenIn` (up 12 pt from 98.5 %, 0.35 s on the entrance curve), one card after another. */
@@ -25,7 +27,8 @@ function cardIn(index: number) {
 
 /**
  * One place 6pm lives outside the app: its name (and what it needs), what it does in a line, the
- * drawn miniature, then how to add it in three steps and a note beside them.
+ * drawn miniature, then how to add it in three steps, a note beside them, and on Android the
+ * buttons that add it in one tap.
  */
 export function SurfaceCard({
   index,
@@ -36,6 +39,7 @@ export function SurfaceCard({
   stepsTitle,
   steps,
   note,
+  actions = [],
   children,
 }: {
   readonly index: number;
@@ -46,6 +50,8 @@ export function SurfaceCard({
   readonly stepsTitle: string;
   readonly steps: readonly [string, string, string];
   readonly note?: { readonly icon: SymbolName; readonly text: string };
+  /** Buttons under the steps that add it in one tap, where the phone allows (Android). */
+  readonly actions?: readonly { readonly label: string; readonly onPress: () => void }[];
   /** The drawn miniature. */
   readonly children: ReactNode;
 }) {
@@ -153,6 +159,32 @@ export function SurfaceCard({
           <Text style={{ ...body(14), lineHeight: 19.5, color: palette.inkSoft, flex: 1 }}>
             {note.text}
           </Text>
+        </View>
+      ) : null}
+
+      {actions.length > 0 ? (
+        <View style={{ gap: 8 }}>
+          {actions.map((action, k) => (
+            <PressScale
+              key={k}
+              accessibilityRole="button"
+              onPress={action.onPress}
+              style={{
+                height: 50,
+                borderRadius: 99,
+                backgroundColor: k === 0 ? palette.accent : palette.btnBg,
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingHorizontal: 16,
+              }}
+            >
+              <FitText
+                style={{ ...body(16, 650), color: k === 0 ? palette.accentFg : palette.btnFg }}
+              >
+                {action.label}
+              </FitText>
+            </PressScale>
+          ))}
         </View>
       ) : null}
     </Animated.View>

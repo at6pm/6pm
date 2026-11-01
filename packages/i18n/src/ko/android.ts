@@ -84,4 +84,13 @@ export const koAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
     '이 폰 안에서 읽고 어디로도 보내지 않아요. 6pm은 은행과 지갑의 알림만 읽어요.',
   'capture.alerts.actionAdd': '알림 접근 허용',
   'capture.alerts.actionOpen': '알림 접근 설정',
+
+  'widgetsGuide.title': '위젯과 타일',
+  'widgetsGuide.home.title': '홈 화면용 위젯',
+  'widgetsGuide.home.largeWhat': '남은 돈과 오늘의 최근 지출, 그리고 QR 스캔과 빠른 추가.',
+  'widgetsGuide.home.step1': '홈 화면의 빈 곳을 길게 누르세요.',
+  'widgetsGuide.home.step2': '위젯을 탭하고 6pm을 찾으세요.',
+  'widgetsGuide.home.step3':
+    '오늘 쓸 수 있는 돈이나 오늘을 길게 눌러 원하는 곳에 놓으세요. 오늘 쓸 수 있는 돈을 넓히면 QR 스캔과 빠른 추가가 생겨요.',
+  'capture.settings.widgetsValue': '홈 & 타일',
 };

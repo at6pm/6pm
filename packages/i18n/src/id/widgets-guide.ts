@@ -60,4 +60,17 @@ export const idWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.live.step2': 'Ketuk Dibayar setelah uangnya terkirim. Tertutup sendiri.',
   'widgetsGuide.live.step3':
     'Tidak muncul? Di Pengaturan, buka 6pm lalu nyalakan Aktivitas Langsung.',
+
+  'widgetsGuide.home.addSafe': 'Tambah Aman hari ini',
+  'widgetsGuide.home.addToday': 'Tambah Hari ini',
+  'widgetsGuide.tiles.title': 'Kartu Setelan Cepat',
+  'widgetsGuide.tiles.what':
+    'Geser ke bawah, ketuk sekali, dan kamu langsung di Pindai QR atau Tambah cepat.',
+  'widgetsGuide.tiles.step1': 'Geser ke bawah dua kali dari atas layar.',
+  'widgetsGuide.tiles.step2': 'Ketuk ikon pensil untuk mengedit kartu.',
+  'widgetsGuide.tiles.step3': 'Cari Pindai QR dan Tambah cepat dari 6pm, lalu seret ke atas.',
+  'widgetsGuide.tiles.addScan': 'Tambah kartu Pindai QR',
+  'widgetsGuide.tiles.addQuickAdd': 'Tambah kartu Tambah cepat',
+  'widgetsGuide.tiles.scanIn': 'Pindai QR sudah ada di Setelan Cepat',
+  'widgetsGuide.tiles.quickAddIn': 'Tambah cepat sudah ada di Setelan Cepat',
 };

@@ -55,4 +55,16 @@ export const viWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
     'Quét QR rồi trả trong app ngân hàng. Khoản đó chờ ngay trên Màn hình khoá.',
   'widgetsGuide.live.step2': 'Chạm Đã trả khi tiền đã đi. Nó tự đóng.',
   'widgetsGuide.live.step3': 'Không thấy? Vào Cài đặt, mở 6pm và bật Hoạt động trực tiếp.',
+
+  'widgetsGuide.home.addSafe': 'Thêm Hôm nay tiêu được',
+  'widgetsGuide.home.addToday': 'Thêm Hôm nay',
+  'widgetsGuide.tiles.title': 'Ô Cài đặt nhanh',
+  'widgetsGuide.tiles.what': 'Vuốt xuống, chạm một lần là vào Quét QR hay Thêm nhanh.',
+  'widgetsGuide.tiles.step1': 'Vuốt từ đỉnh màn hình xuống hai lần.',
+  'widgetsGuide.tiles.step2': 'Chạm biểu tượng bút chì để sửa các ô.',
+  'widgetsGuide.tiles.step3': 'Tìm Quét QR và Thêm nhanh của 6pm rồi kéo lên.',
+  'widgetsGuide.tiles.addScan': 'Thêm ô Quét QR',
+  'widgetsGuide.tiles.addQuickAdd': 'Thêm ô Thêm nhanh',
+  'widgetsGuide.tiles.scanIn': 'Quét QR đã có trong Cài đặt nhanh',
+  'widgetsGuide.tiles.quickAddIn': 'Thêm nhanh đã có trong Cài đặt nhanh',
 };
