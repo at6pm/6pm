@@ -83,19 +83,23 @@ export function WhenPicker({
 
   return (
     <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: 6 }}>
+      {/* Centred by filling the wheel's height: Yoga takes `top: '50%'` from the content height
+          but measures it from the padding edge, a padding above the chosen row. */}
       <View
         pointerEvents="none"
         style={{
           position: 'absolute',
           left: 16,
           right: 16,
-          top: '50%',
-          height: rowHeight + 8,
-          marginTop: -(rowHeight + 8) / 2,
-          borderRadius: 14,
-          backgroundColor: palette.chipBg,
+          top: 0,
+          bottom: 0,
+          justifyContent: 'center',
         }}
-      />
+      >
+        <View
+          style={{ height: rowHeight + 8, borderRadius: 14, backgroundColor: palette.chipBg }}
+        />
+      </View>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Wheel
           items={dayLabels}

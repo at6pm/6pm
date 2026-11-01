@@ -18,7 +18,7 @@ import { Symbol } from '../../ui/icons/symbol';
 import { easeOut } from '../../ui/motion/curves';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
-import { body, families } from '../../ui/type/fonts';
+import { body, families, UNPADDED } from '../../ui/type/fonts';
 import { swatch } from './plan-colours';
 import type { PotFields } from './pot-sheet';
 import { useSheetMoney } from './sheet-money';
@@ -140,6 +140,7 @@ export function PotHero({
           textAlign: 'center',
           padding: 0,
           fontFamily: families.display,
+          ...UNPADDED,
           fontSize: size.name,
           fontWeight: '500',
           letterSpacing: -0.015 * size.name,

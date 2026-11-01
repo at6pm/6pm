@@ -19,7 +19,7 @@ import { SheetFrame } from '../../ui/navigation/sheet-frame';
 import { useFocusOnPresent } from '../../ui/navigation/use-focus-on-present';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
-import { body, families } from '../../ui/type/fonts';
+import { body, families, UNPADDED } from '../../ui/type/fonts';
 import { useOfferUndo } from '../../ui/undo/undo-host';
 
 const NAME_SIZE = 28;
@@ -146,6 +146,7 @@ export default function BillSheet() {
             textAlign: 'center',
             padding: 0,
             fontFamily: families.display,
+            ...UNPADDED,
             fontSize: NAME_SIZE,
             fontWeight: '500',
             letterSpacing: -0.015 * NAME_SIZE,

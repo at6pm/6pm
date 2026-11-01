@@ -12,7 +12,7 @@ import { useFocusOnPresent } from '../../ui/navigation/use-focus-on-present';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { Switch } from '../../ui/primitives/switch';
 import { useTheme } from '../../ui/theme/theme';
-import { body, families } from '../../ui/type/fonts';
+import { body, families, UNPADDED } from '../../ui/type/fonts';
 import { HuePicker } from './hue-picker';
 import { FREE_ICON_COUNT, MAX_ICON_COUNT } from './icon-packs';
 import { IconPicker } from './icon-picker';
@@ -156,6 +156,7 @@ export function CategoryEditor({
               textAlign: 'center',
               padding: 0,
               fontFamily: families.display,
+              ...UNPADDED,
               fontSize: 28,
               fontWeight: '500',
               letterSpacing: -0.28,

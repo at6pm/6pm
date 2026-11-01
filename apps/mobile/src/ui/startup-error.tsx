@@ -6,7 +6,7 @@ import { DEFAULT_LOOK, paletteFor } from '@6pm/theme';
 
 import { translate as t } from '../i18n/translate';
 import { PressScale } from './primitives/press-scale';
-import { families } from './type/fonts';
+import { families, UNPADDED } from './type/fonts';
 
 /**
  * Shown in place of the app when the database or the first read fails. It sits above every
@@ -41,7 +41,13 @@ export function StartupError({ onRetry }: { readonly onRetry: () => void }) {
 
 const styles = StyleSheet.create({
   page: { flex: 1, justifyContent: 'center', paddingHorizontal: 32, gap: 12 },
-  title: { fontFamily: families.display, fontSize: 28, fontWeight: '600', letterSpacing: -0.6 },
+  title: {
+    fontFamily: families.display,
+    ...UNPADDED,
+    fontSize: 28,
+    fontWeight: '600',
+    letterSpacing: -0.6,
+  },
   sub: { fontFamily: families.body, fontSize: 15, lineHeight: 21 },
   button: {
     marginTop: 16,
@@ -50,5 +56,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  buttonLabel: { fontFamily: families.bodySemiBold, fontSize: 16, fontWeight: '600' },
+  buttonLabel: {
+    fontFamily: families.bodySemiBold,
+    ...UNPADDED,
+    fontSize: 16,
+    fontWeight: '600',
+  },
 });
