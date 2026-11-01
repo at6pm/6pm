@@ -23,7 +23,6 @@ export * from './time/utc-offset';
 export * from './contracts/wire';
 export * from './contracts/local-rows';
 export * from './contracts/waitlist';
-export * from './contracts/android-testers';
 export * from './contracts/surfaces';
 export * from './vietqr';
 export * from './close/close-flow';
