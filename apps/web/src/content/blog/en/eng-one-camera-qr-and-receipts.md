@@ -4,6 +4,7 @@ description: "How 6pm's Scan finds QR codes and receipts in one AVCaptureSession
 slug: eng-one-camera-qr-and-receipts
 lang: en
 pubDate: 2026-10-21
+updatedDate: 2026-11-02
 tags: [engineering, ios, apple vision, ocr, android]
 related: [eng-reading-vietqr-on-device, eng-native-feel-expo-reanimated, eng-why-we-open-sourced-our-money-app]
 cta: "Read the camera module on GitHub, or point 6pm at a receipt."
@@ -190,7 +191,7 @@ The share extension (sharing a bank's "transfer successful" screenshot into 6pm)
 
 ## The Android port
 
-Android is not released yet, but the camera module has a Kotlin side in `modules/scan-camera/android`, kept to "the same steps and limits as the iPhone's reader".
+The Android app is in beta, a closed test on Google Play that anyone can join. Its camera is the Kotlin side of the same module, in `modules/scan-camera/android`, kept to "the same steps and limits as the iPhone's reader".
 
 - **Camera:** CameraX, with an `ImageAnalysis` use case on `STRATEGY_KEEP_ONLY_LATEST` and YUV_420_888 frames.
 - **QR:** ML Kit `barcode-scanning` restricted to `FORMAT_QR_CODE`, run on every analysed frame, with the same one-second repeat guard.
@@ -228,8 +229,8 @@ Scan needs QR codes and receipts in one live view, with its own outline and auto
 
 ### Is the Android version released?
 
-No. 6pm is on iPhone. The Android camera module is in the repo and builds in CI.
+It is in beta. The 6pm app is on the App Store for iPhone, and Android is in a closed test on Google Play that anyone can join: tap **Join the Android beta** on [at6pm.app](https://at6pm.app), then take two steps with the same Google account. Its Scan runs on the camera module described above.
 
 ## Try it
 
-The code is at [github.com/at6pm/6pm](https://github.com/at6pm/6pm): `apps/mobile/modules/scan-camera` and `packages/domain/src/capture`. The iPhone app is on [the App Store](https://apps.apple.com/app/id6504689878). More at [at6pm.app](https://at6pm.app).
+The code is at [github.com/at6pm/6pm](https://github.com/at6pm/6pm): `apps/mobile/modules/scan-camera` and `packages/domain/src/capture`. The iPhone app is on [the App Store](https://apps.apple.com/app/id6504689878), and the Android beta is open to anyone from [at6pm.app](https://at6pm.app).

@@ -4,6 +4,7 @@ description: "An honest look at the best expense tracker apps for iPhone in 2026
 slug: best-expense-tracker-apps-iphone-2026
 lang: en
 pubDate: 2026-10-21
+updatedDate: 2026-11-02
 tags: [expense tracker, budget apps, iphone, app comparison, ynab]
 related: [app-quan-ly-chi-tieu-tot-nhat-2026, ynab-alternatives-for-people-who-hate-budgeting, track-spending-automatically-iphone, how-much-can-i-spend-per-day]
 cta: "Get 6pm on the App Store. The close and every way to capture are free."
@@ -33,7 +34,7 @@ Three questions sort most people:
 | **Monarch** | Core $14.99/mo or $99.99/yr; Plus $199.99/yr | No (7-day trial) | Yes | iOS, Android, web | 4.9 (~115K) |
 | **Rocket Money** | Free; Premium tiers in-app | Yes | Yes | iOS, Android, web | 4.5 (401K) |
 | **Spendee** | Plus $1.99/mo, Premium $5.99/mo on spendee.com (in-app prices vary) | Yes (1 wallet, 1 budget) | Yes | iOS, Android, web | 4.6 (6.3K) |
-| **6pm** | Max $4.99/mo or $34.99/yr | Yes: the close, every capture, Budget together | No, by design | iPhone (Android later) | Not yet rated (new) |
+| **6pm** | Max $4.99/mo or $34.99/yr | Yes: the close, every capture, Budget together | No, by design | iPhone (Android in beta) | Not yet rated (new) |
 
 Prices and ratings were checked on 21 October 2026 and change often. Check the store before you subscribe.
 
@@ -43,7 +44,7 @@ Prices and ratings were checked on 21 October 2026 and change often. Check the s
 
 YNAB asks you to give every dollar a job before you spend it. It is a method as much as an app, with plenty of teaching around it, goals, a loan planner and net worth. It imports from select banks in the US, Canada, the UK and the EU, and runs on iPhone, Android, the web and Apple Watch. One subscription can be shared with up to five other people. There is a 34-day free trial, and students get a year free.
 
-**Better than 6pm at:** a proven, deep budgeting system; web and Android; bank import; sharing a whole budget.
+**Better than 6pm at:** a proven, deep budgeting system; web and a released Android app; bank import; sharing a whole budget.
 
 **Trade-off:** it asks for regular attention. If budgeting feels like homework, read our [YNAB alternatives for people who hate budgeting](/blog/ynab-alternatives-for-people-who-hate-budgeting).
 
@@ -63,7 +64,7 @@ Copilot connects to more than 10,000 US institutions, with direct integrations f
 
 Monarch does read-only account connections, auto-categorisation, net worth, investments, a bill and subscription calendar, goals, and either flex or category budgeting. A partner joins at no extra cost with their own login, and both of you see every account and transaction in the household. Web, iOS and Android.
 
-**Better than 6pm at:** whole-household finances; investments; web and Android; a shared view of everything.
+**Better than 6pm at:** whole-household finances; investments; web and a released Android app; a shared view of everything.
 
 **Trade-off:** that shared view is total. If you want to save together but keep your own spending to yourself, see [budgeting as a couple](/blog/budgeting-as-a-couple).
 
@@ -81,7 +82,7 @@ Rocket Money's free tier links accounts, tracks spending and finds subscriptions
 
 Spendee has shared wallets for couples, families and roommates, category budgets, savings goals, an AI receipt scanner and multiple currencies, on iOS, Android and the web. The free plan covers one cash wallet and one budget.
 
-**Better than 6pm at:** Android and web; group wallets where everyone sees the transactions; e-wallet and crypto sync.
+**Better than 6pm at:** web and a released Android app; group wallets where everyone sees the transactions; e-wallet and crypto sync.
 
 ## 6pm: expense tracking on autopilot, one number to live by
 
@@ -95,7 +96,7 @@ At 6pm (or the time you pick) you swipe through the day: Keep, Edit or Not mine.
 
 The free tier is the whole ritual: the close, every way to capture, Budget together (shared pots for two). 6pm Max ($4.99/month or $34.99/year, 7-day trial) adds looks, unlimited Ask and pots, Travel mode, Year book and encrypted backup.
 
-**Where 6pm is weaker, plainly:** no bank sync, so a card swipe you never photograph, forward or tap with Apple Pay has to be typed. No Android yet, no web or Mac. No investments or net worth. Light on reports. And it is new, with no App Store ratings yet.
+**Where 6pm is weaker, plainly:** no bank sync, so a card swipe you never photograph, forward or tap with Apple Pay has to be typed. Android is still in beta, and there is no web or Mac app. No investments or net worth. Light on reports. And it is new, with no App Store ratings yet.
 
 <!-- media: close-swipe-clip -->
 
@@ -130,7 +131,7 @@ Yes. 6pm works in English and Vietnamese and uses your phone's currency, so a US
 
 ### Is 6pm on Android?
 
-Not yet. It is on iPhone; Android comes later.
+In beta. The 6pm app is on the App Store for iPhone, and Android is in a closed test on Google Play that anyone can join: tap **Join the Android beta** on [at6pm.app](https://at6pm.app), then take two steps with the same Google account. Android has no Apple Pay; 6pm catches spends from bank and wallet notifications there instead.
 
 ## Try 6pm
 
