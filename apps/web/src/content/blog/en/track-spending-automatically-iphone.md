@@ -4,6 +4,7 @@ description: "Track spending automatically on iPhone with Apple Pay, receipt pho
 slug: track-spending-automatically-iphone
 lang: en
 pubDate: 2026-10-21
+updatedDate: 2026-11-02
 featured: true
 tags: [expense tracking, iphone, apple pay, automation, how-to]
 related: [cach-ghi-chi-tieu-tu-dong-tren-iphone, scan-receipts-track-expenses, log-expenses-by-voice, bank-alert-emails-expense-log]
@@ -129,7 +130,7 @@ We never store your transactions; they live on your iPhone, encrypted. No bank l
 
 ### Is 6pm on Android?
 
-iPhone first. Android comes later.
+In beta. The 6pm app is on the App Store for iPhone, and Android is in a closed test on Google Play that anyone can join: tap **Join the Android beta** on [at6pm.app](https://at6pm.app), then take two steps with the same Google account. Android has no Apple Pay; 6pm catches spends from bank and wallet notifications there instead.
 
 ## Try 6pm
 

@@ -4,6 +4,7 @@ description: "Ghi chi tiêu tự động trên iPhone: quét VietQR, chụp biê
 slug: cach-ghi-chi-tieu-tu-dong-tren-iphone
 lang: vi
 pubDate: 2026-10-21
+updatedDate: 2026-11-02
 featured: true
 tags: [ghi chi tiêu, tự động, iphone, vietqr, hướng dẫn]
 related: [track-spending-automatically-iphone, quet-vietqr-tu-ghi-chi-tieu, ghi-chi-tieu-bang-giong-noi, chup-hoa-don-ghi-chi-tieu]
@@ -114,7 +115,7 @@ Chúng tôi không lưu giao dịch của bạn; chúng nằm trên iPhone của
 
 ### Có bản Android không?
 
-6pm ra mắt trên iPhone trước. Android sẽ đến sau.
+Có, đang ở bản thử. App 6pm có trên iPhone qua App Store; bản Android đang thử kín trên Google Play và ai cũng tham gia được: bấm **Thử bản Android** ở [at6pm.app/vi](https://at6pm.app/vi), rồi làm hai bước với cùng một tài khoản Google. Trên Android không có Apple Pay; thay vào đó 6pm tự ghi từ thông báo của app ngân hàng và ví.
 
 ## Thử 6pm
 

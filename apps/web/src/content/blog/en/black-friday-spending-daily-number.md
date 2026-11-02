@@ -4,6 +4,7 @@ description: "How to not overspend on Black Friday and Cyber Monday 2026: turn y
 slug: black-friday-spending-daily-number
 lang: en
 pubDate: 2026-10-21
+updatedDate: 2026-11-02
 tags: [black friday, cyber monday, daily budget, impulse spending, holiday shopping]
 related: [song-sot-11-11-chot-so-truoc-khi-chot-don, how-much-can-i-spend-per-day, bank-alert-emails-expense-log, track-spending-automatically-iphone]
 cta: "Ask 6pm before you check out. Free on iPhone."
@@ -115,7 +116,7 @@ Fix it at the close: edit the amount or mark it Not mine. A forwarded refund ema
 
 ### Is 6pm on Android?
 
-Not yet. 6pm is on iPhone first; Android comes later.
+In beta. The 6pm app is on the App Store for iPhone, and Android is in a closed test on Google Play that anyone can join: tap **Join the Android beta** on [at6pm.app](https://at6pm.app), then take two steps with the same Google account.
 
 ## Try 6pm
 
