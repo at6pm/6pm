@@ -40,7 +40,7 @@ const tabIcons = ['today', 'calendar_month', 'auto_stories'];
       <div class="today">
         <div class="today-head">
           <div class="today-title">{t.today}</div>
-          <div class="today-spent d-muted">{t.spent(duoMoney(lang, duoToday.spent))}</div>
+          <div class="today-spent d-muted">{t.spent(duoMoney(lang, duoToday[lang].spent))}</div>
         </div>
         <DuoRows lang={lang} />
       </div>

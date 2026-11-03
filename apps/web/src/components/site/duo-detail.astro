@@ -13,7 +13,7 @@ const money = (k: number): string => duoMoney(lang, k);
 ---
 
 {
-  duoRows.map(([kind, amount], i) => {
+  duoRows[lang].map(([kind, amount], i) => {
     const [tile, glyph, icon] = duoKinds[kind];
     const [name = '', meta = ''] = t.rows[i] ?? [];
     return (
@@ -33,9 +33,9 @@ const money = (k: number): string => duoMoney(lang, k);
         <div class="d-card change">
           <div class="change-label d-muted">{t.todayNumber}</div>
           <div class="change-nums d-face">
-            <span class="was">{money(duoToday.left + amount)}</span>
+            <span class="was">{money(duoToday[lang].left + amount)}</span>
             <span class="sym arrow">arrow_forward</span>
-            <span>{money(duoToday.left)}</span>
+            <span>{money(duoToday[lang].left)}</span>
           </div>
         </div>
         <div class="chips">

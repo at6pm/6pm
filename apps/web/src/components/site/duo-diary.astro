@@ -16,11 +16,11 @@ const shown = 8;
 // a dashed ring; the days ahead are blank.
 const days = Array.from({ length: 31 }, (_, i) => {
   const day = i + 1;
-  const spent = duoSpent[day];
+  const spent = duoSpent[lang][day];
   if (day === 9) return { day, kind: 'today', icon: 'schedule' };
   if (day === 7) return { day, kind: 'missed', icon: '' };
   if (spent) {
-    const under = spent <= duoToday.daily;
+    const under = spent <= duoToday[lang].daily;
     return { day, kind: under ? 'under' : 'over', icon: under ? 'check' : 'arrow_upward' };
   }
   return { day, kind: 'ahead', icon: '' };
@@ -66,7 +66,7 @@ const days = Array.from({ length: 31 }, (_, i) => {
     <div class="kept">
       <div class="kept-words">
         <div class="kept-label d-mono">{t.diary.kept}</div>
-        <div class="kept-value d-face">{duoMoney(lang, duoToday.kept)}</div>
+        <div class="kept-value d-face">{duoMoney(lang, duoToday[lang].kept)}</div>
       </div>
       <Buddy size={54} mood="happy" tight />
     </div>
