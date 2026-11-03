@@ -42,7 +42,7 @@ export const siteCopyEn: SiteCopy = {
       close: 'Close',
       how: 'The Android app is in a closed test on Google Play. Anyone can join, in two steps.',
       group: 'Join the tester group',
-      groupNote: 'Tap “Join group”. This is what lets you into the test.',
+      groupNote: 'Tap “Join group”, then come back here for step 2.',
       test: 'Become a tester',
       testNote: 'Then tap “Become a tester” on Google Play:',
       install: 'Install 6pm: Safe to Spend from Google Play.',
