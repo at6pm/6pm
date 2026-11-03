@@ -17,7 +17,7 @@ const t = siteCopy[lang].duo.screen.stand;
 const recent = duoStandRecent.map((amount, i) => ({ name: t.recent[i], amount }));
 ---
 
-<div class="stand" data-duo-stand data-lang={lang} data-left={duoToday.left} data-start={duoToday.start}>
+<div class="stand" data-duo-stand data-lang={lang} data-left={duoToday[lang].left} data-start={duoToday[lang].start}>
   <div class="half top-half">
     <div class="duo-screen glance">
       <DuoBackdrop sunLeft="50%" horizon={360} ray={184} />
@@ -28,12 +28,12 @@ const recent = duoStandRecent.map((amount, i) => ({ name: t.recent[i], amount })
       </div>
       <div class="middle">
         <div class="left-label">{t.left}</div>
-        <div class="left-num d-face" data-stand-left>{duoMoney(lang, duoToday.left)}</div>
+        <div class="left-num d-face" data-stand-left>{duoMoney(lang, duoToday[lang].left)}</div>
         <div class="track">
           <div
             class="fill"
             data-stand-fill
-            style={`width:${(duoToday.left / duoToday.start) * 100}%`}
+            style={`width:${(duoToday[lang].left / duoToday[lang].start) * 100}%`}
           >
           </div>
         </div>

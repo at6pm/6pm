@@ -22,13 +22,13 @@ const d = siteCopy[lang].duo.screen.diary;
 const names = siteCopy[lang].duo.screen.rows;
 const money = (k: number): string => duoMoney(lang, k);
 const weekday = d.weekdays[(day - 1) % 7] ?? '';
-const spent = duoSpent[day] ?? 0;
-const under = spent <= duoToday.daily;
+const spent = duoSpent[lang][day] ?? 0;
+const under = spent <= duoToday[lang].daily;
 const open = day === 9;
 const missed = day === 7;
 const items = open
-  ? duoRows.map(([kind, amount], i) => ({ name: names[i]?.[0] ?? '', kind, amount }))
-  : (duoDiary[day] ?? []).map(([kind, amount], i) => ({
+  ? duoRows[lang].map(([kind, amount], i) => ({ name: names[i]?.[0] ?? '', kind, amount }))
+  : (duoDiary[lang][day] ?? []).map(([kind, amount], i) => ({
       name: d.items[day]?.[i] ?? '',
       kind,
       amount,
@@ -38,7 +38,7 @@ const label = d.label(
   day,
   open ? d.stillOpen : missed ? d.notClosed : d.closedAt(duoClosedAt[day] ?? ''),
 );
-const gap = Math.abs(duoToday.daily - spent);
+const gap = Math.abs(duoToday[lang].daily - spent);
 const note = open ? d.openNote : under ? d.under(money(gap)) : d.over(money(gap));
 ---
 
@@ -55,9 +55,9 @@ const note = open ? d.openNote : under ? d.under(money(gap)) : d.over(money(gap)
       <div class="day">
         <div class="top">
           <div class="spent-block">
-            <div class="spent d-face">{money(open ? duoToday.spent : spent)}</div>
+            <div class="spent d-face">{money(open ? duoToday[lang].spent : spent)}</div>
             <div class="of">
-              {open ? d.ofSoFar(money(duoToday.start)) : d.ofThatDay(money(duoToday.daily))}
+              {open ? d.ofSoFar(money(duoToday[lang].start)) : d.ofThatDay(money(duoToday[lang].daily))}
             </div>
           </div>
           {!open && (

@@ -27,12 +27,12 @@ const money = (k: number): string => duoMoney(lang, k);
   <div class="number">
     <div class="safe">{t.safe}</div>
     <div class="big d-face">
-      {money(duoToday.left)}{d.unit && <span class="unit">{d.unit}</span>}
+      {money(duoToday[lang].left)}{d.unit && <span class="unit">{d.unit}</span>}
     </div>
     <div class="progress">
       <div class="track"><div class="fill"></div></div>
       <div class="ends">
-        <span>{t.spent(money(duoToday.spent))}</span><span>{t.ofToday(money(duoToday.start))}</span>
+        <span>{t.spent(money(duoToday[lang].spent))}</span><span>{t.ofToday(money(duoToday[lang].start))}</span>
       </div>
     </div>
   </div>

@@ -15,7 +15,7 @@ const Row = open ? 'button' : 'div';
 
 <div class:list={['rows', { open }]}>
   {
-    duoRows.map(([kind, amount], i) => {
+    duoRows[lang].map(([kind, amount], i) => {
       const [tile, glyph, icon] = duoKinds[kind];
       return (
         <Row

@@ -14,14 +14,15 @@ interface Props {
 const { lang } = Astro.props;
 const t = siteCopy[lang].duo.screen;
 const money = (k: number): string => duoMoney(lang, k);
-// October 2026 starts on a Thursday: three blanks, then the days. 9 October is today, 7 slipped by.
+// October 2026 starts on a Thursday: three blanks, then the days. 9 October is today and shows its
+// number like the days ahead; 7 slipped by.
 const days = Array.from({ length: 31 }, (_, i) => {
   const day = i + 1;
-  const spent = duoSpent[day];
-  if (day === 9) return { day, amount: money(duoToday.left), kind: 'today' };
+  const spent = duoSpent[lang][day];
+  if (day === 9) return { day, amount: money(duoToday[lang].start), kind: 'today' };
   if (day === 7) return { day, amount: '—', kind: 'missed' };
-  if (spent) return { day, amount: money(spent), kind: spent <= duoToday.daily ? 'under' : 'over' };
-  return { day, amount: money(duoToday.daily), kind: 'ahead' };
+  if (spent) return { day, amount: money(spent), kind: spent <= duoToday[lang].daily ? 'under' : 'over' };
+  return { day, amount: money(duoToday[lang].daily), kind: 'ahead' };
 });
 const pots = duoPots.map(([amount, color], i) => ({ label: t.pots[i], value: money(amount), color }));
 ---
