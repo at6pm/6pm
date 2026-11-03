@@ -42,7 +42,7 @@ export const siteCopyVi: SiteCopy = {
       close: 'Đóng',
       how: 'Bản Android đang thử kín trên Google Play. Ai cũng tham gia được, chỉ hai bước.',
       group: 'Vào nhóm người thử',
-      groupNote: 'Bấm “Tham gia nhóm”. Đây là bước cho bạn vào bản thử.',
+      groupNote: 'Bấm “Tham gia nhóm”, rồi quay lại trang này để làm bước 2.',
       test: 'Trở thành người thử',
       testNote: 'Rồi bấm “Trở thành người thử nghiệm” trên Google Play:',
       install: 'Cài 6pm: Safe to Spend từ Google Play.',
