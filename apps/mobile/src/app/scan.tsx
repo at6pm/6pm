@@ -1,4 +1,5 @@
 import { useCameraPermissions } from 'expo-camera';
+import * as Clipboard from 'expo-clipboard';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -24,6 +25,7 @@ import {
 } from '../../modules/scan-camera';
 import { useCompanionToast } from '../features/companion/use-companion-toast';
 import { ProppedHint, ProppedTop } from '../features/duo/propped-scan';
+import { ContentCard } from '../features/scan/content-card';
 import { ForeignAlert } from '../features/scan/foreign-alert';
 import { ReceiptCard } from '../features/scan/receipt-card';
 import {
@@ -63,6 +65,7 @@ const QR_HINTS: Record<ScanPhase['kind'], 'camera' | 'blurry' | 'got' | null> = 
   camera: 'camera',
   unreadable: 'blurry',
   foreign: 'got',
+  content: 'got',
   preview: 'got',
   handoff: null,
   return: null,
@@ -227,7 +230,7 @@ export default function Scan() {
   const seeing: Seeing =
     inView || !receiptIdle
       ? 'receipt'
-      : phase.kind === 'preview' || phase.kind === 'foreign'
+      : phase.kind === 'preview' || phase.kind === 'foreign' || phase.kind === 'content'
         ? 'code'
         : null;
   const hint = cameraOff
@@ -338,6 +341,19 @@ export default function Scan() {
                 answering.current = false;
                 toast(t('scan.error.pay'));
               });
+          }}
+        />
+      ) : null}
+      {phase.kind === 'content' ? (
+        <ContentCard
+          content={phase.content}
+          onRetry={scan.retry}
+          onFail={() => toast(t('scan.content.cantOpen'))}
+          onCopy={(text) => {
+            void Clipboard.setStringAsync(text).then(() => {
+              haptics.tap();
+              toast(t('scan.content.copied'));
+            });
           }}
         />
       ) : null}

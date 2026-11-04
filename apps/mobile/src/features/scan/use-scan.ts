@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { AppState } from 'react-native';
+import { AppState, Linking } from 'react-native';
 
 import {
   likelyCategoriesAt,
   parseVietQR,
+  readQrContent,
   type BankInfo,
   type FxRate,
+  type QrContent,
   type VietQR,
   type VietQRFailure,
 } from '@6pm/domain';
@@ -18,7 +20,7 @@ import { haptics } from '../../ui/haptics';
 import { useClock } from '../../ui/theme/clock';
 import { useTravel } from '../travel/travel-provider';
 import { handOff, type Handoff } from './bank-handoff';
-import { payeeName, payOptions, titleCase } from './pay-options';
+import { payeeName, payOptions, receiverDetail, titleCase } from './pay-options';
 import { dongInHome, pricedInHome } from './priced-spend';
 
 /** A payment on its way out: saved as pending the moment the bank app is asked to open. */
@@ -38,6 +40,7 @@ export type ScanPhase =
   | { readonly kind: 'camera' }
   | { readonly kind: 'unreadable' }
   | { readonly kind: 'foreign'; readonly failure: VietQRFailure }
+  | { readonly kind: 'content'; readonly content: QrContent }
   | {
       readonly kind: 'preview';
       readonly qr: VietQR;
@@ -119,11 +122,18 @@ export function useScan() {
           }),
         );
       } else {
-        haptics.tick();
+        const content = result.reason === 'not_emv' ? readQrContent(data) : null;
+        if (content) haptics.tap();
+        else haptics.tick();
+        // MoMo's checkout link goes straight to MoMo's payment screen, where the user confirms;
+        // the card stays behind it, for when MoMo is not on the phone.
+        if (content?.kind === 'momoPayment') void Linking.openURL(content.url).catch(() => false);
         setPhase(
           result.reason === 'foreign'
             ? { kind: 'foreign', failure: result }
-            : { kind: 'unreadable' },
+            : content
+              ? { kind: 'content', content }
+              : { kind: 'unreadable' },
         );
       }
     },
@@ -152,7 +162,7 @@ export function useScan() {
           status: 'pending',
           wallet: bank?.shortName ?? null,
           note: qr.note,
-          detail: `${qr.bank?.shortName ?? qr.bin} · ${qr.accountMasked}`,
+          detail: receiverDetail(qr),
         });
         const payment: Payment = {
           qr,

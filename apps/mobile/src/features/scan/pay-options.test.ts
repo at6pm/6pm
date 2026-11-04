@@ -2,7 +2,13 @@ import { describe, expect, it } from '@jest/globals';
 
 import { currencyOf, encodeVietQR, parseVietQR, VND, type VietQR } from '@6pm/domain';
 
-import { foreignAmountLabel, payeeName, payOptions, payWallets } from './pay-options';
+import {
+  foreignAmountLabel,
+  payeeName,
+  payOptions,
+  payWallets,
+  receiverDetail,
+} from './pay-options';
 
 function scan(payload: string): VietQR {
   const result = parseVietQR(payload);
@@ -38,11 +44,14 @@ describe('payOptions', () => {
     });
   });
 
-  it('sends a merchant QR to the first bank 6pm can open, since only a bank app can pay it', () => {
+  it('offers a shop QR the same banks as a transfer, since their links carry it as scanned', () => {
     const merchant: VietQR = { ...vcb, service: 'merchant' };
     const options = payOptions(merchant, ['VTLMONEY', 'TCB']);
-    expect(options.mode).toBe('bankApp');
-    expect(options.mode === 'bankApp' && options.bank?.id).toBe('TCB');
+    expect(options.mode).toBe('wallets');
+    expect(options.mode === 'wallets' && options.wallets.map((w) => w.id)).toEqual([
+      'VTLMONEY',
+      'TCB',
+    ]);
   });
 
   it('sends a transfer to a bank app when the user picked no bank 6pm knows', () => {
@@ -50,9 +59,9 @@ describe('payOptions', () => {
     expect(payOptions(vcb, ['CASH', 'name:Chase'])).toEqual({ mode: 'bankApp', bank: null });
   });
 
-  it('still offers a merchant QR when none of the user’s wallets can be opened', () => {
+  it('sends a shop QR to a bank app when the user picked no bank 6pm knows', () => {
     const merchant: VietQR = { ...vcb, service: 'merchant' };
-    expect(payOptions(merchant, ['VTLMONEY'])).toEqual({ mode: 'bankApp', bank: null });
+    expect(payOptions(merchant, ['CASH'])).toEqual({ mode: 'bankApp', bank: null });
   });
 });
 
@@ -95,5 +104,25 @@ describe('foreignAmountLabel', () => {
 
   it('is null for a foreign QR without an amount', () => {
     expect(foreignAmountLabel({ ok: false, reason: 'foreign', currency: '764' }, dong)).toBeNull();
+  });
+});
+
+describe('a VNPay shop code', () => {
+  // TORO's kiosk, 7.000₫, read off a photo of its screen.
+  const kiosk = scan(
+    '00020101021226280010A00000077501100313421775520458145303704540470005802VN5904TORO6005HANOI610610000062440114sj8QTFEODMamTl0310KOOTORO2060708KTR0020663040F80',
+  );
+
+  it('names the shop, and the scheme with the tail of its id', () => {
+    expect(payeeName(kiosk)).toBe('Toro');
+    expect(receiverDetail(kiosk)).toBe('VNPay · •••• 1775');
+  });
+
+  it('is named by its scheme when the code carries no shop', () => {
+    expect(payeeName({ ...kiosk, merchantName: null })).toBe('VNPay •••• 1775');
+  });
+
+  it('is offered the user’s banks like any other code', () => {
+    expect(payOptions(kiosk, ['MB', 'TCB'])).toMatchObject({ mode: 'wallets' });
   });
 });

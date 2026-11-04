@@ -24,6 +24,7 @@ export * from './contracts/wire';
 export * from './contracts/local-rows';
 export * from './contracts/waitlist';
 export * from './contracts/surfaces';
+export * from './qr-content';
 export * from './vietqr';
 export * from './close/close-flow';
 export * from './close/close-queue';

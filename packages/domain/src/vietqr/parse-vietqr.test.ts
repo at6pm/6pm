@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { crc16CcittFalse } from './crc16';
 import { maskAccount, parseVietQR, type VietQR, type VietQRResult } from './parse-vietqr';
 
 /** Payloads were built and their CRCs computed with an independent implementation. */
@@ -38,6 +39,11 @@ const QR = {
   qrph: '00020101021128460011ph.ppmi.p2m0111GXCHPHM2XXX03122150000001235204581253036085802PH5910CARINDERIA6006MANILA6304AC2E',
   laos: '00020101021138320016A0052662846625770108277104185204581253034185802LA5908FEU SHOP6009VIENTIANE63041D2F',
   vnOther: '00020101021126280010A0000007750110MERCHANT0153037045802VN5908QUAN COM630491A3',
+  // A shop's VNPay code as a kiosk shows it (TORO, 26.000₫), read off a photo of the screen.
+  vnpayKiosk:
+    '00020101021226280010A000000775011003134217755204581453037045405260005802VN5904TORO6005HANOI610610000062440114dSO8TRBLlccMu70310KOOTORO2060708KTR002066304EDAC',
+  vnpayKiosk7:
+    '00020101021226280010A00000077501100313421775520458145303704540470005802VN5904TORO6005HANOI610610000062440114sj8QTFEODMamTl0310KOOTORO2060708KTR0020663040F80',
   wrongFormat:
     '00020201021138540010A00000072701240006970436011010233348210208QRIBFTTA53037045802VN63041733',
 };
@@ -61,6 +67,9 @@ function vietqr(result: VietQRResult): VietQR {
   if (!result.ok) throw new Error(`expected a VietQR, got ${result.reason}`);
   return result;
 }
+
+const ok = (text: string): VietQR => vietqr(parseVietQR(text));
+const withCrc = (body: string): string => `${body}6304${crc16CcittFalse(`${body}6304`)}`;
 
 describe('parseVietQR', () => {
   it('reads the design preview: merchant, bank, masked account, amount and note', () => {
@@ -166,8 +175,45 @@ describe('parseVietQR', () => {
       expect(parseVietQR(QR.usd)).toEqual({ ok: false, reason: 'unsupported' });
     });
 
-    it('a Vietnamese EMV QR that is not on NAPAS as unsupported', () => {
-      expect(parseVietQR(QR.vnOther)).toEqual({ ok: false, reason: 'unsupported' });
+    it('an EMV QR with no merchant account template as unsupported', () => {
+      const bare = '00020101021153037045802VN';
+      const crc = crc16CcittFalse(`${bare}6304`);
+      expect(parseVietQR(`${bare}6304${crc}`)).toEqual({ ok: false, reason: 'unsupported' });
+    });
+  });
+
+  describe('reads a Vietnamese shop code outside NAPAS', () => {
+    it("VNPay's code on a shop's kiosk screen, as a shop code with its shop and amount", () => {
+      expect(ok(QR.vnpayKiosk)).toMatchObject({
+        service: 'merchant',
+        provider: 'vnpay',
+        bank: null,
+        amount: 26_000,
+        merchantName: 'TORO',
+        city: 'HANOI',
+        account: '0313421775',
+        accountMasked: '•••• 1775',
+        raw: QR.vnpayKiosk,
+      });
+    });
+
+    it("the same kiosk's next code, 7.000₫, as scanned", () => {
+      expect(ok(QR.vnpayKiosk7)).toMatchObject({ amount: 7_000, merchantName: 'TORO' });
+    });
+
+    it('a code with no amount, leaving it to the user', () => {
+      expect(ok(QR.vnOther)).toMatchObject({
+        service: 'merchant',
+        amount: null,
+        merchantName: 'QUAN COM',
+      });
+    });
+
+    it('a code in another currency or country is not one of these', () => {
+      const usd = withCrc(
+        '00020101021126280010A0000007750110MERCHANT015303984580202US5908QUAN COM',
+      );
+      expect(parseVietQR(usd)).toMatchObject({ ok: false });
     });
   });
 

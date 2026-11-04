@@ -23,7 +23,7 @@ import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { useTravel } from '../travel/travel-provider';
 import { body, display, leading, tabular } from '../../ui/type/fonts';
-import type { PayOptions } from './pay-options';
+import { receiverDetail, type PayOptions } from './pay-options';
 import { dongInHome } from './priced-spend';
 import { CardButton, ScanCard } from './scan-card';
 import { scanColours as c } from './scan-colours';
@@ -143,9 +143,7 @@ export function ScanPreview({
             {payee}
           </Text>
           <Text numberOfLines={1} style={{ ...body(13), color: c.cardSoft }}>
-            {[qr.bank?.shortName ?? qr.bin, qr.accountMasked, category?.name]
-              .filter(Boolean)
-              .join(' · ')}
+            {[receiverDetail(qr), category?.name].filter(Boolean).join(' · ')}
           </Text>
         </View>
       </View>
