@@ -26,7 +26,17 @@ export type ForeignScheme =
   | 'alipay'
   | 'wechat'
   | 'twqr'
-  | 'paypay';
+  | 'paypay'
+  | 'venmo'
+  | 'cashapp'
+  | 'paypal'
+  | 'revolut'
+  | 'wise'
+  | 'tikkie'
+  | 'vipps'
+  | 'kakaopay'
+  | 'unionpay'
+  | 'abapay';
 
 export interface ForeignMatch {
   /** ISO 3166-1 alpha-2 country, from tag 58 or implied by the scheme. */
