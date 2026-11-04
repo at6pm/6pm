@@ -13,6 +13,7 @@ import {
 import { localeOf } from '@6pm/i18n';
 
 import { useGivableSpends } from '../data/givable-spends';
+import { readJarAsks, type JarAsks } from '../data/jar-asks';
 import { readReadyShown } from '../data/jar-ready';
 import { useMoney, useMoneyActions, useMoneyStore } from '../data/money-provider';
 import { CashCustom } from '../features/close/cash-custom';
@@ -68,36 +69,46 @@ export default function Close() {
   const { palette } = useTheme();
   const today = useMoney().today;
   const givable = useGivableSpends(today);
-  const readyShown = useReadyShown();
-  if (givable === null || readyShown === null) {
+  const memory = useJarMemory();
+  if (givable === null || memory === null) {
     return <View style={{ flex: 1, experimental_backgroundImage: palette.skyDeep }} />;
   }
-  return <CloseOpen givable={givable} readyShown={readyShown} />;
+  return <CloseOpen givable={givable} readyShown={memory.readyShown} jarAsks={memory.jarAsks} />;
 }
 
-/** The jars' ready moments already shown on this phone, read once as the close opens. */
-function useReadyShown(): ReadonlySet<string> | null {
+/**
+ * What this phone remembers about jars, read once as the close opens: the ready moments already
+ * shown, and what arms the "From your {jar}?" question.
+ */
+function useJarMemory(): { readyShown: ReadonlySet<string>; jarAsks: JarAsks } | null {
   const store = useMoneyStore();
-  const [shown, setShown] = useState<ReadonlySet<string> | null>(null);
+  const [memory, setMemory] = useState<{
+    readyShown: ReadonlySet<string>;
+    jarAsks: JarAsks;
+  } | null>(null);
   useEffect(() => {
     let live = true;
-    readReadyShown(store.db)
-      .catch(() => new Set<string>())
-      .then((keys) => live && setShown(keys))
+    Promise.all([
+      readReadyShown(store.db).catch(() => new Set<string>()),
+      readJarAsks(store.db).catch((): JarAsks => ({ taken: [], declined: {} })),
+    ])
+      .then(([readyShown, jarAsks]) => live && setMemory({ readyShown, jarAsks }))
       .catch(() => undefined);
     return () => {
       live = false;
     };
   }, [store]);
-  return shown;
+  return memory;
 }
 
 function CloseOpen({
   givable,
   readyShown,
+  jarAsks,
 }: {
   readonly givable: readonly GivableSpend[];
   readonly readyShown: ReadonlySet<string>;
+  readonly jarAsks: JarAsks;
 }) {
   const router = useRouter();
   const { palette } = useTheme();
@@ -108,7 +119,7 @@ function CloseOpen({
   const snap = useMoney();
   const actions = useMoneyActions();
   const say = useCompanionToast();
-  const close = useClose(givable, readyShown);
+  const close = useClose(givable, readyShown, jarAsks);
   // The number of the day being closed, even when the money day turns over mid-close.
   const day = useClosingNumber(close.day);
   const { state, dispatch, run } = close;

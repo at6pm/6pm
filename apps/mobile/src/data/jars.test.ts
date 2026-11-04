@@ -1,8 +1,9 @@
 import { describe, expect, it, jest } from '@jest/globals';
 
-import { dailyNumber, FUTURE_YOU_POT_ID, payCycleOn } from '@6pm/domain';
+import { armedJars, dailyNumber, FUTURE_YOU_POT_ID, payCycleOn } from '@6pm/domain';
 
 import { openMemoryDb } from '../features/backup/test/memory-db';
+import { markDeclined, markHandTake, readJarAsks } from './jar-asks';
 import { moneyActions } from './money-actions';
 import { createMoneyStore, dayOf } from './money-store';
 import { planActions } from './plan-actions';
@@ -282,5 +283,81 @@ describe('spending from a jar', () => {
     // 1,5tr went back to free money, 600k of it already spent: free is 900k higher, never 1,5tr.
     expect(day.startFree).toBe(noJar - 600_000);
     expect(day.spent).toBe(0);
+  });
+});
+
+describe('what arms the close’s question', () => {
+  async function open() {
+    const db = openMemoryDb();
+    await seedCategories(db);
+    await writePlan(db, {
+      ...DEFAULT_PLAN,
+      income: 20_000_000,
+      futureYou: 2_000_000,
+      startedOn: '2026-03-01',
+      payday: lastDay,
+    });
+    const store = createMoneyStore(db, TODAY);
+    await store.load(TODAY);
+    const money = moneyActions(store);
+    const jar = await planActions(store).createPot({
+      name: 'Đà Lạt',
+      icon: 'landscape',
+      hue: 200,
+      goal: 6_000_000,
+      fill: { by: 'date', neededBy: '2026-10' },
+    });
+    const armedNow = async () => {
+      const asks = await readJarAsks(db);
+      const snap = store.getSnapshot();
+      return armedJars({
+        taken: asks.taken,
+        spends: [...snap.cycleSpends, ...snap.earlierJarSpends],
+        declined: asks.declined,
+      });
+    };
+    return { db, store, money, jar, armedNow };
+  }
+  const spend = { categoryId: 'food', source: 'manual' as const, status: 'kept' as const };
+
+  it('a spend taken from the jar by hand in Details arms it; the close’s own yes does not', async () => {
+    const { money, jar, armedNow } = await open();
+    const hotel = await money.addSpend({ ...spend, amount: 1_200_000, merchant: 'KS' });
+    await money.takeFromJar(hotel.id, jar.id, 'close');
+    expect(await armedNow()).toEqual(new Set());
+    const bus = await money.addSpend({ ...spend, amount: 350_000, merchant: 'Bus' });
+    await money.takeFromJar(bus.id, jar.id);
+    expect(await armedNow()).toEqual(new Set([jar.id]));
+  });
+
+  it('Quick add from a jar arms it; deleting that spend disarms it, undo arms it again', async () => {
+    const { money, jar, armedNow } = await open();
+    const bus = await money.addSpend({
+      ...spend,
+      amount: 350_000,
+      merchant: 'Bus',
+      fromPot: jar.id,
+    });
+    expect(await armedNow()).toEqual(new Set([jar.id]));
+    await money.setStatus(bus.id, 'deleted');
+    expect(await armedNow()).toEqual(new Set());
+    await money.undo(bus.id);
+    expect(await armedNow()).toEqual(new Set([jar.id]));
+    await money.takeFromJar(bus.id, null);
+    expect(await armedNow()).toEqual(new Set());
+  });
+
+  it('a No disarms it until the next spend taken from it by hand', async () => {
+    const { db, money, jar, armedNow } = await open();
+    const bus = await money.addSpend({
+      ...spend,
+      amount: 350_000,
+      merchant: 'Bus',
+      fromPot: jar.id,
+    });
+    await markDeclined(db, jar.id, new Date(Date.now() + 1000).toISOString());
+    expect(await armedNow()).toEqual(new Set());
+    await markHandTake(db, bus.id, jar.id, new Date(Date.now() + 2000).toISOString());
+    expect(await armedNow()).toEqual(new Set([jar.id]));
   });
 });

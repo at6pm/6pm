@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { futureYouPotRow } from '../plan/pots';
-import { dueJarFor, jarQuestionsFor, readyJarFor, readyKey } from './jar-match';
+import { armedJars, dueJarFor, jarQuestionsFor, readyJarFor, readyKey } from './jar-match';
 
 const jar = {
   id: 'dalat',
@@ -16,7 +16,8 @@ const rainy = { ...jar, id: 'rainy', icon: 'beach_access', neededBy: null };
 const fy = futureYouPotRow('2026-11-04T10:00:00.000Z');
 const saved = { dalat: 6_000_000, rainy: 5_000_000, futureYou: 18_900_000 };
 const hotel = { day: '2026-12-20', amount: 1_200_000 };
-const away = { travelling: false };
+const armed = new Set(['dalat', 'rainy', 'tet', 'futureYou']);
+const away = { travelling: false, armed };
 
 describe('the close asks "From your jar?" only for a dated jar that is due', () => {
   it('asks about a 1,2tr hotel on 20 Dec for a Đà Lạt jar due in December', () => {
@@ -33,7 +34,7 @@ describe('the close asks "From your jar?" only for a dated jar that is due', () 
   });
 
   it('asks about a trip jar while Travel mode is on, up to its month', () => {
-    const trip = { travelling: true };
+    const trip = { travelling: true, armed };
     expect(dueJarFor({ ...hotel, day: '2026-11-20' }, [jar], saved, trip)?.id).toBe('dalat');
     expect(dueJarFor({ ...hotel, day: '2027-01-20' }, [jar], saved, trip)).toBeNull();
     const tet = { ...jar, id: 'tet', icon: 'local_florist', neededBy: '2027-02' };
@@ -82,5 +83,55 @@ describe('one question per jar a night', () => {
     ];
     expect([...jarQuestionsFor(spends, [fy, jar], saved, away)]).toEqual([['hotel', 'dalat']]);
     expect(jarQuestionsFor([], [jar], saved, away).size).toBe(0);
+  });
+});
+
+describe('the close asks only about jars the person armed', () => {
+  const hand = { spendId: 'bus', jarId: 'dalat', at: '2026-12-02T09:00:00.000Z' };
+  const bus = { id: 'bus', fromPot: 'dalat', status: 'kept' };
+  const ask = (on: ReadonlySet<string>) =>
+    dueJarFor(hotel, [jar], saved, { travelling: false, armed: on });
+
+  it('never asks about a jar nobody took a spend from by hand', () => {
+    expect(ask(armedJars({ taken: [], spends: [bus], declined: {} }))).toBeNull();
+  });
+
+  it('asks once a spend was taken from it by hand', () => {
+    expect(ask(armedJars({ taken: [hand], spends: [bus], declined: {} }))?.id).toBe('dalat');
+  });
+
+  it('a No disarms it the next night; a spend taken by hand again arms it', () => {
+    const declined = { dalat: '2026-12-20T11:00:00.000Z' };
+    expect(ask(armedJars({ taken: [hand], spends: [bus], declined }))).toBeNull();
+    const again = { spendId: 'cable-car', jarId: 'dalat', at: '2026-12-21T08:00:00.000Z' };
+    const car = { id: 'cable-car', fromPot: 'dalat', status: 'kept' };
+    expect(ask(armedJars({ taken: [hand, again], spends: [bus, car], declined }))?.id).toBe(
+      'dalat',
+    );
+  });
+
+  it('undoing the hand spend, moving it back to today or deleting it disarms the jar', () => {
+    const none = (spends: { id: string; fromPot: string | null; status: string }[]) =>
+      ask(armedJars({ taken: [hand], spends, declined: {} }));
+    expect(none([{ ...bus, status: 'deleted' }])).toBeNull();
+    expect(none([{ ...bus, status: 'skipped' }])).toBeNull();
+    expect(none([{ ...bus, fromPot: null }])).toBeNull();
+    expect(none([])).toBeNull();
+    // Un-deleted, it stands from the jar again.
+    expect(none([bus])?.id).toBe('dalat');
+  });
+
+  it('arming one jar never arms another', () => {
+    expect(armedJars({ taken: [hand], spends: [bus], declined: {} })).toEqual(new Set(['dalat']));
+    const other = dueJarFor(
+      hotel,
+      [{ ...jar, id: 'tet' }],
+      { tet: 6_000_000 },
+      {
+        travelling: false,
+        armed: new Set(['dalat']),
+      },
+    );
+    expect(other).toBeNull();
   });
 });

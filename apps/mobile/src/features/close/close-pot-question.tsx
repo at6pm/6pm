@@ -21,7 +21,8 @@ import {
 import { localeOf } from '@6pm/i18n';
 import { oklchSrgbHex } from '@6pm/theme';
 
-import { useMoney, useMoneyActions } from '../../data/money-provider';
+import { markDeclined } from '../../data/jar-asks';
+import { useMoney, useMoneyActions, useMoneyStore } from '../../data/money-provider';
 import { findSpend } from '../../data/money-store';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
@@ -108,6 +109,7 @@ function PotQuestion({
   const money = useMoneyFormat();
   const snap = useMoney();
   const actions = useMoneyActions();
+  const store = useMoneyStore();
   // Fixed as the question opens: the answer's write must not redraw the question under the pour.
   const [jar] = useState(() => snap.pots.find((p) => p.id === jarId));
   const [choice] = useState(() => jarChoiceOf(snap, spend, jarId));
@@ -146,7 +148,7 @@ function PotQuestion({
     if (answer !== null) return;
     haptics.tap();
     setAnswer(true);
-    void run(() => actions.takeFromJar(spend.id, jar.id));
+    void run(() => actions.takeFromJar(spend.id, jar.id, 'close'));
     if (bigger) {
       dry.set(
         withTiming(1, { duration: DRY_MS, easing: enter, reduceMotion: ReduceMotion.System }),
@@ -167,6 +169,8 @@ function PotQuestion({
     if (answer !== null) return;
     haptics.tap();
     setAnswer(false);
+    // A No disarms the jar until the person next takes a spend from it by hand (M13).
+    void markDeclined(store.db, jar.id).catch(() => undefined);
   };
 
   return (

@@ -21,6 +21,7 @@ import {
 import { homeCurrencyOf } from '../money/use-money-format';
 
 import { noteReceiptEdit } from './first-catch';
+import { markHandTake } from './jar-asks';
 import { moneyInActions } from './money-in-actions';
 import { findSpend, type MoneyStore } from './money-store';
 
@@ -316,7 +317,15 @@ export function moneyActions(store: MoneyStore) {
   };
 
   return {
-    addSpend: (input: NewSpend) => inTurn(async () => (await captureNow(input)).row),
+    addSpend: (input: NewSpend) =>
+      inTurn(async () => {
+        const { row } = await captureNow(input);
+        // Quick add "From a jar" is taken by hand: it arms the jar for the close's question.
+        if (row.fromPot != null && input.fromPot != null) {
+          await markHandTake(store.db, row.id, row.fromPot);
+        }
+        return row;
+      }),
     /** `addSpend`, also saying whether the payment merged into one already there. */
     captureSpend: (input: NewSpend) => inTurn(() => captureNow(input)),
     /** Takes back a capture (a cancelled payment) without touching anything it did not make. */
@@ -370,13 +379,24 @@ export function moneyActions(store: MoneyStore) {
     /**
      * "From a jar": the spend comes out of the jar as far as it holds, and leaves today's number
      * alone for that part (M13); null puts it back on today. Money in never comes from a jar.
+     * Taken by hand (Details, a jar's page), it arms the jar for the close's question; the close's
+     * own yes (`by: 'close'`) does not.
      */
-    takeFromJar: (id: string, potId: string | null): Promise<SpendRow | null> =>
+    takeFromJar: (
+      id: string,
+      potId: string | null,
+      by: 'hand' | 'close' = 'hand',
+    ): Promise<SpendRow | null> =>
       inTurn(async () => {
         const row = await current(id);
         if (!row || row.direction === 'in') return null;
         if (potId === null) return patchNow(row, { fromPot: null, fromPotAmount: null });
-        return patchNow(row, { fromPot: potId, fromPotAmount: coverOf(row, potId, row.amount) });
+        const next = await patchNow(row, {
+          fromPot: potId,
+          fromPotAmount: coverOf(row, potId, row.amount),
+        });
+        if (by === 'hand') await markHandTake(store.db, id, potId);
+        return next;
       }),
     /**
      * Keep, not mine, delete: remembers the old status so the undo pill can put it back. An edit

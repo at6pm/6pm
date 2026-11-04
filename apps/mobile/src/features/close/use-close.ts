@@ -5,6 +5,7 @@ import {
   closeQueue,
   closeReducer,
   designAmount,
+  armedJars,
   jarQuestionsFor,
   FUTURE_YOU,
   moneyInAsk,
@@ -26,6 +27,7 @@ import {
 } from '@6pm/domain';
 import { localeOf } from '@6pm/i18n';
 
+import type { JarAsks } from '../../data/jar-asks';
 import type { MoneyInPlace } from '../../data/money-in-actions';
 
 import { useMoney, useMoneyActions } from '../../data/money-provider';
@@ -78,6 +80,8 @@ function startOf(
     readonly travelling: boolean;
     /** The ready moments already shown on this phone. */
     readonly readyShown: ReadonlySet<string>;
+    /** The jars the person armed for "From your {jar}?" (`armedJars`). */
+    readonly armed: ReadonlySet<string>;
   },
 ): Start {
   const parked = parkedClose(day);
@@ -121,7 +125,7 @@ function startOf(
     queue.filter((s) => !comesIn(s)),
     money.jars,
     money.saved,
-    { travelling: money.travelling },
+    { travelling: money.travelling, armed: money.armed },
   );
   return {
     queue,
@@ -159,7 +163,11 @@ function workCandidate(queue: readonly SpendRow[], min: number): string | null {
  * the database the moment it is made (so leaving mid-close loses nothing). Leaving parks the
  * close at its step; reopening resumes it.
  */
-export function useClose(givable: readonly GivableSpend[], readyShown: ReadonlySet<string>) {
+export function useClose(
+  givable: readonly GivableSpend[],
+  readyShown: ReadonlySet<string>,
+  jarAsks: JarAsks,
+) {
   const snap = useMoney();
   const { on: travelling } = useTravel();
   const moneyIn = useCloseMoney();
@@ -180,6 +188,11 @@ export function useClose(givable: readonly GivableSpend[], readyShown: ReadonlyS
       saved: snap.potSaved,
       travelling,
       readyShown,
+      armed: armedJars({
+        taken: jarAsks.taken,
+        spends: [...snap.cycleSpends, ...snap.earlierJarSpends, ...snap.waitingBefore],
+        declined: jarAsks.declined,
+      }),
     }),
   );
   const { queue, moneyAsks } = start;

@@ -13,6 +13,7 @@ import {
   type TogetherState,
 } from '@6pm/domain';
 
+import { JAR_ASKS_KEY, markHandTake } from '../../data/jar-asks';
 import type { MoneyStore } from '../../data/money-store';
 import { readPlan, writePlan } from '../../data/plan-settings';
 import { TOGETHER_CACHE_KEY } from '../together/together-state';
@@ -23,7 +24,8 @@ import { TOGETHER_CACHE_KEY } from '../together/together-state';
  * - `shelf`: Future you 18,9tr, Tết (dated), Đà Lạt (due this month), Rainy day (each payday),
  *   a 2.1 goal still on the slice, a jar filled by hand, and a jar shared with B.
  * - `due`: the shelf, with two spends waiting for tonight's close in Đà Lạt's month (the 1,2tr
- *   hotel, and a 7tr flight bigger than the jar), and Rainy day full for the ready moment.
+ *   hotel, and a 7tr flight bigger than the jar), Đà Lạt armed by a bus taken from it by hand
+ *   yesterday, and Rainy day full for the ready moment.
  * - `payday`: the day after payday. `tomorrow`: payday tomorrow. `over`: past the plan.
  * - `first`: a first month with Future you, two bills and what went before 6pm.
  */
@@ -216,7 +218,32 @@ export async function seedDesignJars(
   }
 
   // Tonight's close in Đà Lạt's month: the hotel the jar covers, and a flight bigger than it.
+  // Đà Lạt is armed for the question: the bus there was taken from it by hand yesterday.
   if (state === 'due') {
+    const bus = randomUUID();
+    const yesterday = addDays(today, -1);
+    await tables.spends.put({
+      id: bus,
+      day: yesterday,
+      at: new Date(`${yesterday}T09:20:00`).toISOString(),
+      amount: 350_000,
+      categoryId: 'transport',
+      merchant: 'Phương Trang bus',
+      note: null,
+      source: 'manual',
+      status: 'kept',
+      previousStatus: null,
+      wallet: 'MoMo',
+      forWork: false,
+      detail: null,
+      foreignAmount: null,
+      fromPot: 'dev-dalat',
+      fromPotAmount: 350_000,
+      createdAt: iso,
+      updatedAt: iso,
+    });
+    await db.runAsync('DELETE FROM settings WHERE key = ?', [JAR_ASKS_KEY]);
+    await markHandTake(db, bus, 'dev-dalat', iso);
     for (const [time, merchant, amount] of [
       ['16:40', 'KS Đồi Thông', 1_200_000],
       ['11:05', 'Vietjet · Đà Lạt', 7_000_000],
