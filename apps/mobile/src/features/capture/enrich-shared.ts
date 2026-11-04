@@ -6,7 +6,7 @@ import type { ApiClient } from '../api/api-client';
 import { requireServerAi, type AiModeSettings } from '../privacy/ai-mode';
 
 /** One attempt, kept short: the import waits for it, and a slow answer keeps the read name. */
-export const NAME_MERCHANT_TIMEOUT_MS = 3_000;
+export const NAME_MERCHANT_TIMEOUT_MS = 7_000;
 
 const digit = /\p{Nd}/u;
 const digits = /\p{Nd}/gu;
