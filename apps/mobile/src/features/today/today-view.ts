@@ -51,6 +51,33 @@ export type Labels = {
   readonly moneyIn?: string;
 };
 
+/** The words a row's tag can say. */
+export interface TagWords {
+  readonly pending: string;
+  readonly toReview: string;
+  readonly claimBack: string;
+  readonly notMine: string;
+  readonly bill: string;
+  readonly moneyIn: string;
+  /** "From {jar}" for the jar a spend was taken from. */
+  readonly fromJar: (potId: string) => string;
+}
+
+/**
+ * The tag under a row's amount: what still waits for a yes first, then what the spend became. A
+ * kept spend taken from a jar says which ("FROM ĐÀ LẠT"): it is spending, and the jar paid for it.
+ */
+export function spendTag(row: SpendRow, words: TagWords): string | null {
+  if (row.status === 'pending') return words.pending;
+  if (row.status === 'caught') return words.toReview;
+  if (row.forWork) return words.claimBack;
+  if (row.status === 'skipped') return words.notMine;
+  if (row.paysBill) return words.bill;
+  if (row.direction === 'in') return words.moneyIn;
+  if (row.fromPot != null) return words.fromJar(row.fromPot);
+  return null;
+}
+
 /** Display rows for a list of spends: icon, tint, "08:15 · Drinks · Shared receipt", tag. */
 export function toRowViews(
   spends: readonly SpendRow[],

@@ -115,7 +115,7 @@ export async function cardOf(
     }
   }
   if (ORIGINAL_ANSWERS.has(answer.kind)) {
-    const ctx = askContextOf(snap);
+    const ctx = askContextOf(snap, now.t);
     if (ctx === null) throw new Error('Ask was opened before the month was set up');
     return { card: describeAnswer(answer as AskAnswer, ctx, reading, env), pending: null };
   }
