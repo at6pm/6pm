@@ -30,6 +30,18 @@ describe('futureYouOfMonth', () => {
     expect(november.added).toBe(2_000_000 + 300_000);
   });
 
+  it('takes a spend from the jar out of the total, never adds it', () => {
+    const spent = {
+      kind: 'spent',
+      amount: 1_200_000,
+      cycle: '2026-10-20',
+      at: '2026-10-20T05:00:00.000Z',
+    };
+    const october = futureYouOfMonth([...moves, spent], '2026-10', lastDay);
+    expect(october.total).toBe(2_100_000 - 1_200_000);
+    expect(october.added).toBe(2_100_000);
+  });
+
   it('adds everything up to the end of the month for the total', () => {
     expect(futureYouOfMonth(moves, '2026-10', lastDay).total).toBe(2_100_000);
     expect(futureYouOfMonth(moves, '2026-11', lastDay).total).toBe(4_400_000);

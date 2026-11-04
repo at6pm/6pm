@@ -3,6 +3,7 @@ import { randomUUID } from 'expo-crypto';
 import {
   canKeep,
   findDuplicate,
+  jarCover,
   learnedRule,
   mayBeSamePayment,
   mergedNaming,
@@ -50,6 +51,8 @@ export interface NewSpend {
   readonly direction?: 'in' | 'out' | null;
   /** What the capture read money in as (an email read as a refund), for the close to ask. */
   readonly moneyIn?: 'refund' | null;
+  /** The jar it comes out of (Quick add's "From a jar"); today's money when left out. */
+  readonly fromPot?: string | null;
 }
 
 /**
@@ -120,6 +123,16 @@ export function moneyActions(store: MoneyStore) {
     return next;
   };
 
+  /**
+   * What a jar covers of a spend taken from it (M13): what the jar holds now, this spend's own
+   * earlier part given back first, at most the spend; the rest counts today.
+   */
+  const coverOf = (row: SpendRow, potId: string, amount: number): number => {
+    const snap = store.getSnapshot();
+    const own = row.fromPot === potId ? (row.fromPotAmount ?? row.amount) : 0;
+    return jarCover(amount, (snap.potSaved[potId] ?? 0) + own);
+  };
+
   const update = (id: string, patch: Partial<SpendRow>): Promise<SpendRow | null> =>
     inTurn(async () => {
       const row = await current(id);
@@ -129,7 +142,15 @@ export function moneyActions(store: MoneyStore) {
         patch,
         homeCurrencyOf(store.getSnapshot().plan),
       );
-      return patchNow(row, settled === undefined ? patch : { ...patch, foreignAmount: settled });
+      const next = settled === undefined ? patch : { ...patch, foreignAmount: settled };
+      // A new amount on a spend from a jar takes what the jar can give of it, no more.
+      const jar = next.fromPot === undefined ? row.fromPot : next.fromPot;
+      const amount = next.amount ?? row.amount;
+      const cover =
+        jar != null && next.amount !== undefined
+          ? { fromPotAmount: coverOf(row, jar, amount) }
+          : {};
+      return patchNow(row, { ...next, ...cover });
     });
 
   /** The same payment seen a second way: one item, its sightings recorded, never two rows. */
@@ -212,6 +233,7 @@ export function moneyActions(store: MoneyStore) {
       if (row) return mergeInto(row, input, at.toISOString());
     }
     const now = new Date().toISOString();
+    const jar = input.fromPot ?? null;
     const row: SpendRow = {
       id: input.id ?? randomUUID(),
       // Captured now, it belongs to the day the screens are showing; a recorded time files itself.
@@ -234,6 +256,11 @@ export function moneyActions(store: MoneyStore) {
       moneyIn: input.direction === 'in' ? (input.moneyIn ?? null) : null,
       givesBack: null,
       savedTo: null,
+      fromPot: input.direction === 'in' ? null : jar,
+      fromPotAmount:
+        jar === null || input.direction === 'in'
+          ? null
+          : jarCover(Math.round(input.amount), snap.potSaved[jar] ?? 0),
       createdAt: now,
       updatedAt: now,
     };
@@ -333,6 +360,17 @@ export function moneyActions(store: MoneyStore) {
         return merged.row;
       }),
     update,
+    /**
+     * "From a jar": the spend comes out of the jar as far as it holds, and leaves today's number
+     * alone for that part (M13); null puts it back on today. Money in never comes from a jar.
+     */
+    takeFromJar: (id: string, potId: string | null): Promise<SpendRow | null> =>
+      inTurn(async () => {
+        const row = await current(id);
+        if (!row || row.direction === 'in') return null;
+        if (potId === null) return patchNow(row, { fromPot: null, fromPotAmount: null });
+        return patchNow(row, { fromPot: potId, fromPotAmount: coverOf(row, potId, row.amount) });
+      }),
     /**
      * Keep, not mine, delete: remembers the old status so the undo pill can put it back. An edit
      * made in the same breath (the close's "Save and keep") goes in the same write.

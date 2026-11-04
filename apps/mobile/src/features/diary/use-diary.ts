@@ -134,6 +134,8 @@ export function useDiary() {
               forWork: s.forWork,
               paysBill: s.paysBill,
               direction: s.direction,
+              fromPot: s.fromPot,
+              fromPotAmount: s.fromPotAmount,
             })),
             notDaily,
             { from: spanFrom, to: today },

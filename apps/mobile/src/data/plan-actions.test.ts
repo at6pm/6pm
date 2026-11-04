@@ -9,6 +9,7 @@ import { sql as addBillPayments } from '../db/migrations/0008-bill-kind-and-paym
 import { sql as addSpendMemo } from '../db/migrations/0009-spend-memo';
 import { sql as addSightingCapture } from '../db/migrations/0006-sighting-capture-id';
 import { sql as addMoneyIn } from '../db/migrations/0010-money-in';
+import { sql as addJars } from '../db/migrations/0011-jars';
 import { createMoneyStore, dayOf } from './money-store';
 import { planActions } from './plan-actions';
 import { DEFAULT_PLAN, writePlan } from './plan-settings';
@@ -31,6 +32,7 @@ async function open(today: string, startedOn = '2026-09-01') {
   sqlite.exec(addSpendMemo);
   sqlite.exec(addSightingCapture);
   sqlite.exec(addMoneyIn);
+  sqlite.exec(addJars);
   const db: SqlDatabase = {
     getAllAsync: <T>(source: string, params: SqlValue[]) =>
       Promise.resolve(sqlite.prepare(source).all(...params) as T[]),
@@ -58,17 +60,25 @@ async function open(today: string, startedOn = '2026-09-01') {
   return { store, actions: planActions(store), sqlite };
 }
 
+const byDate = (neededBy: string) => ({ by: 'date' as const, neededBy });
 const pot = {
   name: 'Japan',
   icon: 'flight',
   hue: 200,
   goal: 3_000_000,
-  neededBy: '2026-12',
+  fill: byDate('2026-12'),
 };
 
+/** Set-aside moves of the jars made here, Future you's own jar left out. */
 const moveCount = (sqlite: InstanceType<typeof DatabaseSync>, kind: string) =>
-  (sqlite.prepare('SELECT COUNT(*) AS n FROM pot_moves WHERE kind = ?').get(kind) as { n: number })
-    .n;
+  (
+    sqlite
+      .prepare("SELECT COUNT(*) AS n FROM pot_moves WHERE kind = ? AND pot_id != 'futureYou'")
+      .get(kind) as { n: number }
+  ).n;
+
+const own = (ids: Readonly<Record<string, number>>) =>
+  Object.fromEntries(Object.entries(ids).filter(([id]) => id !== 'futureYou'));
 
 describe('pot set-aside', () => {
   it('records the month into the pot the moment it is made, and the daily number moves', async () => {
@@ -96,9 +106,7 @@ describe('pot set-aside', () => {
     const a = dayOf(store.getSnapshot())?.startFree;
     await store.load('2026-10-02');
     // A day later in the same cycle, nothing was spent: the pot still takes the same amount.
-    expect(store.getSnapshot().setAsideThisCycle).toEqual(
-      expect.objectContaining({ [store.getSnapshot().pots[0]?.id ?? '']: 1_500_000 }),
-    );
+    expect(Object.values(own(store.getSnapshot().setAsideThisCycle))).toEqual([1_500_000]);
     expect(dayOf(store.getSnapshot())?.startFree).toBe(a);
   });
 
@@ -114,7 +122,7 @@ describe('pot set-aside', () => {
 
   it('catches up the cycles a long absence skipped', async () => {
     const { store, actions, sqlite } = await open('2026-10-11');
-    const made = await actions.createPot({ ...pot, goal: 6_000_000, neededBy: '2027-03' });
+    const made = await actions.createPot({ ...pot, goal: 6_000_000, fill: byDate('2027-03') });
     await store.load('2027-01-15');
     // 1tr a month from the cycle of October: Oct, Nov, Dec and Jan cycles are all recorded.
     expect(moveCount(sqlite, 'setAside')).toBe(4);
@@ -149,68 +157,9 @@ describe('pot set-aside', () => {
     const made = await actions.createPot(pot);
     await actions.archivePot(made.id);
     expect(dayOf(store.getSnapshot())?.startFree).toBe(before);
-    expect(store.getSnapshot().pots).toHaveLength(0);
+    expect(store.getSnapshot().pots.map((p) => p.id)).toEqual(['futureYou']);
     await actions.restorePot(made.id);
     expect(dayOf(store.getSnapshot())?.startFree).toBe(before - 1_500_000);
-  });
-});
-
-describe('Future you goals', () => {
-  const goal = { ...pot, kind: 'goal' as const, name: 'Cushion', goal: 15_000_000, neededBy: null };
-
-  it('are created with a share of Future you and fill from it each cycle', async () => {
-    const { store, actions } = await open('2026-10-11');
-    const made = await actions.createPot(goal);
-    expect(made.share).toBe(1);
-    expect(store.getSnapshot().potSaved[made.id]).toBe(2_000_000);
-    // A goal is paid out of Future you: the daily number does not change when one is made.
-    const dayWith = dayOf(store.getSnapshot())?.startFree;
-    await actions.archivePot(made.id);
-    expect(dayOf(store.getSnapshot())?.startFree).toBe(dayWith);
-  });
-
-  it('share Future you between them and give way when one is set', async () => {
-    const { store, actions } = await open('2026-10-11');
-    const a = await actions.createPot(goal);
-    const b = await actions.createPot({ ...goal, name: 'Japan', share: 0.4 });
-    const shares = () => Object.fromEntries(store.getSnapshot().pots.map((p) => [p.id, p.share]));
-    expect(shares()).toEqual({ [a.id]: 0.6, [b.id]: 0.4 });
-    expect(store.getSnapshot().setAsideThisCycle[a.id]).toBe(1_200_000);
-    await actions.updatePot(b.id, { share: 0.7 });
-    expect(shares()).toEqual({ [a.id]: 0.3, [b.id]: 0.7 });
-    expect(store.getSnapshot().setAsideThisCycle[b.id]).toBe(1_400_000);
-    await actions.archivePot(b.id);
-    expect(shares()).toEqual({ [a.id]: 1 });
-  });
-
-  it('give their shares back when a deleted goal is restored, adding up to one again', async () => {
-    const { store, actions } = await open('2026-10-11');
-    const a = await actions.createPot(goal);
-    const b = await actions.createPot({ ...goal, name: 'Japan', share: 0.4 });
-    const c = await actions.createPot({ ...goal, name: 'Car', share: 0.2 });
-    const shares = () => Object.fromEntries(store.getSnapshot().pots.map((p) => [p.id, p.share]));
-    const total = () => Object.values(shares()).reduce<number>((sum, x) => sum + (x ?? 0), 0);
-    const before = shares();
-    await actions.archivePot(b.id);
-    expect(total()).toBeCloseTo(1, 10);
-    await actions.restorePot(b.id);
-    expect(total()).toBeCloseTo(1, 10);
-    expect(shares()).toEqual(before);
-    // What the goals set aside this cycle still adds up to Future you, not more.
-    const setAside = Object.values(store.getSnapshot().setAsideThisCycle).reduce(
-      (x, y) => x + y,
-      0,
-    );
-    expect(setAside).toBe(2_000_000);
-    expect(shares()[a.id]).toBe(before[a.id]);
-    expect(shares()[c.id]).toBe(0.2);
-  });
-
-  it('follow the what-if when Future you changes', async () => {
-    const { store, actions } = await open('2026-10-11');
-    const made = await actions.createPot(goal);
-    await actions.setFutureYou(1_000_000);
-    expect(store.getSnapshot().setAsideThisCycle[made.id]).toBe(1_000_000);
   });
 });
 
@@ -221,12 +170,12 @@ describe('updateMonth', () => {
     await actions.updateMonth({ payday: { kind: 'sameDay', day: 25 } });
     expect(store.getSnapshot().cycle.start).toBe('2026-09-25');
     expect(moveCount(sqlite, 'setAside')).toBe(1);
-    expect(Object.values(store.getSnapshot().setAsideThisCycle)).toEqual([1_500_000]);
+    expect(Object.values(own(store.getSnapshot().setAsideThisCycle))).toEqual([1_500_000]);
   });
 });
 
 describe('already saved', () => {
-  const wedding = { ...pot, name: 'Wedding', goal: 50_000_000, neededBy: '2027-08' };
+  const wedding = { ...pot, name: 'Wedding', goal: 50_000_000, fill: byDate('2027-08') };
   const openings = (sqlite: InstanceType<typeof DatabaseSync>) =>
     sqlite.prepare("SELECT amount FROM pot_moves WHERE kind = 'opening'").all();
 

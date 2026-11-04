@@ -10,7 +10,7 @@ import {
 } from '@6pm/domain';
 import { t as translate } from '@6pm/i18n';
 
-import type { MoneySnapshot } from '../../data/money-store';
+import { NO_JAR_FIELDS, type MoneySnapshot } from '../../data/money-store';
 import { DEFAULT_PLAN } from '../../data/plan-settings';
 import type { I18n } from '../../i18n/i18n';
 import { surfaceContext } from './surface-context';
@@ -65,6 +65,7 @@ const money: MoneySnapshot = {
   topUpsThisCycle: 0,
   setAsideThisCycle: {},
   closedDays: [],
+  ...NO_JAR_FIELDS,
 };
 
 describe('the surfaces on a phone counting dollars', () => {

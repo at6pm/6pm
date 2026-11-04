@@ -14,7 +14,7 @@ import {
 import { t as translate, type Language } from '@6pm/i18n';
 import { paletteFor } from '@6pm/theme';
 
-import { dayOf, type MoneySnapshot } from '../../data/money-store';
+import { dayOf, NO_JAR_FIELDS, type MoneySnapshot } from '../../data/money-store';
 import { DEFAULT_PLAN } from '../../data/plan-settings';
 import type { I18n } from '../../i18n/i18n';
 import { contextStrings, hostOf, surfaceContext } from './surface-context';
@@ -76,6 +76,7 @@ function money(today: string, cycleSpends: SpendRow[], serious = false): MoneySn
     topUpsThisCycle: 0,
     setAsideThisCycle: {},
     closedDays: [],
+    ...NO_JAR_FIELDS,
   };
 }
 

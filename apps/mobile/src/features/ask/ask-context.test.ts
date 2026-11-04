@@ -2,7 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 
 import { payCycleOn, type PotRow } from '@6pm/domain';
 
-import type { MoneySnapshot } from '../../data/money-store';
+import { NO_JAR_FIELDS, type MoneySnapshot } from '../../data/money-store';
 import { askContextOf } from './ask-context';
 
 const today = '2026-10-09';
@@ -44,6 +44,7 @@ const snap: MoneySnapshot = {
   topUpsThisCycle: 0,
   setAsideThisCycle: { Tết: 450_000 },
   closedDays: [],
+  ...NO_JAR_FIELDS,
 };
 
 describe('askContextOf', () => {

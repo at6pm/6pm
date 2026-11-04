@@ -9,7 +9,7 @@ import {
   type PotRow,
 } from '@6pm/domain';
 
-import type { MoneySnapshot } from '../../data/money-store';
+import { NO_JAR_FIELDS, type MoneySnapshot } from '../../data/money-store';
 import {
   barDays,
   billViews,
@@ -93,6 +93,7 @@ const snap: MoneySnapshot = {
     dalat: 1_350_000,
   },
   closedDays: [],
+  ...NO_JAR_FIELDS,
 };
 
 describe('plan view', () => {

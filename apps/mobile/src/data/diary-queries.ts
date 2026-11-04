@@ -107,7 +107,8 @@ export function futureYouOfMonth(
         ? cycleMonth(payCycleOn(move.cycle, payday))
         : monthOf(localDateOf(new Date(move.at)));
     if (filed > month) continue;
-    total += move.amount;
+    // A spend taken from the jar is money out of it, never money in.
+    total += move.kind === 'spent' ? -Math.abs(move.amount) : move.amount;
     if (filed === month && move.kind !== 'spent') added += move.amount;
   }
   return { added, total };
@@ -121,7 +122,12 @@ async function readFutureYou(
   const rows = await store.db.getAllAsync<GoalMoveRow>(
     `SELECT m.kind AS kind, m.amount AS amount, m.cycle AS cycle, m.at AS at
      FROM pot_moves m JOIN pots p ON p.id = m.pot_id
-     WHERE p.kind = 'goal' AND p.archived_at IS NULL`,
+     WHERE p.kind = 'goal' AND p.archived_at IS NULL AND m.kind != 'spent'
+     UNION ALL
+     SELECT 'spent' AS kind, COALESCE(s.from_pot_amount, s.amount) AS amount, s.day AS cycle,
+       s.at AS at
+     FROM spends s JOIN pots p ON p.id = s.from_pot
+     WHERE p.kind = 'goal' AND p.archived_at IS NULL AND s.status NOT IN ('skipped', 'deleted')`,
     [],
   );
   return futureYouOfMonth(rows, month, payday);
@@ -137,6 +143,8 @@ export function toDiarySpend(s: SpendRow): DiarySpend {
     forWork: s.forWork,
     paysBill: s.paysBill,
     direction: s.direction,
+    fromPot: s.fromPot,
+    fromPotAmount: s.fromPotAmount,
   };
 }
 

@@ -8,6 +8,7 @@ import { sql as addBillPayments } from '../db/migrations/0008-bill-kind-and-paym
 import { sql as addSpendMemo } from '../db/migrations/0009-spend-memo';
 import { sql as addSightingCapture } from '../db/migrations/0006-sighting-capture-id';
 import { sql as addMoneyIn } from '../db/migrations/0010-money-in';
+import { sql as addJars } from '../db/migrations/0011-jars';
 import { categoryActions, tallyByCategory } from './category-actions';
 import { moneyActions } from './money-actions';
 import { createMoneyStore } from './money-store';
@@ -28,6 +29,7 @@ async function openStore() {
   sqlite.exec(addSpendMemo);
   sqlite.exec(addSightingCapture);
   sqlite.exec(addMoneyIn);
+  sqlite.exec(addJars);
   const db: SqlDatabase = {
     getAllAsync: <T>(source: string, params: SqlValue[]) =>
       Promise.resolve(sqlite.prepare(source).all(...params) as T[]),

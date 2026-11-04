@@ -3,11 +3,18 @@ import {
   billsThisCycle,
   currencyOf,
   dailyNumber,
+  deletedJarsKeep,
+  futureYouPotRow,
   futureYouStartsOn,
+  jarPartOf,
+  jarSpendMoves,
   joinedCycle,
   occasionsOf,
   payCycleOn,
   potTotals,
+  shelfOrder,
+  sumDayPart,
+  type PotMove,
   type BillRow,
   type CategoryRow,
   type ClosedDayRow,
@@ -19,7 +26,6 @@ import {
   needsReview,
   type SpendRow,
   startOfWeek,
-  sumCounted,
   sumMoneyIn,
 } from '@6pm/domain';
 
@@ -49,14 +55,101 @@ export interface MoneySnapshot {
   readonly waitingBefore: readonly SpendRow[];
   /** The bills that still come off in this pay cycle: one past its last month has stopped. */
   readonly bills: readonly BillRow[];
+  /** The jars, Future you first, then as they were made. */
   readonly pots: readonly PotRow[];
-  /** Saved per pot, from its moves. */
+  /** Jars deleted while spends taken from them still stand (M13). */
+  readonly deletedPots: readonly PotRow[];
+  /** Every stored jar move, this cycle's set-asides included; spends from jars are not here. */
+  readonly potMoves: readonly PotMove[];
+  /** Spends from before this cycle that came out of a jar: they still lower what it holds. */
+  readonly earlierJarSpends: readonly SpendRow[];
+  /** What the person put into shared jars this cycle (it counts like a top-up). */
+  readonly togetherThisCycle: number;
+  /** Held per jar, from its moves and the spends taken from it; never below zero. */
   readonly potSaved: Readonly<Record<string, number>>;
-  /** Top-ups this cycle: the person's own pots, and what they put into shared pots. */
+  /** Top-ups this cycle: the person's own jars, and what they put into shared ones. */
   readonly topUpsThisCycle: number;
-  /** What each pot sets aside this pay cycle, recorded when the cycle began. */
+  /** What each jar sets aside this pay cycle, recorded when the cycle began. */
   readonly setAsideThisCycle: Readonly<Record<string, number>>;
+  /** Taken from each jar by this cycle's spends. */
+  readonly potSpentThisCycle: Readonly<Record<string, number>>;
+  /** What jars deleted this cycle still take out of free money (`deletedJarsKeep`). */
+  readonly deletedJarsKept: number;
   readonly closedDays: readonly ClosedDayRow[];
+}
+
+/** A snapshot's jar fields with no jars, moves or spends from jars: for snapshots built by hand. */
+export const NO_JAR_FIELDS = {
+  deletedPots: [],
+  potMoves: [],
+  earlierJarSpends: [],
+  togetherThisCycle: 0,
+  potSpentThisCycle: {},
+  deletedJarsKept: 0,
+} as const satisfies Partial<MoneySnapshot>;
+
+/** The fields a snapshot's jar totals are worked out from, on every publish. */
+type JarTotals = Pick<
+  MoneySnapshot,
+  'potSaved' | 'topUpsThisCycle' | 'setAsideThisCycle' | 'potSpentThisCycle' | 'deletedJarsKept'
+>;
+
+function notDailyOf(snapshot: Pick<MoneySnapshot, 'categories'>): Set<string> {
+  return new Set(snapshot.categories.filter((c) => !c.countsDaily).map((c) => c.id));
+}
+
+const countedOf = (s: SpendRow) => ({
+  amount: s.amount,
+  category: s.categoryId,
+  status: s.status,
+  forWork: s.forWork,
+  paysBill: s.paysBill,
+  direction: s.direction,
+  fromPot: s.fromPot,
+  fromPotAmount: s.fromPotAmount,
+  day: s.day,
+});
+
+/**
+ * What every jar holds, sets aside and gave this cycle, from the stored moves and the spends taken
+ * from jars. Worked out again whenever a snapshot is published, so a spend marked "From a jar",
+ * edited, skipped or undone moves its jar at once.
+ */
+export function jarTotalsOf(
+  snapshot: Omit<MoneySnapshot, keyof JarTotals> & Partial<JarTotals>,
+): JarTotals {
+  const payday = snapshot.plan?.payday ?? { kind: 'lastDay' as const };
+  const notDaily = notDailyOf(snapshot);
+  const spends = [...snapshot.earlierJarSpends, ...snapshot.cycleSpends].map(countedOf);
+  const spent = jarSpendMoves(spends, payday, notDaily);
+  const totals = potTotals(
+    [...snapshot.potMoves, ...spent],
+    new Set(snapshot.pots.map((p) => p.id)),
+    snapshot.cycle.start,
+  );
+  const covered = (potId: string) =>
+    snapshot.cycleSpends
+      .filter((s) => s.fromPot === potId)
+      .reduce((sum, s) => sum + jarPartOf(countedOf(s), notDaily), 0);
+  const deleted = snapshot.deletedPots.map((pot) => {
+    const thisCycle = snapshot.potMoves.filter(
+      (m) => m.potId === pot.id && m.cycle === snapshot.cycle.start,
+    );
+    const of = (kind: PotMove['kind']) =>
+      thisCycle.filter((m) => m.kind === kind).reduce((sum, m) => sum + m.amount, 0);
+    return {
+      setAside: pot.kind === 'occasion' ? of('setAside') : 0,
+      topUps: of('topUp'),
+      covered: covered(pot.id),
+    };
+  });
+  return {
+    potSaved: totals.saved,
+    topUpsThisCycle: totals.topUps + snapshot.togetherThisCycle,
+    setAsideThisCycle: totals.setAside,
+    potSpentThisCycle: totals.spent,
+    deletedJarsKept: deletedJarsKeep(deleted),
+  };
 }
 
 export interface MoneyStore {
@@ -78,21 +171,16 @@ export interface MoneyStore {
 export function dailyInputOf(snapshot: MoneySnapshot): DailyNumberInput | null {
   const { plan, today } = snapshot;
   if (plan === null) return null;
-  const notDaily = new Set(snapshot.categories.filter((c) => !c.countsDaily).map((c) => c.id));
-  const counted = (s: SpendRow) => ({
-    amount: s.amount,
-    category: s.categoryId,
-    status: s.status,
-    forWork: s.forWork,
-    paysBill: s.paysBill,
-    direction: s.direction,
-  });
-  const spentBefore = sumCounted(
+  const notDaily = notDailyOf(snapshot);
+  const counted = countedOf;
+  // Spending's day parts: what a jar covered stays out of the number (M13).
+  const spentBefore = sumDayPart(
     snapshot.cycleSpends.filter((s) => s.day < today).map(counted),
     notDaily,
   );
   const bills = billsThisCycle(snapshot.bills, snapshot.cycle);
-  const occasions = occasionsOf(snapshot.pots, snapshot.setAsideThisCycle);
+  const occasions =
+    occasionsOf(snapshot.pots, snapshot.setAsideThisCycle) + snapshot.deletedJarsKept;
   const joined = joinedCycle(snapshot.cycle, joinedAnswersOf(plan));
   return {
     plan: {
@@ -156,14 +244,20 @@ export function createMoneyStore(db: SqlDatabase, today: LocalDate): MoneyStore 
     waitingBefore: [],
     bills: [],
     pots: [],
+    deletedPots: [],
+    potMoves: [],
+    earlierJarSpends: [],
+    togetherThisCycle: 0,
     potSaved: {},
     topUpsThisCycle: 0,
     setAsideThisCycle: {},
+    potSpentThisCycle: {},
+    deletedJarsKept: 0,
     closedDays: [],
   };
 
   const publish = (next: MoneySnapshot) => {
-    snapshot = next;
+    snapshot = { ...next, ...jarTotalsOf(next) };
     for (const listener of listeners) listener();
   };
 
@@ -172,22 +266,44 @@ export function createMoneyStore(db: SqlDatabase, today: LocalDate): MoneyStore 
   const loadNow = async (day: LocalDate) => {
     const plan = await readPlan(db);
     const cycle = payCycleOn(day, plan?.payday ?? { kind: 'lastDay' });
-    const [categories, cycleSpends, waitingBefore, bills, pots, recorded, closedDays, together] =
-      await Promise.all([
-        tables.categories.select('WHERE archived_at IS NULL ORDER BY sort', []),
-        tables.spends.select(
-          "WHERE day >= ? AND day <= ? AND status != 'deleted' ORDER BY at DESC",
-          [cycle.start, day],
-        ),
-        tables.spends.select("WHERE day < ? AND status IN ('caught', 'pending') ORDER BY at DESC", [
-          cycle.start,
-        ]),
-        tables.bills.select('WHERE archived_at IS NULL ORDER BY sort', []),
-        tables.pots.select('WHERE archived_at IS NULL ORDER BY created_at', []),
-        readPotMoves(db),
-        tables.closedDays.select('WHERE day >= ? ORDER BY day', [closedSince(day, cycle.start)]),
-        togetherTopUps(db, cycle.start),
-      ]);
+    // Future you's jar is on every phone with a plan: made once, the first time it is missing (an
+    // update from 2.1, a restored older backup, a fresh start). It holds nothing from before.
+    if (plan) await tables.pots.insertMissing(futureYouPotRow(new Date().toISOString()));
+    const [
+      categories,
+      cycleSpends,
+      waitingBefore,
+      bills,
+      pots,
+      recorded,
+      closedDays,
+      together,
+      deletedPots,
+      earlierJarSpends,
+    ] = await Promise.all([
+      tables.categories.select('WHERE archived_at IS NULL ORDER BY sort', []),
+      tables.spends.select("WHERE day >= ? AND day <= ? AND status != 'deleted' ORDER BY at DESC", [
+        cycle.start,
+        day,
+      ]),
+      tables.spends.select("WHERE day < ? AND status IN ('caught', 'pending') ORDER BY at DESC", [
+        cycle.start,
+      ]),
+      tables.bills.select('WHERE archived_at IS NULL ORDER BY sort', []),
+      tables.pots.select('WHERE archived_at IS NULL ORDER BY created_at', []),
+      readPotMoves(db),
+      tables.closedDays.select('WHERE day >= ? ORDER BY day', [closedSince(day, cycle.start)]),
+      togetherTopUps(db, cycle.start),
+      tables.pots.select(
+        `WHERE archived_at IS NOT NULL AND id IN (SELECT from_pot FROM spends
+             WHERE day >= ? AND from_pot IS NOT NULL)`,
+        [cycle.start],
+      ),
+      tables.spends.select(
+        "WHERE day < ? AND from_pot IS NOT NULL AND status NOT IN ('skipped', 'deleted')",
+        [cycle.start],
+      ),
+    ]);
     // Each pay cycle puts the month's set-aside into every pot, once; a launch after missed
     // days or cycles catches up here before anything is counted.
     const caughtUp = plan
@@ -201,12 +317,8 @@ export function createMoneyStore(db: SqlDatabase, today: LocalDate): MoneyStore 
           currency: currencyOf(planCurrencyCode(plan)),
         })
       : [];
-    const {
-      saved: potSaved,
-      setAside,
-      topUps,
-    } = potTotals([...recorded, ...caughtUp], new Set(pots.map((p) => p.id)), cycle.start);
     publish({
+      ...snapshot,
       today: day,
       plan,
       cycle,
@@ -214,10 +326,11 @@ export function createMoneyStore(db: SqlDatabase, today: LocalDate): MoneyStore 
       cycleSpends,
       waitingBefore,
       bills: bills.filter((b) => billCountsIn(b, cycle)),
-      pots,
-      potSaved,
-      topUpsThisCycle: topUps + together,
-      setAsideThisCycle: setAside,
+      pots: shelfOrder(pots),
+      deletedPots,
+      potMoves: [...recorded, ...caughtUp],
+      earlierJarSpends,
+      togetherThisCycle: together,
       closedDays,
     });
   };
