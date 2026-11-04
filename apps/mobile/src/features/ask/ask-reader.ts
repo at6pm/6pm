@@ -12,7 +12,7 @@ import { localReading } from '../local-model/local-tiers';
 import { readAiMode, requireServerAi, type AiModeSettings } from '../privacy/ai-mode';
 
 /** How long the server gets to read a question before the phone reads it with rules. */
-export const ASK_SERVER_TIMEOUT_MS = 4_000;
+export const ASK_SERVER_TIMEOUT_MS = 10_000;
 
 export interface QueryReading {
   readonly query: AskQuery;

@@ -56,8 +56,8 @@ export function nameMerchantPrompt(request: NameMerchantRequest): string {
   ].join('\n');
 }
 
-/** The import waits on the phone for at most 3 s; the call gets a little less. */
-export const nameMerchantTimeoutMs = 2_800;
+/** The import waits on the phone for at most 7 s; the call, a second attempt included, gets 6 s. */
+export const nameMerchantTimeoutMs = 6_000;
 /** A name and a category, plus the model's own thinking, which counts against this too. */
 export const nameMerchantMaxTokens = 1_024;
 
@@ -72,5 +72,6 @@ export function nameMerchant(
     schema: nameMerchantOutputSchema(request.categories),
     maxTokens: nameMerchantMaxTokens,
     timeoutMs: nameMerchantTimeoutMs,
+    totalMs: nameMerchantTimeoutMs,
   });
 }

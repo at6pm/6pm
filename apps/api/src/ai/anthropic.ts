@@ -49,6 +49,11 @@ export type StructuredRequest<Schema extends z.ZodType> = {
   readonly timeoutMs: number;
   /** Attempts after the first: 1 unless the caller cannot wait for a second. */
   readonly retries?: number;
+  /**
+   * The whole call, every attempt and the wait between them, ends by then with `model_timeout`.
+   * A route the phone waits on sets it, so a second attempt never outlives the phone's wait.
+   */
+  readonly totalMs?: number;
   /** `anthropicModel` unless the route names another. */
   readonly model?: AnthropicModel;
 };
@@ -113,18 +118,23 @@ async function structured<Schema extends z.ZodType>(
   const client = anthropicClient(config, request.timeoutMs, request.retries);
   const { type, schema } = zodOutputFormat(request.schema);
   const model = request.model ?? anthropicModel;
+  const deadline = request.totalMs === undefined ? undefined : AbortSignal.timeout(request.totalMs);
   let message: Anthropic.Beta.BetaMessage;
   try {
-    message = await client.beta.messages.create({
-      model,
-      max_tokens: request.maxTokens,
-      ...(anthropicModels[model].fallback ? { betas: [fallbackBeta], fallbacks: 'default' } : {}),
-      // Thinking stays at the model's default: Haiku refuses a request that turns it off.
-      output_config: { effort: 'low', format: { type, schema } },
-      system: request.system,
-      messages: [{ role: 'user', content }],
-    });
+    message = await client.beta.messages.create(
+      {
+        model,
+        max_tokens: request.maxTokens,
+        ...(anthropicModels[model].fallback ? { betas: [fallbackBeta], fallbacks: 'default' } : {}),
+        // Thinking stays at the model's default: Haiku refuses a request that turns it off.
+        output_config: { effort: 'low', format: { type, schema } },
+        system: request.system,
+        messages: [{ role: 'user', content }],
+      },
+      deadline === undefined ? {} : { signal: deadline },
+    );
   } catch (error) {
+    if (deadline?.aborted === true) throw new ApiError('model_timeout', 'The model took too long');
     throw toModelError(error);
   }
 

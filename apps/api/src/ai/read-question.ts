@@ -13,8 +13,11 @@ import {
 import { ApiError } from '../errors';
 import { generate, type AnthropicConfig, type Generated } from './anthropic';
 
-/** The phone gives the server 4 s in all; the call gets a little less. */
-export const askReadTimeoutMs = 3_600;
+/**
+ * The phone gives the server 10 s in all; the call, a second attempt included, gets 8 s of it, so
+ * the answer still has time to travel back.
+ */
+export const askReadTimeoutMs = 8_000;
 /** A short structured answer plus the model's own thinking, which counts against this too. */
 export const askReadMaxTokens = 1_024;
 
@@ -34,8 +37,7 @@ export async function readQuestion(
     schema: askModelOutputSchema(currency),
     maxTokens: askReadMaxTokens,
     timeoutMs: askReadTimeoutMs,
-    // The phone stops waiting before a second attempt could answer, and reads it itself.
-    retries: 0,
+    totalMs: askReadTimeoutMs,
   });
   const read = queryInMinor(generated.output.query, currency);
   // An amount that rounds to nothing in minor units is not a reading.
