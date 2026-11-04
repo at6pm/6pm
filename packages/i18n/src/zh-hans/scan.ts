@@ -91,6 +91,8 @@ export const zhHansScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.content.wifiOpen': '无密码',
   'scan.content.wifiPassword': '密码：{password}',
   'scan.content.cantOpen': '无法打开。',
+  'scan.content.momo': 'MoMo 付款',
+  'scan.content.payMomo': '用 MoMo 付款',
   'scan.note': '二维码里的附言：“{note}”',
   'scan.howMuch': '多少钱？这个二维码由你来填金额。',
   'scan.payWith': '支付方式',

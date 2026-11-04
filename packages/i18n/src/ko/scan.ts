@@ -93,6 +93,8 @@ export const koScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.content.wifiOpen': '비밀번호 없음',
   'scan.content.wifiPassword': '비밀번호: {password}',
   'scan.content.cantOpen': '열 수 없어요.',
+  'scan.content.momo': 'MoMo 결제',
+  'scan.content.payMomo': 'MoMo로 결제',
   'scan.note': 'QR 메모: “{note}”',
   'scan.howMuch': '얼마인가요? 이 QR은 금액이 비어 있어요.',
   'scan.payWith': '결제 수단',

@@ -90,6 +90,8 @@ export const viScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.content.wifiOpen': 'Không có mật khẩu',
   'scan.content.wifiPassword': 'Mật khẩu: {password}',
   'scan.content.cantOpen': 'Không mở được.',
+  'scan.content.momo': 'Thanh toán MoMo',
+  'scan.content.payMomo': 'Trả bằng MoMo',
   'scan.note': 'Lời nhắn trong mã: “{note}”',
   'scan.howMuch': 'Bao nhiêu? Mã này để bạn tự nhập.',
   'scan.payWith': 'Trả bằng',

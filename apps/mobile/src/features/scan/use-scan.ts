@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { AppState } from 'react-native';
+import { AppState, Linking } from 'react-native';
 
 import {
   likelyCategoriesAt,
@@ -125,6 +125,9 @@ export function useScan() {
         const content = result.reason === 'not_emv' ? readQrContent(data) : null;
         if (content) haptics.tap();
         else haptics.tick();
+        // MoMo's checkout link goes straight to MoMo's payment screen, where the user confirms;
+        // the card stays behind it, for when MoMo is not on the phone.
+        if (content?.kind === 'momoPayment') void Linking.openURL(content.url).catch(() => false);
         setPhase(
           result.reason === 'foreign'
             ? { kind: 'foreign', failure: result }

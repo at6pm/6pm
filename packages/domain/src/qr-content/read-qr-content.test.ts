@@ -34,6 +34,18 @@ describe('readQrContent', () => {
     }
   });
 
+  it('reads the payment link a MoMo checkout shows, and no other momo link', () => {
+    const link =
+      'momo://app?action=payWithApp&isScanQR=true&scanQR=true&serviceType=app&amount=45000';
+    expect(readQrContent(link)).toEqual({ kind: 'momoPayment', url: link, amount: 45_000 });
+    expect(readQrContent('momo://app?action=payWithApp&serviceType=app')).toMatchObject({
+      kind: 'momoPayment',
+      amount: null,
+    });
+    expect(readQrContent('momo://app?action=p2p&extra=x')?.kind).toBe('text');
+    expect(readQrContent('momo://?action=payWithApp')?.kind).toBe('text');
+  });
+
   it('reads Wi-Fi sign-in, with escapes and a hidden network', () => {
     expect(readQrContent(String.raw`WIFI:T:WPA;S:Café\;5G;P:pa\:ss\\word;H:true;;`)).toEqual({
       kind: 'wifi',

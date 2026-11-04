@@ -92,6 +92,8 @@ export const enScan = {
   'scan.content.wifiOpen': 'No password',
   'scan.content.wifiPassword': 'Password: {password}',
   'scan.content.cantOpen': 'Couldn’t open that.',
+  'scan.content.momo': 'MoMo payment',
+  'scan.content.payMomo': 'Pay with MoMo',
   'scan.note': 'Note from the QR: “{note}”',
   'scan.howMuch': 'How much? This QR leaves it to you.',
   'scan.payWith': 'Pay with',

@@ -92,6 +92,8 @@ export const jaScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.content.wifiOpen': 'パスワードなし',
   'scan.content.wifiPassword': 'パスワード：{password}',
   'scan.content.cantOpen': '開けませんでした。',
+  'scan.content.momo': 'MoMoの支払い',
+  'scan.content.payMomo': 'MoMoで支払う',
   'scan.note': 'QRのメモ：「{note}」',
   'scan.howMuch': 'いくらですか？このQRは金額を入力する形式です。',
   'scan.payWith': '支払い方法',

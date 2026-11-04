@@ -92,6 +92,8 @@ export const idScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.content.wifiOpen': 'Tanpa kata sandi',
   'scan.content.wifiPassword': 'Kata sandi: {password}',
   'scan.content.cantOpen': 'Tidak bisa dibuka.',
+  'scan.content.momo': 'Pembayaran MoMo',
+  'scan.content.payMomo': 'Bayar dengan MoMo',
   'scan.note': 'Catatan dari QR: “{note}”',
   'scan.howMuch': 'Berapa? QR ini membiarkanmu mengisinya.',
   'scan.payWith': 'Bayar dengan',

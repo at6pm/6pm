@@ -93,6 +93,8 @@ export const thScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.content.wifiOpen': 'ไม่มีรหัสผ่าน',
   'scan.content.wifiPassword': 'รหัสผ่าน: {password}',
   'scan.content.cantOpen': 'เปิดไม่ได้',
+  'scan.content.momo': 'การชำระเงิน MoMo',
+  'scan.content.payMomo': 'จ่ายด้วย MoMo',
   'scan.note': 'ข้อความใน QR: “{note}”',
   'scan.howMuch': 'เท่าไหร่ดี? QR นี้ให้คุณใส่ยอดเอง',
   'scan.payWith': 'จ่ายด้วย',

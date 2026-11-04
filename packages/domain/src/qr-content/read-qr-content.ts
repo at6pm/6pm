@@ -8,6 +8,12 @@ export type QrContent =
       readonly security: 'wpa' | 'wep' | 'open';
       readonly hidden: boolean;
     }
+  | {
+      /** MoMo's own payment link, which MoMo's app opens on its payment screen to confirm. */
+      readonly kind: 'momoPayment';
+      readonly url: string;
+      readonly amount: number | null;
+    }
   | { readonly kind: 'phone'; readonly number: string }
   | { readonly kind: 'sms'; readonly number: string; readonly body: string | null }
   | {
@@ -53,6 +59,7 @@ export function readQrContent(input: string): QrContent | null {
 
   const link = readLink(raw);
   if (link) return link;
+  if (lower.startsWith('momo://app?')) return readMomoPayment(raw) ?? text(raw);
   if (lower.startsWith('wifi:')) return readWifi(raw.slice(5)) ?? text(raw);
   if (lower.startsWith('tel:')) return phone(raw.slice(4)) ?? text(raw);
   if (lower.startsWith('smsto:') || lower.startsWith('sms:')) return readSms(raw) ?? text(raw);
@@ -97,6 +104,23 @@ function queryOf(query: string): Map<string, string> {
     if (!found.has(key)) found.set(key, decode(pair.slice(at + 1)));
   }
   return found;
+}
+
+/**
+ * `momo://app?action=payWithApp&…`: the link a MoMo checkout shows as a QR, which MoMo's app takes
+ * to its payment screen. It is the one app link 6pm opens, and only this action of it; any other
+ * `momo://` link stays text.
+ */
+function readMomoPayment(raw: string): QrContent | null {
+  if (/\s/.test(raw)) return null;
+  const params = queryOf(raw.slice(raw.indexOf('?') + 1));
+  if (params.get('action')?.toLowerCase() !== 'paywithapp') return null;
+  const amount = Number(params.get('amount'));
+  return {
+    kind: 'momoPayment',
+    url: raw,
+    amount: Number.isInteger(amount) && amount > 0 ? amount : null,
+  };
 }
 
 function phone(value: string): QrContent | null {

@@ -1,8 +1,10 @@
 import { Linking, Platform, Text, View } from 'react-native';
 
-import type { QrContent } from '@6pm/domain';
+import { VND, type QrContent } from '@6pm/domain';
+import type { Language } from '@6pm/i18n';
 
 import { useI18n } from '../../i18n/i18n';
+import { moneyFormatFor } from '../../money/use-money-format';
 import { Symbol } from '../../ui/icons/symbol';
 import type { SymbolName } from '../../ui/icons/symbols.generated';
 import { body } from '../../ui/type/fonts';
@@ -54,9 +56,9 @@ export function ContentCard({
   /** The phone had nothing to open it with. */
   readonly onFail: () => void;
 }) {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const open = (url: string) => () => void Linking.openURL(url).catch(onFail);
-  const plan = planFor(content, t, open, onCopy);
+  const plan = planFor(content, t, open, onCopy, language);
 
   return (
     <ScanCard>
@@ -111,6 +113,7 @@ function planFor(
   t: ReturnType<typeof useI18n>['t'],
   open: (url: string) => () => void,
   onCopy: (text: string) => void,
+  language: Language,
 ): Plan {
   switch (content.kind) {
     case 'link':
@@ -139,6 +142,16 @@ function planFor(
         copy: password === null ? content.network : null,
       };
     }
+    case 'momoPayment':
+      return {
+        icon: 'storefront',
+        title: t('scan.content.momo'),
+        headline:
+          content.amount === null ? 'MoMo' : moneyFormatFor(VND, language).full(content.amount),
+        detail: null,
+        primary: { label: t('scan.content.payMomo'), run: open(content.url) },
+        copy: content.url,
+      };
     case 'phone':
       return {
         icon: 'call',

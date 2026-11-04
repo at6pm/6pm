@@ -93,6 +93,8 @@ export const frScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.content.wifiOpen': 'Pas de mot de passe',
   'scan.content.wifiPassword': 'Mot de passe : {password}',
   'scan.content.cantOpen': 'Impossible d’ouvrir ça.',
+  'scan.content.momo': 'Paiement MoMo',
+  'scan.content.payMomo': 'Payer avec MoMo',
   'scan.note': 'Note du QR : « {note} »',
   'scan.howMuch': 'Combien ? Ce QR te laisse choisir.',
   'scan.payWith': 'Payer avec',
