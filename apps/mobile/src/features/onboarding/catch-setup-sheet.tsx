@@ -11,6 +11,7 @@ import { Symbol } from '../../ui/icons/symbol';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading, mono } from '../../ui/type/fonts';
+import { BANK_ALERT_SHORTCUT_URL } from '../capture-guide/bank-alert-shortcut';
 import { captureColours } from '../capture-guide/capture-colours';
 import { GuideSection } from '../capture-guide/guide-sections';
 import { useWalkthroughSteps } from '../capture-guide/guide-walkthroughs';
@@ -30,6 +31,11 @@ const WORDS = {
     headline: 'capture.wallet.headline',
     time: 'capture.wallet.time',
   },
+  alerts: {
+    title: 'onboarding.catch.alerts.title',
+    headline: 'capture.alerts.headline',
+    time: 'capture.alerts.time',
+  },
   email: {
     title: 'onboarding.catch.email.title',
     headline: 'capture.email.headline',
@@ -41,15 +47,19 @@ const WORDS = {
 
 /**
  * A way's drawn walkthrough, over onboarding in a native sheet, with what it needs to get going:
- * Shortcuts for the Wallet automation, the user's own address for receipt email. It is a sheet of
- * onboarding's own, not the capture guide's route, so closing it always lands back on this step.
+ * Shortcuts for the Wallet and bank alert automations, the user's own address for receipt email.
+ * It is a sheet of onboarding's own, not the capture guide's route, so closing it always lands
+ * back on this step. Tapping a way's set-up (adding or opening its Shortcut) tells `onWalked`, so
+ * the step can wait for that way's first catch once the sheet closes.
  */
 export function CatchSetupSheet({
   way,
   onClose,
+  onWalked,
 }: {
   readonly way: WalkedWay | null;
   readonly onClose: () => void;
+  readonly onWalked?: (way: WalkedWay) => void;
 }) {
   // Keeps the way on show while the sheet slides away.
   const shown = useRef(way);
@@ -66,7 +76,12 @@ export function CatchSetupSheet({
       {current === 'email' ? (
         <EmailSetup onClose={onClose} />
       ) : current !== null ? (
-        <SetupBody way={current} emailAddress={null} onClose={onClose} />
+        <SetupBody
+          way={current}
+          emailAddress={null}
+          onClose={onClose}
+          onWalked={() => onWalked?.(current)}
+        />
       ) : null}
     </Modal>
   );
@@ -82,11 +97,17 @@ function SetupBody({
   way,
   emailAddress,
   onClose,
+  onWalked,
 }: {
   readonly way: WalkedWay;
   readonly emailAddress: string | null;
   readonly onClose: () => void;
+  readonly onWalked?: () => void;
 }) {
+  const open = (url: string) => {
+    onWalked?.();
+    void Linking.openURL(url).catch(() => undefined);
+  };
   const { palette } = useTheme();
   const { t } = useI18n();
   const steps = useWalkthroughSteps(way, emailAddress);
@@ -135,12 +156,28 @@ function SetupBody({
               <SheetButton
                 label={t('capture.wallet.actionAdd')}
                 accent
-                onPress={() => void Linking.openURL(WALLET_SHORTCUT_URL).catch(() => undefined)}
+                onPress={() => open(WALLET_SHORTCUT_URL)}
               />
               <SheetButton
                 label={t('capture.wallet.actionOff')}
                 accent={false}
-                onPress={() => void Linking.openURL('shortcuts://').catch(() => undefined)}
+                onPress={() => open('shortcuts://')}
+              />
+            </View>
+          ) : null}
+          {way === 'alerts' ? (
+            <View style={{ gap: 10 }}>
+              {BANK_ALERT_SHORTCUT_URL !== null ? (
+                <SheetButton
+                  label={t('capture.alerts.actionAdd')}
+                  accent
+                  onPress={() => open(BANK_ALERT_SHORTCUT_URL ?? 'shortcuts://')}
+                />
+              ) : null}
+              <SheetButton
+                label={t('capture.alerts.actionOpen')}
+                accent={BANK_ALERT_SHORTCUT_URL === null}
+                onPress={() => open('shortcuts://')}
               />
             </View>
           ) : null}

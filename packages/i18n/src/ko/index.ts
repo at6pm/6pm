@@ -37,6 +37,7 @@ import { koTravel } from './travel';
 import { koVoice } from './voice';
 import { koWidgetsGuide } from './widgets-guide';
 import { koYearBook } from './year-book';
+import { koFirstCatch } from './first-catch';
 
 export { koAndroid } from './android';
 
@@ -80,6 +81,7 @@ export const ko: Catalogue = {
   ...koPotsClose,
   ...koPotsPlan,
   ...koPots,
+  ...koFirstCatch,
 };
 
 /**

@@ -37,6 +37,7 @@ import { deTravel } from './travel';
 import { deVoice } from './voice';
 import { deWidgetsGuide } from './widgets-guide';
 import { deYearBook } from './year-book';
+import { deFirstCatch } from './first-catch';
 
 export { deAndroid } from './android';
 
@@ -80,6 +81,7 @@ export const de: Catalogue = {
   ...dePotsClose,
   ...dePotsPlan,
   ...dePots,
+  ...deFirstCatch,
 };
 
 /**

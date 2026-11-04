@@ -37,6 +37,7 @@ import { thTravel } from './travel';
 import { thVoice } from './voice';
 import { thWidgetsGuide } from './widgets-guide';
 import { thYearBook } from './year-book';
+import { thFirstCatch } from './first-catch';
 
 export { thAndroid } from './android';
 
@@ -80,6 +81,7 @@ export const th: Catalogue = {
   ...thPotsClose,
   ...thPotsPlan,
   ...thPots,
+  ...thFirstCatch,
 };
 
 /**

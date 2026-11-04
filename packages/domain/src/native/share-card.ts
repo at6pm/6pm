@@ -186,6 +186,18 @@ export function buildShareItem(
   const shown = shareAmount(card, edits, money);
   if (shown.amount === null && shown.foreign === null) return null;
   const payee = (edits.payee ?? card.payee).trim();
+  const asRead = shareAmount(card, {}, money).amount;
+  // What the person changed of what was read: a total typed over another, a shop renamed. A name
+  // typed where none was read, or a currency picked for an amount, is not a misreading.
+  const amountFixed = edits.amountText !== undefined && shown.amount !== asRead;
+  const payeeFixed = card.payee.trim() !== '' && payee !== card.payee.trim();
+  const read =
+    amountFixed || payeeFixed
+      ? {
+          ...(amountFixed ? { amount: asRead } : {}),
+          ...(payeeFixed ? { payee: card.payee.trim() } : {}),
+        }
+      : null;
   const foreign = shown.foreign;
   return {
     v: SURFACES_VERSION,
@@ -205,6 +217,8 @@ export function buildShareItem(
       namingLines: card.namingLines,
       payeeSure: card.payeeSure || edits.payee !== undefined,
       ...(card.memo ? { memo: card.memo } : {}),
+      ...(card.looked ? { looked: true } : {}),
+      ...(read ? { read } : {}),
     },
     ...(foreign
       ? {

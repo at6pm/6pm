@@ -20,6 +20,7 @@ import {
 
 import { homeCurrencyOf } from '../money/use-money-format';
 
+import { noteReceiptEdit } from './first-catch';
 import { moneyInActions } from './money-in-actions';
 import { findSpend, type MoneyStore } from './money-store';
 
@@ -142,6 +143,7 @@ export function moneyActions(store: MoneyStore) {
     inTurn(async () => {
       const row = await current(id);
       if (!row) return null;
+      await noteReceiptEdit(store.db, row, patch);
       const settled = settleTypedAmount(
         row.foreignAmount,
         patch,

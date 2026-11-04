@@ -37,6 +37,7 @@ import { frTravel } from './travel';
 import { frVoice } from './voice';
 import { frWidgetsGuide } from './widgets-guide';
 import { frYearBook } from './year-book';
+import { frFirstCatch } from './first-catch';
 
 export { frAndroid } from './android';
 
@@ -80,6 +81,7 @@ export const fr: Catalogue = {
   ...frPotsClose,
   ...frPotsPlan,
   ...frPots,
+  ...frFirstCatch,
 };
 
 /**

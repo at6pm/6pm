@@ -37,6 +37,7 @@ import { esTravel } from './travel';
 import { esVoice } from './voice';
 import { esWidgetsGuide } from './widgets-guide';
 import { esYearBook } from './year-book';
+import { esFirstCatch } from './first-catch';
 
 export { esAndroid } from './android';
 
@@ -80,6 +81,7 @@ export const es: Catalogue = {
   ...esPotsClose,
   ...esPotsPlan,
   ...esPots,
+  ...esFirstCatch,
 };
 
 /**

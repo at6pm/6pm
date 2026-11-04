@@ -1,15 +1,20 @@
 import { StatusBar } from 'expo-status-bar';
+import { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import Animated, { useReducedMotion } from 'react-native-reanimated';
 
+import { writeFirstCatch } from '../../data/first-catch';
+import { useMoneyStore } from '../../data/money-provider';
 import { useI18n, type I18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import type { CompanionMood } from '../../ui/companion/companion-mood';
 import { useDesignInsets } from '../../ui/layout/design-insets';
 import type { AiMode } from '../privacy/ai-mode';
 import { useAiMode } from '../privacy/use-ai-mode';
+import { useAlertAccess } from '../capture-guide/alert-access';
 import { nativeReach } from '../surfaces/native-reach';
-import { catchWaysFor, readyWays } from './catch-ways';
+import { catchWaysFor, listenWaysOf, readyWays, type CatchWay, type ListenWay } from './catch-ways';
+import { ownBankOf, tryWay } from './first-catch-try';
 import { CompanionLine, OnboardingCta, OnboardingHeader } from './onboarding-chrome';
 import { stepEntering } from './onboarding-motion';
 import { onboardingPalette } from './onboarding-palette';
@@ -25,6 +30,7 @@ import { ordinalDay } from './step-parts';
 import { StepPayWith } from './step-pay-with';
 import { StepPrivacy } from './step-privacy';
 import { StepWelcome } from './step-welcome';
+import { useFirstCatch } from './use-first-catch';
 import {
   AI_STEP,
   BILLS_STEP,
@@ -119,6 +125,43 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
   const aiMode = useAiMode();
   const line = stepLine(o, i18n, aiMode);
   const cta = ctaFor(o, i18n);
+  const store = useMoneyStore();
+  const alertAccess = useAlertAccess();
+
+  // The first catch: once a way is set up the catching step waits for one, live, from the moment
+  // the step first opened (a receipt shared while a set-up sheet was open counts).
+  const onCatchStep = o.step === CATCH_STEP;
+  const since = useRef<string | null>(null);
+  if (onCatchStep && since.current === null) since.current = new Date().toISOString();
+  const [listening, setListening] = useState(false);
+  const [setUp, setSetUp] = useState<readonly CatchWay[]>([]);
+  const [walked, setWalked] = useState<ListenWay | null>(null);
+  const catchWays = catchWaysFor(o.currency, aiMode, nativeReach);
+  const listenWays = listenWaysOf(catchWays, alertAccess === true ? [...setUp, 'alerts'] : setUp);
+  const listen = useFirstCatch(onCatchStep && listening, since.current ?? '');
+  const waiting = onCatchStep && listening;
+  useEffect(() => {
+    if (!onCatchStep) setListening(false);
+  }, [onCatchStep]);
+  // Android's Notification access turned on from this step: its alerts are set up.
+  const hadAccess = useRef(alertAccess);
+  useEffect(() => {
+    if (onCatchStep && hadAccess.current === false && alertAccess === true) {
+      setWalked('alerts');
+      setListening(true);
+    }
+    hadAccess.current = alertAccess;
+  }, [alertAccess, onCatchStep]);
+  const later = () => {
+    // "Later" always moves on; Today picks it up the next morning.
+    void writeFirstCatch(store.db, {
+      state: 'later',
+      day: o.today,
+      at: new Date().toISOString(),
+      ways: [...setUp],
+    }).catch(() => undefined);
+    o.next();
+  };
 
   const body = (() => {
     switch (o.step) {
@@ -173,6 +216,22 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
             date={`${i18n.weekday(new Date())} ${i18n.dayMonth(new Date())}`}
             closeAt={o.closeAt}
             safe={money.short(o.first.line)}
+            listening={listening}
+            listen={listen}
+            listenWays={listenWays}
+            walked={walked}
+            bankId={ownBankOf(o.wallets)}
+            onWalked={(way) => {
+              setSetUp((ways) => (ways.includes(way) ? ways : [...ways, way]));
+              if (way === 'alerts' || way === 'wallet') setWalked(way);
+            }}
+            onListen={() => setListening(true)}
+            onTry={(way) => {
+              setWalked(way);
+              tryWay(way, ownBankOf(o.wallets));
+            }}
+            onLater={later}
+            onContinue={o.next}
           />
         );
       case CLOSE_STEP:
@@ -197,8 +256,8 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
 
   // The welcome rises and the reveal fades in on their own; every other step slides in.
   const ownEntrance = o.step === WELCOME_STEP || o.step === LAST_STEP;
-  // The welcome and the privacy promise carry their own button.
-  const ownButton = o.step === WELCOME_STEP || o.step === PRIVACY_STEP;
+  // The welcome and the privacy promise carry their own button, and so does the wait for a catch.
+  const ownButton = o.step === WELCOME_STEP || o.step === PRIVACY_STEP || waiting;
 
   return (
     <View style={{ flex: 1 }}>
@@ -216,10 +275,11 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
           step={o.step}
           pal={pal}
           showSkip={o.step >= BILLS_STEP && o.step <= AI_STEP}
-          onBack={o.back}
+          onBack={waiting ? () => setListening(false) : o.back}
           onSkip={o.skip}
+          ahead={waiting && listen.caught ? 1 : 0}
         />
-        {line !== null ? (
+        {line !== null && !waiting ? (
           <CompanionLine step={o.step} line={line} mood={stepMood(o)} pal={pal} top={top(112)} />
         ) : null}
         <Animated.View
@@ -235,7 +295,7 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
             icon={cta.icon}
             hot={o.step === LAST_STEP}
             pal={pal}
-            onPress={o.next}
+            onPress={onCatchStep && listenWays.length > 0 ? () => setListening(true) : o.next}
           />
         )}
       </View>

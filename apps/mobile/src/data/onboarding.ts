@@ -68,6 +68,30 @@ export const DEFAULT_CATEGORIES = [
   ['gifts', 'redeem', 350],
 ] as const;
 
+/**
+ * The starter categories, named in `language`, when there are none yet: at the end of onboarding,
+ * or as soon as a first catch arrives during it. An install that has categories keeps its own.
+ */
+export async function seedStarterCategories(
+  store: Pick<MoneyStore, 'tables'>,
+  language: Language,
+): Promise<boolean> {
+  const { tables } = store;
+  if ((await tables.categories.all()).length > 0) return false;
+  for (const [sort, [id, icon, hue]] of DEFAULT_CATEGORIES.entries()) {
+    await tables.categories.put({
+      id,
+      name: t(language, `onboarding.category.${id}`),
+      icon,
+      hue,
+      countsDaily: true,
+      sort,
+      archivedAt: null,
+    });
+  }
+  return true;
+}
+
 const WALLETS_KEY = 'wallets';
 const FIRST_DUE_DAY = 1;
 
@@ -112,20 +136,7 @@ async function setUp(
       currency: existing ? planCurrencyCode(existing) : deviceCurrencyCode(),
     });
 
-    const categories = await tables.categories.all();
-    if (categories.length === 0) {
-      for (const [sort, [id, icon, hue]] of DEFAULT_CATEGORIES.entries()) {
-        await tables.categories.put({
-          id,
-          name: t(language, `onboarding.category.${id}`),
-          icon,
-          hue,
-          countsDaily: true,
-          sort,
-          archivedAt: null,
-        });
-      }
-    }
+    await seedStarterCategories(store, language);
 
     // A bill whose day in this pay cycle has already gone by was paid before 6pm started
     // counting: it is not shown overdue.

@@ -23,6 +23,9 @@ import { useI18n } from '../../i18n/i18n';
 import { seedDesignMoneyIn } from './design-money-in-seed';
 import { useYearBook } from '../year-book/use-year-book';
 import { seedDesignYear } from './design-year-seed';
+import { seedCaptureHealth } from './design-capture-health-seed';
+import { writeFirstCatch } from '../../data/first-catch';
+import { addDays } from '@6pm/domain';
 
 /**
  * Lets scripts drive a developer build with no taps: write `dev-command.json` into the app's
@@ -64,6 +67,10 @@ const commandSchema = z.object({
     .string()
     .regex(/^\d{4}$/)
     .optional(),
+  /** "later": onboarding's "I'll do it later" said yesterday, so Today shows its empty slip. */
+  firstCatch: z.literal('later').optional(),
+  /** Seeds 14 days of catches per way and this month's receipts read on the phone. */
+  captureHealth: z.boolean().optional(),
 });
 
 export function DevCommands() {
@@ -96,7 +103,10 @@ export function DevCommands() {
         max,
         yearBook,
         aiMode,
+        firstCatch,
+        captureHealth,
       } = parsed.data;
+      if (captureHealth) await seedCaptureHealth(store, today);
       if (aiMode !== undefined) setAiMode(db, aiMode);
       if (look !== undefined) lookStore.setLook(look, () => true);
       if (companion !== undefined) pinCompanionForm(companion === '' ? null : companion);
@@ -126,6 +136,16 @@ export function DevCommands() {
         });
       if (seed === 'moneyIn') await seedDesignMoneyIn(store, today);
       if (jars) await seedDesignJars(store, today, jars);
+      // Said yesterday, but after anything seeded: only a catch from now on clears the card.
+      if (firstCatch === 'later') {
+        await writeFirstCatch(store.db, {
+          state: 'later',
+          day: addDays(today, -1),
+          at: new Date().toISOString(),
+          ways: ['wallet'],
+        });
+        await store.load(today);
+      }
       // Over Home, so sheets present as sheets.
       if (route) {
         router.replace('/');
