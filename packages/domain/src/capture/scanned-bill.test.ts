@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 
 import { payCycleOn } from '../plan/pay-cycle';
 import type { PayableBill } from './bill-payment';
-import { billScanned, billTopicOf, billTopicOfName } from './scanned-bill';
+import { billTopicOf, billTopicOfName } from './bill-topic';
+import { billScanned } from './scanned-bill';
 
 // 25 Sep → 25 Oct: every bill below falls due in October.
 const cycle = payCycleOn('2026-10-10', { kind: 'sameDay', day: 25 });

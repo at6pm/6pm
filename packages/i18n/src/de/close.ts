@@ -78,6 +78,10 @@ export const deClose: { readonly [Key in keyof typeof enClose]: Entry } = {
   'close.bill.yes': 'Ja, das ist die Rechnung',
   'close.bill.yesCard': 'Ja, meine Karte',
   'close.bill.no': 'Nein, das war eine Ausgabe',
+  'close.bill.amountTitle': 'Ab jetzt {new}?',
+  'close.bill.amountSub': '„{bill}“ kostet sonst {old}. Diesen Monat sind es so oder so {new}.',
+  'close.bill.thisMonth': 'Nur diesen Monat',
+  'close.bill.fromNow': 'Ab jetzt immer',
   'close.repayment.title': 'Zahlst du eine Karte oder einen Kredit ab?',
   'close.repayment.sub':
     'Wenn ja, bleibt das aus deiner Tageszahl raus. Was du mit der Karte gekauft hast, hat schon gezählt.',

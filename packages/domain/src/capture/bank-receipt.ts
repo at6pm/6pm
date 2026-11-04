@@ -3,6 +3,7 @@ import type { Vnd } from '../money/format';
 import { BANKS } from '../vietqr/bank-catalogue';
 import { readReceiptTime } from './receipt-time';
 import { dongIn, heroAmount } from './receipt-amount';
+import { tidyPayee } from './bill-topic';
 import { foldWords } from './spoken-spend';
 
 export { readReceiptTime } from './receipt-time';
@@ -183,12 +184,15 @@ function looksLikeAccountName(name: string): boolean {
   return !/\p{Ll}/u.test(name) || company.test(foldWords(name).trim() + ' ');
 }
 
+/** A payee as kept: no account number on either side, a bill's lead words off. */
 function cleanPayee(value: string): string {
-  return value
-    .replace(/[-–|]\s*\d[\d\s.]*$/u, '')
-    .replace(/^\d[\d\s.]*[-–|]\s*/u, '')
-    .replace(/\s+/g, ' ')
-    .replace(/^[\s,.;:-]+|[\s,.;:-]+$/g, '');
+  return tidyPayee(
+    value
+      .replace(/[-–|]\s*\d[\d\s.]*$/u, '')
+      .replace(/^\d[\d\s.]*[-–|]\s*/u, '')
+      .replace(/\s+/g, ' ')
+      .replace(/^[\s,.;:-]+|[\s,.;:-]+$/g, ''),
+  );
 }
 
 /** "Chuyển tiền tới CIRCLE K VN lúc 16:40" in a text share with no labels. */

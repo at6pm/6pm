@@ -162,6 +162,7 @@ export const idToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'details.bill': 'Ini tagihan',
   'details.bill.no': 'Bukan',
   'details.bill.repayment': 'Cicilan kartu atau pinjaman',
+  'details.bill.amount': '{bill} biasanya {old}. Jadikan {new} mulai sekarang?',
   'source.alert': 'Notifikasi bank',
   'today.pull.add': 'Tarik untuk tambah',
   'today.pull.release': 'Lepas untuk tambah',

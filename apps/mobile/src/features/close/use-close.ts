@@ -253,9 +253,14 @@ export function useClose(
     clearClose();
   }, []);
 
+  // A bill's payment (marked when it was caught) is kept out of the day, so out of what was kept.
+  const paysBill = (s: SpendRow) => (findSpend(snap, s.id) ?? s).paysBill != null;
   const keptBefore = queue
     .filter(
-      (s) => !comesIn(s) && (state.verdicts[s.id] === 'kept' || state.verdicts[s.id] === 'edited'),
+      (s) =>
+        !comesIn(s) &&
+        !paysBill(s) &&
+        (state.verdicts[s.id] === 'kept' || state.verdicts[s.id] === 'edited'),
     )
     .reduce((sum, s) => sum + (findSpend(snap, s.id)?.amount ?? s.amount), 0);
   // A shared receipt names its bank as the prototype words it, an emailed one the address it
@@ -299,6 +304,7 @@ export function useClose(
         : (categories.get(spend.categoryId)?.name ?? ''),
       amount: spend.amount,
       keptBefore,
+      ...(paysBill(spend) ? { adds: 0 } : {}),
       detail: extra ? moneyIn.countedAsPay : cardDetail(spend),
       ...(money ? { money } : {}),
       labels: {

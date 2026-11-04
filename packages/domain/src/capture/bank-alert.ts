@@ -2,6 +2,7 @@ import { VND, type Currency } from '../money/currency';
 import type { SpendDirection } from '../spend/spend';
 import { bankNamedIn, bankOfApp } from './bank-alert-senders';
 import { cleanMemo } from './bank-receipt';
+import { tidyPayee } from './bill-topic';
 import { readsAsBalance } from './receipt-amount';
 import { readReceiptTime, withFullYears } from './receipt-time';
 import { foldWords } from './spoken-spend';
@@ -280,12 +281,16 @@ function wayOf(text: string, amount: Found): SpendDirection | null {
   return comes <= goes ? 'in' : 'out';
 }
 
-/** A counterparty as kept: one line, no account or phone number, letters in it, not too long. */
+/**
+ * A counterparty as kept: one line, no account or phone number, a bill's lead words off, letters
+ * in it, not too long.
+ */
 function cleanName(raw: string | undefined): string | null {
   if (raw === undefined) return null;
   // "cho đơn hàng tại Circle K": the shop is the last place named.
   const place = raw.split(/\s(?:tại|tai|at)\s/iu).pop() ?? raw;
-  const name = place
+  // "cho hóa đơn của dịch vụ Điện lực Hồ Chí Minh": the payee is the company.
+  const name = tidyPayee(place)
     .replace(ACCOUNT_WORDS, '')
     .split(/\s+/)
     .filter((word) => !/\d{3}/.test(word))

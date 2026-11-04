@@ -159,6 +159,7 @@ export const jaToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'details.bill': 'これは固定費',
   'details.bill.no': 'いいえ',
   'details.bill.repayment': 'カードやローンの返済',
+  'details.bill.amount': '{bill}はいつも{old}。今後は{new}にする？',
   'source.alert': '銀行の通知',
   'today.pull.add': '引っぱって追加',
   'today.pull.release': '離して追加',

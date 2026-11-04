@@ -17,6 +17,7 @@ import {
 } from '@6pm/domain';
 import type { Language } from '@6pm/i18n';
 
+import { billPayments } from './bill-payments';
 import { noteReceiptRead } from './first-catch';
 import type { moneyActions } from './money-actions';
 import type { MoneyStore } from './money-store';
@@ -59,6 +60,7 @@ export interface InboxImportResult {
  * listener left in the inbox, oldest first, through the same capture as every other source (rules, duplicate merge, the money day
  * of when it happened). A file is removed only after what it said is committed, and importing
  * the same file twice changes nothing: its id is the spend's, or its sighting is already there.
+ * Then every caught spend that looks like an unpaid bill's payment is marked as paying it.
  */
 export async function importInbox(deps: InboxImportDeps): Promise<InboxImportResult> {
   const { inbox, report } = deps;
@@ -85,6 +87,8 @@ export async function importInbox(deps: InboxImportDeps): Promise<InboxImportRes
     }
     await remove(file.id);
   }
+  // A bill's payment caught now, or before this build could tell, is marked as paying it at once.
+  await billPayments(deps.store).markCaught();
   return { saved, removed };
 }
 

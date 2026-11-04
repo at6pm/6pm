@@ -72,6 +72,10 @@ export const enClose = {
   'close.bill.yes': 'Yes, that’s the bill',
   'close.bill.yesCard': 'Yes, my card',
   'close.bill.no': 'No, that was spending',
+  'close.bill.amountTitle': 'Make it {new} from now on?',
+  'close.bill.amountSub': '{bill} is usually {old}. This month it’s {new} either way.',
+  'close.bill.thisMonth': 'Just this month',
+  'close.bill.fromNow': 'From now on',
   'close.repayment.title': 'Paying off a card or loan?',
   'close.repayment.sub':
     'If it is, it stays out of your daily number. What you bought on the card already counted.',

@@ -160,6 +160,7 @@ export const thToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'details.bill': 'นี่เป็นบิล',
   'details.bill.no': 'ไม่ใช่',
   'details.bill.repayment': 'จ่ายบัตรหรือเงินกู้',
+  'details.bill.amount': '{bill} ปกติคือ {old} ต่อไปใช้ {new} เลยไหม?',
   'source.alert': 'แจ้งเตือนธนาคาร',
   'today.pull.add': 'ดึงลงเพื่อเพิ่ม',
   'today.pull.release': 'ปล่อยเพื่อเพิ่ม',

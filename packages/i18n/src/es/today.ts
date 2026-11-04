@@ -173,6 +173,7 @@ export const esToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'details.bill': 'Era una factura',
   'details.bill.no': 'No',
   'details.bill.repayment': 'Tarjeta o préstamo',
+  'details.bill.amount': '{bill} suele ser {old}. ¿Que sea {new} a partir de ahora?',
   'source.alert': 'Aviso del banco',
   'today.pull.add': 'Desliza para añadir',
   'today.pull.release': 'Suelta para añadir',

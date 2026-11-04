@@ -24,6 +24,7 @@ import { noteReceiptEdit } from './first-catch';
 import { markHandTake } from './jar-asks';
 import { moneyInActions } from './money-in-actions';
 import { findSpend, type MoneyStore } from './money-store';
+import { syncPaidBill } from './paid-bill-sync';
 
 export interface NewSpend {
   /** Set when the capture already has one (an inbox item), so importing it twice finds it. */
@@ -127,6 +128,8 @@ export function moneyActions(store: MoneyStore) {
     const next: SpendRow = { ...row, ...patch, updatedAt: new Date().toISOString() };
     await tables.spends.put(next);
     replaceSpend(next);
+    // A bill the spend pays follows it: back to due when it is skipped or deleted, its amount.
+    await syncPaidBill(store, row, next);
     return next;
   };
 

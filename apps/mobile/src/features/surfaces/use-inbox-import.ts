@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
 
 import { surfaces } from '../../../modules/surfaces';
+import { billPayments } from '../../data/bill-payments';
 import { startReadingCount } from '../../data/first-catch';
 import { importInbox } from '../../data/inbox-import';
 import { useMoneyActions, useMoneyStore } from '../../data/money-provider';
@@ -18,8 +19,9 @@ import { setInboxRunner } from './inbox-runner';
  * Brings in what the share extension, the shortcuts and the Live Activity left in the App Group:
  * once the money store has loaded, and every time the app comes back to the foreground. Then
  * prices any captured foreign amount still waiting for a rate, in the home currency, at the rate
- * of the day it was paid. One run at a time; a return to the foreground during one waits for it,
- * and so does a screen asking for one (`requestInboxImport`), a second ask joining the one queued.
+ * of the day it was paid, and marks a bill's payment among them as paying it. One run at a time;
+ * a return to the foreground during one waits for it, and so does a screen asking for one
+ * (`requestInboxImport`), a second ask joining the one queued.
  */
 export function useInboxImport() {
   const store = useMoneyStore();
@@ -66,6 +68,8 @@ export function useInboxImport() {
           });
           // A charge abroad is priced after anything new came in, and on every return to the app.
           if (everything || result.saved > 0) await price();
+          // A charge abroad priced just now may be a bill's payment: marked once it has an amount.
+          await billPayments(store).markCaught();
         })
         .catch((error: unknown) => {
           Sentry.captureException(error);

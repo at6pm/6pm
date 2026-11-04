@@ -74,6 +74,10 @@ export const jaClose: { readonly [Key in keyof typeof enClose]: Entry } = {
   'close.bill.yes': 'はい、固定費です',
   'close.bill.yesCard': 'はい、カード代です',
   'close.bill.no': 'いいえ、普通の支出',
+  'close.bill.amountTitle': '今後は{new}にする？',
+  'close.bill.amountSub': '{bill}はいつも{old}。今月はどちらでも{new}です。',
+  'close.bill.thisMonth': '今月だけ',
+  'close.bill.fromNow': '今後ずっと',
   'close.repayment.title': 'カードやローンの返済？',
   'close.repayment.sub':
     'そうなら今日の数字からは外します。カードで買ったものは、もうカウントしています。',

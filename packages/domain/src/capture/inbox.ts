@@ -31,6 +31,8 @@ export interface InboxSpendDraft {
   readonly currencyGuessed: boolean;
   /** A transfer's own words ("Nội dung"), read when asking whether it paid a bill. */
   readonly memo: string | null;
+  /** The bank or wallet it was paid from, when the receipt or alert said; null for cash or unknown. */
+  readonly wallet: string | null;
   /** `in` for money that came in (a bank alert that says so); null for spending. */
   readonly direction: 'out' | 'in' | null;
 }
@@ -123,6 +125,17 @@ function noteOf(item: InboxSpend): string | null {
 }
 
 /**
+ * The bank or wallet a capture was paid from: the one a bank's alert or a shared bank receipt
+ * names (its catalogue name, as Details lists the wallets). Money that came in was paid into it,
+ * not from it, and a Wallet tap or a said spend names none.
+ */
+function walletOf(item: InboxSpend): string | null {
+  if (item.direction === 'in') return null;
+  if (item.source !== 'alert' && item.source !== 'shared') return null;
+  return item.receipt?.bank ?? null;
+}
+
+/**
  * The spend an inbox item becomes. The category is the extension's when it still exists, else
  * the merchant's rule, else the fallback. An amount the source could not read is saved as 0 and
  * caught, so the close asks for it rather than the capture being lost; a foreign one keeps its
@@ -165,6 +178,7 @@ export function inboxItemToNewSpend(
     foreignAmount: kept,
     currencyGuessed: item.currencyGuessed === true,
     memo: item.receipt?.memo ?? null,
+    wallet: walletOf(item),
     direction: item.direction ?? null,
   };
 }

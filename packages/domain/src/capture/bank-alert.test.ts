@@ -388,6 +388,21 @@ describe('readBankAlert: money that moved', () => {
     });
   });
 
+  it('names the company a wallet paid a bill to, without the bill’s lead words', () => {
+    const alert = read({
+      app: 'MoMo',
+      title: 'Thanh toán thành công',
+      body: 'Bạn đã thanh toán thành công 727.428đ cho hóa đơn của dịch vụ Điện lực Hồ Chí Minh.',
+    });
+    expect(alert).toMatchObject({
+      kind: 'moved',
+      direction: 'out',
+      amount: 727_428,
+      counterparty: 'Điện lực Hồ Chí Minh',
+      bank: 'MoMo',
+    });
+  });
+
   it('cuts a long memo to the length kept on a spend', () => {
     const long = 'A'.repeat(300);
     const alert = read({ body: `GD: -50,000VND|ND: ${long}` });

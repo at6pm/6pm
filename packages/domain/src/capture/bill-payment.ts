@@ -3,7 +3,8 @@ import { billCountsIn, type BillKind } from '../plan/bills';
 import type { PayCycle } from '../plan/pay-cycle';
 import { billDueIn } from '../plan/plan-river';
 import { diffDays, type LocalDate } from '../time/local-date';
-import { foldWords } from './spoken-spend';
+import { otherBillKind, sameBillKind } from './bill-topic';
+import { foldWords } from './fold-words';
 
 /**
  * What a spend that paid off a card or loan with no bill of its own carries in place of a bill
@@ -11,7 +12,10 @@ import { foldWords } from './spoken-spend';
  */
 export const REPAYMENT = 'repayment';
 
-/** How far from a bill's due day a payment can be and still look like it: a week either side. */
+/**
+ * How far from a bill's due day a payment can be and still look like it by its amount alone: a
+ * week either side. A payment that names the bill, or its kind, can be any day of its cycle.
+ */
 export const BILL_PAYMENT_DAYS = 7;
 
 /**
@@ -127,36 +131,35 @@ function isRepayment(bill: PayableBill): boolean {
 }
 
 /**
- * How strongly a spend looks like a bill's payment, or null when it does not: the bill is unpaid
- * this cycle and not yet asked about, the spend is in this cycle within a week of the bill's due
- * day, and its amount is the bill's exactly (strongest), or the payee or note names the bill, or
- * names a repayment when the bill is one. Closer to the due day breaks a tie.
+ * How strongly a spend looks like a bill's payment, or null when it does not. The bill is unpaid
+ * this cycle and not yet asked about, and the spend is in this cycle. Then any day of the cycle,
+ * the payee, note or memo names the bill or the same kind of bill (an EVN payment for "Điện
+ * nước"; utility bills are paid whenever they arrive); within a week of its due day, its amount
+ * is the bill's exactly (strongest), or it names a repayment when the bill is one. A payee of
+ * another kind of bill (Viettel for a power bill) never names it. Closer to the due day breaks a
+ * tie.
  */
 function matchScore(spend: PaymentCapture, bill: PayableBill, cycle: PayCycle): number | null {
   if (bill.paidCycle === cycle.start || bill.askedCycle === cycle.start) return null;
   if (!billCountsIn(bill, cycle)) return null;
   if (spend.day < cycle.start || spend.day > cycle.payday) return null;
   const away = Math.abs(diffDays(spend.day, billDueIn(cycle, bill.dueDay)));
-  if (away > BILL_PAYMENT_DAYS) return null;
+  const near = away <= BILL_PAYMENT_DAYS;
   const text = textOf(spend);
-  const exact = bill.amount > 0 && spend.amount === bill.amount;
-  const named = namesBill(text, bill);
-  if (!exact && !named && !(isRepayment(bill) && namesRepayment(text))) return null;
+  const named =
+    !otherBillKind(text, bill.name) && (namesBill(text, bill) || sameBillKind(text, bill.name));
+  const exact = near && bill.amount > 0 && spend.amount === bill.amount;
+  const repays = near && isRepayment(bill) && namesRepayment(text);
+  if (!exact && !named && !repays) return null;
   return (exact ? 200 : 0) + (named ? 100 : 0) + (BILL_PAYMENT_DAYS - away);
 }
 
-/**
- * What the close asks about tonight's spends: each spend that looks like an unpaid bill's
- * payment is asked "Is this your {bill}?", each bill at most once (the best-matching spend wins);
- * a spend whose payee or note names a repayment with no bill left to match asks "Paying off a
- * card or loan?". In the order the spends were given; a spend is asked one thing at most.
- */
-export function billPaymentAsks(
-  spends: readonly PaymentCapture[],
+/** Each waiting spend's best unpaid bill, each bill given to one spend at most. */
+function matchBills(
+  open: readonly PaymentCapture[],
   bills: readonly PayableBill[],
   cycle: PayCycle,
-): BillAsk[] {
-  const open = spends.filter((s) => s.paysBill == null && s.amount > 0);
+): Map<string, string> {
   const pairs: { spendId: string; billId: string; score: number }[] = [];
   for (const spend of open) {
     for (const bill of bills) {
@@ -172,9 +175,73 @@ export function billPaymentAsks(
     bySpend.set(pair.spendId, pair.billId);
     taken.add(pair.billId);
   }
-  return open.flatMap((spend): BillAsk[] => {
-    const billId = bySpend.get(spend.id);
+  return bySpend;
+}
+
+const unmarked = (spends: readonly PaymentCapture[]) =>
+  spends.filter((s) => s.paysBill == null && s.amount > 0);
+
+/**
+ * The bills caught spends pay, marked the moment they are caught so a bill's payment never counts
+ * as spending while the bill still comes off the plan: each spend not yet marked that looks like
+ * an unpaid bill's payment (`billPaymentAsks`' rules), each bill once, the best match winning.
+ * A repayment with no bill is left for the close to ask about.
+ */
+export function billPaymentMarks(
+  spends: readonly PaymentCapture[],
+  bills: readonly PayableBill[],
+  cycle: PayCycle,
+): { readonly spendId: string; readonly billId: string }[] {
+  const open = unmarked(spends);
+  const matched = matchBills(open, bills, cycle);
+  return open.flatMap((spend) => {
+    const billId = matched.get(spend.id);
+    return billId === undefined ? [] : [{ spendId: spend.id, billId }];
+  });
+}
+
+/**
+ * Whether a spend was marked as paying a bill when it was caught and the close has yet to ask:
+ * the bill it pays is paid this cycle, by it, and was not asked about this cycle.
+ */
+function markedUnasked(spend: PaymentCapture, bills: readonly PayableBill[], cycle: PayCycle) {
+  if (spend.paysBill == null || spend.paysBill === REPAYMENT || spend.amount <= 0) return false;
+  if (spend.day < cycle.start || spend.day > cycle.payday) return false;
+  const bill = bills.find((b) => b.id === spend.paysBill);
+  return bill !== undefined && bill.paidCycle === cycle.start && bill.askedCycle !== cycle.start;
+}
+
+/**
+ * What the close asks about tonight's spends: each spend that looks like an unpaid bill's
+ * payment, or was marked as one when it was caught, is asked "Is this your {bill}?", each bill at
+ * most once (the best-matching spend wins); a spend whose payee or note names a repayment with no
+ * bill left to match asks "Paying off a card or loan?". In the order the spends were given; a
+ * spend is asked one thing at most.
+ */
+export function billPaymentAsks(
+  spends: readonly PaymentCapture[],
+  bills: readonly PayableBill[],
+  cycle: PayCycle,
+): BillAsk[] {
+  const open = unmarked(spends);
+  const matched = matchBills(open, bills, cycle);
+  return spends.flatMap((spend): BillAsk[] => {
+    if (markedUnasked(spend, bills, cycle)) {
+      return [{ spendId: spend.id, billId: spend.paysBill ?? null }];
+    }
+    if (!open.includes(spend)) return [];
+    const billId = matched.get(spend.id);
     if (billId !== undefined) return [{ spendId: spend.id, billId }];
     return namesRepayment(textOf(spend)) ? [{ spendId: spend.id, billId: null }] : [];
   });
+}
+
+/**
+ * Whether confirming a spend as a bill's payment should ask about the bill's amount from now on:
+ * the bill is not a card's (a card bill keeps its amount, whatever paid it off) and the payment
+ * differs from it. "Just this month" leaves this cycle's payment as the bill once (M2b); "From
+ * now on" makes it the bill's amount (`billAmountFromNow`).
+ */
+export function asksBillAmount(bill: Pick<PayableBill, 'amount' | 'kind'>, paid: Vnd): boolean {
+  return bill.kind !== 'card' && paid > 0 && paid !== bill.amount;
 }

@@ -26,6 +26,8 @@ export interface CloseCardContent {
   readonly category: string;
   readonly amount: number;
   readonly keptBefore: number;
+  /** What keeping it adds to what was kept, when not its amount: nothing for a bill's payment. */
+  readonly adds?: number;
   readonly detail: string | null;
   readonly labels: {
     readonly keptSoFar: string;
@@ -191,7 +193,11 @@ export function CloseCard({
                   {moneyIn ? moneyIn.spreadLabel : labels.withThis}
                 </Text>
                 <Text style={{ ...mono(11.5, 600), ...tabular, color: INK }}>
-                  {money.number(moneyIn ? moneyIn.spread : content.keptBefore + content.amount)}
+                  {money.number(
+                    moneyIn
+                      ? moneyIn.spread
+                      : content.keptBefore + (content.adds ?? content.amount),
+                  )}
                 </Text>
               </View>
             </View>

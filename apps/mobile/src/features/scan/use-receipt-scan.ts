@@ -223,6 +223,8 @@ export function useReceiptScan() {
       if (spendId === null) return 'already';
       const { pays, add } = phase.bill;
       if (bill === 'pays' && pays !== null) await billPayments.setPaysBill(spendId, pays.id);
+      // The bill it looked like, turned off: answered, so a later catch never marks it as paid.
+      if (bill === null && pays !== null) await billPayments.billAsked(pays.id);
       if (bill === 'add' && add !== null && item.amount !== null) {
         const billId = await plan.addBill({
           ...add,
