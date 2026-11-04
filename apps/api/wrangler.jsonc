@@ -85,6 +85,13 @@
           "namespace_id": "6306",
           "simple": { "limit": 20, "period": 60 },
         },
+        // An export file the phone does not know: its headers and value shapes go to the model, at
+        // most twice a file, so one device gets a small allowance (see `limitImportMaps`).
+        {
+          "name": "IMPORT_MAP_RATE_LIMIT",
+          "namespace_id": "6307",
+          "simple": { "limit": 10, "period": 60 },
+        },
       ],
     },
     "prd": {
@@ -152,6 +159,13 @@
           "name": "ICON_PICK_RATE_LIMIT",
           "namespace_id": "6316",
           "simple": { "limit": 20, "period": 60 },
+        },
+        // An export file the phone does not know: its headers and value shapes go to the model, at
+        // most twice a file, so one device gets a small allowance (see `limitImportMaps`).
+        {
+          "name": "IMPORT_MAP_RATE_LIMIT",
+          "namespace_id": "6317",
+          "simple": { "limit": 10, "period": 60 },
         },
       ],
     },
