@@ -17,11 +17,14 @@ import { Companion } from '../../ui/companion/companion';
 import { companionMood } from '../../ui/companion/companion-mood';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useCompanionLine } from '../wording/use-companion-line';
+import { useFirstCatchCard } from './use-first-catch-card';
 import { useClock } from '../../ui/theme/clock';
 import { useTheme } from '../../ui/theme/theme';
 import { display, leading } from '../../ui/type/fonts';
 
 type HomeEvent = 'idle' | 'closedIdle' | 'late' | 'replan' | 'pastPlan' | 'paused';
+/** A calm day while Today waits for the first catch: the companion asks to be let in. */
+type SaidEvent = HomeEvent | 'firstCatchWaiting';
 
 /** Where the companion's row sits on the sheet, and the room the sheet keeps under it. */
 const ROW_TOP = 20;
@@ -63,8 +66,10 @@ export function CompanionGreeting({
   const money = useMoneyFormat();
   const { hour } = useClock();
   // "Tomorrow's 43k, not 43k" says nothing: a day whose lines read the same is a calm one.
-  const said =
+  const waitingForCatch = useFirstCatchCard().due;
+  const calm: HomeEvent =
     event === 'replan' && !replanWorded(day, (amount) => money.short(amount)) ? 'idle' : event;
+  const said: SaidEvent = calm === 'idle' && waitingForCatch ? 'firstCatchWaiting' : calm;
   // A longer line (three or four lines from a model) grows the row; the sheet makes room under it.
   const room = useSharedValue(ROOM);
   const roomStyle = useAnimatedStyle(() => ({ height: room.value }));
