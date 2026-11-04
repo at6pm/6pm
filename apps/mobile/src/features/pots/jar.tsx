@@ -15,15 +15,18 @@ import Animated, {
 import { curves, durations } from '@6pm/theme';
 
 import { isSymbolName, Symbol } from '../../ui/icons/symbol';
-import { jarColours, PARTNER_BADGE, PAST_DATE_WARM } from './jar-colours';
+import { useTheme } from '../../ui/theme/theme';
+import { jarColours, PARTNER_BADGE, PAST_DATE_WARM, TARGET_LINE } from './jar-colours';
+import { jarGeometry } from './jar-geometry';
 
 const FILL_EASE = Easing.bezier(...curves.jarFill);
+const CHECK_EASE = Easing.bezier(...curves.jarCheck);
 
 /** What the jar shows beyond its fill: the edge states are drawn on the jar itself. */
 export type JarState = 'normal' | 'paused' | 'pastDate' | 'full' | 'empty';
 
 export interface JarProps {
-  /** Outer size; everything inside scales from the shelf jar's 52 × 66. */
+  /** Outer size; the proportions follow the canvases' sizes (see `jarGeometry`). */
   readonly width: number;
   readonly height: number;
   readonly hue: number;
@@ -31,21 +34,25 @@ export interface JarProps {
   readonly icon: string;
   readonly futureYou?: boolean;
   /**
-   * How full, 0 to 1: what it holds over its target. A jar with no target is drawn at a steady
-   * level (see `jarLevel`). A shared value moves on the UI thread (a hold, a slider).
+   * How full, 0 to 1, of the glass: what it holds over its target. A jar with no target is drawn
+   * at a steady level (see `jarLevel`). A shared value moves on the UI thread (a hold, a slider).
    */
   readonly level: number | SharedValue<number>;
   /** The dashed target line near the neck: shown when the jar has a target and is not full. */
   readonly target?: boolean;
   readonly state?: JarState;
-  /** A shared jar: the partner's initial and the part they put in (0 to 1 of the target). */
+  /** A shared jar: the partner's initial and the part they put in (0 to 1 of the glass). */
   readonly partner?: { readonly initial: string; readonly level: number } | null;
   /** The page behind the jar, for the ring around a badge. */
   readonly ringColor: string;
-  /** Pressed (a hold to top up): scales to .94 on the pop spring. */
+  /** Pressed (a hold to top up): scales to .94. */
   readonly pressed?: SharedValue<number>;
   /** The surface sloshes slowly (a jar's page). */
   readonly slosh?: boolean;
+  /** No icon and no highlight: the Pots list's small jar. */
+  readonly plain?: boolean;
+  /** The least it is drawn holding; the canvases keep a sliver (5%) in an empty jar. */
+  readonly minFill?: number;
   readonly children?: ReactNode;
   readonly style?: ViewProps['style'];
 }
@@ -54,6 +61,12 @@ export interface JarProps {
 export function jarLevel(saved: number, target: number): number {
   if (target > 0) return Math.max(0, Math.min(1, saved / target));
   return saved > 0 ? 0.62 : 0;
+}
+
+/** Future you's jar on its page: the fill rises with the slice, as the canvas's slider moves it. */
+export function futureYouLevel(slicePercent: number): number {
+  'worklet';
+  return Math.max(0, Math.min(1, (42 + slicePercent * 1.6) / 100));
 }
 
 /**
@@ -75,18 +88,14 @@ export function Jar({
   ringColor,
   pressed,
   slosh = false,
+  plain = false,
+  minFill = 0.05,
   children,
   style,
 }: JarProps) {
   const c = jarColours(hue);
-  const k = width / 52;
-  const lidH = Math.max(3, Math.round(8 * (height / 66)));
-  const bodyTop = Math.round(6 * (height / 66));
-  const bodyH = height - bodyTop;
-  const lineTop = Math.round(bodyH * 0.16);
+  const g = jarGeometry(width, height);
   const showTarget = (target && state !== 'full') || state === 'pastDate';
-  // With a target line, the target is the line; a full jar fills to the brim.
-  const room = showTarget ? (bodyH - lineTop) / bodyH : 1;
 
   const fallback = useSharedValue(typeof level === 'number' ? level : 0);
   const shared = typeof level === 'number' ? null : level;
@@ -103,10 +112,10 @@ export function Jar({
     const v = Math.max(0, Math.min(1, source.value));
     if (state === 'empty') return 0.03;
     if (state === 'paused') return 0;
-    return state === 'full' ? 1 : Math.max(0.05, v * room);
+    return state === 'full' ? 1 : Math.max(minFill, v);
   });
   const fillStyle = useAnimatedStyle(() => ({ height: `${drawn.value * 100}%` }));
-  const partnerLevel = partner ? Math.max(0, Math.min(1, partner.level)) * room : 0;
+  const partnerLevel = partner ? Math.max(0, Math.min(1, partner.level)) : 0;
   // The partner's part sits under one's own, inside what the jar holds.
   const partnerStyle = useAnimatedStyle(() => ({
     height: `${Math.min(100, (partnerLevel / Math.max(0.01, drawn.value)) * 100)}%`,
@@ -129,6 +138,7 @@ export function Jar({
       ReduceMotion.System,
     );
   }, [slosh, wave]);
+  const k = width / 52;
   const surfaceStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: -3 * k * wave.value }, { scaleY: 1 + 0.04 * wave.value }],
   }));
@@ -136,14 +146,21 @@ export function Jar({
     transform: [{ scale: pressed ? 1 - 0.06 * pressed.value : 1 }],
   }));
 
-  const iconSize = Math.round(20 * k);
   const glyph = (color: string) =>
     futureYou ? (
-      <Sun size={iconSize} color={color} />
+      <Sun size={g.icon} color={color} />
     ) : isSymbolName(icon) ? (
-      <Symbol name={icon} size={iconSize} fill={1} weight={500} color={color} />
+      <Symbol name={icon} size={g.icon} fill={1} weight={500} color={color} />
     ) : null;
-  const badge = Math.round(Math.max(18, 20 * Math.min(1.2, k)));
+  const bodyH = height - g.bodyTop;
+  const borderColor =
+    state === 'paused' || state === 'full'
+      ? 'rgba(255,255,255,0.25)'
+      : `rgba(255,255,255,${g.borderAlpha})`;
+  const glow = state === 'full' ? `0 0 ${Math.round(26 * Math.min(1.4, k))}px ${c.glow}` : null;
+  const inner = width >= 120 ? 'inset 0 -14px 26px rgba(0,0,0,0.16)' : null;
+  // Small jars wear the partner's initial at the foot; the larger ones carry badges up top.
+  const badgeHigh = width >= 64;
 
   return (
     <View style={[{ width, height }, style]}>
@@ -151,57 +168,56 @@ export function Jar({
         <View
           style={{
             position: 'absolute',
-            left: Math.round(14 * k),
-            right: Math.round(14 * k),
+            left: g.lidInset,
+            right: g.lidInset,
             top: 0,
-            height: lidH,
-            borderRadius: Math.max(2, lidH / 2),
+            height: g.lidH,
+            borderRadius: Math.max(2, g.lidH / 2),
             backgroundColor: c.lid,
-            opacity: state === 'paused' ? 0.7 : 1,
           }}
         />
         <View
           style={{
             position: 'absolute',
-            left: 0,
-            right: 0,
-            top: bodyTop,
+            left: g.bodyInset,
+            right: g.bodyInset,
+            top: g.bodyTop,
             bottom: 0,
-            borderTopLeftRadius: 15 * k,
-            borderTopRightRadius: 15 * k,
-            borderBottomLeftRadius: 18 * k,
-            borderBottomRightRadius: 18 * k,
+            borderTopLeftRadius: g.radiusTop,
+            borderTopRightRadius: g.radiusTop,
+            borderBottomLeftRadius: g.radiusBottom,
+            borderBottomRightRadius: g.radiusBottom,
             backgroundColor: c.glass,
             borderWidth: state === 'paused' ? 1.5 : 1,
             borderStyle: state === 'paused' ? 'dashed' : 'solid',
-            borderColor:
-              state === 'paused'
-                ? 'rgba(255,255,255,0.25)'
-                : state === 'full'
-                  ? 'rgba(255,255,255,0.25)'
-                  : 'rgba(255,255,255,0.14)',
+            borderColor,
             overflow: 'hidden',
-            boxShadow: state === 'full' ? `0 0 ${Math.round(26 * k)}px ${c.glow}` : undefined,
+            boxShadow: [glow, inner].filter((s) => s !== null).join(', ') || undefined,
           }}
         >
           <Animated.View
             style={[
-              { position: 'absolute', left: 0, right: 0, bottom: 0, backgroundColor: c.fill },
+              {
+                position: 'absolute',
+                left: slosh ? -4 : 0,
+                right: slosh ? -4 : 0,
+                bottom: 0,
+                backgroundColor: c.fill,
+                overflow: 'hidden',
+              },
               fillStyle,
+              slosh ? surfaceStyle : null,
             ]}
           >
-            <Animated.View
-              style={[
-                {
-                  position: 'absolute',
-                  left: -4 * k,
-                  right: -4 * k,
-                  top: 0,
-                  height: 2,
-                  backgroundColor: state === 'full' ? c.fill : c.fillTop,
-                },
-                surfaceStyle,
-              ]}
+            <View
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                top: 0,
+                height: 2,
+                backgroundColor: state === 'full' ? c.fill : c.fillTop,
+              }}
             />
             {partner ? (
               <Animated.View
@@ -222,78 +238,151 @@ export function Jar({
             <View
               style={{
                 position: 'absolute',
-                left: 8 * k,
-                right: 8 * k,
-                top: lineTop,
+                left: g.lineInset,
+                right: g.lineInset,
+                top: g.lineTop,
                 borderTopWidth: 1.5,
                 borderStyle: 'dashed',
-                borderColor: state === 'pastDate' ? PAST_DATE_WARM : 'rgba(251,244,236,0.45)',
+                borderColor: state === 'pastDate' ? PAST_DATE_WARM : TARGET_LINE,
               }}
             />
           ) : null}
-          <View
-            style={{
-              position: 'absolute',
-              left: 6 * k,
-              top: 9 * k,
-              width: Math.max(2, 4 * k),
-              height: '38%',
-              borderRadius: 4 * k,
-              backgroundColor: 'rgba(255,255,255,0.18)',
-            }}
-          />
-          <View
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            {state === 'paused' ? (
-              <PauseGlyph size={iconSize} color="rgba(251,244,236,0.5)" />
-            ) : (
-              <>
-                <Animated.View style={[{ position: 'absolute' }, iconLowStyle]}>
-                  {glyph(c.iconLow)}
-                </Animated.View>
-                <Animated.View style={[{ position: 'absolute' }, iconHighStyle]}>
-                  {glyph(c.iconHigh)}
-                </Animated.View>
-              </>
-            )}
-          </View>
+          {plain ? null : (
+            <View
+              style={{
+                position: 'absolute',
+                left: g.shineLeft,
+                top: g.shineTop,
+                width: g.shineW,
+                height: bodyH * g.shineH,
+                borderRadius: g.shineW,
+                backgroundColor: 'rgba(255,255,255,0.18)',
+              }}
+            />
+          )}
+          {plain ? null : (
+            <View
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {state === 'paused' ? (
+                <PauseGlyph size={g.icon} color="rgba(251,244,236,0.5)" />
+              ) : (
+                <>
+                  <Animated.View style={[{ position: 'absolute' }, iconLowStyle]}>
+                    {glyph(c.iconLow)}
+                  </Animated.View>
+                  <Animated.View style={[{ position: 'absolute' }, iconHighStyle]}>
+                    {glyph(c.iconHigh)}
+                  </Animated.View>
+                </>
+              )}
+            </View>
+          )}
         </View>
         {partner ? (
-          <View
-            style={{
-              position: 'absolute',
-              right: -5,
-              bottom: -3,
-              width: badge,
-              height: badge,
-              borderRadius: badge / 2,
-              backgroundColor: PARTNER_BADGE.bg,
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: `0 0 0 2px ${ringColor}`,
-            }}
+          <Badge
+            size={g.badge}
+            out={g.badgeOut}
+            high={badgeHigh}
+            bg={PARTNER_BADGE.bg}
+            ringColor={ringColor}
           >
             <Text
-              style={{ fontSize: badge / 2, fontWeight: '800', color: PARTNER_BADGE.fg }}
+              style={{ fontSize: g.badge * 0.5, fontWeight: '800', color: PARTNER_BADGE.fg }}
               allowFontScaling={false}
             >
               {partner.initial}
             </Text>
-          </View>
+          </Badge>
+        ) : state === 'full' ? (
+          <CheckBadge size={g.badge} out={g.badgeOut} ringColor={ringColor} />
         ) : null}
         {state === 'empty' ? <Drip hue={hue} k={k} /> : null}
         {children}
       </Animated.View>
     </View>
+  );
+}
+
+function Badge({
+  size,
+  out,
+  high,
+  bg,
+  ringColor,
+  children,
+}: {
+  readonly size: number;
+  readonly out: number;
+  readonly high: boolean;
+  readonly bg: string;
+  readonly ringColor: string;
+  readonly children: ReactNode;
+}) {
+  return (
+    <View
+      style={{
+        position: 'absolute',
+        right: -out,
+        ...(high ? { top: -4 } : { bottom: -3 }),
+        width: size,
+        height: size,
+        borderRadius: size / 2,
+        backgroundColor: bg,
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: `0 0 0 2px ${ringColor}`,
+      }}
+    >
+      {children}
+    </View>
+  );
+}
+
+/** A full jar's check, stamped on with the check curve the moment it fills. */
+function CheckBadge({
+  size,
+  out,
+  ringColor,
+}: {
+  readonly size: number;
+  readonly out: number;
+  readonly ringColor: string;
+}) {
+  const { palette } = useTheme();
+  const shown = useSharedValue(0);
+  useEffect(() => {
+    shown.value = withTiming(1, {
+      duration: 420,
+      easing: CHECK_EASE,
+      reduceMotion: ReduceMotion.System,
+    });
+  }, [shown]);
+  const style = useAnimatedStyle(() => ({ transform: [{ scale: shown.value }] }));
+  return (
+    <Animated.View style={[{ position: 'absolute', right: -out, top: -4 }, style]}>
+      <View
+        style={{
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+          backgroundColor: palette.btnBg,
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: `0 0 0 2px ${ringColor}`,
+        }}
+      >
+        <Symbol name="check" size={Math.round(size * 0.62)} color={palette.btnFg} />
+      </View>
+    </Animated.View>
   );
 }
 

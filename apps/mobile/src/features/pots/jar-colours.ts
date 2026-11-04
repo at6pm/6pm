@@ -2,6 +2,7 @@ import { oklchSrgbHex } from '@6pm/theme';
 
 /** Appends an alpha to a `#rrggbb` colour. */
 export function alpha(hex: string, a: number): string {
+  if (!/^#[0-9a-f]{6}/i.test(hex)) return hex;
   const byte = Math.round(Math.max(0, Math.min(1, a)) * 255)
     .toString(16)
     .padStart(2, '0');
@@ -54,3 +55,17 @@ export const PARTNER_BADGE = { bg: oklchSrgbHex(0.8, 0.1, 30), fg: oklchSrgbHex(
 
 /** A dated jar whose date passed before it filled: its target line and words turn warm. */
 export const PAST_DATE_WARM = oklchSrgbHex(0.85, 0.09, 55);
+
+/** The dashed target line on the glass. */
+export const TARGET_LINE = 'rgba(251,244,236,0.45)';
+
+/** Money in and out on a jar's page: a green dot in; a warm dot and amount out. */
+export const MOVE_IN = oklchSrgbHex(0.8, 0.12, 150);
+export const MOVE_OUT_TEXT = PAST_DATE_WARM;
+
+/** A full jar's words ("12,6tr · full"). */
+export const FULL_TEXT = oklchSrgbHex(0.86, 0.12, 150);
+
+/** The what-if card on Future you's page: a deep wash over the sky. */
+export const WHAT_IF_CARD = 'rgba(20,10,30,0.3)';
+export const WHAT_IF_TRACK = 'rgba(255,255,255,0.12)';

@@ -9,6 +9,7 @@ import {
   payCycleOn,
   type LocalDate,
   type PotRow,
+  togetherStateSchema,
   type TogetherState,
 } from '@6pm/domain';
 
@@ -180,23 +181,34 @@ export async function seedDesignJars(
       ],
       pots: [
         {
-          id: 'dev-home',
+          id: '0d0e0f10-0000-4000-8000-00000000a001',
           name: 'Home',
           icon: 'home',
           hue: 25,
           goal: 5_000_000,
+          neededBy: null,
           currency: 'VND',
           createdBy: B_ID,
           createdAt: made(3),
           contributions: [
-            { id: 'dev-c1', memberId: ME_ID, amount: 1_400_000, addedAt: made(2) },
-            { id: 'dev-c2', memberId: B_ID, amount: 1_200_000, addedAt: made(2) },
+            {
+              id: '0d0e0f10-0000-4000-8000-00000000c001',
+              memberId: ME_ID,
+              amount: 1_400_000,
+              addedAt: made(2),
+            },
+            {
+              id: '0d0e0f10-0000-4000-8000-00000000c002',
+              memberId: B_ID,
+              amount: 1_200_000,
+              addedAt: made(2),
+            },
           ],
         },
       ],
-    } as TogetherState['pair'],
+    },
   };
-  if (state !== 'first') {
+  if (state !== 'first' && togetherStateSchema.safeParse(shared).success) {
     await db.runAsync('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)', [
       TOGETHER_CACHE_KEY,
       JSON.stringify(shared),
