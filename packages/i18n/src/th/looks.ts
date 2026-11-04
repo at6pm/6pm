@@ -1,7 +1,7 @@
 import type { Entry } from '../catalogue-types';
 import type { enLooks } from '../en-looks';
 
-// Looks are ลุค and pots are กระปุก (glossary). Look names are translated; Vietnamese places and
+// Looks are ลุค and jars are โหล (glossary). Look names are translated; Vietnamese places and
 // the sign's own words (Mở cửa, đóng cửa) stay as they would read in Vietnam.
 export const thLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   'looks.title': 'ลุค',
@@ -68,8 +68,8 @@ export const thLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   'max.sub.looks': 'ทั้ง {count} ลุคและฉากมีชีวิต รวมถึงลุคใหม่ทุกลุค',
   'max.head.ask': 'ถามได้เท่าที่อยากถาม',
   'max.sub.ask': 'แบบฟรีถามได้วันละ 10 คำถาม Max ไม่จำกัด',
-  'max.head.pots': 'มีแผนเท่าไหร่ ก็มีกระปุกเท่านั้น',
-  'max.sub.pots': 'แบบฟรีมีกระปุกของตัวเองหนึ่งใบ Max ไม่จำกัด',
+  'max.head.pots': 'มีแผนเท่าไหร่ ก็มีโหลเท่านั้น',
+  'max.sub.pots': 'แบบฟรีมีโหลของตัวเองได้สามใบ Max ไม่จำกัด',
   'max.head.travel': 'โหมดเดินทาง ไปที่ไหนก็ได้',
   'max.sub.travel': 'อัตราแลกเปลี่ยนสดทุกสกุลเงิน เปิดเองอัตโนมัติ',
   'max.head.backup': 'เก็บทุกวันไว้ตลอดไป',
@@ -112,7 +112,7 @@ export const thLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   'max.plan.unavailable': 'ยังไม่มีราคา',
   'max.plan.save': 'ประหยัด {percent}%',
   'max.tile.ask': 'ถาม 6pm ไม่จำกัด',
-  'max.tile.pots': 'กระปุกไม่จำกัด',
+  'max.tile.pots': 'โหลไม่จำกัด',
   'max.tile.travel': 'ทุกสกุลเงิน',
   'max.tile.diary': 'สมุดประจำปี',
   'max.tile.backup': 'สำรองและส่งออก',
@@ -159,9 +159,9 @@ export const thLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   'max.welcome.win.backupReady': 'สำรองข้อมูลแบบเข้ารหัส พร้อมให้เปิด',
   'max.welcome.win.icons': 'ไอคอนหมวดหมู่ 180 แบบ',
   'max.welcome.win.buddy': 'เพื่อนคู่ใจ Max สองตัวให้เลือก',
-  'max.welcome.win.more': 'กระปุก เดินทาง วิดเจ็ตในลุคของคุณ',
+  'max.welcome.win.more': 'โหล เดินทาง วิดเจ็ตในลุคของคุณ',
   'max.welcome.go.looks': 'เลือกลุคของคุณ',
-  'max.welcome.go.pots': 'สร้างกระปุก',
+  'max.welcome.go.pots': 'สร้างโหล',
   'max.welcome.go.travel': 'เปิดโหมดเดินทาง',
   'max.welcome.go.backup': 'ดูการสำรองข้อมูล',
   'max.welcome.go.diary': 'เปิดสมุดประจำปี',

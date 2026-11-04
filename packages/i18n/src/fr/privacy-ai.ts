@@ -31,7 +31,7 @@ export const frPrivacyAi: { readonly [Key in keyof typeof enPrivacyAi]: Entry } 
   'settings.ai.device': 'Sur cet iPhone',
   'privacy.leaves.title': 'Ce qui quitte ton téléphone',
   'privacy.leaves.server.ask':
-    'Une question, avec les noms de tes catégories et cagnottes, pour la lire',
+    'Une question, avec les noms de tes catégories et bocaux, pour la lire',
   'privacy.leaves.server.lines': 'Les quelques faits d’une réplique du compagnon',
   'privacy.leaves.server.receipts': 'Une photo de ticket que ton téléphone ne sait pas lire',
   'privacy.leaves.server.voice': 'Ta voix pendant que tu parles, pour la transformer en texte',

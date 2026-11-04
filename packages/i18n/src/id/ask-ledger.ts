@@ -51,7 +51,7 @@ export const idAskLedger: { readonly [Key in keyof typeof enAskLedger]: Entry } 
     other:
       'Dengan {monthly} sebulan untuk kamu di masa depan, {amount} untuk {what} butuh sekitar {count} tahun, kira-kira {month}.',
   },
-  'ask.answer.goalPace.note': 'Celengan khusus untuk itu menjaga uangnya terpisah dari yang lain.',
+  'ask.answer.goalPace.note': 'Toples khusus untuk itu menjaga uangnya terpisah dari yang lain.',
   'ask.answer.goalNoPace':
     'Belum ada yang masuk ke kamu di masa depan tiap bulan, jadi belum ada laju untuk menghitung {amount} untuk {what}. Sedikit tiap bulan sudah jadi awal.',
   'ask.answer.goalAmount':

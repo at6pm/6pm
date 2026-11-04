@@ -31,7 +31,7 @@ export const dePrivacyAi: { readonly [Key in keyof typeof enPrivacyAi]: Entry } 
   'settings.ai.device': 'Auf diesem iPhone',
   'privacy.leaves.title': 'Was dein Handy verlässt',
   'privacy.leaves.server.ask':
-    'Eine Frage, mit deinen Kategorie- und Spartopf-Namen, um sie zu verstehen',
+    'Eine Frage, mit den Namen deiner Kategorien und Gläser, um sie zu verstehen',
   'privacy.leaves.server.lines': 'Die paar Fakten in einem Spruch deines Begleiters',
   'privacy.leaves.server.receipts': 'Ein Belegfoto, das dein Handy nicht lesen kann',
   'privacy.leaves.server.voice': 'Deine Stimme, während du sprichst, um sie in Text umzuwandeln',

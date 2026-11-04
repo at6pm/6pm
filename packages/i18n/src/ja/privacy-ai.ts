@@ -29,7 +29,7 @@ export const jaPrivacyAi: { readonly [Key in keyof typeof enPrivacyAi]: Entry } 
   'settings.ai.server': '6pmのサーバー',
   'settings.ai.device': 'このiPhone',
   'privacy.leaves.title': 'スマホから出るもの',
-  'privacy.leaves.server.ask': '質問と、それを読むためのカテゴリ名・貯金箱名',
+  'privacy.leaves.server.ask': '質問と、それを読むためのカテゴリ名と瓶の名前',
   'privacy.leaves.server.lines': '相棒のひとことに使う、いくつかの事実',
   'privacy.leaves.server.receipts': 'スマホで読み取れなかったレシートの写真',
   'privacy.leaves.server.voice': '話している間の音声（文字にするため）',

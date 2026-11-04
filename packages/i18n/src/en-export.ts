@@ -20,4 +20,6 @@ export const enExport = {
   'export.csv.currency': 'Currency',
   'export.csv.yes': 'Yes',
   'export.csv.no': 'No',
+  'export.csv.fromJar': 'From {jar}',
+  'export.csv.fromJarPart': 'From {jar}: {amount}',
 } as const;

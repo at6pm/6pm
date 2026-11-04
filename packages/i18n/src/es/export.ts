@@ -23,4 +23,6 @@ export const esExport: { readonly [Key in keyof typeof enExport]: Entry } = {
   'export.csv.currency': 'Moneda',
   'export.csv.yes': 'Sí',
   'export.csv.no': 'No',
+  'export.csv.fromJar': 'Del frasco {jar}',
+  'export.csv.fromJarPart': 'Del frasco {jar}: {amount}',
 };

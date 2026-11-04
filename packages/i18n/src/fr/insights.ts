@@ -2,7 +2,7 @@ import type { Entry } from '../catalogue-types';
 import type { enInsights } from '../en-insights';
 
 // The companion says "je" and "tu", like a friend texting. The daily line is "la barre" in the
-// personality lines and "le chiffre du jour" in plain ones; a pot is a "cagnotte".
+// personality lines and "le chiffre du jour" in plain ones; a jar is a "bocal".
 export const frInsights: { readonly [Key in keyof typeof enInsights]: Entry } = {
   'insight.compare.muchMore': 'beaucoup plus',
   'insight.compare.more': 'plus',
@@ -257,25 +257,23 @@ export const frInsights: { readonly [Key in keyof typeof enInsights]: Entry } = 
   'insight.weekOver.roast.2': '{over} de trop. Une semaine à oublier, un mois pour rattraper.',
   'insight.weekOver.plain': 'Les jours clôturés de cette semaine ont dépassé de {over}.',
 
-  'insight.potMilestone.soft.1': 'La cagnotte {pot} a passé les {percent} %. Regarde-la grandir.',
-  'insight.potMilestone.soft.2': '{percent} % du chemin vers la cagnotte {pot}.',
-  'insight.potMilestone.cheeky.1': 'Cagnotte {pot} : {percent} % atteints. Ça se concrétise.',
-  'insight.potMilestone.cheeky.2':
-    '{percent} % de la cagnotte {pot}, c’est fait. Continue à la nourrir.',
-  'insight.potMilestone.roast.1':
-    'Cagnotte {pot} à {percent} %. La cagnotte gagne. Laisse-la faire.',
-  'insight.potMilestone.roast.2': '{percent} % vers la cagnotte {pot}. Pas touche.',
-  'insight.potMilestone.plain': 'La cagnotte {pot} a passé {percent} % de son objectif.',
+  'insight.potMilestone.soft.1': 'Le bocal {pot} a passé les {percent} %. Regarde-le grandir.',
+  'insight.potMilestone.soft.2': '{percent} % du chemin vers le bocal {pot}.',
+  'insight.potMilestone.cheeky.1': 'Bocal {pot} : {percent} % atteints. Ça se concrétise.',
+  'insight.potMilestone.cheeky.2': '{percent} % du bocal {pot}, c’est fait. Continue à le nourrir.',
+  'insight.potMilestone.roast.1': 'Bocal {pot} à {percent} %. Le bocal gagne. Laisse-le faire.',
+  'insight.potMilestone.roast.2': '{percent} % vers le bocal {pot}. Pas touche.',
+  'insight.potMilestone.plain': 'Le bocal {pot} a passé {percent} % de son objectif.',
 
-  'insight.potFull.soft.1': 'La cagnotte {pot} est pleine. C’est grâce à toi.',
-  'insight.potFull.soft.2': 'Cagnotte {pot} : c’est fait. Profites-en, vraiment.',
-  'insight.potFull.cheeky.1': 'La cagnotte {pot} est pleine ! Confettis, mais en silence.',
-  'insight.potFull.cheeky.2': 'Cagnotte {pot}, remplie à ras bord.',
+  'insight.potFull.soft.1': 'Le bocal {pot} est plein. C’est grâce à toi.',
+  'insight.potFull.soft.2': 'Bocal {pot} : c’est fait. Profites-en, vraiment.',
+  'insight.potFull.cheeky.1': 'Le bocal {pot} est plein ! Confettis, mais en silence.',
+  'insight.potFull.cheeky.2': 'Bocal {pot}, rempli à ras bord.',
   'insight.potFull.roast.1':
-    'La cagnotte {pot} est pleine. J’avais une blague prête ; tu n’en as pas eu besoin.',
+    'Le bocal {pot} est plein. J’avais une blague prête ; tu n’en as pas eu besoin.',
   'insight.potFull.roast.2':
-    'Cagnotte pleine : {pot}. Maintenant, dépense-la pour ce à quoi elle était destinée.',
-  'insight.potFull.plain': 'La cagnotte {pot} a atteint son objectif.',
+    'Bocal plein : {pot}. Maintenant, dépense-le pour ce à quoi il était destiné.',
+  'insight.potFull.plain': 'Le bocal {pot} est plein.',
 
   'insight.workToClaim.soft.1': {
     one: 'Une dépense pro ({amount}) à te faire rembourser.',

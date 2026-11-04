@@ -93,4 +93,5 @@ export const enDiary = {
   'diary.zine.showAmountsSub': 'Off by default. Money is personal.',
   'diary.cal.previous': 'Earlier month',
   'diary.cal.next': 'Later month',
+  'diary.fromJar': 'From {jar}',
 } as const;

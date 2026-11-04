@@ -29,7 +29,7 @@ export const viPrivacyAi: { readonly [Key in keyof typeof enPrivacyAi]: Entry } 
   'settings.ai.server': 'Trên máy chủ',
   'settings.ai.device': 'Trên iPhone này',
   'privacy.leaves.title': 'Những gì rời khỏi máy',
-  'privacy.leaves.server.ask': 'Câu hỏi, cùng tên danh mục và tên hũ, để hiểu câu hỏi',
+  'privacy.leaves.server.ask': 'Câu hỏi, cùng tên danh mục và tên lọ, để hiểu câu hỏi',
   'privacy.leaves.server.lines': 'Vài thông tin trong một câu của bạn đồng hành',
   'privacy.leaves.server.receipts': 'Ảnh biên lai mà máy không tự đọc được',
   'privacy.leaves.server.voice': 'Giọng nói lúc bạn đang nói, để chuyển thành chữ',

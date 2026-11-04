@@ -22,4 +22,6 @@ export const frExport: { readonly [Key in keyof typeof enExport]: Entry } = {
   'export.csv.currency': 'Devise',
   'export.csv.yes': 'Oui',
   'export.csv.no': 'Non',
+  'export.csv.fromJar': 'Du bocal « {jar} »',
+  'export.csv.fromJarPart': 'Du bocal « {jar} » : {amount}',
 };

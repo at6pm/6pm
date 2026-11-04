@@ -7,7 +7,7 @@ export const idAskChat: { readonly [Key in keyof typeof enAskChat]: Entry } = {
   'ask.chat.greeting.soft': 'Hai! Aku di sini kapan pun kamu mau cek soal uangmu.',
   'ask.chat.greeting.cheeky': 'Halo halo. Tanya apa saja soal uang, angkamu ada di aku.',
   'ask.chat.greeting.roast': 'Oh, kamu. Mau tanya separah apa?',
-  'ask.chat.greeting.plain': 'Halo. Tanyakan soal pengeluaran, tagihan, atau celenganmu.',
+  'ask.chat.greeting.plain': 'Halo. Tanyakan soal pengeluaran, tagihan, atau toplesmu.',
   'ask.chat.thanks.soft': 'Sama-sama. Jaga dirimu hari ini, ya.',
   'ask.chat.thanks.cheeky': 'Sama-sama! Bayarnya pakai tutup hari tepat waktu saja.',
   'ask.chat.thanks.roast': 'Jangan makasih ke aku. Makasih ke anggaran yang hampir kamu patuhi.',
@@ -19,7 +19,7 @@ export const idAskChat: { readonly [Key in keyof typeof enAskChat]: Entry } = {
   'ask.chat.identity':
     'Aku temanmu di 6pm. Setiap angka yang kuberikan dihitung di ponselmu, dari pengeluaranmu sendiri. Aku program, bukan manusia.',
   'ask.chat.privacy':
-    'Aku tidak bisa melihat rekening bankmu. Aku hanya tahu yang ada di 6pm, dan itu tetap di ponselmu. Untuk membaca pertanyaan, server kami melihat pertanyaannya serta nama kategori dan celenganmu; untuk menyusun satu kalimat, hanya beberapa fakta di dalamnya.',
+    'Aku tidak bisa melihat rekening bankmu. Aku hanya tahu yang ada di 6pm, dan itu tetap di ponselmu. Untuk membaca pertanyaan, server kami melihat pertanyaannya serta nama kategori dan toplesmu; untuk menyusun satu kalimat, hanya beberapa fakta di dalamnya.',
   'ask.chat.venting.soft': 'Kedengarannya berat. Kamu nggak menanggungnya sendirian.',
   'ask.chat.venting.cheeky': 'Lagi berat, ya. Tarik napas: ini cuma angka, bukan vonis.',
   'ask.chat.venting.plain': 'Stres soal uang itu nyata.',
@@ -45,7 +45,7 @@ export const idAskChat: { readonly [Key in keyof typeof enAskChat]: Entry } = {
   'ask.chat.distress':
     'Aku sungguh ikut sedih kamu merasa begini. Kamu tidak harus menanggungnya sendirian: bicaralah dengan orang yang kamu percaya, atau hubungi layanan Ngày Mai di 096 306 1414 (13.00 sampai 20.30, Rabu sampai Minggu). Kalau kamu dalam bahaya sekarang, hubungi 115.',
   'ask.chat.investing':
-    'Aku tidak bisa bilang harus investasi di mana atau kapan; itu butuh penasihat berlisensi. Aku bisa menunjukkan berapa sisa uangmu tiap bulan, atau seberapa cepat celengan terisi.',
+    'Aku tidak bisa bilang harus investasi di mana atau kapan; itu butuh penasihat berlisensi. Aku bisa menunjukkan berapa sisa uangmu tiap bulan, atau seberapa cepat toples terisi.',
   'ask.chat.unsafe':
-    'Yang itu tidak bisa kubantu. Kalau uang lagi seret, aku bisa menunjukkan sisa sampai gajian atau apa yang bisa ditutup celenganmu. Kalau pemberi pinjaman ilegal mengancammu, hubungi polisi di 113.',
+    'Yang itu tidak bisa kubantu. Kalau uang lagi seret, aku bisa menunjukkan sisa sampai gajian atau apa yang bisa ditutup toplesmu. Kalau pemberi pinjaman ilegal mengancammu, hubungi polisi di 113.',
 };

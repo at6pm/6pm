@@ -1,8 +1,8 @@
 import type { Entry } from '../catalogue-types';
 import type { enInsights } from '../en-insights';
 
-// The companion is gender-neutral (นะ / เลย / แล้ว, never ครับ/ค่ะ) and calls the user คุณ. A pot is
-// a กระปุก, a spend is a รายการ, the day's line is ยอด (เส้น when it is playing the opponent).
+// The companion is gender-neutral (นะ / เลย / แล้ว, never ครับ/ค่ะ) and calls the user คุณ. A jar is
+// a โหล, a spend is a รายการ, the day's line is ยอด (เส้น when it is playing the opponent).
 export const thInsights: { readonly [Key in keyof typeof enInsights]: Entry } = {
   'insight.compare.muchMore': 'มากกว่าเยอะ',
   'insight.compare.more': 'มากกว่า',
@@ -170,21 +170,21 @@ export const thInsights: { readonly [Key in keyof typeof enInsights]: Entry } = 
   'insight.weekOver.roast.2': 'เกิน {over} สัปดาห์นี้ลืมไปซะ เดือนนี้ยังแก้ทัน',
   'insight.weekOver.plain': 'วันที่ปิดแล้วของสัปดาห์นี้เกินยอดรวม {over}',
 
-  'insight.potMilestone.soft.1': 'กระปุก {pot} เกิน {percent}% แล้ว ดูมันโตขึ้นสิ',
-  'insight.potMilestone.soft.2': 'มาได้ {percent}% ของกระปุก {pot} แล้ว',
-  'insight.potMilestone.cheeky.1': 'กระปุก {pot}: {percent}% แล้ว เป็นจริงขึ้นมาแล้ว',
-  'insight.potMilestone.cheeky.2': 'กระปุก {pot} สำเร็จไป {percent}% หยอดต่อเลย',
-  'insight.potMilestone.roast.1': 'กระปุก {pot} อยู่ที่ {percent}% กระปุกกำลังชนะ ปล่อยให้ชนะไป',
-  'insight.potMilestone.roast.2': 'กระปุก {pot} ถึง {percent}% แล้ว ห้ามแอบแคะนะ',
-  'insight.potMilestone.plain': 'กระปุก {pot} เกิน {percent}% ของเป้าแล้ว',
+  'insight.potMilestone.soft.1': 'โหล {pot} เกิน {percent}% แล้ว ดูมันโตขึ้นสิ',
+  'insight.potMilestone.soft.2': 'มาได้ {percent}% ของโหล {pot} แล้ว',
+  'insight.potMilestone.cheeky.1': 'โหล {pot}: {percent}% แล้ว เป็นจริงขึ้นมาแล้ว',
+  'insight.potMilestone.cheeky.2': 'โหล {pot} สำเร็จไป {percent}% หยอดต่อเลย',
+  'insight.potMilestone.roast.1': 'โหล {pot} อยู่ที่ {percent}% โหลกำลังชนะ ปล่อยให้ชนะไป',
+  'insight.potMilestone.roast.2': 'โหล {pot} ถึง {percent}% แล้ว ห้ามแอบหยิบนะ',
+  'insight.potMilestone.plain': 'โหล {pot} เกิน {percent}% ของเป้าแล้ว',
 
-  'insight.potFull.soft.1': 'กระปุก {pot} เต็มแล้ว ฝีมือคุณล้วนๆ',
-  'insight.potFull.soft.2': 'กระปุก {pot}: สำเร็จ ใช้ให้สุขใจเลยนะ',
-  'insight.potFull.cheeky.1': 'กระปุก {pot} เต็มแล้ว! โปรยกระดาษสี แต่เบาๆ',
-  'insight.potFull.cheeky.2': 'กระปุก {pot} เต็มเอี้ยด',
-  'insight.potFull.roast.1': 'กระปุก {pot} เต็มแล้ว เตรียมมุกไว้แต่คุณไม่ต้องใช้เลย',
-  'insight.potFull.roast.2': 'กระปุกเต็ม: {pot} ทีนี้เอาไปใช้กับสิ่งที่ตั้งใจไว้เลย',
-  'insight.potFull.plain': 'กระปุก {pot} ถึงเป้าแล้ว',
+  'insight.potFull.soft.1': 'โหล {pot} เต็มแล้ว ฝีมือคุณล้วนๆ',
+  'insight.potFull.soft.2': 'โหล {pot}: สำเร็จ ใช้ให้สุขใจเลยนะ',
+  'insight.potFull.cheeky.1': 'โหล {pot} เต็มแล้ว! โปรยกระดาษสี แต่เบาๆ',
+  'insight.potFull.cheeky.2': 'โหล {pot} เต็มเอี้ยด',
+  'insight.potFull.roast.1': 'โหล {pot} เต็มแล้ว เตรียมมุกไว้แต่คุณไม่ต้องใช้เลย',
+  'insight.potFull.roast.2': 'โหลเต็ม: {pot} ทีนี้เอาไปใช้กับสิ่งที่ตั้งใจไว้เลย',
+  'insight.potFull.plain': 'โหล {pot} เต็มแล้ว',
 
   'insight.workToClaim.soft.1': { other: 'ค่างาน {count} รายการ ({amount}) รอเบิกคืน' },
   'insight.workToClaim.soft.2': { other: 'ค่างาน {amount} จาก {count} รายการ รอเบิกคืนอยู่' },

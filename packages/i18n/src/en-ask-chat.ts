@@ -15,7 +15,7 @@ export const enAskChat = {
   'ask.chat.identity':
     'I’m your companion in 6pm. Every number I give you is worked out on your phone, from your own spends. I’m a program, not a person.',
   'ask.chat.privacy':
-    'I can’t see your bank account. I only know what’s in 6pm, and that stays on your phone. To read a question, our server sees the question and your category and pot names; to word a line, only the few facts in it.',
+    'I can’t see your bank account. I only know what’s in 6pm, and that stays on your phone. To read a question, our server sees the question and your category and jar names; to word a line, only the few facts in it.',
   'ask.chat.venting.soft': 'That sounds heavy. You’re not carrying it alone.',
   'ask.chat.venting.cheeky': 'Rough one. Breathe: it’s a number, not a verdict.',
   'ask.chat.venting.plain': 'Money stress is real.',
@@ -40,7 +40,7 @@ export const enAskChat = {
   'ask.chat.distress':
     'I’m really sorry you’re feeling this way. You don’t have to carry it alone: talk to someone you trust, or call the Ngày Mai hotline on 096 306 1414 (1pm to 8:30pm, Wednesday to Sunday). If you’re in danger right now, call 115.',
   'ask.chat.investing':
-    'I can’t tell you what to invest in or when; that needs a licensed adviser. I can show what you have spare each month, or how fast a pot is filling.',
+    'I can’t tell you what to invest in or when; that needs a licensed adviser. I can show what you have spare each month, or how fast a jar is filling.',
   'ask.chat.unsafe':
     'I won’t help with that one. If money is tight, I can show what’s left until payday or what your pots could cover. If an illegal lender is threatening you, call the police on 113.',
 } as const;

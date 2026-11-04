@@ -4,7 +4,7 @@ export const enAsk = {
   'ask.sub': 'What fits, what if, when it’s covered',
   'ask.back': 'Back',
   'ask.intro':
-    'Ask what fits, how a big spend changes your days, or when a pot fills up. I’ll show the maths.',
+    'Ask what fits, how a big spend changes your days, or when a jar fills up. I’ll show the maths.',
   'ask.try': 'Try',
   'ask.placeholder': 'Ask or just say it…',
   'ask.send': 'Send',
@@ -31,8 +31,8 @@ export const enAsk = {
   'ask.row.tomorrow': 'Tomorrow',
   'ask.row.futureYou': 'Future you each month',
   'ask.row.moving': 'Moving more',
-  'ask.row.inPot': 'In the pot',
-  'ask.row.goal': 'Goal',
+  'ask.row.inPot': 'In the jar',
+  'ask.row.goal': 'Target',
   'ask.row.perMonth': 'Each month',
   'ask.answer.fitsToday': 'Yes, easily. It fits inside today’s {safe}, so tomorrow doesn’t change.',
   'ask.answer.fits': 'Yes. The days after go from {from} to {to} until payday.',
@@ -40,7 +40,7 @@ export const enAsk = {
   'ask.answer.tight.pots': 'Taking {take} from your pots would keep {withPots} a day.',
   'ask.answer.notThisMonth':
     'Not this month. That’s more than all your free money. It fits after payday on {payday}.',
-  'ask.answer.notThisMonth.pots': 'Or take part of it from a pot.',
+  'ask.answer.notThisMonth.pots': 'Or take part of it from a jar.',
   'ask.answer.weekend.two':
     'About {total} across {first} and {second}, if the days before stay on plan.',
   'ask.answer.weekend.one': 'About {total} on {first}, if the days before stay on plan.',
@@ -50,16 +50,16 @@ export const enAsk = {
     'Moving {amount} more to Future you would cost about {perDay} a day until payday.',
   'ask.answer.saveMore.none': 'Moving {amount} more to Future you would barely change your days.',
   'ask.answer.saveMore.note': 'You can do this from Plan.',
-  'ask.answer.potFull': 'At {monthly} a month, the {pot} pot fills by {month}.',
-  'ask.answer.potFull.done': 'The {pot} pot is already full.',
+  'ask.answer.potFull': 'At {monthly} a month, your {pot} jar fills by {month}.',
+  'ask.answer.potFull.done': 'Your {pot} jar is already full.',
   'ask.answer.potFull.idle':
-    'Nothing goes into the {pot} pot each month right now, so it won’t fill by itself.',
-  'ask.answer.noSuchPot': 'I can’t find a {pot} pot. Ask about one of yours, or make it in Plan.',
-  'ask.answer.noPots': 'There’s no pot yet. Make one in Plan and I’ll tell you when it’s full.',
+    'Nothing goes into your {pot} jar each month right now, so it won’t fill by itself.',
+  'ask.answer.noSuchPot': 'I can’t find a {pot} jar. Ask about one of yours, or make it in Plan.',
+  'ask.answer.noPots': 'There’s no jar yet. Make one in Plan and I’ll tell you when it’s full.',
   'ask.answer.today': 'You can spend {safe} today. Tomorrow’s number is {tomorrow}.',
   'ask.answer.today.used': 'Today’s number is used up. Tomorrow’s is {tomorrow}.',
   'ask.answer.help':
-    'I can tell you what fits, how a big spend changes your days, or when a pot will be full. Try “Can I afford {amount} on Saturday?”',
+    'I can tell you what fits, how a big spend changes your days, or when a jar will be full. Try “Can I afford {amount} on Saturday?”',
   'ask.error': 'Something went wrong, so I couldn’t answer that. Try again.',
   'ask.answer.offline': 'I couldn’t reach the server, so I only read simple questions right now.',
 } as const;

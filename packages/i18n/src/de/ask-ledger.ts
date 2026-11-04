@@ -63,7 +63,7 @@ export const deAskLedger: { readonly [Key in keyof typeof enAskLedger]: Entry } 
     other:
       'Mit {monthly} im Monat für Zukunfts-Ich dauern {amount} für {what} etwa {count} Jahre, bis ungefähr {month}.',
   },
-  'ask.answer.goalPace.note': 'Ein eigener Spartopf dafür hält das Geld vom Rest getrennt.',
+  'ask.answer.goalPace.note': 'Ein eigenes Glas dafür hält das Geld vom Rest getrennt.',
   'ask.answer.goalNoPace':
     'Bisher geht monatlich nichts an Zukunfts-Ich, also gibt es kein Tempo, um {amount} für {what} hochzurechnen. Ein bisschen jeden Monat, und schon gibt es eins.',
   'ask.answer.goalAmount':

@@ -2,7 +2,7 @@ import type { Entry } from './catalogue-types';
 import type { enInsights } from './en-insights';
 
 // Same voice as the companion's other lines: "mình" for itself, "bạn" for you, Saigon texting.
-// Roast teases the habit, never the person. A pot is a "hũ"; closing the day is "chốt ngày".
+// Roast teases the habit, never the person. A jar is a "lọ"; closing the day is "chốt ngày".
 export const viInsights: { readonly [Key in keyof typeof enInsights]: Entry } = {
   'insight.compare.muchMore': 'nhiều hơn hẳn',
   'insight.compare.more': 'nhiều hơn',
@@ -168,21 +168,21 @@ export const viInsights: { readonly [Key in keyof typeof enInsights]: Entry } = 
   'insight.weekOver.roast.2': 'Lố {over}. Tuần để quên, tháng để sửa.',
   'insight.weekOver.plain': 'Các ngày đã chốt tuần này vượt mức {over}.',
 
-  'insight.potMilestone.soft.1': 'Hũ {pot} đã qua {percent}%. Lớn dần rồi nè.',
-  'insight.potMilestone.soft.2': 'Đã được {percent}% đường tới hũ {pot}.',
-  'insight.potMilestone.cheeky.1': 'Hũ {pot}: {percent}% rồi. Sắp thành thật rồi.',
-  'insight.potMilestone.cheeky.2': 'Xong {percent}% hũ {pot}. Cho nó ăn tiếp nha.',
-  'insight.potMilestone.roast.1': 'Hũ {pot} {percent}% rồi. Hũ đang thắng, cứ để nó thắng.',
-  'insight.potMilestone.roast.2': '{percent}% tới hũ {pot}. Đừng có cạy nha.',
-  'insight.potMilestone.plain': 'Hũ {pot} đã qua {percent}% mục tiêu.',
+  'insight.potMilestone.soft.1': 'Lọ {pot} đã qua {percent}%. Lớn dần rồi nè.',
+  'insight.potMilestone.soft.2': 'Đã được {percent}% đường tới lọ {pot}.',
+  'insight.potMilestone.cheeky.1': 'Lọ {pot}: {percent}% rồi. Sắp thành thật rồi.',
+  'insight.potMilestone.cheeky.2': 'Xong {percent}% lọ {pot}. Cho nó ăn tiếp nha.',
+  'insight.potMilestone.roast.1': 'Lọ {pot} {percent}% rồi. Lọ đang thắng, cứ để nó thắng.',
+  'insight.potMilestone.roast.2': '{percent}% tới lọ {pot}. Đừng có cạy nha.',
+  'insight.potMilestone.plain': 'Lọ {pot} đã qua {percent}% mục tiêu.',
 
-  'insight.potFull.soft.1': 'Hũ {pot} đầy rồi. Bạn làm được đó.',
-  'insight.potFull.soft.2': 'Hũ {pot}: xong. Tận hưởng thật trọn nha.',
-  'insight.potFull.cheeky.1': 'Hũ {pot} đầy rồi! Tung hoa, nhưng nhỏ nhỏ thôi.',
-  'insight.potFull.cheeky.2': 'Hũ {pot}, đầy tới miệng.',
-  'insight.potFull.roast.1': 'Hũ {pot} đầy rồi. Mình soạn sẵn câu chọc mà bạn không cần tới.',
-  'insight.potFull.roast.2': 'Hũ đầy: {pot}. Giờ dùng đúng cho việc đã định nha.',
-  'insight.potFull.plain': 'Hũ {pot} đã đạt mục tiêu.',
+  'insight.potFull.soft.1': 'Lọ {pot} đầy rồi. Bạn làm được đó.',
+  'insight.potFull.soft.2': 'Lọ {pot}: xong. Tận hưởng thật trọn nha.',
+  'insight.potFull.cheeky.1': 'Lọ {pot} đầy rồi! Tung hoa, nhưng nhỏ nhỏ thôi.',
+  'insight.potFull.cheeky.2': 'Lọ {pot}, đầy tới miệng.',
+  'insight.potFull.roast.1': 'Lọ {pot} đầy rồi. Mình soạn sẵn câu chọc mà bạn không cần tới.',
+  'insight.potFull.roast.2': 'Lọ đầy: {pot}. Giờ dùng đúng cho việc đã định nha.',
+  'insight.potFull.plain': 'Lọ {pot} đã đầy.',
 
   'insight.workToClaim.soft.1': { other: '{count} khoản công việc ({amount}) chờ bạn đòi lại.' },
   'insight.workToClaim.soft.2': {

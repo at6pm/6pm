@@ -69,7 +69,7 @@ export const koLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   'max.head.ask': '마음껏 물어봐요.',
   'max.sub.ask': '무료는 하루 10개까지. Max는 제한 없어요.',
   'max.head.pots': '계획만큼 저금통을.',
-  'max.sub.pots': '무료는 내 저금통 하나. Max는 제한 없어요.',
+  'max.sub.pots': '무료는 내 저금통 세 개까지. Max는 제한 없어요.',
   'max.head.travel': '어디서든 여행 모드.',
   'max.sub.travel': '모든 통화의 실시간 환율. 알아서 켜져요.',
   'max.head.backup': '모든 하루를 영원히.',

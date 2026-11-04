@@ -56,18 +56,18 @@ export const esAskLedger: { readonly [Key in keyof typeof enAskLedger]: Entry } 
   'ask.row.total': 'Total',
   'ask.row.before': 'Antes',
   'ask.answer.goalPace.months': {
-    one: 'Con {monthly} al mes para tu yo del futuro, {amount} para {what} te lleva cerca de un mes, hacia {month}.',
+    one: 'Con {monthly} al mes para tu yo futuro, {amount} para {what} te lleva cerca de un mes, hacia {month}.',
     other:
-      'Con {monthly} al mes para tu yo del futuro, {amount} para {what} te lleva unos {count} meses, hacia {month}.',
+      'Con {monthly} al mes para tu yo futuro, {amount} para {what} te lleva unos {count} meses, hacia {month}.',
   },
   'ask.answer.goalPace.years': {
-    one: 'Con {monthly} al mes para tu yo del futuro, {amount} para {what} te lleva cerca de un año, hacia {month}.',
+    one: 'Con {monthly} al mes para tu yo futuro, {amount} para {what} te lleva cerca de un año, hacia {month}.',
     other:
-      'Con {monthly} al mes para tu yo del futuro, {amount} para {what} te lleva unos {count} años, hacia {month}.',
+      'Con {monthly} al mes para tu yo futuro, {amount} para {what} te lleva unos {count} años, hacia {month}.',
   },
-  'ask.answer.goalPace.note': 'Una hucha solo para eso separa ese dinero del resto.',
+  'ask.answer.goalPace.note': 'Un frasco solo para eso separa ese dinero del resto.',
   'ask.answer.goalNoPace':
-    'Todavía no va nada a tu yo del futuro cada mes, así que no hay ritmo con el que calcular {amount} para {what}. Un poco cada mes y empezamos.',
+    'Todavía no va nada a tu yo futuro cada mes, así que no hay ritmo con el que calcular {amount} para {what}. Un poco cada mes y empezamos.',
   'ask.answer.goalAmount':
     '¿Cuánto cuesta más o menos {what}? Dime el precio, como “{example}”, y te hago la cuenta.',
   'ask.row.reachedBy': 'Hacia',

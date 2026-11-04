@@ -83,7 +83,7 @@ export const zhHansToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'quick.keep': '记下',
   'details.title': '详情',
   'details.edit': '修改',
-  'details.pot': '存钱罐',
+  'details.pot': '罐子',
   'details.freeMoney': '可自由花的钱',
   'details.claimBack': '报销',
   'details.paidWith': '付款方式',

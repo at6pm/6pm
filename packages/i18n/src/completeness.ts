@@ -18,6 +18,7 @@ export const sameInBothLanguages: readonly string[] = [
   '{percent}%',
   'Nước mía',
   'Xôi',
+  'Tết',
   'Vietcombank',
   'MoMo',
   'Venmo',
