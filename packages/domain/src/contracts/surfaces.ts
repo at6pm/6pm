@@ -33,6 +33,14 @@ export const inboxReceiptSchema = z.object({
   payeeSure: z.boolean().optional(),
   /** The transfer's own words ("Nội dung"), where a repayment is named; absent on older files. */
   memo: z.string().min(1).max(MEMO_MAX).optional(),
+  /** The photo went once for the server's closer look; absent when it was read on the phone alone. */
+  looked: z.boolean().optional(),
+  /**
+   * What the phone read, where the person changed it on the card before saving (the amount in the
+   * home currency, the shop): the receipt was not read right the first time. Absent when nothing
+   * read was changed, and on older files.
+   */
+  read: z.object({ amount: money.nullable().optional(), payee: z.string().optional() }).optional(),
 });
 
 export const inboxSpendSchema = z.object({
@@ -254,6 +262,8 @@ export const shareCardSchema = z.object({
   currencies: z.array(shareCurrencySchema),
   /** The reading is unsure of the total or the currency, and the photo is worth a closer look. */
   needsCheck: z.boolean(),
+  /** The server took its closer look at the photo; absent when the phone read it alone. */
+  looked: z.boolean().optional(),
   /** A transfer's own words ("Nội dung"), kept on the inbox item; absent when it printed none. */
   memo: z.string().min(1).max(MEMO_MAX).nullable().optional(),
 });

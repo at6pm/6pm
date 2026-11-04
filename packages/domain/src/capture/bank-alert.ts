@@ -175,7 +175,7 @@ const SECURITY =
 
 /** After the amount, who it went to or came from, up to the next field. */
 const TO_WHOM =
-  /(?:^|\s)(?:đến|den|tới|toi|cho|tại|tai|to|at(?!\s+\d))\s+(.+?)(?=\s+(?:lúc|luc|at\s+\d|vào|vao|ngày|ngay|on|via|qua|với|voi|ref|số dư|so du|sd|nd|nội dung|noi dung|thành công|thanh cong|was|has|is|for|using|bằng|bang|from|từ|tu)(?:\s|$|[:.,])|\s*(?:[,;|\n(]|\.(?:\s|$)|$))/iu;
+  /(?:^|\s)(?:đến|den|tới|toi|cho|tại|tai|to|at(?!\s+\d)|(?<=transaction\s)with)\s+(.+?)(?=\s+(?:lúc|luc|at\s+\d|vào|vao|ngày|ngay|on|via|qua|với|voi|ref|số dư|so du|sd|nd|nội dung|noi dung|thành công|thanh cong|was|has|is|for|using|bằng|bang|from|từ|tu)(?:\s|$|[:.,])|\s*(?:[,;|\n(]|\.(?:\s|$)|$))/iu;
 const FROM_WHOM =
   /(?:^|\s)(?:từ|tu|from)\s+(.+?)(?=\s+(?:lúc|luc|at\s+\d|vào|vao|ngày|ngay|on|via|qua|với|voi|ref|số dư|so du|sd|nd|nội dung|noi dung|thành công|thanh cong|was|has|is|for|using|bằng|bang|to|đến|den|tới|toi)(?:\s|$|[:.,])|\s*(?:[,;|\n(]|\.(?:\s|$)|$))/iu;
 
@@ -265,7 +265,9 @@ function wayOf(text: string, amount: Found): SpendDirection | null {
   if (amount.signed === '+') return 'in';
   const lead = foldWords(text.slice(Math.max(0, amount.start - 24), amount.start)).trimEnd();
   if (/ (?:ghi co|tang|duoc cong|cong tien|nhan|nhan duoc|received)$/.test(lead)) return 'in';
-  if (/ (?:ghi no|giam|tru|thanh toan|chuyen|paid|spent|charged|transferred|sent)$/.test(lead)) {
+  if (
+    / (?:ghi no|giam|tru|thanh toan|chuyen|paid|spent|charged|transferred|sent|made a)$/.test(lead)
+  ) {
     return 'out';
   }
   const folded = foldWords(text).replace(NOT_A_WAY, ' ');
@@ -274,7 +276,8 @@ function wayOf(text: string, amount: Found): SpendDirection | null {
   if (comes < 0 && goes < 0) return null;
   if (goes < 0) return 'in';
   if (comes < 0) return 'out';
-  return comes < goes ? 'in' : 'out';
+  // "paid you" and "sent you" start where "paid" and "sent" do: the longer words win.
+  return comes <= goes ? 'in' : 'out';
 }
 
 /** A counterparty as kept: one line, no account or phone number, letters in it, not too long. */
