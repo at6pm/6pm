@@ -31,3 +31,16 @@ export function useDiaryRequest(): DiaryRequest | null {
     () => current,
   );
 }
+
+const tabListeners = new Set<() => void>();
+
+/** Asks Home to turn to the Diary tab (after history was brought in, from its sheet). */
+export function requestDiaryTab(): void {
+  for (const listener of tabListeners) listener();
+}
+
+/** Home listens for the Diary tab being asked for; returns the way to stop. */
+export function onDiaryTabRequest(listener: () => void): () => void {
+  tabListeners.add(listener);
+  return () => tabListeners.delete(listener);
+}

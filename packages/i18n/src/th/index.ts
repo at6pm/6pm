@@ -38,6 +38,8 @@ import { thVoice } from './voice';
 import { thWidgetsGuide } from './widgets-guide';
 import { thYearBook } from './year-book';
 import { thFirstCatch } from './first-catch';
+import { thImport } from './import';
+import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { thAndroid } from './android';
 
@@ -82,10 +84,12 @@ export const th: Catalogue = {
   ...thPotsPlan,
   ...thPots,
   ...thFirstCatch,
+  ...thImport,
+  ...importSketchMomo,
 };
 
 /**
  * Texts Thai writes exactly as English does (names, codes, a word the language borrows),
  * beyond the list every language shares.
  */
-export const thSameAsEnglish: readonly string[] = [];
+export const thSameAsEnglish: readonly string[] = [...importSketchEnglish];

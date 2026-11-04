@@ -38,6 +38,8 @@ import { zhHansVoice } from './voice';
 import { zhHansWidgetsGuide } from './widgets-guide';
 import { zhHansYearBook } from './year-book';
 import { zhHansFirstCatch } from './first-catch';
+import { zhHansImport } from './import';
+import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { zhHansAndroid } from './android';
 
@@ -82,10 +84,17 @@ export const zhHans: Catalogue = {
   ...zhHansPotsPlan,
   ...zhHansPots,
   ...zhHansFirstCatch,
+  ...zhHansImport,
+  ...importSketchMomo,
 };
 
 /**
  * Texts Simplified Chinese writes exactly as English does (names, codes, a word the language borrows),
  * beyond the list every language shares.
  */
-export const zhHansSameAsEnglish: readonly string[] = ['App', 'iCloud · {when}', '{who} · {day}'];
+export const zhHansSameAsEnglish: readonly string[] = [
+  ...importSketchEnglish,
+  'App',
+  'iCloud · {when}',
+  '{who} · {day}',
+];

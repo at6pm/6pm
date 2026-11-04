@@ -38,6 +38,8 @@ import { idVoice } from './voice';
 import { idWidgetsGuide } from './widgets-guide';
 import { idYearBook } from './year-book';
 import { idFirstCatch } from './first-catch';
+import { idImport } from './import';
+import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { idAndroid } from './android';
 
@@ -82,6 +84,8 @@ export const id: Catalogue = {
   ...idPotsPlan,
   ...idPots,
   ...idFirstCatch,
+  ...idImport,
+  ...importSketchMomo,
 };
 
 /**
@@ -89,6 +93,7 @@ export const id: Catalogue = {
  * beyond the list every language shares.
  */
 export const idSameAsEnglish: readonly string[] = [
+  ...importSketchEnglish,
   'App',
   'Bank',
   'Edit',

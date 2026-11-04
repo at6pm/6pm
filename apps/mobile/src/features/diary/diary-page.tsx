@@ -125,6 +125,8 @@ export function DiaryPage({ scrollRef }: { readonly scrollRef: AnimatedRef<Anima
           canPrevious={diary.canPrevious}
           canNext={diary.canNext}
           onPage={diary.page}
+          stamp={diary.stamp}
+          broughtOnly={diary.broughtOnly}
         />
       </ScrollReveal>
 

@@ -24,6 +24,7 @@ import {
   useMountProgress,
 } from './onboarding-motion';
 import { leaveGradient, type OnboardingPalette } from './onboarding-palette';
+import { ImportOnboardingRow } from '../import/import-row';
 import { FutureYouAtPayday, SincePaydayEditor, SincePaydayLine } from './since-payday';
 
 /** The number waits for the companion to land before it rolls in. */
@@ -160,6 +161,16 @@ export function StepFirstNumber({
           />
         </Animated.View>
       ) : null}
+      {editing ? null : (
+        <Animated.View layout={reflow} style={{ alignSelf: 'stretch' }}>
+          <ImportOnboardingRow
+            chip={pal.chipBg}
+            ink={pal.ink}
+            inkSoft={pal.inkSoft}
+            ring={pal.sky[1]}
+          />
+        </Animated.View>
+      )}
       {first.offerFutureYouAtPayday ? (
         <Animated.View layout={reflow} style={{ alignSelf: 'stretch' }}>
           <FutureYouAtPayday

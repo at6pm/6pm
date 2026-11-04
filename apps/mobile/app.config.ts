@@ -211,6 +211,20 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     infoPlist: {
       CFBundleAllowMixedLocalizations: true,
       NSSupportsLiveActivities: true,
+      // Money Lover's CSV, and MISA's and MoMo's Excel files, open in 6pm from Files, Zalo or Mail
+      // ("Open in 6pm"): iOS hands over a copy, read on the phone by "Bring your history".
+      CFBundleDocumentTypes: [
+        {
+          CFBundleTypeName: 'Spending history',
+          CFBundleTypeRole: 'Viewer',
+          LSHandlerRank: 'Alternate',
+          LSItemContentTypes: [
+            'public.comma-separated-values-text',
+            'org.openxmlformats.spreadsheetml.sheet',
+          ],
+        },
+      ],
+      LSSupportsOpeningDocumentsInPlace: false,
     },
   },
   android: {

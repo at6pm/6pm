@@ -26,6 +26,10 @@ export function inkWash(dark: boolean) {
     dashed: dark ? 'rgba(255,255,255,.28)' : 'rgba(27,30,46,.22)',
     shelfDashed: dark ? 'rgba(255,255,255,.3)' : 'rgba(27,30,46,.25)',
     todayFill: dark ? 'rgba(255,133,82,.14)' : 'rgba(255,133,82,.2)',
+    /** A brought-in day's outline, and a brought-in month's card: drawn, never filled. */
+    outline: dark ? 'rgba(251,244,236,.22)' : 'rgba(27,30,46,.2)',
+    ghost: dark ? 'rgba(255,255,255,.04)' : 'rgba(27,30,46,.03)',
+    stamp: dark ? 'rgba(251,244,236,.5)' : 'rgba(27,30,46,.45)',
   };
 }
 

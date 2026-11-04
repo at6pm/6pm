@@ -38,6 +38,8 @@ import { koVoice } from './voice';
 import { koWidgetsGuide } from './widgets-guide';
 import { koYearBook } from './year-book';
 import { koFirstCatch } from './first-catch';
+import { koImport } from './import';
+import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { koAndroid } from './android';
 
@@ -82,10 +84,16 @@ export const ko: Catalogue = {
   ...koPotsPlan,
   ...koPots,
   ...koFirstCatch,
+  ...koImport,
+  ...importSketchMomo,
 };
 
 /**
  * Texts Korean writes exactly as English does (names, codes, a word the language borrows),
  * beyond the list every language shares.
  */
-export const koSameAsEnglish: readonly string[] = ['iCloud · {when}', '{who} · {day}'];
+export const koSameAsEnglish: readonly string[] = [
+  ...importSketchEnglish,
+  'iCloud · {when}',
+  '{who} · {day}',
+];

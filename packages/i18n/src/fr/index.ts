@@ -38,6 +38,8 @@ import { frVoice } from './voice';
 import { frWidgetsGuide } from './widgets-guide';
 import { frYearBook } from './year-book';
 import { frFirstCatch } from './first-catch';
+import { frImport } from './import';
+import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { frAndroid } from './android';
 
@@ -82,6 +84,8 @@ export const fr: Catalogue = {
   ...frPotsPlan,
   ...frPots,
   ...frFirstCatch,
+  ...frImport,
+  ...importSketchMomo,
 };
 
 /**
@@ -89,6 +93,7 @@ export const fr: Catalogue = {
  * beyond the list every language shares.
  */
 export const frSameAsEnglish: readonly string[] = [
+  ...importSketchEnglish,
   'App',
   'Apps',
   'Auto',

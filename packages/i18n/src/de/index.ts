@@ -38,6 +38,8 @@ import { deVoice } from './voice';
 import { deWidgetsGuide } from './widgets-guide';
 import { deYearBook } from './year-book';
 import { deFirstCatch } from './first-catch';
+import { deImport } from './import';
+import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { deAndroid } from './android';
 
@@ -82,6 +84,8 @@ export const de: Catalogue = {
   ...dePotsPlan,
   ...dePots,
   ...deFirstCatch,
+  ...deImport,
+  ...importSketchMomo,
 };
 
 /**
@@ -89,6 +93,7 @@ export const de: Catalogue = {
  * beyond the list every language shares.
  */
 export const deSameAsEnglish: readonly string[] = [
+  ...importSketchEnglish,
   'Alipay',
   'App',
   'Apps',

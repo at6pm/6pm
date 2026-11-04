@@ -34,6 +34,7 @@ import { addDays } from '@6pm/domain';
  *
  *   {"seed": "friday", "at": "18:07", "route": "/close", "toast": "Line to show", "companion": "max"}
  *   {"seed": "friday", "jars": "due", "at": "18:00", "max": true}
+ *   {"importFile": "momo-history.xlsx"}
  */
 const commandSchema = z.object({
   seed: z.enum(['friday', 'year', 'moneyIn']).optional(),
@@ -71,6 +72,11 @@ const commandSchema = z.object({
   firstCatch: z.literal('later').optional(),
   /** Seeds 14 days of catches per way and this month's receipts read on the phone. */
   captureHealth: z.boolean().optional(),
+  /** A file in Documents opened in "Bring your history" as if picked ("momo.xlsx"). */
+  importFile: z
+    .string()
+    .regex(/^[\w.-]+$/)
+    .optional(),
 });
 
 export function DevCommands() {
@@ -105,6 +111,7 @@ export function DevCommands() {
         aiMode,
         firstCatch,
         captureHealth,
+        importFile,
       } = parsed.data;
       if (captureHealth) await seedCaptureHealth(store, today);
       if (aiMode !== undefined) setAiMode(db, aiMode);
@@ -150,6 +157,11 @@ export function DevCommands() {
       if (route) {
         router.replace('/');
         if (route !== '/') setTimeout(() => router.push(route as Href), 400);
+      }
+      if (importFile) {
+        const picked = new File(Paths.document, importFile);
+        router.replace('/');
+        setTimeout(() => router.push({ pathname: '/import', params: { uri: picked.uri } }), 400);
       }
       // Held long enough for a headless screenshot to catch it.
       if (line) setTimeout(() => toast(line, 20_000), 1200);
