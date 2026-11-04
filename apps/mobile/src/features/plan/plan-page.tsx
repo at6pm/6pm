@@ -24,6 +24,7 @@ import { useHeaderMeasure, type HeaderShape } from '../home/header-measure';
 import { useHomePageScroll } from '../home/home-scroll';
 import { markPaydayShown, paydayShown } from './payday-shown';
 import { usePlanFormat, type PlanFormat } from './plan-format';
+import { PanelSwitch } from './panel-switch';
 import { planRoutes } from './plan-routes';
 import { beforeEditable, billViews, planJarsOf, planSplitOf, type BillView } from './plan-view';
 import { PotsPanel } from './pots-panel';
@@ -225,45 +226,47 @@ function PlanContent({
         pulse={payday}
       />
 
-      {panel === 'bills' ? (
-        <SplitPanel
-          key="bills"
-          title={t('potsPlan.bills.title')}
-          note={
-            bills.length === 0
-              ? t('potsPlan.bills.none')
-              : paidCount === bills.length
-                ? t('potsPlan.bills.allPaid')
-                : t('potsPlan.bills.paidOf', { paid: paidCount, total: bills.length })
-          }
-        >
-          <BillsPanel bills={bills} colours={colours} format={format} />
-        </SplitPanel>
-      ) : panel === 'pots' ? (
-        <SplitPanel
-          key="pots"
-          title={t('potsPlan.pots.title')}
-          note={t('potsPlan.pots.eachPayday', { amount: money.short(eachPayday) })}
-        >
-          <PotsPanel
-            jars={jars}
-            justPaid={justPaid}
-            fill={filling ? payday : 0}
-            first={split.first}
-            colours={colours}
-          />
-        </SplitPanel>
-      ) : (
-        <SplitPanel key="free" title={t('potsPlan.maths.title')} note={words.daySub}>
-          <MathsPanel
-            split={split}
-            colours={colours}
-            onChangeBefore={
-              beforeEditable(snap) ? () => router.push(planRoutes.sincePayday) : undefined
-            }
-          />
-        </SplitPanel>
-      )}
+      <PanelSwitch active={panel} grow={grow}>
+        {(kind) =>
+          kind === 'bills' ? (
+            <SplitPanel
+              title={t('potsPlan.bills.title')}
+              note={
+                bills.length === 0
+                  ? t('potsPlan.bills.none')
+                  : paidCount === bills.length
+                    ? t('potsPlan.bills.allPaid')
+                    : t('potsPlan.bills.paidOf', { paid: paidCount, total: bills.length })
+              }
+            >
+              <BillsPanel bills={bills} colours={colours} format={format} />
+            </SplitPanel>
+          ) : kind === 'pots' ? (
+            <SplitPanel
+              title={t('potsPlan.pots.title')}
+              note={t('potsPlan.pots.eachPayday', { amount: money.short(eachPayday) })}
+            >
+              <PotsPanel
+                jars={jars}
+                justPaid={justPaid}
+                fill={filling ? payday : 0}
+                first={split.first}
+                colours={colours}
+              />
+            </SplitPanel>
+          ) : (
+            <SplitPanel title={t('potsPlan.maths.title')} note={words.daySub}>
+              <MathsPanel
+                split={split}
+                colours={colours}
+                onChangeBefore={
+                  beforeEditable(snap) ? () => router.push(planRoutes.sincePayday) : undefined
+                }
+              />
+            </SplitPanel>
+          )
+        }
+      </PanelSwitch>
     </>
   );
 }

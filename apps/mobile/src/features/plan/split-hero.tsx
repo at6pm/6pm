@@ -262,7 +262,11 @@ function SplitPart({
 
   useEffect(() => {
     on.value = withSpring(selected ? 1 : 0, { ...springs.pop, reduceMotion });
-    ringOn.value = withTiming(selected ? 1 : 0, { duration: RING_MS, reduceMotion });
+    // The ring is a fade, so it stays one with Reduce Motion on; only the lift is dropped.
+    ringOn.value = withTiming(selected ? 1 : 0, {
+      duration: RING_MS,
+      reduceMotion: ReduceMotion.Never,
+    });
   }, [selected, on, ringOn]);
 
   useEffect(() => {

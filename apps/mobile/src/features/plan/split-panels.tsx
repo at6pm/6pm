@@ -1,10 +1,8 @@
 import { useRouter } from 'expo-router';
 import type { ReactNode } from 'react';
 import { Text, View } from 'react-native';
-import Animated, { Easing, ReduceMotion, withTiming } from 'react-native-reanimated';
 
 import type { MathsRow, PlanSplit } from '@6pm/domain';
-import { curves } from '@6pm/theme';
 
 import { usePlanActions } from '../../data/plan-actions';
 import { useI18n } from '../../i18n/i18n';
@@ -22,23 +20,7 @@ import { planRoutes } from './plan-routes';
 import type { BillView } from './plan-view';
 import type { SplitColours } from './split-colours';
 
-const RISE_MS = 300;
-const riseEase = Easing.bezier(...curves.enter);
-
-/** The panel rising in when a part is chosen: up 12 pt and in, 300 ms. */
-function rise() {
-  'worklet';
-  const timing = { duration: RISE_MS, easing: riseEase, reduceMotion: ReduceMotion.System };
-  return {
-    initialValues: { opacity: 0, transform: [{ translateY: 12 }] },
-    animations: {
-      opacity: withTiming(1, timing),
-      transform: [{ translateY: withTiming(0, timing) }],
-    },
-  };
-}
-
-/** The card under the hero holding the chosen part: its title, a note, and the part's detail. */
+/** A part's panel inside the card under the hero: its title, a note, and the part's detail. */
 export function SplitPanel({
   title,
   note,
@@ -50,15 +32,7 @@ export function SplitPanel({
 }) {
   const { palette } = useTheme();
   return (
-    <Animated.View
-      entering={rise}
-      style={{
-        borderRadius: 26,
-        backgroundColor: palette.cell,
-        boxShadow: palette.cardShadow,
-        overflow: 'hidden',
-      }}
-    >
+    <View>
       <View
         style={{
           flexDirection: 'row',
@@ -78,7 +52,7 @@ export function SplitPanel({
         </Text>
       </View>
       {children}
-    </Animated.View>
+    </View>
   );
 }
 
