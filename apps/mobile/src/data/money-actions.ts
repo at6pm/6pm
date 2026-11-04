@@ -101,7 +101,12 @@ export function moneyActions(store: MoneyStore) {
         row.status === 'deleted'
           ? others(snap.waitingBefore)
           : newestFirst([row, ...others(snap.waitingBefore)]);
-      store.publish({ ...snap, waitingBefore });
+      // A spend from before payday taken from a jar still lowers what the jar holds.
+      const earlierJarSpends =
+        row.fromPot != null && row.status !== 'deleted' && row.status !== 'skipped'
+          ? [row, ...others(snap.earlierJarSpends)]
+          : others(snap.earlierJarSpends);
+      store.publish({ ...snap, waitingBefore, earlierJarSpends });
       return;
     }
     const inCycle = row.day <= snap.today;
