@@ -19,6 +19,9 @@ import { esInsightsHabits } from './insights-habits';
 import { esIntents } from './intents';
 import { esLooks } from './looks';
 import { esMoneyIn } from './money-in';
+import { esPotsClose } from './pots-close';
+import { esPotsPlan } from './pots-plan';
+import { esPots } from './pots';
 import { esNative } from './native';
 import { esOnboarding } from './onboarding';
 import { esPlan } from './plan';
@@ -34,6 +37,7 @@ import { esTravel } from './travel';
 import { esVoice } from './voice';
 import { esWidgetsGuide } from './widgets-guide';
 import { esYearBook } from './year-book';
+import { esFirstCatch } from './first-catch';
 
 export { esAndroid } from './android';
 
@@ -74,6 +78,10 @@ export const es: Catalogue = {
   ...esWidgetsGuide,
   ...esDuo,
   ...esMoneyIn,
+  ...esPotsClose,
+  ...esPotsPlan,
+  ...esPots,
+  ...esFirstCatch,
 };
 
 /**

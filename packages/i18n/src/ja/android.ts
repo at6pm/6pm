@@ -56,7 +56,7 @@ export const jaAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'max.terms.storeOff': '今はMaxを購入できません：Google Playが応答していません。',
   'max.sub.backup': '暗号化バックアップ、全履歴、CSVとスプレッドシート。',
   'max.note.backup': '暗号化バックアップ、CSVとスプレッドシート',
-  'max.welcome.win.more': '貯金箱、旅行、イヤーブック',
+  'max.welcome.win.more': '瓶、旅行、イヤーブック',
 
   'privacy.ai.device.title': 'このスマホの中だけで',
   'privacy.ai.device.unavailable': 'Androidでは、6pmにはスマホの中で動くモデルがありません。',

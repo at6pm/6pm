@@ -6,7 +6,7 @@ export const deAskChat: { readonly [Key in keyof typeof enAskChat]: Entry } = {
   'ask.chat.greeting.soft': 'Hi! Ich bin da, wann immer du nach deinem Geld schauen willst.',
   'ask.chat.greeting.cheeky': 'Hey hey. Frag mich alles rund ums Geld, ich hab deine Zahlen.',
   'ask.chat.greeting.roast': 'Ach, du bist’s. Willst du wissen, wie schlimm es ist?',
-  'ask.chat.greeting.plain': 'Hallo. Frag mich zu deinen Ausgaben, Fixkosten oder Spartöpfen.',
+  'ask.chat.greeting.plain': 'Hallo. Frag mich zu deinen Ausgaben, Fixkosten oder Gläsern.',
   'ask.chat.thanks.soft': 'Jederzeit. Pass heute gut auf dich auf.',
   'ask.chat.thanks.cheeky': 'Gern! Bezahlung bitte in pünktlich abgeschlossenen Tagen.',
   'ask.chat.thanks.roast': 'Dank nicht mir. Dank dem Budget, das du fast eingehalten hast.',
@@ -20,7 +20,7 @@ export const deAskChat: { readonly [Key in keyof typeof enAskChat]: Entry } = {
   'ask.chat.identity':
     'Ich bin dein Begleiter in 6pm. Jede Zahl, die ich dir nenne, wird auf deinem Handy aus deinen eigenen Ausgaben berechnet. Ich bin ein Programm, kein Mensch.',
   'ask.chat.privacy':
-    'Ich sehe dein Bankkonto nicht. Ich kenne nur, was in 6pm steht, und das bleibt auf deinem Handy. Um eine Frage zu verstehen, sieht unser Server die Frage und deine Kategorie- und Spartopf-Namen; für einen Spruch nur die paar Fakten darin.',
+    'Ich sehe dein Bankkonto nicht. Ich kenne nur, was in 6pm steht, und das bleibt auf deinem Handy. Um eine Frage zu verstehen, sieht unser Server die Frage und die Namen deiner Kategorien und Gläser; für einen Spruch nur die paar Fakten darin.',
   'ask.chat.venting.soft': 'Das klingt schwer. Du trägst das nicht allein.',
   'ask.chat.venting.cheeky': 'Harter Tag. Atme durch: Das ist eine Zahl, kein Urteil.',
   'ask.chat.venting.plain': 'Geldstress ist real.',
@@ -46,7 +46,7 @@ export const deAskChat: { readonly [Key in keyof typeof enAskChat]: Entry } = {
   'ask.chat.distress':
     'Es tut mir wirklich leid, dass es dir so geht. Du musst das nicht allein tragen: Sprich mit jemandem, dem du vertraust, oder ruf die Hotline Ngày Mai unter 096 306 1414 an (13 bis 20:30 Uhr, Mittwoch bis Sonntag). Wenn du gerade in Gefahr bist, ruf die 115.',
   'ask.chat.investing':
-    'Ich kann dir nicht sagen, worin oder wann du investieren sollst; dafür brauchst du eine zugelassene Beratung. Ich kann dir zeigen, was du jeden Monat übrig hast oder wie schnell sich ein Spartopf füllt.',
+    'Ich kann dir nicht sagen, worin oder wann du investieren sollst; dafür brauchst du eine zugelassene Beratung. Ich kann dir zeigen, was du jeden Monat übrig hast oder wie schnell sich ein Glas füllt.',
   'ask.chat.unsafe':
-    'Dabei helfe ich nicht. Wenn das Geld knapp ist, zeige ich dir, was bis zum Zahltag übrig ist oder was deine Spartöpfe abdecken könnten. Wenn dich ein illegaler Geldverleiher bedroht, ruf die Polizei unter 113.',
+    'Dabei helfe ich nicht. Wenn das Geld knapp ist, zeige ich dir, was bis zum Zahltag übrig ist oder was deine Gläser abdecken könnten. Wenn dich ein illegaler Geldverleiher bedroht, ruf die Polizei unter 113.',
 };

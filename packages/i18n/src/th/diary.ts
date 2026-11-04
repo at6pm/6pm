@@ -89,4 +89,5 @@ export const thDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.zine.showAmountsSub': 'ปิดไว้เป็นค่าเริ่มต้น เรื่องเงินเป็นเรื่องส่วนตัว',
   'diary.cal.previous': 'เดือนก่อนหน้า',
   'diary.cal.next': 'เดือนถัดไป',
+  'diary.fromJar': 'จากโหล {jar}',
 };

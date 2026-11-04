@@ -1,57 +1,45 @@
 import {
-  sumMoneyIn,
-  addDays,
   addMonthsTo,
   billDueIn,
+  billsThisCycle,
+  cycleFutureYou,
   cyclePosition,
   diffDays,
-  goalMonthly,
-  goalPlan,
   futureYouIn,
+  intoJarsEachPayday,
+  jarsEachPayday,
+  jarShelfState,
   joinedCycle,
   moneyRiver,
+  newJarLocked,
   occasionsOf,
-  potTopUpStep,
-  VND,
-  weekdayMondayFirst,
-  type Currency,
+  planSplit,
+  sumMoneyIn,
   type BillRow,
   type DailyNumber,
-  type GoalPlan,
+  type JarShelfState,
   type LocalDate,
+  type PlanSplit,
   type PotRow,
   type RiverSegment,
   type Vnd,
-  billsThisCycle,
 } from '@6pm/domain';
 
 import type { CycleTopUps } from '../../data/pot-moves';
-import type { MoneySnapshot } from '../../data/money-store';
+import { dailyInputOf, type MoneySnapshot } from '../../data/money-store';
 import { joinedAnswersOf } from '../../data/plan-settings';
-import type { I18n } from '../../i18n/i18n';
-
-/** The +100k buttons on goals and pots, in đồng. */
-export const TOP_UP = 100_000;
-
-/**
- * The +100k on a goal in the home currency: the first rung of the jars' top-up ladder, the
- * design's 100k worth rounded down to 1 or 5 times a power of ten ($1, ¥500, Rp50.000).
- */
-export function topUpIn(currency: Currency = VND): Vnd {
-  return currency.code === 'VND' ? TOP_UP : potTopUpStep(0, currency);
-}
 
 /** Σ what the occasion pots set aside this pay cycle, as the daily number counts them. */
 export function occasionsMonthly(snap: MoneySnapshot): Vnd {
   return occasionsOf(snap.pots, snap.setAsideThisCycle);
 }
 
-/** The pots a customer without Max can have of their own: one occasion pot. */
-export const FREE_OCCASION_POTS = 1;
-
-/** Whether New pot is behind the Max sheet: the free pot is used and Max is not held. */
+/**
+ * Whether New jar is behind the Max sheet: the jars of one's own allowed without Max are used and
+ * Max is not held (Future you and shared jars never count).
+ */
 export function newPotLocked(pots: readonly PotRow[], max: boolean): boolean {
-  return !max && pots.filter((p) => p.kind === 'occasion').length >= FREE_OCCASION_POTS;
+  return newJarLocked(pots, max);
 }
 
 /** The month's money in: the plan's income and what came in on top this cycle and was kept. */
@@ -85,13 +73,6 @@ export function beforeEditable(snap: MoneySnapshot): boolean {
   return joinedCycle(snap.cycle, joinedAnswersOf(snap.plan)).joined;
 }
 
-/** "Before 6pm"'s note: the person's own amount or the even-pace estimate, and how to change it. */
-export function beforeNote(snap: MoneySnapshot, t: I18n['t']): string {
-  const answered = snap.plan?.spentSincePayday != null;
-  const said = t(answered ? 'plan.river.beforeNoteAnswered' : 'plan.river.beforeNote');
-  return beforeEditable(snap) ? `${said} ${t('plan.river.beforeEdit')}` : said;
-}
-
 export interface BillView {
   readonly bill: BillRow;
   readonly due: LocalDate;
@@ -115,84 +96,69 @@ export function billViews(snap: MoneySnapshot): BillView[] {
   });
 }
 
-export interface GoalView {
-  readonly pot: PotRow;
-  readonly saved: Vnd;
-  /** 0–1, capped at full. */
-  readonly progress: number;
-  readonly plan: GoalPlan;
-}
-
-export function goalViews(snap: MoneySnapshot): GoalView[] {
-  const futureYou = snap.plan?.futureYou ?? 0;
-  return snap.pots
-    .filter((p) => p.kind === 'goal')
-    .map((pot) => {
-      const saved = snap.potSaved[pot.id] ?? 0;
-      const monthly = pot.paused ? 0 : goalMonthly(futureYou, pot.share ?? 0);
-      return {
-        pot,
-        saved,
-        progress: pot.goal > 0 ? Math.min(1, saved / pot.goal) : 1,
-        plan: goalPlan({
-          goal: pot.goal,
-          saved,
-          monthly,
-          neededBy: pot.neededBy,
-          cycle: snap.cycle,
-        }),
-      };
-    });
-}
-
-/** "60 / 40": how Future you is shared between the goals. */
-export function shareSplit(goals: readonly GoalView[]): string | null {
-  if (goals.length < 2) return null;
-  return goals.map((g) => Math.round((g.pot.share ?? 0) * 100)).join(' / ');
-}
-
-export interface OccasionView {
-  readonly pot: PotRow;
-  readonly saved: Vnd;
-  readonly progress: number;
-  readonly full: boolean;
-  readonly paused: boolean;
-  /** What it sets aside this pay cycle. */
-  readonly monthly: Vnd;
-}
-
-export function occasionViews(snap: MoneySnapshot): OccasionView[] {
-  return snap.pots
-    .filter((p) => p.kind === 'occasion')
-    .map((pot) => {
-      const saved = snap.potSaved[pot.id] ?? 0;
-      return {
-        pot,
-        saved,
-        progress: pot.goal > 0 ? Math.min(1, saved / pot.goal) : 1,
-        full: saved >= pot.goal,
-        paused: pot.paused,
-        monthly: snap.setAsideThisCycle[pot.id] ?? 0,
-      };
-    });
-}
-
-export interface BarDay {
-  readonly day: LocalDate;
-  readonly isToday: boolean;
-  readonly weekend: boolean;
-}
-
-/** Today through payday, one bar each. */
-export function barDays(today: LocalDate, payday: LocalDate): BarDay[] {
-  const count = Math.max(1, diffDays(payday, today) + 1);
-  return Array.from({ length: count }, (_, k) => {
-    const day = addDays(today, k);
-    return { day, isToday: k === 0, weekend: weekdayMondayFirst(day) >= 5 };
-  });
-}
-
 /** The month 'YYYY-MM' that is `ahead` months after `from`; null for "No date" (0). */
 export function potMonthAt(from: string, ahead: number): string | null {
   return ahead > 0 ? addMonthsTo(from, ahead) : null;
+}
+
+/** Plan's split of the pay for the snapshot: the same input as Today's number, so the same line. */
+export function planSplitOf(snap: MoneySnapshot): PlanSplit | null {
+  const input = dailyInputOf(snap);
+  if (input === null) return null;
+  const joined = joinedAnswersOf(snap.plan);
+  return planSplit({
+    input,
+    cycle: snap.cycle,
+    today: snap.today,
+    spends: snap.cycleSpends.map((s) => ({
+      amount: s.amount,
+      category: s.categoryId,
+      status: s.status,
+      forWork: s.forWork,
+      paysBill: s.paysBill,
+      direction: s.direction,
+      fromPot: s.fromPot,
+      fromPotAmount: s.fromPotAmount,
+      day: s.day,
+    })),
+    joinedOn: joined.on,
+  });
+}
+
+/** One of the person's own jars as Plan draws it. */
+export interface PlanJarView {
+  readonly pot: PotRow;
+  readonly saved: Vnd;
+  /** What it takes each payday; 0 for a jar filled by hand. */
+  readonly each: Vnd;
+  /** What it took this payday. */
+  readonly setAside: Vnd;
+  readonly state: JarShelfState;
+}
+
+/** The jars in shelf order, with what each takes each payday, and the line they add up to. */
+export function planJarsOf(snap: MoneySnapshot): {
+  readonly jars: readonly PlanJarView[];
+  readonly eachPayday: Vnd;
+} {
+  const input = dailyInputOf(snap);
+  const slice = input ? cycleFutureYou(input) : 0;
+  const each = jarsEachPayday({ pots: snap.pots, setAside: snap.setAsideThisCycle, slice });
+  const jars = snap.pots.map((pot) => {
+    const saved = snap.potSaved[pot.id] ?? 0;
+    return {
+      pot,
+      saved,
+      each: each[pot.id] ?? 0,
+      setAside: snap.setAsideThisCycle[pot.id] ?? 0,
+      state: jarShelfState({
+        pot,
+        saved,
+        futureYou: snap.plan?.futureYou ?? 0,
+        cycle: snap.cycle,
+        spentFrom: (snap.potSpentThisCycle[pot.id] ?? 0) > 0,
+      }),
+    };
+  });
+  return { jars, eachPayday: intoJarsEachPayday(slice, snap.pots, snap.setAsideThisCycle) };
 }

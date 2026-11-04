@@ -26,6 +26,7 @@ import { useCompanionToast } from '../companion/use-companion-toast';
 import { useRunAction } from '../companion/use-run-action';
 import { AmountEditor } from './amount-editor';
 import { DetailsCard } from './details-card';
+import { TodayPill } from './from-jar-row';
 import { useFocusOnPresent } from '../../ui/navigation/use-focus-on-present';
 import { easeInOut } from '../../ui/motion/curves';
 
@@ -125,6 +126,7 @@ export function SpendDetails({
           onEditing={setEditingAmount}
           onSave={({ amount, foreignAmount }) => update({ amount, foreignAmount })}
         />
+        <TodayPill spend={spend} />
         <Animated.View
           layout={reflow}
           style={{ alignSelf: 'stretch', alignItems: 'center', gap: 6 }}

@@ -85,7 +85,7 @@ export const viToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'quick.keep': 'Giữ lại',
   'details.title': 'Chi tiết',
   'details.edit': 'Sửa',
-  'details.pot': 'Hũ',
+  'details.pot': 'Lọ',
   'details.freeMoney': 'Tiền rảnh',
   'details.claimBack': 'Đòi lại',
   'details.paidWith': 'Trả bằng',

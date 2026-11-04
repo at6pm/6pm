@@ -1,20 +1,25 @@
 import { useState } from 'react';
 import { Text, View } from 'react-native';
-import Animated, { FadeOut, LinearTransition } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
 import { useI18n } from '../../i18n/i18n';
+import { useMoneyFormat } from '../../money/use-money-format';
 import { Symbol } from '../../ui/icons/symbol';
 import { easeInOut } from '../../ui/motion/curves';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, tabular } from '../../ui/type/fonts';
 import { SpendRow, type SpendRowView } from './spend-row';
+import { useTodayJarLines } from './use-spend-rows';
 
 const SHOWN = 4;
 const layout = LinearTransition.springify().damping(22).stiffness(240);
 /** The rows below a deleted one close the gap it leaves; the list is short, so it is not virtualised. */
 const rowLayout = LinearTransition.duration(200).easing(easeInOut);
 const rowExit = FadeOut.duration(150);
+const lineEnter = FadeIn.duration(200);
+/** The jar lines sit under the text column of the rows above: 16 pt inset, a 38 pt tile, a 12 pt gap. */
+const TEXT_INSET = 66;
 
 /** "Today": the Inbox row when something waits, then the day's spends, newest first. */
 export function TodayList({
@@ -36,6 +41,8 @@ export function TodayList({
 }) {
   const { palette } = useTheme();
   const { t } = useI18n();
+  const money = useMoneyFormat();
+  const jarLines = useTodayJarLines();
   const [all, setAll] = useState(false);
   const shown = all ? rows : rows.slice(0, SHOWN);
 
@@ -119,6 +126,37 @@ export function TodayList({
             />
           </Animated.View>
         ))}
+        {/* Under every spend, so only once they all show: the lines add up to what the day counted. */}
+        {rows.length > 0 && shown.length === rows.length
+          ? jarLines.map((line) => (
+              <Animated.View
+                key={`jar-${line.potId}`}
+                layout={rowLayout}
+                entering={lineEnter}
+                exiting={rowExit}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 10,
+                  marginLeft: TEXT_INSET,
+                  paddingRight: 16,
+                  paddingVertical: 12,
+                  borderTopWidth: 0.5,
+                  borderTopColor: palette.hair,
+                }}
+              >
+                <Text
+                  numberOfLines={1}
+                  style={{ ...body(15, 500), color: palette.inkSoft, flex: 1, minWidth: 0 }}
+                >
+                  {line.label}
+                </Text>
+                <Text style={{ ...body(16, 600), ...tabular, color: palette.inkSoft }}>
+                  {`−${money.full(line.amount)}`}
+                </Text>
+              </Animated.View>
+            ))
+          : null}
         {rows.length > SHOWN ? (
           <PressScale
             highlight

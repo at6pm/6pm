@@ -98,4 +98,5 @@ export const frDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.zine.showAmountsSub': 'Désactivé par défaut. L’argent, c’est personnel.',
   'diary.cal.previous': 'Mois précédent',
   'diary.cal.next': 'Mois suivant',
+  'diary.fromJar': 'Du bocal « {jar} »',
 };

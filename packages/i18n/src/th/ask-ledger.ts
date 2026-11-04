@@ -47,7 +47,7 @@ export const thAskLedger: { readonly [Key in keyof typeof enAskLedger]: Entry } 
     other:
       'ถ้าออมให้ตัวคุณในอนาคตเดือนละ {monthly} เงิน {amount} สำหรับ{what}จะใช้เวลาประมาณ {count} ปี ราวเดือน{month}',
   },
-  'ask.answer.goalPace.note': 'มีกระปุกแยกไว้ให้มันโดยเฉพาะ เงินก้อนนี้จะได้ไม่ปนกับส่วนอื่น',
+  'ask.answer.goalPace.note': 'มีโหลแยกไว้ให้มันโดยเฉพาะ เงินก้อนนี้จะได้ไม่ปนกับส่วนอื่น',
   'ask.answer.goalNoPace':
     'ตอนนี้ยังไม่มีเงินออมให้ตัวคุณในอนาคตทุกเดือน เลยยังคำนวณไม่ได้ว่า {amount} สำหรับ{what}ต้องใช้เวลาเท่าไหร่ ออมสักนิดทุกเดือนก็เริ่มได้แล้ว',
   'ask.answer.goalAmount':

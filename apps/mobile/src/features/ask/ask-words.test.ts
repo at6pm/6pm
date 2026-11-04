@@ -113,7 +113,7 @@ describe('the words for an answer', () => {
       afterPercent: 3,
     });
     expect(card.rows[2]).toEqual({ key: 'Left, per day', value: '0₫' });
-    expect(card.note).toBe('Or take part of it from a pot.');
+    expect(card.note).toBe('Or take part of it from a jar.');
     expect(
       words({ kind: 'afford', amount: 9_000_000 }, 'en', { ...ctx, pots: [] }).note,
     ).toBeNull();
@@ -152,17 +152,17 @@ describe('the words for an answer', () => {
     );
   });
 
-  it('says when a pot fills, that it is full, or that nothing goes in', () => {
+  it('says when a jar fills, that it is full, or that nothing goes in', () => {
     expect(words({ kind: 'potFull', pot: 'tết' }).text).toBe(
-      'At 450k a month, the Tết pot fills by February 2027.',
+      'At 450k a month, your Tết jar fills by February 2027.',
     );
     const full = { ...ctx, pots: [{ name: 'Tết', goal: 1_000_000, saved: 1_000_000, monthly: 0 }] };
-    expect(words({ kind: 'potFull' }, 'en', full).text).toBe('The Tết pot is already full.');
+    expect(words({ kind: 'potFull' }, 'en', full).text).toBe('Your Tết jar is already full.');
     const idle = { ...ctx, pots: [{ name: 'Tết', goal: 3_000_000, saved: 0, monthly: 0 }] };
     expect(words({ kind: 'potFull' }, 'en', idle).text).toBe(
-      'Nothing goes into the Tết pot each month right now, so it won’t fill by itself.',
+      'Nothing goes into your Tết jar each month right now, so it won’t fill by itself.',
     );
-    expect(words({ kind: 'potFull' }, 'en', { ...ctx, pots: [] }).text).toContain('no pot yet');
+    expect(words({ kind: 'potFull' }, 'en', { ...ctx, pots: [] }).text).toContain('no jar yet');
   });
 
   it('answers today’s question and the one it cannot read', () => {

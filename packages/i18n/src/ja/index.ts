@@ -19,6 +19,9 @@ import { jaInsightsHabits } from './insights-habits';
 import { jaIntents } from './intents';
 import { jaLooks } from './looks';
 import { jaMoneyIn } from './money-in';
+import { jaPotsClose } from './pots-close';
+import { jaPotsPlan } from './pots-plan';
+import { jaPots } from './pots';
 import { jaNative } from './native';
 import { jaOnboarding } from './onboarding';
 import { jaPlan } from './plan';
@@ -34,6 +37,7 @@ import { jaTravel } from './travel';
 import { jaVoice } from './voice';
 import { jaWidgetsGuide } from './widgets-guide';
 import { jaYearBook } from './year-book';
+import { jaFirstCatch } from './first-catch';
 
 export { jaAndroid } from './android';
 
@@ -74,6 +78,10 @@ export const ja: Catalogue = {
   ...jaWidgetsGuide,
   ...jaDuo,
   ...jaMoneyIn,
+  ...jaPotsClose,
+  ...jaPotsPlan,
+  ...jaPots,
+  ...jaFirstCatch,
 };
 
 /**

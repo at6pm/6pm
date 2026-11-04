@@ -81,11 +81,13 @@ function Screens() {
         <Stack.Screen name="ask" options={pageSheet} />
         <Stack.Screen name="inbox" options={sheet} />
         <Stack.Screen name="close" options={takeover} />
+        <Stack.Screen name="first-catch" options={takeover} />
         <Stack.Screen name="spend/[id]" options={sheet} />
         <Stack.Screen name="missed-day" options={drawnSheet} />
         <Stack.Screen name="money-diary" options={sheet} />
         <Stack.Screen name="new-pot" options={sheet} />
-        <Stack.Screen name="pot/[id]" options={sheet} />
+        <Stack.Screen name="pots" options={sheet} />
+        <Stack.Screen name="pot/[id]" options={drawnSheet} />
         <Stack.Screen name="bill/[id]" options={sheet} />
         <Stack.Screen name="month" options={sheet} />
         <Stack.Screen name="since-payday" options={sheet} />
@@ -94,6 +96,7 @@ function Screens() {
         <Stack.Screen name="max" options={sheet} />
         <Stack.Screen name="max-welcome" options={takeover} />
         <Stack.Screen name="backup" options={sheet} />
+        <Stack.Screen name="read-on-phone" options={sheet} />
         <Stack.Screen name="together/index" options={sheet} />
         <Stack.Screen name="together/[code]" options={sheet} />
         <Stack.Screen name="shared-pot/[id]" options={sheet} />

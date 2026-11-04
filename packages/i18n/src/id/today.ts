@@ -85,7 +85,7 @@ export const idToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'quick.keep': 'Simpan',
   'details.title': 'Detail',
   'details.edit': 'Ubah',
-  'details.pot': 'Celengan',
+  'details.pot': 'Toples',
   'details.freeMoney': 'Uang bebas',
   'details.claimBack': 'Klaim kantor',
   'details.paidWith': 'Dibayar pakai',

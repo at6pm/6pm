@@ -156,6 +156,43 @@ describe('the snapshot of the phone', () => {
     ]);
   });
 
+  it('carries steady jars and spends from a jar back, and a format 5 snapshot restores without them', async () => {
+    const source = openMemoryDb();
+    await seedMoney(source);
+    await source.runAsync('UPDATE pots SET monthly = ?, needed_by = NULL WHERE id = ?', [
+      400_000,
+      'pot-1',
+    ]);
+    const [spend] = await source.getAllAsync<{ id: string }>('SELECT id FROM spends LIMIT 1', []);
+    await source.runAsync('UPDATE spends SET from_pot = ?, from_pot_amount = ? WHERE id = ?', [
+      'pot-1',
+      10_000,
+      spend?.id ?? '',
+    ]);
+    const snapshot = await buildSnapshot(source, TAKEN);
+    expect(snapshot.version).toBe(6);
+    const phone = openMemoryDb();
+    await restoreSnapshot(phone, snapshot);
+    const tables = openMoneyTables(phone);
+    expect((await tables.pots.get('pot-1'))?.monthly).toBe(400_000);
+    const back = await tables.spends.get(spend?.id ?? '');
+    expect([back?.fromPot, back?.fromPotAmount]).toEqual(['pot-1', 10_000]);
+
+    // A phone from 2.1 sent a format 5 snapshot: no jar fields, restored as spending and dated jars.
+    const older = {
+      ...snapshot,
+      version: 5,
+      pots: snapshot.pots.map(({ monthly: _m, ...pot }) => pot),
+      spends: snapshot.spends.map(({ fromPot: _p, fromPotAmount: _a, ...row }) => row),
+    };
+    expect(backupSnapshotSchema.safeParse(older).success).toBe(true);
+    const restored = openMemoryDb();
+    await restoreSnapshot(restored, older);
+    const t = openMoneyTables(restored);
+    expect((await t.spends.get(spend?.id ?? ''))?.fromPot).toBeNull();
+    expect((await t.pots.get('pot-1'))?.monthly).toBeNull();
+  });
+
   it('replaces what the phone held and leaves the settings that are its own', async () => {
     const source = openMemoryDb();
     await seedMoney(source);

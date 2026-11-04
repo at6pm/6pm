@@ -59,7 +59,7 @@ export const deAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'max.terms.storeOff': 'Max lässt sich gerade nicht kaufen: Google Play antwortet nicht.',
   'max.sub.backup': 'Verschlüsseltes Backup, komplette Historie, CSV und Sheets.',
   'max.note.backup': 'Verschlüsseltes Backup, CSV und Sheets',
-  'max.welcome.win.more': 'Spartöpfe, Reisemodus und das Jahrbuch',
+  'max.welcome.win.more': 'Gläser, Reisemodus und das Jahrbuch',
 
   'privacy.ai.device.title': 'Nur auf diesem Handy',
   'privacy.ai.device.unavailable': 'Auf Android hat 6pm kein Modell, das auf dem Handy läuft.',

@@ -2,7 +2,7 @@ import type { Entry } from '../catalogue-types';
 import type { enCompanion } from '../en-companion';
 
 // The companion talks like a friend who texts: "ich" for itself, "du" for you. Roast teases the
-// habit, never the person. A pot is a Spartopf; Future you is Zukunfts-Ich. `{day}` fits "an einem {day}".
+// habit, never the person. A jar is a Glas; Future you is Zukunfts-Ich. `{day}` fits "an einem {day}".
 export const deCompanion: { readonly [Key in keyof typeof enCompanion]: Entry } = {
   'companion.idle.soft': 'Ruhiger Tag bisher. Die Belege hab ich.',
   'companion.idle.cheeky': 'Verdächtig brav heute.',
@@ -61,18 +61,18 @@ export const deCompanion: { readonly [Key in keyof typeof enCompanion]: Entry } 
   'companion.nudge.cheeky': 'Sechs Uhr. Machen wir die Bücher zu.',
   'companion.nudge.roast': 'Es ist sechs. Zeit, den Belegen ins Auge zu sehen.',
   'companion.nudge.plain': 'Zeit für deinen Tagesabschluss.',
-  'companion.potFull.soft': 'Der Spartopf ist voll. Bereit, wenn der Tag kommt.',
-  'companion.potFull.cheeky': 'Spartopf voll. Zukunfts-Ich grinst selbstzufrieden.',
-  'companion.potFull.roast': 'Voller Spartopf. Komm bloß nicht auf Ideen.',
-  'companion.potFull.plain': 'Spartopf voll.',
+  'companion.potFull.soft': 'Das Glas ist voll. Bereit, wenn der Tag kommt.',
+  'companion.potFull.cheeky': 'Glas voll. Zukunfts-Ich grinst selbstzufrieden.',
+  'companion.potFull.roast': 'Volles Glas. Komm bloß nicht auf Ideen.',
+  'companion.potFull.plain': 'Glas voll.',
   'companion.lateClose.soft': '{day} ist abgelegt. Jeder Tag zählt.',
   'companion.lateClose.cheeky': '{day}, abgelegt. Besser spät als verloren.',
   'companion.lateClose.roast': '{day} gerettet. Knapp.',
   'companion.lateClose.plain': '{day} abgeschlossen.',
-  'companion.potMade.soft': 'Neuer Spartopf gestartet. Langsam und stetig.',
-  'companion.potMade.cheeky': 'Neuer Spartopf. Zukunfts-Ich sagt danke.',
-  'companion.potMade.roast': 'Ein Spartopf. Schau mal einer an, wer da plant.',
-  'companion.potMade.plain': 'Spartopf erstellt.',
+  'companion.potMade.soft': 'Neues Glas gestartet. Langsam und stetig.',
+  'companion.potMade.cheeky': 'Neues Glas. Zukunfts-Ich sagt danke.',
+  'companion.potMade.roast': 'Ein Glas. Schau mal einer an, wer da plant.',
+  'companion.potMade.plain': 'Glas angelegt.',
   'companion.maxOff.soft': 'Max ist aus. Deine Gratis-Looks bleiben.',
   'companion.maxOff.cheeky': 'Max aus. Zurück zur Basis, immer noch süß.',
   'companion.maxOff.roast': 'Gekündigt. Die Spar-Ära beginnt.',

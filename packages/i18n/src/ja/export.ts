@@ -22,4 +22,6 @@ export const jaExport: { readonly [Key in keyof typeof enExport]: Entry } = {
   'export.csv.currency': '通貨',
   'export.csv.yes': 'はい',
   'export.csv.no': 'いいえ',
+  'export.csv.fromJar': '{jar}の瓶から',
+  'export.csv.fromJarPart': '{jar}の瓶から：{amount}',
 };

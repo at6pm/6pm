@@ -19,6 +19,9 @@ import { idInsightsHabits } from './insights-habits';
 import { idIntents } from './intents';
 import { idLooks } from './looks';
 import { idMoneyIn } from './money-in';
+import { idPotsClose } from './pots-close';
+import { idPotsPlan } from './pots-plan';
+import { idPots } from './pots';
 import { idNative } from './native';
 import { idOnboarding } from './onboarding';
 import { idPlan } from './plan';
@@ -34,6 +37,7 @@ import { idTravel } from './travel';
 import { idVoice } from './voice';
 import { idWidgetsGuide } from './widgets-guide';
 import { idYearBook } from './year-book';
+import { idFirstCatch } from './first-catch';
 
 export { idAndroid } from './android';
 
@@ -74,6 +78,10 @@ export const id: Catalogue = {
   ...idWidgetsGuide,
   ...idDuo,
   ...idMoneyIn,
+  ...idPotsClose,
+  ...idPotsPlan,
+  ...idPots,
+  ...idFirstCatch,
 };
 
 /**

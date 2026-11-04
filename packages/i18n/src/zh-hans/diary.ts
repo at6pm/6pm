@@ -87,4 +87,5 @@ export const zhHansDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.zine.showAmountsSub': '默认关闭。钱是私事。',
   'diary.cal.previous': '上个月',
   'diary.cal.next': '下个月',
+  'diary.fromJar': '来自“{jar}”罐子',
 };

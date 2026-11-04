@@ -15,10 +15,13 @@ import {
   type SpendRow,
   type SpendSource,
 } from '@6pm/domain';
+import type { Language } from '@6pm/i18n';
 
 import { billPayments } from './bill-payments';
+import { noteReceiptRead } from './first-catch';
 import type { moneyActions } from './money-actions';
 import type { MoneyStore } from './money-store';
+import { seedStarterCategories } from './onboarding';
 
 /** The App Group inbox as the surfaces module exposes it. */
 export interface InboxSource {
@@ -39,6 +42,11 @@ export interface InboxImportDeps {
    * another is kept as a foreign amount, priced when its rate arrives.
    */
   readonly home?: string;
+  /**
+   * The app's language (the phone's, unless one was picked in Settings): a catch that arrives
+   * before onboarding has made the starter categories makes them, named in it.
+   */
+  readonly language?: Language;
 }
 
 /** What one import did, for the caller to refresh what the extensions show. */
@@ -117,11 +125,20 @@ export async function alreadyImported(
  * saves the receipts it reads through here too.
  */
 export async function saveInboxSpend(
-  deps: Pick<InboxImportDeps, 'store' | 'actions' | 'enrich' | 'home'>,
+  deps: Pick<InboxImportDeps, 'store' | 'actions' | 'enrich' | 'home' | 'language'>,
   incoming: InboxSpend,
 ): Promise<string | null> {
   const { store, actions } = deps;
   if (await alreadyImported(store, incoming)) return null;
+  // The first catch can land while onboarding is still open, before it has made the categories.
+  if (deps.language && store.getSnapshot().categories.length === 0) {
+    const language = deps.language;
+    await store.exclusive(async () => {
+      if (await seedStarterCategories(store, language)) {
+        await store.loadInTurn(store.getSnapshot().today);
+      }
+    });
+  }
   const snap = store.getSnapshot();
   const recent = [...snap.cycleSpends, ...snap.waitingBefore].filter((s) => s.status !== 'deleted');
   if (recent.some((s) => isRepeatTap(incoming, s) || isSameReceipt(incoming, s))) return null;
@@ -149,6 +166,9 @@ export async function saveInboxSpend(
     recent,
   );
   const captured = await actions.captureSpend(draft);
+  if (!captured.merged && item.source === 'shared') {
+    await noteReceiptRead(store.db, captured.row, item.receipt);
+  }
   // Money moved between the person's own accounts: both alerts are set aside as not spending
   // and not money in, struck through where the day lists them, and undone like "Not mine".
   const other = pair ? await store.tables.spends.get(pair.id) : null;

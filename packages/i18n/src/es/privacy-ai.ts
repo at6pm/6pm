@@ -31,7 +31,7 @@ export const esPrivacyAi: { readonly [Key in keyof typeof enPrivacyAi]: Entry } 
   'settings.ai.device': 'En este iPhone',
   'privacy.leaves.title': 'Qué sale de tu teléfono',
   'privacy.leaves.server.ask':
-    'Una pregunta, con los nombres de tus categorías y huchas, para entenderla',
+    'Una pregunta, con los nombres de tus categorías y frascos, para entenderla',
   'privacy.leaves.server.lines': 'Los pocos datos de una frase del compañero',
   'privacy.leaves.server.receipts': 'Una foto de ticket que tu teléfono no pueda leer',
   'privacy.leaves.server.voice': 'Tu voz mientras hablas, para pasarla a texto',

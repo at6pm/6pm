@@ -26,7 +26,7 @@ export const enPrivacyAi = {
   'settings.ai.server': 'On our server',
   'settings.ai.device': 'On this iPhone',
   'privacy.leaves.title': 'What leaves your phone',
-  'privacy.leaves.server.ask': 'A question, with your category and pot names, to read it',
+  'privacy.leaves.server.ask': 'A question, with your category and jar names, to read it',
   'privacy.leaves.server.lines': 'The few facts in one companion line',
   'privacy.leaves.server.receipts': 'A receipt photo your phone can’t read',
   'privacy.leaves.server.voice': 'Your voice while you speak, to turn it into text',

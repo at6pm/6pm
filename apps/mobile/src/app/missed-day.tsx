@@ -2,7 +2,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Text, useWindowDimensions, View } from 'react-native';
 
-import { monthOf, needsReview, sumCounted } from '@6pm/domain';
+import { monthOf, needsReview, sumDayPart } from '@6pm/domain';
 
 import {
   notDailyOf,
@@ -65,7 +65,8 @@ export default function MissedDay() {
   const data = useStoreQuery(read);
   const spends = (data?.spends ?? []).filter((s) => s.status !== 'skipped');
   const waiting = spends.filter(needsReview);
-  const spent = sumCounted(spends.map(toDiarySpend), notDailyOf(snap));
+  // What the day's number counted: a jar's part of a spend stays out (M13).
+  const spent = sumDayPart(spends.map(toDiarySpend), notDailyOf(snap));
   const rows = toRowViews(spends, snap.categories, labels, false);
   const filed = data?.closed === true || day === null || day >= snap.today;
 

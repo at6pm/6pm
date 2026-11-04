@@ -2,7 +2,7 @@ import type { Entry } from './catalogue-types';
 import type { enCompanion } from './en-companion';
 
 // The companion texts like a friend in Saigon: "mình" for itself, "bạn" for you. Roast teases the
-// habit, never the person. A pot is a "hũ"; Future you is "bạn của tương lai".
+// habit, never the person. A jar is a "lọ"; Future you is "Tương lai".
 export const viCompanion: { readonly [Key in keyof typeof enCompanion]: Entry } = {
   'companion.idle.soft': 'Hôm nay êm ru nè. Biên lai mình giữ hết rồi.',
   'companion.idle.cheeky': 'Hôm nay ngoan dữ ta. Thấy nghi nghi.',
@@ -36,8 +36,8 @@ export const viCompanion: { readonly [Key in keyof typeof enCompanion]: Entry } 
   'companion.question.cheeky': 'Một câu nhanh thôi, hứa đó.',
   'companion.question.roast': 'Một câu. Nói thật nha.',
   'companion.question.plain': 'Một câu hỏi.',
-  'companion.save.soft': 'Bạn của tương lai cảm nhận được rồi. Cảm ơn nha.',
-  'companion.save.cheeky': 'Bạn của tương lai vừa quẩy nhẹ một cái.',
+  'companion.save.soft': 'Tương lai cảm nhận được rồi. Cảm ơn nha.',
+  'companion.save.cheeky': 'Tương lai vừa quẩy nhẹ một cái.',
   'companion.save.roast': 'Biết để dành? Ngay {day}? Ghê vậy.',
   'companion.save.plain': 'Đã lưu.',
   'companion.export.soft': 'Đã lưu CSV vào Tệp.',
@@ -60,18 +60,18 @@ export const viCompanion: { readonly [Key in keyof typeof enCompanion]: Entry } 
   'companion.nudge.cheeky': 'Sáu giờ. Chốt sổ thôi.',
   'companion.nudge.roast': 'Sáu giờ rồi. Tới lúc đối mặt với đống biên lai.',
   'companion.nudge.plain': 'Đến giờ chốt ngày.',
-  'companion.potFull.soft': 'Hũ này đầy rồi. Sẵn sàng cho ngày cần tới.',
-  'companion.potFull.cheeky': 'Hũ đầy rồi. Bạn của tương lai đang tự đắc lắm.',
-  'companion.potFull.roast': 'Hũ đầy rồi. Đừng có nảy ý gì nha.',
-  'companion.potFull.plain': 'Hũ đã đầy.',
+  'companion.potFull.soft': 'Lọ này đầy rồi. Sẵn sàng cho ngày cần tới.',
+  'companion.potFull.cheeky': 'Lọ đầy rồi. Tương lai đang tự đắc lắm.',
+  'companion.potFull.roast': 'Lọ đầy rồi. Đừng có nảy ý gì nha.',
+  'companion.potFull.plain': 'Lọ đã đầy.',
   'companion.lateClose.soft': 'Đã chốt {day}. Ngày nào cũng đáng.',
   'companion.lateClose.cheeky': 'Chốt {day} rồi. Thà muộn còn hơn không.',
   'companion.lateClose.roast': 'Vớt được {day}. Sát nút.',
   'companion.lateClose.plain': 'Đã chốt {day}.',
-  'companion.potMade.soft': 'Hũ mới đã mở. Chậm mà chắc.',
-  'companion.potMade.cheeky': 'Hũ mới. Bạn của tương lai cảm ơn nè.',
-  'companion.potMade.roast': 'Có hũ luôn. Biết lên kế hoạch ghê ta.',
-  'companion.potMade.plain': 'Đã tạo hũ.',
+  'companion.potMade.soft': 'Lọ mới đã mở. Chậm mà chắc.',
+  'companion.potMade.cheeky': 'Lọ mới. Tương lai cảm ơn nè.',
+  'companion.potMade.roast': 'Có lọ luôn. Biết lên kế hoạch ghê ta.',
+  'companion.potMade.plain': 'Đã tạo lọ.',
   'companion.maxOff.soft': 'Đã tắt Max. Các giao diện miễn phí vẫn ở đây nha.',
   'companion.maxOff.cheeky': 'Tắt Max rồi. Về lại cơ bản, vẫn dễ thương.',
   'companion.maxOff.roast': 'Huỷ rồi. Kỷ nguyên tiết kiệm bắt đầu.',

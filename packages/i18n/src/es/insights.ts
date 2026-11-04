@@ -2,7 +2,7 @@ import type { Entry } from '../catalogue-types';
 import type { enInsights } from '../en-insights';
 
 // The companion talks to "tú", short and warm, Spain-neutral. The day's line is "el límite" (the
-// jokes may say "pasarse de la raya"); a pot is a "hucha"; closing the day is "el cierre".
+// jokes may say "pasarse de la raya"); a jar is a "frasco"; closing the day is "el cierre".
 export const esInsights: { readonly [Key in keyof typeof enInsights]: Entry } = {
   'insight.compare.muchMore': 'mucho más',
   'insight.compare.more': 'más',
@@ -245,22 +245,22 @@ export const esInsights: { readonly [Key in keyof typeof enInsights]: Entry } = 
   'insight.weekOver.roast.2': '{over} de más. Una semana para olvidar, un mes para arreglarlo.',
   'insight.weekOver.plain': 'Los días cerrados de esta semana superaron el límite en {over}.',
 
-  'insight.potMilestone.soft.1': 'La hucha {pot} ya pasa del {percent}%. Mira cómo crece.',
-  'insight.potMilestone.soft.2': 'Llevas el {percent}% del camino hacia la hucha {pot}.',
-  'insight.potMilestone.cheeky.1': 'Hucha {pot}: al {percent}%. Esto va en serio.',
-  'insight.potMilestone.cheeky.2': '{percent}% de la hucha {pot}, hecho. Sigue alimentándola.',
-  'insight.potMilestone.roast.1': 'La hucha {pot}, al {percent}%. Va ganando. Déjala.',
-  'insight.potMilestone.roast.2': '{percent}% hacia la hucha {pot}. Ni se te ocurra asaltarla.',
-  'insight.potMilestone.plain': 'La hucha {pot} ya pasa del {percent}% de su objetivo.',
+  'insight.potMilestone.soft.1': 'El frasco {pot} ya pasa del {percent}%. Mira cómo crece.',
+  'insight.potMilestone.soft.2': 'Llevas el {percent}% del camino hacia el frasco {pot}.',
+  'insight.potMilestone.cheeky.1': 'Frasco {pot}: al {percent}%. Esto va en serio.',
+  'insight.potMilestone.cheeky.2': '{percent}% del frasco {pot}, hecho. Sigue alimentándolo.',
+  'insight.potMilestone.roast.1': 'El frasco {pot}, al {percent}%. Va ganando. Déjalo.',
+  'insight.potMilestone.roast.2': '{percent}% hacia el frasco {pot}. Ni se te ocurra asaltarlo.',
+  'insight.potMilestone.plain': 'El frasco {pot} ya pasa del {percent}% de su objetivo.',
 
-  'insight.potFull.soft.1': 'La hucha {pot} está llena. Lo has conseguido tú.',
-  'insight.potFull.soft.2': 'Hucha {pot}: completa. Disfrútala de verdad.',
-  'insight.potFull.cheeky.1': '¡La hucha {pot} está llena! Confeti, pero bajito.',
-  'insight.potFull.cheeky.2': 'La hucha {pot}, llena hasta arriba.',
+  'insight.potFull.soft.1': 'El frasco {pot} está lleno. Lo has conseguido tú.',
+  'insight.potFull.soft.2': 'Frasco {pot}: completo. Disfrútalo de verdad.',
+  'insight.potFull.cheeky.1': '¡El frasco {pot} está lleno! Confeti, pero bajito.',
+  'insight.potFull.cheeky.2': 'El frasco {pot}, lleno hasta arriba.',
   'insight.potFull.roast.1':
-    'La hucha {pot} está llena. Tenía un chiste preparado; no ha hecho falta.',
-  'insight.potFull.roast.2': 'Hucha llena: {pot}. Ahora gástala en aquello para lo que era.',
-  'insight.potFull.plain': 'La hucha {pot} ha alcanzado su objetivo.',
+    'El frasco {pot} está lleno. Tenía un chiste preparado; no ha hecho falta.',
+  'insight.potFull.roast.2': 'Frasco lleno: {pot}. Ahora gástalo en aquello para lo que era.',
+  'insight.potFull.plain': 'El frasco {pot} está lleno.',
 
   'insight.workToClaim.soft.1': {
     one: 'Un gasto de trabajo ({amount}) por reclamar.',

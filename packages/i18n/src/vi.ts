@@ -34,6 +34,10 @@ import { viCompanions } from './vi-companions';
 import { viWidgetsGuide } from './vi-widgets-guide';
 import { viDuo } from './vi-duo';
 import { viMoneyIn } from './vi-money-in';
+import { viPotsClose } from './vi-pots-close';
+import { viPotsPlan } from './vi-pots-plan';
+import { viPots } from './vi-pots';
+import { viFirstCatch } from './vi-first-catch';
 
 export const vi: Catalogue = {
   ...viOnboarding,
@@ -71,4 +75,8 @@ export const vi: Catalogue = {
   ...viWidgetsGuide,
   ...viDuo,
   ...viMoneyIn,
+  ...viPotsClose,
+  ...viPotsPlan,
+  ...viPots,
+  ...viFirstCatch,
 };

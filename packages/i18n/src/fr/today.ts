@@ -92,7 +92,7 @@ export const frToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'quick.keep': 'Garder',
   'details.title': 'Détails',
   'details.edit': 'Modifier',
-  'details.pot': 'Cagnotte',
+  'details.pot': 'Bocal',
   'details.freeMoney': 'Argent libre',
   'details.claimBack': 'Note de frais',
   'details.paidWith': 'Payé avec',

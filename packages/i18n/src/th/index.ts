@@ -19,6 +19,9 @@ import { thInsightsHabits } from './insights-habits';
 import { thIntents } from './intents';
 import { thLooks } from './looks';
 import { thMoneyIn } from './money-in';
+import { thPotsClose } from './pots-close';
+import { thPotsPlan } from './pots-plan';
+import { thPots } from './pots';
 import { thNative } from './native';
 import { thOnboarding } from './onboarding';
 import { thPlan } from './plan';
@@ -34,6 +37,7 @@ import { thTravel } from './travel';
 import { thVoice } from './voice';
 import { thWidgetsGuide } from './widgets-guide';
 import { thYearBook } from './year-book';
+import { thFirstCatch } from './first-catch';
 
 export { thAndroid } from './android';
 
@@ -74,6 +78,10 @@ export const th: Catalogue = {
   ...thWidgetsGuide,
   ...thDuo,
   ...thMoneyIn,
+  ...thPotsClose,
+  ...thPotsPlan,
+  ...thPots,
+  ...thFirstCatch,
 };
 
 /**

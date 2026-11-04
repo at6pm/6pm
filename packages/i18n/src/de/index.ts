@@ -19,6 +19,9 @@ import { deInsightsHabits } from './insights-habits';
 import { deIntents } from './intents';
 import { deLooks } from './looks';
 import { deMoneyIn } from './money-in';
+import { dePotsClose } from './pots-close';
+import { dePotsPlan } from './pots-plan';
+import { dePots } from './pots';
 import { deNative } from './native';
 import { deOnboarding } from './onboarding';
 import { dePlan } from './plan';
@@ -34,6 +37,7 @@ import { deTravel } from './travel';
 import { deVoice } from './voice';
 import { deWidgetsGuide } from './widgets-guide';
 import { deYearBook } from './year-book';
+import { deFirstCatch } from './first-catch';
 
 export { deAndroid } from './android';
 
@@ -74,6 +78,10 @@ export const de: Catalogue = {
   ...deWidgetsGuide,
   ...deDuo,
   ...deMoneyIn,
+  ...dePotsClose,
+  ...dePotsPlan,
+  ...dePots,
+  ...deFirstCatch,
 };
 
 /**

@@ -65,7 +65,7 @@ export const frAskLedger: { readonly [Key in keyof typeof enAskLedger]: Entry } 
     other:
       'À {monthly} par mois pour Toi du futur, {amount} pour {what} prend environ {count} ans, vers {month}.',
   },
-  'ask.answer.goalPace.note': 'Une cagnotte rien que pour ça garde cet argent à part du reste.',
+  'ask.answer.goalPace.note': 'Un bocal rien que pour ça garde cet argent à part du reste.',
   'ask.answer.goalNoPace':
     'Rien ne va encore à Toi du futur chaque mois, donc pas de rythme pour calculer {amount} pour {what}. Un petit peu chaque mois, et c’est parti.',
   'ask.answer.goalAmount':

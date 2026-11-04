@@ -22,4 +22,6 @@ export const deExport: { readonly [Key in keyof typeof enExport]: Entry } = {
   'export.csv.currency': 'Währung',
   'export.csv.yes': 'Ja',
   'export.csv.no': 'Nein',
+  'export.csv.fromJar': 'Aus dem Glas „{jar}“',
+  'export.csv.fromJarPart': 'Aus dem Glas „{jar}“: {amount}',
 };

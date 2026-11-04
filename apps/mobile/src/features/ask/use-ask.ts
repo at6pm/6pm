@@ -9,6 +9,7 @@ import {
   answerQuery,
   freeAsksLeft,
   isAskIntent,
+  isFutureYouPot,
   type AskQuery,
   type LocalDate,
 } from '@6pm/domain';
@@ -23,6 +24,7 @@ import { useClock } from '../../ui/theme/clock';
 import { useTheme } from '../../ui/theme/theme';
 import { useApi } from '../api/native-api';
 import { usePlanFormat } from '../plan/plan-format';
+import { jarName } from '../pots/jar-name';
 import { useEntitlement } from '../purchases/purchases-provider';
 import { previousCycleStartOf, readEarlierSpends } from '../wording/insight-input';
 import { readModelChoice } from '../wording/model-choice';
@@ -96,7 +98,10 @@ export function useAsk(): AskChat {
   const { max } = useEntitlement();
   const format = usePlanFormat(today);
   const money = useMoneyFormat();
-  const potName = useMoneySelector((snap) => snap.pots[0]?.name ?? null);
+  // The suggestion names a jar with a target to fill; Future you, first on the shelf, has none.
+  const potName = useMoneySelector(
+    (snap) => snap.pots.find((pot) => !isFutureYouPot(pot) && pot.goal > 0)?.name ?? null,
+  );
   const db = useSQLiteContext();
   const { serious } = useTheme();
   const form = useCompanionForm();
@@ -205,7 +210,7 @@ export function useAsk(): AskChat {
         const reading = await readQuestion(api, db, question, {
           today: snapshot.today,
           categories: snapshot.categories.map((c) => c.name),
-          pots: snapshot.pots.map((pot) => pot.name),
+          pots: snapshot.pots.map((pot) => jarName(pot, words.current.t)),
           previous: before[before.length - 1] ?? null,
           earlier: before.slice(0, -1),
           merchants: [...new Set(snapshot.cycleSpends.map((spend) => spend.merchant))],
@@ -214,7 +219,7 @@ export function useAsk(): AskChat {
         history.current = [...before, reading.query].slice(-HISTORY);
         // Worked out from the store as it is now, after the wait, with the cycle before it.
         const now = store.getSnapshot();
-        const ctx = askContextOf(now);
+        const ctx = askContextOf(now, words.current.t);
         if (ctx === null) throw new Error('Ask was opened before the month was set up');
         const earlierFrom = previousCycleStartOf(now);
         const earlier =

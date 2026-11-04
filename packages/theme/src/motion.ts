@@ -12,6 +12,12 @@ export const curves = {
   snap: [0.2, 0.9, 0.25, 1],
   /** A gesture guide's ghost finger and the wheels it rolls. */
   guide: [0.32, 0.72, 0, 1],
+  /** A jar filling or draining, and a slider's fill following the thumb (Pots). */
+  jarFill: [0.3, 1.4, 0.5, 1],
+  /** A new jar landing on the shelf. */
+  jarIn: [0.3, 1.3, 0.5, 1],
+  /** A check mark stamping onto a full jar. */
+  jarCheck: [0.3, 1.5, 0.5, 1],
 } as const satisfies Record<string, readonly [number, number, number, number]>;
 
 export const durations = {
@@ -27,6 +33,10 @@ export const durations = {
   stamp: 520,
   /** One loop of a gesture guide. */
   guideLoop: 6000,
+  /** A jar's fill moving to a new level. */
+  jarFill: 550,
+  /** The shelf jar growing into its page, and back. */
+  jarOpen: 420,
 } as const;
 
 /** Reanimated `withSpring` configs. */

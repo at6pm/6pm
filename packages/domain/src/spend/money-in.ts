@@ -228,7 +228,7 @@ export function spreadPreview(
   };
 }
 
-/** Where money saved for Future you is put: its goals, by the share each takes of Future you. */
+/** Where money saved for Future you is put: Future you's jar (and 2.1 goals by their shares). */
 export const FUTURE_YOU = 'futureYou';
 
 /**
@@ -256,4 +256,24 @@ export function futureYouSplit(
     if (part > 0) split[goal.id] = part;
   });
   return split;
+}
+
+/**
+ * Money in saved to Future you, by jar: all of it into Future you's jar, or, while 2.1 goals still
+ * fill from the slice, split by their shares as 2.1 did, Future you's jar taking whatever share
+ * they no longer take.
+ */
+export function futureYouSavedSplit(
+  amount: Money,
+  pots: readonly { readonly id: string; readonly kind: string; readonly share: number | null }[],
+): Readonly<Record<string, Money>> {
+  const goals = pots.filter((p) => p.kind === 'goal' && p.id !== FUTURE_YOU);
+  const taken = goals.reduce((sum, g) => sum + Math.max(0, g.share ?? 0), 0);
+  const rest = Math.max(0, Math.round((1 - taken) * 1e6) / 1e6);
+  return futureYouSplit(amount, [
+    ...goals,
+    ...(goals.length === 0 || rest > 0
+      ? [{ id: FUTURE_YOU, share: goals.length === 0 ? 1 : rest }]
+      : []),
+  ]);
 }

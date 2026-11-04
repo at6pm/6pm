@@ -7,7 +7,7 @@ export const idAsk: { readonly [Key in keyof typeof enAsk]: Entry } = {
   'ask.sub': 'Muat nggak, gimana kalau, kapan cukup',
   'ask.back': 'Kembali',
   'ask.intro':
-    'Tanya apa yang muat, bagaimana belanja besar mengubah hari-harimu, atau kapan celengan penuh. Aku tunjukkan hitungannya.',
+    'Tanya apa yang muat, bagaimana belanja besar mengubah hari-harimu, atau kapan toples penuh. Aku tunjukkan hitungannya.',
   'ask.try': 'Coba',
   'ask.placeholder': 'Tanya, atau ucapkan saja…',
   'ask.send': 'Kirim',
@@ -34,16 +34,16 @@ export const idAsk: { readonly [Key in keyof typeof enAsk]: Entry } = {
   'ask.row.tomorrow': 'Besok',
   'ask.row.futureYou': 'Kamu di masa depan tiap bulan',
   'ask.row.moving': 'Ditabung lagi',
-  'ask.row.inPot': 'Di celengan',
-  'ask.row.goal': 'Target',
+  'ask.row.inPot': 'Di toples',
+  'ask.row.goal': 'Jumlah target',
   'ask.row.perMonth': 'Tiap bulan',
   'ask.answer.fitsToday': 'Bisa, gampang. Masih muat di {safe} hari ini, jadi besok tidak berubah.',
   'ask.answer.fits': 'Bisa. Hari-hari sesudahnya berubah dari {from} jadi {to} sampai gajian.',
   'ask.answer.tight': 'Bisa, tapi mepet: hari-hari sesudahnya turun dari {from} jadi {to}.',
-  'ask.answer.tight.pots': 'Ambil {take} dari celenganmu, dan tiap hari tetap {withPots}.',
+  'ask.answer.tight.pots': 'Ambil {take} dari toplesmu, dan tiap hari tetap {withPots}.',
   'ask.answer.notThisMonth':
     'Bulan ini belum bisa. Itu lebih dari seluruh uang bebasmu. Muat setelah gajian pada {payday}.',
-  'ask.answer.notThisMonth.pots': 'Atau ambil sebagian dari celengan.',
+  'ask.answer.notThisMonth.pots': 'Atau ambil sebagian dari toples.',
   'ask.answer.weekend.two':
     'Sekitar {total} untuk {first} dan {second}, kalau hari-hari sebelumnya sesuai rencana.',
   'ask.answer.weekend.one':
@@ -55,17 +55,17 @@ export const idAsk: { readonly [Key in keyof typeof enAsk]: Entry } = {
   'ask.answer.saveMore.none':
     'Menyisihkan {amount} lagi untuk kamu di masa depan hampir tidak mengubah hari-harimu.',
   'ask.answer.saveMore.note': 'Kamu bisa melakukannya dari Rencana.',
-  'ask.answer.potFull': 'Dengan {monthly} sebulan, celengan {pot} penuh pada {month}.',
-  'ask.answer.potFull.done': 'Celengan {pot} sudah penuh.',
+  'ask.answer.potFull': 'Dengan {monthly} sebulan, toples {pot} penuh pada {month}.',
+  'ask.answer.potFull.done': 'Toples {pot} sudah penuh.',
   'ask.answer.potFull.idle':
-    'Saat ini tidak ada yang masuk ke celengan {pot} tiap bulan, jadi tidak akan penuh sendiri.',
+    'Saat ini tidak ada yang masuk ke toples {pot} tiap bulan, jadi tidak akan penuh sendiri.',
   'ask.answer.noSuchPot':
-    'Aku nggak menemukan celengan {pot}. Tanya soal salah satu celenganmu, atau buat di Rencana.',
-  'ask.answer.noPots': 'Belum ada celengan. Buat satu di Rencana, nanti aku kabari kapan penuhnya.',
+    'Aku nggak menemukan toples {pot}. Tanya soal salah satu toplesmu, atau buat di Rencana.',
+  'ask.answer.noPots': 'Belum ada toples. Buat satu di Rencana, nanti aku kabari kapan penuhnya.',
   'ask.answer.today': 'Kamu bisa memakai {safe} hari ini. Angka besok {tomorrow}.',
   'ask.answer.today.used': 'Angka hari ini sudah habis. Besok {tomorrow}.',
   'ask.answer.help':
-    'Aku bisa bilang apa yang muat, bagaimana belanja besar mengubah hari-harimu, atau kapan celengan penuh. Coba “Bisa pakai {amount} hari Sabtu?”',
+    'Aku bisa bilang apa yang muat, bagaimana belanja besar mengubah hari-harimu, atau kapan toples penuh. Coba “Bisa pakai {amount} hari Sabtu?”',
   'ask.error': 'Ada yang salah, jadi aku belum bisa menjawab. Coba lagi.',
   'ask.answer.offline':
     'Aku tidak bisa terhubung ke server, jadi sekarang hanya bisa membaca pertanyaan sederhana.',

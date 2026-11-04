@@ -1,9 +1,9 @@
 /** Budget together. */
 export const enTogether = {
   'together.title': 'Budget together',
-  'together.card.subOn': 'Invite someone to share a pot.',
+  'together.card.subOn': 'Invite someone to share a jar.',
   'together.card.subPaired': {
-    one: 'With {name} · 1 shared pot',
+    one: 'With {name} · 1 shared jar',
     other: 'With {name} · {count} shared pots',
   },
   'together.card.open': 'Open Budget together',
@@ -12,7 +12,7 @@ export const enTogether = {
 
   'together.intro.title': 'Save for it together.',
   'together.intro.sub':
-    'Share a pot with the person you save with. You both add to it, and each of you sees who put in what. Your own days stay on your phone.',
+    'Share a jar with the person you save with. You both add to it, and each of you sees who put in what. Your own days stay on your phone.',
   'together.intro.note':
     'Sign in with Apple is only for Budget together. 6pm asks for your first name, never your email.',
   'together.signIn.failed': 'Couldn’t sign in with Apple. Try again.',
@@ -22,7 +22,7 @@ export const enTogether = {
   'together.waiting.sub':
     'Send the link to the person you save with. When they join, they see your shared pots.',
   'together.paired.title': 'You and {name}',
-  'together.paired.sub': { one: '1 shared pot', other: '{count} shared pots' },
+  'together.paired.sub': { one: '1 shared jar', other: '{count} shared pots' },
   'together.invite': 'Invite someone',
   'together.invite.again': 'Send a new invite link',
   'together.invite.message': 'Save with me on 6pm: {url}',
@@ -30,17 +30,17 @@ export const enTogether = {
   'together.offline': 'Offline. This is what you saw last.',
 
   'together.pots.title': 'Shared pots',
-  'together.newPot': 'New shared pot',
+  'together.newPot': 'New shared jar',
   'together.newPotSub': 'You both add to it.',
   'together.jar.add': 'Add {amount} to {name}',
   'together.jar.split': 'You {mine} · {partner} {theirs}',
   'together.jar.mine': 'You put in {mine}',
 
-  'together.pot.edit': 'Edit shared pot',
-  'together.pot.start': 'Start shared pot',
+  'together.pot.edit': 'Edit shared jar',
+  'together.pot.start': 'Start shared jar',
   'together.pot.save': 'Save',
   'together.pot.sumMonthly': 'About {amount} a month, both of you together',
-  'together.pot.sumSub': 'What you put in counts like a top-up to your own pots.',
+  'together.pot.sumSub': 'What you put in counts like a top-up to your own jars.',
   'together.pot.sumNone': 'No date, no rush',
   'together.pot.sumNoneSub': 'Add to it whenever you like.',
   'together.pot.amount': 'Add',
@@ -50,10 +50,10 @@ export const enTogether = {
   'together.pot.entry': '{who} · {day}',
   'together.pot.takeBack': 'Take back',
   'together.pot.takeBackLabel': 'Take back {amount}',
-  'together.pot.delete': 'Delete shared pot',
+  'together.pot.delete': 'Delete shared jar',
   'together.pot.deleteConfirm': 'Tap again to delete it for both of you',
   'together.pot.deleted': 'Deleted {name}',
-  'together.pot.gone': 'This pot is gone. Your partner may have deleted it.',
+  'together.pot.gone': 'This jar is gone. Your partner may have deleted it.',
 
   'together.leave': 'Leave Budget together',
   'together.leaveConfirm': 'Tap again to leave',
@@ -64,7 +64,7 @@ export const enTogether = {
   'together.delete.note':
     'Deletes your sign-in and everything you share, and tells Apple 6pm no longer uses your Apple ID. Your own days stay on this phone.',
   'together.kept.title': 'Kept on this iPhone',
-  'together.kept.sub': 'What you put into shared pots: {amount}. It stays here when a pot is gone.',
+  'together.kept.sub': 'What you put into shared pots: {amount}. It stays here when a jar is gone.',
 
   'together.join.title': 'Join Budget together',
   'together.join.sub':

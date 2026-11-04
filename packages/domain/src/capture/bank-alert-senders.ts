@@ -1,4 +1,5 @@
-import { BANKS, type BankInfo } from '../vietqr/bank-catalogue';
+import { BANKS, findBank, WORLD_BANKS, type BankInfo } from '../vietqr/bank-catalogue';
+import { WORLD_ALERT_APPS } from '../vietqr/world-alert-apps';
 import { foldWords } from './spoken-spend';
 
 /**
@@ -45,23 +46,45 @@ const NAMES: readonly (readonly [name: string, bank: BankInfo])[] = [
   }),
 ].sort(([a], [b]) => b.length - a.length);
 
+/** The world's banks and wallets with an Android app the listener reads, by its package. */
+const WORLD_BY_PACKAGE = new Map(
+  Object.entries(WORLD_ALERT_APPS).flatMap(([id, pkg]) => {
+    const bank = findBank(id);
+    return bank ? [[pkg.toLowerCase(), bank] as const] : [];
+  }),
+);
+
+/** The world's banks and wallets by their everyday name, folded ("chase", "revolut"). */
+const WORLD_BY_NAME = new Map(
+  WORLD_BANKS.map((bank) => [foldWords(bank.shortName).trim(), bank] as const),
+);
+
 /**
  * The bank or wallet an app is, from the name a notification gives it ("MB Bank", "VCB Digibank",
  * "MoMo") or its bundle id ("com.mbmobile"): the whole name, or the name a bank's app starts with.
- * Null for an app 6pm does not know.
+ * Vietnam's banks are looked for first, so a short code they share with a bank elsewhere ("NAB",
+ * "DBS", "UOB") stays theirs; a bank of another country is known only by its exact Android package
+ * or its whole everyday name ("Chase", "Revolut"). Null for an app 6pm does not know.
  */
 export function bankOfApp(app: string | null | undefined): BankInfo | null {
   const raw = (app ?? '').trim();
   if (raw === '') return null;
+  const lower = raw.toLowerCase();
   const byPackage = BANKS.find(
-    (bank) => bank.android !== null && bank.android.package.toLowerCase() === raw.toLowerCase(),
+    (bank) => bank.android !== null && bank.android.package.toLowerCase() === lower,
   );
   if (byPackage) return byPackage;
   const folded = foldWords(raw);
   for (const [name, bank] of NAMES) {
     if (folded === ` ${name} ` || folded.startsWith(` ${name} `)) return bank;
   }
-  return null;
+  return WORLD_BY_PACKAGE.get(lower) ?? WORLD_BY_NAME.get(folded.trim()) ?? null;
+}
+
+/** Every Android package whose notifications are read as bank and wallet alerts: Vietnam's first. */
+export function alertPackages(): readonly string[] {
+  const vietnam = BANKS.flatMap((bank) => (bank.android ? [bank.android.package] : []));
+  return [...new Set([...vietnam, ...Object.values(WORLD_ALERT_APPS)])];
 }
 
 /** The first bank or wallet named anywhere in some text, word for word ("TK VCB 0011…"). */

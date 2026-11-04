@@ -2,7 +2,7 @@ import type { Entry } from '../catalogue-types';
 import type { enInsights } from '../en-insights';
 
 // The companion talks casually (だね、よ) and rarely names the user; plain lines are です・ます.
-// The day's limit is the “ライン”, a pot is a 貯金箱, a pay cycle is a サイクル.
+// The day's limit is the “ライン”, a jar is a 瓶, a pay cycle is a サイクル.
 export const jaInsights: { readonly [Key in keyof typeof enInsights]: Entry } = {
   'insight.compare.muchMore': 'かなり多め',
   'insight.compare.more': '多め',
@@ -210,9 +210,9 @@ export const jaInsights: { readonly [Key in keyof typeof enInsights]: Entry } = 
   'insight.potMilestone.soft.2': '{pot}への道のり、{percent}%まで来たよ。',
   'insight.potMilestone.cheeky.1': '{pot}：{percent}%達成。現実味が出てきた。',
   'insight.potMilestone.cheeky.2': '{pot}、{percent}%クリア。どんどん育てよう。',
-  'insight.potMilestone.roast.1': '{pot}が{percent}%。貯金箱が勝ってる。勝たせてあげて。',
+  'insight.potMilestone.roast.1': '{pot}が{percent}%。瓶が勝ってる。勝たせてあげて。',
   'insight.potMilestone.roast.2': '{pot}まで{percent}%。つまみ食いは禁止ね。',
-  'insight.potMilestone.plain': '{pot}は目標の{percent}%を超えました。',
+  'insight.potMilestone.plain': '{pot}は目標額の{percent}%を超えました。',
 
   'insight.potFull.soft.1': '{pot}がいっぱいになったよ。やったね。',
   'insight.potFull.soft.2': '{pot}：達成。思いきり楽しんでね。',
@@ -220,7 +220,7 @@ export const jaInsights: { readonly [Key in keyof typeof enInsights]: Entry } = 
   'insight.potFull.cheeky.2': '{pot}、ふちまでいっぱい。',
   'insight.potFull.roast.1': '{pot}が満タン。ツッコミ用意してたのに、いらなかったね。',
   'insight.potFull.roast.2': '満タン：{pot}。さあ、本来の目的に使おう。',
-  'insight.potFull.plain': '{pot}は目標に達しました。',
+  'insight.potFull.plain': '{pot}がいっぱいになりました。',
 
   'insight.workToClaim.soft.1': {
     other: '経費精算できる仕事の支出が{count}件（{amount}）あるよ。',

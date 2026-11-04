@@ -1,88 +1,49 @@
-import { Canvas, Circle, Path, Skia } from '@shopify/react-native-skia';
-import { useEffect } from 'react';
-import { Text, View } from 'react-native';
-import { useDerivedValue, useSharedValue, withTiming } from 'react-native-reanimated';
+import { useEffect, useRef, useState } from 'react';
+import { Text, View, type LayoutChangeEvent } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, {
+  Easing,
+  ReduceMotion,
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
-import { localeOf } from '@6pm/i18n';
+import { WHAT_IF_SHARE } from '@6pm/domain';
+import { curves } from '@6pm/theme';
 
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
-import { FitWidth } from '../../ui/layout/fit-width';
-import { body, display, leading } from '../../ui/type/fonts';
-import { Wheel } from '../../ui/wheel/wheel';
-import { ease } from './onboarding-motion';
-import { PERCENTS } from './onboarding-maths';
+import { haptics } from '../../ui/haptics';
+import { Symbol } from '../../ui/icons/symbol';
+import { BalancedText } from '../../ui/type/balanced-text';
+import { body, display, leading, tabular } from '../../ui/type/fonts';
+import { Jar } from '../pots/jar';
+import { jarColours } from '../pots/jar-colours';
 import type { OnboardingPalette } from './onboarding-palette';
-import { Card, StepHeading, WheelBand } from './step-parts';
+import { Card } from './step-parts';
 
-const RING = 200;
-const HOLE = 168;
-/** The amount keeps clear of the ring: it shrinks to the hole, less a little air. */
-const FIT_PAD = (RING - HOLE) / 2 + 8;
-/** The ring fills 2.5% of its turn per percent: 40% of money in closes it. */
-const TURN_PER_PERCENT = 0.025;
+/** Future you's jar is warm: the canvas's hue 70. */
+const FUTURE_HUE = 70;
+const fillEase = Easing.bezier(...curves.jarFill);
+const FILL_MS = 350;
+const THUMB = 30;
+/** The slider reaches M5's share of money in, in whole percents. */
+const MOST = Math.round(WHAT_IF_SHARE * 100);
+/** The jar is drawn full at this share; the slider runs on past it. */
+const FULL_AT = 30;
 
-/** The ring: a green slice of a full turn from twelve o'clock, easing to each new percentage. */
-function SavingsRing({
-  percent,
-  pal,
-}: {
-  readonly percent: number;
-  readonly pal: OnboardingPalette;
-}) {
-  const turn = useSharedValue(Math.min(1, percent * TURN_PER_PERCENT));
-  useEffect(() => {
-    turn.value = withTiming(Math.min(1, percent * TURN_PER_PERCENT), {
-      duration: 300,
-      easing: ease.css,
-    });
-  }, [percent, turn]);
-  const slice = useDerivedValue(() => {
-    const path = Skia.Path.Make();
-    const sweep = turn.value * 360;
-    if (sweep <= 0) return path;
-    if (sweep >= 360) {
-      path.addCircle(RING / 2, RING / 2, RING / 2);
-      return path;
-    }
-    path.moveTo(RING / 2, RING / 2);
-    path.arcToOval(Skia.XYWHRect(0, 0, RING, RING), -90, sweep, false);
-    path.close();
-    return path;
-  });
-  return (
-    <View
-      style={{
-        width: RING,
-        height: RING,
-        borderRadius: RING / 2,
-        boxShadow: pal.cardShadow,
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <Canvas style={{ position: 'absolute', width: RING, height: RING }}>
-        <Circle cx={RING / 2} cy={RING / 2} r={RING / 2} color={pal.ringTrack} />
-        <Path path={slice} color={pal.green} />
-      </Canvas>
-      <View
-        style={{
-          width: HOLE,
-          height: HOLE,
-          borderRadius: HOLE / 2,
-          backgroundColor: pal.cell,
-        }}
-      />
-    </View>
-  );
-}
-
-/** Pay future you first: a percentage wheel drives the ring and the amount set aside on payday. */
+/**
+ * Pay future you first: Future you's jar on the left fills as the slice slides, "12% of each pay"
+ * and what goes in each payday beside it, and the daily number answering underneath from the
+ * same engine as the first number (`line`).
+ */
 export function StepFutureYou({
   pal,
   percent,
   amount,
-  free,
+  line,
   onPercent,
 }: {
   readonly pal: OnboardingPalette;
@@ -91,92 +52,228 @@ export function StepFutureYou({
   readonly amount: number;
   /** Money in less bills and this, for the month. */
   readonly free: number;
+  /** Safe to spend each day with this slice: the first number's line. */
+  readonly line?: number;
   readonly onPercent: (percent: number) => void;
 }) {
-  const { t, language } = useI18n();
+  const { t } = useI18n();
   const money = useMoneyFormat();
-  // Vietnamese says the month by its number ("tháng 10"); the others by name, as their locale has it.
-  const month =
-    language === 'vi'
-      ? String(new Date().getMonth() + 1)
-      : new Intl.DateTimeFormat(localeOf(language), { month: 'long' }).format(new Date());
+  const c = jarColours(FUTURE_HUE);
+  // The range never ends below the slice already set (M5).
+  const [max] = useState(() => Math.max(MOST, percent));
+
+  const level = useSharedValue(Math.min(1, (percent / FULL_AT) * 0.92));
+  const lit = useSharedValue(percent > 0 ? 1 : 0);
+  useEffect(() => {
+    const motion = { duration: FILL_MS, easing: fillEase, reduceMotion: ReduceMotion.System };
+    level.set(withTiming(Math.min(1, (percent / FULL_AT) * 0.92), motion));
+    lit.set(withTiming(percent > 0 ? 1 : 0, motion));
+  }, [percent, level, lit]);
+  const jarStyle = useAnimatedStyle(() => ({ opacity: 0.55 + 0.45 * lit.get() }));
+
   return (
-    <View style={{ flex: 1, gap: 14 }}>
-      <StepHeading
-        title={t('onboarding.future.title')}
-        sub={t('onboarding.future.sub')}
-        pal={pal}
-      />
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <View>
-          <SavingsRing percent={percent} pal={pal} />
-          <View
-            style={{
-              position: 'absolute',
-              inset: 0,
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 4,
-            }}
-          >
-            <Text
-              style={{
-                ...body(12, 600, 0.05),
-                textTransform: 'uppercase',
-                color: pal.inkSoft,
-              }}
-            >
-              {t('onboarding.future.each')}
-            </Text>
-            <View style={{ alignSelf: 'stretch', paddingHorizontal: FIT_PAD }}>
-              <FitWidth height={44} align="center">
-                <Text style={{ ...leading(display(44, 600, -0.03), 44), color: pal.ink }}>
-                  {money.short(amount)}
-                </Text>
-              </FitWidth>
-            </View>
-            <Text style={{ ...body(12.5, 600), color: pal.inkSoft }}>
-              {amount > 0
-                ? t('onboarding.future.year', { amount: money.short(amount * 12), month })
-                : t('onboarding.future.skip')}
-            </Text>
-          </View>
-        </View>
+    <View style={{ flex: 1 }}>
+      <View style={{ paddingTop: 20, paddingRight: 76 }}>
+        <BalancedText
+          accessibilityRole="header"
+          style={{ ...leading(display(36, 600, -0.03), 36), color: pal.ink }}
+        >
+          {t('potsClose.first.title')}
+        </BalancedText>
       </View>
-      <Card
-        pal={pal}
+      <View
         style={{
-          paddingVertical: 8,
-          paddingHorizontal: 16,
+          flex: 1,
           flexDirection: 'row',
           alignItems: 'center',
-          gap: 10,
+          justifyContent: 'center',
+          gap: 22,
         }}
       >
-        <Text style={{ ...body(16, 550), flex: 1, textAlign: 'right', color: pal.ink }}>
-          {t('onboarding.future.setAside')}
-        </Text>
-        <View style={{ width: 84, justifyContent: 'center' }}>
-          <WheelBand height={42} radius={13} color={pal.chipBg} />
-          <Wheel
-            items={PERCENTS}
-            index={percent}
-            onChange={onPercent}
-            size={28}
-            ink={pal.ink}
-            width={84}
-            label={t('onboarding.future.setAside')}
+        <Animated.View style={jarStyle}>
+          <Jar
+            width={150}
+            height={198}
+            hue={FUTURE_HUE}
+            icon="sunny"
+            futureYou
+            level={level}
+            ringColor={pal.cell}
+            slosh
           />
+        </Animated.View>
+        <View style={{ gap: 2 }}>
+          <Text style={{ ...leading(display(52, 600, -0.03), 49), ...tabular, color: pal.ink }}>
+            {percent}%
+          </Text>
+          <Text style={{ ...body(15, 600), color: pal.inkSoft }}>
+            {t('potsClose.first.ofEachPay')}
+          </Text>
+          <Text style={{ ...display(22, 500), ...tabular, color: pal.ink, paddingTop: 10 }}>
+            {amount > 0 ? money.short(amount) : t('potsClose.first.nothing')}
+          </Text>
+          <Text style={{ ...body(13), color: pal.inkSoft, opacity: 0.8 }}>
+            {t('potsClose.first.eachPayday')}
+          </Text>
         </View>
-        <Text style={{ ...body(16, 550), flex: 1, color: pal.ink }}>
-          {t('onboarding.future.ofIncome')}
-        </Text>
-      </Card>
-      <Text style={{ ...body(13), lineHeight: 18.85, paddingHorizontal: 6, color: pal.inkSoft }}>
-        {free > 0
-          ? t('onboarding.future.note', { amount: money.short(free) })
-          : t('onboarding.future.noteNone')}
-      </Text>
+      </View>
+      <SliceSlider
+        percent={percent}
+        max={max}
+        fill={c.fill}
+        track={pal.track}
+        thumb={pal.light}
+        label={t('potsClose.first.slider')}
+        onPercent={onPercent}
+      />
+      {line !== undefined ? (
+        <Card
+          pal={pal}
+          style={{
+            marginTop: 18,
+            borderRadius: 22,
+            paddingVertical: 14,
+            paddingHorizontal: 16,
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 12,
+          }}
+        >
+          <Symbol name="wb_twilight" size={22} color={pal.accent} />
+          <Text style={{ ...body(15, 600), color: pal.ink, flex: 1 }}>
+            {t('potsClose.first.safe')}
+          </Text>
+          <Text style={{ ...display(26, 500), ...tabular, color: pal.ink }}>
+            {money.short(line)}
+          </Text>
+        </Card>
+      ) : null}
     </View>
+  );
+}
+
+/**
+ * The slice's slider: the track fills to the thumb as it is dragged (on the UI thread), the
+ * percent changes in whole steps with a light haptic every 5%.
+ */
+function SliceSlider({
+  percent,
+  max,
+  fill,
+  track,
+  thumb,
+  label,
+  onPercent,
+}: {
+  readonly percent: number;
+  readonly max: number;
+  readonly fill: string;
+  readonly track: string;
+  readonly thumb: string;
+  readonly label: string;
+  readonly onPercent: (percent: number) => void;
+}) {
+  const width = useSharedValue(0);
+  const x = useSharedValue(0);
+  const last = useRef(percent);
+  const [ready, setReady] = useState(false);
+  const report = (next: number) => {
+    if (next === last.current) return;
+    // A light tap each time the slice crosses a multiple of 5%.
+    if (Math.floor(next / 5) !== Math.floor(last.current / 5)) haptics.tap();
+    last.current = next;
+    onPercent(next);
+  };
+  useEffect(() => {
+    last.current = percent;
+  }, [percent]);
+  const onLayout = (e: LayoutChangeEvent) => {
+    const w = e.nativeEvent.layout.width - THUMB;
+    width.set(w);
+    x.set((percent / max) * w);
+    setReady(true);
+  };
+  const move = (at: number) => {
+    'worklet';
+    const w = width.get();
+    if (w <= 0) return;
+    const clamped = Math.min(w, Math.max(0, at - THUMB / 2));
+    x.set(clamped);
+    runOnJS(report)(Math.round((clamped / w) * max));
+  };
+  const pan = Gesture.Pan()
+    .minDistance(0)
+    .onBegin((e) => move(e.x))
+    .onUpdate((e) => move(e.x))
+    .onFinalize(() => {
+      const w = width.get();
+      if (w <= 0) return;
+      // The thumb settles on the whole percent it reported.
+      x.set(withTiming((Math.round((x.get() / w) * max) / max) * w, { duration: 120 }));
+    });
+  const fillStyle = useAnimatedStyle(() => ({ width: x.get() + THUMB / 2 }));
+  const thumbStyle = useAnimatedStyle(() => ({ transform: [{ translateX: x.get() }] }));
+
+  return (
+    <GestureDetector gesture={pan}>
+      <View
+        onLayout={onLayout}
+        accessible
+        accessibilityRole="adjustable"
+        accessibilityLabel={label}
+        accessibilityValue={{ min: 0, max, now: percent, text: `${percent}%` }}
+        accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
+        onAccessibilityAction={(e) =>
+          report(
+            Math.min(
+              max,
+              Math.max(0, percent + (e.nativeEvent.actionName === 'increment' ? 5 : -5)),
+            ),
+          )
+        }
+        style={{ height: 34, marginHorizontal: 4, justifyContent: 'center' }}
+      >
+        <View
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            top: 14,
+            height: 6,
+            borderRadius: 6,
+            backgroundColor: track,
+          }}
+        />
+        <Animated.View
+          style={[
+            {
+              position: 'absolute',
+              left: 0,
+              top: 14,
+              height: 6,
+              borderRadius: 6,
+              backgroundColor: fill,
+            },
+            fillStyle,
+          ]}
+        />
+        <Animated.View
+          style={[
+            {
+              position: 'absolute',
+              left: 0,
+              top: 2,
+              width: THUMB,
+              height: THUMB,
+              borderRadius: THUMB / 2,
+              backgroundColor: thumb,
+              boxShadow: '0 4px 12px rgba(0,0,0,.35)',
+              opacity: ready ? 1 : 0,
+            },
+            thumbStyle,
+          ]}
+        />
+      </View>
+    </GestureDetector>
   );
 }

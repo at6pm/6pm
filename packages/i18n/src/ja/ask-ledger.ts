@@ -47,7 +47,7 @@ export const jaAskLedger: { readonly [Key in keyof typeof enAskLedger]: Entry } 
     other:
       '未来の自分に毎月{monthly}なら、{what}の{amount}まではおよそ{count}年、{month}ごろです。',
   },
-  'ask.answer.goalPace.note': '専用の貯金箱を作れば、そのお金をほかと分けておけます。',
+  'ask.answer.goalPace.note': '専用の瓶を作れば、そのお金をほかと分けておけます。',
   'ask.answer.goalNoPace':
     'まだ毎月の未来の自分への積み立てがないので、{what}の{amount}までのペースを計算できません。毎月少しずつ始めてみましょう。',
   'ask.answer.goalAmount':

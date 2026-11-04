@@ -19,6 +19,9 @@ import { zhHansInsightsHabits } from './insights-habits';
 import { zhHansIntents } from './intents';
 import { zhHansLooks } from './looks';
 import { zhHansMoneyIn } from './money-in';
+import { zhHansPotsClose } from './pots-close';
+import { zhHansPotsPlan } from './pots-plan';
+import { zhHansPots } from './pots';
 import { zhHansNative } from './native';
 import { zhHansOnboarding } from './onboarding';
 import { zhHansPlan } from './plan';
@@ -34,6 +37,7 @@ import { zhHansTravel } from './travel';
 import { zhHansVoice } from './voice';
 import { zhHansWidgetsGuide } from './widgets-guide';
 import { zhHansYearBook } from './year-book';
+import { zhHansFirstCatch } from './first-catch';
 
 export { zhHansAndroid } from './android';
 
@@ -74,6 +78,10 @@ export const zhHans: Catalogue = {
   ...zhHansWidgetsGuide,
   ...zhHansDuo,
   ...zhHansMoneyIn,
+  ...zhHansPotsClose,
+  ...zhHansPotsPlan,
+  ...zhHansPots,
+  ...zhHansFirstCatch,
 };
 
 /**

@@ -7,6 +7,7 @@ import { sql as addPotMoveOpening } from '../../../db/migrations/0007-pot-move-o
 import { sql as addBillPayments } from '../../../db/migrations/0008-bill-kind-and-payments';
 import { sql as addSpendMemo } from '../../../db/migrations/0009-spend-memo';
 import { sql as addMoneyIn } from '../../../db/migrations/0010-money-in';
+import { sql as addJars } from '../../../db/migrations/0011-jars';
 import { createMoneyStore, type MoneyStore } from '../../../data/money-store';
 import type { SqlDatabase, SqlValue } from '../../../data/table';
 
@@ -24,6 +25,7 @@ export function openMemoryDb(): SqlDatabase {
   sqlite.exec(addBillPayments);
   sqlite.exec(addSpendMemo);
   sqlite.exec(addMoneyIn);
+  sqlite.exec(addJars);
   return {
     getAllAsync: <T>(source: string, params: SqlValue[]) =>
       Promise.resolve(sqlite.prepare(source).all(...params) as T[]),

@@ -22,4 +22,6 @@ export const thExport: { readonly [Key in keyof typeof enExport]: string } = {
   'export.csv.currency': 'สกุลเงิน',
   'export.csv.yes': 'ใช่',
   'export.csv.no': 'ไม่ใช่',
+  'export.csv.fromJar': 'จากโหล {jar}',
+  'export.csv.fromJarPart': 'จากโหล {jar}: {amount}',
 };

@@ -9,7 +9,7 @@ import {
 import { receiptReadingOrder } from '../capture/bank-receipt';
 import { currencyAt } from '../capture/photo-place';
 import { readReceipt } from '../capture/read-receipt';
-import { BANKS } from '../vietqr/bank-catalogue';
+import { alertPackages } from '../capture/bank-alert-senders';
 import { contextMoney } from './context-money';
 import { buildBankAlert } from './log-bank-alert';
 import { buildLogSpend } from './log-spend';
@@ -129,7 +129,11 @@ export function shareLook(
     const merged = look.success
       ? mergeLook(read, look.data, receiptReadingOrder(lines), home)
       : read;
-    return JSON.stringify({ ...cardOf(merged, lines, context, now), needsCheck: false });
+    return JSON.stringify({
+      ...cardOf(merged, lines, context, now),
+      needsCheck: false,
+      looked: true,
+    });
   } catch {
     return JSON.stringify(emptyCard(now));
   }
@@ -253,10 +257,10 @@ export function logBankAlert(
 
 /**
  * The Android packages whose notifications are read as bank and wallet alerts, as a JSON array:
- * every bank and wallet in the catalogue with an app on Google Play. Android's notification
- * listener reads nothing from any other app.
+ * every bank and wallet in Vietnam's catalogue with an app on Google Play, then the banks and
+ * wallets of the other countries whose notifications are payments (never a chat or super-app).
+ * Android's notification listener reads nothing from any other app.
  */
 export function alertApps(): string {
-  const packages = BANKS.flatMap((bank) => (bank.android ? [bank.android.package] : []));
-  return JSON.stringify([...new Set(packages)]);
+  return JSON.stringify(alertPackages());
 }

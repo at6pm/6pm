@@ -95,7 +95,7 @@ export const esToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'quick.keep': 'Guardarlo',
   'details.title': 'Detalles',
   'details.edit': 'Editar',
-  'details.pot': 'Hucha',
+  'details.pot': 'Frasco',
   'details.freeMoney': 'Dinero libre',
   'details.claimBack': 'Reembolso',
   'details.paidWith': 'Pagado con',

@@ -84,7 +84,7 @@ export const thToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'quick.keep': 'เก็บไว้',
   'details.title': 'รายละเอียด',
   'details.edit': 'แก้ไข',
-  'details.pot': 'กระปุก',
+  'details.pot': 'โหล',
   'details.freeMoney': 'เงินใช้ได้อิสระ',
   'details.claimBack': 'เบิกคืน',
   'details.paidWith': 'จ่ายด้วย',

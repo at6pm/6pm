@@ -34,7 +34,9 @@ import type { MoneyStore } from '../../data/money-store';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
+import { jarName } from '../pots/jar-name';
 import { useDiaryRequest } from '../today/diary-request';
+import { useFromJarLabel } from '../today/use-spend-rows';
 import { useDiaryDates } from './diary-dates';
 import type { DayReceiptView } from './day-receipt';
 
@@ -90,6 +92,7 @@ export function useDiary() {
   const money = useMoneyFormat();
   const { currency } = money;
   const dates = useDiaryDates();
+  const fromJar = useFromJarLabel();
   const current = monthOf(today);
   const monday = startOfWeek(today);
   const [paged, setPaged] = useState<string | null>(null);
@@ -134,6 +137,8 @@ export function useDiary() {
               forWork: s.forWork,
               paysBill: s.paysBill,
               direction: s.direction,
+              fromPot: s.fromPot,
+              fromPotAmount: s.fromPotAmount,
             })),
             notDaily,
             { from: spanFrom, to: today },
@@ -212,12 +217,13 @@ export function useDiary() {
   // What money in that day became, on the line under it.
   const moneyInNote = (s: SpendRow): string => {
     switch (s.moneyIn) {
-      case 'saved':
+      case 'saved': {
+        // Saved with no jar named went to Future you's jar; Future you is named in this language.
+        const pot = pots.find((p) => p.id === s.savedTo);
         return t('moneyIn.diary.saved', {
-          pot:
-            pots.find((p) => p.id === s.savedTo)?.name.toLocaleUpperCase() ??
-            t('moneyIn.goesTo.futureYou').toLocaleUpperCase(),
+          pot: (pot ? jarName(pot, t) : t('pots.futureYou')).toLocaleUpperCase(),
         });
+      }
       case 'pay':
         return t('moneyIn.diary.pay');
       case 'refund':
@@ -257,6 +263,10 @@ export function useDiary() {
                 : {}),
             };
           }),
+          jars: receiptData.jars.map((j) => ({
+            name: fromJar(j.potId).toLocaleUpperCase(),
+            amount: j.amount,
+          })),
           moneyIn: receiptData.moneyIn.map((s) => ({
             time: dates.clock(s.at),
             name: (s.merchant || t('moneyIn.name')).toLocaleUpperCase(),

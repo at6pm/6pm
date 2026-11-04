@@ -23,4 +23,6 @@ export const koExport: { readonly [Key in keyof typeof enExport]: Entry } = {
   'export.csv.currency': '통화',
   'export.csv.yes': '예',
   'export.csv.no': '아니요',
+  'export.csv.fromJar': '{jar} 저금통에서',
+  'export.csv.fromJarPart': '{jar} 저금통에서: {amount}',
 };

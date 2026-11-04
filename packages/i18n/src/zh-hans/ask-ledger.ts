@@ -46,7 +46,7 @@ export const zhHansAskLedger: { readonly [Key in keyof typeof enAskLedger]: Entr
   'ask.answer.goalPace.years': {
     other: '每月给未来的你存 {monthly}，{what} 的 {amount} 大约要 {count} 年，{month}左右能存够。',
   },
-  'ask.answer.goalPace.note': '为它单独建一个存钱罐，这笔钱就能和其他钱分开。',
+  'ask.answer.goalPace.note': '为它单独建一个罐子，这笔钱就能和其他钱分开。',
   'ask.answer.goalNoPace':
     '目前每月还没有给未来的你存钱，所以没法算出 {what} 的 {amount} 要存多久。每月存一点，就有节奏了。',
   'ask.answer.goalAmount': '{what} 大概要多少钱？告诉我价格，比如“{example}”，我来帮你算。',

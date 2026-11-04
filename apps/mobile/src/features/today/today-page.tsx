@@ -24,6 +24,7 @@ import { useHomePageScroll, useHomeScroll } from '../home/home-scroll';
 import { PullDetector, useOverscrollPull } from '../home/overscroll-pull';
 import { CompanionGreeting } from './companion-greeting';
 import { requestDiaryDay } from './diary-request';
+import { FirstCatchCard } from './first-catch-card';
 import { PullToAdd, usePullToAdd } from './pull-to-add';
 import { TodayHero } from './today-hero';
 import { TodayList } from './today-list';
@@ -32,6 +33,7 @@ import { useSpendLabels } from './use-spend-rows';
 import { TonightCard } from './tonight-card';
 import { useOpenAsk, useOpenSpend } from '../duo/spread-pane';
 import { useTryingOn } from '../looks/look-settings-provider';
+import { JarShelf } from '../pots/shelf';
 
 /**
  * Today: the hero over the sky, then the sheet that holds the companion, tonight's card, the week
@@ -156,6 +158,7 @@ export function TodayPage({
                 onPress={() => openAsk()}
               />
             ) : null}
+            <FirstCatchCard />
             <TonightCard
               moment={view.moment}
               closeAt={snap.plan?.closeAt ?? '18:00'}
@@ -171,6 +174,7 @@ export function TodayPage({
               onOpenDay={openWeekDay}
               onOpenReceipt={() => showDiary(snap.today)}
             />
+            <JarShelf />
             <TodayList
               rows={view.rows}
               waiting={view.queue.length}

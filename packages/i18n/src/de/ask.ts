@@ -1,13 +1,13 @@
 import type { Entry } from '../catalogue-types';
 import type { enAsk } from '../en-ask';
 
-// "Can I afford" is "ist … drin?", the everyday German for it. Pot names sit in „ “ after "Spartopf".
+// "Can I afford" is "ist … drin?", the everyday German for it. Pot names sit in „ “ after "Glas".
 export const deAsk: { readonly [Key in keyof typeof enAsk]: Entry } = {
   'ask.title': 'Frag 6pm',
   'ask.sub': 'Was drin ist, was wäre wenn, wann es reicht',
   'ask.back': 'Zurück',
   'ask.intro':
-    'Frag, was drin ist, wie eine große Ausgabe deine Tage verändert oder wann ein Spartopf voll ist. Ich zeig dir die Rechnung.',
+    'Frag, was drin ist, wie eine große Ausgabe deine Tage verändert oder wann ein Glas voll ist. Ich zeig dir die Rechnung.',
   'ask.try': 'Probier',
   'ask.placeholder': 'Frag oder sag es einfach …',
   'ask.send': 'Senden',
@@ -34,17 +34,17 @@ export const deAsk: { readonly [Key in keyof typeof enAsk]: Entry } = {
   'ask.row.tomorrow': 'Morgen',
   'ask.row.futureYou': 'Zukunfts-Ich pro Monat',
   'ask.row.moving': 'Mehr zurücklegen',
-  'ask.row.inPot': 'Im Spartopf',
-  'ask.row.goal': 'Ziel',
+  'ask.row.inPot': 'Im Glas',
+  'ask.row.goal': 'Zielbetrag',
   'ask.row.perMonth': 'Pro Monat',
   'ask.answer.fitsToday':
     'Ja, locker. Das passt in die {safe} von heute, morgen ändert sich nichts.',
   'ask.answer.fits': 'Ja. Die Tage danach gehen bis zum Zahltag von {from} auf {to}.',
   'ask.answer.tight': 'Geht, aber es wird knapp: Die Tage danach sinken von {from} auf {to}.',
-  'ask.answer.tight.pots': 'Nimmst du {take} aus deinen Spartöpfen, bleiben {withPots} pro Tag.',
+  'ask.answer.tight.pots': 'Nimmst du {take} aus deinen Gläsern, bleiben {withPots} pro Tag.',
   'ask.answer.notThisMonth':
     'Diesen Monat nicht. Das ist mehr als dein ganzes freies Geld. Nach dem Zahltag am {payday} passt es.',
-  'ask.answer.notThisMonth.pots': 'Oder nimm einen Teil aus einem Spartopf.',
+  'ask.answer.notThisMonth.pots': 'Oder nimm einen Teil aus einem Glas.',
   'ask.answer.weekend.two':
     'Etwa {total} für {first} und {second}, wenn die Tage davor nach Plan laufen.',
   'ask.answer.weekend.one': 'Etwa {total} für {first}, wenn die Tage davor nach Plan laufen.',
@@ -54,18 +54,17 @@ export const deAsk: { readonly [Key in keyof typeof enAsk]: Entry } = {
     'Legst du {amount} mehr für Zukunfts-Ich zurück, kostet das bis zum Zahltag etwa {perDay} pro Tag.',
   'ask.answer.saveMore.none': '{amount} mehr für Zukunfts-Ich würde deine Tage kaum verändern.',
   'ask.answer.saveMore.note': 'Das geht im Plan.',
-  'ask.answer.potFull': 'Mit {monthly} im Monat ist der Spartopf „{pot}“ bis {month} voll.',
-  'ask.answer.potFull.done': 'Der Spartopf „{pot}“ ist schon voll.',
+  'ask.answer.potFull': 'Mit {monthly} im Monat ist dein Glas „{pot}“ bis {month} voll.',
+  'ask.answer.potFull.done': 'Dein Glas „{pot}“ ist schon voll.',
   'ask.answer.potFull.idle':
-    'Gerade fließt monatlich nichts in den Spartopf „{pot}“, er füllt sich also nicht von selbst.',
+    'Gerade fließt monatlich nichts in dein Glas „{pot}“, es füllt sich also nicht von selbst.',
   'ask.answer.noSuchPot':
-    'Ich finde keinen Spartopf „{pot}“. Frag nach einem von deinen oder leg ihn im Plan an.',
-  'ask.answer.noPots':
-    'Noch kein Spartopf da. Leg einen im Plan an, und ich sag dir, wann er voll ist.',
+    'Ich finde kein Glas „{pot}“. Frag nach einem von deinen oder leg es im Plan an.',
+  'ask.answer.noPots': 'Noch kein Glas da. Leg eins im Plan an, und ich sag dir, wann es voll ist.',
   'ask.answer.today': 'Heute kannst du {safe} ausgeben. Die Zahl für morgen: {tomorrow}.',
   'ask.answer.today.used': 'Die Zahl für heute ist aufgebraucht. Morgen sind es {tomorrow}.',
   'ask.answer.help':
-    'Ich sag dir, was drin ist, wie eine große Ausgabe deine Tage verändert oder wann ein Spartopf voll ist. Probier: „Sind {amount} am Samstag drin?“',
+    'Ich sag dir, was drin ist, wie eine große Ausgabe deine Tage verändert oder wann ein Glas voll ist. Probier: „Sind {amount} am Samstag drin?“',
   'ask.error': 'Da ist was schiefgelaufen, ich konnte das nicht beantworten. Versuch es noch mal.',
   'ask.answer.offline':
     'Ich erreiche den Server nicht, darum verstehe ich gerade nur einfache Fragen.',

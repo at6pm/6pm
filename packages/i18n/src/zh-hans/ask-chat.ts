@@ -6,7 +6,7 @@ export const zhHansAskChat: { readonly [Key in keyof typeof enAskChat]: Entry } 
   'ask.chat.greeting.soft': '嗨！想看看钱的情况，随时找我。',
   'ask.chat.greeting.cheeky': '嘿嘿。钱的事尽管问，你的数字都在我这儿。',
   'ask.chat.greeting.roast': '哦，是你啊。来问情况有多糟？',
-  'ask.chat.greeting.plain': '你好。可以问我关于支出、账单或存钱罐的问题。',
+  'ask.chat.greeting.plain': '你好。可以问我关于支出、账单或罐子的问题。',
   'ask.chat.thanks.soft': '不客气。今天也要好好照顾自己。',
   'ask.chat.thanks.cheeky': '不客气！按时日结就当付我工钱了。',
   'ask.chat.thanks.roast': '别谢我。谢谢那个你差点就守住的预算吧。',
@@ -18,7 +18,7 @@ export const zhHansAskChat: { readonly [Key in keyof typeof enAskChat]: Entry } 
   'ask.chat.identity':
     '我是你在 6pm 里的小伙伴。我给你的每个数字，都是在你的手机上根据你自己的支出算出来的。我是程序，不是真人。',
   'ask.chat.privacy':
-    '我看不到你的银行账户。我只知道 6pm 里的内容，而这些都留在你的手机上。为了读懂一个问题，我们的服务器会看到这个问题，以及你的分类和存钱罐名称；为了写一句话，只会用到其中的几条信息。',
+    '我看不到你的银行账户。我只知道 6pm 里的内容，而这些都留在你的手机上。为了读懂一个问题，我们的服务器会看到这个问题，以及你的分类和罐子名称；为了写一句话，只会用到其中的几条信息。',
   'ask.chat.venting.soft': '听起来好沉重。你不是一个人在扛。',
   'ask.chat.venting.cheeky': '这把有点难。深呼吸：这只是个数字，不是判决书。',
   'ask.chat.venting.plain': '为钱发愁，是真实的压力。',
@@ -43,7 +43,7 @@ export const zhHansAskChat: { readonly [Key in keyof typeof enAskChat]: Entry } 
   'ask.chat.distress':
     '很抱歉你现在这么难受。你不必一个人扛：和你信任的人聊一聊，或者拨打 Ngày Mai 心理热线 096 306 1414（周三至周日，13:00 至 20:30）。如果你现在有危险，请拨打 115。',
   'ask.chat.investing':
-    '我没法告诉你该投资什么、什么时候投；这需要持牌顾问。我可以告诉你每月能剩多少，或者存钱罐存得有多快。',
+    '我没法告诉你该投资什么、什么时候投；这需要持牌顾问。我可以告诉你每月能剩多少，或者罐子存得有多快。',
   'ask.chat.unsafe':
-    '这个我不能帮你。如果手头紧，我可以告诉你到发薪日还剩多少，或者你的存钱罐能顶上多少。如果有非法放贷人在威胁你，请拨打 113 报警。',
+    '这个我不能帮你。如果手头紧，我可以告诉你到发薪日还剩多少，或者你的罐子能顶上多少。如果有非法放贷人在威胁你，请拨打 113 报警。',
 };

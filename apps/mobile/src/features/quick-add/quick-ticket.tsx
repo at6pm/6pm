@@ -5,6 +5,7 @@ import type { MoneyParts } from '@6pm/domain';
 import { moneyInInk } from '@6pm/theme';
 
 import { CategoryTile } from '../../ui/category-tile';
+import { ChoiceMenu, type MenuChoice } from '../../ui/primitives/choice-menu';
 import type { SymbolName } from '../../ui/icons/symbols.generated';
 import { DashedRule } from '../../ui/dashed-rule';
 import { FitWidth } from '../../ui/layout/fit-width';
@@ -34,6 +35,8 @@ export function QuickTicket({
   hue,
   categoryLine,
   incoming = false,
+  mark = null,
+  lineMenu,
 }: {
   readonly heading: string;
   readonly stamp: string;
@@ -49,6 +52,15 @@ export function QuickTicket({
   readonly categoryLine: string;
   /** Money said to have come in: the amount prints green, with its "+". */
   readonly incoming?: boolean;
+  /** A spend from a jar: the hint's mark, in the jar's colour. */
+  readonly mark?: string | null;
+  /** The category line opens this menu (which wallet paid). */
+  readonly lineMenu?: {
+    readonly label: string;
+    readonly choices: readonly MenuChoice[];
+    readonly selected: string;
+    readonly onSelect: (key: string) => void;
+  };
 }) {
   const { palette } = useTheme();
   return (
@@ -88,7 +100,22 @@ export function QuickTicket({
               }}
             />
           </FitWidth>
-          <Text style={{ ...mono(11.5), minHeight: 16, color: 'rgba(35,26,36,.55)' }}>{hint}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 16 }}>
+            {mark ? (
+              <View
+                style={{
+                  width: 10,
+                  height: 13,
+                  borderTopLeftRadius: 3,
+                  borderTopRightRadius: 3,
+                  borderBottomLeftRadius: 4,
+                  borderBottomRightRadius: 4,
+                  backgroundColor: mark,
+                }}
+              />
+            ) : null}
+            <Text style={{ ...mono(11.5), color: 'rgba(35,26,36,.55)' }}>{hint}</Text>
+          </View>
         </View>
         <DashedRule color="rgba(35,26,36,.18)" width={1.5} />
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 52 }}>
@@ -102,9 +129,22 @@ export function QuickTicket({
               returnKeyType="done"
               style={{ fontSize: 17, fontWeight: '600', color: INK, padding: 0 }}
             />
-            <Text numberOfLines={1} style={{ ...body(12.5), color: 'rgba(35,26,36,.55)' }}>
-              {categoryLine}
-            </Text>
+            {lineMenu ? (
+              <ChoiceMenu
+                label={lineMenu.label}
+                choices={lineMenu.choices}
+                selected={lineMenu.selected}
+                onSelect={lineMenu.onSelect}
+              >
+                <Text numberOfLines={1} style={{ ...body(12.5), color: 'rgba(35,26,36,.55)' }}>
+                  {categoryLine}
+                </Text>
+              </ChoiceMenu>
+            ) : (
+              <Text numberOfLines={1} style={{ ...body(12.5), color: 'rgba(35,26,36,.55)' }}>
+                {categoryLine}
+              </Text>
+            )}
           </View>
         </View>
       </View>

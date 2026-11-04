@@ -44,6 +44,8 @@ export function CloseReceipt(props: {
   readonly no: string;
   readonly dateLine: string;
   readonly rows: readonly ReceiptLine[];
+  /** "FROM ĐÀ LẠT −1.200.000": what each jar took back off the lines above (M13). */
+  readonly jars: readonly { readonly name: string; readonly amount: number }[];
   readonly claimBack: { readonly name: string; readonly amount: number } | null;
   readonly total: number;
   readonly tomorrow: number;
@@ -157,6 +159,16 @@ export function CloseReceipt(props: {
                 </Text>
                 <Text style={{ ...mono(12.5), ...tabular, color: INK }}>
                   {money.number(r.amount)}
+                </Text>
+              </View>
+            ))}
+            {props.jars.map((jar, i) => (
+              <View key={`jar-${i}`} style={{ flexDirection: 'row', gap: 10 }}>
+                <Text numberOfLines={1} style={{ ...mono(12.5), color: SOFT, flex: 1 }}>
+                  {jar.name}
+                </Text>
+                <Text style={{ ...mono(12.5), ...tabular, color: SOFT }}>
+                  −{money.number(jar.amount)}
                 </Text>
               </View>
             ))}

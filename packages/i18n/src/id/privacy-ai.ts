@@ -29,7 +29,7 @@ export const idPrivacyAi: { readonly [Key in keyof typeof enPrivacyAi]: Entry } 
   'settings.ai.server': 'Di server kami',
   'settings.ai.device': 'Di iPhone ini',
   'privacy.leaves.title': 'Yang keluar dari ponselmu',
-  'privacy.leaves.server.ask': 'Pertanyaan, dengan nama kategori dan celenganmu, untuk membacanya',
+  'privacy.leaves.server.ask': 'Pertanyaan, dengan nama kategori dan toplesmu, untuk membacanya',
   'privacy.leaves.server.lines': 'Beberapa fakta dalam satu kalimat temanmu',
   'privacy.leaves.server.receipts': 'Foto struk yang tidak bisa dibaca ponselmu',
   'privacy.leaves.server.voice': 'Suaramu saat bicara, untuk diubah jadi teks',

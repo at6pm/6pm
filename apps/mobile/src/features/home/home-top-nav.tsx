@@ -10,8 +10,6 @@ import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { AmountText } from '../quick-add/amount-text';
 import { shortParts } from '../quick-add/typed-amount';
-import { PLAN_SECTIONS } from '../plan/plan-page';
-import { haptics } from '../../ui/haptics';
 import { useDesignInsets } from '../../ui/layout/design-insets';
 import { Symbol } from '../../ui/icons/symbol';
 import { PressScale } from '../../ui/primitives/press-scale';
@@ -31,8 +29,6 @@ export const HomeTopNav = memo(function HomeTopNav({
   day,
   onPressTop,
   onQuickAdd,
-  planSection,
-  onPlanSection,
 }: {
   /** What the bar leaves clear on the right (see `TopNav`). */
   readonly edge: number;
@@ -40,8 +36,6 @@ export const HomeTopNav = memo(function HomeTopNav({
   readonly day: DailyNumber;
   readonly onPressTop: () => void;
   readonly onQuickAdd: () => void;
-  readonly planSection: number;
-  readonly onPlanSection: (index: number) => void;
 }) {
   const { palette } = useTheme();
   const { t, language } = useI18n();
@@ -126,39 +120,6 @@ export const HomeTopNav = memo(function HomeTopNav({
           {tab === 'plan' ? t('plan.daysToPayday', { count: daysLeft }) : month}
         </Text>
       </View>
-      {tab === 'plan' ? (
-        <View
-          accessibilityRole="tablist"
-          style={{ flexDirection: 'row', gap: 6, justifyContent: 'center' }}
-        >
-          {PLAN_SECTIONS.map((section, k) => {
-            const on = k === planSection;
-            return (
-              <PressScale
-                key={section}
-                accessibilityRole="tab"
-                accessibilityState={{ selected: on }}
-                hitSlop={{ top: 7, bottom: 7 }}
-                onPress={() => {
-                  if (!on) haptics.tick();
-                  onPlanSection(k);
-                }}
-                style={{
-                  height: 30,
-                  paddingHorizontal: 12,
-                  borderRadius: 99,
-                  backgroundColor: on ? palette.btnBg : palette.chipBg,
-                  justifyContent: 'center',
-                }}
-              >
-                <Text style={{ ...body(13, 600), color: on ? palette.btnFg : palette.ink }}>
-                  {t(section === 'overview' ? 'plan.section.overview' : `plan.river.${section}`)}
-                </Text>
-              </PressScale>
-            );
-          })}
-        </View>
-      ) : null}
     </TopNav>
   );
 });

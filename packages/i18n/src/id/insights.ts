@@ -2,7 +2,7 @@ import type { Entry } from '../catalogue-types';
 import type { enInsights } from '../en-insights';
 
 // The companion says "aku" for itself and "kamu" for you, casual Jakarta texting with nih, deh, ya.
-// The day's limit is "batas"; a pot is a "celengan"; closing the day is "tutup hari".
+// The day's limit is "batas"; a jar is a "toples"; closing the day is "tutup hari".
 export const idInsights: { readonly [Key in keyof typeof enInsights]: Entry } = {
   'insight.compare.muchMore': 'jauh lebih banyak',
   'insight.compare.more': 'lebih banyak',
@@ -189,22 +189,21 @@ export const idInsights: { readonly [Key in keyof typeof enInsights]: Entry } = 
   'insight.weekOver.roast.2': 'Lewat {over}. Minggu untuk dilupakan, bulan untuk memperbaiki.',
   'insight.weekOver.plain': 'Hari-hari yang ditutup minggu ini lewat {over} dari batas.',
 
-  'insight.potMilestone.soft.1': 'Celengan {pot} sudah lewat {percent}%. Lihat, makin besar.',
+  'insight.potMilestone.soft.1': 'Toples {pot} sudah lewat {percent}%. Lihat, makin besar.',
   'insight.potMilestone.soft.2': 'Sudah {percent}% menuju {pot}.',
   'insight.potMilestone.cheeky.1': '{pot}: {percent}% jalan. Beneran kejadian.',
   'insight.potMilestone.cheeky.2': '{percent}% dari {pot}, beres. Terus diisi ya.',
-  'insight.potMilestone.roast.1': 'Celengan {pot} di {percent}%. Celengannya menang. Biarkan saja.',
+  'insight.potMilestone.roast.1': 'Toples {pot} di {percent}%. Toplesnya menang. Biarkan saja.',
   'insight.potMilestone.roast.2': '{percent}% menuju {pot}. Jangan dibobol.',
-  'insight.potMilestone.plain': 'Celengan {pot} sudah lewat {percent}% dari target.',
+  'insight.potMilestone.plain': 'Toples {pot} sudah lewat {percent}% dari target.',
 
-  'insight.potFull.soft.1': 'Celengan {pot} penuh. Kamu yang bikin itu.',
+  'insight.potFull.soft.1': 'Toples {pot} penuh. Kamu yang bikin itu.',
   'insight.potFull.soft.2': '{pot}: selesai. Nikmati sepenuhnya, ya.',
-  'insight.potFull.cheeky.1': 'Celengan {pot} penuh! Konfeti, tapi pelan-pelan.',
+  'insight.potFull.cheeky.1': 'Toples {pot} penuh! Konfeti, tapi pelan-pelan.',
   'insight.potFull.cheeky.2': '{pot}, terisi sampai penuh.',
-  'insight.potFull.roast.1':
-    'Celengan {pot} penuh. Aku sudah siapin lelucon; ternyata nggak perlu.',
-  'insight.potFull.roast.2': 'Celengan penuh: {pot}. Sekarang pakai untuk tujuannya.',
-  'insight.potFull.plain': 'Celengan {pot} sudah mencapai target.',
+  'insight.potFull.roast.1': 'Toples {pot} penuh. Aku sudah siapin lelucon; ternyata nggak perlu.',
+  'insight.potFull.roast.2': 'Toples penuh: {pot}. Sekarang pakai untuk tujuannya.',
+  'insight.potFull.plain': 'Toples {pot} sudah penuh.',
 
   'insight.workToClaim.soft.1': {
     other: '{count} pengeluaran kantor ({amount}) bisa diklaim.',

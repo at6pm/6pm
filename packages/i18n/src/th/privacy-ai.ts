@@ -28,7 +28,7 @@ export const thPrivacyAi: { readonly [Key in keyof typeof enPrivacyAi]: Entry } 
   'settings.ai.server': 'บนเซิร์ฟเวอร์ของเรา',
   'settings.ai.device': 'บน iPhone เครื่องนี้',
   'privacy.leaves.title': 'อะไรบ้างที่ออกจากโทรศัพท์',
-  'privacy.leaves.server.ask': 'คำถาม พร้อมชื่อหมวดหมู่และชื่อกระปุก เพื่อให้เข้าใจคำถาม',
+  'privacy.leaves.server.ask': 'คำถาม พร้อมชื่อหมวดหมู่และชื่อโหล เพื่อให้เข้าใจคำถาม',
   'privacy.leaves.server.lines': 'ข้อมูลไม่กี่อย่างในคำพูดหนึ่งประโยคของเพื่อนคู่ใจ',
   'privacy.leaves.server.receipts': 'รูปใบเสร็จที่โทรศัพท์อ่านเองไม่ได้',
   'privacy.leaves.server.voice': 'เสียงของคุณขณะพูด เพื่อแปลงเป็นข้อความ',

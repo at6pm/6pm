@@ -4,3 +4,4 @@ export * from './look-types';
 export * from './motion';
 export * from './oklch';
 export * from './paper-inks';
+export * from './catch-inks';

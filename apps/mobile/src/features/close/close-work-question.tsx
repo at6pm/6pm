@@ -65,7 +65,7 @@ export interface SlipLine {
   readonly struck?: boolean;
 }
 
-function SlipText({ line }: { readonly line: SlipLine }) {
+export function SlipText({ line }: { readonly line: SlipLine }) {
   const money = useMoneyFormat();
   const ink = line.plus ? moneyInInk.paper : '#2b2530';
   return (

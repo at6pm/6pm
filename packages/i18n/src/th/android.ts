@@ -48,7 +48,7 @@ export const thAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'max.terms.storeOff': 'ตอนนี้ยังซื้อ Max ไม่ได้: Google Play ไม่ตอบสนอง',
   'max.sub.backup': 'สำรองข้อมูลแบบเข้ารหัส ประวัติทั้งหมด CSV และ Sheets',
   'max.note.backup': 'สำรองข้อมูลแบบเข้ารหัส CSV และ Sheets',
-  'max.welcome.win.more': 'กระปุก โหมดเดินทาง และสมุดประจำปี',
+  'max.welcome.win.more': 'โหล โหมดเดินทาง และสมุดประจำปี',
 
   'privacy.ai.device.title': 'บนโทรศัพท์เครื่องนี้เท่านั้น',
   'privacy.ai.device.unavailable': 'บน Android 6pm ไม่มีโมเดลที่รันบนเครื่องได้',

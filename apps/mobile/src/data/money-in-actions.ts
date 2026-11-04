@@ -1,13 +1,13 @@
 import { randomUUID } from 'expo-crypto';
 
-import { FUTURE_YOU, futureYouSplit, type MoneyIn, type SpendRow } from '@6pm/domain';
+import { FUTURE_YOU, futureYouSavedSplit, type MoneyIn, type SpendRow } from '@6pm/domain';
 
 import type { MoneyStore } from './money-store';
 
 /** Where the close puts money that came in. */
 export interface MoneyInPlace {
   readonly moneyIn: MoneyIn;
-  /** For `saved`: a pot's id, or `FUTURE_YOU` for Future you's goals by their shares. */
+  /** For `saved`: a jar's id, or `FUTURE_YOU` for Future you (`futureYouSavedSplit`). */
   readonly savedTo?: string | null;
   /** For `refund` and `payback`: the spend it answers. */
   readonly givesBack?: string | null;
@@ -33,12 +33,7 @@ export function moneyInActions(store: MoneyStore, helpers: Helpers) {
 
   const savedSplit = (amount: number, savedTo: string): Readonly<Record<string, number>> => {
     const live = store.getSnapshot().pots.filter((p) => p.archivedAt === null);
-    if (savedTo === FUTURE_YOU) {
-      return futureYouSplit(
-        amount,
-        live.filter((p) => p.kind === 'goal'),
-      );
-    }
+    if (savedTo === FUTURE_YOU) return futureYouSavedSplit(amount, live);
     return live.some((p) => p.id === savedTo) ? { [savedTo]: amount } : {};
   };
 

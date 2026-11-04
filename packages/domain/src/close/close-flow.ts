@@ -24,9 +24,11 @@ export type CloseStep =
   | 'sorted'
   | 'cash'
   | 'bill'
+  | 'pot'
   | 'money'
   | 'moneyCards'
   | 'question'
+  | 'potReady'
   | 'receipt'
   | 'reveal'
   | 'done';
@@ -46,6 +48,11 @@ export interface CloseCard {
    * The close asks once.
    */
   readonly askBill?: string;
+  /**
+   * The spend falls in a dated pot that is due (its id): the close asks "From your {pot}?" once
+   * when kept (M13).
+   */
+  readonly askPot?: string;
   /** Money that came in: decided by spreading or saving it, not keeping. */
   readonly moneyIn?: boolean;
   /** Money in that looks like the pay, a refund or a payback: asked about, never carded first. */
@@ -64,10 +71,15 @@ export interface CloseState {
   readonly workAnswered: boolean;
   /** Bill questions answered, by card id: true when the spend paid it. */
   readonly billAnswers: Readonly<Record<string, boolean>>;
+  /** Pot questions answered, by card id: true when the spend came from the pot. */
+  readonly potAnswers: Readonly<Record<string, boolean>>;
   /** Money questions answered, by card id: true when it was what it looked like. */
   readonly moneyAnswers: Readonly<Record<string, boolean>>;
   /** Money in carded by the questions (the pay's extra, or a no), in the order they came. */
   readonly moneyCards: readonly CloseCard[];
+  /** A pot that reached its target or due month and is celebrated before the receipt, or null. */
+  readonly readyPot: string | null;
+  readonly readyPotShown: boolean;
   readonly paused: boolean;
 }
 
@@ -78,6 +90,7 @@ export type CloseEvent =
   | { readonly type: 'sortedShown' }
   | { readonly type: 'cashDone' }
   | { readonly type: 'answerBill'; readonly id: string; readonly paid: boolean }
+  | { readonly type: 'answerPot'; readonly id: string; readonly fromPot: boolean }
   /**
    * A money question answered. A yes to the pay may bring its `extra` (a new card's id): money
    * beyond the plan, placed next. A no makes the money an ordinary card.
@@ -89,12 +102,16 @@ export type CloseEvent =
       readonly extra?: string | undefined;
     }
   | { readonly type: 'answerWork' }
+  | { readonly type: 'potReadyDone' }
   | { readonly type: 'receiptDone' }
   | { readonly type: 'finish' }
   | { readonly type: 'pause' }
   | { readonly type: 'resume' };
 
-export function startClose(cards: readonly CloseCard[]): CloseState {
+export function startClose(
+  cards: readonly CloseCard[],
+  options?: { readonly readyPot?: string | null },
+): CloseState {
   const swiped = cards.filter((card) => card.askMoney === undefined);
   return {
     step: swiped.length > 0 ? 'cards' : 'cash',
@@ -104,8 +121,11 @@ export function startClose(cards: readonly CloseCard[]): CloseState {
     sweep: cards.length === 0,
     workAnswered: false,
     billAnswers: {},
+    potAnswers: {},
     moneyAnswers: {},
     moneyCards: [],
+    readyPot: options?.readyPot ?? null,
+    readyPotShown: false,
     paused: false,
   };
 }
@@ -149,6 +169,22 @@ export function billQuestion(state: CloseState): CloseCard | null {
   );
 }
 
+/**
+ * The next card the close asks "From your {pot}?" about, or null when none is left. A spend that
+ * was not mine or paid a bill is never asked.
+ */
+export function potQuestion(state: CloseState): CloseCard | null {
+  return (
+    state.cards.find(
+      (card) =>
+        card.askPot !== undefined &&
+        state.verdicts[card.id] !== 'notMine' &&
+        state.billAnswers[card.id] !== true &&
+        state.potAnswers[card.id] === undefined,
+    ) ?? null
+  );
+}
+
 /** The next money in the close asks about ("Is this your pay?"), or null when none is left. */
 export function moneyQuestion(state: CloseState): CloseCard | null {
   return (
@@ -158,28 +194,37 @@ export function moneyQuestion(state: CloseState): CloseCard | null {
   );
 }
 
-/** A spend that paid a bill is not spending, so it is never asked about as work. */
+/** A spend that paid a bill or came out of a pot is not daily spending, so it is never asked about as work. */
 function needsWorkQuestion(state: CloseState): boolean {
   if (state.workAnswered) return false;
   return state.cards.some(
     (card) =>
       card.askWork === true &&
       state.verdicts[card.id] !== 'notMine' &&
-      state.billAnswers[card.id] !== true,
+      state.billAnswers[card.id] !== true &&
+      state.potAnswers[card.id] !== true,
   );
+}
+
+function needsPotReady(state: CloseState): boolean {
+  return state.readyPot !== null && !state.readyPotShown;
 }
 
 /** Where the close goes after the cash step, each answer and the last money card. */
 function afterCash(state: CloseState): CloseState {
   const step = billQuestion(state)
     ? 'bill'
-    : moneyQuestion(state)
-      ? 'money'
-      : remainingMoneyCards(state).length > 0
-        ? 'moneyCards'
-        : needsWorkQuestion(state)
-          ? 'question'
-          : 'receipt';
+    : potQuestion(state)
+      ? 'pot'
+      : moneyQuestion(state)
+        ? 'money'
+        : remainingMoneyCards(state).length > 0
+          ? 'moneyCards'
+          : needsWorkQuestion(state)
+            ? 'question'
+            : needsPotReady(state)
+              ? 'potReady'
+              : 'receipt';
   return { ...state, step };
 }
 
@@ -208,7 +253,7 @@ export function closeReducer(state: CloseState, event: CloseEvent): CloseState {
       if (state.undoable === null) return state;
       const money = isMoneyCard(state, state.undoable);
       const from: readonly CloseStep[] = money
-        ? ['moneyCards', 'question', 'receipt']
+        ? ['moneyCards', 'question', 'potReady', 'receipt']
         : ['cards', 'sorted'];
       if (!from.includes(state.step)) return state;
       const { [state.undoable]: _undone, ...verdicts } = state.verdicts;
@@ -223,6 +268,13 @@ export function closeReducer(state: CloseState, event: CloseEvent): CloseState {
     case 'answerBill': {
       if (state.step !== 'bill' || billQuestion(state)?.id !== event.id) return state;
       return afterCash({ ...state, billAnswers: { ...state.billAnswers, [event.id]: event.paid } });
+    }
+    case 'answerPot': {
+      if (state.step !== 'pot' || potQuestion(state)?.id !== event.id) return state;
+      return afterCash({
+        ...state,
+        potAnswers: { ...state.potAnswers, [event.id]: event.fromPot },
+      });
     }
     case 'answerMoney': {
       if (state.step !== 'money' || moneyQuestion(state)?.id !== event.id) return state;
@@ -240,8 +292,10 @@ export function closeReducer(state: CloseState, event: CloseEvent): CloseState {
     }
     case 'answerWork':
       return state.step === 'question'
-        ? { ...state, workAnswered: true, undoable: null, step: 'receipt' }
+        ? afterCash({ ...state, workAnswered: true, undoable: null })
         : state;
+    case 'potReadyDone':
+      return state.step === 'potReady' ? { ...state, readyPotShown: true, step: 'receipt' } : state;
     case 'receiptDone':
       return state.step === 'receipt' ? { ...state, step: 'reveal' } : state;
     case 'finish':
@@ -268,7 +322,12 @@ export function stepPosition(step: CloseStep): { index: number; of: 5 } {
       ? 1
       : step === 'cash'
         ? 2
-        : step === 'bill' || step === 'money' || step === 'moneyCards' || step === 'question'
+        : step === 'bill' ||
+            step === 'pot' ||
+            step === 'money' ||
+            step === 'moneyCards' ||
+            step === 'question' ||
+            step === 'potReady'
           ? 3
           : step === 'receipt'
             ? 4

@@ -54,7 +54,7 @@ export const idAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'max.terms.storeOff': 'Max belum bisa dibeli sekarang: Google Play tidak merespons.',
   'max.sub.backup': 'Cadangan terenkripsi, riwayat lengkap, CSV dan Sheets.',
   'max.note.backup': 'Cadangan terenkripsi, CSV dan Sheets',
-  'max.welcome.win.more': 'Celengan, perjalanan, dan Buku tahunan',
+  'max.welcome.win.more': 'Toples, perjalanan, dan Buku tahunan',
 
   'privacy.ai.device.title': 'Hanya di ponsel ini',
   'privacy.ai.device.unavailable': 'Di Android, 6pm tidak punya model yang berjalan di ponsel.',

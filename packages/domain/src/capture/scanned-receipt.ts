@@ -37,7 +37,7 @@ export function lookedReceiptCard(
   const home = contextMoney(context).home;
   const read = readReceipt(lines, context.travel?.currency ?? null, null, home.code);
   const merged = mergeLook(read, look, receiptReadingOrder(lines), home);
-  return { ...cardOf(merged, lines, context, now), needsCheck: false };
+  return { ...cardOf(merged, lines, context, now), needsCheck: false, looked: true };
 }
 
 /** What the user changed on Scan's card before Save. */
@@ -76,7 +76,16 @@ export function scannedReceiptItem(
   );
   if (item === null) return null;
   const read = typed === null ? item : dropForeign({ ...item, amount: typed });
-  return split(read, edits, money.home);
+  // A total typed over what was read is a misreading (a split is not: it is the person's share).
+  const misread = typed !== null && typed !== card.amount;
+  const marked =
+    misread && read.receipt
+      ? {
+          ...read,
+          receipt: { ...read.receipt, read: { ...read.receipt.read, amount: card.amount } },
+        }
+      : read;
+  return split(marked, edits, money.home);
 }
 
 /** A typed home amount replaces the foreign total it was typed over. */

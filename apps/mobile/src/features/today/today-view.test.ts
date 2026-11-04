@@ -6,13 +6,15 @@ import {
   moneyFormat,
   moneyLocale,
   payCycleOn,
+  sumDayPart,
   type ClosedDayRow,
   type SpendRow,
 } from '@6pm/domain';
 
 import type { MoneySnapshot } from '../../data/money-store';
 import { openMemoryStore } from '../backup/test/memory-db';
-import { toRowViews, todayView, type Labels } from './today-view';
+import { countedSpendOf, jarLinesOf } from '../diary/jar-lines';
+import { spendTag, toRowViews, todayView, type Labels } from './today-view';
 
 const labels: Labels = {
   source: (s) => s,
@@ -153,5 +155,45 @@ describe('toRowViews', () => {
       labels,
     );
     expect(row?.foreign?.inHome).toBeNull();
+  });
+});
+
+describe('spendTag', () => {
+  const words = {
+    pending: 'PENDING',
+    toReview: 'TO REVIEW',
+    claimBack: 'CLAIM BACK',
+    notMine: 'NOT MINE',
+    bill: 'BILL',
+    moneyIn: 'MONEY IN',
+    fromJar: (potId: string) => `From ${potId}`,
+  };
+
+  it('labels a kept spend from a jar with the jar, after what still waits for a yes', () => {
+    const kept = { ...spend('hotel', '2026-10-11', 'kept'), fromPot: 'Đà Lạt' };
+    expect(spendTag(kept, words)).toBe('From Đà Lạt');
+    expect(spendTag({ ...kept, status: 'caught' }, words)).toBe('TO REVIEW');
+    expect(spendTag(spend('lunch', '2026-10-11', 'kept'), words)).toBeNull();
+  });
+});
+
+describe('jarLinesOf', () => {
+  it('takes what each jar covered off the day’s spends, so the lines add up to the day’s number', () => {
+    const spends = [
+      { ...spend('hotel', '2026-10-11', 'kept'), amount: 1_200_000, fromPot: 'dalat' },
+      {
+        ...spend('coffee', '2026-10-11', 'kept'),
+        amount: 50_000,
+        fromPot: 'dalat',
+        fromPotAmount: 30_000,
+      },
+      spend('lunch', '2026-10-11', 'kept'),
+      // Not mine: not spending, so its jar covers nothing.
+      { ...spend('gone', '2026-10-11', 'skipped'), fromPot: 'dalat' },
+    ];
+    const lines = jarLinesOf(spends, new Set(), (id) => `From ${id}`);
+    expect(lines).toEqual([{ potId: 'dalat', label: 'From dalat', amount: 1_230_000 }]);
+    const counted = 1_200_000 + 50_000 + 30_000;
+    expect(counted - 1_230_000).toBe(sumDayPart(spends.map(countedSpendOf), new Set()));
   });
 });

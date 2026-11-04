@@ -19,6 +19,9 @@ import { frInsightsHabits } from './insights-habits';
 import { frIntents } from './intents';
 import { frLooks } from './looks';
 import { frMoneyIn } from './money-in';
+import { frPotsClose } from './pots-close';
+import { frPotsPlan } from './pots-plan';
+import { frPots } from './pots';
 import { frNative } from './native';
 import { frOnboarding } from './onboarding';
 import { frPlan } from './plan';
@@ -34,6 +37,7 @@ import { frTravel } from './travel';
 import { frVoice } from './voice';
 import { frWidgetsGuide } from './widgets-guide';
 import { frYearBook } from './year-book';
+import { frFirstCatch } from './first-catch';
 
 export { frAndroid } from './android';
 
@@ -74,6 +78,10 @@ export const fr: Catalogue = {
   ...frWidgetsGuide,
   ...frDuo,
   ...frMoneyIn,
+  ...frPotsClose,
+  ...frPotsPlan,
+  ...frPots,
+  ...frFirstCatch,
 };
 
 /**

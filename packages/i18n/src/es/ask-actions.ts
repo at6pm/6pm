@@ -10,11 +10,11 @@ export const esAskActions: { readonly [Key in keyof typeof enAskActions]: Entry 
   'ask.action.added': 'Añadido. {name}, {amount}, cuenta para hoy.',
   'ask.action.cancelled': 'Vale, no ha cambiado nada.',
   'ask.action.failed': 'No se ha guardado. Prueba con Añadir rápido.',
-  'ask.action.confirmPot': 'Una hucha para {name}: {goal}. ¿La creo?',
-  'ask.action.confirmPotBy': 'Una hucha para {name}: {goal} para {month}. ¿La creo?',
+  'ask.action.confirmPot': 'Un frasco para {name}: {goal}. ¿Lo creo?',
+  'ask.action.confirmPotBy': 'Un frasco para {name}: {goal} para {month}. ¿Lo creo?',
   'ask.action.setUp': 'Crearla',
   'ask.action.potLocked':
-    'La versión gratis incluye una hucha propia, y la tuya ya está en uso. Con Max caben más.',
+    'La versión gratis incluye tres frascos propios, y ya los usas todos. Con Max caben más.',
   'ask.action.seeMax': 'Ver Max',
   'ask.action.potGoal': '¿Cuánto necesitas para {name}? Dímelo, como “10tr”.',
   'ask.action.showMe': 'Enséñame cómo',
@@ -24,13 +24,13 @@ export const esAskActions: { readonly [Key in keyof typeof enAskActions]: Entry 
   'ask.howTo.quickAdd':
     'Añadir rápido acepta un gasto escrito o dicho en voz alta, como “trà sữa 45k”. O dímelo aquí sin más: “vừa ăn phở 50k”.',
   'ask.howTo.dailyNumber':
-    'Tu número del día es el dinero libre de este ciclo de pago, después de facturas, tu yo del futuro y huchas, repartido entre los días que faltan para cobrar. Gasta por debajo y el de mañana crece; pásate y el de mañana baja un poco.',
+    'Tu número del día es el dinero libre de este ciclo de pago, después de facturas, tu yo futuro y frascos, repartido entre los días que faltan para cobrar. Gasta por debajo y el de mañana crece; pásate y el de mañana baja un poco.',
   'ask.howTo.negative':
-    'Baja de cero cuando lo gastado en este ciclo supera su dinero libre. No se rompe nada: el plan lo reparte entre los días que quedan. Afloja unos días, o saca algo de una hucha en Plan.',
+    'Baja de cero cuando lo gastado en este ciclo supera su dinero libre. No se rompe nada: el plan lo reparte entre los días que quedan. Afloja unos días, o saca algo de un frasco.',
   'ask.howTo.pot':
-    'Una hucha es dinero apartado para una cosa, como un viaje o el Tết. 6pm mete un poco cada mes y lo deja fuera de tu número del día, para que esté ahí cuando lo necesites.',
+    'Un frasco es dinero apartado para una cosa, como un viaje o un móvil nuevo. 6pm mete un poco cada día de cobro y lo deja fuera de tu número del día, para que esté ahí cuando lo necesites.',
   'ask.howTo.close':
     'A las 6pm cierras el día: guardas o descartas lo que se ha pillado y ves dónde has quedado. Si te lo saltas, no se pierde nada; los gastos pillados esperan, y cuentan, hasta que decidas.',
   'ask.howTo.budget':
-    '6pm no tiene presupuesto por categoría. Tu número del día es el presupuesto: las facturas, tu yo del futuro y las huchas ya están apartados. Para gastar menos en algo, crea una hucha o dale más a tu yo del futuro en Plan.',
+    '6pm no tiene presupuesto por categoría. Tu número del día es el presupuesto: las facturas, tu yo futuro y los frascos ya están apartados. Para gastar menos en algo, crea un frasco o dale más a tu yo futuro.',
 };
