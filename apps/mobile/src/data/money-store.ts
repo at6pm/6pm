@@ -282,10 +282,12 @@ export function createMoneyStore(db: SqlDatabase, today: LocalDate): MoneyStore 
       earlierJarSpends,
     ] = await Promise.all([
       tables.categories.select('WHERE archived_at IS NULL ORDER BY sort', []),
-      tables.spends.select("WHERE day >= ? AND day <= ? AND status != 'deleted' ORDER BY at DESC", [
-        cycle.start,
-        day,
-      ]),
+      // History brought in from another app is never counted: the joined cycle's part of it
+      // stands in for "spent since payday" instead (M2a).
+      tables.spends.select(
+        "WHERE day >= ? AND day <= ? AND status != 'deleted' AND source != 'import' ORDER BY at DESC",
+        [cycle.start, day],
+      ),
       tables.spends.select("WHERE day < ? AND status IN ('caught', 'pending') ORDER BY at DESC", [
         cycle.start,
       ]),

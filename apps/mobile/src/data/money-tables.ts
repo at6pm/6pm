@@ -2,6 +2,7 @@ import {
   billRowSchema,
   categoryRowSchema,
   closedDayRowSchema,
+  importRowSchema,
   merchantRuleRowSchema,
   potRowSchema,
   spendRowSchema,
@@ -38,6 +39,12 @@ export function openMoneyTables(db: SqlDatabase) {
       schema: closedDayRowSchema,
       key: 'day',
       booleans: ['late'],
+    }),
+    imports: createTable(db, {
+      name: 'imports',
+      schema: importRowSchema,
+      key: 'id',
+      booleans: ['answered'],
     }),
   };
 }

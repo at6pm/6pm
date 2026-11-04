@@ -74,12 +74,15 @@ export function dayDot(spent: Vnd, line: Vnd): DayDot {
  * - `closed`: a paper tile with the day's total and its dot,
  * - `today`: still open, dashed, opens the close,
  * - `missed`: a past day the user never closed, opens the catch-up sheet,
+ * - `brought`: a day before the user started, with history brought in from another app: an
+ *   outline with what it spent, no line and no dot (it was never closed),
  * - `idle`: a day still ahead, or one before the user started; dimmed, does nothing,
  * - `blank`: outside the month.
  */
 export type CalendarCell =
   | { readonly kind: 'blank' }
   | { readonly kind: 'closed'; readonly day: LocalDate; readonly spent: Vnd; readonly dot: DayDot }
+  | { readonly kind: 'brought'; readonly day: LocalDate; readonly spent: Vnd }
   | { readonly kind: 'today' | 'missed' | 'idle'; readonly day: LocalDate };
 
 export function calendarCells(input: {
@@ -88,13 +91,20 @@ export function calendarCells(input: {
   readonly closed: readonly ClosedDayTotal[];
   /** The first day 6pm has anything for; earlier days were never the user's to close. */
   readonly since: LocalDate | null;
+  /** What brought-in history spent on each day that has some. */
+  readonly brought?: ReadonlyMap<LocalDate, Vnd>;
 }): CalendarCell[] {
   const closed = new Map(input.closed.map((d) => [d.day, d]));
+  const brought = input.brought ?? new Map<LocalDate, Vnd>();
   return monthGrid(input.month).map((day): CalendarCell => {
     if (day === null) return { kind: 'blank' };
     const row = closed.get(day);
     if (row) return { kind: 'closed', day, spent: row.spent, dot: dayDot(row.spent, row.line) };
     if (day === input.today) return { kind: 'today', day };
+    const history = brought.get(day);
+    if (history !== undefined && day < input.today && (input.since === null || day < input.since)) {
+      return { kind: 'brought', day, spent: history };
+    }
     if (day < input.today && input.since !== null && day >= input.since) {
       return { kind: 'missed', day };
     }

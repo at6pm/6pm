@@ -48,6 +48,7 @@ function labelsOf(t: T, currency: Currency): SpendsCsvLabels {
       applePay: t('source.applePay'),
       cash: t('source.cash'),
       alert: t('source.alert'),
+      import: t('source.import'),
     },
     yes: t('export.csv.yes'),
     no: t('export.csv.no'),

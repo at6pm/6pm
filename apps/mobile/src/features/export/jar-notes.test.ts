@@ -62,6 +62,7 @@ const labels: SpendsCsvLabels = {
     applePay: 'applePay',
     cash: 'cash',
     alert: 'alert',
+    import: 'import',
   },
   yes: 'yes',
   no: 'no',

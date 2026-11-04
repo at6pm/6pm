@@ -164,6 +164,7 @@ export const idToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'details.bill.repayment': 'Cicilan kartu atau pinjaman',
   'details.bill.amount': '{bill} biasanya {old}. Jadikan {new} mulai sekarang?',
   'source.alert': 'Notifikasi bank',
+  'source.import': 'Dibawa masuk',
   'today.pull.add': 'Tarik untuk tambah',
   'today.pull.release': 'Lepas untuk tambah',
 };
