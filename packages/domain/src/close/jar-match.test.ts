@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { futureYouPotRow } from '../plan/pots';
-import { dueJarFor, readyJarFor, readyKey } from './jar-match';
+import { dueJarFor, jarQuestionsFor, readyJarFor, readyKey } from './jar-match';
 
 const jar = {
   id: 'dalat',
@@ -70,5 +70,17 @@ describe('a jar is ready once per reason', () => {
   it('never celebrates Future you', () => {
     const target = { ...fy, goal: 1_000_000 };
     expect(readyJarFor([target], { futureYou: 5_000_000 }, '2026-12-01', new Set())).toBeNull();
+  });
+});
+
+describe('one question per jar a night', () => {
+  it('asks about the largest spend in the jar’s month, never the coffee beside it', () => {
+    const spends = [
+      { id: 'coffee', day: '2026-12-20', amount: 29_000 },
+      { id: 'hotel', day: '2026-12-20', amount: 1_200_000 },
+      { id: 'pho', day: '2026-12-20', amount: 45_000 },
+    ];
+    expect([...jarQuestionsFor(spends, [fy, jar], saved, away)]).toEqual([['hotel', 'dalat']]);
+    expect(jarQuestionsFor([], [jar], saved, away).size).toBe(0);
   });
 });

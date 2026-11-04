@@ -83,3 +83,26 @@ export function readyJarFor<T extends MatchableJar>(
   }
   return null;
 }
+
+/**
+ * The close's "From your {jar}?" questions for a night's spends: each due jar asks once, about
+ * its largest spend (as the work question asks about the largest), so a coffee in the jar's month
+ * is never asked about beside the hotel. Returns spend id → jar id.
+ */
+export function jarQuestionsFor<T extends MatchableJar>(
+  spends: readonly (JarMatchSpend & { readonly id: string })[],
+  jars: readonly T[],
+  saved: Readonly<Record<string, Vnd>>,
+  options: { readonly travelling: boolean },
+): Map<string, string> {
+  const largest = new Map<string, { id: string; amount: Vnd }>();
+  for (const spend of spends) {
+    const jar = dueJarFor(spend, jars, saved, options);
+    if (jar === null) continue;
+    const best = largest.get(jar.id);
+    if (best === undefined || spend.amount > best.amount) {
+      largest.set(jar.id, { id: spend.id, amount: spend.amount });
+    }
+  }
+  return new Map([...largest].map(([jarId, s]) => [s.id, jarId]));
+}

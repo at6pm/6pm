@@ -10,6 +10,7 @@ import { useI18n } from '../../i18n/i18n';
 import { captureView, trimBottom } from '../sharing/capture-view';
 import { shareFileName } from '../sharing/share-file';
 import { useShareImage } from '../sharing/use-share-image';
+import { jarName } from '../pots/jar-name';
 import { CloseReceipt, RECEIPT_SETTLE_MS } from './close-receipt';
 import { receiptSpends } from './receipt-lines';
 
@@ -53,7 +54,7 @@ export function CloseReceiptStep({
     4,
     '0',
   );
-  const { lines, claimBack } = useMemo(
+  const { lines, jars, claimBack } = useMemo(
     () => receiptSpends(snap.cycleSpends, day, notDailyOf(snap)),
     [snap, day],
   );
@@ -83,6 +84,17 @@ export function CloseReceiptStep({
         name: s.merchant.toUpperCase(),
         amount: s.amount,
       }))}
+      jars={jars.map((line) => {
+        const pot =
+          snap.pots.find((p) => p.id === line.potId) ??
+          snap.deletedPots.find((p) => p.id === line.potId);
+        return {
+          name: t('potsClose.receipt.fromJar', {
+            jar: (pot ? jarName(pot, t) : '').toUpperCase(),
+          }),
+          amount: line.amount,
+        };
+      })}
       claimBack={
         claimBack ? { name: claimBack.merchant.toUpperCase(), amount: claimBack.amount } : null
       }

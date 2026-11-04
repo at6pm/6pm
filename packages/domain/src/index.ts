@@ -73,5 +73,6 @@ export * from './money/money-format';
 export * from './plan/jar-spending';
 export * from './plan/jar-presets';
 export * from './close/jar-match';
+export * from './close/jar-moments';
 export * from './plan/jar-shelf';
 export * from './plan/plan-split';

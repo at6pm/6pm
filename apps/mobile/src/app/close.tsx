@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
 
 import {
@@ -13,13 +13,16 @@ import {
 import { localeOf } from '@6pm/i18n';
 
 import { useGivableSpends } from '../data/givable-spends';
-import { useMoney, useMoneyActions } from '../data/money-provider';
+import { readReadyShown } from '../data/jar-ready';
+import { useMoney, useMoneyActions, useMoneyStore } from '../data/money-provider';
 import { CashCustom } from '../features/close/cash-custom';
 import { BillQuestionStep } from '../features/close/close-bill-question';
 import { CloseCards } from '../features/close/close-cards';
 import { CloseEdit } from '../features/close/close-edit';
 import { CloseMoneyEdit } from '../features/close/close-money-edit';
 import { MoneyQuestionStep } from '../features/close/close-money-question';
+import { PotQuestionStep } from '../features/close/close-pot-question';
+import { PotReadyStep } from '../features/close/close-pot-ready';
 import { CloseReceiptStep } from '../features/close/close-receipt-step';
 import { CloseRevealStep } from '../features/close/close-reveal-step';
 import { CashStep, SortedStep } from '../features/close/close-steps';
@@ -65,13 +68,37 @@ export default function Close() {
   const { palette } = useTheme();
   const today = useMoney().today;
   const givable = useGivableSpends(today);
-  if (givable === null) {
+  const readyShown = useReadyShown();
+  if (givable === null || readyShown === null) {
     return <View style={{ flex: 1, experimental_backgroundImage: palette.skyDeep }} />;
   }
-  return <CloseOpen givable={givable} />;
+  return <CloseOpen givable={givable} readyShown={readyShown} />;
 }
 
-function CloseOpen({ givable }: { readonly givable: readonly GivableSpend[] }) {
+/** The jars' ready moments already shown on this phone, read once as the close opens. */
+function useReadyShown(): ReadonlySet<string> | null {
+  const store = useMoneyStore();
+  const [shown, setShown] = useState<ReadonlySet<string> | null>(null);
+  useEffect(() => {
+    let live = true;
+    readReadyShown(store.db)
+      .catch(() => new Set<string>())
+      .then((keys) => live && setShown(keys))
+      .catch(() => undefined);
+    return () => {
+      live = false;
+    };
+  }, [store]);
+  return shown;
+}
+
+function CloseOpen({
+  givable,
+  readyShown,
+}: {
+  readonly givable: readonly GivableSpend[];
+  readonly readyShown: ReadonlySet<string>;
+}) {
   const router = useRouter();
   const { palette } = useTheme();
   const { t, language } = useI18n();
@@ -81,7 +108,7 @@ function CloseOpen({ givable }: { readonly givable: readonly GivableSpend[] }) {
   const snap = useMoney();
   const actions = useMoneyActions();
   const say = useCompanionToast();
-  const close = useClose(givable);
+  const close = useClose(givable, readyShown);
   // The number of the day being closed, even when the money day turns over mid-close.
   const day = useClosingNumber(close.day);
   const { state, dispatch, run } = close;
@@ -217,6 +244,10 @@ function CloseOpen({ givable }: { readonly givable: readonly GivableSpend[] }) {
       {state.step === 'bill' ? (
         <BillQuestionStep state={state} queue={close.queue} dispatch={dispatch} run={run} />
       ) : null}
+      {state.step === 'pot' ? (
+        <PotQuestionStep state={state} queue={close.queue} dispatch={dispatch} run={run} />
+      ) : null}
+      {state.step === 'potReady' ? <PotReadyStep state={state} dispatch={dispatch} /> : null}
       {state.step === 'money' ? (
         <MoneyQuestionStep
           state={state}
