@@ -246,19 +246,22 @@ interface PathNode {
   readonly label: string;
 }
 
+/** A hop's tile; a see-through one sits on the card's colour so the path runs behind it. */
 function iconTile(icon: SymbolName, pal: OnboardingPalette, background?: string): ReactNode {
   return (
-    <View
-      style={{
-        width: NODE,
-        height: NODE,
-        borderRadius: 16,
-        backgroundColor: background ?? pal.chipBg,
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <Symbol name={icon} size={28} color={background ? catchInk.onTile : pal.ink} />
+    <View style={{ width: NODE, height: NODE, borderRadius: 16, backgroundColor: pal.cell }}>
+      <View
+        style={{
+          width: NODE,
+          height: NODE,
+          borderRadius: 16,
+          backgroundColor: background ?? pal.chipBg,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Symbol name={icon} size={28} color={background ? catchInk.onTile : pal.ink} />
+      </View>
     </View>
   );
 }
