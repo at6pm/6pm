@@ -4,6 +4,7 @@ import Animated, { useReducedMotion } from 'react-native-reanimated';
 
 import { addDays, diffDays, localDateOf } from '@6pm/domain';
 import { localeOf } from '@6pm/i18n';
+import { catchInk } from '@6pm/theme';
 
 import { useMoney } from '../../data/money-provider';
 import { useI18n, type I18n } from '../../i18n/i18n';
@@ -175,7 +176,10 @@ function HealthRowView({
       accessibilityRole="button"
       accessibilityState={{ expanded: open }}
       onPress={onPress}
-      style={{ paddingHorizontal: 14, backgroundColor: open ? colours.warnBg : 'transparent' }}
+      style={{
+        paddingHorizontal: 14,
+        backgroundColor: open ? (palette.dark ? catchInk.warmWash : colours.warnBg) : 'transparent',
+      }}
     >
       <View
         style={{

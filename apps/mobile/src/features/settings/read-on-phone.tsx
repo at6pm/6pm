@@ -79,9 +79,11 @@ export function ReadOnPhone() {
   const chosen = picked ?? accuracy.fixes[0]?.id ?? null;
   const fix = chosen ? fixed.get(chosen) : undefined;
   const receipt = chosen ? receipts.find((r) => r.id === chosen) : undefined;
-  const month = new Intl.DateTimeFormat(localeOf(language), { month: 'long' }).format(
+  const named = new Intl.DateTimeFormat(localeOf(language), { month: 'long' }).format(
     new Date(`${today}T12:00:00`),
   );
+  // Vietnamese capitalises "Tháng 11" on its own, not inside a sentence ("biên lai tháng 11").
+  const month = language === 'vi' ? named.toLocaleLowerCase('vi') : named;
   return (
     <View style={{ gap: 16, paddingHorizontal: 2 }}>
       <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 10 }}>
