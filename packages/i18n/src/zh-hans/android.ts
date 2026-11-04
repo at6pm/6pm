@@ -45,7 +45,7 @@ export const zhHansAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } 
   'max.terms.storeOff': '现在无法购买 Max：Google Play 没有响应。',
   'max.sub.backup': '加密备份、完整历史、CSV 和 Sheets。',
   'max.note.backup': '加密备份、CSV 和 Sheets',
-  'max.welcome.win.more': '存钱罐、旅行和年度纪念册',
+  'max.welcome.win.more': '罐子、旅行和年度纪念册',
 
   'privacy.ai.device.title': '只在这台手机上',
   'privacy.ai.device.unavailable': '在 Android 上，6pm 没有可在手机上运行的模型。',

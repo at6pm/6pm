@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { memo, startTransition, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, startTransition, useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
 import type Animated from 'react-native-reanimated';
@@ -16,7 +16,7 @@ import { Sky } from '../../ui/sky/sky';
 import { useClock } from '../../ui/theme/clock';
 import { useTheme } from '../../ui/theme/theme';
 import { DiaryPage } from '../diary/diary-page';
-import { PlanPage, type PlanSectionsHandle } from '../plan/plan-page';
+import { PlanPage } from '../plan/plan-page';
 import { TodayPage } from '../today/today-page';
 import { HeaderMeasureProvider, useHeaderGeoms } from './header-measure';
 import { HomeNavProvider, type HomeNav } from './home-nav';
@@ -71,8 +71,6 @@ function Shell({ day, initialTab }: { readonly day: DailyNumber; readonly initia
   const planRef = useAnimatedRef<Animated.ScrollView>();
   const diaryRef = useAnimatedRef<Animated.ScrollView>();
   const refs = useMemo(() => [todayRef, planRef, diaryRef] as const, [todayRef, planRef, diaryRef]);
-  const planSections = useRef<PlanSectionsHandle>(null);
-  const [planSection, setPlanSection] = useState(0);
   const homeVisible = useHomeVisible();
   const money = useMoney();
   // Neon Alley's sign knows when the day is closed.
@@ -89,7 +87,6 @@ function Shell({ day, initialTab }: { readonly day: DailyNumber; readonly initia
       const next = HOME_TABS[index];
       if (!next) return;
       if (swiped) haptics.tick();
-      setPlanSection(0);
       setTab(next);
       build(index);
     },
@@ -132,7 +129,6 @@ function Shell({ day, initialTab }: { readonly day: DailyNumber; readonly initia
   const openSettings = useCallback(() => router.push('/settings'), [router]);
   const openQuickAdd = useCallback(() => router.push('/quick-add'), [router]);
   const openScan = useCallback(() => router.push('/scan'), [router]);
-  const jumpToSection = useCallback((k: number) => planSections.current?.scrollToSection(k), []);
   const sun = useMemo(
     () => ({ flag: sunShown, initial: initialTab === 'today' }),
     [sunShown, initialTab],
@@ -186,14 +182,7 @@ function Shell({ day, initialTab }: { readonly day: DailyNumber; readonly initia
                       homeVisible={homeVisible}
                       shown={tab === 'plan'}
                     >
-                      {mounted[1] ? (
-                        <Plan
-                          active={tab === 'plan'}
-                          scrollRef={planRef}
-                          sectionsRef={planSections}
-                          onSectionChange={setPlanSection}
-                        />
-                      ) : null}
+                      {mounted[1] ? <Plan active={tab === 'plan'} scrollRef={planRef} /> : null}
                     </HomePage>
                     <HomePage
                       index={2}
@@ -248,8 +237,6 @@ function Shell({ day, initialTab }: { readonly day: DailyNumber; readonly initia
                   day={day}
                   onPressTop={scrollTop}
                   onQuickAdd={openQuickAdd}
-                  planSection={planSection}
-                  onPlanSection={jumpToSection}
                 />
                 {rail > 0 ? (
                   <SideRail

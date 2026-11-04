@@ -253,9 +253,9 @@ export const deInsights: { readonly [Key in keyof typeof enInsights]: Entry } = 
   'insight.potMilestone.soft.2': '{percent} % auf dem Weg zu {pot}.',
   'insight.potMilestone.cheeky.1': '{pot}: {percent} % geschafft. Es wird wirklich was.',
   'insight.potMilestone.cheeky.2': '{percent} % von {pot}, erledigt. Weiter füttern.',
-  'insight.potMilestone.roast.1': '{pot} bei {percent} %. Der Spartopf gewinnt. Lass ihn.',
-  'insight.potMilestone.roast.2': '{percent} % für {pot}. Finger weg vom Spartopf.',
-  'insight.potMilestone.plain': '{pot} hat {percent} % des Ziels überschritten.',
+  'insight.potMilestone.roast.1': '{pot} bei {percent} %. Das Glas gewinnt. Lass es.',
+  'insight.potMilestone.roast.2': '{percent} % für {pot}. Finger weg vom Glas.',
+  'insight.potMilestone.plain': '{pot} hat {percent} % des Zielbetrags überschritten.',
 
   'insight.potFull.soft.1': '{pot} ist voll. Das warst du.',
   'insight.potFull.soft.2': '{pot}: geschafft. Genieß es, wirklich.',
@@ -263,8 +263,8 @@ export const deInsights: { readonly [Key in keyof typeof enInsights]: Entry } = 
   'insight.potFull.cheeky.2': '{pot}, randvoll.',
   'insight.potFull.roast.1':
     '{pot} ist voll. Ich hatte einen Witz parat; du hast ihn nicht gebraucht.',
-  'insight.potFull.roast.2': 'Voller Spartopf: {pot}. Jetzt gönn dir das, wofür er da war.',
-  'insight.potFull.plain': '{pot}: Ziel erreicht.',
+  'insight.potFull.roast.2': 'Volles Glas: {pot}. Jetzt gönn dir das, wofür es da war.',
+  'insight.potFull.plain': '{pot} ist voll.',
 
   'insight.workToClaim.soft.1': {
     one: 'Eine Arbeitsausgabe ({amount}) kannst du dir erstatten lassen.',

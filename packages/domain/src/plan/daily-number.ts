@@ -1,5 +1,5 @@
 import { floorToStep, VND, type Currency, type Money as Vnd } from '../money/currency';
-import { sumCounted, type CountedSpend } from '../spend/spend';
+import { sumDayPart, type CountedSpend } from '../spend/spend';
 
 /** The month's plan, as the Plan tab sets it. Every field is a monthly amount. */
 export interface MonthPlan {
@@ -9,7 +9,10 @@ export interface MonthPlan {
   readonly bills: Vnd;
   /** Future you: paid first on payday. */
   readonly futureYou: Vnd;
-  /** Occasions: the sum of every pot's monthly set-aside. */
+  /**
+   * The jars outside Future you's slice: what the dated and steady jars set aside this cycle, and
+   * what a jar deleted this cycle still holds for the spends taken from it (see `jarsSetAside`).
+   */
   readonly occasions: Vnd;
   /** One-off top-ups this cycle to goals and pots (the +100k buttons). */
   readonly topUps: Vnd;
@@ -17,7 +20,10 @@ export interface MonthPlan {
 
 export interface DailyNumberInput {
   readonly plan: MonthPlan;
-  /** Everything counted in this pay cycle before today, late spends included. */
+  /**
+   * Everything counted in this pay cycle before today, late spends included: day parts, so what a
+   * jar covered is left out (`sumDayPart`).
+   */
   readonly spentBefore: Vnd;
   /**
    * Money that came in this cycle and was kept as free money (spread, saved, refunds; see
@@ -54,7 +60,7 @@ export interface DailyNumber {
   readonly startFree: Vnd;
   /** Today's line: an even share of `startFree`, today included; never below zero. */
   readonly line: Vnd;
-  /** Counted today. */
+  /** Counted today: today's spending less what jars covered (M13). */
   readonly spent: Vnd;
   /** Free money right now. */
   readonly free: Vnd;
@@ -117,7 +123,7 @@ export function dailyNumber(input: DailyNumberInput): DailyNumber {
   const startFree =
     joinedFree(planned, share, input.beforeJoining) + moneyIn - plan.topUps - input.spentBefore;
   const line = Math.max(0, floorToStep(startFree / (daysLeft + 1), currency));
-  const spent = sumCounted(input.today, input.notDaily);
+  const spent = sumDayPart(input.today, input.notDaily);
   const free = startFree - spent;
   const tomorrow = daysLeft > 0 ? Math.max(0, floorToStep(free / daysLeft, currency)) : 0;
   const overspent = free < 0;

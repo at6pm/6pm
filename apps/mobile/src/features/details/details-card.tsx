@@ -16,6 +16,7 @@ import { useTheme } from '../../ui/theme/theme';
 import { body } from '../../ui/type/fonts';
 import { useRunAction } from '../companion/use-run-action';
 import { useWalletOptions } from '../quick-add/use-wallet-options';
+import { FromJarRow } from './from-jar-row';
 import { useAutosavedNote, useAutosavedText } from './use-autosaved-note';
 import { WhenPicker } from './when-picker';
 
@@ -111,19 +112,6 @@ export function DetailsCard({
       onPress: () => setPicking((open) => !open),
     },
     {
-      key: 'pot',
-      label: t('details.pot'),
-      value: spend.forWork ? t('details.claimBack') : t('details.freeMoney'),
-      menu: {
-        choices: [
-          { key: 'free', label: t('details.freeMoney') },
-          { key: 'work', label: t('details.claimBack') },
-        ],
-        selected: spend.forWork ? 'work' : 'free',
-        onSelect: (key) => onUpdate({ forWork: key === 'work' }),
-      },
-    },
-    {
       key: 'wallet',
       label: t('details.paidWith'),
       value: wallets.find((w) => w.value === wallet)?.label ?? wallet,
@@ -131,6 +119,19 @@ export function DetailsCard({
         choices: wallets.map((w) => ({ key: w.value, label: w.label })),
         selected: wallet,
         onSelect: (key) => onUpdate({ wallet: key }),
+      },
+    },
+    {
+      key: 'pot',
+      label: t('details.claimBack'),
+      value: spend.forWork ? t('potsClose.details.claimYes') : t('potsClose.details.claimNo'),
+      menu: {
+        choices: [
+          { key: 'free', label: t('potsClose.details.claimNo') },
+          { key: 'work', label: t('potsClose.details.claimYes') },
+        ],
+        selected: spend.forWork ? 'work' : 'free',
+        onSelect: (key) => onUpdate({ forWork: key === 'work' }),
       },
     },
     {
@@ -238,6 +239,7 @@ export function DetailsCard({
                 />
               </Animated.View>
             ) : null}
+            {f.key === 'when' ? <FromJarRow spend={spend} /> : null}
           </View>
         );
       })}

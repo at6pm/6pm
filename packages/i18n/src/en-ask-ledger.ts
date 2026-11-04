@@ -63,7 +63,7 @@ export const enAskLedger = {
     other:
       'At {monthly} a month to Future you, {amount} for {what} takes about {count} years, around {month}.',
   },
-  'ask.answer.goalPace.note': 'A pot just for it keeps that money apart from the rest.',
+  'ask.answer.goalPace.note': 'A jar just for it keeps that money apart from the rest.',
   'ask.answer.goalNoPace':
     'Nothing goes to Future you each month yet, so there’s no pace to count {amount} for {what} from. A little each month starts one.',
   'ask.answer.goalAmount':

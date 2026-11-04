@@ -19,6 +19,9 @@ import { koInsightsHabits } from './insights-habits';
 import { koIntents } from './intents';
 import { koLooks } from './looks';
 import { koMoneyIn } from './money-in';
+import { koPotsClose } from './pots-close';
+import { koPotsPlan } from './pots-plan';
+import { koPots } from './pots';
 import { koNative } from './native';
 import { koOnboarding } from './onboarding';
 import { koPlan } from './plan';
@@ -75,6 +78,9 @@ export const ko: Catalogue = {
   ...koWidgetsGuide,
   ...koDuo,
   ...koMoneyIn,
+  ...koPotsClose,
+  ...koPotsPlan,
+  ...koPots,
   ...koFirstCatch,
 };
 

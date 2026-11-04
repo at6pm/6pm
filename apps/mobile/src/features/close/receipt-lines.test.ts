@@ -1,6 +1,6 @@
 import { describe, expect, it } from '@jest/globals';
 
-import { sumCounted, type SpendRow } from '@6pm/domain';
+import { sumCounted, sumDayPart, type SpendRow } from '@6pm/domain';
 
 import { receiptSpends } from './receipt-lines';
 
@@ -54,6 +54,26 @@ describe('receiptSpends', () => {
   });
 
   it('is empty on a day with nothing kept', () => {
-    expect(receiptSpends([], '2026-10-11', notDaily)).toEqual({ lines: [], claimBack: null });
+    expect(receiptSpends([], '2026-10-11', notDaily)).toEqual({
+      lines: [],
+      jars: [],
+      claimBack: null,
+    });
+  });
+
+  it('prints a spend from a jar in full and takes the jar’s part off, so lines meet the total', () => {
+    const withJar = [
+      spend('a', { amount: 45_000 }),
+      spend('hotel', { amount: 1_200_000, fromPot: 'dalat', fromPotAmount: 1_200_000 }),
+      spend('flight', { amount: 7_000_000, fromPot: 'dalat', fromPotAmount: 6_000_000 }),
+    ];
+    const { lines, jars } = receiptSpends(withJar, '2026-10-11', notDaily);
+    expect(lines.map((s) => s.amount)).toEqual([45_000, 1_200_000, 7_000_000]);
+    expect(jars).toEqual([{ potId: 'dalat', amount: 7_200_000 }]);
+    const counted = lines.map((s) => ({ ...s, category: s.categoryId }));
+    const printed = sumCounted(counted, notDaily) - jars.reduce((sum, j) => sum + j.amount, 0);
+    // What the day's number counted: 45k and the 1tr the jar could not cover.
+    expect(printed).toBe(sumDayPart(counted, notDaily));
+    expect(printed).toBe(1_045_000);
   });
 });

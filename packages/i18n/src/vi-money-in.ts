@@ -1,7 +1,7 @@
 import type { Entry } from './catalogue-types';
 import type { enMoneyIn } from './en-money-in';
 
-// A pot is a "hũ"; Future you is "bạn của tương lai" (see vi-plan.ts).
+// A jar is a "lọ"; Future you is "Tương lai" (see vi-pots.ts).
 export const viMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'moneyIn.name': 'Tiền vào',
   'moneyIn.hint': 'Phải để chia đều · lên để để dành',
@@ -14,7 +14,7 @@ export const viMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'moneyIn.btn.futureYou': 'Tương lai',
   'moneyIn.undoSpread': 'Đã chia đều {name}',
   'moneyIn.undoSaved': 'Đã để dành {name}',
-  'moneyIn.pill': 'BẠN CỦA TƯƠNG LAI',
+  'moneyIn.pill': 'TƯƠNG LAI',
 
   'moneyIn.extra.kicker': '{date} · NGÀY LƯƠNG',
   'moneyIn.extra.title': 'Lương về nhiều hơn rồi',
@@ -48,7 +48,7 @@ export const viMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'moneyIn.goesTo.label': 'Để vào đâu',
   'moneyIn.goesTo.spread': 'Chia đều',
   'moneyIn.goesTo.spreadSub': 'Ngày mai thành {amount}',
-  'moneyIn.goesTo.futureYou': 'Bạn của tương lai',
+  'moneyIn.goesTo.futureYou': 'Tương lai',
   'moneyIn.goesTo.savedSub': '{from}, rồi {to}',
   'moneyIn.goesTo.potSub': '{saved} / {goal}, rồi {after}',
   'moneyIn.goesTo.payback': 'Trả lại mình',
@@ -56,7 +56,7 @@ export const viMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'moneyIn.goesTo.effectSpread': 'Mỗi ngày tới ngày lương được thêm {amount}.',
   'moneyIn.goesTo.effectSaved': 'Con số hôm nay giữ nguyên.',
   'moneyIn.goesTo.effectPot':
-    'Con số hôm nay giữ nguyên, và hũ {pot} cần ít hơn mỗi tháng từ ngày lương tới.',
+    'Con số hôm nay giữ nguyên, và lọ {pot} cần ít hơn mỗi tháng từ ngày lương tới.',
   'moneyIn.goesTo.effectPayback': 'Con số giữ nguyên.',
   'moneyIn.goesTo.done': 'Xong',
 

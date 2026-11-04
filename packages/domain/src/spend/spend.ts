@@ -28,6 +28,13 @@ export interface CountedSpend {
   readonly paysBill?: string | null | undefined;
   /** `in` for money that came in: never spending, whatever its status. */
   readonly direction?: SpendDirection | null | undefined;
+  /** The jar this spend came out of (its id), as chosen in Details, Quick add or the close (M13). */
+  readonly fromPot?: string | null | undefined;
+  /**
+   * How much of `amount` the jar covered: what it held when the spend was taken from it, at most
+   * the spend. Null or absent with a jar set means the whole spend.
+   */
+  readonly fromPotAmount?: Vnd | null | undefined;
 }
 
 /**
@@ -45,10 +52,48 @@ export function countsTowardDay(spend: CountedSpend, notDaily: ReadonlySet<strin
   return !notDaily.has(spend.category);
 }
 
+/**
+ * What a spend adds to spending in history: the Diary, the week recap, insights, Ask, the CSV, the
+ * year book and the close receipt's lines. A spend from a jar is spending like any other, in full;
+ * only the jar's part stays out of the daily number (`dayPartOf`).
+ */
 export function sumCounted(spends: readonly CountedSpend[], notDaily: ReadonlySet<string>): Vnd {
   let total = 0;
   for (const spend of spends) if (countsTowardDay(spend, notDaily)) total += spend.amount;
   return total;
+}
+
+/**
+ * The part of a spend its jar covered (M13): nothing when it is not spending or came from no jar,
+ * never more than the spend, never below zero.
+ */
+export function jarPartOf(spend: CountedSpend, notDaily: ReadonlySet<string>): Vnd {
+  if (spend.fromPot == null || !countsTowardDay(spend, notDaily)) return 0;
+  const covered = spend.fromPotAmount ?? spend.amount;
+  return Math.max(0, Math.min(spend.amount, Number.isFinite(covered) ? Math.round(covered) : 0));
+}
+
+/**
+ * The part of a spend that lowers the daily number: its spending less what its jar covered. This
+ * and `jarPartOf` always add up to what `sumCounted` counts for it.
+ */
+export function dayPartOf(spend: CountedSpend, notDaily: ReadonlySet<string>): Vnd {
+  return countsTowardDay(spend, notDaily) ? spend.amount - jarPartOf(spend, notDaily) : 0;
+}
+
+/** The daily number's spending: every spend's day part. */
+export function sumDayPart(spends: readonly CountedSpend[], notDaily: ReadonlySet<string>): Vnd {
+  let total = 0;
+  for (const spend of spends) total += dayPartOf(spend, notDaily);
+  return total;
+}
+
+/**
+ * What a jar covers of a spend taken from it: all of it when the jar holds enough, else what the
+ * jar holds; the rest counts today (M13). A jar never goes below zero.
+ */
+export function jarCover(amount: Vnd, held: Vnd): Vnd {
+  return Math.max(0, Math.min(Math.round(amount), Math.round(held)));
 }
 
 /** Spends the close walks through: everything still waiting for a yes. */

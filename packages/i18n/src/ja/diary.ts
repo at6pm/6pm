@@ -88,4 +88,5 @@ export const jaDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.zine.showAmountsSub': '初期設定はオフ。お金はプライベートなものだから。',
   'diary.cal.previous': '前の月',
   'diary.cal.next': '次の月',
+  'diary.fromJar': '{jar}の瓶から',
 };

@@ -2,7 +2,7 @@ import type { Entry } from '../catalogue-types';
 import type { enInsights } from '../en-insights';
 
 // The companion says 我 for itself and 你 for the user, like a friend texting. The daily line is
-// 额度; a pot is 存钱罐; the close is 日结. Roast teases the habit, never the person.
+// 额度; a jar is 罐子; the close is 日结. Roast teases the habit, never the person.
 export const zhHansInsights: { readonly [Key in keyof typeof enInsights]: Entry } = {
   'insight.compare.muchMore': '多了不少',
   'insight.compare.more': '多了一些',
@@ -201,17 +201,17 @@ export const zhHansInsights: { readonly [Key in keyof typeof enInsights]: Entry 
   'insight.potMilestone.soft.2': '{pot} 已完成 {percent}%。',
   'insight.potMilestone.cheeky.1': '{pot}：{percent}%了。要成了。',
   'insight.potMilestone.cheeky.2': '{pot} 完成 {percent}%。继续投喂。',
-  'insight.potMilestone.roast.1': '{pot} 到 {percent}%了。存钱罐在赢。让它赢。',
+  'insight.potMilestone.roast.1': '{pot} 到 {percent}%了。罐子在赢。让它赢。',
   'insight.potMilestone.roast.2': '{pot} 已到 {percent}%。别去掏它。',
-  'insight.potMilestone.plain': '{pot} 已超过目标的 {percent}%。',
+  'insight.potMilestone.plain': '{pot} 已超过目标金额的 {percent}%。',
 
   'insight.potFull.soft.1': '{pot} 存满了。是你做到的。',
   'insight.potFull.soft.2': '{pot}：完成。好好享受吧，真心的。',
   'insight.potFull.cheeky.1': '{pot} 存满啦！撒花，小声点。',
   'insight.potFull.cheeky.2': '{pot}，满到冒尖。',
   'insight.potFull.roast.1': '{pot} 存满了。我准备了段子，结果你用不上。',
-  'insight.potFull.roast.2': '存钱罐满了：{pot}。现在把它花在本来的用途上吧。',
-  'insight.potFull.plain': '{pot} 已达成目标。',
+  'insight.potFull.roast.2': '罐子满了：{pot}。现在把它花在本来的用途上吧。',
+  'insight.potFull.plain': '{pot} 已存满。',
 
   'insight.workToClaim.soft.1': {
     other: '{count} 笔工作支出（{amount}）待报销。',

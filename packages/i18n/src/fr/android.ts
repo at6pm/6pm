@@ -60,7 +60,7 @@ export const frAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'max.terms.storeOff': 'Max ne peut pas être acheté pour l’instant : Google Play ne répond pas.',
   'max.sub.backup': 'Sauvegarde chiffrée, historique complet, CSV et Sheets.',
   'max.note.backup': 'Sauvegarde chiffrée, CSV et Sheets',
-  'max.welcome.win.more': 'Cagnottes, voyages et l’Album de l’année',
+  'max.welcome.win.more': 'Bocaux, voyages et l’Album de l’année',
 
   'privacy.ai.device.title': 'Uniquement sur ce téléphone',
   'privacy.ai.device.unavailable':

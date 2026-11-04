@@ -36,7 +36,7 @@ export const koAsk: { readonly [Key in keyof typeof enAsk]: Entry } = {
   'ask.row.futureYou': '매달 미래의 나에게',
   'ask.row.moving': '더 옮길 돈',
   'ask.row.inPot': '저금통 잔액',
-  'ask.row.goal': '목표',
+  'ask.row.goal': '목표 금액',
   'ask.row.perMonth': '매달',
   'ask.answer.fitsToday':
     '네, 여유 있어요. 오늘 쓸 수 있는 {safe} 안에 들어가니까 내일은 그대로예요.',

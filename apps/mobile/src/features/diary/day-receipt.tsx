@@ -24,6 +24,11 @@ export interface DayReceiptView {
     /** Given back since ("BACK 27 OCT"): the line is struck through and stamped. */
     readonly back?: string;
   }[];
+  /**
+   * "FROM ĐÀ LẠT": under the spends, what each jar covered of them. The rows less these lines add
+   * up to the total, what the day's number counted.
+   */
+  readonly jars: readonly { readonly name: string; readonly amount: number }[];
   /** Money that came in that day, under the total: it is not spending, so not in it. */
   readonly moneyIn: readonly {
     readonly time: string;
@@ -132,6 +137,20 @@ export function DayReceipt({ receipt }: { readonly receipt: DayReceiptView }) {
                   </View>
                 </>
               ) : null}
+            </View>
+          ))}
+          {receipt.jars.map((j, i) => (
+            <View key={`jar-${i}`} style={{ flexDirection: 'row', gap: 10 }}>
+              {/* A blank clock, so the jar's name sits under the spends' names. */}
+              <Text aria-hidden style={{ ...line, opacity: 0 }}>
+                00:00
+              </Text>
+              <Text numberOfLines={1} style={{ ...line, color: paper.soft, flex: 1, minWidth: 0 }}>
+                {j.name}
+              </Text>
+              <Text style={{ ...line, ...tabular, color: paper.soft }}>
+                −{money.number(j.amount)}
+              </Text>
             </View>
           ))}
           <DashedRule color={paper.rule} />

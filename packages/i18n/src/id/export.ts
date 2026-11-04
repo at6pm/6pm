@@ -22,4 +22,6 @@ export const idExport: { readonly [Key in keyof typeof enExport]: string } = {
   'export.csv.currency': 'Mata uang',
   'export.csv.yes': 'Ya',
   'export.csv.no': 'Tidak',
+  'export.csv.fromJar': 'Dari toples {jar}',
+  'export.csv.fromJarPart': 'Dari toples {jar}: {amount}',
 };

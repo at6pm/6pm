@@ -89,7 +89,7 @@ export const enToday = {
   'quick.keep': 'Keep it',
   'details.title': 'Details',
   'details.edit': 'Edit',
-  'details.pot': 'Pot',
+  'details.pot': 'Jar',
   'details.freeMoney': 'Free money',
   'details.claimBack': 'Claim back',
   'details.paidWith': 'Paid with',

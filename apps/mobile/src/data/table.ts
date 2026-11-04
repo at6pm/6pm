@@ -33,6 +33,8 @@ export interface Table<Row> {
   select(clause: string, params: SqlValue[]): Promise<Row[]>;
   /** Inserts the row, or updates the one with the same key in place. */
   put(row: Row): Promise<void>;
+  /** Inserts the row only when none has its key; one already there is left as it is. */
+  insertMissing(row: Row): Promise<void>;
   remove(key: string): Promise<void>;
   removeWhere(field: keyof Row & string, value: SqlValue): Promise<void>;
 }
@@ -94,6 +96,14 @@ export function createTable<Row extends object>(db: SqlDatabase, spec: TableSpec
           (assignments.length > 0
             ? `ON CONFLICT (${keyColumn}) DO UPDATE SET ${assignments.join(', ')}`
             : `ON CONFLICT (${keyColumn}) DO NOTHING`),
+        fields.map((field) => encode(field, checked[field])),
+      );
+    },
+    insertMissing: async (row) => {
+      const checked = spec.schema.parse(row) as Record<string, unknown>;
+      await db.runAsync(
+        `INSERT INTO ${spec.name} (${columns.join(', ')}) VALUES (${columns.map(() => '?').join(', ')}) ` +
+          `ON CONFLICT (${keyColumn}) DO NOTHING`,
         fields.map((field) => encode(field, checked[field])),
       );
     },

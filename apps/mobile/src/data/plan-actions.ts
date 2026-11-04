@@ -1,7 +1,15 @@
 import { randomUUID } from 'expo-crypto';
 import { useMemo } from 'react';
 
-import { payCycleOn, rebalanceShares, type BillRow, type Payday, type PotRow } from '@6pm/domain';
+import {
+  FUTURE_YOU_POT_ID,
+  isLegacyGoal,
+  payCycleOn,
+  type BillRow,
+  type Payday,
+  type PotMove,
+  type PotRow,
+} from '@6pm/domain';
 
 import { useMoneyStore } from './money-provider';
 import type { MoneyStore } from './money-store';
@@ -21,30 +29,43 @@ export interface NewBill {
   readonly lastMonth?: string | null;
 }
 
+/** How a jar fills each payday: toward a date, a steady amount, or only when added to by hand. */
+export type JarFillChoice =
+  | { readonly by: 'date'; readonly neededBy: string }
+  | { readonly by: 'steady'; readonly monthly: number }
+  | { readonly by: 'hand' };
+
 export interface NewPot {
-  /** An occasion pot, or a Future you goal; occasion when left out. */
-  readonly kind?: PotRow['kind'];
   readonly name: string;
   readonly icon: string;
   readonly hue: number;
+  /** The target; 0 for none. */
   readonly goal: number;
-  /** 'YYYY-MM' it should be full by; null for "no date". */
-  readonly neededBy: string | null;
-  /** A goal's share of Future you (0–1); the other goals give way to it. */
-  readonly share?: number;
+  readonly fill: JarFillChoice;
   /** What it already holds before 6pm ("Already saved"); none when left out. */
   readonly opening?: number;
 }
 
-/** What the edit sheet changes on a pot; `opening` is what it held before 6pm. */
+/**
+ * What the edit sheet changes on a jar; `opening` is what it held before 6pm. Only `fill` changes
+ * how a 2.1 goal fills: a rename, an icon, a colour or a target never does, so none of them moves
+ * the daily number for it.
+ */
 export type PotPatch = Partial<
-  Pick<PotRow, 'name' | 'icon' | 'hue' | 'goal' | 'neededBy' | 'paused' | 'share'> & {
+  Pick<PotRow, 'name' | 'icon' | 'hue' | 'goal' | 'paused'> & {
     opening: number;
+    fill: JarFillChoice;
   }
 >;
 
-/** Changes that reach this cycle's set-aside (as does what it held before 6pm); a rename does not. */
-const SET_ASIDE_FIELDS = ['goal', 'neededBy', 'paused', 'share'] as const;
+function fillFields(fill: JarFillChoice): Pick<PotRow, 'kind' | 'neededBy' | 'share' | 'monthly'> {
+  return {
+    kind: 'occasion',
+    share: null,
+    neededBy: fill.by === 'date' ? fill.neededBy : null,
+    monthly: fill.by === 'steady' ? Math.max(0, Math.round(fill.monthly)) : null,
+  };
+}
 
 /**
  * The Plan tab's writes: bills paid, edited and removed, pots made, edited, topped up and removed,
@@ -65,25 +86,10 @@ export function planActions(store: MoneyStore) {
     store.publish({ ...snap, bills });
   };
 
-  /** Makes this cycle's set-aside for the pots work itself out again from the pots as they are. */
+  /** Makes this cycle's set-aside for the jars work itself out again from the jars as they are. */
   const refreshSetAsides = async (potIds: readonly string[]) => {
     const { start } = store.getSnapshot().cycle;
     for (const id of potIds) await clearCycleSetAside(db, id, start);
-  };
-
-  const goalShares = (pots: readonly PotRow[]) =>
-    Object.fromEntries(pots.filter((p) => p.kind === 'goal').map((p) => [p.id, p.share ?? 0]));
-
-  /** Writes the new shares of the goals whose share moved. */
-  const putShares = async (pots: readonly PotRow[], shares: Readonly<Record<string, number>>) => {
-    const moved: string[] = [];
-    for (const pot of pots) {
-      const share = shares[pot.id];
-      if (pot.kind !== 'goal' || share === undefined || share === pot.share) continue;
-      await tables.pots.put({ ...pot, share });
-      moved.push(pot.id);
-    }
-    return moved;
   };
 
   return inTurn(store.exclusive, {
@@ -138,21 +144,18 @@ export function planActions(store: MoneyStore) {
     },
 
     /**
-     * Starts an occasion pot or a Future you goal. Its first month's set-aside is recorded at
-     * once, so the daily number moves as the sheet promised.
+     * Starts a jar. Its first payday's set-aside is recorded at once, so the daily number moves as
+     * the sheet promised.
      */
     createPot: async (input: NewPot): Promise<PotRow> => {
       const snap = store.getSnapshot();
-      const kind = input.kind ?? 'occasion';
       const row: PotRow = {
         id: randomUUID(),
-        kind,
         name: input.name.trim(),
         icon: input.icon,
         hue: input.hue,
-        goal: Math.round(input.goal),
-        neededBy: input.neededBy,
-        share: kind === 'goal' ? (input.share ?? 1) : null,
+        goal: Math.max(0, Math.round(input.goal)),
+        ...fillFields(input.fill),
         paused: false,
         createdAt: new Date().toISOString(),
         archivedAt: null,
@@ -160,106 +163,76 @@ export function planActions(store: MoneyStore) {
       await db.withTransactionAsync(async () => {
         await tables.pots.put(row);
         await writeOpening(db, row.id, input.opening ?? 0, snap.cycle.start);
-        if (kind === 'goal') {
-          const shares = rebalanceShares(
-            { ...goalShares(snap.pots), [row.id]: row.share ?? 1 },
-            row.id,
-          );
-          const moved = await putShares([...snap.pots, row], shares);
-          await refreshSetAsides(moved.filter((id) => id !== row.id));
-        }
       });
       await reload();
       return row;
     },
 
-    /** The edit sheet's save: details, goal, date, pause, and a goal's share of Future you. */
-    updatePot: async (id: string, { opening, ...patch }: PotPatch) => {
+    /**
+     * The edit sheet's save. Future you's jar keeps its name, icon and fill (its slice is the
+     * what-if's); a 2.1 goal becomes an ordinary jar only when told how to fill.
+     */
+    updatePot: async (id: string, { opening, fill, ...patch }: PotPatch) => {
       const snap = store.getSnapshot();
       const pot = snap.pots.find((p) => p.id === id);
       if (!pot) return;
+      const futureYou = pot.id === FUTURE_YOU_POT_ID;
+      const legacy = isLegacyGoal(pot);
       const next: PotRow = {
         ...pot,
-        ...patch,
-        name: patch.name === undefined ? pot.name : patch.name.trim() || pot.name,
+        ...(futureYou ? { goal: patch.goal ?? pot.goal } : patch),
+        name: futureYou || patch.name === undefined ? pot.name : patch.name.trim() || pot.name,
         goal: patch.goal === undefined ? pot.goal : Math.max(0, Math.round(patch.goal)),
+        ...(fill === undefined || futureYou ? {} : fillFields(fill)),
       };
-      const touched = new Set<string>();
+      // A 2.1 goal still filling from the slice keeps this cycle's set-aside as it was: changing
+      // its target or pausing it moves no number. Any other jar's change reaches this cycle.
+      const reaches =
+        !futureYou &&
+        (fill !== undefined ||
+          (!legacy && (patch.goal !== undefined || patch.paused !== undefined)) ||
+          opening !== undefined);
       await db.withTransactionAsync(async () => {
         await tables.pots.put(next);
         if (opening !== undefined) await writeOpening(db, id, opening, snap.cycle.start);
-        if (SET_ASIDE_FIELDS.some((field) => field in patch) || opening !== undefined) {
-          touched.add(id);
-        }
-        if (pot.kind === 'goal' && typeof patch.share === 'number' && patch.share !== pot.share) {
-          const shares = rebalanceShares({ ...goalShares(snap.pots), [id]: patch.share }, id);
-          for (const moved of await putShares(
-            snap.pots.filter((p) => p.id !== id),
-            shares,
-          )) {
-            touched.add(moved);
-          }
-          await tables.pots.put({ ...next, share: shares[id] ?? patch.share });
-        }
-        await refreshSetAsides([...touched]);
+        if (reaches) await refreshSetAsides([id]);
       });
       await reload();
     },
 
-    /** The +100k buttons: money moved into a goal or pot now, out of this cycle's free money. */
+    /** Hold to add: money put into a jar now, out of this cycle's free money. */
     topUp: async (potId: string, amount: number) => {
       const snap = store.getSnapshot();
+      const move: PotMove = {
+        potId,
+        kind: 'topUp',
+        cycle: snap.cycle.start,
+        amount: Math.max(0, Math.round(amount)),
+      };
+      if (move.amount === 0) return;
       await db.runAsync(
         'INSERT INTO pot_moves (id, pot_id, amount, kind, cycle, at) VALUES (?, ?, ?, ?, ?, ?)',
-        [
-          randomUUID(),
-          potId,
-          Math.round(amount),
-          'topUp',
-          snap.cycle.start,
-          new Date().toISOString(),
-        ],
+        [randomUUID(), potId, move.amount, 'topUp', move.cycle, new Date().toISOString()],
       );
-      store.publish({
-        ...snap,
-        potSaved: { ...snap.potSaved, [potId]: (snap.potSaved[potId] ?? 0) + Math.round(amount) },
-        topUpsThisCycle: snap.topUpsThisCycle + Math.round(amount),
-      });
+      store.publish({ ...snap, potMoves: [...snap.potMoves, move] });
     },
 
     /**
-     * Deletes a pot: it leaves the Plan and the daily number, and what it held (only ever a count)
-     * goes back into free money. `restorePot` undoes it.
+     * Deletes a jar: it leaves the shelf and the daily number, and this cycle's set-aside goes back
+     * to free money, less what was already spent from it (M13). Future you's jar is never deleted.
+     * `restorePot` undoes it.
      */
     archivePot: async (id: string) => {
+      if (id === FUTURE_YOU_POT_ID) return;
       const pot = await tables.pots.get(id);
       if (!pot) return;
       await tables.pots.put({ ...pot, archivedAt: new Date().toISOString() });
-      if (pot.kind === 'goal') {
-        const rest = store.getSnapshot().pots.filter((p) => p.id !== id);
-        const shares = rebalanceShares(goalShares(rest));
-        await refreshSetAsides(await putShares(rest, shares));
-      }
       await reload();
     },
     restorePot: async (id: string) => {
       const pot = await tables.pots.get(id);
       if (!pot) return;
-      const touched: string[] = [];
-      await db.withTransactionAsync(async () => {
-        await tables.pots.put({ ...pot, archivedAt: null });
-        if (pot.kind !== 'goal') return;
-        // The goals that took its share when it went give it back: the shares add up to one again.
-        const rest = store.getSnapshot().pots.filter((p) => p.id !== id);
-        const shares = rebalanceShares({ ...goalShares(rest), [id]: pot.share ?? 0 }, id);
-        touched.push(...(await putShares(rest, shares)));
-        const share = shares[id];
-        if (share !== undefined && share !== pot.share) {
-          await tables.pots.put({ ...pot, archivedAt: null, share });
-          touched.push(id);
-        }
-        await refreshSetAsides(touched);
-      });
+      await tables.pots.put({ ...pot, archivedAt: null });
       await reload();
     },
 
@@ -269,7 +242,7 @@ export function planActions(store: MoneyStore) {
       if (!snap.plan || snap.plan.futureYou === amount) return;
       const plan = { ...snap.plan, futureYou: Math.max(0, Math.round(amount)) };
       await writePlan(db, plan);
-      // The goals split Future you, so this cycle's share of it is worked out again.
+      // Future you's jar and the 2.1 goals fill from the slice: this cycle's part is worked out again.
       await refreshSetAsides(snap.pots.filter((p) => p.kind === 'goal').map((p) => p.id));
       await reload();
     },

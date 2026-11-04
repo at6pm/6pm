@@ -5,6 +5,7 @@ import { payCycleOn } from '../plan/pay-cycle';
 import { currencyOf } from '../money/currency';
 import {
   addsToFree,
+  futureYouSavedSplit,
   futureYouSplit,
   isBigMoneyIn,
   looksLikePay,
@@ -261,5 +262,25 @@ describe('futureYouSplit', () => {
       ]),
     ).toEqual({ a: 100, b: 100, c: 100 });
     expect(futureYouSplit(300, [])).toEqual({});
+  });
+});
+
+describe('money in saved to Future you', () => {
+  it('goes into Future you’s jar when no 2.1 goal is left', () => {
+    expect(futureYouSavedSplit(500_000, [{ id: 'futureYou', kind: 'goal', share: null }])).toEqual({
+      futureYou: 500_000,
+    });
+  });
+
+  it('splits by the 2.1 goals’ shares as 2.1 did, the jar taking what they no longer take', () => {
+    const fy = { id: 'futureYou', kind: 'goal', share: null };
+    const a = { id: 'a', kind: 'goal', share: 0.6 };
+    const b = { id: 'b', kind: 'goal', share: 0.4 };
+    expect(futureYouSavedSplit(1_000_000, [fy, a, b])).toEqual({ a: 600_000, b: 400_000 });
+    const converted = { ...b, kind: 'occasion' };
+    expect(futureYouSavedSplit(1_000_000, [fy, a, converted])).toEqual({
+      a: 600_000,
+      futureYou: 400_000,
+    });
   });
 });

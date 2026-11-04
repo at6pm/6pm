@@ -39,15 +39,15 @@ export const viAskLedger: { readonly [Key in keyof typeof enAskLedger]: Entry } 
   'ask.row.before': 'Trước đó',
   'ask.answer.goalPace.months': {
     other:
-      'Với {monthly} mỗi tháng cho bạn của tương lai, {amount} cho {what} mất khoảng {count} tháng, tầm {month}.',
+      'Với {monthly} mỗi tháng cho Tương lai, {amount} cho {what} mất khoảng {count} tháng, tầm {month}.',
   },
   'ask.answer.goalPace.years': {
     other:
-      'Với {monthly} mỗi tháng cho bạn của tương lai, {amount} cho {what} mất khoảng {count} năm, tầm {month}.',
+      'Với {monthly} mỗi tháng cho Tương lai, {amount} cho {what} mất khoảng {count} năm, tầm {month}.',
   },
-  'ask.answer.goalPace.note': 'Tạo riêng một hũ cho nó để tiền không lẫn vào chỗ khác nha.',
+  'ask.answer.goalPace.note': 'Tạo riêng một lọ cho nó để tiền không lẫn vào chỗ khác nha.',
   'ask.answer.goalNoPace':
-    'Hiện mỗi tháng chưa có khoản nào cho bạn của tương lai, nên chưa tính được bao lâu để có {amount} cho {what}. Mỗi tháng một ít là bắt đầu rồi.',
+    'Hiện mỗi tháng chưa có khoản nào cho Tương lai, nên chưa tính được bao lâu để có {amount} cho {what}. Mỗi tháng một ít là bắt đầu rồi.',
   'ask.answer.goalAmount':
     '{what} tầm bao nhiêu tiền? Nói mình giá, kiểu “{example}”, mình tính cho.',
   'ask.row.reachedBy': 'Khoảng',

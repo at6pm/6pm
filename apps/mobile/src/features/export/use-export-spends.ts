@@ -2,12 +2,15 @@ import { useCallback, useRef, useState } from 'react';
 
 import { localTimeOf, spendsCsv, type Currency, type SpendsCsvLabels } from '@6pm/domain';
 
+import { notDailyOf } from '../../data/diary-queries';
 import { useMoneyStore } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
-import { useHomeCurrency } from '../../money/use-money-format';
+import { useHomeCurrency, useMoneyFormat } from '../../money/use-money-format';
+import { jarName } from '../pots/jar-name';
 import { useToast } from '../../ui/toast/toast-host';
 import { useClock } from '../../ui/theme/clock';
 import { exportFileName } from './export-file';
+import { withJarNotes } from './jar-notes';
 import { shareCsv } from './share-csv';
 
 type T = ReturnType<typeof useI18n>['t'];
@@ -59,6 +62,7 @@ export function useExportSpends() {
   const store = useMoneyStore();
   const { t } = useI18n();
   const currency = useHomeCurrency();
+  const money = useMoneyFormat();
   const { today } = useClock();
   const toast = useToast();
   const [busy, setBusy] = useState(false);
@@ -70,17 +74,33 @@ export function useExportSpends() {
     setBusy(true);
     try {
       // After any write still in flight, so the file has the spend just added.
-      const [spends, categories] = await store.exclusive(() =>
+      // Jars since deleted too: a spend taken from one still says which.
+      const [spends, categories, pots] = await store.exclusive(() =>
         Promise.all([
           store.tables.spends.select("WHERE status != 'deleted' ORDER BY day, at", []),
           store.tables.categories.all(),
+          store.tables.pots.all(),
         ]),
       );
       if (spends.length === 0) {
         toast(t('export.empty'));
         return;
       }
-      const csv = spendsCsv(spends, categories, labelsOf(t, currency), localTimeOf, currency);
+      const names = new Map(pots.map((p) => [p.id, jarName(p, t)]));
+      // A jar the phone no longer has at all is just "From a jar".
+      const rows = withJarNotes(spends, notDailyOf({ categories }), {
+        whole: (potId) => {
+          const jar = names.get(potId);
+          return jar ? t('export.csv.fromJar', { jar }) : t('potsClose.fromJar');
+        },
+        part: (potId, covered) => {
+          const jar = names.get(potId);
+          return jar
+            ? t('export.csv.fromJarPart', { jar, amount: money.full(covered) })
+            : t('potsClose.fromJar');
+        },
+      });
+      const csv = spendsCsv(rows, categories, labelsOf(t, currency), localTimeOf, currency);
       await shareCsv(exportFileName(today), csv);
     } catch (error: unknown) {
       console.error('Exporting the spends failed', error);
@@ -89,7 +109,7 @@ export function useExportSpends() {
       running.current = false;
       setBusy(false);
     }
-  }, [currency, store, t, today, toast]);
+  }, [currency, money, store, t, today, toast]);
 
   return { run, busy };
 }

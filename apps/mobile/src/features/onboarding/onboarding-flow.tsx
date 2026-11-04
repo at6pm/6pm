@@ -201,6 +201,7 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
             percent={o.percent}
             amount={o.futureYou}
             free={o.income - o.billSum - o.futureYou}
+            line={o.first.line}
             onPercent={o.setPercent}
           />
         );

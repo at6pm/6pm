@@ -8,7 +8,7 @@ export const frAskChat: { readonly [Key in keyof typeof enAskChat]: Entry } = {
   'ask.chat.greeting.cheeky': 'Hey ! Demande-moi tout ce qui touche à l’argent, j’ai tes chiffres.',
   'ask.chat.greeting.roast': 'Ah, c’est toi. Tu viens constater l’ampleur des dégâts ?',
   'ask.chat.greeting.plain':
-    'Bonjour. Pose-moi tes questions sur tes dépenses, tes factures ou tes cagnottes.',
+    'Bonjour. Pose-moi tes questions sur tes dépenses, tes factures ou tes bocaux.',
   'ask.chat.thanks.soft': 'Avec plaisir. Prends soin de toi aujourd’hui.',
   'ask.chat.thanks.cheeky': 'Avec plaisir ! Je me fais payer en journées clôturées à l’heure.',
   'ask.chat.thanks.roast': 'Ne me remercie pas. Remercie le budget que tu as presque tenu.',
@@ -21,7 +21,7 @@ export const frAskChat: { readonly [Key in keyof typeof enAskChat]: Entry } = {
   'ask.chat.identity':
     'Je suis ton compagnon dans 6pm. Chaque chiffre que je te donne est calculé sur ton téléphone, à partir de tes propres dépenses. Je suis un programme, pas une personne.',
   'ask.chat.privacy':
-    'Je ne vois pas ton compte bancaire. Je ne connais que ce qu’il y a dans 6pm, et ça reste sur ton téléphone. Pour lire une question, notre serveur voit la question et les noms de tes catégories et cagnottes ; pour formuler une réplique, seulement les quelques faits qu’elle contient.',
+    'Je ne vois pas ton compte bancaire. Je ne connais que ce qu’il y a dans 6pm, et ça reste sur ton téléphone. Pour lire une question, notre serveur voit la question et les noms de tes catégories et bocaux ; pour formuler une réplique, seulement les quelques faits qu’elle contient.',
   'ask.chat.venting.soft': 'Ça a l’air lourd. On le porte à deux.',
   'ask.chat.venting.cheeky': 'Dure journée. Respire : c’est un chiffre, pas un verdict.',
   'ask.chat.venting.plain': 'Le stress lié à l’argent, c’est réel.',
@@ -47,7 +47,7 @@ export const frAskChat: { readonly [Key in keyof typeof enAskChat]: Entry } = {
   'ask.chat.distress':
     'C’est vraiment dur de se sentir comme ça. Tu n’as pas à porter ça sans aide : parle à quelqu’un de confiance, ou appelle la ligne d’écoute Ngày Mai au 096 306 1414 (de 13 h à 20 h 30, du mercredi au dimanche). Si tu es en danger maintenant, appelle le 115.',
   'ask.chat.investing':
-    'Je ne peux pas te dire dans quoi investir ni quand ; il faut un conseiller agréé pour ça. Je peux te montrer ce qu’il te reste chaque mois, ou à quelle vitesse une cagnotte se remplit.',
+    'Je ne peux pas te dire dans quoi investir ni quand ; il faut un conseiller agréé pour ça. Je peux te montrer ce qu’il te reste chaque mois, ou à quelle vitesse un bocal se remplit.',
   'ask.chat.unsafe':
-    'Je ne t’aiderai pas pour ça. Si l’argent manque, je peux te montrer ce qui reste jusqu’à la paie ou ce que tes cagnottes peuvent couvrir. Si un prêteur illégal te menace, appelle la police au 113.',
+    'Je ne t’aiderai pas pour ça. Si l’argent manque, je peux te montrer ce qui reste jusqu’à la paie ou ce que tes bocaux peuvent couvrir. Si un prêteur illégal te menace, appelle la police au 113.',
 };

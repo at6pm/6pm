@@ -84,7 +84,7 @@ export const jaToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'quick.keep': '残す',
   'details.title': '詳細',
   'details.edit': '編集',
-  'details.pot': '貯金箱',
+  'details.pot': '瓶',
   'details.freeMoney': '自由に使えるお金',
   'details.claimBack': '経費精算',
   'details.paidWith': '支払い方法',

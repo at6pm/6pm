@@ -33,6 +33,9 @@ import { enCompanions } from './en-companions';
 import { enWidgetsGuide } from './en-widgets-guide';
 import { enDuo } from './en-duo';
 import { enMoneyIn } from './en-money-in';
+import { enPotsClose } from './en-pots-close';
+import { enPotsPlan } from './en-pots-plan';
+import { enPots } from './en-pots';
 import { enFirstCatch } from './en-first-catch';
 
 /** The source catalogue: every key the app uses, in English. */
@@ -72,5 +75,8 @@ export const en = {
   ...enWidgetsGuide,
   ...enDuo,
   ...enMoneyIn,
+  ...enPotsClose,
+  ...enPotsPlan,
+  ...enPots,
   ...enFirstCatch,
 } as const;

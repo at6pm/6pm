@@ -27,7 +27,7 @@ export const zhHansPrivacyAi: { readonly [Key in keyof typeof enPrivacyAi]: Entr
   'settings.ai.server': '在我们的服务器上',
   'settings.ai.device': '在这台 iPhone 上',
   'privacy.leaves.title': '会离开手机的内容',
-  'privacy.leaves.server.ask': '一个问题，连同你的分类和存钱罐名称，用来读懂它',
+  'privacy.leaves.server.ask': '一个问题，连同你的分类和罐子名称，用来读懂它',
   'privacy.leaves.server.lines': '一句小伙伴的话里用到的几条信息',
   'privacy.leaves.server.receipts': '手机读不出的小票照片',
   'privacy.leaves.server.voice': '你说话时的声音，用来转成文字',

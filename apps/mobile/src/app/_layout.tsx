@@ -86,7 +86,8 @@ function Screens() {
         <Stack.Screen name="missed-day" options={drawnSheet} />
         <Stack.Screen name="money-diary" options={sheet} />
         <Stack.Screen name="new-pot" options={sheet} />
-        <Stack.Screen name="pot/[id]" options={sheet} />
+        <Stack.Screen name="pots" options={sheet} />
+        <Stack.Screen name="pot/[id]" options={drawnSheet} />
         <Stack.Screen name="bill/[id]" options={sheet} />
         <Stack.Screen name="month" options={sheet} />
         <Stack.Screen name="since-payday" options={sheet} />

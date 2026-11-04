@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
 
 import {
@@ -13,13 +13,17 @@ import {
 import { localeOf } from '@6pm/i18n';
 
 import { useGivableSpends } from '../data/givable-spends';
-import { useMoney, useMoneyActions } from '../data/money-provider';
+import { readJarAsks, type JarAsks } from '../data/jar-asks';
+import { readReadyShown } from '../data/jar-ready';
+import { useMoney, useMoneyActions, useMoneyStore } from '../data/money-provider';
 import { CashCustom } from '../features/close/cash-custom';
 import { BillQuestionStep } from '../features/close/close-bill-question';
 import { CloseCards } from '../features/close/close-cards';
 import { CloseEdit } from '../features/close/close-edit';
 import { CloseMoneyEdit } from '../features/close/close-money-edit';
 import { MoneyQuestionStep } from '../features/close/close-money-question';
+import { PotQuestionStep } from '../features/close/close-pot-question';
+import { PotReadyStep } from '../features/close/close-pot-ready';
 import { CloseReceiptStep } from '../features/close/close-receipt-step';
 import { CloseRevealStep } from '../features/close/close-reveal-step';
 import { CashStep, SortedStep } from '../features/close/close-steps';
@@ -65,13 +69,47 @@ export default function Close() {
   const { palette } = useTheme();
   const today = useMoney().today;
   const givable = useGivableSpends(today);
-  if (givable === null) {
+  const memory = useJarMemory();
+  if (givable === null || memory === null) {
     return <View style={{ flex: 1, experimental_backgroundImage: palette.skyDeep }} />;
   }
-  return <CloseOpen givable={givable} />;
+  return <CloseOpen givable={givable} readyShown={memory.readyShown} jarAsks={memory.jarAsks} />;
 }
 
-function CloseOpen({ givable }: { readonly givable: readonly GivableSpend[] }) {
+/**
+ * What this phone remembers about jars, read once as the close opens: the ready moments already
+ * shown, and what arms the "From your {jar}?" question.
+ */
+function useJarMemory(): { readyShown: ReadonlySet<string>; jarAsks: JarAsks } | null {
+  const store = useMoneyStore();
+  const [memory, setMemory] = useState<{
+    readyShown: ReadonlySet<string>;
+    jarAsks: JarAsks;
+  } | null>(null);
+  useEffect(() => {
+    let live = true;
+    Promise.all([
+      readReadyShown(store.db).catch(() => new Set<string>()),
+      readJarAsks(store.db).catch((): JarAsks => ({ taken: [], declined: {} })),
+    ])
+      .then(([readyShown, jarAsks]) => live && setMemory({ readyShown, jarAsks }))
+      .catch(() => undefined);
+    return () => {
+      live = false;
+    };
+  }, [store]);
+  return memory;
+}
+
+function CloseOpen({
+  givable,
+  readyShown,
+  jarAsks,
+}: {
+  readonly givable: readonly GivableSpend[];
+  readonly readyShown: ReadonlySet<string>;
+  readonly jarAsks: JarAsks;
+}) {
   const router = useRouter();
   const { palette } = useTheme();
   const { t, language } = useI18n();
@@ -81,7 +119,7 @@ function CloseOpen({ givable }: { readonly givable: readonly GivableSpend[] }) {
   const snap = useMoney();
   const actions = useMoneyActions();
   const say = useCompanionToast();
-  const close = useClose(givable);
+  const close = useClose(givable, readyShown, jarAsks);
   // The number of the day being closed, even when the money day turns over mid-close.
   const day = useClosingNumber(close.day);
   const { state, dispatch, run } = close;
@@ -217,6 +255,10 @@ function CloseOpen({ givable }: { readonly givable: readonly GivableSpend[] }) {
       {state.step === 'bill' ? (
         <BillQuestionStep state={state} queue={close.queue} dispatch={dispatch} run={run} />
       ) : null}
+      {state.step === 'pot' ? (
+        <PotQuestionStep state={state} queue={close.queue} dispatch={dispatch} run={run} />
+      ) : null}
+      {state.step === 'potReady' ? <PotReadyStep state={state} dispatch={dispatch} /> : null}
       {state.step === 'money' ? (
         <MoneyQuestionStep
           state={state}

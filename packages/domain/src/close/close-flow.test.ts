@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   closeReducer,
+  potQuestion,
   remainingCards,
   startClose,
   stepPosition,
@@ -105,7 +106,49 @@ describe('the 6pm close', () => {
 
   it('labels five steps', () => {
     expect(stepPosition('cards')).toEqual({ index: 1, of: 5 });
+    expect(stepPosition('pot')).toEqual({ index: 3, of: 5 });
+    expect(stepPosition('potReady')).toEqual({ index: 3, of: 5 });
     expect(stepPosition('reveal')).toEqual({ index: 5, of: 5 });
+  });
+
+  it('asks "From your {pot}?" for a due pot spend and celebrates a ready pot before receipt', () => {
+    let s = startClose([{ id: 'hotel', askPot: 'dalat', askWork: true }], { readyPot: 'dalat' });
+    s = run(
+      s,
+      { type: 'decide', id: 'hotel', verdict: 'kept' },
+      { type: 'sortedShown' },
+      { type: 'cashDone' },
+    );
+    expect(s.step).toBe('pot');
+    expect(potQuestion(s)?.id).toBe('hotel');
+
+    // Answering yes to "From your Đà Lạt pot?" skips the work question and moves to potReady
+    s = run(s, { type: 'answerPot', id: 'hotel', fromPot: true });
+    expect(s.potAnswers).toEqual({ hotel: true });
+    expect(s.step).toBe('potReady');
+
+    s = run(s, { type: 'potReadyDone' });
+    expect(s.step).toBe('receipt');
+    expect(run(s, { type: 'receiptDone' }, { type: 'finish' }).step).toBe('done');
+  });
+
+  it('skips the pot question when the spend was not mine or paid a bill', () => {
+    const notMine = run(
+      startClose([{ id: 'hotel', askPot: 'dalat' }]),
+      { type: 'decide', id: 'hotel', verdict: 'notMine' },
+      { type: 'sortedShown' },
+      { type: 'cashDone' },
+    );
+    expect(notMine.step).toBe('receipt');
+
+    const paidBill = run(
+      startClose([{ id: 'transfer', askBill: 'rent', askPot: 'dalat' }]),
+      { type: 'decide', id: 'transfer', verdict: 'kept' },
+      { type: 'sortedShown' },
+      { type: 'cashDone' },
+      { type: 'answerBill', id: 'transfer', paid: true },
+    );
+    expect(paidBill.step).toBe('receipt');
   });
 
   it('always reaches done whatever order the user decides in', () => {

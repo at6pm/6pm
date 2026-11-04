@@ -193,6 +193,29 @@ export const DayPane = memo(function DayPane({ view }: { readonly view: DiaryDay
                 );
               })
             )}
+            {/* "From {jar}": what jars covered, so the rows add up to the day's total (M13). */}
+            {receipt.jars.map((j, i) => (
+              <View
+                key={`jar-${i}`}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 12,
+                  paddingVertical: 11,
+                  borderBottomWidth: 1,
+                  borderStyle: 'dashed',
+                  borderColor: paperInk.rule,
+                }}
+              >
+                <View style={{ width: 34 }} />
+                <Text numberOfLines={1} style={{ flex: 1, ...body(15, 550), color: paperInk.soft }}>
+                  {j.name}
+                </Text>
+                <Text style={{ ...mono(14, 500), ...tabular, color: paperInk.soft }}>
+                  −{money.short(j.amount)}
+                </Text>
+              </View>
+            ))}
           </View>
         </ScrollView>
       </Animated.View>

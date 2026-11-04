@@ -165,6 +165,70 @@ describe('backupSnapshotSchema', () => {
     );
   });
 
+  it('round-trips version 6 snapshots with steady jars and spends from a jar, and reads version 5', () => {
+    const v5Pot = {
+      id: 'cushion',
+      kind: 'goal',
+      name: 'Rainy day',
+      icon: 'umbrella',
+      hue: 200,
+      goal: 10_000_000,
+      neededBy: null,
+      share: 0.5,
+      paused: false,
+      createdAt: '2026-10-01T00:00:00.000Z',
+      archivedAt: null,
+    };
+    const v5Spend = {
+      id: 'spend-v5',
+      day: '2026-10-10',
+      at: '2026-10-10T05:00:00.000Z',
+      amount: 1_200_000,
+      categoryId: 'shopping',
+      merchant: 'Hotel Đà Lạt',
+      note: null,
+      source: 'manual',
+      status: 'kept',
+      previousStatus: null,
+      wallet: null,
+      forWork: false,
+      detail: null,
+      foreignAmount: null,
+      createdAt: '2026-10-10T05:00:00.000Z',
+      updatedAt: '2026-10-10T05:00:00.000Z',
+    };
+    const parsedV5 = backupSnapshotSchema.parse({
+      ...empty,
+      version: 5,
+      pots: [v5Pot],
+      spends: [v5Spend],
+    });
+    expect(parsedV5.version).toBe(5);
+    expect(parsedV5.pots[0]).not.toHaveProperty('monthly');
+    expect(parsedV5.spends[0]).not.toHaveProperty('fromPot');
+
+    const v6Pot = { ...v5Pot, id: 'futureYou', goal: 0, share: 1, monthly: null };
+    const steadyPot = { ...v5Pot, id: 'rainy', goal: 0, share: null, monthly: 500_000 };
+    const v6Spend = {
+      ...v5Spend,
+      id: 'spend-v6',
+      amount: 7_000_000,
+      fromPot: 'dalat',
+      fromPotAmount: 6_000_000,
+    };
+    const parsedV6 = backupSnapshotSchema.parse({
+      ...empty,
+      version: 6,
+      pots: [v6Pot, steadyPot],
+      spends: [v6Spend],
+    });
+    expect(parsedV6.version).toBe(6);
+    expect(parsedV6.pots[0]?.goal).toBe(0);
+    expect(parsedV6.pots[1]?.monthly).toBe(500_000);
+    expect(parsedV6.spends[0]?.fromPot).toBe('dalat');
+    expect(parsedV6.spends[0]?.fromPotAmount).toBe(6_000_000);
+  });
+
   it('counts what a person made and would miss', () => {
     expect(backupItemCount(backupSnapshotSchema.parse(empty))).toBe(0);
   });

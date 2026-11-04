@@ -178,7 +178,7 @@ export const koInsights: { readonly [Key in keyof typeof enInsights]: Entry } = 
   'insight.potMilestone.cheeky.2': '{pot} {percent}% 완료. 계속 밥 줘.',
   'insight.potMilestone.roast.1': '{pot} 저금통 {percent}%. 저금통이 이기는 중. 그냥 둬.',
   'insight.potMilestone.roast.2': '{pot}까지 {percent}%. 털어 가지 마.',
-  'insight.potMilestone.plain': '{pot} 저금통이 목표의 {percent}%를 넘었어요.',
+  'insight.potMilestone.plain': '{pot} 저금통이 목표 금액의 {percent}%를 넘었어요.',
 
   'insight.potFull.soft.1': '{pot} 저금통이 꽉 찼어요. 해냈어요.',
   'insight.potFull.soft.2': '{pot}: 완료. 마음껏 즐겨요.',
@@ -186,7 +186,7 @@ export const koInsights: { readonly [Key in keyof typeof enInsights]: Entry } = 
   'insight.potFull.cheeky.2': '{pot}, 넘치기 직전까지 꽉.',
   'insight.potFull.roast.1': '{pot} 저금통 완성. 놀릴 말 준비했는데 필요 없었네.',
   'insight.potFull.roast.2': '꽉 찬 저금통: {pot}. 이제 원래 쓰려던 데 써.',
-  'insight.potFull.plain': '{pot} 저금통이 목표에 도달했어요.',
+  'insight.potFull.plain': '{pot} 저금통이 꽉 찼어요.',
 
   'insight.workToClaim.soft.1': { other: '경비 청구할 업무 지출 {count}건({amount})이 있어요.' },
   'insight.workToClaim.soft.2': {

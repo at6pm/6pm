@@ -19,6 +19,9 @@ import { frInsightsHabits } from './insights-habits';
 import { frIntents } from './intents';
 import { frLooks } from './looks';
 import { frMoneyIn } from './money-in';
+import { frPotsClose } from './pots-close';
+import { frPotsPlan } from './pots-plan';
+import { frPots } from './pots';
 import { frNative } from './native';
 import { frOnboarding } from './onboarding';
 import { frPlan } from './plan';
@@ -75,6 +78,9 @@ export const fr: Catalogue = {
   ...frWidgetsGuide,
   ...frDuo,
   ...frMoneyIn,
+  ...frPotsClose,
+  ...frPotsPlan,
+  ...frPots,
   ...frFirstCatch,
 };
 

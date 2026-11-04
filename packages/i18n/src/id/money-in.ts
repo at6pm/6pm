@@ -3,14 +3,14 @@ import type { enMoneyIn } from '../en-money-in';
 
 export const idMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'moneyIn.name': 'Uang masuk',
-  'moneyIn.hint': 'Kanan bagi rata · atas untuk masa depan',
+  'moneyIn.hint': 'Kanan bagi rata · atas untuk menabung',
   'moneyIn.hintNoSave': 'Kanan bagi rata · bawah kalau bukan punyamu',
   'moneyIn.card.asIs': 'BESOK TETAP SAMA',
   'moneyIn.card.spread': { other: 'BAGI RATA {count} HARI' },
   'moneyIn.stamp.spread': 'BAGI RATA',
-  'moneyIn.stamp.futureYou': 'MASA DEPAN',
+  'moneyIn.stamp.futureYou': 'KAMU DI MASA DEPAN',
   'moneyIn.btn.spread': 'Bagi rata',
-  'moneyIn.btn.futureYou': 'Masa depan',
+  'moneyIn.btn.futureYou': 'Kamu di masa depan',
   'moneyIn.undoSpread': '{name} dibagi rata',
   'moneyIn.undoSaved': '{name} ditabung',
   'moneyIn.pill': 'KAMU DI MASA DEPAN',

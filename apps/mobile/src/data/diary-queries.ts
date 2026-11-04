@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import {
   countsTowardDay,
   cycleMonth,
+  jarReceiptLines,
   localDateOf,
   monthEnd,
   monthOf,
@@ -12,6 +13,7 @@ import {
   type ClosedDayRow,
   type DailyNumber,
   type DiarySpend,
+  type JarReceiptLine,
   type LocalDate,
   type MonthKey,
   type MonthTotal,
@@ -107,7 +109,8 @@ export function futureYouOfMonth(
         ? cycleMonth(payCycleOn(move.cycle, payday))
         : monthOf(localDateOf(new Date(move.at)));
     if (filed > month) continue;
-    total += move.amount;
+    // A spend taken from the jar is money out of it, never money in.
+    total += move.kind === 'spent' ? -Math.abs(move.amount) : move.amount;
     if (filed === month && move.kind !== 'spent') added += move.amount;
   }
   return { added, total };
@@ -121,7 +124,12 @@ async function readFutureYou(
   const rows = await store.db.getAllAsync<GoalMoveRow>(
     `SELECT m.kind AS kind, m.amount AS amount, m.cycle AS cycle, m.at AS at
      FROM pot_moves m JOIN pots p ON p.id = m.pot_id
-     WHERE p.kind = 'goal' AND p.archived_at IS NULL`,
+     WHERE p.kind = 'goal' AND p.archived_at IS NULL AND m.kind != 'spent'
+     UNION ALL
+     SELECT 'spent' AS kind, COALESCE(s.from_pot_amount, s.amount) AS amount, s.day AS cycle,
+       s.at AS at
+     FROM spends s JOIN pots p ON p.id = s.from_pot
+     WHERE p.kind = 'goal' AND p.archived_at IS NULL AND s.status NOT IN ('skipped', 'deleted')`,
     [],
   );
   return futureYouOfMonth(rows, month, payday);
@@ -137,6 +145,8 @@ export function toDiarySpend(s: SpendRow): DiarySpend {
     forWork: s.forWork,
     paysBill: s.paysBill,
     direction: s.direction,
+    fromPot: s.fromPot,
+    fromPotAmount: s.fromPotAmount,
   };
 }
 
@@ -198,8 +208,10 @@ export async function readDiary(
 /**
  * One day's receipt: the kept spends that count toward the day, oldest first, and its number. A
  * category set to not count, and a spend sent to Claim back, are not in the total, so they are not
- * lines: the lines add up to the total. Money that came in that day and was kept is listed apart,
- * under the total; a spend given back since (refunded, or paid back) carries the day it came back.
+ * lines. A spend taken from a jar is a line at its full amount, and under the lines one per jar
+ * takes off what the jars covered (`jars`): the lines less the jar lines add up to the total, what
+ * the day's number counted. Money that came in that day and was kept is listed apart, under the
+ * total; a spend given back since (refunded, or paid back) carries the day it came back.
  */
 export async function readDayReceipt(
   store: MoneyStore,
@@ -208,6 +220,7 @@ export async function readDayReceipt(
 ): Promise<{
   readonly day: LocalDate;
   readonly spends: readonly SpendRow[];
+  readonly jars: readonly JarReceiptLine[];
   readonly moneyIn: readonly SpendRow[];
   readonly givenBack: Readonly<Record<string, LocalDate>>;
   readonly no: number;
@@ -217,21 +230,18 @@ export async function readDayReceipt(
     readReceiptNumber(store, day),
   ]);
   const moneyIn = spends.filter((s) => s.direction === 'in' && s.status === 'kept');
-  const lines = spends.filter(
-    (s) =>
-      s.status === 'kept' &&
-      countsTowardDay(
-        {
-          amount: s.amount,
-          category: s.categoryId,
-          status: s.status,
-          forWork: s.forWork,
-          paysBill: s.paysBill,
-          direction: s.direction,
-        },
-        notDaily,
-      ),
-  );
+  const counted = (s: SpendRow) => ({
+    amount: s.amount,
+    category: s.categoryId,
+    status: s.status,
+    forWork: s.forWork,
+    paysBill: s.paysBill,
+    direction: s.direction,
+    fromPot: s.fromPot,
+    fromPotAmount: s.fromPotAmount,
+  });
+  const lines = spends.filter((s) => s.status === 'kept' && countsTowardDay(counted(s), notDaily));
+  const jars = jarReceiptLines(lines.map(counted), notDaily);
   const ids = lines.map((s) => s.id);
   const backs =
     ids.length === 0
@@ -242,7 +252,7 @@ export async function readDayReceipt(
         );
   const givenBack: Record<string, LocalDate> = {};
   for (const back of backs) if (back.givesBack) givenBack[back.givesBack] = back.day;
-  return { day, spends: lines, moneyIn, givenBack, no };
+  return { day, spends: lines, jars, moneyIn, givenBack, no };
 }
 
 /** A month's money diary: its closed days, spends and what went to Future you. */

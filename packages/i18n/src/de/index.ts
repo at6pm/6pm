@@ -19,6 +19,9 @@ import { deInsightsHabits } from './insights-habits';
 import { deIntents } from './intents';
 import { deLooks } from './looks';
 import { deMoneyIn } from './money-in';
+import { dePotsClose } from './pots-close';
+import { dePotsPlan } from './pots-plan';
+import { dePots } from './pots';
 import { deNative } from './native';
 import { deOnboarding } from './onboarding';
 import { dePlan } from './plan';
@@ -75,6 +78,9 @@ export const de: Catalogue = {
   ...deWidgetsGuide,
   ...deDuo,
   ...deMoneyIn,
+  ...dePotsClose,
+  ...dePotsPlan,
+  ...dePots,
   ...deFirstCatch,
 };
 

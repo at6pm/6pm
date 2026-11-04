@@ -246,17 +246,17 @@ export const enInsights = {
   'insight.potMilestone.soft.2': '{percent}% of the way to {pot}.',
   'insight.potMilestone.cheeky.1': '{pot}: {percent}% there. It’s happening.',
   'insight.potMilestone.cheeky.2': '{percent}% of {pot}, done. Keep feeding it.',
-  'insight.potMilestone.roast.1': '{pot} at {percent}%. The pot is winning. Let it.',
+  'insight.potMilestone.roast.1': '{pot} at {percent}%. The jar is winning. Let it.',
   'insight.potMilestone.roast.2': '{percent}% to {pot}. Don’t raid it.',
-  'insight.potMilestone.plain': '{pot} is past {percent}% of its goal.',
+  'insight.potMilestone.plain': '{pot} is past {percent}% of its target.',
 
   'insight.potFull.soft.1': '{pot} is full. You did that.',
   'insight.potFull.soft.2': '{pot}: done. Enjoy it, truly.',
   'insight.potFull.cheeky.1': '{pot} is full! Confetti, but quietly.',
   'insight.potFull.cheeky.2': '{pot}, filled to the brim.',
   'insight.potFull.roast.1': '{pot} is full. I had a joke ready; you didn’t need it.',
-  'insight.potFull.roast.2': 'Full pot: {pot}. Now spend it on the thing it was for.',
-  'insight.potFull.plain': '{pot} has reached its goal.',
+  'insight.potFull.roast.2': 'Full jar: {pot}. Now spend it on the thing it was for.',
+  'insight.potFull.plain': '{pot} is full.',
 
   'insight.workToClaim.soft.1': {
     one: 'One work spend ({amount}) to claim back.',

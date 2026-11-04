@@ -1,4 +1,11 @@
-import { type Fact, type FactKind, type FactSlot, type MoneyFormat, slotsOf } from '@6pm/domain';
+import {
+  isFutureYouPot,
+  slotsOf,
+  type Fact,
+  type FactKind,
+  type FactSlot,
+  type MoneyFormat,
+} from '@6pm/domain';
 import type { Language } from '@6pm/i18n';
 
 /** The companion's voice: a personality, or plain in serious mode. */
@@ -30,6 +37,8 @@ function slotText(slot: FactSlot, words: SlotWords): string {
     case 'category':
       return words.categoryName(slot.id);
     case 'pot':
+      // Future you's jar is named in the phone's language, never by the text its row keeps.
+      return isFutureYouPot(slot.id) ? words.say('pots.futureYou') : slot.name;
     case 'bill':
       return slot.name;
     case 'compare':

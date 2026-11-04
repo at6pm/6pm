@@ -22,4 +22,6 @@ export const zhHansExport: { readonly [Key in keyof typeof enExport]: Entry } = 
   'export.csv.currency': '币种',
   'export.csv.yes': '是',
   'export.csv.no': '否',
+  'export.csv.fromJar': '来自“{jar}”罐子',
+  'export.csv.fromJarPart': '来自“{jar}”罐子：{amount}',
 };

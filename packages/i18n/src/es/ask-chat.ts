@@ -7,7 +7,7 @@ export const esAskChat: { readonly [Key in keyof typeof enAskChat]: Entry } = {
   'ask.chat.greeting.soft': '¡Hola! Aquí estoy cuando quieras echar un ojo a tu dinero.',
   'ask.chat.greeting.cheeky': 'Hola, hola. Pregúntame lo que quieras de dinero, tengo tus números.',
   'ask.chat.greeting.roast': 'Ah, eres tú. ¿Vienes a preguntar cómo de mal va?',
-  'ask.chat.greeting.plain': 'Hola. Pregúntame por tus gastos, facturas o huchas.',
+  'ask.chat.greeting.plain': 'Hola. Pregúntame por tus gastos, facturas o frascos.',
   'ask.chat.thanks.soft': 'Cuando quieras. Cuídate hoy.',
   'ask.chat.thanks.cheeky': '¡Cuando quieras! Acepto pagos en días cerrados a tiempo.',
   'ask.chat.thanks.roast': 'No me des las gracias. Dáselas al presupuesto que casi cumpliste.',
@@ -19,7 +19,7 @@ export const esAskChat: { readonly [Key in keyof typeof enAskChat]: Entry } = {
   'ask.chat.identity':
     'Soy tu compañero en 6pm. Cada número que te doy se calcula en tu teléfono, a partir de tus propios gastos. Soy un programa, no una persona.',
   'ask.chat.privacy':
-    'No puedo ver tu cuenta del banco. Solo sé lo que hay en 6pm, y eso se queda en tu teléfono. Para leer una pregunta, nuestro servidor ve la pregunta y los nombres de tus categorías y huchas; para redactar una frase, solo los pocos datos que lleva.',
+    'No puedo ver tu cuenta del banco. Solo sé lo que hay en 6pm, y eso se queda en tu teléfono. Para leer una pregunta, nuestro servidor ve la pregunta y los nombres de tus categorías y frascos; para redactar una frase, solo los pocos datos que lleva.',
   'ask.chat.venting.soft': 'Suena a mucho peso. No tienes por qué llevarlo sin ayuda.',
   'ask.chat.venting.cheeky': 'Día duro. Respira: es un número, no un veredicto.',
   'ask.chat.venting.plain': 'El estrés por el dinero es real.',
@@ -44,7 +44,7 @@ export const esAskChat: { readonly [Key in keyof typeof enAskChat]: Entry } = {
   'ask.chat.distress':
     'Siento mucho que te sientas así. No tienes que cargar con esto en soledad: habla con alguien de confianza o llama a la línea de ayuda Ngày Mai al 096 306 1414 (de 13:00 a 20:30, de miércoles a domingo). Si estás en peligro ahora mismo, llama al 115.',
   'ask.chat.investing':
-    'No puedo decirte en qué invertir ni cuándo; para eso hace falta un asesor autorizado. Puedo enseñarte cuánto te sobra cada mes o lo rápido que se llena una hucha.',
+    'No puedo decirte en qué invertir ni cuándo; para eso hace falta un asesor autorizado. Puedo enseñarte cuánto te sobra cada mes o lo rápido que se llena un frasco.',
   'ask.chat.unsafe':
-    'Con eso no te voy a ayudar. Si el dinero va justo, puedo enseñarte lo que queda hasta el día de cobro o lo que podrían cubrir tus huchas. Si un prestamista ilegal te está amenazando, llama a la policía al 113.',
+    'Con eso no te voy a ayudar. Si el dinero va justo, puedo enseñarte lo que queda hasta el día de cobro o lo que podrían cubrir tus frascos. Si un prestamista ilegal te está amenazando, llama a la policía al 113.',
 };

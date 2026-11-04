@@ -3,54 +3,58 @@ import { View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   Easing,
-  runOnJS,
   useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
   withTiming,
+  type SharedValue,
 } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import { curves } from '@6pm/theme';
 
 import { useTheme } from '../../ui/theme/theme';
-import type { PlanColours } from './plan-colours';
 
-const settle = Easing.bezier(...curves.house);
+const settle = Easing.bezier(...curves.jarFill);
 const SETTLE_MS = 260;
-// The iOS slider the prototype's range input draws: a 4 pt track and a 28 pt white thumb that stays
-// inside the track's ends, as the look's intensity slider does.
-const THUMB = 28;
-const TRACK = 4;
-const HIT = 32;
+// The canvas's range input: a 6 pt track on a 30 pt row, and a 30 pt thumb that stays inside
+// the track's ends.
+const THUMB = 30;
+const TRACK = 6;
 
 /**
- * The what-if range: Future you from 0 to `max` in `step`s (250k in đồng). The thumb follows the
- * finger on the UI thread and ticks at every step; each new step goes to JS once (`onStep`, so
- * the daily number can show the real change), and letting go settles on the step and commits it
- * (`onCommit`).
+ * The what-if range on Future you's jar: 0 to `max` in `step`s. The thumb follows the finger on
+ * the UI thread and writes where it is to `position` (0 to 1 of `max`), so the jar's fill can
+ * follow it; each new notch goes to JS once (`onStep`), and letting go settles on the notch and
+ * commits it (`onCommit`).
  */
-export function WhatIfSlider({
+export function JarSlider({
   value,
   max,
   step: stepSize,
-  colours,
+  fillColor,
+  trackColor,
   label,
+  position,
   onStep,
   onCommit,
 }: {
   readonly value: number;
   readonly max: number;
-  /** One notch, in the home currency's minor units. */
   readonly step: number;
-  readonly colours: PlanColours;
+  readonly fillColor: string;
+  readonly trackColor: string;
   readonly label: string;
+  /** Where the thumb is, 0 to 1, for whatever follows it. */
+  readonly position?: SharedValue<number>;
   readonly onStep: (value: number) => void;
   readonly onCommit: (value: number) => void;
 }) {
   const { palette } = useTheme();
   const reduceMotion = useReducedMotion();
   const width = useSharedValue(0);
-  const pos = useSharedValue(max > 0 ? value / max : 0);
+  const own = useSharedValue(max > 0 ? value / max : 0);
+  const pos = position ?? own;
   const step = useSharedValue(Math.round(value / stepSize));
   const dragging = useSharedValue(false);
   const steps = Math.max(1, Math.round(max / stepSize));
@@ -72,7 +76,7 @@ export function WhatIfSlider({
     const next = Math.round(pos.value * steps);
     if (next !== step.value) {
       step.value = next;
-      runOnJS(onStep)(next * stepSize);
+      scheduleOnRN(onStep, next * stepSize);
     }
   };
   const land = () => {
@@ -82,7 +86,7 @@ export function WhatIfSlider({
       duration: reduceMotion ? 0 : SETTLE_MS,
       easing: settle,
     });
-    runOnJS(onCommit)(Math.min(max, step.value * stepSize));
+    scheduleOnRN(onCommit, Math.min(max, step.value * stepSize));
   };
 
   const pan = Gesture.Pan()
@@ -124,21 +128,31 @@ export function WhatIfSlider({
         }}
         onLayout={(e) => {
           width.value = e.nativeEvent.layout.width;
-          pos.value = max > 0 ? value / max : 0;
         }}
-        style={{ height: HIT, marginVertical: (TRACK + 12 - HIT) / 2, justifyContent: 'center' }}
+        style={{ height: THUMB, justifyContent: 'center' }}
       >
         <View
           style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            top: (THUMB - TRACK) / 2,
             height: TRACK,
-            borderRadius: TRACK / 2,
-            backgroundColor: colours.trackFill,
+            borderRadius: TRACK,
+            backgroundColor: trackColor,
             overflow: 'hidden',
           }}
         >
           <Animated.View
             style={[
-              { position: 'absolute', left: 0, top: 0, bottom: 0, backgroundColor: palette.accent },
+              {
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                bottom: 0,
+                borderRadius: TRACK,
+                backgroundColor: fillColor,
+              },
               fill,
             ]}
           />
@@ -151,8 +165,8 @@ export function WhatIfSlider({
               width: THUMB,
               height: THUMB,
               borderRadius: THUMB / 2,
-              backgroundColor: '#ffffff',
-              boxShadow: '0 2px 6px rgba(0,0,0,.25)',
+              backgroundColor: palette.btnBg,
+              boxShadow: '0 4px 12px rgba(0,0,0,.35)',
             },
             thumb,
           ]}

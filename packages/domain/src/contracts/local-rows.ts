@@ -89,6 +89,10 @@ export const spendRowSchema = z.object({
   givesBack: id.nullable().optional(),
   /** The pot (or Future you goal) money that came in was saved in (its id). */
   savedTo: id.nullable().optional(),
+  /** The jar this spend came out of (its id): its part stays out of the daily number (M13). */
+  fromPot: id.nullable().optional(),
+  /** What the jar covered, at most the spend; the rest counted today. Null: the whole spend. */
+  fromPotAmount: vnd.nullable().optional(),
   createdAt: instant,
   updatedAt: instant,
 });
@@ -141,6 +145,11 @@ export const potRowSchema = z.object({
     .regex(/^\d{4}-\d{2}$/)
     .nullable(),
   share: z.number().min(0).max(1).nullable(),
+  /**
+   * What a jar with no date puts in each payday. Null or absent: nothing steady (a dated jar, a
+   * 2.1 goal still filling from Future you's slice, or one filled only by hand).
+   */
+  monthly: vnd.nullable().optional(),
   paused: z.boolean(),
   createdAt: instant,
   archivedAt: instant.nullable(),

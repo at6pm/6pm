@@ -97,4 +97,5 @@ export const deDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.zine.showAmountsSub': 'Standardmäßig aus. Geld ist privat.',
   'diary.cal.previous': 'Früherer Monat',
   'diary.cal.next': 'Späterer Monat',
+  'diary.fromJar': 'Aus dem Glas „{jar}“',
 };

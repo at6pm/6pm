@@ -90,4 +90,5 @@ export const idDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.zine.showAmountsSub': 'Mati secara bawaan. Uang itu urusan pribadi.',
   'diary.cal.previous': 'Bulan sebelumnya',
   'diary.cal.next': 'Bulan berikutnya',
+  'diary.fromJar': 'Dari toples {jar}',
 };

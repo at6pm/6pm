@@ -121,19 +121,20 @@ describe('the money store', () => {
       icon: 'flight',
       hue: 200,
       goal: 3_000_000,
-      neededBy: '2026-12',
+      fill: { by: 'date' as const, neededBy: '2026-12' },
     };
     const made = await plan.createPot(pot);
     await Promise.all([
       store.load(TODAY),
       plan.updatePot(made.id, { goal: 2_000_000 }),
-      plan.createPot({ ...pot, name: 'Cushion', kind: 'goal', neededBy: null }),
+      plan.createPot({ ...pot, name: 'Cushion', fill: { by: 'steady', monthly: 500_000 } }),
       store.load(TODAY),
       plan.updateMonth({ payday: { kind: 'sameDay', day: 25 } }),
       plan.topUp(made.id, 100_000),
     ]);
     const snap = store.getSnapshot();
-    expect(snap.pots).toHaveLength(2);
+    // Future you's jar, and the two made here.
+    expect(snap.pots).toHaveLength(3);
     expect(snap.topUpsThisCycle).toBe(100_000);
     expect(snap.setAsideThisCycle[made.id]).toBe(1_000_000);
   });

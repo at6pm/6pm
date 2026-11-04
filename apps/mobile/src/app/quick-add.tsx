@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
@@ -12,7 +12,7 @@ import {
   type MerchantRuleRow,
 } from '@6pm/domain';
 import { localeOf } from '@6pm/i18n';
-import { moneyInInk } from '@6pm/theme';
+import { moneyInInk, oklchSrgbHex } from '@6pm/theme';
 
 import { useMoney, useMoneyActions, useMoneyStore } from '../data/money-provider';
 import { useCompanionToast } from '../features/companion/use-companion-toast';
@@ -20,7 +20,10 @@ import { useRunAction } from '../features/companion/use-run-action';
 import { QuickTicket } from '../features/quick-add/quick-ticket';
 import { useWalletOptions } from '../features/quick-add/use-wallet-options';
 import { CASH_WALLET } from '../features/quick-add/wallet-options';
-import { WalletRow } from '../features/quick-add/wallet-row';
+import { FromRow } from '../features/quick-add/wallet-row';
+import { jarChoiceOf } from '../features/close/jar-choice-of';
+import { jarsToSpendFrom } from '../features/details/from-jar-row';
+import { jarName } from '../features/pots/jar-name';
 import {
   QuickMainButton,
   QuickMic,
@@ -59,6 +62,12 @@ export default function QuickAdd() {
   const [keys, setKeys] = useState(() => initialKeypad(trip, money.currency, dongQuote));
   const [note, setNote] = useState('');
   const [wallet, setWallet] = useState(CASH_WALLET);
+  // Opened from a jar's "Spend from it", that jar is already picked.
+  const params = useLocalSearchParams<{ fromPot?: string }>();
+  const [fromPot, setFromPot] = useState<string | null>(() =>
+    params.fromPot && snap.pots.some((p) => p.id === params.fromPot) ? params.fromPot : null,
+  );
+  const jars = jarsToSpendFrom(snap.pots, snap.potSaved, fromPot);
   const wallets = useWalletOptions();
   const saving = useRef(false);
   // What the user taught 6pm: typing a merchant it knows picks that merchant's category.
@@ -104,6 +113,23 @@ export default function QuickAdd() {
   const locale = localeOf(language);
   const stamp = `${new Intl.DateTimeFormat(locale, { weekday: 'short', day: 'numeric', month: 'short' }).format(now)} · ${new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit', hour12: false }).format(now)}`;
 
+  const fromJar = fromPot ? snap.pots.find((p) => p.id === fromPot) : undefined;
+  const fromChoice = fromJar
+    ? jarChoiceOf(
+        snap,
+        {
+          amount,
+          categoryId,
+          day: snap.today,
+          status: 'kept',
+          forWork: false,
+          paysBill: null,
+          direction: null,
+        },
+        fromJar.id,
+      )
+    : null;
+
   const save = async () => {
     // A second tap before the sheet has closed must not write the spend again.
     if (amount <= 0 || !category || saving.current) return;
@@ -130,6 +156,7 @@ export default function QuickAdd() {
               status: 'kept',
               wallet,
               foreignAmount: entry.foreignAmount,
+              fromPot,
             },
       ),
     );
@@ -173,14 +200,20 @@ export default function QuickAdd() {
           amount={amount}
           typed={voice.incoming ? { ...entry.typed, sign: '+' } : entry.typed}
           incoming={voice.incoming}
+          mark={fromJar ? oklchSrgbHex(0.7, 0.12, fromJar.hue) : null}
           hint={
-            voice.heard !== null
-              ? t('voice.heard', { said: voice.heard })
-              : amount
-                ? (entry.underneath ?? '')
-                : voiceOff
-                  ? t('quick.hintKeys', { amount: money.full(toMinor(45_000, money.currency)) })
-                  : t('quick.hint')
+            fromJar && !voice.incoming && voice.heard === null
+              ? t('potsClose.quick.ticket', {
+                  jar: jarName(fromJar, t).toUpperCase(),
+                  amount: money.number(Math.max(0, fromChoice?.todayStays ?? 0)),
+                })
+              : voice.heard !== null
+                ? t('voice.heard', { said: voice.heard })
+                : amount
+                  ? (entry.underneath ?? '')
+                  : voiceOff
+                    ? t('quick.hintKeys', { amount: money.full(toMinor(45_000, money.currency)) })
+                    : t('quick.hint')
           }
           note={note}
           placeholder={t('quick.what')}
@@ -193,6 +226,12 @@ export default function QuickAdd() {
                 : 'payments'
           }
           hue={voice.incoming ? moneyInInk.hue : (category?.hue ?? 80)}
+          lineMenu={{
+            label: t('potsClose.quick.paidWith'),
+            choices: wallets.map((w) => ({ key: w.value, label: w.label })),
+            selected: wallet,
+            onSelect: setWallet,
+          }}
           categoryLine={`${voice.incoming ? t('moneyIn.name') : (category?.name ?? '')} · ${wallets.find((w) => w.value === wallet)?.label ?? wallet}`}
         />
         <ScrollView
@@ -245,7 +284,9 @@ export default function QuickAdd() {
             );
           })}
         </ScrollView>
-        <WalletRow options={wallets} value={wallet} onChange={setWallet} />
+        {voice.incoming ? null : (
+          <FromRow jars={jars} saved={snap.potSaved} value={fromPot} onChange={setFromPot} />
+        )}
         <View>
           <Animated.View
             pointerEvents={listeningOpen ? 'none' : 'auto'}

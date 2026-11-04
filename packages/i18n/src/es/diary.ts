@@ -69,12 +69,12 @@ export const esDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.zine.kicker': 'DIARIO DEL DINERO · N.º {no}',
   'diary.zine.headline.spare': 'Terminaste {month} con {amount} de sobra.',
   'diary.zine.headline.overPaid':
-    'Un poco por encima del plan, y aun así tu yo del futuro cobró primero.',
+    'Un poco por encima del plan, y aun así tu yo futuro cobró primero.',
   'diary.zine.headline.over': 'Un poco por encima del plan. El mes que viene empieza de cero.',
   'diary.zine.stamp': 'CERRADO',
   'diary.zine.spent': 'Gastado',
   'diary.zine.spentSub': 'el plan era {plan}',
-  'diary.zine.futureYou': 'Tu yo del futuro',
+  'diary.zine.futureYou': 'Tu yo futuro',
   'diary.zine.futureYouSub': '{total} en total',
   'diary.zine.under': 'Por debajo de tu línea',
   'diary.zine.underSub': 'de {closed} cerrados',
@@ -98,4 +98,5 @@ export const esDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.zine.showAmountsSub': 'Desactivado de serie. El dinero es cosa tuya.',
   'diary.cal.previous': 'Mes anterior',
   'diary.cal.next': 'Mes siguiente',
+  'diary.fromJar': 'Del frasco {jar}',
 };

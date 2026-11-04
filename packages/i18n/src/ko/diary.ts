@@ -89,4 +89,5 @@ export const koDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.zine.showAmountsSub': '기본은 꺼짐. 돈은 개인적인 거니까요.',
   'diary.cal.previous': '이전 달',
   'diary.cal.next': '다음 달',
+  'diary.fromJar': '{jar} 저금통에서',
 };

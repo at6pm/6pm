@@ -6,10 +6,11 @@ import { cycleMonth, payCycleOn, type PayCycle, type Payday } from './pay-cycle'
 import { goalMonthly, monthsBetween, potMonthlyNeed } from './plan-river';
 
 /**
- * Pots only count: 6pm never moves money. Each pay cycle writes one `setAside` move per pot, the
- * pot's share of that month's money, so the jar fills as the months go by. An `opening` move is
- * what the pot already held before 6pm ("Already saved"): one per pot at most, it counts in what
- * the pot holds and never in a cycle's top-ups, so it never lowers the daily number.
+ * Jars only count: 6pm never moves money. Each pay cycle writes one `setAside` move per jar, what
+ * goes in that payday, so the jar fills as the months go by. An `opening` move is what the jar
+ * already held before 6pm ("Already saved"): one per jar at most, it counts in what the jar holds
+ * and never in a cycle's top-ups, so it never lowers the daily number. A `spent` move is a spend
+ * taken from the jar (M13): positive, and taken away from what the jar holds.
  */
 export type PotMoveKind = 'setAside' | 'topUp' | 'spent' | 'opening';
 
@@ -21,8 +22,56 @@ export interface PotMove {
   readonly amount: Vnd;
 }
 
-/** What a pot's set-aside depends on. */
-export type PotTerms = Pick<PotRow, 'kind' | 'goal' | 'neededBy' | 'share' | 'paused'>;
+/** Future you's jar: on every phone, pinned first, never deleted (M4). */
+export const FUTURE_YOU_POT_ID = 'futureYou';
+
+export function isFutureYouPot(pot: Pick<PotRow, 'id'> | string): boolean {
+  return (typeof pot === 'string' ? pot : pot.id) === FUTURE_YOU_POT_ID;
+}
+
+/**
+ * Future you's jar as a row. Its name is never shown as written: screens say "Future you" in the
+ * phone's language. No target (`goal` 0) and no date; it fills from the Future you slice.
+ */
+export function futureYouPotRow(createdAt: string): PotRow {
+  return {
+    id: FUTURE_YOU_POT_ID,
+    kind: 'goal',
+    name: 'Future you',
+    icon: 'wb_twilight',
+    hue: 70,
+    goal: 0,
+    neededBy: null,
+    share: null,
+    monthly: null,
+    paused: false,
+    createdAt,
+    archivedAt: null,
+  };
+}
+
+/**
+ * A goal from 2.1 that has not been told how to fill since: it keeps its share of the Future you
+ * slice, so nobody's daily number moves on update. Renaming it, or changing its icon, colour or
+ * target, keeps it so; only choosing "By a date" or "Each payday" makes it an ordinary jar.
+ */
+export function isLegacyGoal(pot: Pick<PotRow, 'id' | 'kind'>): boolean {
+  return pot.kind === 'goal' && pot.id !== FUTURE_YOU_POT_ID;
+}
+
+/** How a jar fills each payday. */
+export type JarFill = 'futureYou' | 'slice' | 'date' | 'steady' | 'byHand';
+
+export function jarFillOf(pot: Pick<PotRow, 'id' | 'kind' | 'neededBy' | 'monthly'>): JarFill {
+  if (pot.id === FUTURE_YOU_POT_ID) return 'futureYou';
+  if (pot.kind === 'goal') return 'slice';
+  if (pot.neededBy !== null) return 'date';
+  return pot.monthly != null && pot.monthly > 0 ? 'steady' : 'byHand';
+}
+
+/** What a jar's set-aside depends on. */
+export type PotTerms = Pick<PotRow, 'kind' | 'goal' | 'neededBy' | 'share' | 'paused'> &
+  Partial<Pick<PotRow, 'id' | 'monthly'>>;
 
 /** The most cycles one catch-up writes: a damaged clock must not fill the database. */
 const MAX_CYCLES = 240;
@@ -33,11 +82,13 @@ export function potMonthsLeft(cycle: PayCycle, neededBy: string | null): number 
 }
 
 /**
- * What a pot sets aside in one cycle, given what it held when the cycle began.
- * - An occasion spreads what is left over the months to its date (ceil to 50.000₫, never more than
- *   is left), and stops once that month has gone by. No date, nothing set aside.
- * - A Future you goal takes its share of the monthly Future you, until it is full.
- * - A paused or full pot sets nothing aside.
+ * What a jar sets aside in one cycle, given what it held when the cycle began.
+ * - Future you's jar takes `futureYou`: the slice, less what 2.1 goals still take of it.
+ * - A 2.1 goal takes its share of the slice, until it is full.
+ * - A dated jar spreads what is left over the months to its date (ceil to 50.000₫, never more than
+ *   is left), and stops once that month has gone by.
+ * - A jar with no date puts in its steady amount, up to its target when it has one.
+ * - A paused or full jar sets nothing aside; neither does one filled only by hand.
  */
 export function potSetAside(input: {
   readonly pot: PotTerms;
@@ -48,23 +99,38 @@ export function potSetAside(input: {
   readonly currency?: Currency;
 }): Vnd {
   const { pot, savedBefore, futureYou, cycle, currency = VND } = input;
-  const left = Math.max(0, pot.goal - savedBefore);
-  if (pot.paused || left === 0) return 0;
-  if (pot.kind === 'goal') return Math.min(left, goalMonthly(futureYou, pot.share ?? 0));
-  if (pot.neededBy === null || cycleMonth(cycle) > pot.neededBy) return 0;
+  if (pot.id === FUTURE_YOU_POT_ID) return Math.max(0, Math.round(futureYou)) || 0;
+  if (pot.paused) return 0;
+  const left = pot.goal > 0 ? Math.max(0, pot.goal - savedBefore) : Number.POSITIVE_INFINITY;
+  if (left === 0) return 0;
+  if (pot.kind === 'goal') {
+    return pot.goal > 0 ? Math.min(left, goalMonthly(futureYou, pot.share ?? 0)) : 0;
+  }
+  if (pot.neededBy === null) {
+    const steady = pot.monthly != null && pot.monthly > 0 ? Math.round(pot.monthly) : 0;
+    return Math.min(left, steady);
+  }
+  if (cycleMonth(cycle) > pot.neededBy) return 0;
   return potMonthlyNeed(pot.goal, savedBefore, potMonthsLeft(cycle, pot.neededBy), currency);
 }
 
+/** A move as it changes what a jar holds: a spend taken from it counts down. */
+export function heldBy(move: Pick<PotMove, 'kind' | 'amount'>): Vnd {
+  return move.kind === 'spent' ? -Math.abs(move.amount) : move.amount;
+}
+
 /**
- * What a pot held when a cycle began: every move filed in an earlier cycle, and what it already
- * held before 6pm, whenever that was typed, so the cycle's set-aside already knows about it.
+ * What a jar held when a cycle began: every move filed in an earlier cycle, and what it already
+ * held before 6pm, whenever that was typed, so the cycle's set-aside already knows about it. Never
+ * below zero.
  */
 export function savedBefore(moves: readonly PotMove[], potId: string, cycleStart: LocalDate): Vnd {
-  return moves.reduce(
+  const held = moves.reduce(
     (sum, m) =>
-      m.potId === potId && (m.kind === 'opening' || m.cycle < cycleStart) ? sum + m.amount : sum,
+      m.potId === potId && (m.kind === 'opening' || m.cycle < cycleStart) ? sum + heldBy(m) : sum,
     0,
   );
+  return Math.max(0, held);
 }
 
 /** What a pot already held before 6pm: its opening move, 0 when it has none. */
@@ -92,15 +158,17 @@ export interface SetAsideRecord {
 }
 
 /**
- * The set-asides still to write, in order: for each pot, one per pay cycle after its last one
+ * The set-asides still to write, in order: for each jar, one per pay cycle after its last one
  * through the current cycle (from its first cycle when it has none). A cycle that is already
  * recorded is never written twice, a launch that skipped cycles catches up on all of them, and a
- * pot that sets nothing aside still gets a zero so a later edit cannot reach back into the past.
+ * jar that sets nothing aside still gets a zero so a later edit cannot reach back into the past.
+ * Future you's jar takes, each cycle, the slice less what the 2.1 goals took of it that cycle, so
+ * the slice is never counted twice and its jar starts in the cycle it was made, never before.
  */
 export function dueSetAsides(input: {
   readonly pots: readonly (PotTerms & Pick<PotRow, 'id' | 'createdAt'>)[];
   readonly moves: readonly PotMove[];
-  /** Future you's monthly amount, shared between the goals. */
+  /** Future you's monthly amount: its jar's slice, shared with the 2.1 goals. */
   readonly futureYou: Vnd;
   /**
    * Cycles that start before this day set nothing aside for Future you, as when the person chose
@@ -116,8 +184,20 @@ export function dueSetAsides(input: {
 }): SetAsideRecord[] {
   const { moves, payday, today, futureYou, futureYouFrom, currency = VND } = input;
   const current = payCycleOn(today, payday);
-  const out: SetAsideRecord[] = [];
-  for (const pot of input.pots) {
+  const sliceIn = (cycle: PayCycle) =>
+    futureYouFrom != null && cycle.start < futureYouFrom ? 0 : futureYou;
+  const goalsTook = new Map<LocalDate, Vnd>();
+  for (const m of moves) {
+    if (m.kind !== 'setAside') continue;
+    const pot = input.pots.find((p) => p.id === m.potId);
+    if (pot && isLegacyGoal({ id: pot.id ?? m.potId, kind: pot.kind })) {
+      goalsTook.set(m.cycle, (goalsTook.get(m.cycle) ?? 0) + m.amount);
+    }
+  }
+  const byPot = new Map<string, SetAsideRecord[]>();
+  const due = (pot: PotTerms & Pick<PotRow, 'id' | 'createdAt'>) => {
+    const out: SetAsideRecord[] = [];
+    byPot.set(pot.id, out);
     const recorded = moves
       .filter((m) => m.potId === pot.id && m.kind === 'setAside')
       .reduce<LocalDate | null>(
@@ -129,38 +209,48 @@ export function dueSetAsides(input: {
       const made = input.dayOf(pot.createdAt);
       cycle = payCycleOn(made > today ? today : made, payday);
     } else {
-      if (recorded >= current.start) continue;
+      if (recorded >= current.start) return;
       cycle = payCycleOn(payCycleOn(recorded, payday).payday, payday);
     }
+    const legacy = isLegacyGoal(pot);
+    const isFutureYou = pot.id === FUTURE_YOU_POT_ID;
     let added = 0;
     for (let n = 0; n < MAX_CYCLES && cycle.start <= current.start; n++) {
+      const slice = sliceIn(cycle);
       const amount = potSetAside({
         pot,
         savedBefore: savedBefore(moves, pot.id, cycle.start) + added,
-        futureYou: futureYouFrom != null && cycle.start < futureYouFrom ? 0 : futureYou,
+        futureYou: isFutureYou ? Math.max(0, slice - (goalsTook.get(cycle.start) ?? 0)) : slice,
         cycle,
         currency,
       });
       out.push({ potId: pot.id, cycle: cycle.start, amount });
+      if (legacy) goalsTook.set(cycle.start, (goalsTook.get(cycle.start) ?? 0) + amount);
       added += amount;
       const next = payCycleOn(cycle.payday, payday);
       if (next.start <= cycle.start) break;
       cycle = next;
     }
-  }
-  return out;
+  };
+  for (const pot of input.pots) if (pot.id !== FUTURE_YOU_POT_ID) due(pot);
+  for (const pot of input.pots) if (pot.id === FUTURE_YOU_POT_ID) due(pot);
+  return input.pots.flatMap((pot) => byPot.get(pot.id) ?? []);
 }
 
 export interface PotTotals {
-  /** Held per pot, from all its moves. */
+  /** Held per jar, from all its moves, never below zero. */
   readonly saved: Readonly<Record<string, Vnd>>;
-  /** Set aside per pot in the cycle. */
+  /** Set aside per jar in the cycle. */
   readonly setAside: Readonly<Record<string, Vnd>>;
-  /** The +100k top-ups of the cycle, every pot together. */
+  /** Taken from each jar by spends in the cycle. */
+  readonly spent: Readonly<Record<string, Vnd>>;
+  /** Topped up per jar in the cycle. */
+  readonly toppedUp: Readonly<Record<string, Vnd>>;
+  /** The cycle's top-ups, every jar together. */
   readonly topUps: Vnd;
 }
 
-/** Adds the moves of the pots that still exist. A deleted pot gives its money back to free. */
+/** Adds the moves of the jars that still exist. A deleted jar gives its money back to free. */
 export function potTotals(
   moves: readonly PotMove[],
   potIds: ReadonlySet<string>,
@@ -168,23 +258,64 @@ export function potTotals(
 ): PotTotals {
   const saved: Record<string, Vnd> = {};
   const setAside: Record<string, Vnd> = {};
+  const spent: Record<string, Vnd> = {};
+  const toppedUp: Record<string, Vnd> = {};
   let topUps = 0;
+  const add = (to: Record<string, Vnd>, id: string, amount: Vnd) => {
+    to[id] = (to[id] ?? 0) + amount;
+  };
   for (const move of moves) {
     if (!potIds.has(move.potId)) continue;
-    saved[move.potId] = (saved[move.potId] ?? 0) + move.amount;
+    add(saved, move.potId, heldBy(move));
     if (move.cycle !== cycleStart) continue;
-    if (move.kind === 'topUp') topUps += move.amount;
-    if (move.kind === 'setAside') setAside[move.potId] = (setAside[move.potId] ?? 0) + move.amount;
+    if (move.kind === 'topUp') {
+      topUps += move.amount;
+      add(toppedUp, move.potId, move.amount);
+    }
+    if (move.kind === 'setAside') add(setAside, move.potId, move.amount);
+    if (move.kind === 'spent') add(spent, move.potId, Math.abs(move.amount));
   }
-  return { saved, setAside, topUps };
+  for (const id of Object.keys(saved)) saved[id] = Math.max(0, saved[id] ?? 0);
+  return { saved, setAside, spent, toppedUp, topUps };
 }
 
-/** Occasions in the daily number: what the occasion pots set aside this cycle, added up. */
+/**
+ * The jars outside Future you's slice in the daily number: what the dated and steady jars set
+ * aside this cycle, added up. Future you's jar and the 2.1 goals come out of the slice (`futureYou`
+ * in the plan), so they are never counted twice here.
+ */
 export function occasionsOf(
   pots: readonly Pick<PotRow, 'id' | 'kind'>[],
   setAside: Readonly<Record<string, Vnd>>,
 ): Vnd {
   return pots.reduce((sum, p) => (p.kind === 'occasion' ? sum + (setAside[p.id] ?? 0) : sum), 0);
+}
+
+/**
+ * The one line of the plan: what goes into jars this payday, every jar together. The slice (as
+ * this cycle counts it) covers Future you's jar and the 2.1 goals; the rest is `occasionsOf`.
+ */
+export function intoJarsEachPayday(
+  slice: Vnd,
+  pots: readonly Pick<PotRow, 'id' | 'kind'>[],
+  setAside: Readonly<Record<string, Vnd>>,
+): Vnd {
+  return Math.max(0, slice) + occasionsOf(pots, setAside);
+}
+
+/** Jars in shelf order: Future you first, then the others as they were made. */
+export function shelfOrder<T extends Pick<PotRow, 'id' | 'createdAt'>>(pots: readonly T[]): T[] {
+  return [...pots].sort((a, b) =>
+    a.id === FUTURE_YOU_POT_ID
+      ? -1
+      : b.id === FUTURE_YOU_POT_ID
+        ? 1
+        : a.createdAt < b.createdAt
+          ? -1
+          : a.createdAt > b.createdAt
+            ? 1
+            : 0,
+  );
 }
 
 /**
@@ -245,9 +376,10 @@ export function potTopUpStep(goal: Vnd, currency: Currency = VND): Vnd {
 
 /**
  * What one tap of a jar's quick top-up adds: the step, or only what is left when that is less, and
- * nothing once the jar is full.
+ * nothing once the jar is full. A jar with no target always takes the step.
  */
 export function potTopUp(goal: Vnd, saved: Vnd, step: Vnd): Vnd {
+  if (goal <= 0) return Math.max(0, step);
   return Math.max(0, Math.min(step, goal - saved));
 }
 
@@ -265,4 +397,22 @@ function topUpStepsIn(currency: Currency): Vnd[] {
     step = String(step).startsWith('1') ? step * 5 : step * 2;
   }
   return steps;
+}
+
+/**
+ * Jars of one's own without Max: dated, steady, by hand and 2.1 goals alike. Future you's jar and
+ * jars shared through Budget together never count. Jars already made are always kept.
+ */
+export const FREE_OWN_JARS = 3;
+
+/**
+ * Whether a new jar waits behind Max: the person holds `FREE_OWN_JARS` or more of their own and
+ * not Max. `pots` are the phone's own jars (shared jars live apart and are never passed here).
+ */
+export function newJarLocked(
+  pots: readonly Pick<PotRow, 'id' | 'archivedAt'>[],
+  max: boolean,
+): boolean {
+  const own = pots.filter((p) => p.id !== FUTURE_YOU_POT_ID && p.archivedAt === null);
+  return !max && own.length >= FREE_OWN_JARS;
 }

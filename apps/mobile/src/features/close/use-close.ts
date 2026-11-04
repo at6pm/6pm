@@ -5,8 +5,11 @@ import {
   closeQueue,
   closeReducer,
   designAmount,
+  armedJars,
+  jarQuestionsFor,
   FUTURE_YOU,
   moneyInAsk,
+  readyJarFor,
   receiptBankOf,
   remainingCards,
   remainingMoneyCards,
@@ -18,11 +21,13 @@ import {
   type GivableSpend,
   type MoneyInAsk,
   type PayCycle,
+  type PotRow,
   REPAYMENT,
   type SpendRow,
 } from '@6pm/domain';
 import { localeOf } from '@6pm/i18n';
 
+import type { JarAsks } from '../../data/jar-asks';
 import type { MoneyInPlace } from '../../data/money-in-actions';
 
 import { useMoney, useMoneyActions } from '../../data/money-provider';
@@ -31,6 +36,7 @@ import { homeCurrencyOf } from '../../money/use-money-format';
 import { useI18n } from '../../i18n/i18n';
 import { haptics } from '../../ui/haptics';
 import { useRunAction } from '../companion/use-run-action';
+import { useTravel } from '../travel/travel-provider';
 import { useSpendLabels, useSpendRows } from '../today/use-spend-rows';
 import type { CloseCardContent } from './close-card';
 import { clearClose, parkClose, parkedClose } from './close-session';
@@ -65,7 +71,18 @@ function startOf(
   home: Currency,
   bills: readonly BillRow[],
   cycle: PayCycle,
-  money: { readonly income: number; readonly givable: readonly GivableSpend[] },
+  money: {
+    readonly income: number;
+    readonly givable: readonly GivableSpend[];
+    readonly jars: readonly PotRow[];
+    readonly saved: Readonly<Record<string, number>>;
+    /** Travel mode is on: a trip jar is due up to its month. */
+    readonly travelling: boolean;
+    /** The ready moments already shown on this phone. */
+    readonly readyShown: ReadonlySet<string>;
+    /** The jars the person armed for "From your {jar}?" (`armedJars`). */
+    readonly armed: ReadonlySet<string>;
+  },
 ): Start {
   const parked = parkedClose(day);
   if (parked !== null && parked.state.step !== 'cards' && parked.state.step !== 'done') {
@@ -103,6 +120,13 @@ function startOf(
     if (ask.kind !== 'pay') taken.add(ask.spendId);
     moneyAsks[s.id] = ask;
   }
+  // "From your {jar} jar?": only a dated jar that is due, once a night, its largest spend (M13).
+  const jarAsks = jarQuestionsFor(
+    queue.filter((s) => !comesIn(s)),
+    money.jars,
+    money.saved,
+    { travelling: money.travelling, armed: money.armed },
+  );
   return {
     queue,
     state: startClose(
@@ -112,12 +136,15 @@ function startOf(
           return { id: s.id, moneyIn: true, ...(ask ? { askMoney: ask.kind } : {}) };
         }
         const askBill = asks.get(s.id);
+        const askPot = jarAsks.get(s.id);
         return {
           id: s.id,
           askWork: s.id === askWorkId,
           ...(askBill === undefined ? {} : { askBill }),
+          ...(askPot === undefined ? {} : { askPot }),
         };
       }),
+      { readyPot: readyJarFor(money.jars, money.saved, day, money.readyShown)?.jar.id ?? null },
     ),
     cash: [],
     moneyAsks,
@@ -136,8 +163,13 @@ function workCandidate(queue: readonly SpendRow[], min: number): string | null {
  * the database the moment it is made (so leaving mid-close loses nothing). Leaving parks the
  * close at its step; reopening resumes it.
  */
-export function useClose(givable: readonly GivableSpend[]) {
+export function useClose(
+  givable: readonly GivableSpend[],
+  readyShown: ReadonlySet<string>,
+  jarAsks: JarAsks,
+) {
   const snap = useMoney();
+  const { on: travelling } = useTravel();
   const moneyIn = useCloseMoney();
   const actions = useMoneyActions();
   const run = useRunAction();
@@ -152,6 +184,15 @@ export function useClose(givable: readonly GivableSpend[]) {
     startOf([...snap.cycleSpends, ...snap.waitingBefore], day, home, snap.bills, snap.cycle, {
       income: snap.plan?.income ?? 0,
       givable,
+      jars: snap.pots,
+      saved: snap.potSaved,
+      travelling,
+      readyShown,
+      armed: armedJars({
+        taken: jarAsks.taken,
+        spends: [...snap.cycleSpends, ...snap.earlierJarSpends, ...snap.waitingBefore],
+        declined: jarAsks.declined,
+      }),
     }),
   );
   const { queue, moneyAsks } = start;

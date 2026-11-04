@@ -9,11 +9,11 @@ export const idAskActions: { readonly [Key in keyof typeof enAskActions]: Entry 
   'ask.action.added': 'Ditambahkan. {name}, {amount}, dihitung hari ini.',
   'ask.action.cancelled': 'Oke, tidak ada yang berubah.',
   'ask.action.failed': 'Belum tersimpan. Coba lewat Tambah cepat saja.',
-  'ask.action.confirmPot': 'Celengan untuk {name}: {goal}. Buat sekarang?',
-  'ask.action.confirmPotBy': 'Celengan untuk {name}: {goal} sebelum {month}. Buat sekarang?',
+  'ask.action.confirmPot': 'Toples untuk {name}: {goal}. Buat sekarang?',
+  'ask.action.confirmPotBy': 'Toples untuk {name}: {goal} sebelum {month}. Buat sekarang?',
   'ask.action.setUp': 'Buat',
   'ask.action.potLocked':
-    'Versi gratis punya satu celengan sendiri, dan punyamu sudah terpakai. Max memberi ruang untuk lebih banyak.',
+    'Versi gratis punya tiga toples sendiri, dan semuanya sudah terpakai. Max memberi ruang untuk lebih banyak.',
   'ask.action.seeMax': 'Lihat Max',
   'ask.action.potGoal': 'Berapa yang dibutuhkan untuk {name}? Sebutkan, misalnya “10tr”.',
   'ask.action.showMe': 'Tunjukkan caranya',
@@ -23,13 +23,13 @@ export const idAskActions: { readonly [Key in keyof typeof enAskActions]: Entry 
   'ask.howTo.quickAdd':
     'Tambah cepat menerima pengeluaran yang diketik atau diucapkan, misalnya “trà sữa 45k”. Atau bilang saja ke aku di sini: “vừa ăn phở 50k”.',
   'ask.howTo.dailyNumber':
-    'Angka harianmu adalah uang bebas di siklus gaji ini, setelah tagihan, kamu di masa depan, dan celengan, dibagi rata ke hari-hari tersisa sampai gajian. Belanja di bawahnya, angka besok naik; lewat, angka besok sedikit turun.',
+    'Angka harianmu adalah uang bebas di siklus gaji ini, setelah tagihan, kamu di masa depan, dan toples, dibagi rata ke hari-hari tersisa sampai gajian. Belanja di bawahnya, angka besok naik; lewat, angka besok sedikit turun.',
   'ask.howTo.negative':
-    'Angkanya jadi minus kalau pengeluaran siklus ini melebihi uang bebasnya. Tidak ada yang rusak: rencananya menyebarkan selisih itu ke hari-hari tersisa. Kurangi belanja beberapa hari, atau ambil sedikit dari celengan di Rencana.',
+    'Angkanya jadi minus kalau pengeluaran siklus ini melebihi uang bebasnya. Tidak ada yang rusak: rencananya menyebarkan selisih itu ke hari-hari tersisa. Kurangi belanja beberapa hari, atau ambil sedikit dari toples.',
   'ask.howTo.pot':
-    'Celengan adalah uang yang disisihkan untuk satu hal, seperti liburan atau Tết. 6pm mengisinya sedikit tiap bulan dan memisahkannya dari angka harianmu, jadi uangnya ada saat dibutuhkan.',
+    'Toples adalah uang yang disisihkan untuk satu hal, seperti liburan atau HP baru. 6pm mengisinya sedikit tiap gajian dan memisahkannya dari angka harianmu, jadi uangnya ada saat dibutuhkan.',
   'ask.howTo.close':
     'Jam 6 sore kamu tutup hari: simpan atau lewati yang tertangkap, lalu lihat posisimu. Terlewat pun tidak ada yang hilang; pengeluaran yang tertangkap menunggu, dan tetap dihitung, sampai kamu memutuskan.',
   'ask.howTo.budget':
-    '6pm tidak punya anggaran per kategori. Angka harianmu adalah anggarannya: tagihan, kamu di masa depan, dan celengan sudah disisihkan. Untuk mengurangi belanja sesuatu, mulai celengan atau beri kamu di masa depan lebih banyak di Rencana.',
+    '6pm tidak punya anggaran per kategori. Angka harianmu adalah anggarannya: tagihan, kamu di masa depan, dan toples sudah disisihkan. Untuk mengurangi belanja sesuatu, mulai toples baru atau beri kamu di masa depan lebih banyak.',
 };

@@ -1,8 +1,9 @@
 import type { Vnd } from '../money/format';
-import { sumCounted, type CountedSpend } from '../spend/spend';
+import { sumDayPart, type CountedSpend } from '../spend/spend';
 
 /**
- * A closed day's spent as its receipt lists it now: the kept spends of that day that count. The
+ * A closed day's spent as its receipt lists it now: the kept spends of that day that count, less
+ * what jars covered of them, as the close counted it (`jarReceiptLines`). The
  * close stores what it saw, but a spend can still land on a closed day afterwards (an email that
  * arrived late and was kept at the next close, a date moved, a category changed); the receipt's
  * lines follow, so its total and the calendar follow too. Days with nothing loaded keep what the
@@ -23,7 +24,7 @@ export function restateClosedDays<T extends { readonly day: string; readonly spe
   }
   return closed.map((row) => {
     if (row.day < loaded.from || row.day > loaded.to) return row;
-    const spent = sumCounted(byDay.get(row.day) ?? [], notDaily);
+    const spent = sumDayPart(byDay.get(row.day) ?? [], notDaily);
     return spent === row.spent ? row : { ...row, spent };
   });
 }
