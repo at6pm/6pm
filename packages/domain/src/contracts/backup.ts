@@ -25,8 +25,10 @@ export const BACKUP_FORMAT_VERSION = 1;
  * to its own. Format 4 brought bill kinds and last months, and spends that paid a bill: a phone
  * from before would drop those fields and count each bill payment as spending again. Format 5
  * brought money that came in and bank alerts: a phone from before would count money in as spending.
+ * Format 6 brought jars: steady payday amounts and spends taken from a jar: a phone from before
+ * would count a jar's spending against the daily number again.
  */
-export const BACKUP_SNAPSHOT_VERSION = 5;
+export const BACKUP_SNAPSHOT_VERSION = 6;
 
 /** AES-GCM: a 12-byte nonce in front of the ciphertext, a 16-byte tag behind it. */
 export const BACKUP_IV_BYTES = 12;
