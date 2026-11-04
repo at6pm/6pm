@@ -74,6 +74,10 @@ export const idClose: { readonly [Key in keyof typeof enClose]: Entry } = {
   'close.bill.yes': 'Ya, itu tagihannya',
   'close.bill.yesCard': 'Ya, kartuku',
   'close.bill.no': 'Bukan, itu belanja',
+  'close.bill.amountTitle': 'Jadikan {new} mulai sekarang?',
+  'close.bill.amountSub': '{bill} biasanya {old}. Bulan ini tetap {new}.',
+  'close.bill.thisMonth': 'Bulan ini saja',
+  'close.bill.fromNow': 'Mulai sekarang',
   'close.repayment.title': 'Lagi melunasi kartu atau pinjaman?',
   'close.repayment.sub':
     'Kalau iya, ini tidak masuk angka harianmu. Belanja pakai kartu sudah dihitung.',

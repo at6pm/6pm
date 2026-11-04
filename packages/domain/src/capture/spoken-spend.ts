@@ -1,5 +1,9 @@
 import { VND, type Currency, type Money } from '../money/currency';
 import { readSpokenNumbers, spokenAmount } from '../money/spoken-number';
+import { billWordAt } from './bill-topic';
+import { foldWords } from './fold-words';
+
+export { foldWords };
 
 /** The ids of the categories every month starts with. */
 export type StarterCategoryId =
@@ -62,7 +66,8 @@ const CATEGORY_WORDS: Readonly<Record<StarterCategoryId, readonly string[]>> = {
   shopping: words(
     'shopee, lazada, tiki, tiktok shop, uniqlo, circle k, gs25, ministop, familymart, ' +
       '7 eleven, 7eleven, mall, vincom, shopping, quan ao, ao, giay, shoes, clothes, shirt, ' +
-      'muji, zara, watsons, guardian, dien may xanh, the gioi di dong, fpt shop, cellphones',
+      'muji, zara, watsons, guardian, dien may xanh, the gioi di dong, fpt shop, cellphones, ' +
+      'viettel store',
   ),
   fun: words(
     'xem phim, rap phim, cinema, movie, movies, cgv, lotte cinema, bhd, galaxy cinema, ' +
@@ -90,22 +95,12 @@ const CATEGORY_WORDS: Readonly<Record<StarterCategoryId, readonly string[]>> = {
   ),
 };
 
-/** Lower case, accents and đ taken off, everything but letters and digits as single spaces. */
-export function foldWords(text: string): string {
-  const bare = text
-    .normalize('NFD')
-    .replace(/\p{M}/gu, '')
-    .replace(/[đĐ]/g, 'd')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, ' ')
-    .trim();
-  return bare === '' ? ' ' : ` ${bare} `;
-}
-
 /**
  * The starter category a merchant name or a said spend points to: the category whose word comes
  * first in the text ("trà sữa" → drinks, "Circle K" → shopping, "veggies and eggs at the market"
- * → groceries). Null when no word matches.
+ * → groceries). A household bill's payee (power, water, rent, a phone or internet provider:
+ * "Điện lực Hồ Chí Minh", "VNPT") is Home, unless a category's word comes first. Null when
+ * nothing matches.
  */
 export function categoryHintOf(text: string): StarterCategoryId | null {
   const folded = foldWords(text);
@@ -119,6 +114,9 @@ export function categoryHintOf(text: string): StarterCategoryId | null {
       }
     }
   }
+  // A household bill's payee, unless a category's word comes first ("Shopee trả sau").
+  const bill = billWordAt(text);
+  if (bill >= 0 && (!best || bill < best.at)) return 'home';
   return best?.id ?? null;
 }
 

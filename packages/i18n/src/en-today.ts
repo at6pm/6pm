@@ -167,4 +167,5 @@ export const enToday = {
   'details.bill': 'This was a bill',
   'details.bill.no': 'No',
   'details.bill.repayment': 'A card or loan',
+  'details.bill.amount': '{bill} is usually {old}. Make it {new} from now on?',
 } as const;

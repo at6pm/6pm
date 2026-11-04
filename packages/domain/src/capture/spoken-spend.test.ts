@@ -53,7 +53,7 @@ describe('parseSpokenSpend', () => {
     expect(parseSpokenSpend('tiền điện')).toEqual({
       name: 'Tiền điện',
       amount: null,
-      categoryHint: null,
+      categoryHint: 'home',
     });
   });
 
@@ -95,6 +95,28 @@ describe('categoryHintOf', () => {
 
   it('takes the category whose word comes first', () => {
     expect(categoryHintOf('trà sữa and a cake at the market')).toBe('drinks');
+  });
+
+  it.each([
+    'Điện lực Hồ Chí Minh',
+    'hóa đơn của dịch vụ Điện lực Hồ Chí Minh',
+    'EVNHCMC',
+    'Công ty Cấp nước Gia Định',
+    'SAWACO',
+    'Tiền nhà tháng 11',
+    'VNPT Hà Nội',
+    'Viettel Telecom',
+    'FPT Telecom cước Internet',
+    'Cước điện thoại MobiFone',
+  ])('files the household bill payee %j under Home', (text) => {
+    expect(categoryHintOf(text)).toBe('home');
+  });
+
+  it('keeps a shop that only shares a provider’s name in its own category', () => {
+    expect(categoryHintOf('FPT Shop Quận 3')).toBe('shopping');
+    expect(categoryHintOf('Viettel Store')).toBe('shopping');
+    expect(categoryHintOf('Viettel Post')).toBeNull();
+    expect(categoryHintOf('Viettel Money')).toBeNull();
   });
 });
 

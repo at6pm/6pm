@@ -2,11 +2,21 @@ import { useState, type ReactNode } from 'react';
 import { Text, TextInput, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { billChoicesFor, spendDayRange, movedTo, REPAYMENT, type SpendRow } from '@6pm/domain';
+import {
+  asksBillAmount,
+  billChoicesFor,
+  spendDayRange,
+  movedTo,
+  receiptBankOf,
+  REPAYMENT,
+  type BillRow,
+  type SpendRow,
+} from '@6pm/domain';
 
 import { useBillPayments } from '../../data/bill-payments';
 import { useMoney } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
+import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
 import { Symbol } from '../../ui/icons/symbol';
 import { ChoiceMenu, type MenuChoice } from '../../ui/primitives/choice-menu';
@@ -60,7 +70,12 @@ export function DetailsCard({
   const { t } = useI18n();
   const snap = useMoney();
   const { now } = useClock();
-  const wallets = useWalletOptions(spend.wallet);
+  // A spend caught before captures kept their wallet still names the bank its alert or receipt did.
+  const caughtFrom =
+    spend.direction !== 'in' && (spend.source === 'alert' || spend.source === 'shared')
+      ? receiptBankOf(spend.detail)
+      : null;
+  const wallets = useWalletOptions(spend.wallet ?? caughtFrom);
   const [merchant, setMerchant] = useState(spend.merchant);
   const [note, setNote] = useState(spend.note ?? '');
   const shop = useAutosavedText(spend.id, spend.merchant, 'merchant');
@@ -68,6 +83,23 @@ export function DetailsCard({
   const [picking, setPicking] = useState(false);
   const payments = useBillPayments();
   const run = useRunAction();
+  const money = useMoneyFormat();
+  // A bill just picked that this payment differs from: asked once, under its row, whether the
+  // payment is its amount from now on. "Just this month" is already true (M2b).
+  const [amountAsk, setAmountAsk] = useState<BillRow | null>(null);
+  const pickBill = (key: string) => {
+    const target = key === NO_BILL ? null : key;
+    const bill = snap.bills.find((b) => b.id === target);
+    const inCycle = spend.day >= snap.cycle.start;
+    setAmountAsk(bill && inCycle && asksBillAmount(bill, spend.amount) ? bill : null);
+    void run(() => payments.setPaysBill(spend.id, target));
+  };
+  const answerAmount = (fromNow: boolean) => {
+    haptics.tick();
+    const bill = amountAsk;
+    setAmountAsk(null);
+    if (fromNow && bill) void run(() => payments.billFromNowOn(bill.id, spend.amount));
+  };
   // "This was a bill", for a payment the close did not catch: no, one of this cycle's bills still
   // to pay, or a card or loan with no bill.
   const paysBill = spend.paysBill ?? null;
@@ -92,7 +124,7 @@ export function DetailsCard({
           ? t('details.status.caught')
           : t('details.status.skipped');
 
-  const wallet = spend.wallet ?? 'Cash';
+  const wallet = spend.wallet ?? caughtFrom ?? 'Cash';
   const fields: {
     key: string;
     label: string;
@@ -140,8 +172,7 @@ export function DetailsCard({
       menu: {
         choices: billChoices.map((c) => ({ key: c ?? NO_BILL, label: billLabel(c) })),
         selected: paysBill ?? NO_BILL,
-        onSelect: (key) =>
-          void run(() => payments.setPaysBill(spend.id, key === NO_BILL ? null : key)),
+        onSelect: pickBill,
       },
     },
     { key: 'status', label: t('details.status'), value: statusLabel(spend.status) },
@@ -236,6 +267,40 @@ export function DetailsCard({
                   now={now}
                   onChange={(instant) => onUpdate(movedTo(instant))}
                 />
+              </Animated.View>
+            ) : null}
+            {f.key === 'bill' && amountAsk ? (
+              <Animated.View entering={FadeIn.duration(250)} exiting={FadeOut.duration(150)}>
+                <Text
+                  style={{
+                    ...body(15),
+                    lineHeight: 21,
+                    color: palette.inkSoft,
+                    marginHorizontal: 16,
+                    paddingBottom: 10,
+                  }}
+                >
+                  {t('details.bill.amount', {
+                    bill: amountAsk.name,
+                    old: money.short(amountAsk.amount),
+                    new: money.short(spend.amount),
+                  })}
+                </Text>
+                {[false, true].map((fromNow) => (
+                  <PressScale
+                    key={String(fromNow)}
+                    highlight
+                    highlightBleed={16}
+                    accessibilityRole="button"
+                    onPress={() => answerAmount(fromNow)}
+                    style={rowStyle}
+                  >
+                    <Text style={{ ...body(16), color: palette.ink, flex: 1 }}>
+                      {t(fromNow ? 'close.bill.fromNow' : 'close.bill.thisMonth')}
+                    </Text>
+                    {fromNow ? null : <Symbol name="check" size={18} color={palette.ink} />}
+                  </PressScale>
+                ))}
               </Animated.View>
             ) : null}
           </View>

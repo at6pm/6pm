@@ -79,6 +79,10 @@ export const frClose: { readonly [Key in keyof typeof enClose]: Entry } = {
   'close.bill.yes': 'Oui, c’est la facture',
   'close.bill.yesCard': 'Oui, ma carte',
   'close.bill.no': 'Non, c’était une dépense',
+  'close.bill.amountTitle': 'On passe à {new} à partir de maintenant ?',
+  'close.bill.amountSub': '{bill}, c’est d’habitude {old}. Ce mois-ci, c’est {new} de toute façon.',
+  'close.bill.thisMonth': 'Juste ce mois-ci',
+  'close.bill.fromNow': 'À partir de maintenant',
   'close.repayment.title': 'Tu rembourses une carte ou un prêt ?',
   'close.repayment.sub':
     'Si oui, ça ne compte pas dans ton chiffre du jour. Tes achats par carte ont déjà compté.',

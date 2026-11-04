@@ -54,6 +54,24 @@ describe('inboxItemToNewSpend', () => {
     expect(draft.at.toISOString()).toBe(tap.at);
   });
 
+  it('is paid from the bank or wallet its alert or shared receipt names, never cash', () => {
+    const alert: InboxSpend = {
+      ...tap,
+      source: 'alert',
+      merchant: 'Điện lực Hồ Chí Minh',
+      receipt: { bank: 'MoMo', namingLines: [] },
+    };
+    expect(inboxItemToNewSpend(alert, filing).wallet).toBe('MoMo');
+    const shared: InboxSpend = {
+      ...alert,
+      source: 'shared',
+      receipt: { bank: 'MB Bank', namingLines: [] },
+    };
+    expect(inboxItemToNewSpend(shared, filing).wallet).toBe('MB Bank');
+    expect(inboxItemToNewSpend({ ...alert, direction: 'in' }, filing).wallet).toBeNull();
+    expect(inboxItemToNewSpend(tap, filing).wallet).toBeNull();
+  });
+
   it('files under the extension’s category, then the rule, then the fallback', () => {
     expect(inboxItemToNewSpend({ ...tap, categoryId: 'drinks' }, filing).categoryId).toBe('drinks');
     const ruled = { ...filing, ruleCategoryId: 'transport' };

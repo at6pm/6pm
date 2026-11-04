@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import type { CountedSpend } from '../spend/spend';
 import {
+  billAmountFromNow,
   billPaidBy,
   billsThisCycle,
   billThisCycle,
@@ -99,6 +100,19 @@ describe('paying a bill is not spending', () => {
 
   it('an other bill paid its own amount keeps no paid amount', () => {
     expect(billPaidBy({ amount: 5_000_000 }, 5_000_000, october).paidAmount).toBeNull();
+  });
+
+  it('"Just this month" changes only this cycle; "From now on" every cycle after too', () => {
+    const power: CycleBill = { amount: 600_000, kind: 'other', paidCycle: null };
+    const paid = { ...power, ...billPaidBy(power, 727_428, october) };
+    const november = payCycleOn(october.payday, payday25);
+    // Just this month: M2b already made the payment this cycle's bill.
+    expect(billThisCycle(paid, october)).toBe(727_428);
+    expect(billThisCycle(paid, november)).toBe(600_000);
+    const fromNow = { ...paid, ...billAmountFromNow(727_428) };
+    expect(billThisCycle(fromNow, october)).toBe(727_428);
+    expect(billThisCycle(fromNow, november)).toBe(727_428);
+    expect(freeWith([fromNow], [])).toBe(freeWith([paid], []));
   });
 
   it('a payment taken back puts the bill back at its amount, still due', () => {

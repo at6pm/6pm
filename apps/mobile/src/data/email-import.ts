@@ -1,7 +1,14 @@
-import { capturedInHome, categoryHintOf, likelyCategoriesAt, type EmailCapture } from '@6pm/domain';
+import {
+  capturedInHome,
+  categoryHintOf,
+  likelyCategoriesAt,
+  tidyPayee,
+  type EmailCapture,
+} from '@6pm/domain';
 
 import { homeCurrencyOf } from '../money/use-money-format';
 
+import { billPayments } from './bill-payments';
 import { alreadyImported } from './inbox-import';
 import type { moneyActions } from './money-actions';
 import type { MoneyStore } from './money-store';
@@ -44,7 +51,7 @@ async function categoryFor(deps: EmailImportDeps, capture: EmailCapture): Promis
   return (
     exists(ruled) ??
     exists(capture.category) ??
-    exists(categoryHintOf(capture.merchant)) ??
+    exists(categoryHintOf(`${capture.merchant} ${capture.memo ?? ''}`)) ??
     categories.find((c) => likely.includes(c.id))?.id ??
     categories[0]?.id ??
     'food'
@@ -54,7 +61,8 @@ async function categoryFor(deps: EmailImportDeps, capture: EmailCapture): Promis
 /**
  * Saves the receipts that arrived by email through the same capture as every other source
  * (rules, the duplicate merge with a scan or a shared receipt, the money day of when it was
- * paid), each waiting for the close. Its detail is the address it came from. The server is told
+ * paid), each waiting for the close. Its detail is the address it came from, its wallet the bank
+ * that sent it. A bill's payment among them is marked as paying it. The server is told
  * only after every one of them is committed, and a receipt fetched twice is saved once: its id
  * is the spend's, or its sighting is already there. A receipt in another currency is then priced
  * at once, when a rate can be had.
@@ -75,10 +83,12 @@ export async function importEmailCaptures(deps: EmailImportDeps): Promise<EmailI
         amount: priced.amount,
         foreignAmount: priced.foreignAmount,
         categoryId: await categoryFor(deps, capture),
-        merchant: capture.merchant.trim(),
+        merchant: tidyPayee(capture.merchant),
         source: 'email',
         status: 'caught',
         detail: capture.from,
+        // A bank's own alert email says which account paid; money in was paid into it.
+        wallet: capture.kind === undefined ? capture.bank : null,
         memo: capture.memo ?? null,
         at: new Date(capture.at),
         ...(capture.kind === undefined
@@ -92,5 +102,7 @@ export async function importEmailCaptures(deps: EmailImportDeps): Promise<EmailI
   }
   if (done.length > 0) await source.ack(done);
   if (abroad) await deps.priceWaiting?.();
+  // A receipt for a bill is marked as paying it at once, so it never counts as spending too.
+  if (saved > 0) await billPayments(store).markCaught();
   return { saved, acknowledged: done.length };
 }

@@ -88,6 +88,39 @@ describe('importInbox', () => {
     expect(row).toMatchObject({ amount: 45_000, source: 'applePay', status: 'caught', day: TODAY });
   });
 
+  it('marks a bill’s payment as paying the bill the moment it lands, paid from its wallet', async () => {
+    await store.tables.bills.put({
+      id: 'power',
+      name: 'Điện nước',
+      icon: 'bolt',
+      hue: 50,
+      amount: 600_000,
+      dueDay: 3,
+      paidCycle: null,
+      sort: 0,
+      archivedAt: null,
+      kind: 'other',
+      lastMonth: null,
+      paidAmount: null,
+      askedCycle: null,
+    });
+    await store.load(TODAY);
+    const item = tap({
+      source: 'alert',
+      amount: 727_428,
+      merchant: 'Điện lực Hồ Chí Minh',
+      receipt: { bank: 'MoMo', namingLines: [] },
+      direction: 'out',
+    });
+    await run(memoryInbox([item]));
+    expect(await store.tables.spends.get(item.id)).toMatchObject({
+      paysBill: 'power',
+      wallet: 'MoMo',
+      status: 'caught',
+    });
+    expect(store.getSnapshot().bills[0]).toMatchObject({ paidAmount: 727_428, askedCycle: null });
+  });
+
   it('changes nothing when the same file is imported again', async () => {
     const item = tap();
     await run(memoryInbox([item]));

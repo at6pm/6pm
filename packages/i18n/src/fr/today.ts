@@ -169,6 +169,8 @@ export const frToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'details.bill': 'C’était une facture',
   'details.bill.no': 'Non',
   'details.bill.repayment': 'Une carte ou un prêt',
+  'details.bill.amount':
+    '{bill}, c’est d’habitude {old}. On passe à {new} à partir de maintenant ?',
   'source.alert': 'Alerte bancaire',
   'today.pull.add': 'Tire pour ajouter',
   'today.pull.release': 'Lâche pour ajouter',

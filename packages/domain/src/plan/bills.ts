@@ -63,6 +63,17 @@ export function billPaidBy(
   return { paidCycle: cycle.start, paidAmount: differs ? amount : null };
 }
 
+/**
+ * A bill whose payment this cycle is its amount from now on ("From now on"): the amount every
+ * later cycle takes, and this cycle's too, so nothing moves today.
+ */
+export function billAmountFromNow(amount: Vnd): {
+  readonly amount: Vnd;
+  readonly paidAmount: null;
+} {
+  return { amount, paidAmount: null };
+}
+
 /** A bill no longer paid by anything this cycle: back to due, at its own amount. */
 export function billUnpaid(): { readonly paidCycle: null; readonly paidAmount: null } {
   return { paidCycle: null, paidAmount: null };

@@ -161,4 +161,5 @@ export const viToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'details.bill': 'Đây là hoá đơn',
   'details.bill.no': 'Không',
   'details.bill.repayment': 'Trả thẻ hay khoản vay',
+  'details.bill.amount': '{bill} thường là {old}. Từ giờ để {new} luôn?',
 };

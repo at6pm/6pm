@@ -75,6 +75,10 @@ export const thClose: { readonly [Key in keyof typeof enClose]: Entry } = {
   'close.bill.yes': 'ใช่ บิลนี้แหละ',
   'close.bill.yesCard': 'ใช่ บัตรของฉัน',
   'close.bill.no': 'ไม่ เป็นการใช้จ่าย',
+  'close.bill.amountTitle': 'ต่อไปใช้ {new} เลยไหม?',
+  'close.bill.amountSub': '{bill} ปกติคือ {old} เดือนนี้คิด {new} อยู่แล้ว',
+  'close.bill.thisMonth': 'แค่เดือนนี้',
+  'close.bill.fromNow': 'ต่อไปเลย',
   'close.repayment.title': 'กำลังจ่ายหนี้บัตรหรือเงินกู้อยู่ไหม?',
   'close.repayment.sub':
     'ถ้าใช่ รายการนี้จะไม่นับรวมในยอดรายวันของคุณ ของที่คุณรูดบัตรซื้อถูกนับไปแล้ว',
