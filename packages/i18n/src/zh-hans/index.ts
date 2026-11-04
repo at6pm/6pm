@@ -34,6 +34,7 @@ import { zhHansTravel } from './travel';
 import { zhHansVoice } from './voice';
 import { zhHansWidgetsGuide } from './widgets-guide';
 import { zhHansYearBook } from './year-book';
+import { zhHansFirstCatch } from './first-catch';
 
 export { zhHansAndroid } from './android';
 
@@ -74,6 +75,7 @@ export const zhHans: Catalogue = {
   ...zhHansWidgetsGuide,
   ...zhHansDuo,
   ...zhHansMoneyIn,
+  ...zhHansFirstCatch,
 };
 
 /**
