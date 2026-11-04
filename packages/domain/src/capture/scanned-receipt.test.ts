@@ -94,5 +94,18 @@ describe('a scanned receipt', () => {
       now,
     );
     expect(looked).toMatchObject({ amount: 4_525, currency: 'USD', needsCheck: false });
+    const saved = scannedReceiptItem(looked, {}, 'f', dollars);
+    expect(saved?.receipt?.looked).toBe(true);
+  });
+
+  it('keeps what was read under a total typed over it, but not under a split', () => {
+    const card = scannedReceiptCard(grabfood, context, now);
+    expect(scannedReceiptItem(card, { amount: 110_000 }, 'g', context)?.receipt?.read).toEqual({
+      amount: 101_500,
+    });
+    expect(scannedReceiptItem(card, { people: 2 }, 'h', context)?.receipt?.read).toBeUndefined();
+    expect(
+      scannedReceiptItem(card, { amount: 101_500 }, 'i', context)?.receipt?.read,
+    ).toBeUndefined();
   });
 });

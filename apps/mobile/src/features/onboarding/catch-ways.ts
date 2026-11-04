@@ -19,22 +19,20 @@ export function needsSetup(way: CatchWay): way is SetupWay {
 }
 
 /**
- * The ways that have a drawn walkthrough to open: the Wallet and mail set-ups, and sharing a
- * receipt. Android's bank alerts open its own settings instead.
+ * The ways that have a drawn walkthrough to open: the Wallet, bank alert (the iPhone's Shortcuts
+ * automation) and mail set-ups, and sharing a receipt. Android's bank alerts open its own
+ * settings instead.
  */
-export type WalkedWay = Extract<CatchWay, 'wallet' | 'email' | 'share'>;
-
-export function walkedWay(way: CatchWay): WalkedWay | null {
-  return way === 'wallet' || way === 'email' || way === 'share' ? way : null;
-}
+export type WalkedWay = Extract<CatchWay, 'wallet' | 'email' | 'share' | 'alerts'>;
 
 /** The native pieces the ways lean on; a phone without one is not shown that way. */
 export type CatchReach = Pick<
   NativeReach,
   'scan' | 'share' | 'wallet' | 'widgets' | 'alertListener'
->;
+> &
+  Partial<Pick<NativeReach, 'bankAlerts'>>;
 
-/** The iPhone's: bank alerts there are a Shortcuts automation, set up later from Settings. */
+/** An iPhone before iOS 27: bank alerts need its Shortcuts automation on an app's notifications. */
 const FULL_REACH: CatchReach = {
   scan: true,
   share: true,
@@ -48,7 +46,7 @@ const NEEDS: Readonly<Partial<Record<CatchWay, keyof CatchReach>>> = {
   scan: 'scan',
   share: 'share',
   wallet: 'wallet',
-  alerts: 'alertListener',
+  alerts: 'bankAlerts',
   lock: 'widgets',
 };
 
@@ -66,6 +64,8 @@ export function catchWaysFor(
 ): readonly CatchWay[] {
   return CATCH_WAYS.filter((way) => {
     const needs = NEEDS[way];
+    // Android's listener is bank alerts there, whatever else the phone says.
+    if (way === 'alerts') return reach.alertListener || reach.bankAlerts === true;
     if (needs !== undefined && !reach[needs]) return false;
     return !(way === 'scan' && home.code !== 'VND') && !(way === 'email' && mode === 'device');
   });
@@ -85,3 +85,21 @@ export const WAY_ICON: Readonly<Record<CatchWay, SymbolName>> = {
   add: 'mic',
   lock: 'widgets',
 };
+
+/**
+ * The ways a first catch can be made with right away, as onboarding offers them while it waits:
+ * a bank alert, a shared receipt, a Wallet tap. Only those set up are offered: sharing needs
+ * nothing, the Wallet and bank alert automations count once their set-up was walked (or, on
+ * Android, once Notification access is on).
+ */
+export const LISTEN_WAYS = ['alerts', 'share', 'wallet'] as const;
+export type ListenWay = (typeof LISTEN_WAYS)[number];
+
+export function listenWaysOf(
+  ways: readonly CatchWay[],
+  setUp: readonly CatchWay[],
+): readonly ListenWay[] {
+  return LISTEN_WAYS.filter(
+    (way) => ways.includes(way) && (way === 'share' || setUp.includes(way)),
+  );
+}

@@ -26,6 +26,7 @@ import { CloseTimePicker } from '../features/settings/close-time-picker';
 import { CompanionCard } from '../features/settings/companion-card';
 import { SettingsLookCard } from '../features/settings/settings-look-card';
 import { SettingsMaxCard } from '../features/settings/settings-max-card';
+import { useMonthReading } from '../features/settings/read-on-phone';
 import { SettingRow, SettingsSection } from '../features/settings/setting-rows';
 import { SettingsBanksRow } from '../features/settings/settings-banks-row';
 import { useCloseTimeDraft } from '../features/settings/use-close-time-draft';
@@ -61,6 +62,7 @@ export default function Settings() {
   const [deleting, setDeleting] = useState(false);
   const [pickingClose, setPickingClose] = useState(false);
   const reminders = useReminderPermission();
+  const reading = useMonthReading();
   // The wheels move the time at once; the plan (and the reminder that follows it) is saved when they rest.
   const close = useCloseTimeDraft(plan.closeAt, (closeAt) => void actions.updatePlan({ closeAt }));
   const disarm = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -179,6 +181,17 @@ export default function Settings() {
             }}
           />
         ) : null}
+        {nativeReach.backTap ? (
+          <SettingRow
+            icon="touch_app"
+            label={t('capture.backTap.name')}
+            value={t('capture.status.on')}
+            onPress={() => {
+              haptics.tick();
+              router.push({ pathname: '/capture-guide', params: { source: 'backTap' } });
+            }}
+          />
+        ) : null}
         <TravelRow />
       </SettingsSection>
 
@@ -186,6 +199,19 @@ export default function Settings() {
         <SettingsSection title={t('settings.yourData')}>
           <BackupRow first />
           <AiSettingsRow />
+          <SettingRow
+            icon="receipt_long"
+            label={t('catch.reading.title')}
+            value={
+              reading && reading.accuracy.total > 0
+                ? `${reading.accuracy.right}/${reading.accuracy.total}`
+                : t('catch.reading.none')
+            }
+            onPress={() => {
+              haptics.tick();
+              router.push('/read-on-phone');
+            }}
+          />
           <SettingRow
             icon="lock"
             label={t('settings.privacy')}

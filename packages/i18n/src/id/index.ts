@@ -34,6 +34,7 @@ import { idTravel } from './travel';
 import { idVoice } from './voice';
 import { idWidgetsGuide } from './widgets-guide';
 import { idYearBook } from './year-book';
+import { idFirstCatch } from './first-catch';
 
 export { idAndroid } from './android';
 
@@ -74,6 +75,7 @@ export const id: Catalogue = {
   ...idWidgetsGuide,
   ...idDuo,
   ...idMoneyIn,
+  ...idFirstCatch,
 };
 
 /**

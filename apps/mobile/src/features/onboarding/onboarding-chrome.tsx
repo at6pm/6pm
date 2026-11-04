@@ -38,19 +38,24 @@ function Segment({ filled, pal }: { readonly filled: boolean; readonly pal: Onbo
   );
 }
 
-/** Back, a dash per step and Skip, in one 44 pt row. Hidden controls keep their place. */
+/**
+ * Back, a dash per step and Skip, in one 44 pt row. Hidden controls keep their place. `ahead`
+ * fills that many more dashes (the first catch landing fills the next step's).
+ */
 export function OnboardingHeader({
   step,
   pal,
   showSkip,
   onBack,
   onSkip,
+  ahead = 0,
 }: {
   readonly step: number;
   readonly pal: OnboardingPalette;
   readonly showSkip: boolean;
   readonly onBack: () => void;
   readonly onSkip: () => void;
+  readonly ahead?: number;
 }) {
   const { t } = useI18n();
   const canGoBack = step > 0;
@@ -91,7 +96,7 @@ export function OnboardingHeader({
         style={{ flex: 1, flexDirection: 'row', gap: 4 }}
       >
         {Array.from({ length: SHOWN_STEPS }, (_, k) => (
-          <Segment key={k} filled={k <= shownIndex(step)} pal={pal} />
+          <Segment key={k} filled={k <= shownIndex(step) + ahead} pal={pal} />
         ))}
       </View>
       <Animated.View style={skip} pointerEvents={showSkip ? 'auto' : 'none'}>

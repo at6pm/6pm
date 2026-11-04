@@ -34,6 +34,7 @@ import { jaTravel } from './travel';
 import { jaVoice } from './voice';
 import { jaWidgetsGuide } from './widgets-guide';
 import { jaYearBook } from './year-book';
+import { jaFirstCatch } from './first-catch';
 
 export { jaAndroid } from './android';
 
@@ -74,6 +75,7 @@ export const ja: Catalogue = {
   ...jaWidgetsGuide,
   ...jaDuo,
   ...jaMoneyIn,
+  ...jaFirstCatch,
 };
 
 /**

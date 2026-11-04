@@ -13,6 +13,7 @@ export const sameInBothLanguages: readonly string[] = [
   'MB Bank',
   'Email',
   'Apple Pay',
+  'Wallet',
   'AI',
   '{size} GB',
   '{percent}%',
