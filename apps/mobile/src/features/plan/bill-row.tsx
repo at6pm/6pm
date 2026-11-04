@@ -3,66 +3,66 @@ import { Pressable, Text, View } from 'react-native';
 import Animated, {
   Easing,
   interpolateColor,
+  ReduceMotion,
   useAnimatedStyle,
-  useReducedMotion,
   useSharedValue,
+  withSequence,
+  withSpring,
   withTiming,
 } from 'react-native-reanimated';
 
-import { curves } from '@6pm/theme';
+import { curves, springs } from '@6pm/theme';
 
 import { useMoneyFormat } from '../../money/use-money-format';
-import { CategoryTile } from '../../ui/category-tile';
 import { isSymbolName, Symbol } from '../../ui/icons/symbol';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, tabular } from '../../ui/type/fonts';
 import type { BillView } from './plan-view';
+import { billTile, type SplitColours } from './split-colours';
 
 const ease = Easing.bezier(...curves.enter);
 const TOGGLE_MS = 250;
+const reduceMotion = ReduceMotion.System;
 
-/** One bill: its tile, name and due line (tap to edit), the amount, and the paid tick. */
+/** One bill in Plan's Bills panel: its tile, name and due line (tap to edit), amount and tick. */
 export function BillRowView({
   view,
   first,
   sub,
-  subColour,
   label,
   editLabel,
+  colours,
   onToggle,
   onEdit,
 }: {
   readonly view: BillView;
   readonly first: boolean;
   readonly sub: string;
-  readonly subColour: string;
   readonly label: string;
   readonly editLabel: string;
+  readonly colours: SplitColours;
   readonly onToggle: () => void;
   readonly onEdit: () => void;
 }) {
   const { palette } = useTheme();
   const money = useMoneyFormat();
-  const reduceMotion = useReducedMotion();
   const paid = useSharedValue(view.paid ? 1 : 0);
-  const pressed = useSharedValue(0);
+  const pop = useSharedValue(1);
+  const tile = billTile(view.bill.hue);
   useEffect(() => {
-    paid.value = withTiming(view.paid ? 1 : 0, {
-      duration: reduceMotion ? 0 : TOGGLE_MS,
-      easing: ease,
-    });
-  }, [view.paid, paid, reduceMotion]);
-  const row = useAnimatedStyle(() => ({ opacity: 1 - 0.4 * paid.value }));
+    paid.value = withTiming(view.paid ? 1 : 0, { duration: TOGGLE_MS, easing: ease, reduceMotion });
+  }, [view.paid, paid]);
+  const row = useAnimatedStyle(() => ({ opacity: 1 - 0.45 * paid.value }));
+  const tileStyle = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(paid.value, [0, 1], [tile, colours.paidTile]),
+  }));
   const ring = useAnimatedStyle(() => ({
-    borderColor: interpolateColor(paid.value, [0, 1], [palette.inkSoft, palette.btnBg]),
-    backgroundColor: interpolateColor(paid.value, [0, 1], ['rgba(0,0,0,0)', palette.btnBg]),
-    transform: [{ scale: 1 - 0.05 * pressed.value }],
+    borderColor: interpolateColor(paid.value, [0, 1], [palette.inkSoft, colours.tick]),
+    backgroundColor: interpolateColor(paid.value, [0, 1], ['rgba(0,0,0,0)', colours.tick]),
+    transform: [{ scale: pop.value }],
   }));
-  const tick = useAnimatedStyle(() => ({
-    opacity: paid.value,
-    transform: [{ scale: 0.6 + 0.4 * paid.value }],
-  }));
+  const tick = useAnimatedStyle(() => ({ opacity: paid.value }));
   const { bill } = view;
   return (
     <Animated.View
@@ -71,9 +71,10 @@ export function BillRowView({
           flexDirection: 'row',
           alignItems: 'center',
           gap: 12,
-          paddingVertical: 10,
-          borderTopWidth: 0.5,
-          borderColor: first ? 'transparent' : palette.hair,
+          marginHorizontal: 14,
+          paddingVertical: 9,
+          borderTopWidth: first ? 0 : 0.5,
+          borderColor: palette.hair,
         },
         row,
       ]}
@@ -85,36 +86,59 @@ export function BillRowView({
         onPress={onEdit}
         style={{ flex: 1, minWidth: 0, flexDirection: 'row', alignItems: 'center', gap: 12 }}
       >
-        <CategoryTile icon={isSymbolName(bill.icon) ? bill.icon : 'payments'} hue={bill.hue} />
-        <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
-          <Text numberOfLines={1} style={{ ...body(16, 550), color: palette.ink }}>
+        <Animated.View
+          style={[
+            {
+              width: 34,
+              height: 34,
+              borderRadius: 11,
+              alignItems: 'center',
+              justifyContent: 'center',
+            },
+            tileStyle,
+          ]}
+        >
+          <Symbol
+            name={isSymbolName(bill.icon) ? bill.icon : 'payments'}
+            size={19}
+            fill={1}
+            color="#ffffff"
+          />
+        </Animated.View>
+        <View style={{ flex: 1, minWidth: 0, gap: 1 }}>
+          <Text numberOfLines={1} style={{ ...body(15, 600), color: palette.ink }}>
             {bill.name}
           </Text>
-          <Text style={{ ...body(13), color: subColour }}>{sub}</Text>
+          <Text
+            numberOfLines={1}
+            style={{ ...body(12), color: view.paid ? palette.inkSoft : colours.due }}
+          >
+            {sub}
+          </Text>
         </View>
-        <Text style={{ ...body(15, 600), ...tabular, color: palette.ink }}>
-          {money.full(bill.amount)}
+        <Text style={{ ...body(14.5, 650), ...tabular, color: palette.ink }}>
+          {money.short(bill.amount)}
         </Text>
       </PressScale>
       <Pressable
         accessibilityRole="checkbox"
         accessibilityState={{ checked: view.paid }}
         accessibilityLabel={label}
-        hitSlop={6}
-        onPress={onToggle}
-        onPressIn={() => {
-          pressed.value = withTiming(1, { duration: 60 });
-        }}
-        onPressOut={() => {
-          pressed.value = withTiming(0, { duration: 240 });
+        hitSlop={8}
+        onPress={() => {
+          pop.value = withSequence(
+            withTiming(0.86, { duration: 70, reduceMotion }),
+            withSpring(1, { ...springs.pop, reduceMotion }),
+          );
+          onToggle();
         }}
       >
         <Animated.View
           style={[
             {
-              width: 34,
-              height: 34,
-              borderRadius: 17,
+              width: 32,
+              height: 32,
+              borderRadius: 16,
               borderWidth: 1.5,
               alignItems: 'center',
               justifyContent: 'center',
@@ -123,7 +147,7 @@ export function BillRowView({
           ]}
         >
           <Animated.View style={tick}>
-            <Symbol name="check" size={20} color={palette.btnFg} />
+            <Symbol name="check" size={19} color={colours.tickInk} />
           </Animated.View>
         </Animated.View>
       </Pressable>
