@@ -12,7 +12,7 @@ const jar = {
   paused: false,
   archivedAt: null,
 };
-const rainy = { ...jar, id: 'rainy', icon: 'umbrella', neededBy: null };
+const rainy = { ...jar, id: 'rainy', icon: 'beach_access', neededBy: null };
 const fy = futureYouPotRow('2026-11-04T10:00:00.000Z');
 const saved = { dalat: 6_000_000, rainy: 5_000_000, futureYou: 18_900_000 };
 const hotel = { day: '2026-12-20', amount: 1_200_000 };

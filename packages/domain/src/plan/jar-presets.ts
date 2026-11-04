@@ -28,7 +28,7 @@ const PRESETS: readonly JarPreset[] = [
   { id: 'tet', icon: 'local_florist', hue: 20, target: 7_000_000, fills: 'date' },
   { id: 'trip', icon: 'flight', hue: 200, target: 6_000_000, fills: 'date' },
   { id: 'phone', icon: 'smartphone', hue: 250, target: 9_000_000, fills: 'steady' },
-  { id: 'rainy', icon: 'umbrella', hue: 145, target: 12_600_000, fills: 'steady' },
+  { id: 'rainy', icon: 'beach_access', hue: 145, target: 12_600_000, fills: 'steady' },
   { id: 'wedding', icon: 'favorite', hue: 350, target: 2_000_000, fills: 'date' },
   { id: 'other', icon: 'savings', hue: 75, target: 0, fills: 'steady' },
 ];
@@ -46,7 +46,7 @@ export function jarPresets(tet: boolean, currency: Currency = VND): JarPreset[] 
 }
 
 /** Icons a trip jar wears: the close asks about it while Travel mode is on. */
-const TRIP_ICONS: ReadonlySet<string> = new Set(['flight', 'landscape', 'luggage', 'beach_access']);
+const TRIP_ICONS: ReadonlySet<string> = new Set(['flight', 'landscape', 'luggage']);
 
 export function isTripJar(pot: { readonly icon: string }): boolean {
   return TRIP_ICONS.has(pot.icon);

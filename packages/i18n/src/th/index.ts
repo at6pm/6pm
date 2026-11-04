@@ -19,6 +19,9 @@ import { thInsightsHabits } from './insights-habits';
 import { thIntents } from './intents';
 import { thLooks } from './looks';
 import { thMoneyIn } from './money-in';
+import { thPotsClose } from './pots-close';
+import { thPotsPlan } from './pots-plan';
+import { thPots } from './pots';
 import { thNative } from './native';
 import { thOnboarding } from './onboarding';
 import { thPlan } from './plan';
@@ -74,6 +77,9 @@ export const th: Catalogue = {
   ...thWidgetsGuide,
   ...thDuo,
   ...thMoneyIn,
+  ...thPotsClose,
+  ...thPotsPlan,
+  ...thPots,
 };
 
 /**

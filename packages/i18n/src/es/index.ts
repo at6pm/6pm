@@ -19,6 +19,9 @@ import { esInsightsHabits } from './insights-habits';
 import { esIntents } from './intents';
 import { esLooks } from './looks';
 import { esMoneyIn } from './money-in';
+import { esPotsClose } from './pots-close';
+import { esPotsPlan } from './pots-plan';
+import { esPots } from './pots';
 import { esNative } from './native';
 import { esOnboarding } from './onboarding';
 import { esPlan } from './plan';
@@ -74,6 +77,9 @@ export const es: Catalogue = {
   ...esWidgetsGuide,
   ...esDuo,
   ...esMoneyIn,
+  ...esPotsClose,
+  ...esPotsPlan,
+  ...esPots,
 };
 
 /**

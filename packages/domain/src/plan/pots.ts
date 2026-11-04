@@ -38,7 +38,7 @@ export function futureYouPotRow(createdAt: string): PotRow {
     id: FUTURE_YOU_POT_ID,
     kind: 'goal',
     name: 'Future you',
-    icon: 'wb_sunny',
+    icon: 'wb_twilight',
     hue: 70,
     goal: 0,
     neededBy: null,

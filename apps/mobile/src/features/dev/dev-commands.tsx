@@ -17,6 +17,8 @@ import { pinCompanionForm } from './dev-companion-form';
 import { CUSTOMER_KEY, serializeCustomer } from '../purchases/customer-memory';
 import { FREE_CUSTOMER } from '../purchases/purchases-port';
 import { seedDesignFriday } from './design-friday-seed';
+import { seedDesignJars } from './design-jars-seed';
+import { DEV_MAX, DEV_MAX_KEY } from './dev-max';
 import { useI18n } from '../../i18n/i18n';
 import { seedDesignMoneyIn } from './design-money-in-seed';
 import { useYearBook } from '../year-book/use-year-book';
@@ -28,9 +30,12 @@ import { seedDesignYear } from './design-year-seed';
  * or foreground the app. The file is read once and deleted.
  *
  *   {"seed": "friday", "at": "18:07", "route": "/close", "toast": "Line to show", "companion": "max"}
+ *   {"seed": "friday", "jars": "due", "at": "18:00", "max": true}
  */
 const commandSchema = z.object({
   seed: z.enum(['friday', 'year', 'moneyIn']).optional(),
+  /** After the seed: the Pots and Plan canvases' jars and states (see `seedDesignJars`). */
+  jars: z.enum(['shelf', 'due', 'payday', 'tomorrow', 'over', 'first']).optional(),
   /** The friday or year seed's currency (ISO 4217); đồng when not given. */
   currency: z
     .string()
@@ -52,7 +57,7 @@ const commandSchema = z.object({
   look: z.enum(LOOK_IDS).optional(),
   /** Where the AI runs, as the Settings choice sets it. */
   aiMode: z.enum(['server', 'device']).optional(),
-  /** Keeps Max on or off as the last known customer; it takes effect at the next launch. */
+  /** Holds Max on or off whatever the store says; it takes effect at the next launch. */
   max: z.boolean().optional(),
   /** Binds this year's book and opens the share sheet, as a tap on a bound book does. */
   yearBook: z
@@ -60,16 +65,6 @@ const commandSchema = z.object({
     .regex(/^\d{4}$/)
     .optional(),
 });
-
-const DEV_MAX = {
-  active: true,
-  plan: 'yearly',
-  inTrial: false,
-  trialEndsAt: null,
-  renewsAt: null,
-  endsAt: null,
-  willRenew: true,
-} as const;
 
 export function DevCommands() {
   const router = useRouter();
@@ -90,6 +85,7 @@ export function DevCommands() {
       if (!parsed.success) return;
       const {
         seed,
+        jars,
         currency,
         scale,
         at,
@@ -110,6 +106,11 @@ export function DevCommands() {
           CUSTOMER_KEY,
           serializeCustomer(customer),
         ]);
+        // Held through the store's answers, which a simulator gives as free.
+        await store.db.runAsync('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)', [
+          DEV_MAX_KEY,
+          max ? '1' : '0',
+        ]);
       }
       if (at !== undefined) {
         const [h = 0, m = 0] = at.split(':').map(Number);
@@ -124,6 +125,7 @@ export function DevCommands() {
           ...(scale ? { scale } : {}),
         });
       if (seed === 'moneyIn') await seedDesignMoneyIn(store, today);
+      if (jars) await seedDesignJars(store, today, jars);
       // Over Home, so sheets present as sheets.
       if (route) {
         router.replace('/');

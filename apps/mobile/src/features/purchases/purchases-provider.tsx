@@ -13,6 +13,7 @@ import { AppState, Platform } from 'react-native';
 
 import type { LookId } from '@6pm/theme';
 
+import { DEV_MAX_KEY, withDevMax } from '../dev/dev-max';
 import { CUSTOMER_KEY, parseCustomer, serializeCustomer } from './customer-memory';
 import { canUseLook } from './entitlement';
 import { revenueCatPurchases } from './revenuecat-port';
@@ -76,10 +77,21 @@ export function PurchasesProvider({
   readonly port?: PurchasesPort;
 }) {
   const db = useSQLiteContext();
+  // A development build can hold Max whatever the store says (see `withDevMax`).
+  const [devMax] = useState(
+    () =>
+      __DEV__ &&
+      db.getFirstSync<{ value: string }>('SELECT value FROM settings WHERE key = ?', [DEV_MAX_KEY])
+        ?.value === '1',
+  );
   const [customer, setCustomerState] = useState<CustomerState>(() =>
-    parseCustomer(
-      db.getFirstSync<{ value: string }>('SELECT value FROM settings WHERE key = ?', [CUSTOMER_KEY])
-        ?.value,
+    withDevMax(
+      parseCustomer(
+        db.getFirstSync<{ value: string }>('SELECT value FROM settings WHERE key = ?', [
+          CUSTOMER_KEY,
+        ])?.value,
+      ),
+      devMax,
     ),
   );
   // The kept text of the customer on screen: a store answer that says the same changes nothing.
@@ -92,7 +104,8 @@ export function PurchasesProvider({
   const statusRef = useRef<OfferingsStatus>('idle');
 
   const setCustomer = useCallback(
-    (next: CustomerState) => {
+    (answer: CustomerState) => {
+      const next = withDevMax(answer, devMax);
       const text = serializeCustomer(next);
       if (text === keptRef.current) return;
       keptRef.current = text;
@@ -102,7 +115,7 @@ export function PurchasesProvider({
         text,
       ]).catch((error: unknown) => console.error('Keeping the purchases failed', error));
     },
-    [db],
+    [db, devMax],
   );
 
   const loadOfferings = useCallback(() => {
