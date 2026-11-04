@@ -81,8 +81,13 @@ export function wayQuiet(
 
 /** Where onboarding's first catch stands, kept on the phone. */
 export const firstCatchStateSchema = z.discriminatedUnion('state', [
-  /** "I'll do it later": the day it was said, and when. */
-  z.object({ state: z.literal('later'), day: z.string(), at: z.string() }),
+  /** "I'll do it later": the day it was said, when, and the ways set up by then. */
+  z.object({
+    state: z.literal('later'),
+    day: z.string(),
+    at: z.string(),
+    ways: z.array(z.string()).optional(),
+  }),
   /** A real catch landed (in onboarding or from Today's card). */
   z.object({ state: z.literal('caught'), at: z.string() }),
 ]);

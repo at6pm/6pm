@@ -2,7 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 
 import { currencyOf, VND } from '@6pm/domain';
 
-import { catchWaysFor, readyWays } from './catch-ways';
+import { catchWaysFor, listenWaysOf, readyWays } from './catch-ways';
 
 describe('the ways onboarding shows', () => {
   it('offers receipt email in server mode', () => {
@@ -37,5 +37,54 @@ describe('the ways onboarding shows', () => {
     expect(ways).toEqual(['scan', 'alerts', 'email', 'add']);
     expect(readyWays(ways)).toBe(2);
     expect(catchWaysFor(VND)).not.toContain('alerts');
+  });
+
+  it('offers bank alerts on an iPhone whose Shortcuts can run on a notification', () => {
+    const ios27 = {
+      scan: true,
+      share: true,
+      wallet: true,
+      widgets: true,
+      alertListener: false,
+      bankAlerts: true,
+    };
+    expect(catchWaysFor(VND, 'server', ios27)).toEqual([
+      'scan',
+      'share',
+      'wallet',
+      'alerts',
+      'email',
+      'add',
+      'lock',
+    ]);
+  });
+});
+
+describe('the ways onboarding waits on', () => {
+  const all = catchWaysFor(VND, 'server', {
+    scan: true,
+    share: true,
+    wallet: true,
+    widgets: true,
+    alertListener: false,
+    bankAlerts: true,
+  });
+
+  it('offers only the ways that were set up, sharing needing none', () => {
+    expect(listenWaysOf(all, [])).toEqual(['share']);
+    expect(listenWaysOf(all, ['wallet'])).toEqual(['share', 'wallet']);
+    expect(listenWaysOf(all, ['alerts', 'wallet', 'email'])).toEqual(['alerts', 'share', 'wallet']);
+  });
+
+  it('offers nothing a phone cannot do', () => {
+    const android = catchWaysFor(VND, 'server', {
+      scan: true,
+      share: false,
+      wallet: false,
+      widgets: false,
+      alertListener: true,
+    });
+    expect(listenWaysOf(android, [])).toEqual([]);
+    expect(listenWaysOf(android, ['alerts'])).toEqual(['alerts']);
   });
 });

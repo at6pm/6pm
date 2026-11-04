@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { ScrollView, useWindowDimensions } from 'react-native';
 import Animated, {
   scrollTo,
@@ -22,9 +22,11 @@ import { VoiceDemo, WalletDemo } from './catch-demos-tap-voice';
 import { AlertsDemo } from './catch-demos-alerts';
 import { CatchRail } from './catch-rail';
 import { CatchSetupSheet } from './catch-setup-sheet';
-import { catchWaysFor, type CatchWay, type WalkedWay } from './catch-ways';
+import { catchWaysFor, type CatchWay, type ListenWay, type WalkedWay } from './catch-ways';
+import { FirstCatchListen } from './first-catch-listen';
 import type { OnboardingPalette } from './onboarding-palette';
 import { StepHeading } from './step-parts';
+import type { FirstCatchListen as Listen } from './use-first-catch';
 
 const CARD = 300;
 const GAP = 10;
@@ -35,13 +37,24 @@ const SIDE = 20;
  * How 6pm catches spending: a tab per way above swipeable cards, each card a small live picture,
  * a line on what it does, and whether it works already. The two that need a minute outside 6pm
  * (the Wallet automation, mail forwarding) and sharing open their drawn walkthrough in a sheet;
- * Android's bank alerts open its Notification access switch.
+ * Android's bank alerts open its Notification access switch. Once a way is set up the step waits,
+ * live, for its first catch (`FirstCatchListen`), which takes the whole step over.
  */
 export function StepCatching({
   pal,
   date,
   closeAt,
   safe,
+  listening,
+  listen,
+  listenWays,
+  walked,
+  bankId,
+  onWalked,
+  onListen,
+  onTry,
+  onLater,
+  onContinue,
 }: {
   readonly pal: OnboardingPalette;
   /** Today, for the Lock Screen picture ("Friday 9 October"). */
@@ -49,6 +62,19 @@ export function StepCatching({
   readonly closeAt: string;
   /** The user's own first number, short ("245k"), for the Lock Screen picture. */
   readonly safe: string;
+  /** Waiting for the first catch: the step shows that instead of the ways. */
+  readonly listening: boolean;
+  readonly listen: Listen;
+  readonly listenWays: readonly ListenWay[];
+  readonly walked: ListenWay | null;
+  readonly bankId: string | null;
+  /** A way's set-up was walked (its Shortcut added or opened). */
+  readonly onWalked: (way: CatchWay) => void;
+  /** Starts waiting for the first catch. */
+  readonly onListen: () => void;
+  readonly onTry: (way: ListenWay) => void;
+  readonly onLater: () => void;
+  readonly onContinue: () => void;
 }) {
   const { t } = useI18n();
   const aiMode = useAiMode();
@@ -65,6 +91,23 @@ export function StepCatching({
   const shown = useSharedValue(0);
   const [selected, setSelected] = useState(0);
   const [setup, setSetup] = useState<WalkedWay | null>(null);
+  // A set-up walked in the open sheet: the step waits for that way's first catch once it closes.
+  const walkedHere = useRef(false);
+  const closeSetup = () => {
+    setSetup(null);
+    if (walkedHere.current && !listening) onListen();
+    walkedHere.current = false;
+  };
+  const sheet = (
+    <CatchSetupSheet
+      way={setup}
+      onClose={closeSetup}
+      onWalked={(way) => {
+        walkedHere.current = true;
+        onWalked(way);
+      }}
+    />
+  );
 
   const onScroll = useAnimatedScrollHandler((e) => {
     x.value = e.contentOffset.x;
@@ -86,7 +129,7 @@ export function StepCatching({
 
   const ready = (label: string): CatchStatus => ({ label, ready: true });
   const nothingToDo = ready(t('onboarding.catch.readyNothing'));
-  const setUp = (way: 'wallet' | 'email'): CatchAction => ({
+  const setUp = (way: 'wallet' | 'email' | 'alerts'): CatchAction => ({
     label: t('onboarding.catch.setUp'),
     accent: true,
     onPress: () => open(way),
@@ -116,6 +159,14 @@ export function StepCatching({
           action: setUp('wallet'),
         };
       case 'alerts':
+        // The iPhone's is a Shortcuts automation, walked through in the sheet.
+        if (!nativeReach.alertListener) {
+          return {
+            demo: <AlertsDemo />,
+            status: { label: t('capture.alerts.time'), ready: false },
+            action: setUp('alerts'),
+          };
+        }
         // One switch in Android's settings, opened straight from here; ready once it is on.
         return alertAccess === true
           ? { demo: <AlertsDemo />, status: ready(t('onboarding.catch.ready')) }
@@ -146,6 +197,30 @@ export function StepCatching({
         };
     }
   };
+
+  if (listening) {
+    return (
+      <>
+        <FirstCatchListen
+          pal={pal}
+          ways={listenWays}
+          walked={walked}
+          listen={listen}
+          bankId={bankId}
+          access={nativeReach.alertListener}
+          onTry={onTry}
+          onFix={(way) => {
+            haptics.tap();
+            if (way === 'alerts' && nativeReach.alertListener) openAlertAccess();
+            else setSetup(way);
+          }}
+          onLater={onLater}
+          onContinue={onContinue}
+        />
+        {sheet}
+      </>
+    );
+  }
 
   // A phone shorter than the design (or a larger text size) scrolls the step up from under the
   // Continue button rather than hiding the card's foot behind it.
@@ -196,7 +271,7 @@ export function StepCatching({
           );
         })}
       </Animated.ScrollView>
-      <CatchSetupSheet way={setup} onClose={() => setSetup(null)} />
+      {sheet}
     </ScrollView>
   );
 }
