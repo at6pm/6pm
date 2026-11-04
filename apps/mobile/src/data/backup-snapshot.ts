@@ -19,6 +19,7 @@ const CLEARED_IN_ORDER = [
   'spend_sightings',
   'pot_moves',
   'spends',
+  'imports',
   'merchant_rules',
   'bills',
   'pots',
@@ -93,14 +94,17 @@ export async function buildSnapshot(db: SqlDatabase, takenAt: string): Promise<B
     cycle: string;
     at: string;
   }>('SELECT id, pot_id, amount, kind, cycle, at FROM pot_moves ORDER BY id', []);
-  const [categories, bills, pots, closedDays, settings, togetherMoves] = await Promise.all([
-    tables.categories.all(),
-    tables.bills.all(),
-    tables.pots.all(),
-    tables.closedDays.all(),
-    readSettings(db),
-    readTogetherMoves(db),
-  ]);
+  const [categories, bills, pots, closedDays, settings, togetherMoves, imports] = await Promise.all(
+    [
+      tables.categories.all(),
+      tables.bills.all(),
+      tables.pots.all(),
+      tables.closedDays.all(),
+      readSettings(db),
+      readTogetherMoves(db),
+      tables.imports.all(),
+    ],
+  );
   const spendIds = new Set(spends.map((spend) => spend.id));
   const potIds = new Set(pots.map((pot) => pot.id));
   return {
@@ -132,6 +136,7 @@ export async function buildSnapshot(db: SqlDatabase, takenAt: string): Promise<B
         at: row.at,
       })),
     togetherMoves,
+    imports,
     closedDays,
   };
 }
@@ -231,6 +236,7 @@ export async function restoreSnapshot(db: SqlDatabase, snapshot: BackupSnapshot)
         [row.id, row.potId, row.potName, row.amount, row.cycle, row.at],
       );
     }
+    for (const row of snapshot.imports ?? []) await tables.imports.put(row);
     for (const row of snapshot.closedDays) await tables.closedDays.put(row);
   });
 }

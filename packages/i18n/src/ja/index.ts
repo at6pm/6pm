@@ -38,6 +38,8 @@ import { jaVoice } from './voice';
 import { jaWidgetsGuide } from './widgets-guide';
 import { jaYearBook } from './year-book';
 import { jaFirstCatch } from './first-catch';
+import { jaImport } from './import';
+import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { jaAndroid } from './android';
 
@@ -82,6 +84,8 @@ export const ja: Catalogue = {
   ...jaPotsPlan,
   ...jaPots,
   ...jaFirstCatch,
+  ...jaImport,
+  ...importSketchMomo,
 };
 
 /**
@@ -89,6 +93,7 @@ export const ja: Catalogue = {
  * beyond the list every language shares.
  */
 export const jaSameAsEnglish: readonly string[] = [
+  ...importSketchEnglish,
   'App',
   'From',
   'Log to 6pm',

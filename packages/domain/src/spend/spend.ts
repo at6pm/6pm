@@ -1,8 +1,11 @@
 import type { Vnd } from '../money/format';
 
-/** Where a spend came from. Shown on cards, rows and the source trail. */
+/**
+ * Where a spend came from. Shown on cards, rows and the source trail. `import` is history brought
+ * in from another app's export: it is never counted, closed or asked about.
+ */
 export type SpendSource =
-  'manual' | 'voice' | 'shared' | 'qr' | 'email' | 'applePay' | 'cash' | 'alert';
+  'manual' | 'voice' | 'shared' | 'qr' | 'email' | 'applePay' | 'cash' | 'alert' | 'import';
 
 /** Spending goes out; money that came in comes in (see `money-in.ts`). */
 export type SpendDirection = 'out' | 'in';

@@ -122,3 +122,23 @@ describe('calendarCells', () => {
     expect(underCount(closed)).toBe(2);
   });
 });
+
+describe('brought-in days', () => {
+  it('draws history before the start as outlines and never as missed days', () => {
+    const cells = calendarCells({
+      month: '2026-10',
+      today: '2026-11-05',
+      closed: [{ day: '2026-10-30', spent: 100, line: 200 }],
+      since: '2026-10-29',
+      brought: new Map([
+        ['2026-10-03', 45_000],
+        ['2026-10-30', 9_000],
+      ]),
+    });
+    const of = (day: string) => cells.find((c) => c.kind !== 'blank' && c.day === day);
+    expect(of('2026-10-03')).toEqual({ kind: 'brought', day: '2026-10-03', spent: 45_000 });
+    expect(of('2026-10-04')?.kind).toBe('idle');
+    expect(of('2026-10-29')?.kind).toBe('missed');
+    expect(of('2026-10-30')?.kind).toBe('closed');
+  });
+});

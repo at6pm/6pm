@@ -1,10 +1,11 @@
-import { useRouter } from 'expo-router';
-import { useRef, useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 
 import { DEFAULT_CLOSE_AT, type Payday } from '@6pm/domain';
 
 import { useMoneyStore } from '../../data/money-provider';
+import { importedSpentBetween } from '../../data/import-actions';
 import { completeOnboarding } from '../../data/onboarding';
 import { useI18n } from '../../i18n/i18n';
 import { useHomeCurrency } from '../../money/use-money-format';
@@ -84,6 +85,17 @@ export function useOnboarding(startStep = 0) {
     currency,
   );
   const dailyHint = firstDay({ income, payday, bills: 0, futureYou: 0 }, today, currency).line;
+  // History brought in from another app stands in for the estimate: its real spending since
+  // payday (M2a), read again whenever onboarding comes back from the bring-in.
+  const joinedSince = first.joined ? first.since : null;
+  useFocusEffect(
+    useCallback(() => {
+      if (joinedSince === null) return;
+      void importedSpentBetween(store, joinedSince, today).then((spent) => {
+        if (spent > 0) setSpentSincePayday(spent);
+      });
+    }, [joinedSince, store, today]),
+  );
 
   const finish = async () => {
     if (busy.current) return;

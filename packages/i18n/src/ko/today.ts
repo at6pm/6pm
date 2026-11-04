@@ -162,6 +162,7 @@ export const koToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'details.bill.repayment': '카드나 대출 상환',
   'details.bill.amount': '{bill}은(는) 보통 {old}예요. 앞으로 {new}로 바꿀까요?',
   'source.alert': '은행 알림',
+  'source.import': '가져옴',
   'today.pull.add': '당겨서 추가',
   'today.pull.release': '놓으면 추가',
 };

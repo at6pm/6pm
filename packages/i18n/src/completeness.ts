@@ -1,9 +1,11 @@
+import { importSameEverywhere } from './en-import';
 import type { Entry } from './catalogue-types';
 
 type LooseCatalogue = Readonly<Record<string, Entry>>;
 
 /** Words that are deliberately the same in English and Vietnamese. Keep this list short. */
 export const sameInBothLanguages: readonly string[] = [
+  ...importSameEverywhere,
   '6pm',
   'Max',
   'MAX',

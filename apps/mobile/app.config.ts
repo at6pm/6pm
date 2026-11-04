@@ -163,7 +163,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   owner: 'sixpm',
   slug: '6pm',
   scheme: variant.scheme,
-  version: '2.1.1',
+  version: '2.1.2',
   orientation: 'portrait',
   // The companion as the setting sun, half-sunk on a calm horizon: six o'clock without words.
   icon: './assets/icon/icon.png',
@@ -211,6 +211,20 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     infoPlist: {
       CFBundleAllowMixedLocalizations: true,
       NSSupportsLiveActivities: true,
+      // Money Lover's CSV, and MISA's and MoMo's Excel files, open in 6pm from Files, Zalo or Mail
+      // ("Open in 6pm"): iOS hands over a copy, read on the phone by "Bring your history".
+      CFBundleDocumentTypes: [
+        {
+          CFBundleTypeName: 'Spending history',
+          CFBundleTypeRole: 'Viewer',
+          LSHandlerRank: 'Alternate',
+          LSItemContentTypes: [
+            'public.comma-separated-values-text',
+            'org.openxmlformats.spreadsheetml.sheet',
+          ],
+        },
+      ],
+      LSSupportsOpeningDocumentsInPlace: false,
     },
   },
   android: {

@@ -18,4 +18,6 @@ export const haptics = {
   commit: () => felt(Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)),
   /** The close done, the reveal settling, a purchase made. */
   success: () => felt(Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)),
+  /** Something held until it went: brought-in history taken out again. */
+  warning: () => felt(Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)),
 };

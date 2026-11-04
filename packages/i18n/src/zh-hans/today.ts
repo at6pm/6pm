@@ -159,6 +159,7 @@ export const zhHansToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'details.bill.repayment': '信用卡或贷款',
   'details.bill.amount': '“{bill}”平时是 {old}。以后都按 {new} 算？',
   'source.alert': '银行通知',
+  'source.import': '带入',
   'today.pull.add': '下拉记一笔',
   'today.pull.release': '松手记一笔',
 };

@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 
 import {
   calendarCells,
+  countsTowardDay,
   diaryShelf,
   floorToStep,
   payCycleOn,
@@ -15,6 +16,7 @@ import {
   weekRecap,
   yearBookShelf,
   type ClosedDayRow,
+  type ImportApp,
   type SpendRow,
 } from '@6pm/domain';
 
@@ -158,7 +160,26 @@ export function useDiary() {
     () => restate(closedDays.filter((d) => d.day >= monday && d.day <= today)),
     [closedDays, monday, today, restate],
   );
-  const firstMonth = data?.since ? monthOf(data.since) : null;
+  // Days before 6pm started that have history brought in from another app: outlines, no line.
+  const brought = useMemo(() => {
+    const days = new Map<string, number>();
+    const apps = new Set<ImportApp>();
+    for (const s of span ?? []) {
+      if (s.source !== 'import' || s.status !== 'kept' || monthOf(s.day) !== month) continue;
+      if (s.importId) apps.add(data?.importApps.get(s.importId) ?? 'other');
+      const counted = {
+        amount: s.amount,
+        category: s.categoryId,
+        status: s.status,
+        direction: s.direction,
+      };
+      if (!countsTowardDay(counted, notDaily)) continue;
+      days.set(s.day, (days.get(s.day) ?? 0) + s.amount);
+    }
+    return { days, app: [...apps][0] ?? null };
+  }, [span, month, notDaily, data]);
+  const firstDays = [data?.since, data?.broughtSince].filter((d): d is string => !!d).sort();
+  const firstMonth = firstDays[0] ? monthOf(firstDays[0]) : null;
   const page = useCallback(
     (by: 1 | -1) => {
       haptics.tick();
@@ -181,7 +202,9 @@ export function useDiary() {
     setPick({ day: request.day, after: latest?.closedAt ?? '' });
   }
   const selected =
-    pick !== null && pick.after === latest?.closedAt && monthClosed.some((d) => d.day === pick.day)
+    pick !== null &&
+    pick.after === (latest?.closedAt ?? '') &&
+    (monthClosed.some((d) => d.day === pick.day) || brought.days.has(pick.day))
       ? pick.day
       : (latest?.day ?? null);
   const select = useCallback(
@@ -240,6 +263,36 @@ export function useDiary() {
       }
     }
   };
+  const appName = brought.app ? t(`import.app.${brought.app}`) : '';
+  const broughtReceipt: DayReceiptView | null =
+    !row && receiptData && brought.days.has(receiptData.day)
+      ? {
+          day: receiptData.day,
+          title: dates.stamp(receiptData.day),
+          no: '',
+          rows: receiptData.spends.map((s) => ({
+            time: dates.clock(s.at),
+            name: s.merchant.toLocaleUpperCase(),
+            merchant: s.merchant,
+            categoryId: s.categoryId,
+            amount: s.amount,
+          })),
+          jars: [],
+          moneyIn: receiptData.moneyIn.map((s) => ({
+            time: dates.clock(s.at),
+            name: (s.merchant || t('moneyIn.name')).toLocaleUpperCase(),
+            amount: s.amount,
+            note: t('import.diary.brought'),
+          })),
+          empty: t('diary.receipt.empty'),
+          totalLabel: t('close.receipt.total'),
+          total: brought.days.get(receiptData.day) ?? 0,
+          line: 0,
+          note: t('import.diary.receiptNote', { app: appName }),
+          stamp: t('import.diary.brought'),
+          closedAt: brought.app ? t(`import.stamp.${brought.app}`) : '',
+        }
+      : null;
   const receipt: DayReceiptView | null =
     row && receiptData
       ? {
@@ -287,7 +340,7 @@ export function useDiary() {
           stamp: t('close.receipt.closed'),
           closedAt: row.late ? t('diary.receipt.late') : dates.clock(row.closedAt),
         }
-      : null;
+      : broughtReceipt;
 
   const under = underCount(monthClosed);
   // Earlier months show the line their own days kept, not today's.
@@ -307,14 +360,31 @@ export function useDiary() {
     letters: dates.letters(monday),
     monthTitle: dates.month(month),
     summary:
-      monthClosed.length === 0
-        ? t('diary.cal.summaryNone')
-        : t('diary.cal.summary', {
-            closed: monthClosed.length,
-            under,
-            line: money.short(monthLine),
-          }),
-    cells: calendarCells({ month, today, closed: monthClosed, since: data?.since ?? null }),
+      monthClosed.length === 0 && brought.days.size > 0
+        ? t('import.diary.summary', { app: appName })
+        : monthClosed.length === 0
+          ? t('diary.cal.summaryNone')
+          : t('diary.cal.summary', {
+              closed: monthClosed.length,
+              under,
+              line: money.short(monthLine),
+            }),
+    cells: calendarCells({
+      month,
+      today,
+      closed: monthClosed,
+      since: data?.since ?? null,
+      brought: brought.days,
+    }),
+    /** "ML · 2026" on a month with brought-in days; null on a month 6pm kept itself. */
+    stamp:
+      brought.days.size > 0 && brought.app
+        ? t('import.diary.stamp', {
+            app: t(`import.stamp.${brought.app}`),
+            year: month.slice(0, 4),
+          })
+        : null,
+    broughtOnly: monthClosed.length === 0 && brought.days.size > 0,
     selected,
     select,
     receipt,

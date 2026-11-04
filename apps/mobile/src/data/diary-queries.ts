@@ -13,6 +13,7 @@ import {
   type ClosedDayRow,
   type DailyNumber,
   type DiarySpend,
+  type ImportApp,
   type JarReceiptLine,
   type LocalDate,
   type MonthKey,
@@ -50,11 +51,14 @@ export function readSpendsBetween(
   );
 }
 
-/** The first day 6pm has anything for: a spend or a closed day. Null on a fresh install. */
+/**
+ * The first day 6pm has anything for: a spend or a closed day. Null on a fresh install. History
+ * brought in from another app is not 6pm's: its days were never the person's to close.
+ */
 export async function readFirstDay(store: MoneyStore): Promise<LocalDate | null> {
   const rows = await store.db.getAllAsync<{ day: string | null }>(
     `SELECT MIN(day) AS day FROM (
-       SELECT MIN(day) AS day FROM spends WHERE status != 'deleted'
+       SELECT MIN(day) AS day FROM spends WHERE status != 'deleted' AND source != 'import'
        UNION ALL SELECT MIN(day) AS day FROM closed_days
      )`,
     [],
@@ -169,13 +173,15 @@ export async function readDayNumber(
     readSpendsBetween(store, cycle.start, day),
     readPotMoves(store.db),
   ]);
+  // Brought-in history never counts toward a day's number, as it never does today's.
+  const counted = spends.filter((s) => s.source !== 'import');
   // The day's own cycle: what its pots set aside and what was topped up in it, not today's.
   const totals = potTotals(moves, new Set(snap.pots.map((p) => p.id)), cycle.start);
   return dayOf({
     ...snap,
     today: day,
     cycle,
-    cycleSpends: spends.reverse(),
+    cycleSpends: counted.reverse(),
     topUpsThisCycle: totals.topUps,
     setAsideThisCycle: totals.setAside,
   });
@@ -188,6 +194,10 @@ export async function readDayNumber(
 export interface DiaryData {
   readonly weekSpends: readonly SpendRow[];
   readonly since: LocalDate | null;
+  /** The first day of history brought in from another app, which the calendar pages back to. */
+  readonly broughtSince: LocalDate | null;
+  /** Which app each bring-in came from, by its id. */
+  readonly importApps: ReadonlyMap<string, ImportApp>;
   readonly allClosed: number;
   readonly months: readonly MonthTotal[];
 }
@@ -196,13 +206,25 @@ export async function readDiary(
   store: MoneyStore,
   week: { readonly from: LocalDate; readonly to: LocalDate },
 ): Promise<DiaryData> {
-  const [weekSpends, since, months] = await Promise.all([
+  const [weekSpends, since, months, brought, imports] = await Promise.all([
     readSpendsBetween(store, week.from, week.to),
     readFirstDay(store),
     readMonthTotals(store),
+    store.db.getAllAsync<{ day: string | null }>(
+      "SELECT MIN(day) AS day FROM spends WHERE source = 'import' AND status != 'deleted'",
+      [],
+    ),
+    store.tables.imports.all(),
   ]);
   const allClosed = months.reduce((sum, m) => sum + m.closed, 0);
-  return { weekSpends, since, allClosed, months };
+  return {
+    weekSpends,
+    since,
+    broughtSince: brought[0]?.day ?? null,
+    importApps: new Map(imports.map((i) => [i.id, i.app])),
+    allClosed,
+    months,
+  };
 }
 
 /**

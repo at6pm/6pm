@@ -14,11 +14,25 @@ import { dots, inkWash, paper } from './diary-colours';
 
 const SELECT_MS = 200;
 
-function Legend({ colour, label }: { readonly colour: string; readonly label: string }) {
+function Legend({
+  colour,
+  outline,
+  label,
+}: {
+  readonly colour: string;
+  readonly outline?: boolean;
+  readonly label: string;
+}) {
   const { palette } = useTheme();
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-      <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: colour }} />
+      <View
+        style={
+          outline
+            ? { width: 7, height: 7, borderRadius: 2, borderWidth: 1, borderColor: colour }
+            : { width: 6, height: 6, borderRadius: 3, backgroundColor: colour }
+        }
+      />
       <Text style={{ ...body(11, 600), color: palette.inkSoft }}>{label}</Text>
     </View>
   );
@@ -101,6 +115,66 @@ function ClosedCell({
   );
 }
 
+/**
+ * A day brought in from another app: an outline with what it spent, no dot (it had no line).
+ * It opens its receipt like a closed day.
+ */
+function BroughtCell({
+  cell,
+  selected,
+  onPress,
+}: {
+  readonly cell: Extract<CalendarCell, { kind: 'brought' }>;
+  readonly selected: boolean;
+  readonly onPress: () => void;
+}) {
+  const { palette } = useTheme();
+  const money = useMoneyFormat();
+  const wash = inkWash(palette.dark);
+  const ring = useAnimatedStyle(() => ({
+    opacity: withTiming(selected ? 1 : 0, { duration: SELECT_MS }),
+  }));
+  return (
+    <PressScale
+      accessibilityRole="button"
+      accessibilityState={{ selected }}
+      onPress={onPress}
+      style={{
+        flex: 1,
+        height: 52,
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: wash.outline,
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 4,
+      }}
+    >
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          {
+            position: 'absolute',
+            inset: -2.5,
+            borderRadius: 14.5,
+            borderWidth: 2,
+            borderColor: palette.accent,
+          },
+          ring,
+        ]}
+      />
+      <Text style={{ ...body(14, 650), ...tabular, lineHeight: 14, color: palette.ink }}>
+        {Number(cell.day.slice(8))}
+      </Text>
+      <FitText
+        style={{ ...mono(9.5, 500), lineHeight: 9.5, color: palette.inkSoft, maxWidth: '100%' }}
+      >
+        {money.short(cell.spent)}
+      </FitText>
+    </PressScale>
+  );
+}
+
 /** Today (dashed in the accent, "6pm"), a missed day (dashed hairline) or a day still ahead. */
 function OpenCell({
   cell,
@@ -172,6 +246,8 @@ export function MonthCalendar({
   canPrevious,
   canNext,
   onPage,
+  stamp = null,
+  broughtOnly = false,
 }: {
   readonly title: string;
   readonly summary: string;
@@ -185,19 +261,28 @@ export function MonthCalendar({
   readonly canPrevious: boolean;
   readonly canNext: boolean;
   readonly onPage: (by: 1 | -1) => void;
+  /** "ML · 2026": where a month's brought-in days came from, stamped on its card. */
+  readonly stamp?: string | null;
+  /** Every day with something is brought in: the card is drawn as an outline, not filled. */
+  readonly broughtOnly?: boolean;
 }) {
   const { palette } = useTheme();
   const { t } = useI18n();
+  const wash = inkWash(palette.dark);
   const weeks = Array.from({ length: cells.length / 7 }, (_, w) => cells.slice(w * 7, w * 7 + 7));
   return (
     <View
       style={{
         borderRadius: 26,
-        backgroundColor: palette.cell,
-        boxShadow: palette.cardShadow,
+        backgroundColor: broughtOnly ? wash.ghost : palette.cell,
+        boxShadow: broughtOnly ? undefined : palette.cardShadow,
+        borderWidth: broughtOnly ? 1 : 0,
+        borderStyle: 'dashed',
+        borderColor: wash.outline,
         paddingVertical: 16,
         paddingHorizontal: 14,
         gap: 14,
+        overflow: 'hidden',
       }}
     >
       <View
@@ -230,8 +315,11 @@ export function MonthCalendar({
           />
         </View>
         <View style={{ alignItems: 'flex-end', gap: 3 }}>
-          <Legend colour={dots.under} label={t('diary.cal.under')} />
-          <Legend colour={dots.over} label={t('diary.cal.over')} />
+          {broughtOnly ? null : <Legend colour={dots.under} label={t('diary.cal.under')} />}
+          {broughtOnly ? null : <Legend colour={dots.over} label={t('diary.cal.over')} />}
+          {stamp ? (
+            <Legend outline colour={wash.stamp} label={t('import.diary.legendBrought')} />
+          ) : null}
         </View>
       </View>
       <View style={{ flexDirection: 'row', gap: 5 }}>
@@ -262,6 +350,13 @@ export function MonthCalendar({
                   selected={cell.day === selected}
                   onPress={() => onSelect(cell.day)}
                 />
+              ) : cell.kind === 'brought' ? (
+                <BroughtCell
+                  key={cell.day}
+                  cell={cell}
+                  selected={cell.day === selected}
+                  onPress={() => onSelect(cell.day)}
+                />
               ) : (
                 <OpenCell
                   key={cell.day}
@@ -273,6 +368,24 @@ export function MonthCalendar({
           </View>
         ))}
       </View>
+      {stamp ? (
+        <View
+          pointerEvents="none"
+          style={{
+            position: 'absolute',
+            right: -6,
+            bottom: 16,
+            paddingVertical: 3,
+            paddingHorizontal: 8,
+            borderWidth: 2,
+            borderRadius: 5,
+            borderColor: wash.stamp,
+            transform: [{ rotate: '-10deg' }],
+          }}
+        >
+          <Text style={{ ...mono(9, 600, 0.12), color: wash.stamp }}>{stamp}</Text>
+        </View>
+      ) : null}
     </View>
   );
 }

@@ -97,6 +97,7 @@ function Screens() {
         <Stack.Screen name="max-welcome" options={takeover} />
         <Stack.Screen name="backup" options={sheet} />
         <Stack.Screen name="read-on-phone" options={sheet} />
+        <Stack.Screen name="import" options={sheet} />
         <Stack.Screen name="together/index" options={sheet} />
         <Stack.Screen name="together/[code]" options={sheet} />
         <Stack.Screen name="shared-pot/[id]" options={sheet} />

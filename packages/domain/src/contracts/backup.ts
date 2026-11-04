@@ -4,6 +4,7 @@ import {
   billRowSchema,
   categoryRowSchema,
   closedDayRowSchema,
+  importRowSchema,
   merchantRuleRowSchema,
   potRowSchema,
   spendRowSchema,
@@ -26,9 +27,10 @@ export const BACKUP_FORMAT_VERSION = 1;
  * from before would drop those fields and count each bill payment as spending again. Format 5
  * brought money that came in and bank alerts: a phone from before would count money in as spending.
  * Format 6 brought jars: steady payday amounts and spends taken from a jar: a phone from before
- * would count a jar's spending against the daily number again.
+ * would count a jar's spending against the daily number again. Format 7 brought history from
+ * other apps' exports: a phone from before would count those lines as spending in this cycle.
  */
-export const BACKUP_SNAPSHOT_VERSION = 6;
+export const BACKUP_SNAPSHOT_VERSION = 7;
 
 /** AES-GCM: a 12-byte nonce in front of the ciphertext, a 16-byte tag behind it. */
 export const BACKUP_IV_BYTES = 12;
@@ -161,6 +163,8 @@ export const backupSnapshotSchema = z.strictObject({
   potMoves: z.array(potMoveRowSchema),
   /** Absent in backups taken before Budget together history was carried. */
   togetherMoves: z.array(togetherMoveRowSchema).optional(),
+  /** Absent in backups taken before history could be brought in. */
+  imports: z.array(importRowSchema).optional(),
   closedDays: z.array(closedDayRowSchema),
 });
 export type BackupSnapshot = z.infer<typeof backupSnapshotSchema>;

@@ -175,6 +175,7 @@ export const deToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'details.bill.repayment': 'Karte oder Kredit',
   'details.bill.amount': '„{bill}“ kostet sonst {old}. Ab jetzt {new}?',
   'source.alert': 'Bankmitteilung',
+  'source.import': 'Mitgebracht',
   'today.pull.add': 'Ziehen zum Erfassen',
   'today.pull.release': 'Loslassen zum Erfassen',
 };

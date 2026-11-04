@@ -64,3 +64,14 @@ export async function limitIconPicks(c: Context<AppEnv>): Promise<void> {
   });
   if (!success) throw tooMany();
 }
+
+/**
+ * Called by the import route once its device is known, before the body is read. A person brings
+ * a file in now and then, and the phone asks at most twice for one file.
+ */
+export async function limitImportMaps(c: Context<AppEnv>): Promise<void> {
+  const { success } = await c.env.IMPORT_MAP_RATE_LIMIT.limit({
+    key: `device:${c.var.device.hash}`,
+  });
+  if (!success) throw tooMany();
+}

@@ -15,7 +15,7 @@ export async function readGivableSpends(
   today: LocalDate,
 ): Promise<GivableSpend[]> {
   const rows = await store.tables.spends.select(
-    "WHERE day >= ? AND status IN ('kept', 'caught') ORDER BY at DESC",
+    "WHERE day >= ? AND status IN ('kept', 'caught') AND source != 'import' ORDER BY at DESC",
     [addDays(today, -CLAIM_DAYS)],
   );
   const answered = new Set(rows.flatMap((r) => (r.givesBack ? [r.givesBack] : [])));

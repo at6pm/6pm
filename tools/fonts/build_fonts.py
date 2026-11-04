@@ -36,9 +36,13 @@ EXTRA_PROTOTYPES = [
     "6pm Onboarding v2.dc.html",
     "6pm Surfaces and States.dc.html",
 ]
-# Icons the app always ships, whatever the prototypes name (the Edit pot keypad's cost line, and
-# the money wheels' gesture hints).
-EXTRA_ICONS = ["calendar_month", "swipe_vertical", "touch_app"]
+# Icons the app always ships, whatever the prototypes name (the Edit pot keypad's cost line, the
+# money wheels' gesture hints, and the bring-in's guide sketches, column roles and undo).
+EXTRA_ICONS = [
+    "calendar_month", "swipe_vertical", "touch_app",
+    "folder_open", "redo", "calendar_today", "notes", "swap_vert", "grid_view", "table_view",
+    "date_range", "upload_file", "visibility_off", "support_agent", "description", "donut_small",
+]
 
 # Latin, Latin-1, Latin Extended-A/B (đ, ơ, ư), combining marks, Vietnamese (Latin Extended
 # Additional), general punctuation (’ – — …), currency (₫), arrows and math (≈ −).

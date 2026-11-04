@@ -19,6 +19,8 @@ import { AiSettingsRow } from '../features/privacy/ai-settings-row';
 import { CaptureSettingsSection } from '../features/capture-guide/capture-settings-section';
 import { useDeleteBackup } from '../features/backup/use-backup';
 import { ExportRow } from '../features/export/export-row';
+import { ImportSettingsRow } from '../features/import/import-row';
+import { ImportUndoCards } from '../features/import/import-undo';
 import { usePurchases } from '../features/purchases/purchases-provider';
 import { useCompanionSettingsStore } from '../features/companion/companion-settings-provider';
 import { useLookSettingsStore } from '../features/looks/look-settings-provider';
@@ -197,7 +199,8 @@ export default function Settings() {
 
       <View style={{ gap: 8 }}>
         <SettingsSection title={t('settings.yourData')}>
-          <BackupRow first />
+          <ImportSettingsRow />
+          <BackupRow />
           <AiSettingsRow />
           <SettingRow
             icon="receipt_long"
@@ -238,6 +241,7 @@ export default function Settings() {
           ) : null}
           <ExportRow />
         </SettingsSection>
+        <ImportUndoCards />
         <PressScale
           accessibilityRole="button"
           accessibilityState={{ busy: deleting }}

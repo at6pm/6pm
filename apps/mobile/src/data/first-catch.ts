@@ -93,7 +93,7 @@ export interface CatchSeen {
  */
 export async function catchesSince(db: SqlDatabase, since: string): Promise<CatchSeen[]> {
   const rows = await db.getAllAsync<{ source: SpendSource; at: string; detail: string | null }>(
-    `SELECT source, created_at AS at, detail FROM spends WHERE created_at >= ?
+    `SELECT source, created_at AS at, detail FROM spends WHERE created_at >= ? AND source != 'import'
      UNION ALL
      SELECT s.source, s.seen_at AS at, s.detail FROM spend_sightings s
        JOIN spends p ON p.id = s.spend_id

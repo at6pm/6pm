@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { IMPORT_APPS } from '../import/columns';
+
 /** Rows of the phone's money database, checked on every read and write. */
 
 const id = z.string().min(1);
@@ -19,6 +21,7 @@ export const spendSourceSchema = z.enum([
   'applePay',
   'cash',
   'alert',
+  'import',
 ]);
 export const spendStatusSchema = z.enum(['caught', 'pending', 'kept', 'skipped', 'deleted']);
 
@@ -93,6 +96,11 @@ export const spendRowSchema = z.object({
   fromPot: id.nullable().optional(),
   /** What the jar covered, at most the spend; the rest counted today. Null: the whole spend. */
   fromPotAmount: vnd.nullable().optional(),
+  /**
+   * The bring-in this line came with (`imports.id`): history from another app's export, before the
+   * day 6pm started. Absent on every other spend, and on rows and backups from before it could.
+   */
+  importId: id.nullable().optional(),
   createdAt: instant,
   updatedAt: instant,
 });
@@ -166,3 +174,22 @@ export const closedDayRowSchema = z.object({
   note: z.string().nullable(),
 });
 export type ClosedDayRow = z.infer<typeof closedDayRowSchema>;
+
+/**
+ * One bring-in of another app's history: which app, when, and what it wrote. Its lines are the
+ * spends with its `importId`. When its lines in the joined pay cycle stood in for "spent since
+ * payday", `answerBefore` keeps what was there, so undoing it puts that back.
+ */
+export const importRowSchema = z.object({
+  id,
+  app: z.enum(IMPORT_APPS),
+  at: instant,
+  lines: z.number().int().nonnegative(),
+  firstDay: day.nullable(),
+  lastDay: day.nullable(),
+  /** This bring-in set "spent since payday" from its lines. */
+  answered: z.boolean(),
+  /** What "spent since payday" was before it did; null when it was the estimate. */
+  answerBefore: vnd.nullable(),
+});
+export type ImportRecordRow = z.infer<typeof importRowSchema>;

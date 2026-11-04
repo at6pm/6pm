@@ -38,6 +38,8 @@ import { esVoice } from './voice';
 import { esWidgetsGuide } from './widgets-guide';
 import { esYearBook } from './year-book';
 import { esFirstCatch } from './first-catch';
+import { esImport } from './import';
+import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { esAndroid } from './android';
 
@@ -82,6 +84,8 @@ export const es: Catalogue = {
   ...esPotsPlan,
   ...esPots,
   ...esFirstCatch,
+  ...esImport,
+  ...importSketchMomo,
 };
 
 /**
@@ -89,6 +93,7 @@ export const es: Catalogue = {
  * beyond the list every language shares.
  */
 export const esSameAsEnglish: readonly string[] = [
+  ...importSketchEnglish,
   'App',
   'Apps',
   'General',

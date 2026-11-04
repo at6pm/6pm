@@ -170,7 +170,7 @@ describe('the snapshot of the phone', () => {
       spend?.id ?? '',
     ]);
     const snapshot = await buildSnapshot(source, TAKEN);
-    expect(snapshot.version).toBe(6);
+    expect(snapshot.version).toBe(BACKUP_SNAPSHOT_VERSION);
     const phone = openMemoryDb();
     await restoreSnapshot(phone, snapshot);
     const tables = openMoneyTables(phone);

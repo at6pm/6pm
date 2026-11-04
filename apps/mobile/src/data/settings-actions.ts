@@ -10,6 +10,7 @@ const EVERY_TABLE = [
   'pot_moves',
   'together_moves',
   'spends',
+  'imports',
   'merchant_rules',
   'bills',
   'pots',
