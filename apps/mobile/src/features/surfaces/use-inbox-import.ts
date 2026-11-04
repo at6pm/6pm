@@ -6,16 +6,19 @@ import { AppState } from 'react-native';
 import { surfaces } from '../../../modules/surfaces';
 import { importInbox } from '../../data/inbox-import';
 import { useMoneyActions, useMoneyStore } from '../../data/money-provider';
+import { useI18n } from '../../i18n/i18n';
 import { useHomeCurrency } from '../../money/use-money-format';
 import { useApi } from '../api/native-api';
 import { createEnrichShared } from '../capture/enrich-shared';
 import { priceWaitingNow } from '../travel/price-waiting';
+import { setInboxRunner } from './inbox-runner';
 
 /**
  * Brings in what the share extension, the shortcuts and the Live Activity left in the App Group:
  * once the money store has loaded, and every time the app comes back to the foreground. Then
  * prices any captured foreign amount still waiting for a rate, in the home currency, at the rate
- * of the day it was paid. One run at a time; a return to the foreground during one waits for it.
+ * of the day it was paid. One run at a time; a return to the foreground during one waits for it,
+ * and so does a screen asking for one (`requestInboxImport`), a second ask joining the one queued.
  */
 export function useInboxImport() {
   const store = useMoneyStore();
@@ -23,6 +26,7 @@ export function useInboxImport() {
   const api = useApi();
   const db = useSQLiteContext();
   const home = useHomeCurrency();
+  const { language } = useI18n();
   const running = useRef<Promise<unknown>>(Promise.resolve());
 
   useEffect(() => {
@@ -35,26 +39,48 @@ export function useInboxImport() {
       categories: () => store.getSnapshot().categories,
     });
     const price = () => priceWaitingNow({ store, actions, api, home });
-    const run = () => {
-      running.current = running.current
-        .then(() =>
-          importInbox({
+    let queued: Promise<void> | null = null;
+    // Prices everything waiting after this run, not only what it brought in.
+    let priceAll = false;
+    // A run asked for while another waits to start is that one: the inbox is read when it starts.
+    const run = (all = false): Promise<void> => {
+      priceAll ||= all;
+      if (queued) return queued;
+      const next = running.current
+        .then(async () => {
+          queued = null;
+          const everything = priceAll;
+          priceAll = false;
+          const result = await importInbox({
             store,
             actions,
             inbox: native,
             enrich,
             home: home.code,
+            language,
             report: (message) => Sentry.captureMessage(message),
-          }),
-        )
-        .catch((error: unknown) => Sentry.captureException(error))
-        .then(price)
-        .catch((error: unknown) => Sentry.captureException(error));
+          }).catch((error: unknown) => {
+            Sentry.captureException(error);
+            return { saved: 0, removed: 0 };
+          });
+          // A charge abroad is priced after anything new came in, and on every return to the app.
+          if (everything || result.saved > 0) await price();
+        })
+        .catch((error: unknown) => {
+          Sentry.captureException(error);
+        });
+      queued = next;
+      running.current = next;
+      return next;
     };
-    run();
+    void run(true);
+    setInboxRunner(() => run());
     const sub = AppState.addEventListener('change', (state) => {
-      if (state === 'active') run();
+      if (state === 'active') void run(true);
     });
-    return () => sub.remove();
-  }, [store, actions, api, db, home]);
+    return () => {
+      setInboxRunner(null);
+      sub.remove();
+    };
+  }, [store, actions, api, db, home, language]);
 }
