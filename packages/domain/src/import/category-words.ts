@@ -44,6 +44,7 @@ const UNSAID = new Set([
 
 /** Whole names first, then the words a name holds; the first match wins, so order matters. */
 const NAMES: readonly (readonly [ImportTarget, readonly string[]])[] = [
+  ['bills', ['dien', 'nuoc', 'gas', 'internet', 'dien thoai', 'truyen hinh', 'cap']],
   [
     'notDaily',
     [
@@ -365,6 +366,7 @@ const WORDS: readonly (readonly [ImportTarget, readonly string[]])[] = [
       'children babies',
       'kids',
       'vat nuoi',
+      'thu cung',
       'pets',
       'pet',
       'giao duc',

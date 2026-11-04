@@ -127,7 +127,21 @@ const HEADER_WORDS: readonly (readonly [FullRole, readonly string[]])[] = [
       'withdrawal',
     ],
   ],
-  ['amount', ['amount', 'so tien', 'gia tri', 'value', 'tien', 'sum', 'total', 'so tien vnd']],
+  [
+    'amount',
+    [
+      'amount',
+      'so tien',
+      'gia',
+      'gia tien',
+      'gia tri',
+      'value',
+      'tien',
+      'sum',
+      'total',
+      'so tien vnd',
+    ],
+  ],
   ['subcategory', ['subcategory', 'sub category', 'hang muc con', 'danh muc con']],
   [
     'category',
@@ -222,7 +236,10 @@ function momoPlan(sheet: Sheet): ColumnPlan | null {
   return null;
 }
 
-/** The first row (of the first 15) whose headers name a date and an amount, with the roles read. */
+/**
+ * The header row among the first 15: the one whose headers name a date and an amount, or else the
+ * one naming the most roles (a partial guess for the person to finish), with the roles read.
+ */
 function headerPlan(sheet: Sheet, app: ImportApp): ColumnPlan | null {
   let best: { at: number; roles: FullRole[]; score: number } | null = null;
   for (let at = 0; at < Math.min(15, sheet.rows.length); at++) {
@@ -231,12 +248,9 @@ function headerPlan(sheet: Sheet, app: ImportApp): ColumnPlan | null {
     // One column per role: a second "Date" or "Category" is skipped.
     const seen = new Set<FullRole>();
     const unique = roles.map((r) => (r !== 'skip' && seen.has(r) ? 'skip' : (seen.add(r), r)));
-    const hasDate = unique.includes('date');
-    const hasAmount =
-      unique.includes('amount') || unique.includes('amountIn') || unique.includes('amountOut');
-    const score = unique.filter((r) => r !== 'skip').length + (hasDate && hasAmount ? 10 : 0);
-    if (hasDate && hasAmount && (best === null || score > best.score))
-      best = { at, roles: unique, score };
+    const named = unique.filter((r) => r !== 'skip').length;
+    const score = named + (planReads({ roles: unique }) ? 100 : 0);
+    if (named > 0 && (best === null || score > best.score)) best = { at, roles: unique, score };
   }
   return best ? { app, header: best.at, roles: best.roles } : null;
 }
@@ -269,7 +283,8 @@ export function planOf(sheet: Sheet): ColumnPlan {
   if (momo) return momo;
   const app: ImportApp = isMoneyLover(sheet) ? 'moneyLover' : isMisa(sheet) ? 'misa' : 'other';
   const plan = headerPlan(sheet, app);
-  if (plan) return plan;
+  if (plan && planReads(plan)) return plan;
+  if (plan) return { ...plan, app: 'other' };
   return { app: 'other', header: 0, roles: (sheet.rows[0] ?? []).map(() => 'skip') };
 }
 

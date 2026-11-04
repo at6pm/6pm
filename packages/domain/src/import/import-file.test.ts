@@ -175,15 +175,17 @@ describe('a file 6pm does not know', () => {
 
   it('says so when it cannot find a date and an amount, and shows the server only shapes', () => {
     const opened = openImportFile(
-      csv('Ngày GD;Giá;Nhóm\n09/10/2026;-120000;Mua sắm\n08/10/2026;+17400000;Lương\n'),
+      csv('Ngày GD;Cột B;Nhóm\n09/10/2026;-120000;Mua sắm\n08/10/2026;+17400000;Lương\n'),
     );
     if (!opened.ok) throw new Error('not opened');
     const sheet = opened.sheets[0];
     if (sheet === undefined) throw new Error('no sheet');
     expect(planReads(planOf(sheet))).toBe(false);
+    // What it could name is kept, for the person to finish.
+    expect(planOf(sheet).roles).toEqual(['date', 'skip', 'category']);
     expect(columnSamples(sheet, 0)).toEqual([
       { header: 'Ngày GD', shapes: ['dd/dd/dddd'] },
-      { header: 'Giá', shapes: ['-dddddd', '+dddddddd'] },
+      { header: 'Cột B', shapes: ['-dddddd', '+dddddddd'] },
       { header: 'Nhóm', shapes: ['w w', 'w'] },
     ]);
     expect(valueShape('Thành công', true)).toBe('Thành công');
@@ -242,6 +244,9 @@ describe('importTargetOf', () => {
     ['CIRCLE K', 'groceries'],
     ['Hoá đơn & Tiện ích', 'bills'],
     ['Hoá đơn điện', 'bills'],
+    ['Điện', 'bills'],
+    ['Nước', 'bills'],
+    ['Thú cưng', 'family'],
     ['Điện lực Hồ Chí Minh', 'bills'],
     ['data vinaphone trực tiếp', 'bills'],
     ['Mua sắm', 'shopping'],
