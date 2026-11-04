@@ -20,6 +20,7 @@ export const sameInBothLanguages: readonly string[] = [
   'Xôi',
   'Vietcombank',
   'MoMo',
+  'VNPay',
   'CSV · Sheets',
   // Siri hears English only, so its phrase and what is said to it stay English.
   'Log in 6pm',

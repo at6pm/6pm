@@ -28,6 +28,7 @@ export { readOtherPayment, type OtherPayment } from './other-payment';
 export {
   maskAccount,
   parseVietQR,
+  type MerchantProvider,
   type VietQR,
   type VietQRFailure,
   type VietQRFailureReason,

@@ -4,8 +4,10 @@ import { AppState } from 'react-native';
 import {
   likelyCategoriesAt,
   parseVietQR,
+  readQrContent,
   type BankInfo,
   type FxRate,
+  type QrContent,
   type VietQR,
   type VietQRFailure,
 } from '@6pm/domain';
@@ -38,6 +40,8 @@ export type ScanPhase =
   | { readonly kind: 'camera' }
   | { readonly kind: 'unreadable' }
   | { readonly kind: 'foreign'; readonly failure: VietQRFailure }
+  | { readonly kind: 'merchant'; readonly failure: VietQRFailure }
+  | { readonly kind: 'content'; readonly content: QrContent }
   | {
       readonly kind: 'preview';
       readonly qr: VietQR;
@@ -119,11 +123,17 @@ export function useScan() {
           }),
         );
       } else {
-        haptics.tick();
+        const content = result.reason === 'not_emv' ? readQrContent(data) : null;
+        if (content) haptics.tap();
+        else haptics.tick();
         setPhase(
           result.reason === 'foreign'
             ? { kind: 'foreign', failure: result }
-            : { kind: 'unreadable' },
+            : result.reason === 'merchant'
+              ? { kind: 'merchant', failure: result }
+              : content
+                ? { kind: 'content', content }
+                : { kind: 'unreadable' },
         );
       }
     },
@@ -192,6 +202,23 @@ export function useScan() {
       const payee = named ? titleCase(named) : fallbackPayee;
       await actions.addSpend({
         ...priced,
+        categoryId: await categoryFor(payee),
+        merchant: payee,
+        source: 'qr',
+        status: 'kept',
+        wallet: null,
+      });
+    },
+    /**
+     * A shop's Vietnamese payment code 6pm cannot pay, paid in the user's bank app: kept at once
+     * as a spend of the đồng it asks for. Rejects when the code has no amount or cannot be saved.
+     */
+    keepMerchant: async (failure: VietQRFailure, fallbackPayee: string) => {
+      if (failure.dong === undefined) throw new Error('The code has no amount to keep');
+      const named = failure.merchantName?.trim();
+      const payee = named ? titleCase(named) : fallbackPayee;
+      await actions.addSpend({
+        ...dongInHome(failure.dong, home, quote),
         categoryId: await categoryFor(payee),
         merchant: payee,
         source: 'qr',

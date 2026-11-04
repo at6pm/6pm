@@ -45,7 +45,16 @@ export interface VietQR {
   raw: string;
 }
 
-export type VietQRFailureReason = 'not_emv' | 'bad_crc' | 'foreign' | 'unsupported' | 'malformed';
+export type VietQRFailureReason =
+  'not_emv' | 'bad_crc' | 'foreign' | 'merchant' | 'unsupported' | 'malformed';
+
+/** Vietnamese shop-code schemes outside NAPAS that 6pm names. */
+export type MerchantProvider = 'vnpay';
+
+/** Sub-tag 00 of a VNPay merchant account template. */
+const MERCHANT_GUIDS: readonly { prefix: string; provider: MerchantProvider }[] = [
+  { prefix: 'A000000775', provider: 'vnpay' },
+];
 
 export interface VietQRFailure {
   ok: false;
@@ -53,6 +62,10 @@ export interface VietQRFailure {
   /** For a foreign QR: ISO 3166-1 alpha-2 country. */
   country?: string;
   scheme?: ForeignScheme;
+  /** For a Vietnamese shop code outside NAPAS (`merchant`): who issued it, when 6pm knows. */
+  provider?: MerchantProvider;
+  /** For a `merchant` code: the amount it asks for in whole đồng, when it carries one. */
+  dong?: Vnd;
   /** For a foreign QR, so it can be logged by hand: amount as written, in its own currency. */
   amount?: string;
   /**
@@ -101,9 +114,8 @@ export function parseVietQR(input: string): VietQRResult {
   const napas = findNapasTemplate(fields, unit);
   if (!napas) {
     const foreign = detectForeign(fields, merchantGuids(fields, unit));
-    return foreign
-      ? { ok: false, reason: 'foreign', ...foreign, ...foreignDetails(fields) }
-      : fail('unsupported');
+    if (foreign) return { ok: false, reason: 'foreign', ...foreign, ...foreignDetails(fields) };
+    return merchantCode(fields, merchantGuids(fields, unit)) ?? fail('unsupported');
   }
   const currency = fields.get('53');
   const country = fields.get('58')?.toUpperCase();
@@ -182,6 +194,30 @@ function readAmount(value: string | undefined): Vnd | null | undefined {
   if (!match?.[1]) return undefined;
   const amount = Number(match[1]);
   return amount === 0 ? null : amount;
+}
+
+/**
+ * A shop's payment code from a Vietnamese scheme outside NAPAS (VNPay's, for one): an EMV code in
+ * đồng with a merchant account template of its own. 6pm reads its shop and amount to keep the
+ * spend, and cannot hand it to a bank app, since no bank takes such a code as a link.
+ */
+function merchantCode(fields: TlvFields, guids: readonly string[]): VietQRFailure | null {
+  const currency = fields.get('53');
+  const country = fields.get('58')?.toUpperCase();
+  if (guids.length === 0) return null;
+  if (
+    (currency !== undefined && currency !== '704') ||
+    (country !== undefined && country !== 'VN')
+  ) {
+    return null;
+  }
+  const dong = readAmount(fields.get('54'));
+  if (dong === undefined) return null;
+  const found: VietQRFailure = { ok: false, reason: 'merchant', ...foreignDetails(fields) };
+  const known = MERCHANT_GUIDS.find((m) => guids.some((g) => g.startsWith(m.prefix)));
+  if (known) found.provider = known.provider;
+  if (dong !== null) found.dong = dong;
+  return found;
 }
 
 function foreignDetails(

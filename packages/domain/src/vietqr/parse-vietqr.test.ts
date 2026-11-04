@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { crc16CcittFalse } from './crc16';
 import { maskAccount, parseVietQR, type VietQR, type VietQRResult } from './parse-vietqr';
 
 /** Payloads were built and their CRCs computed with an independent implementation. */
@@ -38,6 +39,9 @@ const QR = {
   qrph: '00020101021128460011ph.ppmi.p2m0111GXCHPHM2XXX03122150000001235204581253036085802PH5910CARINDERIA6006MANILA6304AC2E',
   laos: '00020101021138320016A0052662846625770108277104185204581253034185802LA5908FEU SHOP6009VIENTIANE63041D2F',
   vnOther: '00020101021126280010A0000007750110MERCHANT0153037045802VN5908QUAN COM630491A3',
+  // A shop's VNPay code as a kiosk shows it (TORO, 26.000₫), read off a photo of the screen.
+  vnpayKiosk:
+    '00020101021226280010A000000775011003134217755204581453037045405260005802VN5904TORO6005HANOI610610000062440114dSO8TRBLlccMu70310KOOTORO2060708KTR002066304EDAC',
   wrongFormat:
     '00020201021138540010A00000072701240006970436011010233348210208QRIBFTTA53037045802VN63041733',
 };
@@ -166,8 +170,36 @@ describe('parseVietQR', () => {
       expect(parseVietQR(QR.usd)).toEqual({ ok: false, reason: 'unsupported' });
     });
 
-    it('a Vietnamese EMV QR that is not on NAPAS as unsupported', () => {
-      expect(parseVietQR(QR.vnOther)).toEqual({ ok: false, reason: 'unsupported' });
+    it('an EMV QR with no merchant account template as unsupported', () => {
+      const bare = '00020101021153037045802VN';
+      const crc = crc16CcittFalse(`${bare}6304`);
+      expect(parseVietQR(`${bare}6304${crc}`)).toEqual({ ok: false, reason: 'unsupported' });
+    });
+  });
+
+  describe('reads a Vietnamese shop code outside NAPAS', () => {
+    it("VNPay's code on a shop's kiosk screen, with its shop and amount", () => {
+      expect(parseVietQR(QR.vnpayKiosk)).toEqual({
+        ok: false,
+        reason: 'merchant',
+        provider: 'vnpay',
+        amount: '26000',
+        dong: 26_000,
+        currency: '704',
+        merchantName: 'TORO',
+      });
+    });
+
+    it('a code with no amount, from a scheme it does not name', () => {
+      const result = parseVietQR(QR.vnOther);
+      expect(result).toEqual({
+        ok: false,
+        reason: 'merchant',
+        provider: 'vnpay',
+        currency: '704',
+        merchantName: 'QUAN COM',
+      });
+      expect(result).not.toHaveProperty('dong');
     });
   });
 
