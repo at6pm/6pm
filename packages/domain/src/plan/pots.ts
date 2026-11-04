@@ -399,10 +399,20 @@ function topUpStepsIn(currency: Currency): Vnd[] {
   return steps;
 }
 
-/** Jars of one's own without Max, beside Future you's. Jars already made are always kept. */
-export const FREE_OWN_JARS = 1;
+/**
+ * Jars of one's own without Max: dated, steady, by hand and 2.1 goals alike. Future you's jar and
+ * jars shared through Budget together never count. Jars already made are always kept.
+ */
+export const FREE_OWN_JARS = 3;
 
-/** Whether a new jar waits behind Max: the free jar is in use and Max is not held. */
-export function newJarLocked(pots: readonly Pick<PotRow, 'id'>[], max: boolean): boolean {
-  return !max && pots.filter((p) => p.id !== FUTURE_YOU_POT_ID).length >= FREE_OWN_JARS;
+/**
+ * Whether a new jar waits behind Max: the person holds `FREE_OWN_JARS` or more of their own and
+ * not Max. `pots` are the phone's own jars (shared jars live apart and are never passed here).
+ */
+export function newJarLocked(
+  pots: readonly Pick<PotRow, 'id' | 'archivedAt'>[],
+  max: boolean,
+): boolean {
+  const own = pots.filter((p) => p.id !== FUTURE_YOU_POT_ID && p.archivedAt === null);
+  return !max && own.length >= FREE_OWN_JARS;
 }

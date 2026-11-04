@@ -14,6 +14,7 @@ import {
   intoJarsEachPayday,
   isLegacyGoal,
   jarFillOf,
+  FREE_OWN_JARS,
   newJarLocked,
   occasionsOf,
   potSetAside,
@@ -329,10 +330,25 @@ describe('Tết only for those who keep it', () => {
 });
 
 describe('jars without Max', () => {
-  it('Future you and one jar of one’s own are free; Max has no limit', () => {
-    const fy = futureYouPotRow('2026-11-04T10:00:00.000Z');
+  const fy = futureYouPotRow('2026-11-04T10:00:00.000Z');
+  const own = (n: number, kind: 'goal' | 'occasion' = 'occasion') =>
+    Array.from({ length: n }, (_, i) => ({ ...tet, kind, id: `jar-${kind}-${i}` }));
+
+  it('Future you and three jars of one’s own are free', () => {
+    expect(FREE_OWN_JARS).toBe(3);
+    expect(newJarLocked([fy, ...own(2)], false)).toBe(false);
+    expect(newJarLocked([fy, ...own(3)], false)).toBe(true);
+  });
+
+  it('five 2.1 goals are kept, and a new jar waits for Max', () => {
+    expect(newJarLocked([fy, ...own(5, 'goal')], false)).toBe(true);
+    expect(newJarLocked([fy, ...own(5, 'goal')], true)).toBe(false);
+  });
+
+  it('Future you, deleted jars and shared jars never count', () => {
+    const deleted = own(2).map((j) => ({ ...j, archivedAt: '2026-11-01T00:00:00.000Z' }));
+    expect(newJarLocked([fy, ...own(2), ...deleted], false)).toBe(false);
+    // Shared jars live in Budget together's state, never among the phone's own jars.
     expect(newJarLocked([fy], false)).toBe(false);
-    expect(newJarLocked([fy, tet], false)).toBe(true);
-    expect(newJarLocked([fy, tet, goalA], true)).toBe(false);
   });
 });
