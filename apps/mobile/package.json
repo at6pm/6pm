@@ -30,6 +30,7 @@
     "expo-crypto": "catalog:",
     "expo-dev-client": "catalog:",
     "expo-device": "catalog:",
+    "expo-document-picker": "catalog:",
     "expo-file-system": "catalog:",
     "expo-font": "catalog:",
     "expo-haptics": "catalog:",

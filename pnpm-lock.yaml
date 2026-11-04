@@ -197,6 +197,12 @@ catalogs:
     '@jest/globals':
       specifier: 29.7.0
       version: 29.7.0
+    '@noble/ciphers':
+      specifier: 2.4.0
+      version: 2.4.0
+    '@noble/hashes':
+      specifier: 2.4.0
+      version: 2.4.0
     '@react-native/jest-preset':
       specifier: 0.88.0-rc.3
       version: 0.88.0-rc.3
@@ -260,6 +266,9 @@ catalogs:
     expo-doctor:
       specifier: 1.20.4
       version: 1.20.4
+    expo-document-picker:
+      specifier: 58.0.4
+      version: 58.0.4
     expo-haptics:
       specifier: 58.0.6
       version: 58.0.6
@@ -314,6 +323,9 @@ catalogs:
     fast-check:
       specifier: 4.10.2
       version: 4.10.2
+    fflate:
+      specifier: 0.8.3
+      version: 0.8.3
     globals:
       specifier: 17.12.0
       version: 17.12.0
@@ -527,6 +539,9 @@ importers:
       expo-device:
         specifier: 'catalog:'
         version: 58.0.5(expo@58.0.9)
+      expo-document-picker:
+        specifier: 'catalog:'
+        version: 58.0.4(expo@58.0.9)
       expo-file-system:
         specifier: 58.0.9
         version: 58.0.9(expo@58.0.9)(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))
@@ -673,6 +688,15 @@ importers:
 
   packages/domain:
     dependencies:
+      '@noble/ciphers':
+        specifier: 'catalog:'
+        version: 2.4.0
+      '@noble/hashes':
+        specifier: 'catalog:'
+        version: 2.4.0
+      fflate:
+        specifier: 'catalog:'
+        version: 0.8.3
       zod:
         specifier: 'catalog:'
         version: 4.6.5
@@ -2692,6 +2716,14 @@ packages:
     peerDependencies:
       '@emnapi/core': ^1.7.1 || ^2.0.0-alpha.4
       '@emnapi/runtime': ^1.7.1 || ^2.0.0-alpha.4
+
+  '@noble/ciphers@2.4.0':
+    resolution: {integrity: sha512-AnjFn0Jv92laAkvMrghlFZq4qQCIN/4DxFV/eooqtC2YTjB7kBeLMS2T9KJX4Dn+ZVXLOwK0lSgqDtx9gvxtiw==}
+    engines: {node: '>= 20.19.0'}
+
+  '@noble/hashes@2.4.0':
+    resolution: {integrity: sha512-X5XaVWZIBCT7HHZGm5I7ZQXDwLG+bGXuSrMQAW+7Zvl87h1kmc1ZB1VSRJcpUfoUrGQp4Fkoxm5kZ+Ms+aW+eA==}
+    engines: {node: '>= 20.19.0'}
 
   '@noxcturnal/noxcturnal-darwin-arm64@0.1.1':
     resolution: {integrity: sha512-Y0JXi8J4abYq88swQLqXOw0kSw0v6CfKp4tboyqPOWNVgQvUy14SMTKVyPLUpaKd0ZJGP8cvNTSQI9bZP7+5CQ==}
@@ -4716,6 +4748,11 @@ packages:
     engines: {node: ^20.19.4 || ^22.13.0 || ^24.3.0 || >= 25.0.0}
     hasBin: true
 
+  expo-document-picker@58.0.4:
+    resolution: {integrity: sha512-rxs+9RrpI55/BEGNB/3sXjoBG6yZDLyn6Z7KzjbbBLdX8bE2cZT4IozQ3Q5wufaEEeaHQn48EgPiuMoTsAidpg==}
+    peerDependencies:
+      expo: '*'
+
   expo-eas-client@58.0.2:
     resolution: {integrity: sha512-mhRYnE35MzGxR1Xnl9FAg7/yHaocy4xoVzgsDmS9cbK+1wM6l74/I/73/E4Kr6wChdVZfeS6S+Tv4I1qYbGY2g==}
 
@@ -5019,6 +5056,9 @@ packages:
 
   fetch-nodeshim@0.4.10:
     resolution: {integrity: sha512-m6I8ALe4L4XpdETy7MJZWs6L1IVMbjs99bwbpIKphxX+0CTns4IKDWJY0LWfr4YsFjfg+z1TjzTMU8lKl8rG0w==}
+
+  fflate@0.8.3:
+    resolution: {integrity: sha512-tbZNuJrLwGUp3zshBtdy4W+ORxZuIh8a5ilyIEQDC5rY1f3U20JMry0Ll3WBzU58EZKsEuJFXhb5gwv8CsPvgA==}
 
   file-entry-cache@11.1.5:
     resolution: {integrity: sha512-+PFTHITI08JIGhnNpGNI8T8inUpgZfk3GNEqfT9R2zZV2iFXg3CvqzSl/uEhs7TSGujYRELEANyDvS8Fj7+S7Q==}
@@ -9862,6 +9902,10 @@ snapshots:
       '@tybys/wasm-util': 0.10.4
     optional: true
 
+  '@noble/ciphers@2.4.0': {}
+
+  '@noble/hashes@2.4.0': {}
+
   '@noxcturnal/noxcturnal-darwin-arm64@0.1.1':
     optional: true
 
@@ -12054,6 +12098,10 @@ snapshots:
 
   expo-doctor@1.20.4: {}
 
+  expo-document-picker@58.0.4(expo@58.0.9):
+    dependencies:
+      expo: 58.0.9(@babel/core@7.29.7(supports-color@8.1.1))(@expo/dom-webview@58.0.2)(@expo/metro-runtime@58.0.14)(expo-router@58.0.19)(react-dom@19.3.0(react@19.3.0))(react-native-worklets@0.13.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)(supports-color@8.1.1))(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)(supports-color@8.1.1)(typescript@6.0.3)
+
   expo-eas-client@58.0.2: {}
 
   expo-file-system@58.0.9(expo@58.0.9)(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)):
@@ -12381,6 +12429,8 @@ snapshots:
       picomatch: 4.0.7
 
   fetch-nodeshim@0.4.10: {}
+
+  fflate@0.8.3: {}
 
   file-entry-cache@11.1.5:
     dependencies:

@@ -13,6 +13,9 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@noble/ciphers": "catalog:",
+    "@noble/hashes": "catalog:",
+    "fflate": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
