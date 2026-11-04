@@ -69,7 +69,7 @@ export const FX_CURRENCY_CODES: readonly string[] = [
 const PRICED = new Set(FX_CURRENCY_CODES);
 
 /** The payment QR schemes Scan recognises, by the currency their codes are paid in. */
-const SCHEME_CURRENCY: Readonly<Record<ForeignScheme, string>> = {
+const SCHEME_CURRENCY: Readonly<Record<ForeignScheme, string | null>> = {
   promptpay: 'THB',
   paynow: 'SGD',
   sgqr: 'SGD',
@@ -93,6 +93,17 @@ const SCHEME_CURRENCY: Readonly<Record<ForeignScheme, string>> = {
   wechat: 'CNY',
   twqr: 'TWD',
   paypay: 'JPY',
+  venmo: 'USD',
+  cashapp: 'USD',
+  // Paid in whatever currency the sender's account holds, so the code names it or nothing does.
+  paypal: null,
+  revolut: null,
+  wise: null,
+  tikkie: 'EUR',
+  vipps: 'NOK',
+  kakaopay: 'KRW',
+  unionpay: 'CNY',
+  abapay: null,
 };
 
 /**
@@ -237,6 +248,9 @@ export function currencyOfForeignQr(qr: {
       : currencyOfNumeric(qr.currency);
     if (named !== null) return named;
   }
-  if (qr.scheme !== undefined) return travelCurrencyOf(SCHEME_CURRENCY[qr.scheme]);
+  if (qr.scheme !== undefined) {
+    const code = SCHEME_CURRENCY[qr.scheme];
+    return code === null ? null : travelCurrencyOf(code);
+  }
   return qr.country === undefined ? null : currencyOfCountry(qr.country);
 }

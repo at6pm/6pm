@@ -136,3 +136,82 @@ describe('readOtherPayment', () => {
     expect(parseVietQR('hello')).toEqual({ ok: false, reason: 'not_emv' });
   });
 });
+
+describe('readOtherPayment: payment links of apps', () => {
+  it('reads Venmo, in its profile link and its pay link with an amount', () => {
+    expect(readOtherPayment('https://venmo.com/u/jane-doe')).toEqual({
+      scheme: 'venmo',
+      country: 'US',
+      currency: 'USD',
+    });
+    expect(
+      readOtherPayment('venmo://paycharge?txn=pay&recipients=jane-doe&amount=12.50&note=lunch'),
+    ).toEqual({ scheme: 'venmo', country: 'US', currency: 'USD', amount: '12.50' });
+  });
+
+  it('reads Cash App, with the amount in the path when there is one', () => {
+    expect(readOtherPayment('https://cash.app/$janedoe')).toEqual({
+      scheme: 'cashapp',
+      country: 'US',
+      currency: 'USD',
+    });
+    expect(readOtherPayment('https://cash.app/$janedoe/20')).toMatchObject({ amount: '20' });
+  });
+
+  it('reads PayPal.me with the currency its amount names, and none when it names none', () => {
+    expect(readOtherPayment('https://www.paypal.me/janedoe/25EUR')).toEqual({
+      scheme: 'paypal',
+      country: 'US',
+      amount: '25',
+      currency: 'EUR',
+    });
+    const bare = readOtherPayment('https://paypal.me/janedoe/25');
+    expect(bare).toEqual({ scheme: 'paypal', country: 'US', amount: '25' });
+    expect(bare).not.toHaveProperty('currency');
+    expect(readOtherPayment('https://www.paypal.com/paypalme/janedoe')).toMatchObject({
+      scheme: 'paypal',
+    });
+  });
+
+  it('names Revolut, Wise, Tikkie, Vipps, KakaoPay, UnionPay and ABA PAY links', () => {
+    expect(readOtherPayment('https://revolut.me/janedoe')).toMatchObject({ scheme: 'revolut' });
+    expect(readOtherPayment('https://wise.com/pay/me/janedoe')).toMatchObject({ scheme: 'wise' });
+    expect(readOtherPayment('https://tikkie.me/pay/abc/xyz')).toEqual({
+      scheme: 'tikkie',
+      country: 'NL',
+      currency: 'EUR',
+    });
+    expect(readOtherPayment('https://qr.vipps.no/28/2/01/031/4741234567')).toMatchObject({
+      scheme: 'vipps',
+      currency: 'NOK',
+    });
+    expect(readOtherPayment('https://qr.kakaopay.com/Ej8abc')).toMatchObject({
+      scheme: 'kakaopay',
+      currency: 'KRW',
+    });
+    expect(readOtherPayment('https://qr.95516.com/00010000/0123')).toMatchObject({
+      scheme: 'unionpay',
+      currency: 'CNY',
+    });
+    expect(readOtherPayment('https://pay.ababank.com/oRF8abc')).toMatchObject({
+      scheme: 'abapay',
+      country: 'KH',
+    });
+  });
+
+  it('reads the UPI apps’ own links as UPI', () => {
+    for (const link of [
+      'phonepe://pay?pa=shop@ybl&pn=Shop&am=40.00&cu=INR',
+      'paytmmp://pay?pa=shop@paytm&pn=Shop&am=40.00&cu=INR',
+      'tez://upi/pay?pa=shop@okaxis&pn=Shop&am=40.00&cu=INR',
+    ]) {
+      expect(readOtherPayment(link)).toMatchObject({ scheme: 'upi', amount: '40.00' });
+    }
+  });
+
+  it('does not take a look-alike host for one of them', () => {
+    expect(readOtherPayment('https://venmo.com.evil.example/u/jane')).toBeNull();
+    expect(readOtherPayment('https://notcash.app/$jane')).toBeNull();
+    expect(readOtherPayment('https://paypal.me.evil.example/jane')).toBeNull();
+  });
+});

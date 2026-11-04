@@ -25,14 +25,99 @@ export function readOtherPayment(raw: string): OtherPayment | null {
   const text = raw.trim();
   const lower = text.toLowerCase();
   if (lower.startsWith('upi://pay')) return upi(text);
+  // The UPI apps' own schemes carry the same fields as the UPI link.
+  if (/^(phonepe:\/\/pay|paytmmp:\/\/pay|tez:\/\/upi\/pay|gpay:\/\/upi\/pay)\?/.test(lower))
+    return upi(text);
   if (text.startsWith('BCD\n') || text.startsWith('BCD\r\n')) return epc(lines(text));
   if (text.startsWith('SPC\n') || text.startsWith('SPC\r\n')) return swiss(lines(text));
   if (text.startsWith('SPD*')) return spayd(text);
+  const app = readAppPayment(text, lower);
+  if (app) return app;
   if (lower.startsWith('https://qr.alipay.com/')) return linked('alipay', 'CN', 'CNY');
   if (lower.startsWith('wxp://')) return linked('wechat', 'CN', 'CNY');
   if (lower.startsWith('twqrp://')) return linked('twqr', 'TW', 'TWD');
   if (lower.startsWith('https://qr.paypay.ne.jp/')) return linked('paypay', 'JP', 'JPY');
   return null;
+}
+
+/** `https://host/path?query` as host (no `www.`), path segments and query. */
+function parts(text: string): { host: string; path: string[]; query: Map<string, string> } | null {
+  const match = /^https?:\/\/([^/?#\s]+)([^?#\s]*)(?:\?([^#\s]*))?(?:#\S*)?$/i.exec(text);
+  if (!match?.[1]) return null;
+  const query = new Map<string, string>();
+  for (const pair of (match[3] ?? '').split('&')) {
+    const at = pair.indexOf('=');
+    if (at > 0) query.set(pair.slice(0, at).toLowerCase(), decode(pair.slice(at + 1)));
+  }
+  return {
+    host: match[1].toLowerCase().replace(/^www\./, ''),
+    path: (match[2] ?? '')
+      .split('/')
+      .filter((part) => part !== '')
+      .map(decode),
+    query,
+  };
+}
+
+/** "20", "20.50" or "20USD" as an amount and the currency it names, if any. */
+function moneyOf(value: string | undefined): { amount: string; currency?: string } | null {
+  const match = /^(\d{1,13}(?:\.\d{1,2})?)([A-Za-z]{3})?$/.exec((value ?? '').trim());
+  if (!match?.[1] || Number(match[1]) <= 0) return null;
+  return match[2] ? { amount: match[1], currency: match[2].toUpperCase() } : { amount: match[1] };
+}
+
+/**
+ * The payment links of person-to-person and wallet apps: Venmo, Cash App, PayPal.me, Revolut,
+ * Wise, Tikkie, Vipps, KakaoPay, UnionPay's cloud QR and ABA PAY. The amount is read where the
+ * link carries one (PayPal.me and Cash App in the path, Venmo in its query); the rest are named.
+ */
+function readAppPayment(text: string, lower: string): OtherPayment | null {
+  if (lower.startsWith('venmo://paycharge?')) return venmo(text.slice(text.indexOf('?') + 1));
+  const url = parts(text);
+  if (!url) return null;
+  const { host, path } = url;
+  if (host === 'venmo.com') return venmo(text.slice(text.indexOf('?') + 1));
+  if (host === 'cash.app' && path[0]?.startsWith('$')) {
+    const found = linked('cashapp', 'US', 'USD');
+    const money = moneyOf(path[1]);
+    if (money) found.amount = money.amount;
+    return found;
+  }
+  const paypal =
+    host === 'paypal.me'
+      ? path
+      : host.endsWith('paypal.com') && path[0] === 'paypalme'
+        ? path.slice(1)
+        : null;
+  if (paypal && paypal[0]) {
+    const found: OtherPayment = { scheme: 'paypal', country: 'US' };
+    const money = moneyOf(paypal[1]);
+    if (money) {
+      found.amount = money.amount;
+      if (money.currency && CODE.test(money.currency)) found.currency = money.currency;
+    }
+    return found;
+  }
+  if (host === 'revolut.me' && path[0]) return { scheme: 'revolut', country: 'GB' };
+  if (host === 'wise.com' && path[0] === 'pay') return { scheme: 'wise', country: 'GB' };
+  if (host === 'tikkie.me' && path[0] === 'pay') return linked('tikkie', 'NL', 'EUR');
+  if (host === 'qr.vipps.no') return linked('vipps', 'NO', 'NOK');
+  if (host === 'qr.kakaopay.com') return linked('kakaopay', 'KR', 'KRW');
+  if (host === 'qr.95516.com') return linked('unionpay', 'CN', 'CNY');
+  if (host === 'pay.ababank.com') return { scheme: 'abapay', country: 'KH' };
+  return null;
+}
+
+/** Venmo's `paycharge?txn=pay&recipients=name&amount=12.50&note=…` or its profile link. */
+function venmo(query: string): OtherPayment {
+  const found = linked('venmo', 'US', 'USD');
+  const params = new Map<string, string>();
+  for (const pair of query.split('&')) {
+    const at = pair.indexOf('=');
+    if (at > 0) params.set(pair.slice(0, at).toLowerCase(), decode(pair.slice(at + 1)));
+  }
+  setAmount(found, params.get('amount'));
+  return found;
 }
 
 function linked(scheme: ForeignScheme, country: string, currency: string): OtherPayment {
