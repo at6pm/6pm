@@ -71,16 +71,6 @@ export const viScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.scheme.twqr': 'Taiwan Pay của Đài Loan',
   'scan.scheme.paypay': 'PayPay của Nhật Bản',
   'scan.scheme.other': 'nước ngoài',
-  'scan.merchant.title': 'Đây là mã {scheme}.',
-  'scan.merchant.titleOther': 'Đây là mã thanh toán của một cửa hàng.',
-  'scan.merchant.body':
-    '6pm chưa trả được mã này. Trả trong app ngân hàng, rồi giữ {amount} ở đây.',
-  'scan.merchant.bodyPlain':
-    '6pm chưa trả được mã này. Trả trong app ngân hàng, rồi ghi lại ở đây.',
-  'scan.merchant.keep': 'Giữ {amount}',
-  'scan.merchant.payIn': 'Trả bằng {bank}',
-  'scan.merchant.fallbackPayee': 'Cửa hàng',
-  'scan.scheme.vnpay': 'VNPay',
   'scan.content.link': 'Liên kết web',
   'scan.content.wifi': 'Mạng Wi-Fi',
   'scan.content.phone': 'Số điện thoại',

@@ -1,14 +1,7 @@
 import * as Clipboard from 'expo-clipboard';
 import { Linking, Platform } from 'react-native';
 
-import {
-  handoffPlan,
-  payloadFor,
-  rawHandoffPlan,
-  type BankInfo,
-  type HandoffPlan,
-  type VietQR,
-} from '@6pm/domain';
+import { handoffPlan, payloadFor, type BankInfo, type VietQR } from '@6pm/domain';
 
 import { saveImage } from '../sharing/share-image';
 import { shareFileName } from '../sharing/share-file';
@@ -41,25 +34,8 @@ const OS = Platform.OS === 'android' ? 'android' : 'ios';
  */
 export async function handOff(bank: BankInfo | null, qr: VietQR, amount: number): Promise<Handoff> {
   await Clipboard.setStringAsync(String(amount));
-  return run(handoffPlan(bank, OS, qr, amount), payloadFor(qr, amount));
-}
-
-/**
- * Hands a bank app a shop's payment code as scanned (VNPay's, which 6pm cannot rewrite): the
- * bank's link carries it when the bank takes one, else the code goes to the photos for the bank's
- * own scanner. The amount, when the code has one, is on the clipboard.
- */
-export async function handOffCode(
-  bank: BankInfo | null,
-  raw: string,
-  amount: number | null,
-): Promise<Handoff> {
-  if (amount !== null) await Clipboard.setStringAsync(String(amount));
-  return run(rawHandoffPlan(bank, OS, raw), raw);
-}
-
-async function run(plan: HandoffPlan | null, payload: string): Promise<Handoff> {
-  const qrSaved = plan?.filledIn === true ? false : await saveQr(payload);
+  const plan = handoffPlan(bank, OS, qr, amount);
+  const qrSaved = plan?.filledIn === true ? false : await saveQr(payloadFor(qr, amount));
   if (plan === null) return { result: 'manual', qrSaved };
   if (plan.open !== null && (await opens(plan.open))) return { result: 'opened', qrSaved };
   for (const url of plan.store) {

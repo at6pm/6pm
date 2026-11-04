@@ -42,6 +42,8 @@ const QR = {
   // A shop's VNPay code as a kiosk shows it (TORO, 26.000₫), read off a photo of the screen.
   vnpayKiosk:
     '00020101021226280010A000000775011003134217755204581453037045405260005802VN5904TORO6005HANOI610610000062440114dSO8TRBLlccMu70310KOOTORO2060708KTR002066304EDAC',
+  vnpayKiosk7:
+    '00020101021226280010A00000077501100313421775520458145303704540470005802VN5904TORO6005HANOI610610000062440114sj8QTFEODMamTl0310KOOTORO2060708KTR0020663040F80',
   wrongFormat:
     '00020201021138540010A00000072701240006970436011010233348210208QRIBFTTA53037045802VN63041733',
 };
@@ -65,6 +67,9 @@ function vietqr(result: VietQRResult): VietQR {
   if (!result.ok) throw new Error(`expected a VietQR, got ${result.reason}`);
   return result;
 }
+
+const ok = (text: string): VietQR => vietqr(parseVietQR(text));
+const withCrc = (body: string): string => `${body}6304${crc16CcittFalse(`${body}6304`)}`;
 
 describe('parseVietQR', () => {
   it('reads the design preview: merchant, bank, masked account, amount and note', () => {
@@ -178,30 +183,37 @@ describe('parseVietQR', () => {
   });
 
   describe('reads a Vietnamese shop code outside NAPAS', () => {
-    it("VNPay's code on a shop's kiosk screen, with its shop and amount", () => {
-      expect(parseVietQR(QR.vnpayKiosk)).toEqual({
-        ok: false,
-        reason: 'merchant',
+    it("VNPay's code on a shop's kiosk screen, as a shop code with its shop and amount", () => {
+      expect(ok(QR.vnpayKiosk)).toMatchObject({
+        service: 'merchant',
         provider: 'vnpay',
-        amount: '26000',
-        dong: 26_000,
-        raw: QR.vnpayKiosk,
-        currency: '704',
+        bank: null,
+        amount: 26_000,
         merchantName: 'TORO',
+        city: 'HANOI',
+        account: '0313421775',
+        accountMasked: '•••• 1775',
+        raw: QR.vnpayKiosk,
       });
     });
 
-    it('a code with no amount, from a scheme it does not name', () => {
-      const result = parseVietQR(QR.vnOther);
-      expect(result).toEqual({
-        ok: false,
-        reason: 'merchant',
-        provider: 'vnpay',
-        currency: '704',
+    it("the same kiosk's next code, 7.000₫, as scanned", () => {
+      expect(ok(QR.vnpayKiosk7)).toMatchObject({ amount: 7_000, merchantName: 'TORO' });
+    });
+
+    it('a code with no amount, leaving it to the user', () => {
+      expect(ok(QR.vnOther)).toMatchObject({
+        service: 'merchant',
+        amount: null,
         merchantName: 'QUAN COM',
-        raw: QR.vnOther,
       });
-      expect(result).not.toHaveProperty('dong');
+    });
+
+    it('a code in another currency or country is not one of these', () => {
+      const usd = withCrc(
+        '00020101021126280010A0000007750110MERCHANT015303984580202US5908QUAN COM',
+      );
+      expect(parseVietQR(usd)).toMatchObject({ ok: false });
     });
   });
 

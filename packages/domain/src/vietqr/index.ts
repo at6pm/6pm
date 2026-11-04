@@ -16,7 +16,6 @@ export {
   handoffPlan,
   handoffUrl,
   payloadFor,
-  rawHandoffPlan,
   transferLink,
   type HandoffPlan,
 } from './handoff-link';

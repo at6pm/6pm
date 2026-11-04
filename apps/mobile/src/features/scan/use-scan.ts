@@ -19,8 +19,8 @@ import { useHomeCurrency } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
 import { useClock } from '../../ui/theme/clock';
 import { useTravel } from '../travel/travel-provider';
-import { handOff, handOffCode, type Handoff } from './bank-handoff';
-import { payeeName, payOptions, payWallets, titleCase } from './pay-options';
+import { handOff, type Handoff } from './bank-handoff';
+import { payeeName, payOptions, receiverDetail, titleCase } from './pay-options';
 import { dongInHome, pricedInHome } from './priced-spend';
 
 /** A payment on its way out: saved as pending the moment the bank app is asked to open. */
@@ -40,7 +40,6 @@ export type ScanPhase =
   | { readonly kind: 'camera' }
   | { readonly kind: 'unreadable' }
   | { readonly kind: 'foreign'; readonly failure: VietQRFailure }
-  | { readonly kind: 'merchant'; readonly failure: VietQRFailure }
   | { readonly kind: 'content'; readonly content: QrContent }
   | {
       readonly kind: 'preview';
@@ -129,11 +128,9 @@ export function useScan() {
         setPhase(
           result.reason === 'foreign'
             ? { kind: 'foreign', failure: result }
-            : result.reason === 'merchant'
-              ? { kind: 'merchant', failure: result }
-              : content
-                ? { kind: 'content', content }
-                : { kind: 'unreadable' },
+            : content
+              ? { kind: 'content', content }
+              : { kind: 'unreadable' },
         );
       }
     },
@@ -162,7 +159,7 @@ export function useScan() {
           status: 'pending',
           wallet: bank?.shortName ?? null,
           note: qr.note,
-          detail: `${qr.bank?.shortName ?? qr.bin} · ${qr.accountMasked}`,
+          detail: receiverDetail(qr),
         });
         const payment: Payment = {
           qr,
@@ -209,30 +206,6 @@ export function useScan() {
         wallet: null,
       });
     },
-    /**
-     * A shop's Vietnamese payment code 6pm cannot pay, paid in the user's bank app: kept at once
-     * as a spend of the đồng it asks for. Rejects when the code has no amount or cannot be saved.
-     */
-    keepMerchant: async (failure: VietQRFailure, fallbackPayee: string) => {
-      if (failure.dong === undefined) throw new Error('The code has no amount to keep');
-      const named = failure.merchantName?.trim();
-      const payee = named ? titleCase(named) : fallbackPayee;
-      await actions.addSpend({
-        ...dongInHome(failure.dong, home, quote),
-        categoryId: await categoryFor(payee),
-        merchant: payee,
-        source: 'qr',
-        status: 'kept',
-        wallet: null,
-      });
-    },
-    /** The user's banks that take a shop's code in their transfer link, for the shop-code card. */
-    merchantBanks: payWallets(walletIds).filter((bank) => bank.ios?.link?.kind === 'qrPay'),
-    /** Opens a bank app with a shop's code as scanned, for the user to pay there. */
-    payMerchant: (failure: VietQRFailure, bank: BankInfo) =>
-      failure.raw === undefined
-        ? Promise.resolve(null)
-        : handOffCode(bank, failure.raw, failure.dong ?? null),
     /** For when the bank app never took over: the user says they are back. */
     back: () =>
       setPhase((p) => (p.kind === 'handoff' ? { kind: 'return', payment: p.payment } : p)),

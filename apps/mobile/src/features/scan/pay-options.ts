@@ -29,9 +29,7 @@ export function payWallets(walletIds: readonly string[]): BankInfo[] {
 
 export function payOptions(qr: VietQR, walletIds: readonly string[]): PayOptions {
   const wallets = payWallets(walletIds);
-  if (qr.service === 'merchant' || wallets.length === 0) {
-    return { mode: 'bankApp', bank: wallets.find((w) => w.ios !== null) ?? null };
-  }
+  if (wallets.length === 0) return { mode: 'bankApp', bank: null };
   return { mode: 'wallets', wallets };
 }
 
@@ -43,11 +41,22 @@ export function titleCase(name: string): string {
     .replace(/(^|\s)(\p{L})/gu, (_, gap: string, c: string) => gap + c.toUpperCase());
 }
 
-/** Who the money goes to: the name in the QR, else the receiving bank and the account's tail. */
+/** Whose code it is, short: the receiving bank, or VNPay for its shop codes, or the BIN of a bank 6pm does not know. */
+function receiverName(qr: VietQR): string {
+  if (qr.bank) return qr.bank.shortName;
+  return qr.provider === 'vnpay' ? 'VNPay' : qr.bin;
+}
+
+/** "MB Bank · •••• 4821": the receiver and the tail of its account, as a line of detail. */
+export function receiverDetail(qr: VietQR): string {
+  return [receiverName(qr), qr.accountMasked].filter((part) => part !== '').join(' · ');
+}
+
+/** Who the money goes to: the name in the QR, else the receiver and the account's tail. */
 export function payeeName(qr: VietQR): string {
   const name = qr.merchantName?.trim();
   if (name) return titleCase(name);
-  return `${qr.bank?.shortName ?? qr.bin} ${qr.accountMasked}`;
+  return receiverDetail(qr).replace(' · ', ' ');
 }
 
 /**

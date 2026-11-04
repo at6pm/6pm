@@ -74,16 +74,6 @@ export const deScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.scheme.twqr': 'Taiwan Pay',
   'scan.scheme.paypay': 'PayPay',
   'scan.scheme.other': 'Ausland',
-  'scan.merchant.title': 'Das ist ein {scheme}-Code.',
-  'scan.merchant.titleOther': 'Das ist der Zahlungscode eines Geschäfts.',
-  'scan.merchant.body':
-    '6pm kann diesen Code nicht bezahlen. Zahl in deiner Bank-App und behalte dann {amount} hier.',
-  'scan.merchant.bodyPlain':
-    '6pm kann diesen Code nicht bezahlen. Zahl in deiner Bank-App und erfass es dann hier.',
-  'scan.merchant.keep': '{amount} behalten',
-  'scan.merchant.payIn': 'In {bank} bezahlen',
-  'scan.merchant.fallbackPayee': 'Geschäft',
-  'scan.scheme.vnpay': 'VNPay',
   'scan.content.link': 'Weblink',
   'scan.content.wifi': 'WLAN-Netzwerk',
   'scan.content.phone': 'Telefonnummer',

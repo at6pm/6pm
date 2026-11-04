@@ -29,6 +29,8 @@ export interface VietQR {
   /** "•••• 4821": the last four characters, for display. */
   accountMasked: string;
   service: VietQRService;
+  /** For a shop code outside NAPAS (VNPay's, say): who issued it, when 6pm knows. */
+  provider?: MerchantProvider;
   /** Amount in đồng when the QR carries one. */
   amount: Vnd | null;
   /** Purpose of transaction (tag 62, sub-tag 08), the "Note from the QR". */
@@ -66,8 +68,6 @@ export interface VietQRFailure {
   provider?: MerchantProvider;
   /** For a `merchant` code: the amount it asks for in whole đồng, when it carries one. */
   dong?: Vnd;
-  /** For a `merchant` code: the payload as scanned, for a bank app to read. */
-  raw?: string;
   /** For a foreign QR, so it can be logged by hand: amount as written, in its own currency. */
   amount?: string;
   /**
@@ -117,8 +117,7 @@ export function parseVietQR(input: string): VietQRResult {
   if (!napas) {
     const foreign = detectForeign(fields, merchantGuids(fields, unit));
     if (foreign) return { ok: false, reason: 'foreign', ...foreign, ...foreignDetails(fields) };
-    const merchant = merchantCode(fields, merchantGuids(fields, unit));
-    return merchant ? { ...merchant, raw } : fail('unsupported');
+    return shopCode(fields, unit, raw) ?? fail('unsupported');
   }
   const currency = fields.get('53');
   const country = fields.get('58')?.toUpperCase();
@@ -201,26 +200,60 @@ function readAmount(value: string | undefined): Vnd | null | undefined {
 
 /**
  * A shop's payment code from a Vietnamese scheme outside NAPAS (VNPay's, for one): an EMV code in
- * đồng with a merchant account template of its own. 6pm reads its shop and amount to keep the
- * spend, and cannot hand it to a bank app, since no bank takes such a code as a link.
+ * đồng with a merchant account template of its own. It is read like a NAPAS shop code (the shop,
+ * the amount, no account to name), and a bank app that takes a VietQR in its transfer link takes it
+ * too, as scanned.
  */
-function merchantCode(fields: TlvFields, guids: readonly string[]): VietQRFailure | null {
+function shopCode(fields: TlvFields, unit: LengthUnit, raw: string): VietQR | null {
   const currency = fields.get('53');
   const country = fields.get('58')?.toUpperCase();
-  if (guids.length === 0) return null;
   if (
     (currency !== undefined && currency !== '704') ||
     (country !== undefined && country !== 'VN')
   ) {
     return null;
   }
-  const dong = readAmount(fields.get('54'));
-  if (dong === undefined) return null;
-  const found: VietQRFailure = { ok: false, reason: 'merchant', ...foreignDetails(fields) };
-  const known = MERCHANT_GUIDS.find((m) => guids.some((g) => g.startsWith(m.prefix)));
-  if (known) found.provider = known.provider;
-  if (dong !== null) found.dong = dong;
-  return found;
+  let guid: string | null = null;
+  let id = '';
+  for (const [tag, value] of fields) {
+    const n = Number(tag);
+    if (n < 26 || n > 51) continue;
+    const template = parseTlv(value, unit);
+    const found = template?.get('00');
+    if (!found) continue;
+    guid = found.toUpperCase();
+    id = template?.get('01') ?? '';
+    break;
+  }
+  if (guid === null) return null;
+  const amount = readAmount(fields.get('54'));
+  if (amount === undefined) return null;
+  const additional = fields.has('62')
+    ? parseTlv(fields.get('62') ?? '', unit)
+    : new Map<string, string>();
+  if (!additional) return null;
+  const account = ACCOUNT.test(id) ? id : '';
+  const shop: VietQR = {
+    ok: true,
+    kind: 'vietqr',
+    bank: null,
+    bin: '',
+    account,
+    accountMasked: account === '' ? '' : maskAccount(account),
+    service: 'merchant',
+    amount,
+    note: text(additional.get('08')),
+    merchantName: text(fields.get('59')),
+    city: text(fields.get('60')),
+    mcc: text(fields.get('52')),
+    billNumber: text(additional.get('01')),
+    referenceLabel: text(additional.get('05')),
+    dynamic: fields.get('01') === '12',
+    raw,
+  };
+  const known = MERCHANT_GUIDS.find((m) => guid.startsWith(m.prefix));
+  if (known) shop.provider = known.provider;
+  return shop;
 }
 
 function foreignDetails(

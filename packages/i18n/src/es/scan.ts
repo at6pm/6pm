@@ -75,16 +75,6 @@ export const esScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.scheme.twqr': 'Taiwan Pay de Taiwán',
   'scan.scheme.paypay': 'PayPay de Japón',
   'scan.scheme.other': 'extranjero',
-  'scan.merchant.title': 'Este es un código de {scheme}.',
-  'scan.merchant.titleOther': 'Este es el código de pago de un comercio.',
-  'scan.merchant.body':
-    '6pm no puede pagar este código. Paga en la app de tu banco y guarda {amount} aquí.',
-  'scan.merchant.bodyPlain':
-    '6pm no puede pagar este código. Paga en la app de tu banco y anótalo aquí.',
-  'scan.merchant.keep': 'Guardar {amount}',
-  'scan.merchant.payIn': 'Pagar en {bank}',
-  'scan.merchant.fallbackPayee': 'Comercio',
-  'scan.scheme.vnpay': 'VNPay',
   'scan.content.link': 'Enlace web',
   'scan.content.wifi': 'Red wifi',
   'scan.content.phone': 'Número de teléfono',

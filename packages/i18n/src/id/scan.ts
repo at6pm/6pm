@@ -73,16 +73,6 @@ export const idScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.scheme.twqr': 'Taiwan Pay dari Taiwan',
   'scan.scheme.paypay': 'PayPay Jepang',
   'scan.scheme.other': 'luar negeri',
-  'scan.merchant.title': 'Ini kode {scheme}.',
-  'scan.merchant.titleOther': 'Ini kode pembayaran sebuah toko.',
-  'scan.merchant.body':
-    '6pm belum bisa membayar kode ini. Bayar di aplikasi bankmu, lalu simpan {amount} di sini.',
-  'scan.merchant.bodyPlain':
-    '6pm belum bisa membayar kode ini. Bayar di aplikasi bankmu, lalu catat di sini.',
-  'scan.merchant.keep': 'Simpan {amount}',
-  'scan.merchant.payIn': 'Bayar di {bank}',
-  'scan.merchant.fallbackPayee': 'Toko',
-  'scan.scheme.vnpay': 'VNPay',
   'scan.content.link': 'Tautan web',
   'scan.content.wifi': 'Jaringan Wi-Fi',
   'scan.content.phone': 'Nomor telepon',

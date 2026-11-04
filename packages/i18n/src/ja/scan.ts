@@ -73,16 +73,6 @@ export const jaScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.scheme.twqr': '台湾Pay',
   'scan.scheme.paypay': '日本のPayPay',
   'scan.scheme.other': '海外',
-  'scan.merchant.title': '{scheme}のコードです。',
-  'scan.merchant.titleOther': 'お店の支払いコードです。',
-  'scan.merchant.body':
-    '6pmではこのコードは支払えません。銀行アプリで支払ってから、ここに{amount}を残しましょう。',
-  'scan.merchant.bodyPlain':
-    '6pmではこのコードは支払えません。銀行アプリで支払ってから、ここに記録しましょう。',
-  'scan.merchant.keep': '{amount}を残す',
-  'scan.merchant.payIn': '{bank}で支払う',
-  'scan.merchant.fallbackPayee': 'お店',
-  'scan.scheme.vnpay': 'VNPay',
   'scan.content.link': 'Webリンク',
   'scan.content.wifi': 'Wi-Fiネットワーク',
   'scan.content.phone': '電話番号',

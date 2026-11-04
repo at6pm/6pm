@@ -27,7 +27,6 @@ import { useCompanionToast } from '../features/companion/use-companion-toast';
 import { ProppedHint, ProppedTop } from '../features/duo/propped-scan';
 import { ContentCard } from '../features/scan/content-card';
 import { ForeignAlert } from '../features/scan/foreign-alert';
-import { MerchantAlert } from '../features/scan/merchant-alert';
 import { ReceiptCard } from '../features/scan/receipt-card';
 import {
   MIN_SHARE,
@@ -66,7 +65,6 @@ const QR_HINTS: Record<ScanPhase['kind'], 'camera' | 'blurry' | 'got' | null> = 
   camera: 'camera',
   unreadable: 'blurry',
   foreign: 'got',
-  merchant: 'got',
   content: 'got',
   preview: 'got',
   handoff: null,
@@ -232,10 +230,7 @@ export default function Scan() {
   const seeing: Seeing =
     inView || !receiptIdle
       ? 'receipt'
-      : phase.kind === 'preview' ||
-          phase.kind === 'foreign' ||
-          phase.kind === 'merchant' ||
-          phase.kind === 'content'
+      : phase.kind === 'preview' || phase.kind === 'foreign' || phase.kind === 'content'
         ? 'code'
         : null;
   const hint = cameraOff
@@ -337,32 +332,6 @@ export default function Scan() {
             answering.current = true;
             scan
               .keepForeign(phase.failure, rate, payee)
-              .then(() => {
-                haptics.success();
-                say('capture');
-                router.back();
-              })
-              .catch(() => {
-                answering.current = false;
-                toast(t('scan.error.pay'));
-              });
-          }}
-        />
-      ) : null}
-      {phase.kind === 'merchant' ? (
-        <MerchantAlert
-          failure={phase.failure}
-          banks={scan.merchantBanks}
-          onPay={(bank) => {
-            void scan.payMerchant(phase.failure, bank);
-          }}
-          onLog={typeIt}
-          onRetry={scan.retry}
-          onKeep={() => {
-            if (answering.current) return;
-            answering.current = true;
-            scan
-              .keepMerchant(phase.failure, t('scan.merchant.fallbackPayee'))
               .then(() => {
                 haptics.success();
                 say('capture');
