@@ -81,6 +81,7 @@ export const deScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.merchant.bodyPlain':
     '6pm kann diesen Code nicht bezahlen. Zahl in deiner Bank-App und erfass es dann hier.',
   'scan.merchant.keep': '{amount} behalten',
+  'scan.merchant.payIn': 'In {bank} bezahlen',
   'scan.merchant.fallbackPayee': 'Geschäft',
   'scan.scheme.vnpay': 'VNPay',
   'scan.content.link': 'Weblink',

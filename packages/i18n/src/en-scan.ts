@@ -78,6 +78,7 @@ export const enScan = {
   'scan.merchant.body': '6pm can’t pay this one. Pay it in your bank app, then keep {amount} here.',
   'scan.merchant.bodyPlain': '6pm can’t pay this one. Pay it in your bank app, then log it here.',
   'scan.merchant.keep': 'Keep {amount}',
+  'scan.merchant.payIn': 'Pay in {bank}',
   'scan.merchant.fallbackPayee': 'Shop',
   'scan.scheme.vnpay': 'VNPay',
   'scan.content.link': 'Web link',

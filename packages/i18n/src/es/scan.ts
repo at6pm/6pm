@@ -82,6 +82,7 @@ export const esScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.merchant.bodyPlain':
     '6pm no puede pagar este código. Paga en la app de tu banco y anótalo aquí.',
   'scan.merchant.keep': 'Guardar {amount}',
+  'scan.merchant.payIn': 'Pagar en {bank}',
   'scan.merchant.fallbackPayee': 'Comercio',
   'scan.scheme.vnpay': 'VNPay',
   'scan.content.link': 'Enlace web',

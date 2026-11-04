@@ -120,12 +120,15 @@ export function ScanAlert({
   body: text,
   primary,
   secondary,
+  lead,
 }: {
   readonly icon: SymbolName;
   readonly title: string;
   readonly body: string;
   readonly primary: { readonly label: string; readonly onPress: () => void };
   readonly secondary?: { readonly label: string; readonly onPress: () => void };
+  /** A way forward above the row, solid; the row's two buttons are then both outlined. */
+  readonly lead?: { readonly label: string; readonly onPress: () => void };
 }) {
   return (
     <ScanCard>
@@ -150,9 +153,10 @@ export function ScanAlert({
           <Text style={{ ...body(14), lineHeight: 19.6, color: c.cardBody }}>{text}</Text>
         </View>
       </View>
+      {lead ? <CardButton solid {...lead} /> : null}
       <View style={{ flexDirection: 'row', gap: 8 }}>
         {secondary ? <CardButton flex={1} {...secondary} /> : null}
-        <CardButton flex={1.4} solid {...primary} />
+        <CardButton flex={1.4} solid={!lead} {...primary} />
       </View>
     </ScanCard>
   );

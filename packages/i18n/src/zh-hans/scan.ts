@@ -77,6 +77,7 @@ export const zhHansScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.merchant.body': '6pm 暂时无法支付这个码。请在银行 App 里付款，再把 {amount} 留在这里。',
   'scan.merchant.bodyPlain': '6pm 暂时无法支付这个码。请在银行 App 里付款，再在这里记一笔。',
   'scan.merchant.keep': '留下 {amount}',
+  'scan.merchant.payIn': '在 {bank} 里付款',
   'scan.merchant.fallbackPayee': '店铺',
   'scan.scheme.vnpay': 'VNPay',
   'scan.content.link': '网页链接',

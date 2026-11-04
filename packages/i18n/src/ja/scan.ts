@@ -80,6 +80,7 @@ export const jaScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.merchant.bodyPlain':
     '6pmではこのコードは支払えません。銀行アプリで支払ってから、ここに記録しましょう。',
   'scan.merchant.keep': '{amount}を残す',
+  'scan.merchant.payIn': '{bank}で支払う',
   'scan.merchant.fallbackPayee': 'お店',
   'scan.scheme.vnpay': 'VNPay',
   'scan.content.link': 'Webリンク',

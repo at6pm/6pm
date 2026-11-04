@@ -78,6 +78,7 @@ export const viScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.merchant.bodyPlain':
     '6pm chưa trả được mã này. Trả trong app ngân hàng, rồi ghi lại ở đây.',
   'scan.merchant.keep': 'Giữ {amount}',
+  'scan.merchant.payIn': 'Trả bằng {bank}',
   'scan.merchant.fallbackPayee': 'Cửa hàng',
   'scan.scheme.vnpay': 'VNPay',
   'scan.content.link': 'Liên kết web',

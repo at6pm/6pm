@@ -80,6 +80,7 @@ export const idScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.merchant.bodyPlain':
     '6pm belum bisa membayar kode ini. Bayar di aplikasi bankmu, lalu catat di sini.',
   'scan.merchant.keep': 'Simpan {amount}',
+  'scan.merchant.payIn': 'Bayar di {bank}',
   'scan.merchant.fallbackPayee': 'Toko',
   'scan.scheme.vnpay': 'VNPay',
   'scan.content.link': 'Tautan web',

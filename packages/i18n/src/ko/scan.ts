@@ -81,6 +81,7 @@ export const koScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.merchant.bodyPlain':
     '6pm에서는 이 코드를 결제할 수 없어요. 은행 앱에서 결제한 뒤 여기에 기록하세요.',
   'scan.merchant.keep': '{amount} 남기기',
+  'scan.merchant.payIn': '{bank}에서 결제',
   'scan.merchant.fallbackPayee': '가게',
   'scan.scheme.vnpay': 'VNPay',
   'scan.content.link': '웹 링크',

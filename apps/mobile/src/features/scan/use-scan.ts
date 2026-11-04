@@ -19,8 +19,8 @@ import { useHomeCurrency } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
 import { useClock } from '../../ui/theme/clock';
 import { useTravel } from '../travel/travel-provider';
-import { handOff, type Handoff } from './bank-handoff';
-import { payeeName, payOptions, titleCase } from './pay-options';
+import { handOff, handOffCode, type Handoff } from './bank-handoff';
+import { payeeName, payOptions, payWallets, titleCase } from './pay-options';
 import { dongInHome, pricedInHome } from './priced-spend';
 
 /** A payment on its way out: saved as pending the moment the bank app is asked to open. */
@@ -226,6 +226,13 @@ export function useScan() {
         wallet: null,
       });
     },
+    /** The user's banks that take a shop's code in their transfer link, for the shop-code card. */
+    merchantBanks: payWallets(walletIds).filter((bank) => bank.ios?.link?.kind === 'qrPay'),
+    /** Opens a bank app with a shop's code as scanned, for the user to pay there. */
+    payMerchant: (failure: VietQRFailure, bank: BankInfo) =>
+      failure.raw === undefined
+        ? Promise.resolve(null)
+        : handOffCode(bank, failure.raw, failure.dong ?? null),
     /** For when the bank app never took over: the user says they are back. */
     back: () =>
       setPhase((p) => (p.kind === 'handoff' ? { kind: 'return', payment: p.payment } : p)),

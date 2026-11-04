@@ -67,6 +67,34 @@ function momoTransferLink(app: IosApp, qr: VietQR, amount: Vnd): string | null {
   return `${app.scheme}app?action=p2p&extra=${encodeURIComponent(extra)}`;
 }
 
+/**
+ * What to open to hand a bank app a payment code 6pm does not rewrite (a shop's VNPay code), as
+ * scanned. The banks that take a VietQR in their transfer link are handed it the same way; the
+ * rest open at their home, and the code goes to the photos for the bank's scanner.
+ */
+export function rawHandoffPlan(
+  bank: BankInfo | null,
+  os: 'ios' | 'android',
+  raw: string,
+): HandoffPlan | null {
+  const ios = bank?.ios ?? null;
+  const link = ios?.link ?? null;
+  if (os === 'ios') {
+    if (ios === null) return null;
+    if (link?.kind !== 'qrPay')
+      return { open: ios.scheme, filledIn: false, store: [appStoreUrl(ios)] };
+    const open = `${ios.scheme}${link.path}?targetPage=QRPay&qrContent=${encodeURIComponent(raw)}`;
+    return { open, filledIn: true, store: [appStoreUrl(ios)] };
+  }
+  const android = bank?.android ?? null;
+  if (android === null) return null;
+  return {
+    open: ios?.scheme ?? null,
+    filledIn: false,
+    store: [marketUrl(android), playStoreUrl(android)],
+  };
+}
+
 /** What 6pm opens: the filled-in transfer when the bank's form is known, else the app's home. */
 export function handoffUrl(app: IosApp, qr: VietQR, amount: Vnd): string {
   return transferLink(app, qr, amount) ?? app.scheme;

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { findBank } from './bank-catalogue';
 import { encodeVietQR } from './encode-vietqr';
-import { handoffPlan, handoffUrl, payloadFor, transferLink } from './handoff-link';
+import { handoffPlan, handoffUrl, payloadFor, rawHandoffPlan, transferLink } from './handoff-link';
 import { parseVietQR, type VietQR } from './parse-vietqr';
 
 function scan(payload: string): VietQR {
@@ -191,5 +191,34 @@ describe('handoffPlan', () => {
     expect(handoffPlan(viettel, 'ios', transfer, 10_000)).toBeNull();
     expect(handoffPlan(viettel, 'android', transfer, 10_000)).toBeNull();
     expect(handoffPlan(null, 'android', transfer, 10_000)).toBeNull();
+  });
+});
+
+describe('rawHandoffPlan', () => {
+  // A shop's VNPay code as a kiosk shows it (TORO, 7.000₫).
+  const vnpay =
+    '00020101021226280010A00000077501100313421775520458145303704540470005802VN5904TORO6005HANOI610610000062440114sj8QTFEODMamTl0310KOOTORO2060708KTR0020663040F80';
+
+  it('hands the code, untouched, to a bank that takes a VietQR in its transfer link', () => {
+    const plan = rawHandoffPlan(findBank('MB'), 'ios', vnpay);
+    expect(plan).toMatchObject({ filledIn: true });
+    expect(plan?.open).toBe(
+      `mbbank://applink?targetPage=QRPay&qrContent=${encodeURIComponent(vnpay)}`,
+    );
+  });
+
+  it('opens a bank with no transfer link at its home, for the code saved to the photos', () => {
+    expect(rawHandoffPlan(findBank('VCB'), 'ios', vnpay)).toMatchObject({
+      open: 'vietcombankmobile://',
+      filledIn: false,
+    });
+  });
+
+  it('opens a bank at its home on Android, and has nothing for a bank with no app', () => {
+    expect(rawHandoffPlan(findBank('MB'), 'android', vnpay)).toMatchObject({
+      open: 'mbbank://',
+      filledIn: false,
+    });
+    expect(rawHandoffPlan(null, 'ios', vnpay)).toBeNull();
   });
 });

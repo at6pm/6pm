@@ -352,6 +352,10 @@ export default function Scan() {
       {phase.kind === 'merchant' ? (
         <MerchantAlert
           failure={phase.failure}
+          banks={scan.merchantBanks}
+          onPay={(bank) => {
+            void scan.payMerchant(phase.failure, bank);
+          }}
           onLog={typeIt}
           onRetry={scan.retry}
           onKeep={() => {

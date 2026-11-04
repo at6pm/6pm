@@ -66,6 +66,8 @@ export interface VietQRFailure {
   provider?: MerchantProvider;
   /** For a `merchant` code: the amount it asks for in whole đồng, when it carries one. */
   dong?: Vnd;
+  /** For a `merchant` code: the payload as scanned, for a bank app to read. */
+  raw?: string;
   /** For a foreign QR, so it can be logged by hand: amount as written, in its own currency. */
   amount?: string;
   /**
@@ -115,7 +117,8 @@ export function parseVietQR(input: string): VietQRResult {
   if (!napas) {
     const foreign = detectForeign(fields, merchantGuids(fields, unit));
     if (foreign) return { ok: false, reason: 'foreign', ...foreign, ...foreignDetails(fields) };
-    return merchantCode(fields, merchantGuids(fields, unit)) ?? fail('unsupported');
+    const merchant = merchantCode(fields, merchantGuids(fields, unit));
+    return merchant ? { ...merchant, raw } : fail('unsupported');
   }
   const currency = fields.get('53');
   const country = fields.get('58')?.toUpperCase();

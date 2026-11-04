@@ -79,6 +79,7 @@ export const thScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.merchant.body': '6pm ยังจ่ายรหัสนี้ให้ไม่ได้ จ่ายในแอปธนาคารแล้วเก็บ {amount} ไว้ที่นี่',
   'scan.merchant.bodyPlain': '6pm ยังจ่ายรหัสนี้ให้ไม่ได้ จ่ายในแอปธนาคารแล้วบันทึกไว้ที่นี่',
   'scan.merchant.keep': 'เก็บ {amount}',
+  'scan.merchant.payIn': 'จ่ายใน {bank}',
   'scan.merchant.fallbackPayee': 'ร้านค้า',
   'scan.scheme.vnpay': 'VNPay',
   'scan.content.link': 'ลิงก์เว็บ',

@@ -185,6 +185,7 @@ describe('parseVietQR', () => {
         provider: 'vnpay',
         amount: '26000',
         dong: 26_000,
+        raw: QR.vnpayKiosk,
         currency: '704',
         merchantName: 'TORO',
       });
@@ -198,6 +199,7 @@ describe('parseVietQR', () => {
         provider: 'vnpay',
         currency: '704',
         merchantName: 'QUAN COM',
+        raw: QR.vnOther,
       });
       expect(result).not.toHaveProperty('dong');
     });
