@@ -8,6 +8,7 @@ import {
   firstCaughtSince,
   readFirstCatch,
   readMonthReading,
+  startReadingCount,
   writeFirstCatch,
 } from './first-catch';
 import { importInbox } from './inbox-import';
@@ -139,5 +140,13 @@ describe('first catch on the phone', () => {
     await run([shared({ at: new Date(Date.now() - 40 * 86_400_000).toISOString() })]);
     expect((await readMonthReading(store, TODAY)).accuracy.total).toBe(1);
     expect((await readMonthReading(store, NEXT_MONTH)).accuracy.total).toBe(0);
+  });
+
+  it('counts only receipts that arrived once the phone began counting', async () => {
+    await run([shared()]);
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    await startReadingCount(store.db);
+    await run([shared({ id: crypto.randomUUID(), amount: 40_000, merchant: 'Circle K' })]);
+    expect((await readMonthReading(store, TODAY)).accuracy.total).toBe(1);
   });
 });

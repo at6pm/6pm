@@ -28,6 +28,8 @@ import type { SqlDatabase } from './table';
 const STATE_KEY = 'first_catch';
 const FIXES_KEY = 'receipt_fixes';
 const LOOKED_KEY = 'receipts_looked';
+/** When this phone began keeping how receipts were read: older ones are not counted. */
+const SINCE_KEY = 'receipts_counted_since';
 /** Receipts remembered at most: months of sharing, more than a month's count needs. */
 const KEEP = 400;
 
@@ -158,6 +160,17 @@ export async function noteReceiptEdit(
   if (fix !== known) await writeFix(db, row.id, fix);
 }
 
+/**
+ * Starts the count of receipts read on the phone, once: a receipt that arrived before is not
+ * counted, since nothing says whether it went for a closer look.
+ */
+export async function startReadingCount(db: SqlDatabase): Promise<void> {
+  await db.runAsync('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)', [
+    SINCE_KEY,
+    JSON.stringify(new Date().toISOString()),
+  ]);
+}
+
 /** This month's receipts read on the phone (oldest first) and how they were read. */
 export interface MonthReading {
   readonly accuracy: CaptureAccuracy;
@@ -166,11 +179,14 @@ export interface MonthReading {
 
 /**
  * The receipts shared or scanned this calendar month (today's month, by the day they arrived, so a
- * receipt from another month shared today counts today) and how they were read.
+ * receipt from another month shared today counts today) and how they were read, from when the
+ * phone began counting.
  */
 export async function readMonthReading(store: MoneyStore, today: LocalDate): Promise<MonthReading> {
   const [year = 0, month = 1] = today.split('-').map(Number);
-  const start = new Date(year, month - 1, 1).toISOString();
+  const counted = z.string().safeParse(await readJson(store.db, SINCE_KEY));
+  const monthStart = new Date(year, month - 1, 1).toISOString();
+  const start = counted.success && counted.data > monthStart ? counted.data : monthStart;
   const thisMonth = today.slice(0, 7);
   const rows = await store.tables.spends.select(
     "WHERE source = 'shared' AND created_at >= ? ORDER BY created_at",

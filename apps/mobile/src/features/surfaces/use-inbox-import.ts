@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
 
 import { surfaces } from '../../../modules/surfaces';
+import { startReadingCount } from '../../data/first-catch';
 import { importInbox } from '../../data/inbox-import';
 import { useMoneyActions, useMoneyStore } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
@@ -73,6 +74,7 @@ export function useInboxImport() {
       running.current = next;
       return next;
     };
+    void startReadingCount(store.db).catch(() => undefined);
     void run(true);
     setInboxRunner(() => run());
     const sub = AppState.addEventListener('change', (state) => {
