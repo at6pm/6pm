@@ -11,6 +11,7 @@ import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
 import { Symbol } from '../../ui/icons/symbol';
+import { useDesignInsets } from '../../ui/layout/design-insets';
 import { SheetFrame } from '../../ui/navigation/sheet-frame';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
@@ -48,6 +49,7 @@ export function NewJarSheet({
 }) {
   const router = useRouter();
   const { palette } = useTheme();
+  const { bottom } = useDesignInsets();
   const { t } = useI18n();
   const money = useMoneyFormat();
   const actions = usePlanActions();
@@ -315,7 +317,7 @@ export function NewJarSheet({
           ) : null}
         </Animated.View>
       </ScrollView>
-      <View style={{ paddingTop: 12, paddingHorizontal: 16, paddingBottom: 34 }}>
+      <View style={{ paddingTop: 12, paddingHorizontal: 16, paddingBottom: bottom(34) }}>
         <PressScale
           accessibilityRole="button"
           scaleTo={0.97}

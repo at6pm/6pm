@@ -18,6 +18,7 @@ import momo from '../../../assets/import/momo.png';
 
 import { useI18n } from '../../i18n/i18n';
 import { haptics } from '../../ui/haptics';
+import { useDesignInsets } from '../../ui/layout/design-insets';
 import { Symbol, type SymbolProps } from '../../ui/icons/symbol';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
@@ -216,10 +217,11 @@ export function PrivacyLine() {
   );
 }
 
-/** The foot of every step: its button (or buttons) over the home indicator. */
+/** The foot of every step: its button (or buttons) over the home indicator or Android's buttons. */
 export function ImportFoot({ children }: { readonly children: ReactNode }) {
+  const { bottom } = useDesignInsets();
   return (
-    <View style={{ paddingTop: 12, paddingHorizontal: 16, paddingBottom: 34, gap: 10 }}>
+    <View style={{ paddingTop: 12, paddingHorizontal: 16, paddingBottom: bottom(34), gap: 10 }}>
       {children}
     </View>
   );
