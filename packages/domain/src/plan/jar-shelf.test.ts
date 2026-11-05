@@ -8,9 +8,11 @@ import {
   jarsEachPayday,
   lineWithFutureYou,
   lineWithSetAside,
+  jarPaydaysLeft,
   newJarMonths,
   sliceShareOf,
   steadyChoices,
+  steadyLadder,
 } from './jar-shelf';
 import { payCycleOn } from './pay-cycle';
 import { FUTURE_YOU_POT_ID, intoJarsEachPayday } from './pots';
@@ -154,5 +156,40 @@ describe('New jar choices', () => {
   it('offers steady amounts worth the design’s in any currency', () => {
     expect(steadyChoices()).toEqual([200_000, 500_000, 1_000_000, 2_000_000]);
     for (const n of steadyChoices(currencyOf('USD'))) expect(n).toBeGreaterThan(0);
+  });
+
+  it('runs the steady strip from 100k to 5tr, by value in any currency', () => {
+    expect(steadyLadder()).toEqual([
+      100_000, 200_000, 300_000, 500_000, 700_000, 1_000_000, 1_500_000, 2_000_000, 3_000_000,
+      5_000_000,
+    ]);
+    for (const n of steadyChoices()) expect(steadyLadder()).toContain(n);
+    const usd = steadyLadder(currencyOf('USD'));
+    expect(usd.length).toBeGreaterThan(0);
+    expect(new Set(usd).size).toBe(usd.length);
+    for (let i = 1; i < usd.length; i++) expect(usd[i]).toBeGreaterThan(usd[i - 1] ?? 0);
+  });
+});
+
+describe('Paydays a jar still takes', () => {
+  const terms = { goal: 6_000_000, savedBefore: 0, neededBy: null, monthly: null, cycle };
+
+  it('counts the paydays to its month by a date', () => {
+    expect(jarPaydaysLeft({ ...terms, neededBy: '2026-11' })).toBe(1);
+    expect(jarPaydaysLeft({ ...terms, neededBy: '2027-02' })).toBe(4);
+    expect(jarPaydaysLeft({ ...terms, neededBy: '2028-10' })).toBe(24);
+  });
+
+  it('counts the paydays a steady amount takes to cover what is left', () => {
+    expect(jarPaydaysLeft({ ...terms, monthly: 2_000_000 })).toBe(3);
+    expect(jarPaydaysLeft({ ...terms, monthly: 700_000 })).toBe(9);
+    expect(jarPaydaysLeft({ ...terms, savedBefore: 5_000_000, monthly: 2_000_000 })).toBe(1);
+  });
+
+  it('has none for a jar with no target, no amount, a full one or a month gone by', () => {
+    expect(jarPaydaysLeft({ ...terms, goal: 0, monthly: 500_000 })).toBeNull();
+    expect(jarPaydaysLeft(terms)).toBeNull();
+    expect(jarPaydaysLeft({ ...terms, savedBefore: 6_000_000, monthly: 500_000 })).toBeNull();
+    expect(jarPaydaysLeft({ ...terms, neededBy: '2026-09' })).toBeNull();
   });
 });

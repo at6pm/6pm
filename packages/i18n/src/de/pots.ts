@@ -55,6 +55,16 @@ export const dePots: { readonly [Key in keyof typeof enPots]: Entry } = {
   'pots.new.byDate': 'Bis zu einem Datum',
   'pots.new.eachPayday': 'Pro Zahltag',
   'pots.new.each': 'pro Zahltag',
+  'pots.new.byDateLine': {
+    one: '{amount} pro Zahltag · {count} Zahltag',
+    other: '{amount} pro Zahltag · {count} Zahltage',
+  },
+  'pots.new.steadyLine': {
+    one: '{amount} pro Zahltag · voll in {count} Zahltag',
+    other: '{amount} pro Zahltag · voll in {count} Zahltagen',
+  },
+  'pots.new.eachLine': '{amount} pro Zahltag',
+  'pots.new.otherAmount': 'Anderer Betrag',
   'pots.new.eachDay': 'Pro Tag',
   'pots.new.start': 'Starten',
   'pots.new.save': 'Sichern',

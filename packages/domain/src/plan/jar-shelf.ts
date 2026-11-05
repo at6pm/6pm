@@ -3,7 +3,7 @@ import type { PotRow } from '../contracts/local-rows';
 import type { Vnd } from '../money/format';
 import { dailyNumber, type DailyNumberInput } from './daily-number';
 import { cycleMonth, type PayCycle } from './pay-cycle';
-import { addMonthsTo } from './plan-river';
+import { addMonthsTo, monthsBetween } from './plan-river';
 import { FUTURE_YOU_POT_ID, isLegacyGoal, jarFillOf } from './pots';
 import { whatIfRange } from './what-if';
 
@@ -113,4 +113,46 @@ export function steadyChoices(currency: Currency = VND): Vnd[] {
       ? d
       : Math.max(currency.step, floorToStep(designAmount(d, currency), currency)),
   );
+}
+
+/**
+ * The steady amounts New jar's "Each payday" strip runs through, from the design's 100k to 5tr,
+ * by value in any currency (each at least one step, none repeated).
+ */
+export function steadyLadder(currency: Currency = VND): Vnd[] {
+  const design = [
+    100_000, 200_000, 300_000, 500_000, 700_000, 1_000_000, 1_500_000, 2_000_000, 3_000_000,
+    5_000_000,
+  ];
+  const amounts = design.map((d) =>
+    currency.code === 'VND'
+      ? d
+      : Math.max(currency.step, floorToStep(designAmount(d, currency), currency)),
+  );
+  return [...new Set(amounts)];
+}
+
+/**
+ * The paydays a jar still takes to fill, as New jar says it ("2,1tr each payday · 4 paydays"):
+ * by a date, the paydays from this cycle's to the jar's month, as its set-aside spreads over them;
+ * each payday, the paydays its steady amount takes to cover what is left of its target. Null when
+ * it never fills that way (no target, no amount) or is already full.
+ */
+export function jarPaydaysLeft(input: {
+  readonly goal: Vnd;
+  readonly savedBefore: Vnd;
+  /** "By a date": the jar's month ('YYYY-MM'). */
+  readonly neededBy: string | null;
+  /** "Each payday": what goes in. */
+  readonly monthly: Vnd | null;
+  readonly cycle: PayCycle;
+}): number | null {
+  const left = Math.max(0, input.goal - input.savedBefore);
+  if (!(left > 0)) return null;
+  if (input.neededBy !== null) {
+    if (cycleMonth(input.cycle) > input.neededBy) return null;
+    return monthsBetween(cycleMonth(input.cycle), input.neededBy);
+  }
+  const each = input.monthly ?? 0;
+  return each > 0 ? Math.ceil(left / each) : null;
 }
