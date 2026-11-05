@@ -82,3 +82,4 @@ export * from './plan/plan-split';
 export * from './capture/capture-health';
 export * from './import';
 export * from './contracts/import-map';
+export * from './share';
