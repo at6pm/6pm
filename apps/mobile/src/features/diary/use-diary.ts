@@ -307,6 +307,7 @@ export function useDiary() {
               merchant: s.merchant,
               categoryId: s.categoryId,
               amount: s.amount,
+              photo: s.photo != null,
               ...(back
                 ? {
                     back: t('moneyIn.diary.back', {

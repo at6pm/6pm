@@ -2,7 +2,8 @@ import { Text, View } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 
-import { CategoryTile } from '../../ui/category-tile';
+import { photoUri } from '../../data/device-photo-files';
+import { TileWithPhoto } from '../../ui/photo/photo-clip';
 import type { SymbolName } from '../../ui/icons/symbols.generated';
 import { useTheme } from '../../ui/theme/theme';
 import { body, tabular } from '../../ui/type/fonts';
@@ -27,6 +28,8 @@ export interface SpendRowView {
   readonly reviewable: boolean;
   readonly skipped: boolean;
   readonly first: boolean;
+  /** The kept photo's file name: a clip on the tile says one is kept. */
+  readonly photo: string | null;
 }
 
 /**
@@ -38,6 +41,7 @@ export function SpendRow({
   confirmLabel,
   deleteLabel,
   editLabel,
+  photoLabel,
   onConfirm,
   onDelete,
   onOpen,
@@ -46,6 +50,8 @@ export function SpendRow({
   readonly confirmLabel: string;
   readonly deleteLabel: string;
   readonly editLabel: string;
+  /** "Photo kept", read out for a row with a clip. */
+  readonly photoLabel: string;
   readonly onConfirm: (id: string) => void;
   readonly onDelete: (id: string) => void;
   readonly onOpen: (id: string) => void;
@@ -87,7 +93,13 @@ export function SpendRow({
           <Animated.View
             accessible
             accessibilityRole="button"
-            accessibilityLabel={[row.name, row.amount, row.meta, row.tag]
+            accessibilityLabel={[
+              row.name,
+              row.amount,
+              row.meta,
+              row.tag,
+              row.photo ? photoLabel : null,
+            ]
               .filter(Boolean)
               .join(', ')}
             accessibilityActions={accessibilityActions}
@@ -109,7 +121,11 @@ export function SpendRow({
               front,
             ]}
           >
-            <CategoryTile icon={row.icon} hue={row.hue} />
+            <TileWithPhoto
+              icon={row.icon}
+              hue={row.hue}
+              photo={row.photo === null ? null : photoUri(row.photo)}
+            />
             <View
               style={{
                 flex: 1,

@@ -120,6 +120,7 @@ export function TodayList({
               confirmLabel={t('today.row.confirm')}
               deleteLabel={t('today.row.delete')}
               editLabel={t('details.edit')}
+              photoLabel={t('photo.kept')}
               onConfirm={onConfirm}
               onDelete={onDelete}
               onOpen={onOpenSpend}

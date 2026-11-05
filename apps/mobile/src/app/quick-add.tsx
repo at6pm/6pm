@@ -17,8 +17,17 @@ import { moneyInInk, oklchSrgbHex } from '@6pm/theme';
 
 import { useMoney, useMoneyActions, useMoneyStore } from '../data/money-provider';
 import { useCompanionToast } from '../features/companion/use-companion-toast';
+import { useToast } from '../ui/toast/toast-host';
 import { useRunAction } from '../features/companion/use-run-action';
 import { QuickTicket } from '../features/quick-add/quick-ticket';
+import { QUICK_PHOTO_ROOM, QuickPhoto } from '../features/quick-add/quick-photo';
+import { keepPhotoAt } from '../data/device-photo-files';
+import {
+  CameraOff,
+  dropWaitingPhoto,
+  photoInto,
+  waitingPhotoUri,
+} from '../features/details/photo-sources';
 import { useWalletOptions } from '../features/quick-add/use-wallet-options';
 import { CASH_WALLET } from '../features/quick-add/wallet-options';
 import { firstJarFor, FromJarSwitch, FromRow } from '../features/quick-add/wallet-row';
@@ -55,6 +64,7 @@ export default function QuickAdd() {
   const actions = useMoneyActions();
   const store = useMoneyStore();
   const run = useRunAction();
+  const toast = useToast();
   const say = useCompanionToast();
   const { trip, dongQuote } = useTravel();
   const money = useMoneyFormat();
@@ -133,36 +143,63 @@ export default function QuickAdd() {
       )
     : null;
 
+  // A photo clipped on before the spend exists waits in the caches until Keep it.
+  const [photo, setPhoto] = useState<string | null>(null);
+  const waiting = useRef<string | null>(null);
+  waiting.current = photo;
+  useEffect(
+    () => () => {
+      // Closed without keeping: the waiting photo goes.
+      if (waiting.current !== null && !saving.current) dropWaitingPhoto(waiting.current);
+    },
+    [],
+  );
+  const pickPhoto = (key: string) => {
+    const uri = waitingPhotoUri();
+    photoInto(key === 'camera' ? 'camera' : 'photos', uri)
+      .then((got) => {
+        if (!got) return;
+        if (photo !== null) dropWaitingPhoto(photo);
+        setPhoto(uri);
+      })
+      .catch((error: unknown) =>
+        toast(t(error instanceof CameraOff ? 'photo.cameraOff' : 'photo.failed')),
+      );
+  };
+
   const save = async () => {
     // A second tap before the sheet has closed must not write the spend again.
     if (amount <= 0 || !category || saving.current) return;
     saving.current = true;
     // Money said to have come in waits for the close, which asks where it goes.
-    const saved = await run(() =>
-      actions.addSpend(
-        voice.incoming
-          ? {
-              amount,
-              categoryId: category.id,
-              merchant: note.trim(),
-              source: 'voice',
-              status: 'caught',
-              wallet,
-              foreignAmount: entry.foreignAmount,
-              direction: 'in',
-            }
-          : {
-              amount,
-              categoryId: category.id,
-              merchant: note.trim() || category.name,
-              source: voice.said ? 'voice' : 'manual',
-              status: 'kept',
-              wallet,
-              foreignAmount: entry.foreignAmount,
-              fromPot,
-            },
-      ),
-    );
+    let keptId: string | null = null;
+    const saved = await run(async () => {
+      keptId = (
+        await actions.addSpend(
+          voice.incoming
+            ? {
+                amount,
+                categoryId: category.id,
+                merchant: note.trim(),
+                source: 'voice',
+                status: 'caught',
+                wallet,
+                foreignAmount: entry.foreignAmount,
+                direction: 'in',
+              }
+            : {
+                amount,
+                categoryId: category.id,
+                merchant: note.trim() || category.name,
+                source: voice.said ? 'voice' : 'manual',
+                status: 'kept',
+                wallet,
+                foreignAmount: entry.foreignAmount,
+                fromPot,
+              },
+        )
+      ).id;
+    });
     if (!saved) {
       saving.current = false;
       return;
@@ -170,6 +207,13 @@ export default function QuickAdd() {
     haptics.success();
     say('capture');
     edge.dismiss();
+    if (photo !== null && keptId !== null) {
+      const from = photo;
+      void actions
+        .attachPhoto(keptId, (to) => keepPhotoAt(from, to).then(() => true))
+        .catch(() => toast(t('photo.failed')))
+        .finally(() => dropWaitingPhoto(from));
+    }
   };
 
   const edge = useEdgeSheet();
@@ -228,6 +272,8 @@ export default function QuickAdd() {
         }}
       >
         <QuickTicket
+          clip={<QuickPhoto photo={photo} onPick={pickPhoto} />}
+          clipRoom={QUICK_PHOTO_ROOM}
           heading={t('quick.ticket', { no: String(snap.cycleSpends.length + 1).padStart(3, '0') })}
           stamp={stamp}
           amount={amount}

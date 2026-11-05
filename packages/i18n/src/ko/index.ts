@@ -38,6 +38,7 @@ import { koVoice } from './voice';
 import { koWidgetsGuide } from './widgets-guide';
 import { koYearBook } from './year-book';
 import { koFirstCatch } from './first-catch';
+import { koPhoto } from './photo';
 import { koImport } from './import';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
@@ -84,6 +85,7 @@ export const ko: Catalogue = {
   ...koPotsPlan,
   ...koPots,
   ...koFirstCatch,
+  ...koPhoto,
   ...koImport,
   ...importSketchMomo,
 };

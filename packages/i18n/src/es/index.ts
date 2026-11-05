@@ -38,6 +38,7 @@ import { esVoice } from './voice';
 import { esWidgetsGuide } from './widgets-guide';
 import { esYearBook } from './year-book';
 import { esFirstCatch } from './first-catch';
+import { esPhoto } from './photo';
 import { esImport } from './import';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
@@ -84,6 +85,7 @@ export const es: Catalogue = {
   ...esPotsPlan,
   ...esPots,
   ...esFirstCatch,
+  ...esPhoto,
   ...esImport,
   ...importSketchMomo,
 };

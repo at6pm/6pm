@@ -26,6 +26,8 @@ import { useCompanionToast } from '../companion/use-companion-toast';
 import { useRunAction } from '../companion/use-run-action';
 import { AmountEditor } from './amount-editor';
 import { DetailsCard } from './details-card';
+import { PRINT_WIDTH, SpendPhoto } from './spend-photo';
+import { useMoneyFormat } from '../../money/use-money-format';
 import { TodayPill } from './from-jar-row';
 import { useFocusOnPresent } from '../../ui/navigation/use-focus-on-present';
 import { easeInOut } from '../../ui/motion/curves';
@@ -54,6 +56,7 @@ export function SpendDetails({
   const offerUndo = useOfferUndo();
   const say = useCompanionToast();
   const run = useRunAction();
+  const money = useMoneyFormat();
   const spend = findSpend(snap, id);
   const [askRule, setAskRule] = useState(false);
   // A catch with no amount opens on the keypad, once the sheet has risen.
@@ -114,7 +117,16 @@ export function SpendDetails({
     <>
       <View style={{ alignItems: 'center', gap: 6, paddingVertical: 4 }}>
         <CategoryTile icon={icon} hue={category?.hue ?? 80} size={56} radius={19} glyph={31} />
-        <Text style={{ ...body(20, 650, -0.02), color: palette.ink, paddingTop: 4 }}>
+        {/* The name keeps clear of the photo clipped at the top right. */}
+        <Text
+          style={{
+            ...body(20, 650, -0.02),
+            color: palette.ink,
+            paddingTop: 4,
+            paddingHorizontal: PRINT_WIDTH + 8,
+            textAlign: 'center',
+          }}
+        >
           {spend.merchant}
         </Text>
         <Text style={{ ...body(14), color: palette.inkSoft }}>
@@ -127,6 +139,11 @@ export function SpendDetails({
           onSave={({ amount, foreignAmount }) => update({ amount, foreignAmount })}
         />
         <TodayPill spend={spend} />
+        <SpendPhoto
+          spend={spend}
+          title={`${spend.merchant} · ${money.full(spend.amount)}`}
+          subtitle={`${when} · ${labels.time(spend.at)}`}
+        />
         <Animated.View
           layout={reflow}
           style={{ alignSelf: 'stretch', alignItems: 'center', gap: 6 }}

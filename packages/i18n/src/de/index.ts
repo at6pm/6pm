@@ -38,6 +38,7 @@ import { deVoice } from './voice';
 import { deWidgetsGuide } from './widgets-guide';
 import { deYearBook } from './year-book';
 import { deFirstCatch } from './first-catch';
+import { dePhoto } from './photo';
 import { deImport } from './import';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
@@ -84,6 +85,7 @@ export const de: Catalogue = {
   ...dePotsPlan,
   ...dePots,
   ...deFirstCatch,
+  ...dePhoto,
   ...deImport,
   ...importSketchMomo,
 };

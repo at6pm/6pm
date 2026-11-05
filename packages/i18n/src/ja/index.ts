@@ -38,6 +38,7 @@ import { jaVoice } from './voice';
 import { jaWidgetsGuide } from './widgets-guide';
 import { jaYearBook } from './year-book';
 import { jaFirstCatch } from './first-catch';
+import { jaPhoto } from './photo';
 import { jaImport } from './import';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
@@ -84,6 +85,7 @@ export const ja: Catalogue = {
   ...jaPotsPlan,
   ...jaPots,
   ...jaFirstCatch,
+  ...jaPhoto,
   ...jaImport,
   ...importSketchMomo,
 };
