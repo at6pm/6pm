@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
 import { ScrollView, Text, TextInput, View } from 'react-native';
+import Animated, { LinearTransition } from 'react-native-reanimated';
 
 import type { PotRow } from '@6pm/domain';
 
@@ -13,7 +14,15 @@ import { Symbol } from '../../ui/icons/symbol';
 import { SheetFrame } from '../../ui/navigation/sheet-frame';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
-import { body, display, families, leading, tabular, UNPADDED } from '../../ui/type/fonts';
+import {
+  body,
+  display,
+  faceLineHeight,
+  families,
+  leading,
+  tabular,
+  UNPADDED,
+} from '../../ui/type/fonts';
 import { useOfferUndo } from '../../ui/undo/undo-host';
 import { useCompanionToast } from '../companion/use-companion-toast';
 import { useRunAction } from '../companion/use-run-action';
@@ -22,10 +31,15 @@ import { expectLanding } from './jar-flight';
 import { jarLevel } from './jar';
 import { useJarFormat } from './jar-words';
 import { ChoiceChips, DraftJar, FillSegment, PresetTiles } from './new-jar-parts';
+import { JarLook } from './new-jar-look';
 import { RollingText } from './rolling-text';
 import { useNewJar, type AskedJar } from './use-new-jar';
 
 type Keypad = 'target' | 'steady' | null;
+
+const CARD_INSET = 16;
+/** Siblings under the icon and colour panel slide to where it leaves them. */
+const settle = LinearTransition.duration(250);
 
 /**
  * New jar (Pots canvas, B, third phone), and a jar's Edit: one sheet. A preset re-tints the jar
@@ -53,6 +67,7 @@ export function NewJarSheet({
   const jar = useNewJar(editing, asked);
   const { draft } = jar;
   const [keypad, setKeypad] = useState<Keypad>(null);
+  const [looking, setLooking] = useState(false);
   const [working, setWorking] = useState(false);
   const busy = useRef(false);
   const short = (n: number) => money.short(n);
@@ -146,6 +161,7 @@ export function NewJarSheet({
       ? t('pots.new.target', { amount: short(draft.target) })
       : t('pots.new.noTarget');
   const steadyIndex = jar.choices.indexOf(draft.steady);
+  const amountStyle = { ...display(34, 500), color: palette.ink };
 
   return (
     <SheetFrame header={header}>
@@ -166,12 +182,47 @@ export function NewJarSheet({
           />
         )}
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16, paddingHorizontal: 4 }}>
-          <DraftJar
-            hue={draft.hue}
-            icon={draft.icon}
-            futureYou={fy}
-            level={editing ? jarLevel(saved, draft.target) : 0}
-          />
+          <PressScale
+            accessibilityRole="button"
+            accessibilityLabel={t('pots.new.look')}
+            accessibilityState={{ expanded: looking }}
+            disabled={fy}
+            scaleTo={0.95}
+            onPress={() => {
+              haptics.tap();
+              setLooking((on) => !on);
+            }}
+          >
+            <DraftJar
+              hue={draft.hue}
+              icon={draft.icon}
+              futureYou={fy}
+              level={editing ? jarLevel(saved, draft.target) : 0}
+            />
+            {fy ? null : (
+              <View
+                pointerEvents="none"
+                style={{
+                  position: 'absolute',
+                  right: -6,
+                  bottom: -2,
+                  width: 28,
+                  height: 28,
+                  borderRadius: 14,
+                  backgroundColor: looking ? palette.btnBg : palette.chipBg,
+                  boxShadow: `0 0 0 2px ${palette.sheetSolid}`,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Symbol
+                  name={looking ? 'check' : 'palette'}
+                  size={16}
+                  color={looking ? palette.btnFg : palette.ink}
+                />
+              </View>
+            )}
+          </PressScale>
           <View style={{ flex: 1, gap: 4 }}>
             {fy ? (
               <Text style={{ ...leading(display(30, 500), 30 * 1.05, true), color: palette.ink }}>
@@ -234,86 +285,98 @@ export function NewJarSheet({
             ) : null}
           </View>
         </View>
-        {fy ? null : (
-          <>
-            <FillSegment
-              options={[
-                { id: 'date', icon: 'calendar_month', label: t('pots.new.byDate') },
-                { id: 'steady', icon: 'autorenew', label: t('pots.new.eachPayday') },
-              ]}
-              selected={draft.mode}
-              onSelect={(id) => jar.setFill({ mode: id === 'date' ? 'date' : 'steady' })}
-            />
-            <View
-              style={{
-                borderRadius: 22,
-                backgroundColor: palette.cell,
-                paddingVertical: 14,
-                paddingHorizontal: 16,
-                gap: 12,
-              }}
-            >
-              {draft.mode === 'date' ? (
-                <ChoiceChips
-                  chips={jar.months.map((m) => ({ id: m, label: format.chip(m) }))}
-                  selected={draft.month}
-                  onSelect={(month) => jar.setFill({ month })}
-                />
-              ) : (
-                <ChoiceChips
-                  chips={jar.choices.map((c) => ({ id: String(c), label: short(c) }))}
-                  selected={steadyIndex >= 0 ? String(draft.steady) : null}
-                  onSelect={(c) => jar.setFill({ steady: Number(c) })}
-                />
-              )}
-              <PressScale
-                accessibilityRole="button"
-                disabled={draft.mode === 'date'}
-                onPress={() => {
-                  haptics.tap();
-                  setKeypad('steady');
-                }}
+        {looking && !fy ? (
+          <JarLook
+            icon={draft.icon}
+            hue={draft.hue}
+            onChange={(patch) => jar.change({ ...patch, preset: null })}
+          />
+        ) : null}
+        <Animated.View layout={settle} style={{ gap: 16 }}>
+          {fy ? null : (
+            <>
+              <FillSegment
+                options={[
+                  { id: 'date', icon: 'calendar_month', label: t('pots.new.byDate') },
+                  { id: 'steady', icon: 'autorenew', label: t('pots.new.eachPayday') },
+                ]}
+                selected={draft.mode}
+                onSelect={(id) => jar.setFill({ mode: id === 'date' ? 'date' : 'steady' })}
+              />
+              <View
                 style={{
-                  flexDirection: 'row',
-                  alignItems: 'baseline',
-                  justifyContent: 'space-between',
+                  borderRadius: 22,
+                  backgroundColor: palette.cell,
+                  paddingVertical: 14,
+                  paddingHorizontal: CARD_INSET,
+                  gap: 12,
                 }}
               >
-                <RollingText
-                  text={short(shown.each)}
-                  style={{ ...display(34, 500), color: palette.ink }}
-                  lineHeight={36}
-                />
-                <Text style={{ ...body(14, 600), color: palette.inkSoft }}>
-                  {t('pots.new.each')}
-                </Text>
-              </PressScale>
+                {draft.mode === 'date' ? (
+                  <ChoiceChips
+                    key="months"
+                    chips={jar.months.map((m) => ({ id: m, label: format.chip(m) }))}
+                    selected={draft.month}
+                    onSelect={(month) => jar.setFill({ month })}
+                    inset={CARD_INSET}
+                  />
+                ) : (
+                  <ChoiceChips
+                    key="steady"
+                    chips={jar.choices.map((c) => ({ id: String(c), label: short(c) }))}
+                    selected={steadyIndex >= 0 ? String(draft.steady) : null}
+                    onSelect={(c) => jar.setFill({ steady: Number(c) })}
+                    inset={CARD_INSET}
+                  />
+                )}
+                <PressScale
+                  accessibilityRole="button"
+                  disabled={draft.mode === 'date'}
+                  onPress={() => {
+                    haptics.tap();
+                    setKeypad('steady');
+                  }}
+                  style={{ gap: 2, paddingTop: 4 }}
+                >
+                  {/* Its own line, as tall as the face draws it: a serif's figures are never cut. */}
+                  <RollingText
+                    text={short(shown.each)}
+                    style={amountStyle}
+                    lineHeight={faceLineHeight(amountStyle)}
+                  />
+                  <Text style={{ ...body(14, 600), color: palette.inkSoft }}>
+                    {t('pots.new.each')}
+                  </Text>
+                </PressScale>
+              </View>
+            </>
+          )}
+          {fy ? null : (
+            <View
+              style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 6 }}
+            >
+              <Symbol name="wb_twilight" size={19} color={palette.inkSoft} />
+              <Text style={{ ...body(14), flex: 1, color: palette.inkSoft }}>
+                {t('pots.new.eachDay')}
+              </Text>
+              <Text style={{ ...body(14), ...tabular, color: palette.inkSoft }}>
+                <Text style={{ opacity: 0.6 }}>{short(shown.before)} →</Text>{' '}
+                <Text style={{ ...body(14, 700), color: palette.ink }}>{short(shown.after)}</Text>
+              </Text>
             </View>
-          </>
-        )}
-        {fy ? null : (
-          <View
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 6 }}
-          >
-            <Symbol name="wb_twilight" size={19} color={palette.inkSoft} />
-            <Text style={{ ...body(14), flex: 1, color: palette.inkSoft }}>
-              {t('pots.new.eachDay')}
-            </Text>
-            <Text style={{ ...body(14), ...tabular, color: palette.inkSoft }}>
-              <Text style={{ opacity: 0.6 }}>{short(shown.before)} →</Text>{' '}
-              <Text style={{ ...body(14, 700), color: palette.ink }}>{short(shown.after)}</Text>
-            </Text>
-          </View>
-        )}
-        {editing && !fy ? (
-          <PressScale
-            accessibilityRole="button"
-            onPress={() => void remove()}
-            style={{ height: 44, alignItems: 'center', justifyContent: 'center' }}
-          >
-            <Text style={{ ...body(16, 600), color: palette.inkSoft }}>{t('pots.new.delete')}</Text>
-          </PressScale>
-        ) : null}
+          )}
+          {editing && !fy ? (
+            <PressScale
+              accessibilityRole="button"
+              onPress={() => void remove()}
+              style={{ height: 44, alignItems: 'center', justifyContent: 'center' }}
+            >
+              <Text style={{ ...body(16, 600), color: palette.inkSoft }}>
+                {t('pots.new.delete')}
+              </Text>
+            </PressScale>
+          ) : null}
+        </Animated.View>
       </ScrollView>
       <View style={{ paddingTop: 12, paddingHorizontal: 16, paddingBottom: 34 }}>
         <PressScale

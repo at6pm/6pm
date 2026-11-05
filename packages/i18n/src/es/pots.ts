@@ -55,6 +55,7 @@ export const esPots: { readonly [Key in keyof typeof enPots]: Entry } = {
   'pots.new.start': 'Empezar',
   'pots.new.save': 'Guardar',
   'pots.new.name': 'Ponle nombre',
+  'pots.new.look': 'Icono y color',
   'pots.new.targetTitle': 'Meta',
   'pots.new.amountTitle': 'Cada cobro',
   'pots.new.delete': 'Borrar bote',

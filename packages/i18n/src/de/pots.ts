@@ -55,6 +55,7 @@ export const dePots: { readonly [Key in keyof typeof enPots]: Entry } = {
   'pots.new.start': 'Starten',
   'pots.new.save': 'Sichern',
   'pots.new.name': 'Benennen',
+  'pots.new.look': 'Symbol und Farbe',
   'pots.new.targetTitle': 'Ziel',
   'pots.new.amountTitle': 'Pro Zahltag',
   'pots.new.delete': 'Sparglas löschen',

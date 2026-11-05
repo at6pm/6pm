@@ -55,6 +55,7 @@ export const frPots: { readonly [Key in keyof typeof enPots]: Entry } = {
   'pots.new.start': 'Commencer',
   'pots.new.save': 'Enregistrer',
   'pots.new.name': 'Donne-lui un nom',
+  'pots.new.look': 'Icône et couleur',
   'pots.new.targetTitle': 'Objectif',
   'pots.new.amountTitle': 'À chaque paie',
   'pots.new.delete': 'Supprimer le bocal',

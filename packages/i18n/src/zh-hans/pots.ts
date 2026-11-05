@@ -55,6 +55,7 @@ export const zhHansPots: { readonly [Key in keyof typeof enPots]: Entry } = {
   'pots.new.start': '开始',
   'pots.new.save': '保存',
   'pots.new.name': '取个名字',
+  'pots.new.look': '图标和颜色',
   'pots.new.targetTitle': '目标',
   'pots.new.amountTitle': '每个发薪日',
   'pots.new.delete': '删除存钱罐',

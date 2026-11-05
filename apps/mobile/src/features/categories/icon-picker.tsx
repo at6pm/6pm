@@ -153,10 +153,13 @@ export const IconPicker = memo(function IconPicker({
   icon,
   hue,
   onPick,
+  maxHeight = 292,
 }: {
   readonly icon: string;
   readonly hue: number;
   readonly onPick: (icon: SymbolName) => void;
+  /** The well's height before it scrolls. */
+  readonly maxHeight?: number;
 }) {
   const { t } = useI18n();
   const router = useRouter();
@@ -166,7 +169,7 @@ export const IconPicker = memo(function IconPicker({
   const offerMax = () => router.push({ pathname: '/max', params: { from: 'icons' } });
   return (
     <ScrollView
-      style={{ maxHeight: 292 }}
+      style={{ maxHeight }}
       contentContainerStyle={{ gap: 16, padding: 2 }}
       showsVerticalScrollIndicator={false}
       nestedScrollEnabled

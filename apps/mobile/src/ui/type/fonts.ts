@@ -215,6 +215,18 @@ export function leading(style: TextStyle, designed: number, oneLine = false): Te
     : { ...style, ...box, lineHeight, paddingTop: num(style.paddingTop) + lost };
 }
 
+/**
+ * The line a style's face draws at its size, in points: what iOS gives a line of it when no line
+ * height is set, taller for a script with marks above and below. A row that must hold one line of
+ * it (an odometer's digits) is this tall, so a tall serif's figures are never cut off.
+ */
+export function faceLineHeight(style: TextStyle): number {
+  const family = familyOf(style);
+  const faceEm =
+    family === undefined ? SYSTEM_LINE_HEIGHT : (FONT_LINE_HEIGHT[family] ?? SYSTEM_LINE_HEIGHT);
+  return Math.ceil((style.fontSize ?? 14) * Math.max(faceEm, scriptLineHeight));
+}
+
 /** A margin or padding the style sets in points, 0 when it sets none. */
 function num(value: TextStyle['marginTop']): number {
   return typeof value === 'number' ? value : 0;

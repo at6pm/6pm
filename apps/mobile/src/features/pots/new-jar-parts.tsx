@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { ScrollView, Text, View, type ScrollViewInstance } from 'react-native';
 import Animated, {
   Easing,
   FadeIn,
@@ -60,8 +60,10 @@ export function PresetTiles({
               onPick(p);
             }}
             style={{
-              width: 76,
-              height: 86,
+              minWidth: 76,
+              minHeight: 86,
+              paddingHorizontal: 8,
+              paddingVertical: 10,
               borderRadius: 20,
               backgroundColor: on ? palette.tabActive : TILE_REST,
               boxShadow: on ? `inset 0 0 0 1.5px ${palette.ink}` : undefined,
@@ -71,7 +73,7 @@ export function PresetTiles({
             }}
           >
             {isSymbolName(p.icon) ? <CategoryTile icon={p.icon} hue={p.hue} /> : null}
-            <Text numberOfLines={1} style={{ ...body(12, 650), color: palette.ink }}>
+            <Text style={{ ...body(12, 650), color: palette.ink, textAlign: 'center' }}>
               {nameOf(p)}
             </Text>
           </PressScale>
@@ -201,7 +203,9 @@ export function FillSegment({
           }}
           style={{
             flex: 1,
-            height: 40,
+            minHeight: 40,
+            paddingVertical: 6,
+            paddingHorizontal: 6,
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
@@ -209,7 +213,9 @@ export function FillSegment({
           }}
         >
           <Symbol name={o.icon} size={18} color={palette.ink} />
-          <Text numberOfLines={1} style={{ ...body(14.5, 650), color: palette.ink }}>
+          <Text
+            style={{ ...body(14.5, 650), color: palette.ink, flexShrink: 1, textAlign: 'center' }}
+          >
             {o.label}
           </Text>
         </PressScale>
@@ -218,29 +224,38 @@ export function FillSegment({
   );
 }
 
-/** A row of choice chips, four to a row's width; more scroll. */
+/**
+ * A row of choice chips that scrolls sideways from edge to edge of its card: each chip at least a
+ * quarter of the row and as wide as its words ("Tháng 12" in a wide serif, at the largest text
+ * size), so none is ever cut, and the chosen one is scrolled into view as the row first draws.
+ */
 export function ChoiceChips({
   chips,
   selected,
   onSelect,
+  inset,
 }: {
   readonly chips: readonly { readonly id: string; readonly label: string }[];
   readonly selected: string | null;
   readonly onSelect: (id: string) => void;
+  /** The card's padding at the sides: the row reaches past it, its first chip starts on it. */
+  readonly inset: number;
 }) {
   const { palette } = useTheme();
   const [width, setWidth] = useState(0);
-  const chip = width > 0 ? (width - 18) / 4 : 0;
+  const scroll = useRef<ScrollViewInstance>(null);
+  const shown = useRef(false);
+  const least = width > 0 ? (width - 18) / 4 : 0;
   return (
     <View onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
       <ScrollView
+        ref={scroll}
         horizontal
         showsHorizontalScrollIndicator={false}
-        snapToInterval={chip + 6}
-        decelerationRate="fast"
-        contentContainerStyle={{ gap: 6 }}
+        style={{ marginHorizontal: -inset }}
+        contentContainerStyle={{ gap: 6, paddingHorizontal: inset }}
       >
-        {chip > 0
+        {least > 0
           ? chips.map((c) => {
               const on = c.id === selected;
               return (
@@ -252,9 +267,18 @@ export function ChoiceChips({
                     haptics.tick();
                     onSelect(c.id);
                   }}
+                  onLayout={(e) => {
+                    if (!on || shown.current) return;
+                    shown.current = true;
+                    const { x, width: w } = e.nativeEvent.layout;
+                    if (x + w > width)
+                      scroll.current?.scrollTo({ x: x + w - width, animated: false });
+                  }}
                   style={{
-                    width: chip,
-                    height: 40,
+                    minWidth: least,
+                    minHeight: 40,
+                    paddingHorizontal: 12,
+                    paddingVertical: 8,
                     borderRadius: 12,
                     backgroundColor: on ? palette.btnBg : palette.chipBg,
                     alignItems: 'center',

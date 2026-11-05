@@ -53,6 +53,7 @@ export const enPots = {
   'pots.new.start': 'Start',
   'pots.new.save': 'Save',
   'pots.new.name': 'Name it',
+  'pots.new.look': 'Icon and colour',
   'pots.new.targetTitle': 'Target',
   'pots.new.amountTitle': 'Each payday',
   'pots.new.delete': 'Delete jar',

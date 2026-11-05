@@ -55,6 +55,7 @@ export const idPots: { readonly [Key in keyof typeof enPots]: Entry } = {
   'pots.new.start': 'Mulai',
   'pots.new.save': 'Simpan',
   'pots.new.name': 'Beri nama',
+  'pots.new.look': 'Ikon dan warna',
   'pots.new.targetTitle': 'Sasaran',
   'pots.new.amountTitle': 'Tiap gajian',
   'pots.new.delete': 'Hapus celengan',

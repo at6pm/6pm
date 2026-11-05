@@ -55,6 +55,7 @@ export const jaPots: { readonly [Key in keyof typeof enPots]: Entry } = {
   'pots.new.start': '始める',
   'pots.new.save': '保存',
   'pots.new.name': '名前をつける',
+  'pots.new.look': 'アイコンと色',
   'pots.new.targetTitle': '目標',
   'pots.new.amountTitle': '給料日ごと',
   'pots.new.delete': '貯金びんを削除',

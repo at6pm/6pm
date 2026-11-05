@@ -55,6 +55,7 @@ export const thPots: { readonly [Key in keyof typeof enPots]: Entry } = {
   'pots.new.start': 'เริ่ม',
   'pots.new.save': 'บันทึก',
   'pots.new.name': 'ตั้งชื่อ',
+  'pots.new.look': 'ไอคอนและสี',
   'pots.new.targetTitle': 'เป้า',
   'pots.new.amountTitle': 'ทุกเงินเดือนออก',
   'pots.new.delete': 'ลบกระปุก',

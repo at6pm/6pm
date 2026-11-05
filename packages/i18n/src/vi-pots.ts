@@ -55,6 +55,7 @@ export const viPots: { readonly [Key in keyof typeof enPots]: Entry } = {
   'pots.new.start': 'Bắt đầu',
   'pots.new.save': 'Lưu',
   'pots.new.name': 'Đặt tên',
+  'pots.new.look': 'Biểu tượng và màu',
   'pots.new.targetTitle': 'Mục tiêu',
   'pots.new.amountTitle': 'Mỗi kỳ lương',
   'pots.new.delete': 'Xoá lọ',

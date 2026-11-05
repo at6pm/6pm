@@ -55,6 +55,7 @@ export const koPots: { readonly [Key in keyof typeof enPots]: Entry } = {
   'pots.new.start': '시작',
   'pots.new.save': '저장',
   'pots.new.name': '이름 짓기',
+  'pots.new.look': '아이콘과 색',
   'pots.new.targetTitle': '목표',
   'pots.new.amountTitle': '월급날마다',
   'pots.new.delete': '저금통 삭제',
