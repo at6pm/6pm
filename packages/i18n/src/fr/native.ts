@@ -4,7 +4,7 @@ import type { enNative } from '../en-native';
 // Permission prompts read like iOS's own French strings; Wallet is « Cartes » on a French iPhone.
 export const frNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.permission.camera':
-    '6pm utilise l’appareil photo pour lire les codes QR et les tickets que tu scannes. Les photos restent sur ton iPhone, sauf si un ticket doit être lu de plus près.',
+    '6pm utilise l’appareil photo pour lire les codes QR et les tickets que tu scannes, et pour prendre la photo que tu gardes avec une dépense. Les photos restent sur ton iPhone, sauf un ticket à lire de plus près et ta sauvegarde chiffrée.',
   'native.permission.microphone':
     '6pm t’écoute pendant que tu dictes une dépense. Ta voix est envoyée à un service de transcription pour être écrite, ou reste sur cet iPhone en mode sur l’appareil.',
   'native.permission.speech': '6pm transforme ce que tu dis en un montant et un nom.',

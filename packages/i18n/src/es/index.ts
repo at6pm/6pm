@@ -40,6 +40,8 @@ import { esYearBook } from './year-book';
 import { esFirstCatch } from './first-catch';
 import { esPhoto } from './photo';
 import { esImport } from './import';
+import { esOwed } from './owed';
+import { esSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { esAndroid } from './android';
@@ -87,7 +89,9 @@ export const es: Catalogue = {
   ...esFirstCatch,
   ...esPhoto,
   ...esImport,
+  ...esOwed,
   ...importSketchMomo,
+  ...esSeason,
 };
 
 /**

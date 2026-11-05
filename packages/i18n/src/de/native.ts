@@ -4,7 +4,7 @@ import type { enNative } from '../en-native';
 // Permission prompts follow iOS's German register; App Shortcut phrases are spoken commands.
 export const deNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.permission.camera':
-    '6pm verwendet die Kamera, um die QR-Codes und Belege zu lesen, die du scannst. Fotos bleiben auf deinem iPhone, außer ein Beleg muss genauer gelesen werden.',
+    '6pm verwendet die Kamera, um die QR-Codes und Belege zu lesen, die du scannst, und um das Foto aufzunehmen, das du zu einer Ausgabe behältst. Fotos bleiben auf deinem iPhone, bis auf einen Beleg, der genauer gelesen werden muss, und dein verschlüsseltes Backup.',
   'native.permission.microphone':
     '6pm hört zu, während du eine Ausgabe sagst. Deine Stimme wird zum Verschriftlichen an einen Spracherkennungsdienst gesendet oder bleibt im Modus „Auf dem Gerät“ auf diesem iPhone.',
   'native.permission.speech': '6pm macht aus dem, was du sagst, einen Betrag und einen Namen.',

@@ -3,7 +3,7 @@ import type { enNative } from '../en-native';
 
 export const idNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.permission.camera':
-    '6pm menggunakan kamera untuk membaca kode QR dan struk yang kamu pindai. Foto tetap di iPhone-mu kecuali ada struk yang perlu dibaca lebih teliti.',
+    '6pm menggunakan kamera untuk membaca kode QR dan struk yang kamu pindai, dan untuk memotret foto yang kamu simpan bersama pengeluaran. Foto tetap di iPhone-mu, kecuali struk yang perlu dibaca lebih teliti dan cadangan terenkripsimu.',
   'native.permission.microphone':
     '6pm mendengarkan saat kamu mengucapkan pengeluaran. Suaramu dikirim ke layanan ucapan-ke-teks untuk ditulis, atau tetap di iPhone ini dalam mode di perangkat.',
   'native.permission.speech': '6pm mengubah ucapanmu menjadi jumlah dan nama.',

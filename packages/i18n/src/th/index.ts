@@ -40,6 +40,8 @@ import { thYearBook } from './year-book';
 import { thFirstCatch } from './first-catch';
 import { thPhoto } from './photo';
 import { thImport } from './import';
+import { thOwed } from './owed';
+import { thSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { thAndroid } from './android';
@@ -87,7 +89,9 @@ export const th: Catalogue = {
   ...thFirstCatch,
   ...thPhoto,
   ...thImport,
+  ...thOwed,
   ...importSketchMomo,
+  ...thSeason,
 };
 
 /**

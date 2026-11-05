@@ -5,7 +5,7 @@ import type { enNative } from '../en-native';
 // phrases are what a Spanish speaker says to Siri: "Apunta un gasto en 6pm".
 export const esNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.permission.camera':
-    '6pm usa la cámara para leer los códigos QR y los tickets que escaneas. Las fotos se quedan en tu iPhone, salvo que un ticket necesite una lectura más detallada.',
+    '6pm usa la cámara para leer los códigos QR y los tickets que escaneas, y para hacer la foto que guardas con un gasto. Las fotos se quedan en tu iPhone, salvo un ticket que necesite una lectura más detallada y tu copia cifrada.',
   'native.permission.microphone':
     '6pm te escucha mientras dices un gasto. Tu voz va a un servicio de voz a texto para transcribirla, o se queda en este iPhone en el modo en el dispositivo.',
   'native.permission.speech': '6pm convierte lo que dices en un importe y un nombre.',

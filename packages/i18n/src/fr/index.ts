@@ -40,6 +40,8 @@ import { frYearBook } from './year-book';
 import { frFirstCatch } from './first-catch';
 import { frPhoto } from './photo';
 import { frImport } from './import';
+import { frOwed } from './owed';
+import { frSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { frAndroid } from './android';
@@ -87,7 +89,9 @@ export const fr: Catalogue = {
   ...frFirstCatch,
   ...frPhoto,
   ...frImport,
+  ...frOwed,
   ...importSketchMomo,
+  ...frSeason,
 };
 
 /**

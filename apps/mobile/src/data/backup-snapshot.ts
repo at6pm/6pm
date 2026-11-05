@@ -22,6 +22,7 @@ import type { SqlDatabase } from './table';
 const CLEARED_IN_ORDER = [
   'spend_sightings',
   'pot_moves',
+  'owed',
   'spends',
   'imports',
   'merchant_rules',
@@ -147,8 +148,8 @@ export async function buildSnapshot(
     cycle: string;
     at: string;
   }>('SELECT id, pot_id, amount, kind, cycle, at FROM pot_moves ORDER BY id', []);
-  const [categories, bills, pots, closedDays, settings, togetherMoves, imports] = await Promise.all(
-    [
+  const [categories, bills, pots, closedDays, settings, togetherMoves, imports, owed] =
+    await Promise.all([
       tables.categories.all(),
       tables.bills.all(),
       tables.pots.all(),
@@ -156,8 +157,8 @@ export async function buildSnapshot(
       readSettings(db),
       readTogetherMoves(db),
       tables.imports.all(),
-    ],
-  );
+      tables.owed.all(),
+    ]);
   const spendIds = new Set(spends.map((spend) => spend.id));
   const potIds = new Set(pots.map((pot) => pot.id));
   const snapshot: BackupSnapshot = {
@@ -190,6 +191,7 @@ export async function buildSnapshot(
       })),
     togetherMoves,
     imports,
+    owed,
     closedDays,
   };
   if (!files) return snapshot;
@@ -310,6 +312,7 @@ export async function restoreSnapshot(
       );
     }
     for (const row of snapshot.imports ?? []) await tables.imports.put(row);
+    for (const row of snapshot.owed ?? []) await tables.owed.put(row);
     for (const row of snapshot.closedDays) await tables.closedDays.put(row);
   });
   // What the phone held before is gone with its spends.

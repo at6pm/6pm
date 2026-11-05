@@ -14,13 +14,14 @@ describe('splitting a receipt', () => {
     expect(offersSplit(500, USD)).toBe(false);
   });
 
-  it('rounds each đồng share up to a thousand, so the shares cover the bill', () => {
+  it('keeps what rounding the others to a thousand leaves, so the shares add up to the bill', () => {
     expect(splitShare(2_941_000, 4, VND)).toBe(736_000);
+    expect(splitShare(1_000_000, 7, VND)).toBe(148_000);
     expect(splitShare(2_941_000, 1, VND)).toBe(2_941_000);
     expect(splitShare(900_000, 3, VND)).toBe(300_000);
   });
 
-  it('rounds other shares up to the cent', () => {
+  it('keeps the cent left over in other currencies', () => {
     expect(splitShare(10_000, 3, USD)).toBe(3_334);
   });
 

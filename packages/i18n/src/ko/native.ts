@@ -5,7 +5,7 @@ import type { enNative } from '../en-native';
 // commands; 에 and 에서 after the app's name read the same whatever its last sound.
 export const koNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.permission.camera':
-    '6pm은 스캔하는 QR 코드와 영수증을 읽기 위해 카메라를 사용해요. 영수증을 더 자세히 봐야 할 때가 아니면 사진은 iPhone 밖으로 나가지 않아요.',
+    '6pm은 스캔하는 QR 코드와 영수증을 읽고, 지출에 끼워 둘 사진을 찍기 위해 카메라를 사용해요. 더 자세히 봐야 하는 영수증과 암호화된 백업을 빼면 사진은 iPhone 밖으로 나가지 않아요.',
   'native.permission.microphone':
     '6pm은 지출을 말로 입력하는 동안 음성을 들어요. 음성은 텍스트로 바꾸기 위해 음성 인식 서비스로 전송되며, 기기 내 모드에서는 이 iPhone에만 남아요.',
   'native.permission.speech': '6pm은 말한 내용을 금액과 이름으로 바꿔요.',

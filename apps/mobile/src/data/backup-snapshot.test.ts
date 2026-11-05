@@ -225,6 +225,33 @@ describe('the snapshot of the phone', () => {
     expect((await t.pots.get('pot-1'))?.monthly).toBeNull();
   });
 
+  it('carries the Tết jar and lì xì envelopes, and restores a format 7 snapshot without them', async () => {
+    const source = openMemoryDb();
+    await seedMoney(source);
+    await source.runAsync('UPDATE pots SET season = ? WHERE id = ?', ['newYear', 'pot-1']);
+    const [spend] = await source.getAllAsync<{ id: string }>('SELECT id FROM spends LIMIT 1', []);
+    await source.runAsync('UPDATE spends SET envelopes = ? WHERE id = ?', [5, spend?.id ?? '']);
+    const snapshot = await buildSnapshot(source, TAKEN);
+    const phone = openMemoryDb();
+    await restoreSnapshot(phone, snapshot);
+    const tables = openMoneyTables(phone);
+    expect((await tables.pots.get('pot-1'))?.season).toBe('newYear');
+    expect((await tables.spends.get(spend?.id ?? ''))?.envelopes).toBe(5);
+
+    const older = {
+      ...snapshot,
+      version: 7,
+      pots: snapshot.pots.map(({ season: _s, ...pot }) => pot),
+      spends: snapshot.spends.map(({ envelopes: _e, ...row }) => row),
+    };
+    expect(backupSnapshotSchema.safeParse(older).success).toBe(true);
+    const restored = openMemoryDb();
+    await restoreSnapshot(restored, older);
+    const t = openMoneyTables(restored);
+    expect((await t.pots.get('pot-1'))?.season).toBeNull();
+    expect((await t.spends.get(spend?.id ?? ''))?.envelopes).toBeNull();
+  });
+
   it('replaces what the phone held and leaves the settings that are its own', async () => {
     const source = openMemoryDb();
     await seedMoney(source);
@@ -388,23 +415,26 @@ describe("the spends' photos in the snapshot", () => {
     expect(await buildSnapshot(fresh, TAKEN, folder)).toEqual(snapshot);
   });
 
-  it('restores a format 7 backup, from before photos, on a phone that had some', async () => {
-    const { db, folder } = await phoneWithPhoto();
-    const current = await buildSnapshot(db, TAKEN);
-    const older = backupSnapshotSchema.parse({
-      ...current,
-      version: 7,
-      spends: current.spends.map(({ photo: _photo, ...row }) => row),
-    });
-    expect(older.photos).toBeUndefined();
+  it.each([7, 8, 9])(
+    'restores a format %i backup, from before photos, on a phone that had some',
+    async (version) => {
+      const { db, folder } = await phoneWithPhoto();
+      const current = await buildSnapshot(db, TAKEN);
+      const older = backupSnapshotSchema.parse({
+        ...current,
+        version,
+        spends: current.spends.map(({ photo: _photo, ...row }) => row),
+      });
+      expect(older.photos).toBeUndefined();
 
-    await restoreSnapshot(db, older, folder);
+      await restoreSnapshot(db, older, folder);
 
-    expect(await photoOf(db, 'spend-1')).toBeNull();
-    expect(folder.names()).toEqual([]);
-    const back = await buildSnapshot(db, TAKEN);
-    expect(back.spends.map((s) => s.id)).toEqual(older.spends.map((s) => s.id));
-  });
+      expect(await photoOf(db, 'spend-1')).toBeNull();
+      expect(folder.names()).toEqual([]);
+      const back = await buildSnapshot(db, TAKEN);
+      expect(back.spends.map((s) => s.id)).toEqual(older.spends.map((s) => s.id));
+    },
+  );
 
   it('leaves out what does not fit, and that spend comes back without its photo', async () => {
     const { db, folder } = await phoneWithPhoto(BACKUP_MAX_SEALED_BYTES / 1000 / 2);

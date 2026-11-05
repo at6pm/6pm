@@ -38,12 +38,13 @@ EXTRA_PROTOTYPES = [
 ]
 # Icons the app always ships, whatever the prototypes name (the Edit pot keypad's cost line, the
 # money wheels' gesture hints, the bring-in's guide sketches, column roles and undo, and the
-# receipt photo's clip, picker and full view).
+# receipt photo's clip, picker and full view, and Who owes me's name chip, account sheet and QR).
 EXTRA_ICONS = [
     "calendar_month", "swipe_vertical", "touch_app",
     "folder_open", "redo", "calendar_today", "notes", "swap_vert", "grid_view", "table_view",
     "date_range", "upload_file", "visibility_off", "support_agent", "description", "donut_small",
     "attach_file", "photo_library", "swipe_down", "cached",
+    "person_add", "swap_horiz", "brightness_high",
 ]
 
 # Latin, Latin-1, Latin Extended-A/B (đ, ơ, ư), combining marks, Vietnamese (Latin Extended

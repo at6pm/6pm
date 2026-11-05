@@ -233,7 +233,52 @@ describe('backupSnapshotSchema', () => {
     expect(parsedV6.spends[0]?.fromPotAmount).toBe(6_000_000);
   });
 
-  it("carries spends' photos in format 8, and reads a format 7 snapshot that has none", () => {
+  it('round-trips the Tết jar and lì xì envelopes, and reads a version 7 snapshot without them', () => {
+    const pot = {
+      id: 'tet',
+      kind: 'occasion',
+      name: 'Tết',
+      icon: 'local_florist',
+      hue: 20,
+      goal: 7_000_000,
+      neededBy: '2027-02',
+      share: null,
+      paused: false,
+      createdAt: '2026-12-01T00:00:00.000Z',
+      archivedAt: null,
+    };
+    const spend = {
+      id: 'lixi',
+      day: '2027-02-06',
+      at: '2027-02-06T03:00:00.000Z',
+      amount: 1_000_000,
+      categoryId: 'lixi',
+      merchant: 'Lì xì',
+      note: null,
+      source: 'voice',
+      status: 'kept',
+      previousStatus: null,
+      wallet: null,
+      forWork: false,
+      detail: null,
+      foreignAmount: null,
+      createdAt: '2027-02-06T03:00:00.000Z',
+      updatedAt: '2027-02-06T03:00:00.000Z',
+    };
+    const v7 = backupSnapshotSchema.parse({ ...empty, version: 7, pots: [pot], spends: [spend] });
+    expect(v7.pots[0]).not.toHaveProperty('season');
+    expect(v7.spends[0]).not.toHaveProperty('envelopes');
+    const v8 = backupSnapshotSchema.parse({
+      ...empty,
+      version: 8,
+      pots: [{ ...pot, season: 'newYear' }],
+      spends: [{ ...spend, envelopes: 5, fromPot: 'tet' }],
+    });
+    expect(v8.pots[0]?.season).toBe('newYear');
+    expect(v8.spends[0]?.envelopes).toBe(5);
+  });
+
+  it("carries spends' photos in format 10, and reads formats 7, 8 and 9 that have none", () => {
     const spend = {
       id: 'spend-1',
       day: '2026-10-05',
@@ -252,18 +297,21 @@ describe('backupSnapshotSchema', () => {
       createdAt: '2026-10-05T03:00:00.000Z',
       updatedAt: '2026-10-05T03:00:00.000Z',
     };
-    const v7 = backupSnapshotSchema.parse({ ...empty, version: 7, spends: [spend] });
-    expect(v7.photos).toBeUndefined();
-    expect(v7.spends[0]).not.toHaveProperty('photo');
+    for (const version of [7, 8, 9]) {
+      const older = backupSnapshotSchema.parse({ ...empty, version, spends: [spend] });
+      expect(older.photos).toBeUndefined();
+      expect(older.spends[0]).not.toHaveProperty('photo');
+    }
 
     const photo = { name: 'spend-1-mk2.jpg', jpeg: sealed(3_000) };
-    const v8 = backupSnapshotSchema.parse({
+    const v10 = backupSnapshotSchema.parse({
       ...empty,
       spends: [{ ...spend, photo: photo.name }],
       photos: [photo],
     });
-    expect(v8.spends[0]?.photo).toBe('spend-1-mk2.jpg');
-    expect(v8.photos?.[0]?.name).toBe('spend-1-mk2.jpg');
+    expect(v10.version).toBe(10);
+    expect(v10.spends[0]?.photo).toBe('spend-1-mk2.jpg');
+    expect(v10.photos?.[0]?.name).toBe('spend-1-mk2.jpg');
 
     for (const name of ['../spend-1.jpg', 'spend-1.png', 'a/b.jpg', '']) {
       expect(

@@ -7,6 +7,10 @@ import {
   designAmount,
   armedJars,
   jarQuestionsFor,
+  moneyDayOf,
+  newYearArmedJar,
+  type BonusJar,
+  type NewYearWindow,
   FUTURE_YOU,
   moneyInAsk,
   readyJarFor,
@@ -20,6 +24,7 @@ import {
   type Currency,
   type GivableSpend,
   type MoneyInAsk,
+  type OwedLine,
   type PayCycle,
   type PotRow,
   REPAYMENT,
@@ -32,6 +37,7 @@ import type { MoneyInPlace } from '../../data/money-in-actions';
 
 import { useMoney, useMoneyActions } from '../../data/money-provider';
 import { findSpend } from '../../data/money-store';
+import { openOwedOf, owedLineOf } from '../../data/owed-actions';
 import { homeCurrencyOf } from '../../money/use-money-format';
 import { useI18n } from '../../i18n/i18n';
 import { haptics } from '../../ui/haptics';
@@ -42,6 +48,7 @@ import type { CloseCardContent } from './close-card';
 import { clearClose, parkClose, parkedClose } from './close-session';
 import type { CashChip } from './close-steps';
 import { useCloseMoney } from './use-close-money';
+import { useNewYear } from '../pots/use-new-year';
 
 const UNDO_MS = 4500;
 const SORTED_MS = 1700;
@@ -80,8 +87,13 @@ function startOf(
     readonly travelling: boolean;
     /** The ready moments already shown on this phone. */
     readonly readyShown: ReadonlySet<string>;
-    /** The jars the person armed for "From your {jar}?" (`armedJars`). */
+    /** The jars armed for "From your {jar}?" (`armedJars`, and the season's in its window). */
     readonly armed: ReadonlySet<string>;
+    /** Who owes the user what, still open: a payback may answer their lines. */
+    readonly owed: readonly OwedLine[];
+    /** The Lunar New Year season and its jar, for the bonus question; null for none. */
+    readonly season: NewYearWindow | null;
+    readonly seasonJar: BonusJar | null;
   },
 ): Start {
   const parked = parkedClose(day);
@@ -100,11 +112,14 @@ function startOf(
   const asks = new Map(
     billPaymentAsks(spending, bills, cycle).map((ask) => [ask.spendId, ask.billId ?? REPAYMENT]),
   );
-  // Each spend is given back once: a second refund of the same order is an ordinary card.
+  // Each spend is given back once: a second refund of the same order is an ordinary card. Each
+  // owed line is paid once too, though one dinner's lines may each be paid back tonight.
   const taken = new Set<string>();
+  const paid = new Set<string>();
   const moneyAsks: Record<string, MoneyInAsk> = {};
   for (const s of queue.filter(comesIn)) {
     const givable = money.givable.filter((g) => !taken.has(g.id));
+    const owed = money.owed.filter((line) => !paid.has(line.id));
     const ask = moneyInAsk(
       {
         day: s.day,
@@ -114,10 +129,17 @@ function startOf(
         memo: s.memo,
         hint: s.moneyIn === 'refund' ? 'refund' : null,
       },
-      { income: money.income, cycle, spends: givable },
+      {
+        income: money.income,
+        cycle,
+        spends: givable,
+        owed,
+        season: { window: money.season, jar: money.seasonJar },
+      },
     );
     if (ask === null) continue;
-    if (ask.kind !== 'pay') taken.add(ask.spendId);
+    if (ask.kind === 'payback' && ask.owed) for (const id of ask.owed) paid.add(id);
+    else if (ask.kind === 'refund' || ask.kind === 'payback') taken.add(ask.spendId);
     moneyAsks[s.id] = ask;
   }
   // "From your {jar} jar?": only a dated jar that is due, once a night, its largest spend (M13).
@@ -125,7 +147,7 @@ function startOf(
     queue.filter((s) => !comesIn(s)),
     money.jars,
     money.saved,
-    { travelling: money.travelling, armed: money.armed },
+    { travelling: money.travelling, armed: money.armed, season: money.season },
   );
   return {
     queue,
@@ -180,6 +202,16 @@ export function useClose(
 
   // Fixed when the close opens; its order never changes underneath the user.
   const home = homeCurrencyOf(snap.plan);
+  const season = useNewYear();
+  const seasonWindow = season.window;
+  const seasonArmed = newYearArmedJar({
+    pots: snap.pots,
+    day,
+    window: seasonWindow,
+    declinedOn: Object.fromEntries(
+      Object.entries(jarAsks.declined).map(([jar, at]) => [jar, moneyDayOf(new Date(at))]),
+    ),
+  });
   const [start] = useState(() =>
     startOf([...snap.cycleSpends, ...snap.waitingBefore], day, home, snap.bills, snap.cycle, {
       income: snap.plan?.income ?? 0,
@@ -188,11 +220,25 @@ export function useClose(
       saved: snap.potSaved,
       travelling,
       readyShown,
-      armed: armedJars({
-        taken: jarAsks.taken,
-        spends: [...snap.cycleSpends, ...snap.earlierJarSpends, ...snap.waitingBefore],
-        declined: jarAsks.declined,
-      }),
+      armed: new Set([
+        ...armedJars({
+          taken: jarAsks.taken,
+          spends: [...snap.cycleSpends, ...snap.earlierJarSpends, ...snap.waitingBefore],
+          declined: jarAsks.declined,
+        }),
+        // In its season the Tết jar arms itself, until a No this season (M13).
+        ...(seasonArmed === null ? [] : [seasonArmed.id]),
+      ]),
+      season: seasonWindow,
+      seasonJar:
+        season.jar === null
+          ? null
+          : {
+              id: season.jar.id,
+              goal: season.jar.goal,
+              held: snap.potSaved[season.jar.id] ?? 0,
+            },
+      owed: openOwedOf(snap).map(owedLineOf),
     }),
   );
   const { queue, moneyAsks } = start;

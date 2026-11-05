@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import { Image, Text, View } from 'react-native';
 import Animated, {
   Easing,
@@ -10,16 +10,67 @@ import Animated, {
 
 import { curves, durations, photoInk } from '@6pm/theme';
 
+import { keepPhotoAt } from '../../data/device-photo-files';
+import { useMoneyActions } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
 import { haptics } from '../../ui/haptics';
 import { Symbol } from '../../ui/icons/symbol';
 import { PhotoClip } from '../../ui/photo/photo-clip';
 import { ActionMenu } from '../../ui/primitives/action-menu';
+import { useToast } from '../../ui/toast/toast-host';
 import { mono } from '../../ui/type/fonts';
-import { photoActions } from '../details/photo-sources';
+import {
+  CameraOff,
+  dropWaitingPhoto,
+  photoActions,
+  photoInto,
+  waitingPhotoUri,
+} from '../details/photo-sources';
 
 /** How much of the ticket's right side the clip and its photo take: the amount keeps clear. */
 export const QUICK_PHOTO_ROOM = 86;
+
+/**
+ * The photo clipped on before its spend exists. It waits in the caches; Keep it hands it to the
+ * spend (`keepWith`), and Quick add closed without keeping lets it go.
+ */
+export function useWaitingPhoto(saving: RefObject<boolean>) {
+  const { t } = useI18n();
+  const toast = useToast();
+  const actions = useMoneyActions();
+  const [photo, setPhoto] = useState<string | null>(null);
+  const waiting = useRef<string | null>(null);
+  waiting.current = photo;
+  useEffect(
+    () => () => {
+      if (waiting.current !== null && !saving.current) dropWaitingPhoto(waiting.current);
+    },
+    [saving],
+  );
+  const failed = (error: unknown) =>
+    toast(t(error instanceof CameraOff ? 'photo.cameraOff' : 'photo.failed'));
+  return {
+    photo,
+    pick: (key: string) => {
+      const uri = waitingPhotoUri();
+      photoInto(key === 'camera' ? 'camera' : 'photos', uri)
+        .then((got) => {
+          if (!got) return;
+          if (waiting.current !== null) dropWaitingPhoto(waiting.current);
+          setPhoto(uri);
+        })
+        .catch(failed);
+    },
+    keepWith: (spendId: string) => {
+      const from = waiting.current;
+      if (from === null) return;
+      void actions
+        .attachPhoto(spendId, (to) => keepPhotoAt(from, to).then(() => true))
+        .catch(failed)
+        .finally(() => dropWaitingPhoto(from));
+    },
+  };
+}
 
 const drop = {
   duration: durations.photoDrop,

@@ -4,7 +4,7 @@ import type { enNative } from '../en-native';
 // Permission prompts read like Thai iOS: "6pm ใช้…เพื่อ…". Apple's own names follow the Thai iPhone (รูปภาพ, กระเป๋าสตางค์).
 export const thNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.permission.camera':
-    '6pm ใช้กล้องเพื่ออ่านคิวอาร์โค้ดและใบเสร็จที่คุณสแกน รูปจะอยู่บน iPhone ของคุณ เว้นแต่ใบเสร็จนั้นต้องอ่านละเอียดขึ้น',
+    '6pm ใช้กล้องเพื่ออ่านคิวอาร์โค้ดและใบเสร็จที่คุณสแกน และเพื่อถ่ายรูปที่คุณแนบไว้กับรายจ่าย รูปจะอยู่บน iPhone ของคุณ ยกเว้นใบเสร็จที่ต้องอ่านละเอียดขึ้นและข้อมูลสำรองที่เข้ารหัสของคุณ',
   'native.permission.microphone':
     '6pm ฟังขณะที่คุณพูดรายจ่าย เสียงของคุณจะถูกส่งไปยังบริการแปลงเสียงเป็นข้อความ หรืออยู่บน iPhone เครื่องนี้เท่านั้นในโหมดบนอุปกรณ์',
   'native.permission.speech': '6pm แปลงสิ่งที่คุณพูดเป็นยอดเงินและชื่อรายการ',

@@ -40,6 +40,8 @@ import { koYearBook } from './year-book';
 import { koFirstCatch } from './first-catch';
 import { koPhoto } from './photo';
 import { koImport } from './import';
+import { koOwed } from './owed';
+import { koSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { koAndroid } from './android';
@@ -87,7 +89,9 @@ export const ko: Catalogue = {
   ...koFirstCatch,
   ...koPhoto,
   ...koImport,
+  ...koOwed,
   ...importSketchMomo,
+  ...koSeason,
 };
 
 /**

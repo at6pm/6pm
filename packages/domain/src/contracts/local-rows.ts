@@ -105,6 +105,11 @@ export const spendRowSchema = z.object({
    */
   importId: id.nullable().optional(),
   /**
+   * Red envelopes in one lì xì entry ("5 bao × 200k" is 5): the spend or money in is their total.
+   * Null or absent for everything else, and on rows and backups from before it was kept.
+   */
+  envelopes: z.number().int().positive().max(999).nullable().optional(),
+  /**
    * The photo kept with it (its file name in the app's photo folder): the receipt it was read from,
    * or a picture of what was bought. It stays on the phone. Absent on rows and backups from before
    * a spend could keep one.
@@ -167,6 +172,12 @@ export const potRowSchema = z.object({
    * 2.1 goal still filling from Future you's slice, or one filled only by hand).
    */
   monthly: vnd.nullable().optional(),
+  /**
+   * A season's jar: `newYear` is the Tết jar (Seollal's or the Spring Festival's for those who keep
+   * them). It is outside the free jars, and in the season's window it is asked about by itself.
+   * Null or absent for every other jar, and on rows and backups from before it was kept.
+   */
+  season: z.enum(['newYear']).nullable().optional(),
   paused: z.boolean(),
   createdAt: instant,
   archivedAt: instant.nullable(),
@@ -202,3 +213,31 @@ export const importRowSchema = z.object({
   answerBefore: vnd.nullable(),
 });
 export type ImportRecordRow = z.infer<typeof importRowSchema>;
+
+/** How an owed line was settled (see `OwedSettled`). */
+export const owedSettledSchema = z.enum(['payback', 'cash', 'covered']);
+
+/**
+ * A share of a split spend someone else owes: a person (a typed first name, or nobody named), the
+ * amount, and the spend it is a share of. Open until settled: by money in (`settledSpendId` is
+ * that money in), in cash (the payback kept that day), or covered by the user (the spend it became
+ * that day). Arrived with snapshot format 9.
+ */
+export const owedRowSchema = z.object({
+  id,
+  spendId: id,
+  name: z.string().min(1).nullable(),
+  amount: z.number().int().positive(),
+  /** The spend's day: a payback's reach is counted from it. */
+  day,
+  /** Its place in the split, after the user's own share. */
+  sort: z.number().int().nonnegative(),
+  createdAt: instant,
+  settledAt: instant.nullable(),
+  settledBy: owedSettledSchema.nullable(),
+  settledSpendId: id.nullable(),
+  /** When to remind the user to ask; set and read by reminders, null for none. */
+  remindAt: instant.nullable(),
+  updatedAt: instant,
+});
+export type OwedRow = z.infer<typeof owedRowSchema>;
