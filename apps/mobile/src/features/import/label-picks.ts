@@ -1,21 +1,16 @@
-import {
-  foldWords,
-  importTargetOf,
-  suggestCategoryIcon,
-  type CategoryRow,
-  type ImportTarget,
-} from '@6pm/domain';
+import { foldWords, type CategoryRow, type ImportTarget } from '@6pm/domain';
 import { t as translate, type Language } from '@6pm/i18n';
 
 import type { LabelPick } from '../../data/import-actions';
 import { DEFAULT_CATEGORIES } from '../../data/onboarding';
-import { ICON_PACKS } from '../categories/icon-packs';
+import { otherNotDailyOf, otherNotDailyRow } from '../../data/shared-categories';
 
 /**
  * Where each of their categories goes, as "Label the boxes" holds it: one of the person's own
  * categories (`cat:<id>`), a starter category or Bills the person does not have yet (`new:<target>`,
- * made when the lines are brought in), or Not daily (its own category, named as theirs is, that
- * never counts in a day).
+ * made when the lines are brought in), or Not daily: the one "Other · not daily" category every
+ * Not daily label shares, made the first time one needs it. A bring-in never makes a category
+ * per label.
  */
 export type Choice = `cat:${string}` | `new:${ImportTarget}` | 'notDaily';
 
@@ -32,7 +27,6 @@ const BILLS = { icon: 'receipt_long', hue: 80 } as const;
 const STARTERS = new Map<string, { icon: string; hue: number }>(
   DEFAULT_CATEGORIES.map(([id, icon, hue]) => [id, { icon, hue }]),
 );
-const FREE_ICONS = ICON_PACKS.filter((p) => p.free).flatMap((p) => p.icons);
 
 const folded = (name: string) => foldWords(name).trim();
 
@@ -53,20 +47,20 @@ export function categoryFor(
   return live.find((c) => c.id === target) ?? live.find((c) => names.has(folded(c.name)));
 }
 
-/** Where a target goes for this person. */
+/** Where a target goes for this person: Not daily is their "Other · not daily" once they have it. */
 export function choiceOf(target: ImportTarget, categories: readonly CategoryRow[]): Choice {
-  if (target === 'notDaily') return 'notDaily';
+  if (target === 'notDaily') {
+    const shared = otherNotDailyOf(categories);
+    return shared ? `cat:${shared.id}` : 'notDaily';
+  }
   const mine = categoryFor(target, categories);
   return mine ? `cat:${mine.id}` : `new:${target}`;
 }
 
-/** The choice 6pm's own words make for a label of theirs, or null when the person picks. */
-export function defaultChoice(label: string, categories: readonly CategoryRow[]): Choice | null {
-  const target = importTargetOf(label);
-  return target === null ? null : choiceOf(target, categories);
-}
-
-/** Every tile: the person's categories in their order, then the starters and Bills they lack, then Not daily. */
+/**
+ * Every tile: the person's categories in their order, then Bills if they lack it, then Not daily
+ * (unless their "Other · not daily" is already among their own).
+ */
 export function choiceTiles(categories: readonly CategoryRow[], language: Language): ChoiceTile[] {
   const live = categories.filter((c) => c.archivedAt === null).sort((a, b) => a.sort - b.sort);
   const tiles: ChoiceTile[] = live.map((c) => ({
@@ -83,6 +77,7 @@ export function choiceTiles(categories: readonly CategoryRow[], language: Langua
       ...BILLS,
     });
   }
+  if (otherNotDailyOf(categories)) return tiles;
   tiles.push({
     choice: 'notDaily',
     name: translate(language, 'import.cat.notDaily'),
@@ -126,7 +121,7 @@ function freeId(base: string, taken: Set<string>): string {
 
 /**
  * The choices as the bring-in writes them. Starters and Bills the person lacks are made once
- * each; every Not daily label becomes a category of its own, named as theirs is.
+ * each, and every Not daily label goes in one "Other · not daily", made once.
  */
 export function picksOf(
   choices: ReadonlyMap<string, Choice>,
@@ -141,32 +136,34 @@ export function picksOf(
       picks.set(label, { kind: 'category', id: choice.slice(4) });
       continue;
     }
-    if (choice === 'notDaily') {
-      picks.set(label, {
-        kind: 'new',
-        id: freeId(`imported-${folded(label).replace(/\s+/g, '-') || 'other'}`, taken),
-        name: label.slice(0, 40),
-        icon: suggestCategoryIcon(label, FREE_ICONS) ?? 'category',
-        hue: 0,
-        countsDaily: false,
-      });
-      continue;
-    }
     const existing = made.get(choice);
     if (existing) {
       picks.set(label, existing);
       continue;
     }
-    const tile = tileOf(choice, categories, language);
-    const target = choice.slice(4);
-    const pick: LabelPick = {
-      kind: 'new',
-      id: freeId(target, taken),
-      name: tile.name,
-      icon: tile.icon,
-      hue: tile.hue ?? 80,
-      countsDaily: target !== 'bills',
-    };
+    let pick: LabelPick;
+    if (choice === 'notDaily') {
+      const row = otherNotDailyRow(language, 0);
+      pick = {
+        kind: 'new',
+        id: row.id,
+        name: row.name,
+        icon: row.icon,
+        hue: row.hue,
+        countsDaily: false,
+      };
+    } else {
+      const tile = tileOf(choice, categories, language);
+      const target = choice.slice(4);
+      pick = {
+        kind: 'new',
+        id: freeId(target, taken),
+        name: tile.name,
+        icon: tile.icon,
+        hue: tile.hue ?? 80,
+        countsDaily: target !== 'bills',
+      };
+    }
     made.set(choice, pick);
     picks.set(label, pick);
   }

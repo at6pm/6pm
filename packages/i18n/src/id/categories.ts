@@ -40,4 +40,10 @@ export const idCategories: { readonly [Key in keyof typeof enCategories]: Entry 
   'categories.pack.out': 'Jalan-jalan',
   'categories.pack.people': 'Orang & hewan',
   'categories.pack.money': 'Uang, hadiah & Tết',
+  'categories.other': 'Lainnya',
+  'categories.delete': 'Hapus',
+  'categories.moved': { other: '{count} dipindah ke {name}' },
+  'categories.moveUp': 'Naikkan',
+  'categories.moveDown': 'Turunkan',
+  'categories.dragHint': 'Tahan dan seret untuk mengurutkan',
 };

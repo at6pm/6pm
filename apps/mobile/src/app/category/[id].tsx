@@ -1,9 +1,10 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 
-import { fallbackFor, useCategoryActions, type CategoryInput } from '../../data/category-actions';
+import { homeFor, useCategoryActions, type CategoryInput } from '../../data/category-actions';
 import { useMoney } from '../../data/money-provider';
 import { CategoryEditor } from '../../features/categories/category-editor';
+import { announceDeleted } from '../../features/categories/category-undo';
 import { useCompanionToast } from '../../features/companion/use-companion-toast';
 import { useI18n } from '../../i18n/i18n';
 import { haptics } from '../../ui/haptics';
@@ -17,14 +18,14 @@ const NEW_CATEGORY: CategoryInput = { name: '', icon: 'pets', hue: 200, countsDa
 export default function CategoryRoute() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const { categories } = useMoney();
   const actions = useCategoryActions();
   const say = useCompanionToast();
   // Read once: a deleted category leaves the snapshot while the sheet is still on its way out.
   const [shown] = useState(() => {
     const category = categories.find((c) => c.id === id);
-    const fallback = category ? fallbackFor(categories, category.id) : undefined;
+    const home = category ? homeFor(categories, category.id, language) : undefined;
     return {
       id: category?.id,
       initial: category
@@ -36,7 +37,7 @@ export default function CategoryRoute() {
           }
         : NEW_CATEGORY,
       title: category ? t('categories.edit.title') : t('categories.new'),
-      deleteLabel: fallback ? t('categories.edit.delete', { name: fallback.name }) : null,
+      deleteLabel: home ? t('categories.edit.delete', { name: home.to.name }) : null,
     };
   });
 
@@ -50,7 +51,9 @@ export default function CategoryRoute() {
   const remove = () => {
     if (!shown.id) return;
     haptics.tap();
-    void actions.deleteCategory(shown.id);
+    void actions.deleteCategory(shown.id, language).then((deleted) => {
+      if (deleted) announceDeleted(deleted);
+    });
   };
 
   return (

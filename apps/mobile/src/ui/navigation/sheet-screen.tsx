@@ -19,6 +19,7 @@ export function SheetScreen({
   children,
   footer,
   gap = 22,
+  scrollEnabled = true,
 }: {
   readonly title: string;
   /** Space between the body's sections (Settings spaces its cards wider). */
@@ -26,6 +27,8 @@ export function SheetScreen({
   readonly children?: ReactNode;
   /** Pinned under the scroll area (e.g. "Confirm all"). */
   readonly footer?: ReactNode;
+  /** Off while a row is dragged inside the body. */
+  readonly scrollEnabled?: boolean;
 }) {
   const { palette } = useTheme();
   const { t } = useI18n();
@@ -59,6 +62,7 @@ export function SheetScreen({
     <SheetFrame header={header}>
       <ScrollView
         style={{ flex: 1 }}
+        scrollEnabled={scrollEnabled}
         contentInsetAdjustmentBehavior="never"
         automaticallyAdjustKeyboardInsets
         keyboardDismissMode="interactive"

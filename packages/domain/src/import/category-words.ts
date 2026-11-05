@@ -1,4 +1,6 @@
+import { billWordAt } from '../capture/bill-topic';
 import { foldWords } from '../capture/fold-words';
+import { categoryHintOf } from '../capture/spoken-spend';
 
 /**
  * Their category names, and the shops in a MoMo history, mapped to 6pm's starter categories. The
@@ -232,6 +234,8 @@ const WORDS: readonly (readonly [ImportTarget, readonly string[]])[] = [
       'green sm',
       'xanh sm',
       'gojek',
+      'mai linh',
+      'vinasun',
       'be group',
       'bebike',
       'becar',
@@ -401,17 +405,109 @@ const WORDS: readonly (readonly [ImportTarget, readonly string[]])[] = [
   ],
 ];
 
+/** The first target a word or phrase in the folded text points to, on word boundaries only. */
+function wordTargetOf(folded: string): ImportTarget | null {
+  for (const [target, words] of WORDS) {
+    for (const word of words) if (folded.includes(` ${word} `)) return target;
+  }
+  return null;
+}
+
 /**
- * The 6pm category a name of theirs (or a shop in a MoMo history) goes in, or null when the person
- * has to pick. A name that says nothing ("Other", "Khác") is always theirs to pick.
+ * The 6pm category one of their category names goes in (Money Lover's, MISA's, a CSV's), or null
+ * when the person has to pick. A name that says nothing ("Other", "Khác") is always theirs to
+ * pick; Not daily comes only from a whole name ("Phí", "Đầu tư"), never from a word inside one.
  */
 export function importTargetOf(name: string): ImportTarget | null {
   const folded = foldWords(name);
   const whole = folded.trim();
   if (whole === '' || UNSAID.has(whole)) return null;
   for (const [target, names] of NAMES) if (names.includes(whole)) return target;
-  for (const [target, words] of WORDS) {
-    for (const word of words) if (folded.includes(` ${word} `)) return target;
+  return wordTargetOf(folded);
+}
+
+/** Family names most Vietnamese full names start with, folded. */
+const FAMILY_NAMES = new Set([
+  'nguyen',
+  'tran',
+  'le',
+  'pham',
+  'hoang',
+  'huynh',
+  'phan',
+  'vu',
+  'vo',
+  'dang',
+  'bui',
+  'do',
+  'ho',
+  'ngo',
+  'duong',
+  'ly',
+  'dinh',
+  'dao',
+  'doan',
+  'lam',
+  'mai',
+  'trinh',
+  'truong',
+  'luong',
+  'luu',
+  'ha',
+  'cao',
+  'ton',
+  'thai',
+  'quach',
+  'chau',
+  'ta',
+  'la',
+  'kieu',
+  'trieu',
+  'tang',
+]);
+
+/**
+ * Whether a payee reads as a person: a full name in capitals, as a wallet prints the account
+ * holder ("NGUYEN VAN AN"), two to five words of letters, the first a family name.
+ */
+export function looksLikePerson(payee: string): boolean {
+  const raw = payee.trim();
+  if (raw === '' || raw !== raw.toLocaleUpperCase('vi') || !/\p{L}/u.test(raw)) return false;
+  const words = foldWords(raw).trim().split(' ');
+  return (
+    words.length >= 2 &&
+    words.length <= 5 &&
+    words.every((w) => /^[a-z]+$/.test(w)) &&
+    FAMILY_NAMES.has(words[0] ?? '')
+  );
+}
+
+/** The wallet's own names, which say how it was paid, never what for ("Ví Trả Sau" is no phone bill). */
+const WALLET_WORDS = / (?:vi tra sau|vi momo|tui than tai|du no)(?= )/g;
+
+/**
+ * Where a payee in a wallet's history goes (MoMo's shops and people): a shop's or a bill's words
+ * ("GRAB", "Circle K", "Điện lực") to a starter category or Bills, as Quick add reads a merchant.
+ * Never Not daily, which only a category name of theirs can say, and never anything for a person
+ * or a transfer: those, and every shop 6pm's words cannot place, are the person's to pick.
+ */
+export function payeeTargetOf(payee: string): ImportTarget | null {
+  const whole = foldWords(payee).trim();
+  if (whole === '' || UNSAID.has(whole)) return null;
+  // A name in capitals is a person, unless it is a shop's whole name ("MAI LINH" is the taxi).
+  if (looksLikePerson(payee)) {
+    return WORDS.find(([, words]) => words.includes(whole))?.[0] ?? null;
   }
-  return null;
+  const folded = foldWords(payee).replace(WALLET_WORDS, '');
+  if (folded.trim() === '') return null;
+  const named = wordTargetOf(folded);
+  if (named !== null) return named;
+  const hint = categoryHintOf(folded);
+  if (hint === 'home' && billWordAt(folded) >= 0) return 'bills';
+  return hint;
+}
+
+/** The guess for a label, as the app that wrote it means it: their category, or a wallet's payee. */
+export function labelTargetOf(app: string, label: string): ImportTarget | null {
+  return app === 'momo' ? payeeTargetOf(label) : importTargetOf(label);
 }

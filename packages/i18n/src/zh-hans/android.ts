@@ -43,8 +43,8 @@ export const zhHansAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } 
   'look.noteStoreOff': 'Google Play 没有响应，暂时无法购买这个外观。',
   'max.cta.waiting': '正在等待 Google Play…',
   'max.terms.storeOff': '现在无法购买 Max：Google Play 没有响应。',
-  'max.sub.backup': '加密备份、完整历史、CSV 和 Sheets。',
-  'max.note.backup': '加密备份、CSV 和 Sheets',
+  'max.sub.backup': '加密备份和完整历史。',
+  'max.note.backup': '加密备份',
   'max.welcome.win.more': '罐子、旅行和年度纪念册',
 
   'privacy.ai.device.title': '只在这台手机上',

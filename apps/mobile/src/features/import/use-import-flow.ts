@@ -25,7 +25,7 @@ import { useI18n } from '../../i18n/i18n';
 import { deviceCurrencyCode } from '../../money/device-money';
 import { useApi } from '../api/native-api';
 import { askColumns, askLabels } from './ask-import-map';
-import { choiceOf, defaultChoice, picksOf, type Choice } from './label-picks';
+import { choiceOf, picksOf, type Choice } from './label-picks';
 import type { PickedFile } from './open-file';
 
 /**
@@ -67,6 +67,8 @@ export function useImportFlow() {
   const [summary, setSummary] = useState<ImportSummary | null>(null);
   const [app, setApp] = useState<ImportApp>('other');
   const [choices, setChoices] = useState<ReadonlyMap<string, Choice>>(new Map());
+  // Labels the person picked themselves; every other filled one is 6pm's suggestion.
+  const [chosen, setChosen] = useState<ReadonlySet<string>>(new Set());
   const [progress, setProgress] = useState<BringProgress>({
     state: 'idle',
     written: 0,
@@ -96,11 +98,11 @@ export function useImportFlow() {
       setSummary({ ...unpacked, alreadyIn: unpacked.alreadyIn + already });
       const categories = store.getSnapshot().categories;
       const picked = new Map<string, Choice>();
-      for (const { label } of unpacked.labels) {
-        const choice = defaultChoice(label, categories);
-        if (choice) picked.set(label, choice);
+      for (const { label, target } of unpacked.labels) {
+        if (target !== null) picked.set(label, choiceOf(target, categories));
       }
       setChoices(picked);
+      setChosen(new Set());
       setStep({ kind: 'box' });
       // A MoMo history's labels are shops and people: they never leave the phone.
       const unknown = unpacked.labels.filter((l) => !picked.has(l.label)).map((l) => l.label);
@@ -186,6 +188,7 @@ export function useImportFlow() {
 
   const choose = useCallback((label: string, choice: Choice) => {
     setChoices((now) => new Map(now).set(label, choice));
+    setChosen((now) => (now.has(label) ? now : new Set(now).add(label)));
   }, []);
 
   const start = useCallback(async () => {
@@ -212,6 +215,11 @@ export function useImportFlow() {
     }
   }, [app, choices, language, progress.state, store, summary]);
 
+  const suggested = useMemo(
+    () => new Set([...choices.keys()].filter((label) => !chosen.has(label))),
+    [choices, chosen],
+  );
+
   const lines = useMemo(() => {
     if (!sheet || !plan) return 0;
     return Math.max(0, sheet.rows.length - plan.header - 1);
@@ -228,6 +236,7 @@ export function useImportFlow() {
     summary,
     app,
     choices,
+    suggested,
     progress,
     openedMs,
     open,

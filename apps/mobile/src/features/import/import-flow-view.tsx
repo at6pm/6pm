@@ -152,6 +152,7 @@ export function ImportFlowView({
           <ImportLabels
             labels={flow.summary.labels}
             choices={flow.choices}
+            suggested={flow.suggested}
             categories={flow.categories}
             lines={flow.summary.rows.length}
             onChoose={flow.choose}

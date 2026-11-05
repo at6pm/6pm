@@ -92,7 +92,16 @@ function Breath({ index }: { readonly index: number }) {
   );
 }
 
-function Chip({ tile, index }: { readonly tile: ChoiceTile | null; readonly index: number }) {
+function Chip({
+  tile,
+  index,
+  suggested,
+}: {
+  readonly tile: ChoiceTile | null;
+  readonly index: number;
+  /** 6pm's guess, not yet the person's pick: drawn with a dashed edge until they confirm it. */
+  readonly suggested: boolean;
+}) {
   const { palette } = useTheme();
   const { t } = useI18n();
   if (tile === null) {
@@ -140,6 +149,9 @@ function Chip({ tile, index }: { readonly tile: ChoiceTile | null; readonly inde
         paddingLeft: 5,
         paddingRight: 8,
         transformOrigin: 'left',
+        borderWidth: 1.5,
+        borderStyle: suggested ? 'dashed' : 'solid',
+        borderColor: suggested ? palette.inkSoft : palette.chipBg,
       }}
     >
       <ChoiceGlyph tile={tile} size={24} radius={8} glyph={15} />
@@ -229,6 +241,7 @@ function Progress({ done, total }: { readonly done: number; readonly total: numb
 export function ImportLabels({
   labels,
   choices,
+  suggested,
   categories,
   lines,
   onChoose,
@@ -236,6 +249,8 @@ export function ImportLabels({
 }: {
   readonly labels: readonly ImportLabel[];
   readonly choices: ReadonlyMap<string, Choice>;
+  /** Filled in by 6pm's words, not yet picked by the person: shown as suggestions. */
+  readonly suggested: ReadonlySet<string>;
   readonly categories: readonly CategoryRow[];
   /** Everything that comes in, spending and money in. */
   readonly lines: number;
@@ -272,6 +287,7 @@ export function ImportLabels({
               const choice = choices.get(label.label) ?? null;
               const on = picking === label.label;
               const tile = choice ? tileOf(choice, categories, language) : null;
+              const guessed = choice !== null && suggested.has(label.label);
               return (
                 <PressScale
                   key={label.label}
@@ -279,7 +295,11 @@ export function ImportLabels({
                   accessibilityLabel={t('import.labels.row', {
                     name: label.label,
                     lines: t('import.box.count', { count: label.count, n: count(label.count) }),
-                    target: tile?.name ?? t('import.labels.pickOne'),
+                    target: tile
+                      ? guessed
+                        ? `${tile.name}, ${t('import.labels.suggested')}`
+                        : tile.name
+                      : t('import.labels.pickOne'),
                   })}
                   accessibilityState={{ expanded: on }}
                   scaleTo={0.99}
@@ -312,10 +332,11 @@ export function ImportLabels({
                       </Text>
                       <Text style={{ ...body(11.5), color: palette.inkSoft, opacity: 0.82 }}>
                         {t('import.box.count', { count: label.count, n: count(label.count) })}
+                        {guessed ? ` · ${t('import.labels.suggested')}` : ''}
                       </Text>
                     </View>
                     <Wire unknown={choice === null} />
-                    <Chip tile={tile} index={i} />
+                    <Chip tile={tile} index={i} suggested={guessed} />
                   </View>
                 </PressScale>
               );

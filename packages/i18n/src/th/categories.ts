@@ -39,4 +39,10 @@ export const thCategories: { readonly [Key in keyof typeof enCategories]: Entry 
   'categories.pack.out': 'ออกไปเที่ยว',
   'categories.pack.people': 'คนและสัตว์เลี้ยง',
   'categories.pack.money': 'เงิน ของขวัญ และเทศกาล',
+  'categories.other': 'อื่นๆ',
+  'categories.delete': 'ลบ',
+  'categories.moved': { other: 'ย้าย {count} รายการไปที่{name}แล้ว' },
+  'categories.moveUp': 'เลื่อนขึ้น',
+  'categories.moveDown': 'เลื่อนลง',
+  'categories.dragHint': 'กดค้างแล้วลากเพื่อจัดลำดับ',
 };

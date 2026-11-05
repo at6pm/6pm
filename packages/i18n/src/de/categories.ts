@@ -47,4 +47,13 @@ export const deCategories: { readonly [Key in keyof typeof enCategories]: Entry 
   'categories.pack.out': 'Ausgehen',
   'categories.pack.people': 'Menschen & Haustiere',
   'categories.pack.money': 'Geld, Geschenke & Tết',
+  'categories.other': 'Sonstiges',
+  'categories.delete': 'Löschen',
+  'categories.moved': {
+    one: '{count} nach {name} verschoben',
+    other: '{count} nach {name} verschoben',
+  },
+  'categories.moveUp': 'Nach oben',
+  'categories.moveDown': 'Nach unten',
+  'categories.dragHint': 'Halten und ziehen zum Sortieren',
 };

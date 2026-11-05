@@ -39,4 +39,10 @@ export const viCategories: { readonly [Key in keyof typeof enCategories]: Entry 
   'categories.pack.out': 'Đi chơi',
   'categories.pack.people': 'Gia đình & thú cưng',
   'categories.pack.money': 'Tiền, quà & Tết',
+  'categories.other': 'Khác',
+  'categories.delete': 'Xoá',
+  'categories.moved': { other: 'Đã chuyển {count} khoản sang {name}' },
+  'categories.moveUp': 'Lên trên',
+  'categories.moveDown': 'Xuống dưới',
+  'categories.dragHint': 'Giữ rồi kéo để đổi thứ tự',
 };

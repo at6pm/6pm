@@ -46,8 +46,8 @@ export const koAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'look.noteStoreOff': 'Google Play가 응답하지 않아서 지금은 이 룩을 살 수 없어요.',
   'max.cta.waiting': 'Google Play 응답 기다리는 중…',
   'max.terms.storeOff': '지금은 Max를 구매할 수 없어요: Google Play가 응답하지 않아요.',
-  'max.sub.backup': '암호화 백업, 전체 기록, CSV와 Sheets.',
-  'max.note.backup': '암호화 백업, CSV와 Sheets',
+  'max.sub.backup': '암호화 백업과 전체 기록.',
+  'max.note.backup': '암호화 백업',
   'max.welcome.win.more': '저금통, 여행, 이어북',
 
   'privacy.ai.device.title': '이 폰에서만',

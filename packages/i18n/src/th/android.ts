@@ -46,8 +46,8 @@ export const thAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'look.noteStoreOff': 'Google Play ไม่ตอบสนอง ตอนนี้เลยยังซื้อลุคนี้ไม่ได้',
   'max.cta.waiting': 'กำลังรอ Google Play…',
   'max.terms.storeOff': 'ตอนนี้ยังซื้อ Max ไม่ได้: Google Play ไม่ตอบสนอง',
-  'max.sub.backup': 'สำรองข้อมูลแบบเข้ารหัส ประวัติทั้งหมด CSV และ Sheets',
-  'max.note.backup': 'สำรองข้อมูลแบบเข้ารหัส CSV และ Sheets',
+  'max.sub.backup': 'สำรองข้อมูลแบบเข้ารหัส และประวัติทั้งหมด',
+  'max.note.backup': 'สำรองข้อมูลแบบเข้ารหัส',
   'max.welcome.win.more': 'โหล โหมดเดินทาง และสมุดประจำปี',
 
   'privacy.ai.device.title': 'บนโทรศัพท์เครื่องนี้เท่านั้น',

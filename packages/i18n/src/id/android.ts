@@ -52,8 +52,8 @@ export const idAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'look.noteStoreOff': 'Google Play tidak merespons, jadi tampilan ini belum bisa dibeli.',
   'max.cta.waiting': 'Menunggu Google Play…',
   'max.terms.storeOff': 'Max belum bisa dibeli sekarang: Google Play tidak merespons.',
-  'max.sub.backup': 'Cadangan terenkripsi, riwayat lengkap, CSV dan Sheets.',
-  'max.note.backup': 'Cadangan terenkripsi, CSV dan Sheets',
+  'max.sub.backup': 'Cadangan terenkripsi dan riwayat lengkap.',
+  'max.note.backup': 'Cadangan terenkripsi',
   'max.welcome.win.more': 'Toples, perjalanan, dan Buku tahunan',
 
   'privacy.ai.device.title': 'Hanya di ponsel ini',

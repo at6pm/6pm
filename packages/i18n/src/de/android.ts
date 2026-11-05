@@ -57,8 +57,8 @@ export const deAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
     'Google Play antwortet nicht, darum lässt sich dieser Look gerade nicht kaufen.',
   'max.cta.waiting': 'Warte auf Google Play …',
   'max.terms.storeOff': 'Max lässt sich gerade nicht kaufen: Google Play antwortet nicht.',
-  'max.sub.backup': 'Verschlüsseltes Backup, komplette Historie, CSV und Sheets.',
-  'max.note.backup': 'Verschlüsseltes Backup, CSV und Sheets',
+  'max.sub.backup': 'Verschlüsseltes Backup und komplette Historie.',
+  'max.note.backup': 'Verschlüsseltes Backup',
   'max.welcome.win.more': 'Gläser, Reisemodus und das Jahrbuch',
 
   'privacy.ai.device.title': 'Nur auf diesem Handy',

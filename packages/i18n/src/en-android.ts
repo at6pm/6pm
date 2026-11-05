@@ -54,8 +54,8 @@ export const enAndroid = {
   'look.noteStoreOff': 'Google Play isn’t answering, so this look can’t be bought just yet.',
   'max.cta.waiting': 'Waiting for Google Play…',
   'max.terms.storeOff': 'Max can’t be bought just now: Google Play isn’t answering.',
-  'max.sub.backup': 'Encrypted backup, full history, CSV and Sheets.',
-  'max.note.backup': 'Encrypted backup, CSV and Sheets',
+  'max.sub.backup': 'Encrypted backup and full history.',
+  'max.note.backup': 'Encrypted backup',
   'max.welcome.win.more': 'Pots, travel and the Year book',
 
   // Where AI runs, and privacy.

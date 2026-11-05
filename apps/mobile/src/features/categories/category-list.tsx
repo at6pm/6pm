@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Text, View } from 'react-native';
-import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
+import Animated, { LinearTransition } from 'react-native-reanimated';
 
 import type { CategoryRow } from '@6pm/domain';
 
@@ -13,81 +13,73 @@ import { planColours } from '../plan/plan-colours';
 
 export const rowLayout = LinearTransition.springify().damping(22).stiffness(240);
 
-/** One category: its tile, name and this month's tally, "Not daily" when it stays out of the day. */
-export function CategoryListRow({
+/**
+ * One category's face: its tile, name and this month's tally, "Not daily" when it stays out of the
+ * day. The sortable list around it owns the tap, the swipe and the drag.
+ */
+export function CategoryRowFace({
   category,
   sub,
   notDailyLabel,
   first,
-  onPress,
 }: {
   readonly category: CategoryRow;
   readonly sub: string;
   readonly notDailyLabel: string;
   readonly first: boolean;
-  readonly onPress: () => void;
 }) {
   const { palette } = useTheme();
   return (
-    <Animated.View
-      entering={FadeIn.duration(250)}
-      exiting={FadeOut.duration(180)}
-      layout={rowLayout}
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+        paddingLeft: 16,
+        paddingRight: 14,
+        backgroundColor: palette.cell,
+      }}
     >
-      <PressScale
-        highlight
-        onPress={onPress}
-        accessibilityRole="button"
-        accessibilityLabel={`${category.name}, ${sub}`}
+      <CategoryTile
+        icon={isSymbolName(category.icon) ? category.icon : 'payments'}
+        hue={category.hue}
+      />
+      <View
         style={{
+          flex: 1,
+          minWidth: 0,
           flexDirection: 'row',
           alignItems: 'center',
-          gap: 12,
-          paddingLeft: 16,
-          paddingRight: 14,
+          gap: 8,
+          paddingVertical: 12,
+          borderTopWidth: 0.5,
+          borderTopColor: first ? 'transparent' : palette.hair,
         }}
       >
-        <CategoryTile
-          icon={isSymbolName(category.icon) ? category.icon : 'payments'}
-          hue={category.hue}
-        />
-        <View
-          style={{
-            flex: 1,
-            minWidth: 0,
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 8,
-            paddingVertical: 12,
-            borderTopWidth: 0.5,
-            borderTopColor: first ? 'transparent' : palette.hair,
-          }}
-        >
-          <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
-            <Text numberOfLines={1} style={{ ...body(16, 550), color: palette.ink }}>
-              {category.name}
-            </Text>
-            <Text numberOfLines={1} style={{ ...body(13), color: palette.inkSoft }}>
-              {sub}
-            </Text>
-          </View>
-          {category.countsDaily ? null : (
-            <View
-              style={{
-                height: 22,
-                paddingHorizontal: 8,
-                borderRadius: 99,
-                backgroundColor: palette.chipBg,
-                justifyContent: 'center',
-              }}
-            >
-              <Text style={{ ...body(11, 700), color: palette.inkSoft }}>{notDailyLabel}</Text>
-            </View>
-          )}
-          <Symbol name="chevron_right" size={20} color={palette.ink} style={{ opacity: 0.35 }} />
+        <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
+          <Text numberOfLines={1} style={{ ...body(16, 550), color: palette.ink }}>
+            {category.name}
+          </Text>
+          <Text numberOfLines={1} style={{ ...body(13), color: palette.inkSoft }}>
+            {sub}
+          </Text>
         </View>
-      </PressScale>
-    </Animated.View>
+        {category.countsDaily ? null : (
+          <View
+            style={{
+              height: 22,
+              paddingHorizontal: 8,
+              borderRadius: 99,
+              backgroundColor: palette.chipBg,
+              justifyContent: 'center',
+            }}
+          >
+            <Text style={{ ...body(11, 700), color: palette.inkSoft }}>{notDailyLabel}</Text>
+          </View>
+        )}
+        <Symbol name="chevron_right" size={20} color={palette.ink} style={{ opacity: 0.35 }} />
+      </View>
+    </View>
   );
 }
 

@@ -58,8 +58,8 @@ export const frAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'look.noteStoreOff': 'Google Play ne répond pas, donc ce look ne peut pas encore être acheté.',
   'max.cta.waiting': 'En attente de Google Play…',
   'max.terms.storeOff': 'Max ne peut pas être acheté pour l’instant : Google Play ne répond pas.',
-  'max.sub.backup': 'Sauvegarde chiffrée, historique complet, CSV et Sheets.',
-  'max.note.backup': 'Sauvegarde chiffrée, CSV et Sheets',
+  'max.sub.backup': 'Sauvegarde chiffrée et historique complet.',
+  'max.note.backup': 'Sauvegarde chiffrée',
   'max.welcome.win.more': 'Bocaux, voyages et l’Album de l’année',
 
   'privacy.ai.device.title': 'Uniquement sur ce téléphone',
