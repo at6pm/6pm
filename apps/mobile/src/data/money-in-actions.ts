@@ -14,6 +14,11 @@ export interface MoneyInPlace {
   readonly givesBack?: string | null;
   /** For `payback`: the owed lines it pays (`owedPaybackFor`), settled with it. */
   readonly owed?: readonly string[];
+  /**
+   * The Tết bonus: this much goes into this jar first (a top-up), and only the rest is spread or
+   * saved as `moneyIn` says.
+   */
+  readonly jarFirst?: { readonly potId: string; readonly amount: number } | null;
 }
 
 interface Helpers {
@@ -47,8 +52,18 @@ export function moneyInActions(store: MoneyStore, helpers: Helpers) {
         const row = await current(id);
         if (!row || row.direction !== 'in') return null;
         const snap = store.getSnapshot();
-        const split =
-          place.moneyIn === 'saved' && place.savedTo ? savedSplit(row.amount, place.savedTo) : {};
+        const first = place.jarFirst;
+        const jarPart =
+          first && snap.pots.some((p) => p.id === first.potId && p.archivedAt === null)
+            ? Math.min(row.amount, Math.max(0, Math.round(first.amount)))
+            : 0;
+        const rest = row.amount - jarPart;
+        const split: Record<string, number> = {
+          ...(place.moneyIn === 'saved' && place.savedTo && rest > 0
+            ? savedSplit(rest, place.savedTo)
+            : {}),
+        };
+        if (first && jarPart > 0) split[first.potId] = (split[first.potId] ?? 0) + jarPart;
         const at = new Date().toISOString();
         const next: SpendRow = {
           ...row,

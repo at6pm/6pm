@@ -258,7 +258,7 @@ export function owedActions(store: MoneyStore) {
 
     /**
      * "I'll cover it": the shares become the user's own spending today, in the spend's category
-     * and shop, never on the spend's own day, so no past close changes (M15).
+     * and shop, never on the spend's own day, so no past close changes (M16).
      */
     cover: (lineIds: readonly string[], note: string | null): Promise<Settled | null> =>
       store.exclusive(async () => {

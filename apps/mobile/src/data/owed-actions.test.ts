@@ -182,7 +182,7 @@ describe('who owes me', () => {
     expect(lineOf(ctx.store, 'Linh').remindAt).toBe('2026-10-12T11:00:00.000Z');
   });
 
-  it('is carried by a backup, and an older backup restores with nobody owing', async () => {
+  it('is carried by a backup', async () => {
     await splitDinner(ctx);
     const snapshot = await buildSnapshot(ctx.db, '2026-10-12T00:00:00.000Z');
     expect(snapshot.version).toBe(BACKUP_SNAPSHOT_VERSION);
@@ -191,15 +191,30 @@ describe('who owes me', () => {
     await restoreSnapshot(phone.db, snapshot);
     await phone.store.load(DINNER);
     expect(phone.store.getSnapshot().owed).toHaveLength(3);
+  });
 
-    const { owed, ...older } = snapshot;
-    expect(owed).toBeDefined();
-    const seven = { ...older, version: 7 };
-    expect(backupSnapshotSchema.safeParse(seven).success).toBe(true);
-    const again = await open(DINNER);
-    await restoreSnapshot(again.db, seven);
-    await again.store.load(DINNER);
-    expect(again.store.getSnapshot().owed).toEqual([]);
-    expect(spentToday(again.store)).toBe(300_000);
+  /** The snapshot as a phone of an earlier format wrote it: no owed lines, and before format 8 no
+   * season jars or envelopes either. */
+  const olderSnapshot = async (version: 7 | 8) => {
+    await splitDinner(ctx);
+    const { owed, ...rest } = await buildSnapshot(ctx.db, '2026-10-12T00:00:00.000Z');
+    expect(owed).toHaveLength(3);
+    if (version === 8) return { ...rest, version };
+    return {
+      ...rest,
+      version,
+      pots: rest.pots.map(({ season: _season, ...pot }) => pot),
+      spends: rest.spends.map(({ envelopes: _envelopes, ...spend }) => spend),
+    };
+  };
+
+  it.each([7, 8] as const)('restores a format %i backup with nobody owing', async (version) => {
+    const older = await olderSnapshot(version);
+    expect(backupSnapshotSchema.safeParse(older).success).toBe(true);
+    const phone = await open(DINNER);
+    await restoreSnapshot(phone.db, older);
+    await phone.store.load(DINNER);
+    expect(phone.store.getSnapshot().owed).toEqual([]);
+    expect(spentToday(phone.store)).toBe(300_000);
   });
 });

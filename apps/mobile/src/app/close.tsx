@@ -49,6 +49,7 @@ import { CloseLedger, type CardPress } from '../features/duo/close-ledger';
 import { useFoldShut } from '../features/duo/use-fold-shut';
 import { useFoldForm } from '../ui/layout/fold';
 import { useFinishClose } from '../features/close/use-finish-close';
+import { ENVELOPE_CATEGORY_ID } from '../features/pots/use-new-year';
 
 /** The design phone's width less its 20 pt sides. */
 const COLUMN = 362;
@@ -168,10 +169,15 @@ function CloseOpen({
   };
   const { plan } = snap;
   // Money on top of the stack: its hint, or the companion's word when it is a big one.
-  const moneyHintFor = (amount: number | undefined) =>
-    amount !== undefined && !plan.serious && isBigMoneyIn(amount, plan.income)
-      ? t(`companion.moneyIn.big.${plan.persona}` as 'companion.moneyIn.big.soft')
-      : t(close.moneyIn.canSave ? 'moneyIn.hint' : 'moneyIn.hintNoSave');
+  const moneyHintFor = (amount: number | undefined, id?: string) =>
+    // Lì xì received: saving it for Future you is what the card suggests.
+    id !== undefined &&
+    close.moneyIn.canSave &&
+    snap.cycleSpends.some((s) => s.id === id && s.categoryId === ENVELOPE_CATEGORY_ID)
+      ? t('season.card.saved')
+      : amount !== undefined && !plan.serious && isBigMoneyIn(amount, plan.income)
+        ? t(`companion.moneyIn.big.${plan.persona}` as 'companion.moneyIn.big.soft')
+        : t(close.moneyIn.canSave ? 'moneyIn.hint' : 'moneyIn.hintNoSave');
   const pillFor = (amount: number | undefined) =>
     amount === undefined ? null : close.moneyIn.pillFor(amount);
   const topCard = close.cards[0];
@@ -214,7 +220,7 @@ function CloseOpen({
           }
           title={t('close.title', { count: close.queue.length })}
           hint={t('close.hint')}
-          moneyHint={moneyHintFor(topCard?.money ? topCard.amount : undefined)}
+          moneyHint={moneyHintFor(topCard?.money ? topCard.amount : undefined, topCard?.row.id)}
           pill={pillFor(topCard?.money ? topCard.amount : undefined)}
           undoText={close.undoText}
           undoLabel={t('close.undo')}
@@ -278,8 +284,8 @@ function CloseOpen({
               : shortDate(closingDate)
           }
           title={extraOnTop ? t('moneyIn.extra.title') : t('moneyIn.name')}
-          hint={moneyHintFor(topMoney?.amount)}
-          moneyHint={moneyHintFor(topMoney?.amount)}
+          hint={moneyHintFor(topMoney?.amount, topMoney?.row.id)}
+          moneyHint={moneyHintFor(topMoney?.amount, topMoney?.row.id)}
           pill={pillFor(topMoney?.amount)}
           undoText={close.undoText}
           undoLabel={t('close.undo')}

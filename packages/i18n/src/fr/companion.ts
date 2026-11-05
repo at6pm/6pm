@@ -152,4 +152,22 @@ export const frCompanion: { readonly [Key in keyof typeof enCompanion]: Entry } 
   'companion.moneyInSpread.roast':
     '{amount} de {name}. {daily} de plus par jour. Essaie d’en garder un peu.',
   'companion.moneyInSpread.plain': '{amount} reçus. Chaque jour jusqu’à la paie gagne {daily}.',
+  'companion.seasonCountdown.soft': 'Chaque jour, une lanterne s’éteint. Puis vient {festival}.',
+  'companion.seasonCountdown.cheeky': 'Une lanterne par jour. La cagnotte tient bon.',
+  'companion.seasonCountdown.roast':
+    'Les lanternes s’éteignent. Ta cagnotte, elle, a intérêt à tenir.',
+  'companion.seasonCountdown.plain': '{festival} approche. La cagnotte est prête.',
+  'companion.seasonHoliday.soft': 'Joyeux {festival}. La cagnotte s’en occupe.',
+  'companion.seasonHoliday.cheeky':
+    'Joyeux {festival} ! Distribue des enveloppes, pas des excuses.',
+  'companion.seasonHoliday.roast': 'Joyeux {festival}. Oui, quelqu’un va te demander ton salaire.',
+  'companion.seasonHoliday.plain': 'Joyeux {festival}.',
+  'companion.seasonBonus.soft': 'Une prime ! Donnons-lui un plan.',
+  'companion.seasonBonus.cheeky': 'Saison des primes. La cagnotte d’abord, le plaisir ensuite.',
+  'companion.seasonBonus.roast': 'Avant qu’elle devienne un nouveau téléphone : la cagnotte.',
+  'companion.seasonBonus.plain': 'Une prime est arrivée.',
+  'companion.envelopes.soft': 'Donné avec amour. C’est noté.',
+  'companion.envelopes.cheeky': 'Enveloppes distribuées. Le chiffre du jour n’a même pas bougé.',
+  'companion.envelopes.roast': 'Quelle générosité. C’est la cagnotte qui a payé, pas toi.',
+  'companion.envelopes.plain': 'Enregistré.',
 };

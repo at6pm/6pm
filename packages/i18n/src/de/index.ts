@@ -40,6 +40,7 @@ import { deYearBook } from './year-book';
 import { deFirstCatch } from './first-catch';
 import { deImport } from './import';
 import { deOwed } from './owed';
+import { deSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { deAndroid } from './android';
@@ -88,6 +89,7 @@ export const de: Catalogue = {
   ...deImport,
   ...deOwed,
   ...importSketchMomo,
+  ...deSeason,
 };
 
 /**

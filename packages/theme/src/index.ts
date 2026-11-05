@@ -7,3 +7,4 @@ export * from './paper-inks';
 export * from './catch-inks';
 export * from './import-inks';
 export * from './owed-inks';
+export * from './season-inks';

@@ -40,6 +40,7 @@ import { jaYearBook } from './year-book';
 import { jaFirstCatch } from './first-catch';
 import { jaImport } from './import';
 import { jaOwed } from './owed';
+import { jaSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { jaAndroid } from './android';
@@ -88,6 +89,7 @@ export const ja: Catalogue = {
   ...jaImport,
   ...jaOwed,
   ...importSketchMomo,
+  ...jaSeason,
 };
 
 /**

@@ -40,6 +40,7 @@ import { idYearBook } from './year-book';
 import { idFirstCatch } from './first-catch';
 import { idImport } from './import';
 import { idOwed } from './owed';
+import { idSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { idAndroid } from './android';
@@ -88,6 +89,7 @@ export const id: Catalogue = {
   ...idImport,
   ...idOwed,
   ...importSketchMomo,
+  ...idSeason,
 };
 
 /**

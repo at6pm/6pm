@@ -24,6 +24,9 @@ import { seedDesignMoneyIn } from './design-money-in-seed';
 import { seedDesignOwed } from './design-owed-seed';
 import { useYearBook } from '../year-book/use-year-book';
 import { seedDesignYear } from './design-year-seed';
+import { seedDesignTet } from './design-tet-seed';
+import { resetSeasonOffer } from '../pots/use-new-year';
+import { languages } from '@6pm/i18n';
 import { seedCaptureHealth } from './design-capture-health-seed';
 import { writeFirstCatch } from '../../data/first-catch';
 import { addDays } from '@6pm/domain';
@@ -36,6 +39,7 @@ import { addDays } from '@6pm/domain';
  *   {"seed": "friday", "at": "18:07", "route": "/close", "toast": "Line to show", "companion": "max"}
  *   {"seed": "friday", "jars": "due", "at": "18:00", "max": true}
  *   {"importFile": "momo-history.xlsx"}
+ *   {"tet": "bonus", "on": "2027-01-25", "at": "18:00", "route": "/close"}
  */
 const commandSchema = z.object({
   seed: z.enum(['friday', 'year', 'moneyIn']).optional(),
@@ -50,6 +54,18 @@ const commandSchema = z.object({
     .optional(),
   /** Multiplies the year seed's earlier days, for long amounts. */
   scale: z.number().positive().optional(),
+  /**
+   * Moves the app's day to this date (with `at`, or 18:00): the Tết season can be checked before
+   * Tết. "" unpins, as `at: ""` does.
+   */
+  on: z
+    .string()
+    .regex(/^(\d{4}-\d{2}-\d{2})?$/)
+    .optional(),
+  /** The Tết Season canvas's states on the designed Friday (see `seedDesignTet`); with `on`. */
+  tet: z.enum(['offer', 'bonus', 'window']).optional(),
+  /** Speaks this language, as Settings › Language picks it. */
+  language: z.enum(languages).optional(),
   /** Pin the clock to today at HH:MM; "" unpins. */
   at: z
     .string()
@@ -85,7 +101,7 @@ const commandSchema = z.object({
 export function DevCommands() {
   const router = useRouter();
   const store = useMoneyStore();
-  const { language } = useI18n();
+  const { language, setLanguage } = useI18n();
   const { today } = useClock();
   const toast = useToast();
   const { bind: bindYear } = useYearBook();
@@ -116,7 +132,11 @@ export function DevCommands() {
         firstCatch,
         captureHealth,
         importFile,
+        on,
+        tet,
+        language: speak,
       } = parsed.data;
+      if (speak !== undefined) setLanguage(speak);
       if (aiMode !== undefined) setAiMode(db, aiMode);
       if (look !== undefined) lookStore.setLook(look, () => true);
       if (companion !== undefined) pinCompanionForm(companion === '' ? null : companion);
@@ -132,25 +152,36 @@ export function DevCommands() {
           max ? '1' : '0',
         ]);
       }
-      if (at !== undefined) {
+      // The day seeds file under: the pinned one when `on` moves it.
+      let day = today;
+      if (on !== undefined && on !== '') {
+        const [y = 0, mo = 1, d = 1] = on.split('-').map(Number);
+        const [h = 18, m = 0] = (at || '18:00').split(':').map(Number);
+        pinClock(new Date(y, mo - 1, d, h, m, 0, 0));
+        day = on;
+      } else if (at !== undefined) {
         const [h = 0, m = 0] = at.split(':').map(Number);
         const pin = new Date();
         pin.setHours(h, m, 0, 0);
-        pinClock(at === '' ? null : pin);
-      }
+        pinClock(at === '' || on === '' ? null : pin);
+      } else if (on === '') pinClock(null);
       // In the store's turn, so a load or write already under way never meets a half-cleared
       // database (a set-aside written for a jar the seed has just deleted).
       await store.exclusive(async () => {
-        if (captureHealth) await seedCaptureHealth(store, today);
-        if (seed === 'friday') await seedDesignFriday(store, today, currency, language);
+        if (captureHealth) await seedCaptureHealth(store, day);
+        if (seed === 'friday') await seedDesignFriday(store, day, currency, language);
+        if (tet) {
+          await seedDesignTet(store, day, tet, currency, speak ?? language);
+          await resetSeasonOffer(store.db);
+        }
         if (seed === 'year')
-          await seedDesignYear(store, today, {
+          await seedDesignYear(store, day, {
             ...(currency ? { code: currency } : {}),
             ...(scale ? { scale } : {}),
           });
-        if (seed === 'moneyIn') await seedDesignMoneyIn(store, today);
-        if (jars) await seedDesignJars(store, today, jars);
-        if (owed) await seedDesignOwed(store, today, owed);
+        if (seed === 'moneyIn') await seedDesignMoneyIn(store, day);
+        if (jars) await seedDesignJars(store, day, jars);
+        if (owed) await seedDesignOwed(store, day, owed);
       });
       // Said yesterday, but after anything seeded: only a catch from now on clears the card.
       if (firstCatch === 'later') {
@@ -181,7 +212,7 @@ export function DevCommands() {
       if (state === 'active') void run();
     });
     return () => subscription.remove();
-  }, [router, store, today, toast, bindYear, lookStore, db, language]);
+  }, [router, store, today, toast, bindYear, lookStore, db, language, setLanguage]);
 
   return null;
 }

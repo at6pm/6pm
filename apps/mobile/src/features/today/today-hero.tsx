@@ -10,6 +10,8 @@ import { useMoneyFormat } from '../../money/use-money-format';
 import { useHeaderMeasure, type HeaderShape } from '../home/header-measure';
 import { useHomeNav } from '../home/home-nav';
 import { TravelPill } from '../travel/travel-pill';
+import { useNewYear } from '../pots/use-new-year';
+import { SeasonKicker } from './season-kicker';
 import { Symbol } from '../../ui/icons/symbol';
 import { useDesignInsets } from '../../ui/layout/design-insets';
 import { FitWidth } from '../../ui/layout/fit-width';
@@ -56,6 +58,7 @@ export function TodayHero({
   // On the iPhone Duo, Settings and Add live in the side rail.
   const { top, rail } = useDesignInsets();
   const measure = useHeaderMeasure('today', HEADER);
+  const season = useNewYear();
 
   // A day over its line is covered by the days after it, unless the cycle's free money is gone:
   // then the meter says how far past the plan the cycle is, and only a spend today fills it.
@@ -94,27 +97,45 @@ export function TodayHero({
     >
       <View
         onLayout={measure.layout('row')}
-        style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
+        style={{
+          flexDirection: 'row',
+          // The countdown's lanterns hang below the buttons' line, as the canvas draws them.
+          alignItems: season.day ? 'flex-start' : 'center',
+          justifyContent: 'space-between',
+        }}
       >
-        <View onLayout={measure.layout('date')} style={{ gap: 1 }}>
-          <Text
-            onLayout={measure.layout('weekday')}
-            onTextLayout={measure.lines('weekday')}
-            style={{
-              ...body(13, 600, 0.06),
-              textTransform: 'uppercase',
-              color: palette.inkSoft,
-            }}
-          >
-            {weekday(dayDate)}
-          </Text>
-          <Text
-            onLayout={measure.layout('day')}
-            onTextLayout={measure.lines('day')}
-            style={{ ...body(22, 700, -0.02), color: palette.ink }}
-          >
-            {dayMonth(dayDate)}
-          </Text>
+        <View onLayout={measure.layout('date')} style={{ gap: 1, flexShrink: 1 }}>
+          {season.day && season.tradition ? (
+            // In the Lunar New Year season the date gives way to the countdown and its lanterns.
+            <SeasonKicker
+              day={season.day}
+              tradition={season.tradition}
+              festival={season.festival}
+              onLayout={measure.layout('day')}
+              onTextLayout={measure.lines('day')}
+            />
+          ) : (
+            <>
+              <Text
+                onLayout={measure.layout('weekday')}
+                onTextLayout={measure.lines('weekday')}
+                style={{
+                  ...body(13, 600, 0.06),
+                  textTransform: 'uppercase',
+                  color: palette.inkSoft,
+                }}
+              >
+                {weekday(dayDate)}
+              </Text>
+              <Text
+                onLayout={measure.layout('day')}
+                onTextLayout={measure.lines('day')}
+                style={{ ...body(22, 700, -0.02), color: palette.ink }}
+              >
+                {dayMonth(dayDate)}
+              </Text>
+            </>
+          )}
           <TravelPill />
         </View>
         {rail > 0 ? null : (

@@ -10,7 +10,8 @@ import { sql as addSightingCapture } from '../db/migrations/0006-sighting-captur
 import { sql as addMoneyIn } from '../db/migrations/0010-money-in';
 import { sql as addJars } from '../db/migrations/0011-jars';
 import { sql as addImports } from '../db/migrations/0012-imports';
-import { sql as addOwed } from '../db/migrations/0013-owed';
+import { sql as addNewYear } from '../db/migrations/0013-new-year';
+import { sql as addOwed } from '../db/migrations/0014-owed';
 import { categoryActions, tallyByCategory } from './category-actions';
 import { moneyActions } from './money-actions';
 import { createMoneyStore, dayOf } from './money-store';
@@ -34,6 +35,7 @@ async function openStore() {
   sqlite.exec(addMoneyIn);
   sqlite.exec(addJars);
   sqlite.exec(addImports);
+  sqlite.exec(addNewYear);
   sqlite.exec(addOwed);
   const db: SqlDatabase = {
     getAllAsync: <T>(source: string, params: SqlValue[]) =>
