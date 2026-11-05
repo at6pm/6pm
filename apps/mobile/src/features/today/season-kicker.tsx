@@ -137,9 +137,15 @@ export function SeasonKicker({
     : t('season.kicker.holiday', { day: day.mung, festival });
   return (
     <View style={{ gap: 6 }}>
+      {/* One line, as the date it stands in for: the hero's band has no room for a second one
+          over the lanterns, so at the largest text it grows less and then shrinks to fit. */}
       <Text
         onLayout={onLayout}
         onTextLayout={onTextLayout}
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.7}
+        maxFontSizeMultiplier={1.25}
         style={{ ...body(22, 700, -0.02), color: palette.ink }}
       >
         {words}
