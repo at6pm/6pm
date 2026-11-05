@@ -79,5 +79,5 @@ export async function seedDesignYear(
       });
     }
   });
-  await store.load(today);
+  await store.loadInTurn(today);
 }

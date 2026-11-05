@@ -98,5 +98,5 @@ export async function seedCaptureHealth(store: MoneyStore, today: LocalDate): Pr
     const read = at === 11 ? { amount: 1_250_000 } : at === 41 ? { amount: 89_000 } : {};
     await noteReceiptEdit(store.db, { ...receipt, ...read }, patch);
   }
-  await store.load(today);
+  await store.loadInTurn(today);
 }

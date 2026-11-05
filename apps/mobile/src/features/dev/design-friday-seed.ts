@@ -178,5 +178,5 @@ export async function seedDesignFriday(
       });
     }
   });
-  await store.load(today);
+  await store.loadInTurn(today);
 }

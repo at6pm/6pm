@@ -113,7 +113,6 @@ export function DevCommands() {
         captureHealth,
         importFile,
       } = parsed.data;
-      if (captureHealth) await seedCaptureHealth(store, today);
       if (aiMode !== undefined) setAiMode(db, aiMode);
       if (look !== undefined) lookStore.setLook(look, () => true);
       if (companion !== undefined) pinCompanionForm(companion === '' ? null : companion);
@@ -135,14 +134,19 @@ export function DevCommands() {
         pin.setHours(h, m, 0, 0);
         pinClock(at === '' ? null : pin);
       }
-      if (seed === 'friday') await seedDesignFriday(store, today, currency, language);
-      if (seed === 'year')
-        await seedDesignYear(store, today, {
-          ...(currency ? { code: currency } : {}),
-          ...(scale ? { scale } : {}),
-        });
-      if (seed === 'moneyIn') await seedDesignMoneyIn(store, today);
-      if (jars) await seedDesignJars(store, today, jars);
+      // In the store's turn, so a load or write already under way never meets a half-cleared
+      // database (a set-aside written for a jar the seed has just deleted).
+      await store.exclusive(async () => {
+        if (captureHealth) await seedCaptureHealth(store, today);
+        if (seed === 'friday') await seedDesignFriday(store, today, currency, language);
+        if (seed === 'year')
+          await seedDesignYear(store, today, {
+            ...(currency ? { code: currency } : {}),
+            ...(scale ? { scale } : {}),
+          });
+        if (seed === 'moneyIn') await seedDesignMoneyIn(store, today);
+        if (jars) await seedDesignJars(store, today, jars);
+      });
       // Said yesterday, but after anything seeded: only a catch from now on clears the card.
       if (firstCatch === 'later') {
         await writeFirstCatch(store.db, {
