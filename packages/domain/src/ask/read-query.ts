@@ -41,6 +41,7 @@ import {
   LIST,
   PAST,
   has,
+  jarAsHu,
   words,
 } from './read-query-words';
 
@@ -146,11 +147,12 @@ function readPlan(
 const UNKNOWN = { kind: 'unknown' } as const;
 
 export function readQuery(
-  question: string,
+  asked: string,
   names: ReadNames = {},
   previous: AskQuery | null = null,
   currency: Currency = VND,
 ): AskQuery {
+  const question = jarAsHu(asked);
   const f = foldWords(question);
   const spoken = f.trim().split(' ');
   const amount = moneyIn(question, currency);

@@ -47,7 +47,7 @@ export const viAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'max.terms.storeOff': 'Chưa thể mua Max lúc này: Google Play chưa phản hồi.',
   'max.sub.backup': 'Sao lưu mã hoá, toàn bộ lịch sử, CSV và Sheets.',
   'max.note.backup': 'Sao lưu mã hoá, CSV và Sheets',
-  'max.welcome.win.more': 'Lọ, du lịch và Sách năm',
+  'max.welcome.win.more': 'Hũ, du lịch và Sách năm',
 
   'privacy.ai.device.title': 'Chỉ trên điện thoại này',
   'privacy.ai.device.unavailable': 'Trên Android, 6pm không có mô hình chạy ngay trên máy.',
