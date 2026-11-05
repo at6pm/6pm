@@ -200,7 +200,7 @@ export function planActions(store: MoneyStore) {
       await reload();
     },
 
-    /** Hold to add: money put into a jar now, out of this cycle's free money. */
+    /** Add, on a jar's page: money put into a jar now, out of this cycle's free money. */
     topUp: async (potId: string, amount: number) => {
       const snap = store.getSnapshot();
       const move: PotMove = {

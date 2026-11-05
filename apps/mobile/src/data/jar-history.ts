@@ -3,7 +3,7 @@ import { jarPartOf, moneyDayOf, type LocalDate, type SpendStatus } from '@6pm/do
 import type { SqlDatabase } from './table';
 
 /**
- * One line of a jar's page: a payday's set-aside, money added by hand (a hold or Add), a spend
+ * One line of a jar's page: a payday's set-aside, money added by hand (Add on its page), a spend
  * taken from it, or the jar starting (with what it held before 6pm, if anything).
  */
 export type JarHistoryEntry =

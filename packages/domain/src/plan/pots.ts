@@ -375,15 +375,6 @@ export function potTopUpStep(goal: Vnd, currency: Currency = VND): Vnd {
 }
 
 /**
- * What one tap of a jar's quick top-up adds: the step, or only what is left when that is less, and
- * nothing once the jar is full. A jar with no target always takes the step.
- */
-export function potTopUp(goal: Vnd, saved: Vnd, step: Vnd): Vnd {
-  if (goal <= 0) return Math.max(0, step);
-  return Math.max(0, Math.min(step, goal - saved));
-}
-
-/**
  * The same ladder outside đồng: 1 and 5 times a power of ten, from the largest such amount no
  * bigger than the design's 100k worth in the currency ($1, then $5, $10, $50 …), seven rungs.
  */
