@@ -261,8 +261,9 @@ export function JarPage({
 
   return (
     <View style={{ flex: 1 }}>
+      {/* The page's sky takes the touches its content leaves: Android's gesture handler passes a
+          touch on a view with no background to whatever is beneath, here Today's rows and Scan. */}
       <Animated.View
-        pointerEvents="none"
         style={[
           {
             position: 'absolute',
