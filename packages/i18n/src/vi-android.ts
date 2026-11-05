@@ -45,8 +45,8 @@ export const viAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'look.noteStoreOff': 'Google Play chưa phản hồi, nên chưa thể mua giao diện này.',
   'max.cta.waiting': 'Đang chờ Google Play…',
   'max.terms.storeOff': 'Chưa thể mua Max lúc này: Google Play chưa phản hồi.',
-  'max.sub.backup': 'Sao lưu mã hoá, toàn bộ lịch sử, CSV và Sheets.',
-  'max.note.backup': 'Sao lưu mã hoá, CSV và Sheets',
+  'max.sub.backup': 'Sao lưu mã hoá và toàn bộ lịch sử.',
+  'max.note.backup': 'Sao lưu mã hoá',
   'max.welcome.win.more': 'Lọ, du lịch và Sách năm',
 
   'privacy.ai.device.title': 'Chỉ trên điện thoại này',
