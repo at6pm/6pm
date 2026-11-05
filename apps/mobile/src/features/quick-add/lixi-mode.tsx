@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import Animated, {
   Easing,
@@ -30,6 +30,9 @@ const FAN_MS = 450;
 /** The quick add's three modes in the season: the keypad, lì xì by the envelope, and voice. */
 export type QuickMode = 'keypad' | 'envelopes';
 
+/** How much of the lì xì switch's words fit: all of them, only the chosen segment's, or none. */
+type Shown = 'words' | 'chosen' | 'icons';
+
 /**
  * The header's mode switch in the season (Tết Season canvas, second phone): Keypad, the lì xì
  * mode in the season's red, and Voice, which opens the microphone over the keypad as the mic
@@ -51,44 +54,96 @@ export function QuickModeSwitch({
 }) {
   const { palette } = useTheme();
   const { t } = useI18n();
-  const segment = (label: string, on: boolean, red: boolean, onPress: () => void) => (
-    <PressScale
-      accessibilityRole="tab"
-      accessibilityState={{ selected: on }}
-      onPress={onPress}
-      style={{
-        paddingVertical: 6,
-        paddingHorizontal: 14,
-        borderRadius: 99,
-        backgroundColor: on ? (red ? seasonInk.red : palette.btnBg) : 'transparent',
-      }}
-    >
-      <Text
-        numberOfLines={1}
+  // The room the header leaves, and what the switch needs with every word, and with only the
+  // chosen one's: when the words do not fit (a narrow phone, large text, a long language), the
+  // other segments show their icons, and when even that does not fit, every segment does.
+  const [room, setRoom] = useState(0);
+  const [needsWords, setNeedsWords] = useState(0);
+  const [needsOne, setNeedsOne] = useState(0);
+  const shown: Shown =
+    room === 0 || needsWords <= room ? 'words' : needsOne <= room ? 'chosen' : 'icons';
+  const segment = (
+    label: string,
+    icon: SymbolName,
+    on: boolean,
+    red: boolean,
+    compact: boolean,
+    onPress: () => void,
+  ) => {
+    const ink = on ? (red ? seasonInk.onRed : palette.btnFg) : palette.ink;
+    return (
+      <PressScale
+        accessibilityRole="tab"
+        accessibilityLabel={label}
+        accessibilityState={{ selected: on }}
+        onPress={onPress}
         style={{
-          ...body(13, on ? 650 : 600),
-          color: on ? (red ? seasonInk.onRed : palette.btnFg) : palette.ink,
+          paddingVertical: 6,
+          paddingHorizontal: compact ? 12 : 14,
+          borderRadius: 99,
+          backgroundColor: on ? (red ? seasonInk.red : palette.btnBg) : 'transparent',
         }}
       >
-        {label}
-      </Text>
-    </PressScale>
-  );
-  return (
-    <View
-      accessibilityRole="tablist"
-      style={{
-        flexDirection: 'row',
-        padding: 3,
-        borderRadius: 99,
-        backgroundColor: palette.chipBg,
-      }}
-    >
-      {segment(t('season.quick.keypad'), mode === 'keypad' && !listening, false, () =>
+        {compact ? (
+          <Symbol name={icon} size={18} color={ink} />
+        ) : (
+          <Text
+            numberOfLines={1}
+            maxFontSizeMultiplier={1.6}
+            style={{ ...body(13, on ? 650 : 600), color: ink }}
+          >
+            {label}
+          </Text>
+        )}
+      </PressScale>
+    );
+  };
+  const keypadOn = mode === 'keypad' && !listening;
+  const envelopesOn = mode === 'envelopes';
+  const compact = (on: boolean, as: Shown) => as === 'icons' || (as === 'chosen' && !on);
+  const segments = (as: Shown) => (
+    <>
+      {segment(t('season.quick.keypad'), 'keyboard', keypadOn, false, compact(keypadOn, as), () =>
         onMode('keypad'),
       )}
-      {segment(envelope, mode === 'envelopes', true, () => onMode('envelopes'))}
-      {segment(t('season.quick.voice'), listening, false, onVoice)}
+      {segment(envelope, 'mail', envelopesOn, true, compact(envelopesOn, as), () =>
+        onMode('envelopes'),
+      )}
+      {segment(t('season.quick.voice'), 'mic', listening, false, compact(listening, as), onVoice)}
+    </>
+  );
+  const track = { flexDirection: 'row', padding: 3, borderRadius: 99 } as const;
+  return (
+    <View
+      onLayout={(e) => setRoom(e.nativeEvent.layout.width)}
+      style={{ alignSelf: 'stretch', alignItems: 'center' }}
+    >
+      {/* Measured, never seen: the switch with every word, and with the chosen one's only. */}
+      <View
+        pointerEvents="none"
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+        style={{ position: 'absolute', left: 0, top: 0, width: 1000, opacity: 0, gap: 4 }}
+      >
+        <View
+          onLayout={(e) => setNeedsWords(e.nativeEvent.layout.width)}
+          style={[track, { alignSelf: 'flex-start' }]}
+        >
+          {segments('words')}
+        </View>
+        <View
+          onLayout={(e) => setNeedsOne(e.nativeEvent.layout.width)}
+          style={[track, { alignSelf: 'flex-start' }]}
+        >
+          {segments('chosen')}
+        </View>
+      </View>
+      <View
+        accessibilityRole="tablist"
+        style={[track, { backgroundColor: palette.chipBg, opacity: room > 0 ? 1 : 0 }]}
+      >
+        {segments(shown)}
+      </View>
     </View>
   );
 }
