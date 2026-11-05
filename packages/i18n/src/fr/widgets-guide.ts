@@ -17,13 +17,17 @@ export const frWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.whenItShows': 'Quand il s’affiche',
 
   'widgetsGuide.home.title': 'Widgets de l’écran d’accueil',
-  'widgetsGuide.home.what': 'Le chiffre du jour en un coup d’œil. Touche-en un pour ouvrir 6pm.',
+  'widgetsGuide.home.what':
+    'De petites cartes postales de ta journée : le vrai ciel de l’heure, le soleil là où il est, et un nombre.',
   'widgetsGuide.home.small': 'Petit',
   'widgetsGuide.home.medium': 'Moyen',
   'widgetsGuide.home.large': 'Grand',
-  'widgetsGuide.home.smallWhat': 'Ce que tu peux dépenser aujourd’hui.',
-  'widgetsGuide.home.mediumWhat': 'Le chiffre, avec Scanner QR et Ajout rapide à côté.',
-  'widgetsGuide.home.largeWhat': 'Ce qui reste, et les dernières dépenses du jour.',
+  'widgetsGuide.home.smallWhat':
+    'Le nombre du jour sur son ciel, un bocal en compte à rebours, ou tes soirs clôturés d’affilée.',
+  'widgetsGuide.home.mediumWhat':
+    'Le nombre avec son ciel et tes bocaux. Touche un bocal pour l’ouvrir.',
+  'widgetsGuide.home.largeWhat':
+    'Le mois en soleils : chaque soir clôturé, et combien dans la limite.',
   'widgetsGuide.home.step1':
     'Touche et maintiens un espace vide de l’écran d’accueil jusqu’à ce que les apps bougent.',
   'widgetsGuide.home.step2': 'Touche Modifier en haut, puis Ajouter un widget.',
@@ -36,7 +40,8 @@ export const frWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.lock.card': 'Carte',
   'widgetsGuide.lock.step1': 'Touche et maintiens l’écran verrouillé, puis touche Personnaliser.',
   'widgetsGuide.lock.step2': 'Choisis Écran verrouillé, puis touche l’espace sous l’heure.',
-  'widgetsGuide.lock.step3': 'Touche 6pm, puis choisis l’anneau ou la carte.',
+  'widgetsGuide.lock.step3':
+    'Touche 6pm, puis choisis l’anneau, le nombre sur une ligne ou un bocal.',
 
   'widgetsGuide.control.title': 'Centre de contrôle',
   'widgetsGuide.control.what':
@@ -61,7 +66,7 @@ export const frWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
 
   'widgetsGuide.live.title': 'Activité en direct',
   'widgetsGuide.live.what':
-    'S’affiche toute seule pendant qu’un paiement QR attend, et pendant tes voyages.',
+    'À six heures, la clôture arrive sur ton écran verrouillé, où attendent aussi un paiement QR ou ton voyage.',
   'widgetsGuide.live.step1':
     'Scanne un QR et paie dans ton app bancaire. Le paiement attend sur ton écran verrouillé.',
   'widgetsGuide.live.step2': 'Touche Payé une fois l’argent parti. Elle se ferme toute seule.',
@@ -69,7 +74,10 @@ export const frWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
     'Elle ne s’affiche pas ? Dans Réglages, ouvre 6pm et active Activités en direct.',
 
   'widgetsGuide.home.addSafe': 'Ajouter À dépenser aujourd’hui',
-  'widgetsGuide.home.addToday': 'Ajouter Aujourd’hui',
+  'widgetsGuide.lock.jar': 'Bocal',
+  'widgetsGuide.home.addStreak': 'Ajouter Série',
+  'widgetsGuide.home.addJar': 'Ajouter un bocal',
+  'widgetsGuide.home.addToday': 'Ajouter Mon mois',
   'widgetsGuide.tiles.title': 'Blocs des Réglages rapides',
   'widgetsGuide.tiles.what':
     'Glisse vers le bas, touche une fois, et tu es dans Scanner QR ou Ajout rapide.',

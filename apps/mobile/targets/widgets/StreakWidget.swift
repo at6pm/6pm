@@ -67,7 +67,7 @@ struct StreakView: View {
         .overlay(alignment: .topTrailing) {
           // The sun sets into the line: only its top half shows.
           if let sun = look.sun("dusk") ?? look.sun("day") {
-            SunDisc(sun: sun, look: look, size: 38)
+            SunDisc(sun: sun, look: look, size: 38, glows: false)
               .frame(width: 38, height: 38)
               .mask(alignment: .top) { Rectangle().frame(height: 19) }
               .offset(y: -19)

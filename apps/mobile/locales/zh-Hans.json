@@ -12,8 +12,12 @@
     "sixpm_shortcut_quick_add": "快速记账",
     "sixpm_widget_safe_name": "今天可以花",
     "sixpm_widget_safe_description": "今天还能花多少，一眼就知道。",
-    "sixpm_widget_today_name": "今天",
-    "sixpm_widget_today_description": "今天花了哪些钱，最新的在前。",
+    "sixpm_widget_today_name": "我的一个月",
+    "sixpm_widget_today_description": "整个月化作太阳：你结算过的每个晚上。",
+    "sixpm_widget_streak_name": "连续记录",
+    "sixpm_widget_streak_description": "连续结算的晚上，每晚都是它的天空。",
+    "sixpm_widget_jar_name": "一个罐子",
+    "sixpm_widget_jar_description": "一个罐子，倒数到它的那一天。",
     "sixpm_widget_set_up": "打开 6pm 进行设置"
   }
 }

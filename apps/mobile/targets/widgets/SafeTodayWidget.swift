@@ -100,7 +100,7 @@ struct SafeMedium: View {
   let entry: SurfaceEntry
 
   var body: some View {
-    if let day = entry.entry, let card = entry.card {
+    if entry.entry != nil, let card = entry.card {
       HStack(spacing: 12) {
         VStack(alignment: .leading, spacing: 0) {
           Kicker(text: card.kicker, entry: entry)

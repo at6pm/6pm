@@ -74,8 +74,13 @@ const ANDROID_STRINGS: Readonly<Record<string, string>> = {
   sixpm_shortcut_quick_add: 'native.intents.quickAdd.title',
   sixpm_widget_safe_name: 'native.surfaces.safeToday.name',
   sixpm_widget_safe_description: 'native.surfaces.safeToday.description',
-  sixpm_widget_today_name: 'native.surfaces.todayList.name',
-  sixpm_widget_today_description: 'native.surfaces.todayList.description',
+  // The large widget kept its receiver when it became the month.
+  sixpm_widget_today_name: 'native.surfaces.month.name',
+  sixpm_widget_today_description: 'native.surfaces.month.description',
+  sixpm_widget_streak_name: 'native.surfaces.streak.name',
+  sixpm_widget_streak_description: 'native.surfaces.streak.description',
+  sixpm_widget_jar_name: 'native.surfaces.jar.name',
+  sixpm_widget_jar_description: 'native.surfaces.jar.description',
   sixpm_widget_set_up: 'native.surfaces.setUp',
 };
 

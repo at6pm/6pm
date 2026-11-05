@@ -1,273 +1,288 @@
 package ai.sixpm.surfaces.widgets
 
-import android.content.Context
-import android.graphics.Bitmap
+import android.graphics.Path
 import android.graphics.RectF
 import android.text.TextPaint
 
-/** The Scan QR and Quick add targets' places on a drawn widget, in dp, for its tap areas. */
-data class WidgetTargets(val scan: RectF?, val add: RectF?)
+/** Where a drawn jar sits on the medium widget, in dp, for its tap area. */
+data class JarSpot(val jar: PostcardJar, val rect: RectF)
 
 /**
- * The widgets as the iPhone draws them, in dp from the prototype's points: Safe today small and
- * medium, and Today (large). Free, the small and large widgets sit on the light card (the night
- * card on a dark Home Screen); in the user's look (Max), on the look's own ground in its display face.
+ * The postcards as the iPhone draws them ("6pm Widgets"), in dp from the prototype's points: the
+ * number on its sky (small), with the jars (medium), the streak's strata, one jar counting down,
+ * and the month as suns (large). Every word, number and colour was decided by the app.
  */
-class WidgetDrawings(private val context: Context, private val faces: WidgetFaces) {
-  private val pad = 16f
-
-  /** The last line of a widget: tomorrow and what is pending, or "Open 6pm" once out of date. */
-  private fun footnote(moment: WidgetMoment, day: WidgetDay): String =
-    if (moment.state == WidgetMoment.State.STALE) moment.text("openApp")
-    else listOf(day.tomorrowText, day.pendingText).filter { it.isNotEmpty() }.joinToString(" · ")
-
+class WidgetDrawings(private val faces: WidgetFaces) {
   private fun color(moment: WidgetMoment, token: String): Int = WidgetInk.color(moment.token(token))
+
+  private fun ink(moment: WidgetMoment): Int = color(moment, "skyInk")
+
+  private fun dark(moment: WidgetMoment): Boolean = moment.token("dark") == "1"
 
   private fun top(paint: TextPaint): Float = -paint.fontMetrics.ascent
 
-  private fun lineHeight(paint: TextPaint): Float = paint.fontMetrics.descent - paint.fontMetrics.ascent
+  /** An amount, or ••• when the person hides them: Android has no locked Home screen to wait for. */
+  private fun amount(moment: WidgetMoment, text: String): String =
+    if (moment.postcards?.hideAmounts == true) moment.text("hidden").ifEmpty { "•••" } else text
 
-  /** Small: the companion and Scan QR over the number and "safe today". */
-  fun small(canvas: WidgetCanvas, moment: WidgetMoment, day: WidgetDay, dark: Boolean): WidgetTargets {
-    val look = moment.inLook
-    val ink: Int
-    val number: Int
-    val button: Int
-    val onButton: Int
-    val labelOpacity: Double
-    when {
-      look -> {
-        ink = color(moment, "skyInk")
-        number = ink
-        button = color(moment, "accent")
-        onButton = color(moment, "onAccent")
-        labelOpacity = 0.65
-        canvas.gradient(intArrayOf(color(moment, "skyTop"), color(moment, "skyMid")), null, 0.5f, 0f, 0.5f, 1f)
-      }
-      dark -> {
-        ink = WidgetInk.PlainNight.ink
-        number = WidgetInk.PlainNight.accent
-        button = WidgetInk.PlainNight.accent
-        onButton = color(moment, "onAccent")
-        labelOpacity = 0.6
-        canvas.fill(WidgetInk.PlainNight.sheetSolid)
-      }
-      else -> {
-        ink = color(moment, "cardInk")
-        number = ink
-        button = ink
-        onButton = color(moment, "cardBg")
-        labelOpacity = 0.6
-        canvas.fill(color(moment, "cardBg"))
-      }
+  /** The look's sky for the stretch's hour, top to bottom, or its own ground (Basic). */
+  fun sky(canvas: WidgetCanvas, moment: WidgetMoment) {
+    val look = moment.postcards?.ink
+    val ground = if (dark(moment)) look?.groundNight else look?.groundDay
+    if (!ground.isNullOrEmpty()) {
+      canvas.fill(WidgetInk.color(ground))
+      return
     }
-    companion(canvas, moment, 36, RectF(pad, pad, pad + 36, pad + 36))
-    val scan = RectF(canvas.width - pad - 36, pad, canvas.width - pad, pad + 36)
-    canvas.circle(scan.centerX(), scan.centerY(), 18f, button)
-    canvas.glyph(moment.text("glyph.scan"), scan, canvas.ink(faces.symbol(20f), 20f, onButton))
-
-    val size = if (look) 38f else 44f
-    val weight = if (look) 600 else 500
-    val label = canvas.ink(faces.body(600), 12f, WidgetInk.faded(ink, labelOpacity))
-    val labelBaseline = canvas.height - pad - label.fontMetrics.descent
-    val labelText = if (moment.state == WidgetMoment.State.STALE) moment.text("openApp") else moment.text("safeTodayShort")
-    canvas.text(labelText, pad, labelBaseline, label, canvas.width - pad * 2)
-    val figure = canvas.ink(faces.display(moment.displayFont, size, weight), size, number)
-    val figureBaseline = labelBaseline + label.fontMetrics.ascent - 2 - figure.fontMetrics.descent
-    canvas.text(day.safeShort, pad, figureBaseline, figure, canvas.width - pad * 2, minScale = 0.6f)
-    return WidgetTargets(scan = scan, add = null)
-  }
-
-  /** Medium: the number on the look's sky, with Scan QR and Quick add beside it. */
-  fun medium(canvas: WidgetCanvas, moment: WidgetMoment, day: WidgetDay): WidgetTargets {
-    // CSS 160deg: from just left of the top centre to just right of the bottom centre.
     canvas.gradient(
       intArrayOf(color(moment, "skyTop"), color(moment, "skyMid"), color(moment, "skyBottom")),
-      floatArrayOf(0f, 0.7f, 1f),
-      0.33f,
-      0.03f,
-      0.67f,
-      0.97f,
+      floatArrayOf(0f, 0.52f, 1f),
+      0.5f,
+      0f,
+      0.5f,
+      1f,
     )
-    val ink = color(moment, "skyInk")
-    val column = 96f
-    val textWidth = canvas.width - pad * 2 - column - 14
-    val soft = WidgetInk.faded(ink, 0.8)
-
-    val heading = canvas.ink(faces.body(600), 13f, soft)
-    canvas.text(moment.text("safeToSpend"), pad, pad + top(heading), heading, textWidth)
-    val foot = canvas.ink(faces.body(600), 12f, soft)
-    canvas.text(footnote(moment, day), pad, canvas.height - pad - foot.fontMetrics.descent, foot, textWidth)
-    val figure = canvas.ink(faces.display(moment.displayFont, 56f, 500), 56f, ink, trackingEm = -0.02f)
-    val middle = canvas.height / 2
-    val baseline = middle - (figure.fontMetrics.ascent + figure.fontMetrics.descent) / 2
-    canvas.text(day.safeShort, pad, baseline, figure, textWidth, minScale = 0.6f)
-
-    val left = canvas.width - pad - column
-    val tileHeight = (canvas.height - pad * 2 - 8) / 2
-    val scan = RectF(left, pad, left + column, pad + tileHeight)
-    val add = RectF(left, pad + tileHeight + 8, left + column, canvas.height - pad)
-    tile(canvas, scan, moment.text("glyph.scan"), moment.text("scanQr"), color(moment, "accent"), color(moment, "onAccent"))
-    tile(canvas, add, moment.text("glyph.add"), moment.text("quickAdd"), WidgetInk.faded(ink, 0.2), ink)
-    return WidgetTargets(scan = scan, add = add)
   }
 
-  /** A tile that opens the app at a route: radius 18, a 26 dp glyph over a 12 dp label. */
-  private fun tile(canvas: WidgetCanvas, rect: RectF, glyph: String, label: String, background: Int, foreground: Int) {
-    canvas.roundRect(rect, 18f, background)
-    val symbol = canvas.ink(faces.symbol(26f), 26f, foreground)
-    val words = canvas.ink(faces.body(650), 12f, foreground)
-    val glyphBox = 26f
-    val stack = glyphBox + 4 + lineHeight(words)
-    val y = rect.centerY() - stack / 2
-    canvas.glyph(glyph, RectF(rect.left, y, rect.right, y + glyphBox), symbol)
-    canvas.centred(label, rect.centerX(), y + glyphBox + 4 + top(words), words, rect.width() - 8)
+  /** The stretch's sun, centred where the app put it. */
+  private fun sun(canvas: WidgetCanvas, moment: WidgetMoment, card: PostcardCard, size: Float, small: Boolean) {
+    val look = moment.postcards?.ink ?: return
+    val fill = look.suns[card.sunKind] ?: return
+    val cx = canvas.width * (if (small) card.sunXs else card.sunX).toFloat()
+    val cy = canvas.height * (if (small) card.sunYs else card.sunY).toFloat()
+    val rect = RectF(cx - size / 2, cy - size / 2, cx + size / 2, cy + size / 2)
+    look.sunGlow[card.sunKind]?.let { canvas.glow(RectF(rect).apply { inset(-size * 0.3f, -size * 0.3f) }, size * 0.5f, WidgetInk.color(it)) }
+    canvas.oval(rect, canvas.fillPaint(fill, rect))
+    look.sunRing?.let { canvas.strokeOval(rect, 3f, WidgetInk.color(it)) }
   }
 
-  /** A pill along Today's foot: a 20 dp glyph and a 13 dp label side by side, centred. */
-  private fun pill(canvas: WidgetCanvas, rect: RectF, glyph: String, label: String, background: Int, foreground: Int) {
-    canvas.roundRect(rect, rect.height() / 2, background)
-    val symbol = canvas.ink(faces.symbol(20f), 20f, foreground)
-    val words = canvas.ink(faces.body(650), 13f, foreground)
-    val glyphBox = 20f
-    val labelWidth = words.measureText(label).coerceAtMost(rect.width() - glyphBox - 6 - 24)
-    val x = rect.centerX() - (glyphBox + 6 + labelWidth) / 2
-    canvas.glyph(glyph, RectF(x, rect.centerY() - glyphBox / 2, x + glyphBox, rect.centerY() + glyphBox / 2), symbol)
-    val baseline = rect.centerY() - (words.fontMetrics.ascent + words.fontMetrics.descent) / 2
-    canvas.text(label, x + glyphBox + 6, baseline, words, labelWidth)
+  private fun kicker(canvas: WidgetCanvas, moment: WidgetMoment, size: Float, color: Int): TextPaint {
+    val mono = moment.postcards?.ink?.mono != false
+    return canvas.ink(if (mono) faces.mono() else faces.body(600), size, WidgetInk.faded(color, 0.8), trackingEm = if (mono) 0.14f else 0.04f)
   }
 
-  /**
-   * Today: what is left, the day's spend against its line, today's newest spends and "+N more"
-   * with what they add up to, as many as fit above Scan QR and Quick add along its foot.
-   */
-  fun list(canvas: WidgetCanvas, moment: WidgetMoment, day: WidgetDay, darkScreen: Boolean): WidgetTargets {
-    val dark = darkScreen && !moment.inLook
-    val ink = if (dark) WidgetInk.PlainNight.ink else color(moment, "cardInk")
-    canvas.fill(if (dark) WidgetInk.PlainNight.sheetSolid else color(moment, "cardBg"))
-    val side = 16f
-    var y = 14f
-
-    val title = canvas.ink(faces.body(700), 15f, ink)
-    val safe = canvas.ink(faces.display(moment.displayFont, 24f, 500), 24f, ink)
-    val headBaseline = y + top(safe)
-    val companionShown = companion(canvas, moment, 22, RectF(side, headBaseline - 18, side + 22, headBaseline + 4))
-    val titleX = side + if (companionShown) 30f else 0f
-    val titleWidth = canvas.text(moment.text("today"), titleX, headBaseline, title)
-    canvas.text(day.safeText, canvas.width - side, headBaseline, safe, canvas.width - titleX - titleWidth - side - 8, alignEnd = true)
-    y = headBaseline + safe.fontMetrics.descent
-
-    val fraction = day.spentFraction
-    if (fraction != null) {
-      y += 6
-      val bar = RectF(side, y, canvas.width - side, y + 6)
-      canvas.roundRect(bar, 3f, WidgetInk.faded(ink, 0.08))
-      val fill = bar.width() * fraction.toFloat().coerceIn(0f, 1f)
-      if (fill > 0) canvas.roundRect(RectF(bar.left, bar.top, bar.left + fill, bar.bottom), 3f, color(moment, "accent"))
-      val small = canvas.ink(faces.body(600), 11f, WidgetInk.faded(ink, 0.55))
-      val baseline = bar.bottom + 5 + top(small)
-      canvas.text(day.spentText.orEmpty(), side, baseline, small, bar.width() / 2)
-      canvas.text(day.lineText.orEmpty(), canvas.width - side, baseline, small, bar.width() / 2, alignEnd = true)
-      y = baseline + small.fontMetrics.descent + 8
-    } else {
-      y += 6
-    }
-
-    val rule = WidgetInk.faded(ink, 0.1)
-    val body = canvas.ink(faces.body(400), 14f, ink)
-    if (day.list.isEmpty()) {
-      canvas.line(side, y, canvas.width - side, 0.5f, rule)
-      val faint = canvas.ink(faces.body(400), 14f, WidgetInk.faded(ink, 0.55))
-      canvas.text(moment.text("listEmpty"), side, y + 6 + top(faint), faint, canvas.width - side * 2)
-      y += 6 + lineHeight(faint) + 6
-    }
-    val pendingInk = color(moment, if (dark) "pendingInkDark" else "pendingInk")
-    // The pills along the foot, as `sixpm_widget_today` lays out their tap areas.
-    val pillTop = canvas.height - 14 - 40
-    val scan = RectF(side, pillTop, canvas.width / 2 - 4, pillTop + 40)
-    val add = RectF(canvas.width / 2 + 4, pillTop, canvas.width - side, pillTop + 40)
-    val floor = pillTop - 6
-    for (row in day.list) {
-      if (y + 38 > floor) break
-      canvas.line(side, y, canvas.width - side, 0.5f, rule)
-      spendRow(canvas, moment, row, RectF(side, y + 6, canvas.width - side, y + 32), body, ink, pendingInk)
-      y += 38
-    }
-    if (day.moreText.isNotEmpty() && y + 30 <= floor) {
-      canvas.line(side, y, canvas.width - side, 0.5f, rule)
-      val faint = canvas.ink(faces.body(400), 14f, WidgetInk.faded(ink, 0.55))
-      val baseline = y + 7 + top(faint)
-      canvas.text(day.moreText, side, baseline, faint, canvas.width / 2)
-      canvas.text(day.moreAmountText.orEmpty(), canvas.width - side, baseline, faint, canvas.width / 2, alignEnd = true)
-      y = baseline + faint.fontMetrics.descent + 7
-    }
-    if (moment.state == WidgetMoment.State.STALE && y + 30 <= floor) {
-      canvas.line(side, y, canvas.width - side, 0.5f, rule)
-      val open = canvas.ink(faces.body(600), 14f, ink)
-      canvas.text(moment.text("openApp"), side, y + 7 + top(open), open, canvas.width - side * 2)
-    }
-
-    val accent = if (dark) WidgetInk.PlainNight.accent else color(moment, "accent")
-    val onAccent = color(moment, "onAccent")
-    pill(canvas, scan, moment.text("glyph.scan"), moment.text("scanQr"), accent, onAccent)
-    pill(canvas, add, moment.text("glyph.add"), moment.text("quickAdd"), WidgetInk.faded(ink, 0.08), ink)
-    return WidgetTargets(scan = scan, add = add)
+  private fun number(canvas: WidgetCanvas, moment: WidgetMoment, size: Float, color: Int): TextPaint {
+    val look = moment.postcards?.ink
+    return canvas.ink(faces.display(moment.displayFont, size, look?.displayWeight ?: 500), size, color, trackingEm = look?.numberTracking ?: -0.03f)
   }
 
-  /** One spend: its 26 dp tile, the name (and PENDING while it waits), the amount. */
-  private fun spendRow(
-    canvas: WidgetCanvas,
-    moment: WidgetMoment,
-    row: WidgetRow,
-    rect: RectF,
-    body: TextPaint,
-    ink: Int,
-    pendingInk: Int,
-  ) {
-    val hue = if (row.hue % 1.0 == 0.0) row.hue.toInt().toString() else row.hue.toString()
-    val tile = RectF(rect.left, rect.top, rect.left + 26, rect.top + 26)
-    // CSS 155deg.
-    canvas.roundRect(
-      tile,
-      9f,
-      intArrayOf(WidgetInk.color(moment.text("tile.$hue.from")), WidgetInk.color(moment.text("tile.$hue.to"))),
-      0.29f,
-      0.05f,
-      0.71f,
-      0.95f,
-    )
-    canvas.glyph(row.icon, tile, canvas.ink(faces.symbol(16f, filled = true), 16f, WidgetInk.color(moment.text("tile.$hue.glyph"))))
-    val baseline = tile.centerY() - (body.fontMetrics.ascent + body.fontMetrics.descent) / 2
-    val amount = canvas.ink(faces.body(600), 14f, ink)
-    val amountWidth = canvas.text(row.amountText, rect.right, baseline, amount, rect.width() / 2, alignEnd = true)
-    val nameX = tile.right + 9
-    val room = rect.right - amountWidth - 8 - nameX
-    if (row.pending) {
-      val tag = canvas.ink(faces.body(700), 11f, pendingInk, trackingEm = 0.04f)
-      val tagText = moment.text("pendingTag").uppercase()
-      val tagWidth = tag.measureText(tagText)
-      val nameWidth = canvas.text(row.name, nameX, baseline, body, (room - tagWidth - 4).coerceAtLeast(0f))
-      canvas.text(tagText, nameX + nameWidth + 4, baseline, tag, room - nameWidth - 4)
-    } else {
-      canvas.text(row.name, nameX, baseline, body, room)
+  /** Small: the short kicker, the short number and what it is, on the sky with the sun. */
+  fun small(canvas: WidgetCanvas, moment: WidgetMoment, day: WidgetDay, card: PostcardCard) {
+    sky(canvas, moment)
+    sun(canvas, moment, card, 40f, small = true)
+    val ink = ink(moment)
+    val pad = 14f
+    val head = kicker(canvas, moment, 9.5f, ink)
+    canvas.text(card.kickerShort, pad, pad + top(head), head, canvas.width - pad * 2)
+    val label = canvas.ink(faces.body(600), 11.5f, WidgetInk.faded(ink, 0.8))
+    val labelBaseline = canvas.height - pad - label.fontMetrics.descent
+    val words = if (moment.state == WidgetMoment.State.STALE) moment.text("openApp") else card.subShort
+    canvas.text(words, pad, labelBaseline, label, canvas.width - pad * 2)
+    val figure = number(canvas, moment, moment.postcards?.ink?.numberSmall ?: 40f, ink)
+    val figureBaseline = labelBaseline + label.fontMetrics.ascent - 3 - figure.fontMetrics.descent
+    canvas.text(amount(moment, day.safeShort), pad, figureBaseline, figure, canvas.width - pad * 2, minScale = 0.5f)
+    if (card.closed && card.closedAt != null) stamp(canvas, moment.text("stamp"), card.closedAt, ink)
+  }
+
+  /** CLOSED and the time, pressed on at an angle in the top right corner. */
+  private fun stamp(canvas: WidgetCanvas, word: String, time: String, ink: Int) {
+    val paint = canvas.ink(faces.mono(), 8.5f, ink, trackingEm = 0.12f)
+    val width = maxOf(paint.measureText(word), paint.measureText(time)) + 12
+    val line = paint.fontMetrics.descent - paint.fontMetrics.ascent
+    val rect = RectF(canvas.width - 12 - width, 12f, canvas.width - 12, 12 + line * 2 + 6)
+    canvas.rotated(-7f, rect.centerX(), rect.centerY()) {
+      canvas.strokePath(Path().apply { addRoundRect(rect, 4f, 4f, Path.Direction.CW) }, 2f, ink)
+      canvas.centred(word, rect.centerX(), rect.top + 3 + top(paint), paint)
+      canvas.centred(time, rect.centerX(), rect.top + 3 + line + top(paint), paint)
     }
   }
 
-  /** Before the month is set up: "Open 6pm to set up", on the card. */
+  /** Medium: the kicker, the number, the day's bar and what it means, then up to four jars. */
+  fun medium(canvas: WidgetCanvas, moment: WidgetMoment, card: PostcardCard): List<JarSpot> {
+    sky(canvas, moment)
+    sun(canvas, moment, card, 54f, small = false)
+    val ink = ink(moment)
+    val pad = 16f
+    val jars = moment.postcards?.jars.orEmpty().take(4)
+    val shelf = if (jars.isEmpty()) 0f else jars.size * 34f + (jars.size - 1) * 5f + 12f
+    val room = canvas.width - pad * 2 - shelf
+    val head = kicker(canvas, moment, 10f, ink)
+    canvas.text(card.kicker, pad, pad + top(head), head, room)
+    val sub = canvas.ink(faces.body(600), 12f, WidgetInk.faded(ink, 0.8))
+    val subBaseline = canvas.height - pad - sub.fontMetrics.descent
+    val words = if (moment.state == WidgetMoment.State.STALE) moment.text("openApp") else card.sub
+    canvas.text(words, pad, subBaseline, sub, room)
+    val barTop = subBaseline + sub.fontMetrics.ascent - 4 - 5
+    val bar = RectF(pad, barTop, pad + minOf(140f, room), barTop + 5)
+    canvas.roundRect(bar, 2.5f, WidgetInk.faded(ink, if (dark(moment)) 0.22 else 0.14))
+    val used = bar.width() * card.used.toFloat().coerceIn(0f, 1f)
+    if (used > 0) canvas.roundRect(RectF(bar.left, bar.top, bar.left + used, bar.bottom), 2.5f, ink)
+    val figure = number(canvas, moment, moment.postcards?.ink?.numberMedium ?: 44f, ink)
+    canvas.text(amount(moment, card.number), pad, bar.top - 4 - figure.fontMetrics.descent, figure, room, minScale = 0.5f)
+
+    val spots = ArrayList<JarSpot>()
+    var x = canvas.width - pad - (jars.size * 34f + (jars.size - 1) * 5f)
+    val label = canvas.ink(faces.body(700), 9.5f, WidgetInk.faded(ink, 0.85))
+    val labelBaseline = canvas.height - pad - 2 - label.fontMetrics.descent
+    val jarBottom = labelBaseline + label.fontMetrics.ascent - 4
+    jars.forEachIndexed { index, jar ->
+      val rect = RectF(x, jarBottom - 46, x + 34, jarBottom)
+      jar(canvas, moment, jar, index, rect, 1f, ink)
+      canvas.centred(amount(moment, jar.amountText), rect.centerX(), labelBaseline, label, 40f)
+      spots.add(JarSpot(jar, RectF(rect.left, rect.top, rect.right, labelBaseline + label.fontMetrics.descent)))
+      x += 39
+    }
+    return spots
+  }
+
+  /** A jar as the look draws it: the lid, the glass, what it holds, its icon. */
+  private fun jar(canvas: WidgetCanvas, moment: WidgetMoment, jar: PostcardJar, index: Int, rect: RectF, scale: Float, ink: Int, targetLine: Boolean = false) {
+    val look = moment.postcards?.ink
+    val lidInset = (if (scale > 1) 17f else 9f)
+    val lidH = if (scale > 1) 10f else 6f
+    val bodyTop = if (scale > 1) 8f else 5f
+    val body = RectF(rect.left, rect.top + bodyTop, rect.right, rect.bottom)
+    val shape = canvas.jarPath(body, (look?.jarRadiusTop ?: 10f) * scale, (look?.jarRadiusBottom ?: 12f) * scale)
+    val own = look?.jarFills.isNullOrEmpty()
+    canvas.clipped(shape) {
+      val glass = look?.jarBody
+      canvas.rect(body, if (glass != null) canvas.fillPaint(glass, body) else android.graphics.Paint().apply { color = WidgetInk.color(jar.glass) })
+      val level = body.height() * jar.level.toFloat().coerceIn(0f, 1f)
+      val held = RectF(body.left, body.bottom - level, body.right, body.bottom)
+      val fill = look?.jarFills?.getOrNull(index % maxOf(1, look.jarFills.size))
+      canvas.rect(held, if (fill != null) canvas.fillPaint(fill, held) else android.graphics.Paint().apply { color = WidgetInk.color(jar.fill) })
+      if (own && level > 0) canvas.line(held.left, held.top, held.right, 1.5f * scale, WidgetInk.color(jar.fillTop))
+      if (targetLine) canvas.dashedLine(body.left + 8, body.top + 16, body.right - 8, 1.5f, WidgetInk.faded(ink, if (dark(moment)) 0.4 else 0.3), 4f, 3f)
+    }
+    val edge = look?.jarEdge?.let { WidgetInk.color(it) } ?: WidgetInk.faded(ink, 0.18)
+    canvas.strokePath(shape, look?.jarEdgeWidth ?: 1f, edge)
+    canvas.roundRect(RectF(rect.left + lidInset, rect.top, rect.right - lidInset, rect.top + lidH), 3f * scale, WidgetInk.color(look?.jarLid ?: jar.lid))
+    if (look?.jarIcon != false) {
+      val size = if (scale > 1) 22f else 14f
+      val paint = canvas.ink(faces.symbol(size, filled = true), size, WidgetInk.color(if (jar.level > 0.48) jar.iconHigh else jar.iconLow))
+      canvas.glyph(jar.icon, body, paint)
+    }
+  }
+
+  /** The jar widget: the jar tall beside its name, its day, the count and what it holds. */
+  fun oneJar(canvas: WidgetCanvas, moment: WidgetMoment, jar: PostcardJar) {
+    sky(canvas, moment)
+    val ink = ink(moment)
+    val pad = 14f
+    val index = moment.postcards?.jars?.indexOfFirst { it.id == jar.id }?.coerceAtLeast(0) ?: 0
+    val jarRect = RectF(pad, pad, pad + 64, canvas.height - pad)
+    jar(canvas, moment, jar, index, jarRect, 2f, ink, targetLine = true)
+    val x = jarRect.right + 10
+    val room = canvas.width - pad - x
+    val name = canvas.ink(faces.body(700), 14f, ink)
+    var y = pad + 2 + top(name)
+    canvas.text(jar.name, x, y, name, room)
+    val soft = canvas.ink(faces.body(600), 11f, WidgetInk.faded(ink, 0.75))
+    if (jar.dayText.isNotEmpty()) canvas.text(jar.dayText, x, y + name.fontMetrics.descent + 1 + top(soft), soft, room)
+    val foot = canvas.ink(faces.body(700), 11f, ink)
+    canvas.text(amount(moment, jar.ofText), x, canvas.height - pad - 2 - foot.fontMetrics.descent, foot, room)
+    val figure = number(canvas, moment, 40f, ink)
+    y = canvas.height / 2 + 6
+    canvas.text(jar.countText, x, y, figure, room, minScale = 0.5f)
+    canvas.text(jar.countUnit, x, y + figure.fontMetrics.descent + top(soft), soft, room)
+  }
+
+  /** The streak: the evenings closed in a row as strata, the count and the sun setting into it. */
+  fun streak(canvas: WidgetCanvas, moment: WidgetMoment) {
+    val cards = moment.postcards ?: return
+    val look = cards.ink
+    canvas.fill(WidgetInk.color(look?.streakGround))
+    val foot = 62f
+    val area = RectF(6f, 6f, canvas.width - 6, canvas.height - foot)
+    val count = cards.streakBands.size + if (cards.streakOpen) 1 else 0
+    if (count > 0) {
+      val band = (area.height() - (count - 1) * 2) / count
+      var y = area.top
+      for (colours in cards.streakBands) {
+        val rect = RectF(area.left, y, area.right, y + band)
+        val paint = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG)
+        paint.shader = android.graphics.LinearGradient(rect.left, 0f, rect.right, 0f, colours.map { WidgetInk.color(it) }.toIntArray(), floatArrayOf(0f, 0.55f, 1f).copyOf(colours.size), android.graphics.Shader.TileMode.CLAMP)
+        canvas.path(Path().apply { addRoundRect(rect, 4f, 4f, Path.Direction.CW) }, paint)
+        y += band + 2
+      }
+      if (cards.streakOpen) {
+        val rect = RectF(area.left, y, area.right, y + band)
+        canvas.clipped(Path().apply { addRoundRect(rect, 4f, 4f, Path.Direction.CW) }) {
+          var x = rect.left
+          while (x < rect.right) {
+            canvas.rect(RectF(x, rect.top, x + 4, rect.bottom), android.graphics.Paint().apply { color = WidgetInk.color(look?.hatch) })
+            x += 8
+          }
+        }
+      }
+    }
+    val lineY = canvas.height - foot
+    // The sun sets into the line: only its top half shows.
+    val sunFill = look?.suns?.get("dusk") ?: look?.suns?.get("day")
+    if (sunFill != null) {
+      val rect = RectF(canvas.width - 16 - 38, lineY - 19, canvas.width - 16, lineY + 19)
+      canvas.clipped(RectF(rect.left, rect.top, rect.right, lineY)) { canvas.oval(rect, canvas.fillPaint(sunFill, rect)) }
+    }
+    canvas.line(0f, lineY, canvas.width, 1f, WidgetInk.color(look?.streakLine))
+    val light = WidgetInk.color("#ffffff")
+    val figure = number(canvas, moment, 40f, light)
+    val baseline = canvas.height - 6 - figure.fontMetrics.descent
+    val width = canvas.text(cards.streakCount.toString(), 14f, baseline, figure, canvas.width / 2)
+    val word = canvas.ink(faces.mono(), 8.5f, WidgetInk.color(look?.streakWord), trackingEm = 0.14f)
+    val line = word.fontMetrics.descent - word.fontMetrics.ascent
+    canvas.text(moment.text("streakLine1"), 14 + width + 8, baseline - 4 - line, word, canvas.width - width - 36)
+    canvas.text(moment.text("streakLine2"), 14 + width + 8, baseline - 4, word, canvas.width - width - 36)
+  }
+
+  /** The month as suns: the title, the headline, a sun for each evening and tonight's close. */
+  fun month(canvas: WidgetCanvas, moment: WidgetMoment, card: PostcardCard) {
+    val cards = moment.postcards ?: return
+    sky(canvas, moment)
+    val ink = ink(moment)
+    val side = 18f
+    val head = kicker(canvas, moment, 10f, ink)
+    var y = 18 + top(head)
+    canvas.text(cards.monthTitle, side, y, head, canvas.width - side * 2 - 40)
+    canvas.text(moment.text("brand"), canvas.width - side, y, canvas.ink(faces.display(moment.displayFont, 15f, 600), 15f, ink), 40f, alignEnd = true)
+    val headline = canvas.ink(faces.display(moment.displayFont, 26f, 500), 26f, ink, trackingEm = -0.02f)
+    y += head.fontMetrics.descent + 10 + top(headline)
+    canvas.text(cards.monthHeadline, side, y, headline, canvas.width - side * 2, minScale = 0.7f)
+    y += headline.fontMetrics.descent + 12
+    val rows = maxOf(5, (cards.monthCells.size + 6) / 7)
+    val footTop = canvas.height - 16 - 24
+    val gap = 8f
+    val dot = minOf((canvas.width - side * 2 - 12 - gap * 6) / 7, (footTop - y - 8 - (rows - 1) * 6) / rows)
+    val gridWidth = dot * 7 + gap * 6
+    val left = (canvas.width - gridWidth) / 2
+    val look = cards.ink
+    for (k in 0 until rows * 7) {
+      val cell = cards.monthCells.getOrNull(k) ?: "blank"
+      val rect = RectF(left + (k % 7) * (dot + gap), y + (k / 7) * (dot + 6), left + (k % 7) * (dot + gap) + dot, y + (k / 7) * (dot + 6) + dot)
+      when (cell) {
+        "sun" -> {
+          if (look != null) canvas.oval(rect, canvas.fillPaint(look.dotFull, rect))
+          look?.dotFullRing?.let { canvas.strokeOval(rect, 2f, WidgetInk.color(it)) }
+        }
+        "half" -> if (look != null) canvas.clipped(Path().apply { addOval(rect, Path.Direction.CW) }) { canvas.rect(rect, canvas.fillPaint(look.dotHalf, rect)) }
+        "miss" -> canvas.strokeOval(rect, 1.5f, if (look?.dotRing.isNullOrEmpty()) WidgetInk.faded(ink, 0.35) else WidgetInk.color(look?.dotRing))
+        "today" -> canvas.strokeOval(rect, 2f, WidgetInk.color(look?.today))
+        "ahead" -> canvas.strokeOval(rect, 1f, WidgetInk.faded(ink, if (dark(moment)) 0.2 else 0.18))
+      }
+    }
+    canvas.dashedLine(side, footTop, canvas.width - side, 1f, WidgetInk.faded(ink, if (dark(moment)) 0.4 else 0.3), 3f, 3f)
+    val foot = canvas.ink(faces.mono(), 11f, ink)
+    val baseline = footTop + 10 + top(foot)
+    canvas.text(moment.text("tonight"), side, baseline, foot, canvas.width / 2)
+    val tonight = if (moment.state == WidgetMoment.State.STALE) moment.text("openApp") else card.tonight
+    canvas.text(tonight, canvas.width - side, baseline, foot, canvas.width / 2, alignEnd = true)
+  }
+
+  /** Before the month is set up: "Open 6pm to set up", on the sky. */
   fun setUp(canvas: WidgetCanvas, moment: WidgetMoment, fallback: String) {
-    val known = moment.token("cardBg") != null
-    val ink = if (known) color(moment, "cardInk") else WidgetInk.PlainNight.ink
-    canvas.fill(if (known) color(moment, "cardBg") else WidgetInk.PlainNight.sheetSolid)
+    val known = moment.token("skyTop") != null
+    val ink = if (known) ink(moment) else WidgetInk.PlainNight.ink
+    if (known) sky(canvas, moment) else canvas.fill(WidgetInk.PlainNight.sheetSolid)
     val words = moment.text("setUp").ifEmpty { fallback }
     val paint = canvas.ink(faces.body(600), 13f, ink)
     canvas.centred(words, canvas.width / 2, canvas.height / 2 - (paint.fontMetrics.ascent + paint.fontMetrics.descent) / 2, paint, canvas.width - 32)
-  }
-
-  /** The companion in the hour's mood, or nothing in serious mode. Returns whether it was drawn. */
-  private fun companion(canvas: WidgetCanvas, moment: WidgetMoment, size: Int, rect: RectF): Boolean {
-    if (moment.serious) return false
-    val image: Bitmap = WidgetCompanion.load(context, moment.mood, size) ?: return false
-    canvas.picture(image, rect)
-    return true
   }
 }

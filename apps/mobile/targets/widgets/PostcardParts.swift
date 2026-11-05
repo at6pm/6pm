@@ -246,7 +246,9 @@ struct DaySun: View {
             if let crease = dots.crease { Crease(color: crease, size: size) }
           }
       case "miss":
-        shape.strokeBorder(Color(css: dots.ring), lineWidth: 1.5)
+        // A look without its own ring draws the missed evening in the sky's ink.
+        shape.strokeBorder(
+          dots.ring.isEmpty ? entry.ink.opacity(0.35) : Color(css: dots.ring), lineWidth: 1.5)
       case "today":
         shape.strokeBorder(Color(css: entry.look.today), lineWidth: 2)
       case "ahead":

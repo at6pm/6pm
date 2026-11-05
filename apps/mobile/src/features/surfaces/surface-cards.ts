@@ -9,7 +9,7 @@ import {
   type SurfaceSnapshot,
 } from '@6pm/domain';
 import { localeOf, type Language } from '@6pm/i18n';
-import { widgetSunAt, widgetSunKind } from '@6pm/theme';
+import { widgetSunAt, widgetSunKind, type LookId } from '@6pm/theme';
 
 import type { I18n } from '../../i18n/i18n';
 
@@ -43,6 +43,8 @@ export interface CardContext {
   readonly format: MoneyFormat;
   /** 'HH:MM': when the person closes. */
   readonly closeAt: string;
+  /** The look the widgets wear: Golden Hour's sun moves through the day, the others' stay clear. */
+  readonly look?: LookId;
 }
 
 /** Sentence-case words set in capitals, as the kickers are, in the app's language. */
@@ -76,7 +78,7 @@ export function cardOf(
   const shown = phase === 'closed' && closed ? closed.next : day.number;
   const safe = Math.max(0, shown.safe);
   const short = format.short(safe);
-  const sun = widgetSunAt(hour);
+  const sun = widgetSunAt(hour, context.look);
   const sunKind = widgetSunKind(hour, hoursOf(closeAt));
   const base = {
     phase,

@@ -173,7 +173,7 @@ export function surfaceSnapshot(input: SnapshotInput): SurfaceSnapshot {
   const pending = pendingCount(money);
   const list = rowsOf(money, format);
   const closeAt = money.plan?.closeAt ?? DEFAULT_CLOSE_AT;
-  const context: CardContext = { t, language, format, closeAt };
+  const context: CardContext = { t, language, format, closeAt, look: look.look };
   const closedRow = money.closedDays.find((d) => d.day === money.today) ?? null;
   const entries: Entry[] = [];
   if (today !== null) {

@@ -22,8 +22,8 @@ struct MonthView: View {
   var body: some View {
     if let card = entry.card, let month = entry.snapshot?.month {
       let rows = max(5, (month.cells.count + 6) / 7)
-      let dot: CGFloat = rows > 5 ? 28 : 34
-      VStack(alignment: .leading, spacing: 12) {
+      let dot: CGFloat = rows > 5 ? 24 : 30
+      VStack(alignment: .leading, spacing: 10) {
         HStack(alignment: .firstTextBaseline) {
           Kicker(text: month.title, entry: entry)
           Spacer(minLength: 8)
@@ -36,7 +36,7 @@ struct MonthView: View {
           .lineLimit(2)
           .minimumScaleFactor(0.7)
           .fixedSize(horizontal: false, vertical: true)
-        Grid(horizontalSpacing: 8, verticalSpacing: rows > 5 ? 6 : 8) {
+        Grid(horizontalSpacing: 8, verticalSpacing: rows > 5 ? 5 : 6) {
           ForEach(0..<rows, id: \.self) { row in
             GridRow {
               ForEach(0..<7, id: \.self) { column in

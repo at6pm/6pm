@@ -17,13 +17,16 @@ export const thWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.whenItShows': 'แสดงเมื่อไหร่',
 
   'widgetsGuide.home.title': 'วิดเจ็ตหน้าจอโฮม',
-  'widgetsGuide.home.what': 'เห็นยอดวันนี้ใช้ได้ในพริบตา แตะเพื่อเปิด 6pm',
+  'widgetsGuide.home.what':
+    'โปสการ์ดเล็กๆ ของวัน: ฟ้าจริงของชั่วโมงนี้ ดวงอาทิตย์ตรงที่มันอยู่ และตัวเลขหนึ่งตัว',
   'widgetsGuide.home.small': 'เล็ก',
   'widgetsGuide.home.medium': 'กลาง',
   'widgetsGuide.home.large': 'ใหญ่',
-  'widgetsGuide.home.smallWhat': 'ยอดที่ใช้ได้วันนี้ของคุณ',
-  'widgetsGuide.home.mediumWhat': 'ยอดเงิน พร้อมปุ่มสแกนคิวอาร์และเพิ่มด่วนข้างๆ',
-  'widgetsGuide.home.largeWhat': 'ยอดที่เหลือ และรายจ่ายล่าสุดของวันนี้',
+  'widgetsGuide.home.smallWhat':
+    'ตัวเลขวันนี้บนฟ้าของมัน โหลที่นับถอยหลัง หรือเย็นที่คุณปิดวันติดต่อกัน',
+  'widgetsGuide.home.mediumWhat': 'ตัวเลขกับฟ้าและโหลของคุณ แตะโหลเพื่อเปิด',
+  'widgetsGuide.home.largeWhat':
+    'ทั้งเดือนเป็นดวงอาทิตย์: ทุกเย็นที่คุณปิดวัน และกี่ครั้งที่อยู่ในงบ',
   'widgetsGuide.home.step1': 'แตะพื้นที่ว่างบนหน้าจอโฮมค้างไว้จนแอปเริ่มสั่น',
   'widgetsGuide.home.step2': 'แตะแก้ไขที่มุมบน แล้วแตะเพิ่มวิดเจ็ต',
   'widgetsGuide.home.step3': 'ค้นหา 6pm ปัดไปที่ขนาดที่ต้องการ แล้วแตะเพิ่มวิดเจ็ต',
@@ -34,7 +37,7 @@ export const thWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.lock.card': 'การ์ด',
   'widgetsGuide.lock.step1': 'แตะหน้าจอล็อคค้างไว้ แล้วแตะกำหนดเอง',
   'widgetsGuide.lock.step2': 'เลือกหน้าจอล็อค แล้วแตะช่องใต้นาฬิกา',
-  'widgetsGuide.lock.step3': 'แตะ 6pm แล้วเลือกแบบวงแหวนหรือการ์ด',
+  'widgetsGuide.lock.step3': 'แตะ 6pm แล้วเลือกวงแหวน ตัวเลขบรรทัดเดียว หรือโหล',
 
   'widgetsGuide.control.title': 'ศูนย์ควบคุม',
   'widgetsGuide.control.what': 'ปัดลง แตะครั้งเดียว ก็เข้าสแกนคิวอาร์หรือเพิ่มด่วนได้เลย',
@@ -53,13 +56,17 @@ export const thWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.action.note': 'อยากพูดมากกว่า? บอก Siri ว่า “จดใน 6pm” แล้วตามด้วยยอดเงิน',
 
   'widgetsGuide.live.title': 'กิจกรรมสด',
-  'widgetsGuide.live.what': 'ขึ้นมาเองระหว่างรอจ่ายคิวอาร์ และระหว่างที่คุณเดินทาง',
+  'widgetsGuide.live.what':
+    'ตอนหกโมง การปิดวันจะมาที่หน้าจอล็อก และรออยู่ตรงนั้นเมื่อมีการจ่าย QR หรือตอนเดินทาง',
   'widgetsGuide.live.step1': 'สแกนคิวอาร์แล้วจ่ายในแอปธนาคาร รายการจะรออยู่บนหน้าจอล็อค',
   'widgetsGuide.live.step2': 'แตะจ่ายแล้วเมื่อเงินออกไปแล้ว มันจะปิดไปเอง',
   'widgetsGuide.live.step3': 'ไม่ขึ้น? เข้าการตั้งค่า เปิด 6pm แล้วเปิดกิจกรรมสด',
 
   'widgetsGuide.home.addSafe': 'เพิ่ม วันนี้ใช้ได้',
-  'widgetsGuide.home.addToday': 'เพิ่ม วันนี้',
+  'widgetsGuide.lock.jar': 'โหล',
+  'widgetsGuide.home.addStreak': 'เพิ่มสถิติต่อเนื่อง',
+  'widgetsGuide.home.addJar': 'เพิ่มโหล',
+  'widgetsGuide.home.addToday': 'เพิ่มเดือนของฉัน',
   'widgetsGuide.tiles.title': 'ไทล์ในการตั้งค่าด่วน',
   'widgetsGuide.tiles.what': 'ปัดลง แตะครั้งเดียว ก็เข้าสแกนคิวอาร์หรือเพิ่มด่วนได้เลย',
   'widgetsGuide.tiles.step1': 'ปัดลงจากขอบบนของหน้าจอสองครั้ง',

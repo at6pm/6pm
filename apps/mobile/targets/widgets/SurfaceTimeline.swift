@@ -173,7 +173,7 @@ struct SurfaceEntry: TimelineEntry {
   func text(_ key: String) -> String { snapshot?.text(key) ?? "" }
   var displayFont: String? { snapshot?.strings["font.display"] }
   var card: SurfaceSnapshot.Card? { entry?.card }
-  var look: PostcardLook { snapshot?.look ?? .golden }
+  var look: PostcardLook { snapshot?.look ?? .plain }
   /// The sky is dark this stretch: its ink is light.
   var dark: Bool { tokens["dark"] == "1" }
   var hideAmounts: Bool { snapshot?.hideAmounts == true }

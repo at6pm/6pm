@@ -16,13 +16,17 @@ export const deWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.whenItShows': 'Wann es erscheint',
 
   'widgetsGuide.home.title': 'Widgets auf dem Home-Bildschirm',
-  'widgetsGuide.home.what': 'Der heute verfügbare Betrag auf einen Blick. Tippen öffnet 6pm.',
+  'widgetsGuide.home.what':
+    'Kleine Postkarten deines Tages: der echte Himmel der Stunde, die Sonne, wo sie steht, und eine Zahl.',
   'widgetsGuide.home.small': 'Klein',
   'widgetsGuide.home.medium': 'Mittel',
   'widgetsGuide.home.large': 'Groß',
-  'widgetsGuide.home.smallWhat': 'Dein heute verfügbarer Betrag.',
-  'widgetsGuide.home.mediumWhat': 'Der Betrag, daneben „QR scannen“ und „Schnell erfassen“.',
-  'widgetsGuide.home.largeWhat': 'Was übrig ist, und die neuesten Ausgaben von heute.',
+  'widgetsGuide.home.smallWhat':
+    'Die Zahl von heute auf ihrem Himmel, ein Glas, das herunterzählt, oder deine Abende in Folge.',
+  'widgetsGuide.home.mediumWhat':
+    'Die Zahl mit ihrem Himmel und deinen Gläsern. Tippe auf ein Glas, um es zu öffnen.',
+  'widgetsGuide.home.largeWhat':
+    'Der Monat als Sonnen: jeder Abend, den du abgeschlossen hast, und wie viele im Rahmen.',
   'widgetsGuide.home.step1':
     'Lege den Finger auf eine leere Stelle des Home-Bildschirms, bis die Apps wackeln.',
   'widgetsGuide.home.step2': 'Tippe oben auf „Bearbeiten“ und dann auf „Widget hinzufügen“.',
@@ -35,7 +39,8 @@ export const deWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.lock.card': 'Karte',
   'widgetsGuide.lock.step1': 'Lege den Finger auf den Sperrbildschirm und tippe auf „Anpassen“.',
   'widgetsGuide.lock.step2': 'Wähle „Sperrbildschirm“ und tippe auf den Bereich unter der Uhr.',
-  'widgetsGuide.lock.step3': 'Tippe auf 6pm und wähle den Kreis oder die Karte.',
+  'widgetsGuide.lock.step3':
+    'Tippe auf 6pm und wähle den Ring, die Zahl in einer Zeile oder ein Glas.',
 
   'widgetsGuide.control.title': 'Kontrollzentrum',
   'widgetsGuide.control.what':
@@ -58,7 +63,7 @@ export const deWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
 
   'widgetsGuide.live.title': 'Live-Aktivität',
   'widgetsGuide.live.what':
-    'Erscheint von selbst, während eine QR-Zahlung wartet und während du reist.',
+    'Um sechs kommt der Abschluss auf deinen Sperrbildschirm, und dort wartet auch eine QR-Zahlung oder deine Reise.',
   'widgetsGuide.live.step1':
     'Scanne einen QR-Code und zahl in deiner Banking-App. Die Zahlung wartet auf deinem Sperrbildschirm.',
   'widgetsGuide.live.step2':
@@ -67,7 +72,10 @@ export const deWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
     'Wird nicht angezeigt? Öffne in den Einstellungen 6pm und aktiviere „Live-Aktivitäten“.',
 
   'widgetsGuide.home.addSafe': '„Heute verfügbar“ hinzufügen',
-  'widgetsGuide.home.addToday': '„Heute“ hinzufügen',
+  'widgetsGuide.lock.jar': 'Glas',
+  'widgetsGuide.home.addStreak': 'Serie hinzufügen',
+  'widgetsGuide.home.addJar': 'Ein Glas hinzufügen',
+  'widgetsGuide.home.addToday': 'Mein Monat hinzufügen',
   'widgetsGuide.tiles.title': 'Kacheln in den Schnelleinstellungen',
   'widgetsGuide.tiles.what':
     'Runterwischen, einmal tippen, und du bist in „QR scannen“ oder „Schnell erfassen“.',

@@ -12,8 +12,12 @@
     "sixpm_shortcut_quick_add": "Tambah cepat",
     "sixpm_widget_safe_name": "Aman hari ini",
     "sixpm_widget_safe_description": "Yang bisa kamu pakai hari ini, sekali lirik.",
-    "sixpm_widget_today_name": "Hari ini",
-    "sixpm_widget_today_description": "Pengeluaranmu hari ini, yang terbaru di atas.",
+    "sixpm_widget_today_name": "Bulanku",
+    "sixpm_widget_today_description": "Sebulan sebagai matahari: setiap malam yang kamu tutup.",
+    "sixpm_widget_streak_name": "Beruntun",
+    "sixpm_widget_streak_description": "Malam yang kamu tutup berturut-turut, masing-masing dengan langitnya.",
+    "sixpm_widget_jar_name": "Satu stoples",
+    "sixpm_widget_jar_description": "Satu stoples, menghitung mundur ke harinya.",
     "sixpm_widget_set_up": "Buka 6pm untuk mengatur"
   }
 }

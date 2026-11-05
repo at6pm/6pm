@@ -15,13 +15,16 @@ export const viWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.whenItShows': 'Khi nào hiện',
 
   'widgetsGuide.home.title': 'Tiện ích Màn hình chính',
-  'widgetsGuide.home.what': 'Liếc là thấy số tiêu được hôm nay. Chạm để mở 6pm.',
+  'widgetsGuide.home.what':
+    'Những tấm bưu thiếp nhỏ của ngày: bầu trời thật của giờ này, mặt trời ở đúng chỗ, và một con số.',
   'widgetsGuide.home.small': 'Nhỏ',
   'widgetsGuide.home.medium': 'Vừa',
   'widgetsGuide.home.large': 'Lớn',
-  'widgetsGuide.home.smallWhat': 'Số tiêu được hôm nay của bạn.',
-  'widgetsGuide.home.mediumWhat': 'Con số, kèm nút Quét QR và Thêm nhanh bên cạnh.',
-  'widgetsGuide.home.largeWhat': 'Số còn lại, và các khoản chi mới nhất hôm nay.',
+  'widgetsGuide.home.smallWhat':
+    'Con số hôm nay trên bầu trời của nó, một hũ đếm ngược, hoặc những tối bạn chốt liên tiếp.',
+  'widgetsGuide.home.mediumWhat': 'Con số cùng bầu trời và các hũ của bạn. Chạm vào hũ để mở.',
+  'widgetsGuide.home.largeWhat':
+    'Cả tháng thành những mặt trời: mỗi tối bạn đã chốt, và bao nhiêu lần trong mức.',
   'widgetsGuide.home.step1': 'Chạm và giữ một chỗ trống trên Màn hình chính đến khi các app rung.',
   'widgetsGuide.home.step2': 'Chạm Sửa ở góc trên, rồi Thêm tiện ích.',
   'widgetsGuide.home.step3': 'Tìm 6pm, vuốt tới cỡ bạn muốn, rồi chạm Thêm tiện ích.',
@@ -32,7 +35,7 @@ export const viWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.lock.card': 'Thẻ',
   'widgetsGuide.lock.step1': 'Chạm và giữ Màn hình khoá, rồi chạm Tuỳ chỉnh.',
   'widgetsGuide.lock.step2': 'Chọn Màn hình khoá, rồi chạm vào ô dưới đồng hồ.',
-  'widgetsGuide.lock.step3': 'Chạm 6pm, rồi chọn vòng hoặc thẻ.',
+  'widgetsGuide.lock.step3': 'Chạm 6pm, rồi chọn vòng, con số trên một dòng hoặc một hũ.',
 
   'widgetsGuide.control.title': 'Trung tâm điều khiển',
   'widgetsGuide.control.what': 'Vuốt xuống, chạm một lần là vào Quét QR hay Thêm nhanh.',
@@ -53,14 +56,18 @@ export const viWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
     'Thích nói hơn? Nói với Siri “Log in 6pm”, rồi số tiền (Siri chưa có tiếng Việt).',
 
   'widgetsGuide.live.title': 'Hoạt động trực tiếp',
-  'widgetsGuide.live.what': 'Tự hiện khi một khoản trả QR đang chờ, và khi bạn đi du lịch.',
+  'widgetsGuide.live.what':
+    'Đến sáu giờ, việc chốt ngày hiện trên màn hình khoá, và nó chờ ở đó khi có khoản QR đang chờ hay khi bạn đi du lịch.',
   'widgetsGuide.live.step1':
     'Quét QR rồi trả trong app ngân hàng. Khoản đó chờ ngay trên Màn hình khoá.',
   'widgetsGuide.live.step2': 'Chạm Đã trả khi tiền đã đi. Nó tự đóng.',
   'widgetsGuide.live.step3': 'Không thấy? Vào Cài đặt, mở 6pm và bật Hoạt động trực tiếp.',
 
   'widgetsGuide.home.addSafe': 'Thêm Hôm nay tiêu được',
-  'widgetsGuide.home.addToday': 'Thêm Hôm nay',
+  'widgetsGuide.lock.jar': 'Hũ',
+  'widgetsGuide.home.addStreak': 'Thêm Chuỗi tối',
+  'widgetsGuide.home.addJar': 'Thêm một hũ',
+  'widgetsGuide.home.addToday': 'Thêm Tháng của tôi',
   'widgetsGuide.tiles.title': 'Ô Cài đặt nhanh',
   'widgetsGuide.tiles.what': 'Vuốt xuống, chạm một lần là vào Quét QR hay Thêm nhanh.',
   'widgetsGuide.tiles.step1': 'Vuốt từ đỉnh màn hình xuống hai lần.',

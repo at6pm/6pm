@@ -129,47 +129,6 @@ struct PostcardLook: Decodable {
   }()
 }
 
-extension PostcardLook.Fill {
-  init(kind: String, stops: [PostcardLook.Stop], center: [Double]?, angle: Double?) {
-    self.kind = kind
-    self.stops = stops
-    self.center = center
-    self.angle = angle
-  }
-}
-
-extension PostcardLook {
-  init(
-    id: String, ground: Ground?, suns: Suns, sunAspect: Double, sunRing: Ring?, sunCrease: String?,
-    frame: [Ring], dots: Dots, jar: Jar, numberShadows: [Shadow], numberGlow: [Shadow],
-    displayWeight: Double, numberMedium: Double, numberSmall: Double, numberTracking: Double,
-    mono: Bool, streakGround: String, streakLine: String, streakWord: String, hatch: String,
-    today: String
-  ) {
-    self.id = id
-    self.ground = ground
-    self.suns = suns
-    self.sunAspect = sunAspect
-    self.sunRing = sunRing
-    self.sunCrease = sunCrease
-    self.frame = frame
-    self.dots = dots
-    self.jar = jar
-    self.numberShadows = numberShadows
-    self.numberGlow = numberGlow
-    self.displayWeight = displayWeight
-    self.numberMedium = numberMedium
-    self.numberSmall = numberSmall
-    self.numberTracking = numberTracking
-    self.mono = mono
-    self.streakGround = streakGround
-    self.streakLine = streakLine
-    self.streakWord = streakWord
-    self.hatch = hatch
-    self.today = today
-  }
-}
-
 /// A fill as CSS draws it, over the frame it is given: a colour, a radial or linear gradient, the
 /// Riso halftone, or Long Exposure's trails.
 struct FillView: View {
@@ -286,6 +245,14 @@ extension View {
             .blur(radius: shadow.blur / 2)
         }
       }
+      // As in CSS, a shadow is never drawn under its shape: a clear disc stays clear.
+      .mask {
+        ZStack {
+          Rectangle().padding(-120)
+          shape.blendMode(.destinationOut)
+        }
+        .compositingGroup()
+      }
     }
   }
 
@@ -304,6 +271,8 @@ struct SunDisc: View {
   let sun: PostcardLook.Sun
   let look: PostcardLook
   let size: CGFloat
+  /// Its glow; the streak's half sun, cut at the line, has none.
+  var glows = true
 
   var body: some View {
     let width = size * look.sunAspect
@@ -326,7 +295,7 @@ struct SunDisc: View {
         }
       }
       .frame(width: width, height: size)
-      .boxShadows(sun.shadows, shape: Ellipse())
+      .boxShadows(glows ? sun.shadows : [], shape: Ellipse())
   }
 }
 

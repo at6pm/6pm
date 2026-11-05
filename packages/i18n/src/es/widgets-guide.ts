@@ -17,13 +17,16 @@ export const esWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.whenItShows': 'Cuándo aparece',
 
   'widgetsGuide.home.title': 'Widgets de la pantalla de inicio',
-  'widgetsGuide.home.what': 'Lo que puedes gastar hoy, de un vistazo. Toca uno para abrir 6pm.',
+  'widgetsGuide.home.what':
+    'Pequeñas postales de tu día: el cielo real de la hora, el sol donde está y un número.',
   'widgetsGuide.home.small': 'Pequeño',
   'widgetsGuide.home.medium': 'Mediano',
   'widgetsGuide.home.large': 'Grande',
-  'widgetsGuide.home.smallWhat': 'Lo que puedes gastar hoy.',
-  'widgetsGuide.home.mediumWhat': 'El número, con Escanear QR y Añadir rápido al lado.',
-  'widgetsGuide.home.largeWhat': 'Lo que te queda y los últimos gastos de hoy.',
+  'widgetsGuide.home.smallWhat':
+    'El número de hoy en su cielo, un bote en cuenta atrás o las noches que cerraste seguidas.',
+  'widgetsGuide.home.mediumWhat': 'El número con su cielo y tus botes. Toca un bote para abrirlo.',
+  'widgetsGuide.home.largeWhat':
+    'El mes en soles: cada noche que cerraste y cuántas dentro del límite.',
   'widgetsGuide.home.step1':
     'Mantén pulsado un espacio vacío de tu pantalla de inicio hasta que las apps se muevan.',
   'widgetsGuide.home.step2': 'Toca Editar en la esquina superior y luego Añadir widget.',
@@ -35,7 +38,7 @@ export const esWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.lock.card': 'Tarjeta',
   'widgetsGuide.lock.step1': 'Mantén pulsada la pantalla de bloqueo y toca Personalizar.',
   'widgetsGuide.lock.step2': 'Elige Pantalla de bloqueo y toca el espacio bajo el reloj.',
-  'widgetsGuide.lock.step3': 'Toca 6pm y elige el anillo o la tarjeta.',
+  'widgetsGuide.lock.step3': 'Toca 6pm y elige el anillo, el número en una línea o un bote.',
 
   'widgetsGuide.control.title': 'Centro de control',
   'widgetsGuide.control.what':
@@ -56,14 +59,18 @@ export const esWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.action.note': '¿Prefieres decirlo? Dile a Siri “Apunta en 6pm” y luego el importe.',
 
   'widgetsGuide.live.title': 'Actividad en vivo',
-  'widgetsGuide.live.what': 'Aparece sola mientras espera un pago por QR, y mientras viajas.',
+  'widgetsGuide.live.what':
+    'A las seis el cierre llega a tu pantalla de bloqueo, y ahí espera también un pago QR o tu viaje.',
   'widgetsGuide.live.step1':
     'Escanea un QR y paga en la app de tu banco. El pago espera en tu pantalla de bloqueo.',
   'widgetsGuide.live.step2': 'Toca Pagado cuando haya salido el dinero. Se cierra sola.',
   'widgetsGuide.live.step3': '¿No aparece? En Ajustes, abre 6pm y activa Actividades en vivo.',
 
   'widgetsGuide.home.addSafe': 'Añadir Puedes gastar hoy',
-  'widgetsGuide.home.addToday': 'Añadir Hoy',
+  'widgetsGuide.lock.jar': 'Bote',
+  'widgetsGuide.home.addStreak': 'Añadir Racha',
+  'widgetsGuide.home.addJar': 'Añadir un bote',
+  'widgetsGuide.home.addToday': 'Añadir Mi mes',
   'widgetsGuide.tiles.title': 'Recuadros de Ajustes rápidos',
   'widgetsGuide.tiles.what':
     'Desliza hacia abajo, toca una vez y entras en Escanear QR o Añadir rápido.',

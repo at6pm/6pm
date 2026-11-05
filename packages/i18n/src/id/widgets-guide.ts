@@ -17,13 +17,17 @@ export const idWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.whenItShows': 'Kapan muncul',
 
   'widgetsGuide.home.title': 'Widget Layar Utama',
-  'widgetsGuide.home.what': 'Angka aman hari ini, sekali lirik. Ketuk untuk membuka 6pm.',
+  'widgetsGuide.home.what':
+    'Kartu pos kecil harimu: langit asli jam ini, matahari di tempatnya, dan satu angka.',
   'widgetsGuide.home.small': 'Kecil',
   'widgetsGuide.home.medium': 'Sedang',
   'widgetsGuide.home.large': 'Besar',
-  'widgetsGuide.home.smallWhat': 'Angka amanmu untuk hari ini.',
-  'widgetsGuide.home.mediumWhat': 'Angkanya, dengan Pindai QR dan Tambah cepat di sebelahnya.',
-  'widgetsGuide.home.largeWhat': 'Sisa hari ini, dan pengeluaran terbaru hari ini.',
+  'widgetsGuide.home.smallWhat':
+    'Angka hari ini di langitnya, satu stoples menghitung mundur, atau malam yang kamu tutup berturut-turut.',
+  'widgetsGuide.home.mediumWhat':
+    'Angka dengan langitnya dan stoplesmu. Ketuk stoples untuk membukanya.',
+  'widgetsGuide.home.largeWhat':
+    'Sebulan sebagai matahari: setiap malam yang kamu tutup, dan berapa dalam batas.',
   'widgetsGuide.home.step1':
     'Sentuh dan tahan area kosong di Layar Utama sampai aplikasinya bergoyang.',
   'widgetsGuide.home.step2': 'Ketuk Edit di pojok atas, lalu Tambah Widget.',
@@ -35,7 +39,7 @@ export const idWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.lock.card': 'Kartu',
   'widgetsGuide.lock.step1': 'Sentuh dan tahan Layar Terkunci, lalu ketuk Sesuaikan.',
   'widgetsGuide.lock.step2': 'Pilih Layar Terkunci, lalu ketuk area di bawah jam.',
-  'widgetsGuide.lock.step3': 'Ketuk 6pm, lalu pilih cincin atau kartu.',
+  'widgetsGuide.lock.step3': 'Ketuk 6pm, lalu pilih cincin, angka dalam satu baris, atau stoples.',
 
   'widgetsGuide.control.title': 'Pusat Kontrol',
   'widgetsGuide.control.what':
@@ -57,7 +61,8 @@ export const idWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
     'Lebih suka bicara? Bilang ke Siri “Log in 6pm”, lalu jumlahnya (Siri belum berbahasa Indonesia).',
 
   'widgetsGuide.live.title': 'Aktivitas Langsung',
-  'widgetsGuide.live.what': 'Muncul sendiri saat pembayaran QR menunggu, dan saat kamu bepergian.',
+  'widgetsGuide.live.what':
+    'Jam enam, penutupan muncul di layar kuncimu, dan di sana juga menunggu pembayaran QR atau perjalananmu.',
   'widgetsGuide.live.step1':
     'Pindai QR lalu bayar di aplikasi bankmu. Pembayarannya menunggu di Layar Terkunci.',
   'widgetsGuide.live.step2': 'Ketuk Dibayar setelah uangnya terkirim. Tertutup sendiri.',
@@ -65,7 +70,10 @@ export const idWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
     'Tidak muncul? Di Pengaturan, buka 6pm lalu nyalakan Aktivitas Langsung.',
 
   'widgetsGuide.home.addSafe': 'Tambah Aman hari ini',
-  'widgetsGuide.home.addToday': 'Tambah Hari ini',
+  'widgetsGuide.lock.jar': 'Stoples',
+  'widgetsGuide.home.addStreak': 'Tambah Beruntun',
+  'widgetsGuide.home.addJar': 'Tambah stoples',
+  'widgetsGuide.home.addToday': 'Tambah Bulanku',
   'widgetsGuide.tiles.title': 'Kartu Setelan Cepat',
   'widgetsGuide.tiles.what':
     'Geser ke bawah, ketuk sekali, dan kamu langsung di Pindai QR atau Tambah cepat.',

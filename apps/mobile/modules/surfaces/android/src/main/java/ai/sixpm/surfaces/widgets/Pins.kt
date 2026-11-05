@@ -18,7 +18,9 @@ object Pins {
   private fun widget(context: Context, kind: String): ComponentName? =
     when (kind) {
       "safe" -> ComponentName(context, SafeTodayWidget::class.java)
-      "today" -> ComponentName(context, TodayListWidget::class.java)
+      "today", "month" -> ComponentName(context, TodayListWidget::class.java)
+      "streak" -> ComponentName(context, StreakWidget::class.java)
+      "jar" -> ComponentName(context, JarWidget::class.java)
       else -> null
     }
 

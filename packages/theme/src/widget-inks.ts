@@ -56,7 +56,7 @@ export interface WidgetLookInk {
   readonly dots: {
     readonly full: WidgetFill;
     readonly half: WidgetFill;
-    /** A missed evening's ring. */
+    /** A missed evening's ring; empty draws it in the sky's ink (Golden Hour, day and night). */
     readonly ring: string;
     readonly aspect: number;
     /** A ring a whole sun is drawn with (Neon Alley), and its glow. */
@@ -173,7 +173,7 @@ export const widgetInks: Readonly<Record<LookId, WidgetLookInk>> = {
       dusk: sun(GOLDEN_DUSK, halo(8, '#ffc83e2e'), glow(60, '#ff438266', 26)),
       night: sun(radial([0.4, 0.4], ['#f4f1e6', 0], ['#d8d4c6', 0.7]), glow(30, '#ffffff22', 6)),
     },
-    dots: dots(GOLDEN_DUSK, half('#ffc46b', 'rgba(255,196,107,0.22)'), 'rgba(251,244,236,0.35)'),
+    dots: dots(GOLDEN_DUSK, half('#ffc46b', 'rgba(255,196,107,0.22)'), ''),
     jar: {
       lid: null,
       body: null,
@@ -587,23 +587,42 @@ export const widgetInks: Readonly<Record<LookId, WidgetLookInk>> = {
  * one (`xs`, `ys`): "6pm Widgets" sets it at 07:00, 13:00, 18:00 and 21:00 (the moon), and the
  * hours between take the way between.
  */
-const SUN_STOPS: readonly (readonly [number, number, number, number, number])[] = [
+type SunStop = readonly [number, number, number, number, number];
+
+const SUN_STOPS: readonly SunStop[] = [
   [7, 0.18, 0.706, 0.2, 0.765],
   [13, 0.52, 0.247, 0.55, 0.235],
   [18, 0.84, 0.753, 0.82, 0.812],
   [21, 0.8, 0.235, 0.78, 0.212],
 ];
 
-export function widgetSunAt(hour: number): {
+/**
+ * The other looks keep their one sun clear of the number ("6pm Widgets in Looks"): high through
+ * the day, and at six low on the small widget and high on the medium one.
+ */
+const LOOK_SUN_STOPS: readonly SunStop[] = [
+  [13, 0.46, 0.2, 0.74, 0.2],
+  [18, 0.46, 0.235, 0.82, 0.753],
+];
+
+export function widgetSunAt(
+  hour: number,
+  look: LookId = 'golden',
+): {
   readonly x: number;
   readonly y: number;
   readonly xs: number;
   readonly ys: number;
 } {
-  const first = SUN_STOPS[0];
-  const last = SUN_STOPS[SUN_STOPS.length - 1];
+  const stops = look === 'golden' ? SUN_STOPS : LOOK_SUN_STOPS;
+  return sunBetween(stops, hour);
+}
+
+function sunBetween(stops: readonly SunStop[], hour: number) {
+  const first = stops[0];
+  const last = stops[stops.length - 1];
   if (!first || !last) return { x: 0.5, y: 0.5, xs: 0.5, ys: 0.5 };
-  const at = (s: readonly [number, number, number, number, number]) => ({
+  const at = (s: SunStop) => ({
     x: s[1],
     y: s[2],
     xs: s[3],
@@ -611,9 +630,9 @@ export function widgetSunAt(hour: number): {
   });
   if (hour <= first[0]) return at(first);
   if (hour >= last[0]) return at(last);
-  for (let i = 1; i < SUN_STOPS.length; i += 1) {
-    const a = SUN_STOPS[i - 1];
-    const b = SUN_STOPS[i];
+  for (let i = 1; i < stops.length; i += 1) {
+    const a = stops[i - 1];
+    const b = stops[i];
     if (!a || !b || hour > b[0]) continue;
     const t = (hour - a[0]) / (b[0] - a[0]);
     const mix = (k: 1 | 2 | 3 | 4) => Math.round((a[k] + (b[k] - a[k]) * t) * 1000) / 1000;

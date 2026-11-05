@@ -19,6 +19,7 @@ import { DiaryPage } from '../diary/diary-page';
 import { PlanPage } from '../plan/plan-page';
 import { TodayPage } from '../today/today-page';
 import { onDiaryTabRequest } from '../today/diary-request';
+import { onHomeTabRequest } from './home-tab-request';
 import { HeaderMeasureProvider, useHeaderGeoms } from './header-measure';
 import { HomeNavProvider, type HomeNav } from './home-nav';
 import { HomePage } from './home-page';
@@ -110,6 +111,7 @@ function Shell({ day, initialTab }: { readonly day: DailyNumber; readonly initia
   const homeNav = useMemo<HomeNav>(() => ({ tabIndex, goToTab }), [tabIndex, goToTab]);
   const openDiary = useCallback(() => goToTab('diary'), [goToTab]);
   useEffect(() => onDiaryTabRequest(openDiary), [openDiary]);
+  useEffect(() => onHomeTabRequest(goToTab), [goToTab]);
 
   // Plan and Diary are built when Today has settled, so the first frame holds only what is shown.
   useEffect(() => {

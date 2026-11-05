@@ -117,6 +117,7 @@ struct JarSmall: View {
           Text(jar.name).font(SurfaceFont.body(size: 14, weight: 700)).lineLimit(1)
           if !jar.dayText.isEmpty {
             Text(jar.dayText).font(SurfaceFont.body(size: 11, weight: 600)).opacity(0.75)
+              .lineLimit(1).minimumScaleFactor(0.7)
           }
         }
         Spacer(minLength: 0)
