@@ -90,6 +90,8 @@ struct ReceiptView: View {
           .overlay(RoundedRectangle(cornerRadius: 5).stroke(ThemeTokens.Paper.stamp, lineWidth: 2.5))
           .rotationEffect(.degrees(-7))
           .opacity(0.92)
+          // Pressed into the paper: the lines under it show through, as ink on ink does.
+          .blendMode(.multiply)
           .padding(.top, 42)
           .padding(.trailing, 22)
         }

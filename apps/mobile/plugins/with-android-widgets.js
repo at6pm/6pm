@@ -57,7 +57,7 @@ const WIDGETS = [
     resize: [250, 250],
     name: 'sixpm_widget_month_name',
     description: 'sixpm_widget_month_description',
-    preview: null,
+    preview: 'sixpm_widget_month_preview',
   },
   {
     receiver: 'WeekWidget',
@@ -67,7 +67,7 @@ const WIDGETS = [
     resize: [110, 110],
     name: 'sixpm_widget_week_name',
     description: 'sixpm_widget_week_description',
-    preview: null,
+    preview: 'sixpm_widget_week_preview',
   },
   {
     receiver: 'ReceiptWidget',
@@ -77,7 +77,7 @@ const WIDGETS = [
     resize: [250, 110],
     name: 'sixpm_widget_receipt_name',
     description: 'sixpm_widget_receipt_description',
-    preview: null,
+    preview: 'sixpm_widget_receipt_preview',
   },
   {
     receiver: 'StreakWidget',
