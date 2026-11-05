@@ -1,16 +1,24 @@
 import { jarPartOf, moneyDayOf, type LocalDate, type SpendStatus } from '@6pm/domain';
 
-import { topUpOf } from './pot-moves';
+import { isAlreadySavedId, topUpOf } from './pot-moves';
 import type { SqlDatabase } from './table';
 
 /**
- * One line of a jar's page: a payday's set-aside, money added by hand (Add on its page), a spend
- * taken from it, or the jar starting (with what it held before 6pm, if anything).
+ * One line of a jar's page: a payday's set-aside, money added by hand (Add on its page, out of
+ * this cycle's money or already saved), a spend taken from it, or the jar starting (with what it
+ * held before 6pm, if anything).
  */
 export type JarHistoryEntry =
   | { readonly kind: 'payday'; readonly day: LocalDate; readonly amount: number }
   | {
       readonly kind: 'topUp';
+      readonly day: LocalDate;
+      readonly amount: number;
+      /** Its row, so it can be removed. */
+      readonly moveId: string;
+    }
+  | {
+      readonly kind: 'alreadySaved';
       readonly day: LocalDate;
       readonly amount: number;
       /** Its row, so it can be removed. */
@@ -50,11 +58,11 @@ interface SpendColumns {
 }
 
 /** Lines of one day: the jar starting first, then the payday, then the rest as they happened. */
-const RANK = { started: 0, payday: 1, topUp: 2, spent: 2 } as const;
+const RANK = { started: 0, payday: 1, topUp: 2, alreadySaved: 2, spent: 2 } as const;
 
 /**
  * A jar's moves for its page, newest first: every payday's set-aside (filed on its payday, never
- * a payday that put nothing in), every top-up, the spends taken from it (only the part the jar
+ * a payday that put nothing in), every top-up and add of money already saved, the spends taken from it (only the part the jar
  * covered, and only while they still count) and the day it started. `notDaily` are the categories
  * that do not count, so a spend in one never took anything from the jar.
  */
@@ -83,7 +91,19 @@ export async function readJarHistory(
     moves.flatMap((m) => (m.kind === 'topUp' && m.amount < 0 ? [topUpOf(m.id)] : [])),
   );
   for (const m of moves) {
-    if (m.kind === 'opening') opening += m.amount;
+    if (m.kind === 'opening' && isAlreadySavedId(m.id)) {
+      if (m.amount > 0) {
+        lines.push({
+          entry: {
+            kind: 'alreadySaved',
+            day: moneyDayOf(new Date(m.at)),
+            amount: m.amount,
+            moveId: m.id,
+          },
+          at: m.at,
+        });
+      }
+    } else if (m.kind === 'opening') opening += m.amount;
     else if (m.kind === 'setAside' && m.amount > 0) {
       lines.push({ entry: { kind: 'payday', day: m.cycle, amount: m.amount }, at: m.at });
     } else if (m.kind === 'topUp' && m.amount > 0 && !takenBack.has(m.id)) {

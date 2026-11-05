@@ -121,3 +121,22 @@ describe('a jar’s moves after one was removed', () => {
     expect(after).toHaveLength(before.length - 1);
   });
 });
+
+describe('money already saved, added later', () => {
+  it('shows each add on its own day, apart from what the jar started with', async () => {
+    const db = openMemoryDb();
+    await seed(db);
+    await db.runAsync(
+      "INSERT INTO pot_moves (id, pot_id, amount, kind, cycle, at) VALUES ('already-saved:a', 'tet', 3000000, 'opening', '2026-09-30', '2026-10-04T05:00:00.000Z')",
+      [],
+    );
+    const lines = await readJarHistory(db, pot, new Set(['rent']));
+    expect(lines[0]).toEqual({
+      kind: 'alreadySaved',
+      day: '2026-10-04',
+      amount: 3_000_000,
+      moveId: 'already-saved:a',
+    });
+    expect(lines.at(-1)).toEqual({ kind: 'started', day: '2026-08-01', amount: 1_000_000 });
+  });
+});

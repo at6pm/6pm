@@ -16,17 +16,26 @@ import { scheduleOnRN } from 'react-native-worklets';
 import {
   cycleFutureYou,
   cycleMonth,
+  dailyNumber,
   futureYouResume,
   jarsEachPayday,
+  lineWithTopUp,
+  nextSetAsideWith,
   potMonthsLeft,
   whatIfRange,
+  type JarAddFrom,
 } from '@6pm/domain';
 import { curves, durations } from '@6pm/theme';
 
+import { readJarAddFrom, writeJarAddFrom } from '../../data/jar-add-from';
 import { readJarHistory, type JarHistoryEntry } from '../../data/jar-history';
 import { useMoney, useMoneyActions, useMoneyStore } from '../../data/money-provider';
 import { dailyInputOf, dayOf } from '../../data/money-store';
-import { usePlanActions, type RemovedTopUp } from '../../data/plan-actions';
+import {
+  usePlanActions,
+  type RemovedAlreadySaved,
+  type RemovedTopUp,
+} from '../../data/plan-actions';
 import { useI18n } from '../../i18n/i18n';
 import { haptics } from '../../ui/haptics';
 import { Symbol } from '../../ui/icons/symbol';
@@ -37,6 +46,7 @@ import { body } from '../../ui/type/fonts';
 import { useOfferUndo } from '../../ui/undo/undo-host';
 import { useRunAction } from '../companion/use-run-action';
 import { AmountKeypadSheet } from '../quick-add/amount-keypad-sheet';
+import { JarAddChoice, JarAddLines } from './jar-add-from';
 import { JarHero } from './jar-hero';
 import { setJarAway, takeFlightSource } from './jar-flight';
 import { JarActions, JarMoves } from './jar-page-parts';
@@ -191,6 +201,20 @@ export function JarPage({
   }, [store, pot, notDailyKey, snap.potMoves, snap.cycleSpends]);
 
   const [adding, setAdding] = useState(false);
+  // Where Add takes the money from, as last chosen for this jar on this phone.
+  const [addFrom, setAddFrom] = useState<JarAddFrom>('cycle');
+  useEffect(() => {
+    let live = true;
+    readJarAddFrom(store.db, id).then(
+      (from) => {
+        if (live) setAddFrom(from);
+      },
+      () => undefined,
+    );
+    return () => {
+      live = false;
+    };
+  }, [store, id]);
   if (jar === null || pot === null) return null;
 
   const slice = input ? cycleFutureYou(input) : committed;
@@ -237,6 +261,20 @@ export function JarPage({
       offerUndo(t('pots.move.removedTopUp', { amount: short }), undoLabel, () => {
         void run(() => actions.restoreTopUp(undo));
       });
+    } else if (line.kind === 'alreadySaved') {
+      const done: { removed: RemovedAlreadySaved | null } = { removed: null };
+      const ok = await run(async () => {
+        done.removed = await actions.removeAlreadySaved(line.moveId);
+      });
+      const undo = done.removed;
+      if (!ok || undo === null) return;
+      offerUndo(
+        t('pots.move.removedAlreadySaved', { amount: short, name: jar.name }),
+        undoLabel,
+        () => {
+          void run(() => actions.restoreAlreadySaved(undo));
+        },
+      );
     } else if (line.kind === 'spent') {
       const spend = await store.tables.spends.get(line.spendId);
       if (!spend || spend.fromPot !== jar.id) return;
@@ -390,8 +428,42 @@ export function JarPage({
         <AmountKeypadSheet
           title={t('pots.page.addTitle', { name: jar.name })}
           decimals={format.money.currency.minorDigits > 0}
+          above={
+            <JarAddChoice
+              from={addFrom}
+              onFrom={(from) => {
+                setAddFrom(from);
+                void writeJarAddFrom(store.db, jar.id, from).catch(() => undefined);
+              }}
+            />
+          }
+          below={(amount) => {
+            const line = input ? dailyNumber(input).line : 0;
+            return (
+              <JarAddLines
+                from={addFrom}
+                dayBefore={line}
+                dayAfter={input ? lineWithTopUp(input, amount) : line}
+                payday={
+                  snap.plan
+                    ? nextSetAsideWith({
+                        pot,
+                        moves: snap.potMoves,
+                        cycle: snap.cycle,
+                        payday: snap.plan.payday,
+                        amount,
+                        currency: format.money.currency,
+                      })
+                    : null
+                }
+                dated={pot.neededBy !== null}
+                short={(amount) => format.money.short(amount)}
+              />
+            );
+          }}
           onAmount={(amount) => {
-            void run(() => actions.topUp(jar.id, amount)).then((ok) => {
+            const add = addFrom === 'saved' ? actions.addAlreadySaved : actions.topUp;
+            void run(() => add(jar.id, amount)).then((ok) => {
               if (ok) haptics.success();
             });
           }}

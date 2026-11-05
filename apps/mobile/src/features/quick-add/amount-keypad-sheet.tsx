@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Modal, Pressable, Text, useWindowDimensions, View } from 'react-native';
 import { GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
@@ -40,10 +40,16 @@ export function AmountKeypadSheet({
   title,
   decimals = false,
   inks,
+  above,
+  below,
   onAmount,
   onClose,
 }: {
   readonly title: string;
+  /** Shown between the title and the amount (a jar's Add: where the money comes from). */
+  readonly above?: ReactNode;
+  /** Shown under the amount, given what is typed so far (what it does to the numbers). */
+  readonly below?: (amount: number) => ReactNode;
   /** Inks of the screen it opens over; the look's otherwise. */
   readonly inks?: KeypadSheetInks | undefined;
   /** Offer the decimal key when the home currency has decimals. */
@@ -112,6 +118,7 @@ export function AmountKeypadSheet({
                 }}
               />
               <Text style={{ ...body(17, 650), color: ink.ink, textAlign: 'center' }}>{title}</Text>
+              {above}
               <FitWidth height={52} align="center">
                 <AmountText
                   parts={typedParts(keys.digits, money)}
@@ -125,6 +132,7 @@ export function AmountKeypadSheet({
                   }}
                 />
               </FitWidth>
+              {below?.(amount)}
               <Keypad
                 onPress={(key: KeypadKey) => setKeys((k) => pressKey(k, key))}
                 ink={ink.ink}

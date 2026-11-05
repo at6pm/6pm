@@ -86,9 +86,29 @@ export async function recordDueSetAsides(
   return due.map((d) => ({ potId: d.potId, kind: 'setAside', cycle: d.cycle, amount: d.amount }));
 }
 
+/** The opening move of what a jar held when it started ("Jar started"). */
+export function openingId(potId: string): string {
+  return `opening:${potId}`;
+}
+
+const ALREADY_SAVED = 'already-saved:';
+
+/**
+ * A later add of money already saved (Add, "Already saved"): an opening move of its own, so it
+ * counts like what the jar started with, and keeps its own amount and day.
+ */
+export function alreadySavedId(key: string): string {
+  return `${ALREADY_SAVED}${key}`;
+}
+
+export function isAlreadySavedId(id: string): boolean {
+  return id.startsWith(ALREADY_SAVED);
+}
+
 /**
  * Sets what a pot already held before 6pm: its one opening move, replaced on every edit and
  * removed at 0. It is filed in the cycle it was typed in, but counts as saved before every cycle.
+ * Money already saved that was added later keeps its own moves.
  */
 export async function writeOpening(
   db: SqlDatabase,
@@ -96,7 +116,7 @@ export async function writeOpening(
   amount: number,
   cycle: LocalDate,
 ): Promise<void> {
-  const id = `opening:${potId}`;
+  const id = openingId(potId);
   const held = Math.max(0, Math.round(amount));
   if (held === 0) {
     await db.runAsync('DELETE FROM pot_moves WHERE id = ?', [id]);
