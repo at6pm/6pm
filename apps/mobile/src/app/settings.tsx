@@ -20,7 +20,6 @@ import { CaptureSettingsSection } from '../features/capture-guide/capture-settin
 import { useDeleteBackup } from '../features/backup/use-backup';
 import { ExportRow } from '../features/export/export-row';
 import { ImportSettingsRow } from '../features/import/import-row';
-import { ImportUndoCards } from '../features/import/import-undo';
 import { usePurchases } from '../features/purchases/purchases-provider';
 import { useCompanionSettingsStore } from '../features/companion/companion-settings-provider';
 import { useLookSettingsStore } from '../features/looks/look-settings-provider';
@@ -241,7 +240,6 @@ export default function Settings() {
           ) : null}
           <ExportRow />
         </SettingsSection>
-        <ImportUndoCards />
         <PressScale
           accessibilityRole="button"
           accessibilityState={{ busy: deleting }}
