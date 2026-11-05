@@ -43,17 +43,24 @@ const reflow = LinearTransition.duration(200).easing(easeInOut);
 export function SpendDetails({
   id,
   onDeleted,
+  offerDeleteUndo,
 }: {
   readonly id: string;
   /** The spend is gone: close the sheet, or turn the page back to the month. */
   readonly onDeleted: () => void;
+  /**
+   * Where the delete's undo is offered: in the sheet, the app's own bar, since the sheet closes
+   * as the spend goes. The photo's undo stays with the nearest bar.
+   */
+  readonly offerDeleteUndo?: ReturnType<typeof useOfferUndo>;
 }) {
   const { palette } = useTheme();
   const { t, language, weekdayDate } = useI18n();
   const snap = useMoney();
   const actions = useMoneyActions();
   const labels = useSpendLabels();
-  const offerUndo = useOfferUndo();
+  const nearestUndo = useOfferUndo();
+  const offerUndo = offerDeleteUndo ?? nearestUndo;
   const say = useCompanionToast();
   const run = useRunAction();
   const money = useMoneyFormat();
