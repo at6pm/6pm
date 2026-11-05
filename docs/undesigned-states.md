@@ -170,7 +170,7 @@ fakes behaviour the app cannot fake. Founder review.
 | Onboarding · Bills | Due day | A small day wheel beside the amount wheels, captioned "Due day" | The deck asks only the amount |
 | Diary · Calendar | Earlier months | Round chevrons beside the month title | The design shows one month |
 | Diary · Shelf | This month’s cover | Opens the money diary as it stands | The prototype leaves it inert |
-| Settings | Notifications off | A "Close reminder: Off" row under Close time; asks once if iOS still can, else opens iOS Settings; gone once allowed | The prototype has no off state |
+| Settings | Notifications | A "Notifications" row under Close time, "On" or "Off" (the phone's permission), opening Settings › Your day › Notifications | The prototype has no notification settings |
 | Settings | Close time | Tapping the row opens the onboarding wheels inline, 15:00–23:45 in 15-minute steps | The prototype cycles five stops; product decisions require the full range |
 | Settings | Delete all busy or failed | The button reads "Deleting…"; on failure a toast, and the sheet stays |  |
 | Scan | Bank app opened but 6pm never left the foreground | "I’m back" fades in after 4 s | A stuck overlay on a modal that cannot be swiped away |
@@ -500,6 +500,12 @@ fakes behaviour the app cannot fake. Founder review.
 | Details · receipt photo | The largest text sizes | Past 1.3× text the name needs the header's whole width, so the print sits centred under the date instead of at the top right | The canvas is drawn at the default size |
 | Close card · receipt photo | Where the print stands | 6 pt above the card's top edge, not the design's 34 pt: the app's hint line ("Right to keep · left to edit · …") sits in that room | The canvas has no hint line over the card |
 | Details · full view | The largest text sizes | The header, hint and buttons grow with the text size up to 1.35× and no further, one line each, so they never cover the photo | The canvas is drawn at the default size |
+| Settings › Notifications | The whole screen | Settings' own sections and rows: "On this phone" (Allowed, Turn on, which asks once, or Off in Settings, which opens iOS Settings), "What 6pm sends" with a switch per kind and what each sends under its name, "Lock screen" with Show amounts on the lock screen (off), and the one-a-day rule as a note | No canvas; the plan names the switches |
+| Who owes me · person sheet | Remind me | A full-width button under Paid in cash and Ask again, in their style; tapped, it opens into three outlined chips (In 3 days, In a week, On payday) and, once one is set, Don't remind me; the button then reads "Reminding you Sat 28 Nov" and a toast says when | The canvas has no reminder |
+| Who owes me · opened from a reminder | Ask ready | The person's Ask opens over the list (the receiving account first when none is typed); outside đồng, their sheet opens instead | The canvas has no reminder |
+| Notifications | Words without amounts | Every kind has a line with no number, used until amounts are allowed on the lock screen | iOS cannot hide a part of a notification on the lock screen only |
+| Notifications · Android | Their channels | Close reminder and Reminders you set ring with a banner; Payday and Capture ring without one; the quiet "Caught" stays in its own silent channel | Android groups notifications by channel |
+| First catch | 6pm open when it lands | No notification: the catching step (or Today) shows the catch itself; a first catch between 22:00 and 08:00 is not said at all | The rule allows nothing at night but the close |
 | Widgets · Streak | No evening closed in a row yet | "0" over the strata, with only tonight's hatched band | The canvas shows a run of 8 |
 | Widgets · Streak | In a look other than Golden Hour | The look's darkest ground, its accent for the line and the words, its dusk sun setting into the line; Basic's evenings, all one black, are drawn in the system's blue to purple | The canvases draw the streak in Golden Hour only |
 | Widgets · A jar | A jar with no date | The count is how full it is ("62%" over "full"), or what it holds over "saved" with no target | The canvas shows the Tết jar counting down |

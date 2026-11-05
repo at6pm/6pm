@@ -42,6 +42,7 @@ import { jaFirstCatch } from './first-catch';
 import { jaPhoto } from './photo';
 import { jaImport } from './import';
 import { jaOwed } from './owed';
+import { jaNotifications } from './notifications';
 import { jaSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
@@ -94,6 +95,7 @@ export const ja: Catalogue = {
   ...jaOwed,
   ...importSketchMomo,
   ...jaSeason,
+  ...jaNotifications,
 };
 
 /**

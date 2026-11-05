@@ -46,7 +46,10 @@ export interface ClosePlanInput {
   /** iOS only starts (or asks for) an activity while the app is in the foreground. */
   readonly foreground: boolean;
   readonly enabled: boolean;
-  /** iOS 26 and later start an activity at a time of the app's choosing. */
+  /**
+   * iOS starts the activity at the close by itself (iOS 26 and later), ringing as it arrives: only
+   * while the day's close reminder would ring, and then in its place.
+   */
   readonly canSchedule: boolean;
   readonly stateJson: string;
   /** What the activity says as it arrives. */
@@ -70,14 +73,17 @@ export interface ClosePlan extends Omit<ActivityPlan, 'start'> {
 
 /**
  * The close at six on the Lock Screen: one activity for the money day, from the close until three
- * hours after it. It is asked for ahead of time where iOS can start it by itself (iOS 26), and
- * otherwise started when the app is opened in that window; it is updated as spends wait for it,
+ * hours after it. It is asked for ahead of time where iOS can start it by itself (iOS 26) and the
+ * close reminder would ring, ringing in the reminder's place, and otherwise started when the app is
+ * opened in that window; it is updated as spends wait for it,
  * and it ends once the day is closed, the window is over, or the day has turned.
  */
 export function closeActivityPlan(input: ClosePlanInput): ClosePlan {
   const due = momentOf(input.today, hoursOf(input.closeAt));
   const over = new Date(due.getTime() + CLOSE_HOURS * 60 * 60 * 1000);
-  const wanted = !input.closed && input.now < over;
+  const ahead = input.now < due;
+  // One asked for ahead that may no longer ring (the reminder was switched off) is taken back.
+  const wanted = !input.closed && input.now < over && (!ahead || input.canSchedule);
   const update: { id: string; stateJson: string }[] = [];
   const end: { id: string; finalStateJson: null }[] = [];
   let kept = false;
@@ -92,7 +98,6 @@ export function closeActivityPlan(input: ClosePlanInput): ClosePlan {
       end.push({ id: activity.id, finalStateJson: null });
     }
   }
-  const ahead = input.now < due;
   const canStart =
     wanted && !kept && input.foreground && input.enabled && (!ahead || input.canSchedule);
   const start = canStart

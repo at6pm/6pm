@@ -42,6 +42,7 @@ import { esFirstCatch } from './first-catch';
 import { esPhoto } from './photo';
 import { esImport } from './import';
 import { esOwed } from './owed';
+import { esNotifications } from './notifications';
 import { esSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
@@ -94,6 +95,7 @@ export const es: Catalogue = {
   ...esOwed,
   ...importSketchMomo,
   ...esSeason,
+  ...esNotifications,
 };
 
 /**

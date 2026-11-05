@@ -1,7 +1,7 @@
 import * as Application from 'expo-application';
 import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Linking, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { oklchSrgbHex } from '@6pm/theme';
@@ -10,11 +10,9 @@ import { useMoney, useMoneyStore } from '../data/money-provider';
 import { DEFAULT_PLAN } from '../data/plan-settings';
 import { devicePhotoFiles } from '../data/device-photo-files';
 import { settingsActions } from '../data/settings-actions';
-import { askForReminders, cancelCloseReminder } from '../features/onboarding/close-reminder';
-import {
-  refreshReminderPermission,
-  useReminderPermission,
-} from '../features/reminders/reminder-permission';
+import { cancelCloseReminder } from '../features/onboarding/close-reminder';
+import { reloadNotificationSettings } from '../features/reminders/notification-prefs';
+import { useReminderPermission } from '../features/reminders/reminder-permission';
 import { BackupRow } from '../features/backup/backup-row';
 import { AiSettingsRow } from '../features/privacy/ai-settings-row';
 import { CaptureSettingsSection } from '../features/capture-guide/capture-settings-section';
@@ -90,23 +88,17 @@ export default function Settings() {
         // The data is gone: what follows must not turn a finished delete into an error.
         setLanguage(null);
         void cancelCloseReminder().catch(() => undefined);
-        return Promise.all([lookStore.reload(), companionStore.reload()]).catch(() => undefined);
+        return Promise.all([
+          lookStore.reload(),
+          companionStore.reload(),
+          reloadNotificationSettings(store.db),
+        ]).catch(() => undefined);
       })
       .then(() => router.dismissTo('/'))
       .catch(() => toast(t('settings.deleteFailed')))
       .finally(() => setDeleting(false));
   };
   const openMax = () => router.push({ pathname: '/max', params: { from: 'looks' } });
-  const askOrOpenSettings = () => {
-    haptics.tick();
-    if (reminders === 'ask') {
-      askForReminders()
-        .then(() => refreshReminderPermission())
-        .catch(() => undefined);
-    } else {
-      void Linking.openSettings();
-    }
-  };
 
   return (
     <SheetScreen title={t('home.settings')} gap={26}>
@@ -155,16 +147,21 @@ export default function Settings() {
             <CloseTimePicker closeAt={close.value} onChange={close.set} />
           </Animated.View>
         ) : null}
-        {reminders !== null && reminders !== 'granted' ? (
-          <Animated.View entering={FadeIn.duration(250)} exiting={FadeOut.duration(150)}>
-            <SettingRow
-              icon="notifications_off"
-              label={t('settings.reminders')}
-              value={t('settings.remindersOff')}
-              onPress={askOrOpenSettings}
-            />
-          </Animated.View>
-        ) : null}
+        <SettingRow
+          icon={
+            reminders === null || reminders === 'granted' ? 'notifications' : 'notifications_off'
+          }
+          label={t('settings.notifications')}
+          value={
+            reminders === null || reminders === 'granted'
+              ? t('settings.notificationsOn')
+              : t('settings.remindersOff')
+          }
+          onPress={() => {
+            haptics.tick();
+            router.push('/notifications');
+          }}
+        />
         <SettingRow
           icon="translate"
           label={t('settings.language')}

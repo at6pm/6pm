@@ -15,6 +15,7 @@ import { useEntitlement } from '../purchases/purchases-provider';
 import { useTravel } from '../travel/travel-provider';
 import { useNewYear } from '../pots/use-new-year';
 import { pinnedClock, useClock } from '../../ui/theme/clock';
+import { useFirstCatchNotice } from '../reminders/first-catch-notice';
 import { renderCompanions } from './companion-images';
 import { useClosedHistory } from './use-closed-history';
 import { useHideAmounts } from './use-hide-amounts';
@@ -52,6 +53,7 @@ export function useSurfaceWriters() {
   const serious = money.plan?.serious ?? false;
   const worn = resolveLook(look, customer);
   const ownConfig = config[worn];
+  const firstCatch = useFirstCatchNotice();
 
   const widget = useMemo(
     () => widgetLook({ max, look: worn, serious, ...(ownConfig ? { config: ownConfig } : {}) }),
@@ -83,8 +85,8 @@ export function useSurfaceWriters() {
   const key = snapshotKey(snapshot);
 
   // The latest values, read by a write that fires later.
-  const latest = useRef({ snapshot, money, language, t, tripCurrency, rates, home });
-  latest.current = { snapshot, money, language, t, tripCurrency, rates, home };
+  const latest = useRef({ snapshot, money, language, t, tripCurrency, rates, home, firstCatch });
+  latest.current = { snapshot, money, language, t, tripCurrency, rates, home, firstCatch };
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const writing = useRef<Promise<unknown>>(Promise.resolve());
 
@@ -106,7 +108,7 @@ export function useSurfaceWriters() {
           rules,
           language: now.language,
           host,
-          strings: contextStrings(now.t),
+          strings: contextStrings(now.t, now.firstCatch),
           tripCurrency: now.tripCurrency,
           rates: now.rates?.rates.rates ?? [],
           currency: now.home,
@@ -120,7 +122,7 @@ export function useSurfaceWriters() {
   useEffect(() => {
     if (timer.current !== null) clearTimeout(timer.current);
     timer.current = setTimeout(writeNow, DEBOUNCE_MS);
-  }, [key, language, t, tripCurrency, rates, home, writeNow]);
+  }, [key, language, t, tripCurrency, rates, home, firstCatch, writeNow]);
 
   useEffect(() => {
     const sub = AppState.addEventListener('change', (state) => {

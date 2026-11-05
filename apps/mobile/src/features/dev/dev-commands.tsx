@@ -31,6 +31,12 @@ import { languages } from '@6pm/i18n';
 import { seedCaptureHealth } from './design-capture-health-seed';
 import { writeFirstCatch } from '../../data/first-catch';
 import { addDays } from '@6pm/domain';
+import {
+  applyNotifyCommand,
+  dumpScheduledNotifications,
+  notifyCommandSchema,
+  remindOpenLinesIn,
+} from './dev-notifications';
 
 /**
  * Lets scripts drive a developer build with no taps: write `dev-command.json` into the app's
@@ -42,6 +48,7 @@ import { addDays } from '@6pm/domain';
  *   {"importFile": "momo-history.xlsx"}
  *   {"tet": "bonus", "on": "2027-01-25", "at": "18:00", "route": "/close"}
  *   {"seed": "friday", "photo": "receipt.jpg", "route": "/close"}
+ *   {"notify": {"amounts": true}, "dumpNotifications": true}
  */
 const commandSchema = z.object({
   seed: z.enum(['friday', 'year', 'moneyIn']).optional(),
@@ -103,6 +110,12 @@ const commandSchema = z.object({
     .string()
     .regex(/^[\w.-]+$/)
     .optional(),
+  /** Settings › Notifications' switches: a kind's switch, or amounts on the lock screen. */
+  notify: notifyCommandSchema.optional(),
+  /** Writes what is scheduled into Documents as `notifications.json`, a moment later. */
+  dumpNotifications: z.boolean().optional(),
+  /** "Remind me" on every open owed line, due this many seconds from now (on the real clock). */
+  remindSoon: z.number().int().positive().optional(),
 });
 
 export function DevCommands() {
@@ -143,11 +156,15 @@ export function DevCommands() {
         photo,
         on,
         tet,
+        notify,
+        dumpNotifications,
+        remindSoon,
         language: speak,
       } = parsed.data;
       if (speak !== undefined) setLanguage(speak);
       if (aiMode !== undefined) setAiMode(db, aiMode);
       if (look !== undefined) lookStore.setLook(look, () => true);
+      if (notify !== undefined) await applyNotifyCommand(store, notify);
       if (companion !== undefined) pinCompanionForm(companion === '' ? null : companion);
       if (max !== undefined) {
         const customer = max ? { ...FREE_CUSTOMER, max: DEV_MAX } : FREE_CUSTOMER;
@@ -232,6 +249,8 @@ export function DevCommands() {
       // Held long enough for a headless screenshot to catch it.
       if (line) setTimeout(() => toast(line, 20_000), 1200);
       if (yearBook) setTimeout(() => void bindYear(yearBook), 1200);
+      if (remindSoon) await remindOpenLinesIn(store, remindSoon);
+      if (dumpNotifications) dumpScheduledNotifications();
     };
     void run();
     const subscription = AppState.addEventListener('change', (state) => {

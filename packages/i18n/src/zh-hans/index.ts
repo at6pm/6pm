@@ -42,6 +42,7 @@ import { zhHansFirstCatch } from './first-catch';
 import { zhHansPhoto } from './photo';
 import { zhHansImport } from './import';
 import { zhHansOwed } from './owed';
+import { zhHansNotifications } from './notifications';
 import { zhHansSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
@@ -94,6 +95,7 @@ export const zhHans: Catalogue = {
   ...zhHansOwed,
   ...importSketchMomo,
   ...zhHansSeason,
+  ...zhHansNotifications,
 };
 
 /**

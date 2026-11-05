@@ -18,12 +18,25 @@ export function hostOf(apiBase: unknown): string | null {
 /**
  * The words the domain bundle fills in for the extensions' cards, in the app's language, and
  * those of Android's caught notification. `safeAfter` keeps its `{amount}` for the domain to
- * fill; the notification's keep `{amount}`, `{name}` and `{bank}` for the alert listener.
+ * fill; the notification's keep `{amount}`, `{name}` and `{bank}` for the alert listener. While
+ * the first catch is still to come (`firstCatch`), its words are there for the alert reader and
+ * the Wallet shortcut to say once, with `{amount}` and `{name}` filled in on the phone; without
+ * them nothing is said.
  */
-export function contextStrings(t: I18n['t']): SurfaceContext['strings'] {
+export function contextStrings(
+  t: I18n['t'],
+  firstCatch: { readonly named: string; readonly noName: string } | null = null,
+): SurfaceContext['strings'] {
   const amount = '{amount}';
   const name = '{name}';
   return {
+    ...(firstCatch
+      ? {
+          firstCatch: firstCatch.named,
+          firstCatchNoName: firstCatch.noName,
+          captureChannel: t('notify.channel.capture'),
+        }
+      : {}),
     today: t('surfaces.context.today'),
     yesterday: t('surfaces.context.yesterday'),
     safeAfter: t('surfaces.context.safeAfter', { amount }),

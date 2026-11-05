@@ -42,6 +42,7 @@ import { deFirstCatch } from './first-catch';
 import { dePhoto } from './photo';
 import { deImport } from './import';
 import { deOwed } from './owed';
+import { deNotifications } from './notifications';
 import { deSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
@@ -94,6 +95,7 @@ export const de: Catalogue = {
   ...deOwed,
   ...importSketchMomo,
   ...deSeason,
+  ...deNotifications,
 };
 
 /**

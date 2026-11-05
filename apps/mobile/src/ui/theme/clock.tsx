@@ -39,6 +39,11 @@ export function pinClock(at: Date | null): void {
   for (const listener of pinListeners) listener();
 }
 
+/** Now, on the clock the app shows: the pinned time in a developer build that pinned one. */
+export function clockNow(): Date {
+  return pinned ?? new Date();
+}
+
 /** The time the clock is pinned to, or null while it follows the real time. */
 export function pinnedClock(): Date | null {
   return pinned;

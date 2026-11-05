@@ -42,6 +42,7 @@ import { frFirstCatch } from './first-catch';
 import { frPhoto } from './photo';
 import { frImport } from './import';
 import { frOwed } from './owed';
+import { frNotifications } from './notifications';
 import { frSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
@@ -94,6 +95,7 @@ export const fr: Catalogue = {
   ...frOwed,
   ...importSketchMomo,
   ...frSeason,
+  ...frNotifications,
 };
 
 /**
@@ -117,6 +119,7 @@ export const frSameAsEnglish: readonly string[] = [
   'Note',
   'Notification',
   'Notification › Date',
+  'Notifications',
   'Parking',
   'Plan',
   'QR',

@@ -1,9 +1,15 @@
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
-import { owedByPerson, type OwedPerson, type OwedRow } from '@6pm/domain';
+import {
+  owedByPerson,
+  remindAtFor,
+  type OwedPerson,
+  type OwedRow,
+  type RemindChoice,
+} from '@6pm/domain';
 
 import { useMoney } from '../../data/money-provider';
 import { owedLineOf } from '../../data/owed-actions';
@@ -20,6 +26,9 @@ import { body, display, tabular } from '../../ui/type/fonts';
 import { useToast } from '../../ui/toast/toast-host';
 import { useOfferUndo } from '../../ui/undo/undo-host';
 import { accountReady } from '../../data/receiving-account';
+import { askForReminders } from '../onboarding/close-reminder';
+import { useNotificationSettings } from '../reminders/notification-prefs';
+import { refreshReminderPermission } from '../reminders/reminder-permission';
 import { shareMessage } from './ask-share';
 import { CoverSheet } from './cover-sheet';
 import { Avatar, PaidStamp, Slip } from './owed-parts';
@@ -208,7 +217,7 @@ function PersonCard({
 export function OwedList() {
   const router = useRouter();
   const { palette } = useTheme();
-  const { t, language } = useI18n();
+  const { t, language, weekdayDate } = useI18n();
   const money = useMoneyFormat();
   const snap = useMoney();
   const owed = useOwedActions();
@@ -216,6 +225,8 @@ export function OwedList() {
   const toast = useToast();
   const { account } = useReceivingAccount();
   const { rows, total, count } = useOwed();
+  const { settings } = useNotificationSettings();
+  const { ask: askKey } = useLocalSearchParams<{ ask?: string }>();
   const [covering, setCovering] = useState<OwedPerson | null>(null);
   const leaving = useLeaving(rows);
   const leavingIds = useMemo(() => new Set(leaving.map((r) => r.id)), [leaving]);
@@ -246,6 +257,46 @@ export function OwedList() {
     }
     router.push({ pathname: '/owed-ask', params: { key: person.key } });
   };
+
+  // "Remind me": every strip of theirs comes back at 10:00 on the day chosen, as one reminder.
+  const remind = (person: OwedPerson, choice: RemindChoice | null) => {
+    const ids = person.lines.map((l) => l.id);
+    const at = choice === null ? null : remindAtFor(choice, snap.today, snap.cycle.payday);
+    void owed.setRemindAt(ids, at?.toISOString() ?? null);
+    if (at === null) return;
+    if (settings !== null && !settings.on.reminders) {
+      toast(t('owed.remind.off'));
+      return;
+    }
+    toast(t('owed.remind.toast', { date: weekdayDate(at) }));
+    void askForReminders()
+      .then(() => refreshReminderPermission())
+      .catch(() => undefined);
+  };
+  const remindAtOf = (person: OwedPerson): Date | null => {
+    const ids = new Set(person.lines.map((l) => l.id));
+    const set = rows
+      .filter((r) => ids.has(r.id) && r.remindAt !== null)
+      .map((r) => new Date(r.remindAt ?? ''))
+      .filter((d) => d.getTime() > Date.now());
+    return set.length === 0 ? null : new Date(Math.min(...set.map((d) => d.getTime())));
+  };
+
+  // Opened from a reminder: that person's Ask is ready (or their sheet, where there is no QR).
+  const opened = useRef(false);
+  const openAsk = useRef<(person: OwedPerson) => void>(() => undefined);
+  openAsk.current = (person) => {
+    if (money.currency.code === 'VND') ask(person);
+    else setCovering(person);
+  };
+  useEffect(() => {
+    if (opened.current || !askKey) return;
+    const person = people.find((p) => p.key === askKey);
+    if (!person) return;
+    // Only the first time the people are there: later changes keep the screen as it is.
+    opened.current = true;
+    openAsk.current(person);
+  }, [askKey, people]);
 
   const settle = (person: OwedPerson, paid: boolean) => {
     const ids = person.lines.map((l) => l.id);
@@ -324,6 +375,8 @@ export function OwedList() {
             setCovering(null);
             ask(person);
           }}
+          remindAt={remindAtOf(covering)}
+          onRemind={(choice) => remind(covering, choice)}
           onClose={() => setCovering(null)}
         />
       ) : null}

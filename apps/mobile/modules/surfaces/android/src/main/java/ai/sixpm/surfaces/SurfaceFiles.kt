@@ -12,7 +12,7 @@ import java.io.File
  */
 object SurfaceFiles {
   private val SURFACE_NAMES = setOf("snapshot", "context")
-  private val STATUS_NAMES = setOf("last-alert")
+  private val STATUS_NAMES = setOf("last-alert", "first-catch-told")
 
   private fun folder(context: Context, name: String): File =
     File(File(context.noBackupFilesDir, "surfaces"), name).apply { mkdirs() }

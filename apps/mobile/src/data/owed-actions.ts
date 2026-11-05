@@ -313,8 +313,8 @@ export function owedActions(store: MoneyStore) {
       }),
 
     /**
-     * When to remind the user to ask (null for never). Kept on the lines for reminders to read;
-     * nothing here schedules one.
+     * When to remind the user to ask (null for never), from "Remind me". Kept on the lines; the
+     * notification sync schedules it, and drops it once the lines are settled.
      */
     setRemindAt: (lineIds: readonly string[], remindAt: string | null): Promise<void> =>
       store.exclusive(async () => {

@@ -10,7 +10,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import type { OwedPerson } from '@6pm/domain';
+import type { OwedPerson, RemindChoice } from '@6pm/domain';
 import { curves, owedInk, sheetScrim } from '@6pm/theme';
 
 import { useI18n } from '../../i18n/i18n';
@@ -25,6 +25,7 @@ import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading } from '../../ui/type/fonts';
 import { PaidStamp, Slip } from './owed-parts';
 import { stampIn } from './owed-motion';
+import { RemindRow } from './remind-row';
 
 /** The design phone's width: the sheet keeps it on a wider screen. */
 const SHEET_WIDTH = 402;
@@ -72,7 +73,8 @@ function SmallButton({
 /**
  * One person's strips, to settle: "Cover Minh's 150k?" with the strip lying in Minh's box. Cover
  * it slides the strip over to Yours (it becomes the user's own spending today) and the line says
- * so; Paid in cash stamps it PAID; Ask again opens the Ask. No guilt in the copy.
+ * so; Paid in cash stamps it PAID; Ask again opens the Ask; Remind me brings it back in 3 days, a
+ * week or on payday, at 10:00. No guilt in the copy.
  */
 export function CoverSheet({
   person,
@@ -80,6 +82,8 @@ export function CoverSheet({
   onCover,
   onCash,
   onAsk,
+  remindAt,
+  onRemind,
   onClose,
 }: {
   readonly person: OwedPerson;
@@ -88,6 +92,10 @@ export function CoverSheet({
   readonly onCover: () => void;
   readonly onCash: () => void;
   readonly onAsk: () => void;
+  /** When the person is to be reminded about these strips, or null for never. */
+  readonly remindAt: Date | null;
+  /** "Remind me" chose when, or null for not at all. */
+  readonly onRemind: (choice: RemindChoice | null) => void;
   /** Runs once the sheet has left. */
   readonly onClose: () => void;
 }) {
@@ -288,6 +296,7 @@ export function CoverSheet({
                 }}
               />
             </View>
+            <RemindRow remindAt={remindAt} onRemind={onRemind} />
           </Animated.View>
         </GestureDetector>
       </Animated.View>

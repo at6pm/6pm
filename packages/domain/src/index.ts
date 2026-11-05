@@ -79,6 +79,8 @@ export * from './plan/jar-presets';
 export * from './plan/new-year-jar';
 export * from './plan/new-year-recap';
 export * from './time/lunar';
+export * from './time/reminder-day';
+export * from './plan/payday-preview';
 export * from './close/jar-match';
 export * from './close/jar-moments';
 export * from './plan/jar-shelf';

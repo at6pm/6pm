@@ -44,6 +44,15 @@ describe('closeActivityPlan', () => {
     expect(six.start?.timing.startAt).toBeUndefined();
   });
 
+  it('takes back one asked for ahead once it may no longer ring', () => {
+    const plan = closeActivityPlan(input({ canSchedule: false, running: [running(today)] }));
+    expect(plan.end).toEqual([{ id: `a-${today}`, finalStateJson: null }]);
+    const six = closeActivityPlan(
+      input({ canSchedule: false, now: at('18:20'), running: [running(today)] }),
+    );
+    expect(six.end).toEqual([]);
+  });
+
   it('follows the close the person set', () => {
     const plan = closeActivityPlan(input({ closeAt: '19:30' }));
     expect(plan.start?.timing.startAt).toBe(at('19:30').toISOString());
