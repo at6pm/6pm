@@ -54,8 +54,8 @@ export const jaAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'look.noteStoreOff': 'Google Playが応答しないため、この着せかえは今は購入できません。',
   'max.cta.waiting': 'Google Playを待っています…',
   'max.terms.storeOff': '今はMaxを購入できません：Google Playが応答していません。',
-  'max.sub.backup': '暗号化バックアップ、全履歴、CSVとスプレッドシート。',
-  'max.note.backup': '暗号化バックアップ、CSVとスプレッドシート',
+  'max.sub.backup': '暗号化バックアップと全履歴。',
+  'max.note.backup': '暗号化バックアップ',
   'max.welcome.win.more': '瓶、旅行、イヤーブック',
 
   'privacy.ai.device.title': 'このスマホの中だけで',

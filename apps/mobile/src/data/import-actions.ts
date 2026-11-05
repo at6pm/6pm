@@ -18,6 +18,7 @@ import { readFirstDay } from './diary-queries';
 import type { MoneyStore } from './money-store';
 import { seedStarterCategories } from './onboarding';
 import { readPlan, writePlan, type PlanSettings } from './plan-settings';
+import { nextSort, OTHER_NOT_DAILY_ID, untouchedShared } from './shared-categories';
 import { columnOf, type SqlValue } from './table';
 
 /**
@@ -147,21 +148,28 @@ export function bringIn(store: MoneyStore, input: BringInInput): Promise<ImportR
     const id = randomUUID();
     await seedStarterCategories(store, input.language);
     const existing = await tables.categories.all();
-    const have = new Set(existing.map((c) => c.id));
-    let sort = existing.reduce((max, c) => Math.max(max, c.sort + 1), 0);
+    const byId = new Map(existing.map((c) => [c.id, c]));
+    const have = new Set(existing.filter((c) => c.archivedAt === null).map((c) => c.id));
+    let sort = nextSort(existing);
     const made: CategoryRow[] = [];
     for (const pick of input.picks.values()) {
       if (pick.kind !== 'new' || have.has(pick.id)) continue;
       have.add(pick.id);
-      made.push({
-        id: pick.id,
-        name: pick.name,
-        icon: pick.icon,
-        hue: pick.hue,
-        countsDaily: pick.countsDaily,
-        sort: sort++,
-        archivedAt: null,
-      });
+      // One put away before (an undone bring-in's "Other · not daily") comes back as it was.
+      const before = byId.get(pick.id);
+      made.push(
+        before
+          ? { ...before, sort: sort++, archivedAt: null }
+          : {
+              id: pick.id,
+              name: pick.name,
+              icon: pick.icon,
+              hue: pick.hue,
+              countsDaily: pick.countsDaily,
+              sort: sort++,
+              archivedAt: null,
+            },
+      );
     }
     const record: ImportRecordRow = {
       id,
@@ -251,11 +259,28 @@ export function bringIn(store: MoneyStore, input: BringInInput): Promise<ImportR
 export interface RemovedImport {
   readonly record: ImportRecordRow;
   readonly spends: readonly SpendRow[];
+  /** "Other · not daily", put away when nothing was left in it. */
+  readonly archived?: readonly CategoryRow[];
+}
+
+/**
+ * "Other · not daily" as 6pm made it, when nothing at all is filed in it any more (and no rule
+ * points at it): undoing the bring-in that filled it puts it away with its lines.
+ */
+async function emptySharedNotDaily(store: MoneyStore): Promise<CategoryRow | null> {
+  const row = await store.tables.categories.get(OTHER_NOT_DAILY_ID);
+  if (row === null || row.archivedAt !== null || !untouchedShared(row)) return null;
+  const used = await store.db.getAllAsync<{ n: number }>(
+    `SELECT (SELECT COUNT(*) FROM spends WHERE category_id = ?)
+       + (SELECT COUNT(*) FROM merchant_rules WHERE category_id = ?) AS n`,
+    [row.id, row.id],
+  );
+  return (used[0]?.n ?? 0) === 0 ? row : null;
 }
 
 /**
  * Removes one bring-in's lines and nothing else: closed days, every other spend and the categories
- * stay. When its lines set "spent since payday", the answer goes back to what the other bring-ins
+ * stay, but for "Other · not daily" when the bring-in made it and nothing else is in it. When its lines set "spent since payday", the answer goes back to what the other bring-ins
  * still say, or to what it was before.
  */
 export function undoImport(store: MoneyStore, importId: string): Promise<RemovedImport | null> {
@@ -266,9 +291,15 @@ export function undoImport(store: MoneyStore, importId: string): Promise<Removed
     const spends = await tables.spends.select("WHERE import_id = ? AND source = 'import'", [
       importId,
     ]);
+    let archived: CategoryRow[] = [];
     await db.withTransactionAsync(async () => {
       await db.runAsync("DELETE FROM spends WHERE import_id = ? AND source = 'import'", [importId]);
       await tables.imports.remove(importId);
+      const empty = await emptySharedNotDaily(store);
+      if (empty) {
+        await tables.categories.put({ ...empty, archivedAt: new Date().toISOString() });
+        archived = [empty];
+      }
     });
     const plan = await readPlan(db);
     const today = store.getSnapshot().today;
@@ -278,7 +309,7 @@ export function undoImport(store: MoneyStore, importId: string): Promise<Removed
       await writePlan(db, withAnswer(plan, left > 0 ? left : record.answerBefore));
     }
     await store.loadInTurn(today);
-    return { record, spends };
+    return { record, spends, archived };
   });
 }
 
@@ -288,6 +319,7 @@ export function restoreImport(store: MoneyStore, removed: RemovedImport): Promis
     const { db, tables } = store;
     const marks = `(${SPEND_COLUMNS.map(() => '?').join(', ')})`;
     await db.withTransactionAsync(async () => {
+      for (const category of removed.archived ?? []) await tables.categories.put(category);
       await tables.imports.put(removed.record);
       for (let at = 0; at < removed.spends.length; at += BATCH) {
         const batch = removed.spends.slice(at, at + BATCH);

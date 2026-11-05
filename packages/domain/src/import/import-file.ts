@@ -1,5 +1,5 @@
 import type { LocalDate } from '../time/local-date';
-import { importTargetOf, type ImportTarget } from './category-words';
+import { labelTargetOf, type ImportTarget } from './category-words';
 import { isCompoundFile, readCompoundFile } from './cfb';
 import { decodeText, readCsv } from './csv-read';
 import {
@@ -131,7 +131,7 @@ export function summariseImport(read: ReadLines, startDay: LocalDate): ImportSum
   const listed = [...labels].map(([label, count]) => ({
     label,
     count,
-    target: importTargetOf(label),
+    target: labelTargetOf(read.app, label),
   }));
   listed.sort((a, b) =>
     (a.target === null) !== (b.target === null) ? (a.target === null ? -1 : 1) : b.count - a.count,

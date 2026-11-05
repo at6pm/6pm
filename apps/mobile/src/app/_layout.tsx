@@ -18,6 +18,7 @@ import { SurfacesSync } from '../features/surfaces/surfaces-sync';
 import { LookSettingsProvider, useThemeLook } from '../features/looks/look-settings-provider';
 import { MemberCompanionForm } from '../features/purchases/member-companion-form';
 import { AppIconSync } from '../features/app-icon/app-icon-sync';
+import { ImportRepairSync } from '../features/import/import-repair-sync';
 import { readSharedAiMode } from '../features/privacy/ai-mode-share';
 import { applyAiModeToCrashReports } from '../features/privacy/crash-reports';
 import { AiModeSync } from '../features/privacy/use-ai-mode';
@@ -150,6 +151,7 @@ function RootLayout() {
                               <BackupHost />
                               <SurfacesSync />
                               <AppIconSync />
+                              <ImportRepairSync />
                               {__DEV__ ? <DevCommands /> : null}
                             </ToastHost>
                           </PlanTheme>

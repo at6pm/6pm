@@ -14,6 +14,7 @@ import { Switch } from '../../ui/primitives/switch';
 import { useTheme } from '../../ui/theme/theme';
 import { body, families, UNPADDED } from '../../ui/type/fonts';
 import { HuePicker } from './hue-picker';
+import { useEntitlement } from '../purchases/purchases-provider';
 import { FREE_ICON_COUNT, MAX_ICON_COUNT } from './icon-packs';
 import { IconPicker } from './icon-picker';
 import { mayAutoPick } from './icon-suggestion';
@@ -47,6 +48,8 @@ export function CategoryEditor({
 }) {
   const { palette } = useTheme();
   const { t } = useI18n();
+  // With Max every icon is theirs: no "36 free · 144 with Max".
+  const { max } = useEntitlement();
   const [draft, setDraft] = useState(initial);
   const nameInput = useRef<TextInputInstance>(null);
   useFocusOnPresent(nameInput, focusName);
@@ -174,9 +177,11 @@ export function CategoryEditor({
             }}
           >
             {label(t('categories.edit.icon'))}
-            <Text style={{ ...body(12.5), color: palette.inkSoft }}>
-              {t('categories.edit.iconCount', { free: FREE_ICON_COUNT, more: MAX_ICON_COUNT })}
-            </Text>
+            {max ? null : (
+              <Text style={{ ...body(12.5), color: palette.inkSoft }}>
+                {t('categories.edit.iconCount', { free: FREE_ICON_COUNT, more: MAX_ICON_COUNT })}
+              </Text>
+            )}
           </View>
           <IconPicker icon={draft.icon} hue={draft.hue} onPick={pickIcon} />
         </View>

@@ -43,4 +43,10 @@ export const enCategories = {
   'categories.pack.out': 'Going out',
   'categories.pack.people': 'People & pets',
   'categories.pack.money': 'Money, gifts & Tết',
+  'categories.other': 'Other',
+  'categories.delete': 'Delete',
+  'categories.moved': { one: 'Moved {count} to {name}', other: 'Moved {count} to {name}' },
+  'categories.moveUp': 'Move up',
+  'categories.moveDown': 'Move down',
+  'categories.dragHint': 'Hold and drag to reorder',
 } as const;
