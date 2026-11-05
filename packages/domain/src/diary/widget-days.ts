@@ -1,8 +1,15 @@
 import type { PotRow } from '../contracts/local-rows';
 import { hoursOf, type ClockTime } from '../time/close-time';
-import { addDays, diffDays, makeDate, parts, type LocalDate } from '../time/local-date';
+import {
+  addDays,
+  diffDays,
+  makeDate,
+  parts,
+  weekdayMondayFirst,
+  type LocalDate,
+} from '../time/local-date';
 import { nextNewYearWindow, type LunarTradition } from '../time/lunar';
-import { calendarCells, type ClosedDayTotal, type MonthKey } from './calendar';
+import { calendarCells, dayDot, type ClosedDayTotal, type MonthKey } from './calendar';
 
 /**
  * The days the widgets draw: the evenings closed in a row (the streak's strata), the month as
@@ -80,6 +87,80 @@ export function monthSuns(input: {
     cells,
     closed: cells.filter((c) => c === 'sun' || c === 'half').length,
     under: cells.filter((c) => c === 'sun').length,
+  };
+}
+
+export interface WeekSuns {
+  /** Monday to Sunday, as `SunCell`s (no blanks). */
+  readonly cells: readonly SunCell[];
+  /** Evenings closed this week so far. */
+  readonly closed: number;
+  /** The week's days so far that were the person's to close, today included. */
+  readonly days: number;
+  /** Today is closed: the week line counts it in. */
+  readonly todayClosed: boolean;
+}
+
+/**
+ * This week as suns (the small "This week" widget): Monday to Sunday, each closed day a whole
+ * sun or half of one, today's ring while it is open, a missed day's ring, the days ahead faint.
+ */
+export function weekSuns(input: {
+  readonly today: LocalDate;
+  readonly closed: readonly ClosedDayTotal[];
+  readonly since: LocalDate | null;
+}): WeekSuns {
+  const monday = addDays(input.today, -weekdayMondayFirst(input.today));
+  const byDay = new Map(input.closed.map((d) => [d.day, d]));
+  const days = Array.from({ length: 7 }, (_, i) => addDays(monday, i));
+  const cells = days.map((day): SunCell => {
+    const row = byDay.get(day);
+    if (row) return dayDot(row.spent, row.line) === 'under' ? 'sun' : 'half';
+    if (day === input.today) return 'today';
+    if (day < input.today && input.since !== null && day >= input.since) return 'miss';
+    return 'ahead';
+  });
+  const counted = days.filter(
+    (day) => day <= input.today && (input.since === null || day >= input.since || byDay.has(day)),
+  );
+  return {
+    cells,
+    closed: cells.filter((c) => c === 'sun' || c === 'half').length,
+    days: counted.length,
+    todayClosed: byDay.has(input.today),
+  };
+}
+
+/** One line of today's receipt: when, where, how much, and whether it is confirmed yet. */
+export interface WidgetReceiptLine<T> {
+  readonly spend: T;
+  readonly confirmed: boolean;
+}
+
+/**
+ * Today's receipt as the medium widget prints it: today's spends, oldest first, the newest
+ * `most` of them (skipped and deleted ones left out), how many were left off above, and the
+ * receipt's number (the close receipt's: one more than the evenings closed before today).
+ */
+export function todayReceipt<
+  T extends { readonly day: LocalDate; readonly at: string; readonly status: string },
+>(input: {
+  readonly spends: readonly T[];
+  readonly today: LocalDate;
+  readonly closedBefore: number;
+  readonly most: number;
+}): { readonly lines: WidgetReceiptLine<T>[]; readonly earlier: number; readonly number: number } {
+  const todays = input.spends
+    .filter((s) => s.day === input.today && s.status !== 'skipped' && s.status !== 'deleted')
+    .sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0));
+  const shown = todays.slice(-input.most);
+  return {
+    lines: shown.map((spend) => ({
+      spend,
+      confirmed: spend.status !== 'caught' && spend.status !== 'pending',
+    })),
+    earlier: todays.length - shown.length,
+    number: input.closedBefore + 1,
   };
 }
 

@@ -41,6 +41,7 @@ struct SurfaceSnapshot: Decodable {
     let sun: Sun
     let sunKind: String
     let closedAt: String?
+    let day: String?
 
     var closed: Bool { phase == "closed" }
   }
@@ -99,6 +100,30 @@ struct SurfaceSnapshot: Decodable {
     let cells: [String]
   }
 
+  struct Week: Decodable {
+    let title: String
+    let line: String
+    let letters: [String]
+    let cells: [String]
+  }
+
+  struct Receipt: Decodable {
+    struct Line: Decodable {
+      let time: String
+      let name: String
+      let amount: String
+      let confirmed: Bool
+    }
+
+    let day: String
+    let title: String
+    let number: String
+    let lines: [Line]
+    let earlier: String
+    let empty: String
+    let left: String
+  }
+
   struct Links: Decodable {
     let today: String
     let month: String
@@ -116,6 +141,8 @@ struct SurfaceSnapshot: Decodable {
   let jars: [Jar]?
   let streak: Streak?
   let month: Month?
+  let week: Week?
+  let receipt: Receipt?
   let look: PostcardLook?
   let links: Links?
   let pinnedAt: String?

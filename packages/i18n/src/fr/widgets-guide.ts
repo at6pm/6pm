@@ -26,7 +26,9 @@ export const frWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
     'Le nombre du jour sur son ciel, un bocal en compte à rebours, ou tes soirs clôturés d’affilée.',
   'widgetsGuide.home.mediumWhat':
     'Le nombre avec son ciel et tes bocaux. Touche un bocal pour l’ouvrir.',
-  'widgetsGuide.home.largeWhat':
+  'widgetsGuide.home.largeWhat': 'Ce qui reste, et les dernières dépenses du jour.',
+  'widgetsGuide.home.month': 'Mon mois',
+  'widgetsGuide.home.monthWhat':
     'Le mois en soleils : chaque soir clôturé, et combien dans la limite.',
   'widgetsGuide.home.step1':
     'Touche et maintiens un espace vide de l’écran d’accueil jusqu’à ce que les apps bougent.',

@@ -23,7 +23,9 @@ export const viWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.home.smallWhat':
     'Con số hôm nay trên bầu trời của nó, một hũ đếm ngược, hoặc những tối bạn chốt liên tiếp.',
   'widgetsGuide.home.mediumWhat': 'Con số cùng bầu trời và các hũ của bạn. Chạm vào hũ để mở.',
-  'widgetsGuide.home.largeWhat':
+  'widgetsGuide.home.largeWhat': 'Số còn lại, và các khoản chi mới nhất hôm nay.',
+  'widgetsGuide.home.month': 'Tháng của tôi',
+  'widgetsGuide.home.monthWhat':
     'Cả tháng thành những mặt trời: mỗi tối bạn đã chốt, và bao nhiêu lần trong mức.',
   'widgetsGuide.home.step1': 'Chạm và giữ một chỗ trống trên Màn hình chính đến khi các app rung.',
   'widgetsGuide.home.step2': 'Chạm Sửa ở góc trên, rồi Thêm tiện ích.',

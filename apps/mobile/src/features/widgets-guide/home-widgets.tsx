@@ -5,6 +5,7 @@ import { Symbol } from '../../ui/icons/symbol';
 import { body, display, mono } from '../../ui/type/fonts';
 import type { PreviewJar, WidgetPreview } from './preview-data';
 import { fillCss, shadowCss, textShadowOf } from './widget-css';
+import { ReceiptMedium, TodayListLarge, WeekSmall } from './home-widgets-more';
 
 /** The Home Screen widget sizes on a 402-point iPhone, in points. */
 export const WIDGET_SIZE = {
@@ -14,7 +15,8 @@ export const WIDGET_SIZE = {
 } as const;
 export type WidgetSize = keyof typeof WIDGET_SIZE;
 /** The small widgets: the number on its sky, one jar, the streak. */
-export type SmallKind = 'today' | 'jar' | 'streak';
+/** Which widget of a size: the number (`today`), a jar, the streak, the week; the receipt; the list or the month. */
+export type WidgetKind = 'today' | 'jar' | 'streak' | 'week' | 'receipt' | 'month';
 const RADIUS = 23;
 
 /**
@@ -28,7 +30,7 @@ export function HomeWidget({
   preview,
 }: {
   readonly size: WidgetSize;
-  readonly kind?: SmallKind;
+  readonly kind?: WidgetKind;
   readonly preview: WidgetPreview;
 }) {
   if (preview.entry === null || preview.card === null)
@@ -37,16 +39,19 @@ export function HomeWidget({
     case 'small':
       if (kind === 'jar') return <JarSmall preview={preview} />;
       if (kind === 'streak') return <Streak preview={preview} />;
+      if (kind === 'week') return <WeekSmall preview={preview} />;
       return <Small preview={preview} />;
     case 'medium':
+      if (kind === 'receipt') return <ReceiptMedium preview={preview} />;
       return <Medium preview={preview} />;
     case 'large':
-      return <Month preview={preview} />;
+      if (kind === 'month') return <Month preview={preview} />;
+      return <TodayListLarge preview={preview} />;
   }
 }
 
 /** The sky of the stretch, or the look's own ground (Basic). */
-function skyOf(preview: WidgetPreview): string {
+export function skyOf(preview: WidgetPreview): string {
   const ground = preview.look?.ground;
   const ink = preview.ink;
   if (ground) {
@@ -56,7 +61,7 @@ function skyOf(preview: WidgetPreview): string {
   return `linear-gradient(180deg, ${ink['skyTop']} 0%, ${ink['skyMid']} 52%, ${ink['skyBottom']} 100%)`;
 }
 
-function Shell({
+export function Shell({
   size,
   background,
   children,
@@ -81,12 +86,20 @@ function Shell({
 }
 
 /** What the widgets show for an amount when the person hides them: the mask, as the locked phone does. */
-function money(preview: WidgetPreview, text: string): string {
+export function money(preview: WidgetPreview, text: string): string {
   return preview.hideAmounts ? (preview.strings['hidden'] ?? text) : text;
 }
 
 /** The sun of the stretch where it stands. */
-function Sun({ preview, size, small }: { preview: WidgetPreview; size: number; small: boolean }) {
+export function Sun({
+  preview,
+  size,
+  small,
+}: {
+  preview: WidgetPreview;
+  size: number;
+  small: boolean;
+}) {
   const card = preview.card;
   const look = preview.look;
   const sun = card && look ? look.suns[card.sunKind] : null;
@@ -114,7 +127,15 @@ function Sun({ preview, size, small }: { preview: WidgetPreview; size: number; s
   );
 }
 
-function Kicker({ preview, text, size }: { preview: WidgetPreview; text: string; size: number }) {
+export function Kicker({
+  preview,
+  text,
+  size,
+}: {
+  preview: WidgetPreview;
+  text: string;
+  size: number;
+}) {
   const ink = preview.ink['skyInk'];
   const style = preview.look?.mono === false ? body(size, 600, 0.04) : mono(size, 500, 0.14);
   return (
@@ -124,7 +145,15 @@ function Kicker({ preview, text, size }: { preview: WidgetPreview; text: string;
   );
 }
 
-function Figure({ preview, text, size }: { preview: WidgetPreview; text: string; size: number }) {
+export function Figure({
+  preview,
+  text,
+  size,
+}: {
+  preview: WidgetPreview;
+  text: string;
+  size: number;
+}) {
   const look = preview.look;
   const dark = preview.ink['dark'] === '1';
   const shadows = [...(look?.numberShadows ?? []), ...(dark ? (look?.numberGlow ?? []) : [])];
@@ -439,6 +468,44 @@ function Streak({ preview }: { readonly preview: WidgetPreview }) {
 }
 
 /** The month as suns: the title, the headline, a sun for each evening and tonight's close. */
+/** One day as a sun: whole, half, a missed ring, today's accent ring, or still ahead. */
+export function DayDot({
+  preview,
+  cell,
+  size,
+}: {
+  readonly preview: WidgetPreview;
+  readonly cell: string;
+  readonly size: number;
+}) {
+  const look = preview.look;
+  if (!look) return <View style={{ width: size, height: size }} />;
+  const ink = preview.ink['skyInk'] ?? '#000';
+  const dark = preview.ink['dark'] === '1';
+  const dots = look.dots;
+  return (
+    <View
+      style={{
+        width: size,
+        height: size,
+        borderRadius: size / 2,
+        ...(cell === 'sun'
+          ? {
+              experimental_backgroundImage: fillCss(dots.full),
+              ...(dots.fullRing
+                ? { borderWidth: dots.fullRing.width, borderColor: dots.fullRing.color }
+                : {}),
+            }
+          : {}),
+        ...(cell === 'half' ? { experimental_backgroundImage: fillCss(dots.half) } : {}),
+        ...(cell === 'miss' ? { borderWidth: 1.5, borderColor: dots.ring || `${ink}59` } : {}),
+        ...(cell === 'today' ? { borderWidth: 2, borderColor: look.today } : {}),
+        ...(cell === 'ahead' ? { borderWidth: 1, borderColor: `${ink}${dark ? '33' : '2e'}` } : {}),
+      }}
+    />
+  );
+}
+
 function Month({ preview }: { readonly preview: WidgetPreview }) {
   const month = preview.month;
   const look = preview.look;
@@ -448,7 +515,6 @@ function Month({ preview }: { readonly preview: WidgetPreview }) {
   const dark = preview.ink['dark'] === '1';
   const rows = Math.max(5, Math.ceil(month.cells.length / 7));
   const dot = rows > 5 ? 24 : 30;
-  const dots = look.dots;
   return (
     <Shell size="large" background={skyOf(preview)}>
       <View style={{ flex: 1, paddingTop: 18, paddingHorizontal: 18, paddingBottom: 16, gap: 10 }}>
@@ -477,30 +543,7 @@ function Month({ preview }: { readonly preview: WidgetPreview }) {
           }}
         >
           {Array.from({ length: rows * 7 }, (_, k) => month.cells[k] ?? 'blank').map((cell, k) => (
-            <View
-              key={k}
-              style={{
-                width: dot,
-                height: dot,
-                borderRadius: dot / 2,
-                ...(cell === 'sun'
-                  ? {
-                      experimental_backgroundImage: fillCss(dots.full),
-                      ...(dots.fullRing
-                        ? { borderWidth: dots.fullRing.width, borderColor: dots.fullRing.color }
-                        : {}),
-                    }
-                  : {}),
-                ...(cell === 'half' ? { experimental_backgroundImage: fillCss(dots.half) } : {}),
-                ...(cell === 'miss'
-                  ? { borderWidth: 1.5, borderColor: dots.ring || `${ink}59` }
-                  : {}),
-                ...(cell === 'today' ? { borderWidth: 2, borderColor: look.today } : {}),
-                ...(cell === 'ahead'
-                  ? { borderWidth: 1, borderColor: `${ink}${dark ? '33' : '2e'}` }
-                  : {}),
-              }}
-            />
+            <DayDot key={k} preview={preview} cell={cell} size={dot} />
           ))}
         </View>
         <View style={{ flex: 1 }} />

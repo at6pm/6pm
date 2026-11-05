@@ -2,11 +2,10 @@ import SwiftUI
 import WidgetKit
 
 /// My month (large, `W:104-112`): the month as suns, each evening closed a whole sun, over the
-/// line half of one, and tonight's close at the foot. Opens the Diary at the month. Its kind is
-/// the large widget's from before the postcards, so a widget already placed turns into the month.
+/// line half of one, and tonight's close at the foot. Opens the Diary at the month.
 struct MonthWidget: Widget {
   var body: some WidgetConfiguration {
-    StaticConfiguration(kind: "TodayList", provider: SurfaceTimelineProvider()) { entry in
+    StaticConfiguration(kind: "Month", provider: SurfaceTimelineProvider()) { entry in
       MonthView(entry: entry)
     }
     .configurationDisplayName(Text("month.name", tableName: "Surfaces"))

@@ -5,6 +5,8 @@
 "markPaid.title" = "已付";
 "month.description" = "整个月化作太阳：你结算过的每个晚上。";
 "month.name" = "我的一个月";
+"receipt.description" = "今天的花销，记下就打印出来。";
+"receipt.name" = "今日小票";
 "safeToday.description" = "今天还能花多少，一眼就知道。";
 "safeToday.name" = "今天可以花";
 "setUp" = "打开 6pm 进行设置";
@@ -12,3 +14,5 @@
 "streak.name" = "连续记录";
 "todayList.description" = "今天花了哪些钱，最新的在前。";
 "todayList.name" = "今天";
+"week.description" = "一周化作太阳：你结算过的每个晚上。";
+"week.name" = "本周";

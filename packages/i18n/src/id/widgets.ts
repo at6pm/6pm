@@ -43,4 +43,12 @@ export const idWidgets: { readonly [Key in keyof typeof enWidgets]: Entry } = {
   'widgets.close.none': 'Tidak ada yang menunggu',
   'widgets.close.start': 'Mulai',
   'widgets.stamp': 'Ditutup',
+  'widgets.week.title': 'Minggu ini',
+  'widgets.week.next': { other: '{count} ditutup, malam ini berikutnya.' },
+  'widgets.week.first': 'Malam ini yang pertama.',
+  'widgets.week.done': '{closed} dari {days} ditutup.',
+  'widgets.receipt.title': '{date} · Hari ini sejauh ini',
+  'widgets.receipt.no': 'No. {no}',
+  'widgets.receipt.left': 'Sisa hari ini',
+  'widgets.receipt.empty': 'Belum ada yang tercatat.',
 };

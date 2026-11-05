@@ -516,3 +516,12 @@ fakes behaviour the app cannot fake. Founder review.
 | Widgets · My month | A month of six weeks | The suns are drawn a little smaller so the six rows fit | The canvas shows a five-week October |
 | Widgets · Lock Screen card | The close's line under the number | "close at 18:00" follows the person's close time | The canvas shows 18:00 |
 | Widgets & controls | Hide amounts | A row with the switch under the look line, in the cell colour, built from the Settings switch | No canvas shows where the switch lives |
+| Widgets · Today list (large) | As a postcard | The kicker and "6pm" over the number on the look's sky, the day's bar in the sky's ink, today's newest three spends and "+N more"; no sun, which would sit on the list | The canvas has no large list; it is drawn from the postcards' parts |
+| Widgets · Today list (large) | After the close | Keeps today's spends under tomorrow's number until the next money day | No canvas shows the list after the close |
+| Widgets · This week | In a look other than Golden Hour | On the look's sky with its dots, as "Widgets in Looks" draws it; Golden Hour too, where the first canvas shows a dark ground | The two canvases differ |
+| Widgets · This week | Nothing closed yet this week | "Tonight's the first." | The canvas shows four closed |
+| Widgets · This week | Today's ring | Drawn still: WidgetKit cannot run the canvas's pulse | The canvas pulses it |
+| Widgets · Today's receipt | No spends yet today, and the next money day | "Nothing caught yet." under the head; the head is empty on the next day's stretches | The canvas shows four lines |
+| Widgets · Today's receipt | More than four spends | "+2 more" above the four newest lines | The canvas shows four |
+| Widgets · Today's receipt | The torn foot | The teeth's soft shadow along the bottom edge (a widget cannot cut through to the wallpaper) | The canvas bites the teeth out |
+| Widgets & controls · guide | My month beside the Today list | A fourth choice, My month, after Large in the size picker | The guide's picker had three sizes |

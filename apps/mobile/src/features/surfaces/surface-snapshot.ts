@@ -23,7 +23,8 @@ import { companionMood } from '../../ui/companion/companion-mood';
 import { isSymbolName } from '../../ui/icons/symbol';
 import { merchantIcon } from '../today/merchant-icon';
 import { dayStretches, HIDDEN, type CardContext, type CardDay } from './surface-cards';
-import { monthCardOf, streakOf } from './surface-days';
+import { monthCardOf, streakOf, weekCardOf } from './surface-days';
+import { receiptOf } from './surface-receipt';
 import { glyphOf } from './surface-glyph';
 import { surfaceJars } from './surface-jars';
 import { surfaceLook } from './surface-look';
@@ -188,10 +189,10 @@ export function surfaceSnapshot(input: SnapshotInput): SurfaceSnapshot {
     const closed =
       closedRow && tomorrow ? { at: closedTime(closedRow, language), next: tomorrow } : null;
     for (const { from, card } of dayStretches(todayCard, context, closed)) {
-      // After the close the widgets carry tomorrow's number, and its line is untouched.
+      // After the close the widgets carry tomorrow's number; the Today list keeps today's spends.
       const shown = closed ? tomorrow : today;
       if (shown === null) continue;
-      entries.push(entryOf(shown, from, closed ? NO_LIST : list, pending, t, format, card));
+      entries.push(entryOf(shown, from, list, pending, t, format, card));
     }
     if (tomorrow !== null) {
       const nextCard: CardDay = { date: next.today, number: tomorrow, caught: 0, waiting: 0 };
@@ -257,6 +258,20 @@ export function surfaceSnapshot(input: SnapshotInput): SurfaceSnapshot {
       since: input.since ?? null,
       t,
       language,
+    }),
+    week: weekCardOf({
+      today: money.today,
+      closed: withToday,
+      since: input.since ?? null,
+      t,
+      language,
+    }),
+    receipt: receiptOf({
+      money,
+      closedBefore: withToday.filter((d) => d.day < money.today).length,
+      t,
+      language,
+      format,
     }),
     look: surfaceLook(look),
     links: { today: '/app?tab=today', month: '/app?tab=diary', streak: '/app?tab=diary' },

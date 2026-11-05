@@ -43,4 +43,12 @@ export const viWidgets: { readonly [Key in keyof typeof enWidgets]: Entry } = {
   'widgets.close.none': 'Không có gì chờ',
   'widgets.close.start': 'Bắt đầu',
   'widgets.stamp': 'Đã chốt',
+  'widgets.week.title': 'Tuần này',
+  'widgets.week.next': { other: 'Đã chốt {count} ngày, tối nay tới lượt.' },
+  'widgets.week.first': 'Tối nay là lần đầu.',
+  'widgets.week.done': 'Đã chốt {closed}/{days} ngày.',
+  'widgets.receipt.title': '{date} · Hôm nay đến giờ',
+  'widgets.receipt.no': 'Số {no}',
+  'widgets.receipt.left': 'Còn hôm nay',
+  'widgets.receipt.empty': 'Chưa có khoản nào.',
 };

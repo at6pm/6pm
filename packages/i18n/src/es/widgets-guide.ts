@@ -25,7 +25,9 @@ export const esWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.home.smallWhat':
     'El número de hoy en su cielo, un bote en cuenta atrás o las noches que cerraste seguidas.',
   'widgetsGuide.home.mediumWhat': 'El número con su cielo y tus botes. Toca un bote para abrirlo.',
-  'widgetsGuide.home.largeWhat':
+  'widgetsGuide.home.largeWhat': 'Lo que te queda y los últimos gastos de hoy.',
+  'widgetsGuide.home.month': 'Mi mes',
+  'widgetsGuide.home.monthWhat':
     'El mes en soles: cada noche que cerraste y cuántas dentro del límite.',
   'widgetsGuide.home.step1':
     'Mantén pulsado un espacio vacío de tu pantalla de inicio hasta que las apps se muevan.',

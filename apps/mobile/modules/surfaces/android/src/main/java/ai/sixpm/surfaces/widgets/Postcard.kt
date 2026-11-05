@@ -10,6 +10,8 @@ data class PostcardCard(
   val kicker: String,
   val kickerShort: String,
   val number: String,
+  /** The number with its symbol, as the Lock Screen card and the receipt print it. */
+  val amount: String,
   val sub: String,
   /** `sub` with its amount hidden; null when it names none. */
   val subHidden: String?,
@@ -22,6 +24,8 @@ data class PostcardCard(
   val sunYs: Double,
   val sunKind: String,
   val closedAt: String?,
+  /** The money day the stretch belongs to. */
+  val day: String?,
 ) {
   val closed: Boolean
     get() = phase == "closed"
@@ -36,6 +40,7 @@ data class PostcardCard(
         kicker = json.optString("kicker"),
         kickerShort = json.optString("kickerShort"),
         number = json.optString("number"),
+        amount = json.optString("amount"),
         sub = json.optString("sub"),
         subHidden = if (json.has("subHidden")) json.optString("subHidden") else null,
         subShort = json.optString("subShort"),
@@ -47,6 +52,7 @@ data class PostcardCard(
         sunYs = sun.optDouble("ys", 0.3),
         sunKind = json.optString("sunKind", "day"),
         closedAt = if (json.has("closedAt")) json.optString("closedAt") else null,
+        day = if (json.has("day")) json.optString("day") else null,
       )
     }
   }
@@ -195,6 +201,8 @@ data class Postcards(
   val todayLink: String,
   val monthLink: String,
   val streakLink: String,
+  val week: PostcardWeek?,
+  val receipt: PostcardReceipt?,
 ) {
   /** The jar a jar widget shows: the season's, else the first with a day, else the first. */
   val shownJar: PostcardJar?
@@ -247,6 +255,8 @@ data class Postcards(
         todayLink = links?.optString("today") ?: "/app",
         monthLink = links?.optString("month") ?: "/app",
         streakLink = links?.optString("streak") ?: "/app",
+        week = PostcardWeek.of(json.optJSONObject("week")),
+        receipt = PostcardReceipt.of(json.optJSONObject("receipt")),
       )
     }
   }

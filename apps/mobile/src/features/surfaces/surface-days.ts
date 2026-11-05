@@ -1,8 +1,11 @@
 import {
+  addDays,
   hourOf,
   monthOf,
   monthSuns,
   streakRun,
+  weekdayMondayFirst,
+  weekSuns,
   type ClosedDayRow,
   type LocalDate,
   type SurfaceSnapshot,
@@ -69,5 +72,32 @@ export function monthCardOf(input: {
         ? t('widgets.month.none')
         : t('widgets.month.headline', { count: suns.closed, under: suns.under }),
     cells: [...suns.cells],
+  };
+}
+
+/** This week as suns, with each day's initial and "4 closed, tonight's next." under them. */
+export function weekCardOf(input: {
+  readonly today: LocalDate;
+  readonly closed: readonly ClosedDayRow[];
+  readonly since: LocalDate | null;
+  readonly t: I18n['t'];
+  readonly language: Language;
+}): NonNullable<SurfaceSnapshot['week']> {
+  const { today, t, language } = input;
+  const locale = localeOf(language);
+  const week = weekSuns({ today, closed: input.closed, since: input.since });
+  const monday = addDays(today, -weekdayMondayFirst(today));
+  const narrow = new Intl.DateTimeFormat(locale, { weekday: 'narrow' });
+  return {
+    title: t('widgets.week.title').toLocaleUpperCase(locale),
+    line: week.todayClosed
+      ? t('widgets.week.done', { closed: week.closed, days: week.days })
+      : week.closed === 0
+        ? t('widgets.week.first')
+        : t('widgets.week.next', { count: week.closed }),
+    letters: Array.from({ length: 7 }, (_, i) =>
+      narrow.format(new Date(`${addDays(monday, i)}T12:00:00`)),
+    ),
+    cells: [...week.cells],
   };
 }

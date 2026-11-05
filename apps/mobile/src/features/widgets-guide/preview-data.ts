@@ -33,6 +33,8 @@ export interface WidgetPreview {
   readonly jars: readonly PreviewJar[];
   readonly streak: SurfaceSnapshot['streak'] | null;
   readonly month: SurfaceSnapshot['month'] | null;
+  readonly week: SurfaceSnapshot['week'] | null;
+  readonly receipt: SurfaceSnapshot['receipt'] | null;
   readonly look: NonNullable<SurfaceSnapshot['look']> | null;
   readonly strings: SurfaceSnapshot['strings'];
   /** The widgets' colours this stretch, by the names Swift reads them under. */
@@ -51,7 +53,7 @@ const byCodepoint = new Map<number, SymbolName>(
   (Object.entries(symbolCodepoints) as [SymbolName, number][]).map(([name, code]) => [code, name]),
 );
 
-function nameOfGlyph(glyph: string): SymbolName {
+export function nameOfGlyph(glyph: string): SymbolName {
   return byCodepoint.get(glyph.codePointAt(0) ?? 0) ?? 'savings';
 }
 
@@ -112,6 +114,8 @@ export function useWidgetPreview(): WidgetPreview {
       jars: (snapshot.jars ?? []).map((jar) => ({ ...jar, icon: nameOfGlyph(jar.icon) })),
       streak: snapshot.streak ?? null,
       month: snapshot.month ?? null,
+      week: snapshot.week ?? null,
+      receipt: snapshot.receipt ?? null,
       look: snapshot.look ?? null,
       strings: snapshot.strings,
       ink: widgetTokens(palette),

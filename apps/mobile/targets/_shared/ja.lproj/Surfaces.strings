@@ -5,6 +5,8 @@
 "markPaid.title" = "支払い済み";
 "month.description" = "1か月を太陽で。締めたすべての夜。";
 "month.name" = "今月";
+"receipt.description" = "今日の支出をキャッチしたそばから印字。";
+"receipt.name" = "今日のレシート";
 "safeToday.description" = "今日使えるお金がひと目で分かります。";
 "safeToday.name" = "今日使えるお金";
 "setUp" = "6pmを開いて設定";
@@ -12,3 +14,5 @@
 "streak.name" = "連続記録";
 "todayList.description" = "今日の支出を新しい順に表示します。";
 "todayList.name" = "今日";
+"week.description" = "1週間を太陽で。締めたすべての夜。";
+"week.name" = "今週";

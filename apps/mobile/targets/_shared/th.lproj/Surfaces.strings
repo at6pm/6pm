@@ -5,6 +5,8 @@
 "markPaid.title" = "จ่ายแล้ว";
 "month.description" = "ทั้งเดือนเป็นดวงอาทิตย์: ทุกเย็นที่คุณปิดวัน";
 "month.name" = "เดือนของฉัน";
+"receipt.description" = "รายจ่ายวันนี้ พิมพ์ออกมาทันทีที่จับได้";
+"receipt.name" = "ใบเสร็จวันนี้";
 "safeToday.description" = "ยอดที่คุณใช้ได้วันนี้ ดูได้ในพริบตา";
 "safeToday.name" = "วันนี้ใช้ได้";
 "setUp" = "เปิด 6pm เพื่อตั้งค่า";
@@ -12,3 +14,5 @@
 "streak.name" = "สถิติต่อเนื่อง";
 "todayList.description" = "รายจ่ายวันนี้ ล่าสุดอยู่บนสุด";
 "todayList.name" = "วันนี้";
+"week.description" = "ทั้งสัปดาห์เป็นดวงอาทิตย์: ทุกเย็นที่คุณปิดวัน";
+"week.name" = "สัปดาห์นี้";

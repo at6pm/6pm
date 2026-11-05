@@ -452,6 +452,38 @@ describe('the postcards', () => {
     expect(snap.jars?.[1]?.level).toBeCloseTo(3.1 / 7);
   });
 
+  it('draws the week as suns and prints today’s receipt, oldest line first', () => {
+    const at = new Date(`2026-10-08T18:04:00`).toISOString();
+    const m = {
+      ...money(today, spends),
+      closedDays: [closedDay('2026-10-05', at), closedDay('2026-10-08', at, 400_000)],
+    };
+    const snap = snapshotOf(m, 'en', { since: '2026-10-01' });
+    expect(snap.week).toMatchObject({
+      title: 'THIS WEEK',
+      line: '2 closed, tonight’s next.',
+      cells: ['sun', 'miss', 'miss', 'half', 'today', 'ahead', 'ahead'],
+    });
+    expect(snap.week?.letters).toHaveLength(7);
+    expect(snap.receipt).toMatchObject({
+      day: today,
+      title: 'FRI 9 OCT · TODAY SO FAR',
+      number: 'Nº 003',
+      left: 'LEFT TODAY',
+    });
+    expect(snap.receipt?.lines.map((l) => [l.name, l.amount, l.confirmed])).toEqual([
+      ['BÁNH MÌ CÔ BA', '25.000', true],
+      ['PHỞ HÒA', '45.000', false],
+    ]);
+    expect(stretchAt(snap, today, '13:00')?.card?.day).toBe(today);
+  });
+
+  it('says the week in Vietnamese', () => {
+    const snap = snapshotOf(money(today, spends), 'vi');
+    expect(snap.week?.title).toBe('TUẦN NÀY');
+    expect(snap.receipt?.left).toBe('CÒN HÔM NAY');
+  });
+
   it('carries the hide-amounts choice and the look’s widget materials', () => {
     const snap = snapshotOf(money(today, spends), 'en', { hideAmounts: true });
     expect(snap.hideAmounts).toBe(true);

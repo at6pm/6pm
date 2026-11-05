@@ -24,14 +24,43 @@ class SafeTodayWidget : AppWidgetProvider() {
   }
 }
 
-/** My month: the month as suns. Opens the Diary. Its receiver is the large widget's from before. */
+/** Today: what is left, the day against its line, and today's newest spends. Opens Today. */
 class TodayListWidget : AppWidgetProvider() {
+  override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
+    for (id in ids) Widgets.drawList(context, manager, id)
+  }
+
+  override fun onAppWidgetOptionsChanged(context: Context, manager: AppWidgetManager, id: Int, options: Bundle) {
+    Widgets.drawList(context, manager, id)
+  }
+}
+
+/** My month: the month as suns. Opens the Diary. */
+class MonthWidget : AppWidgetProvider() {
   override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
     for (id in ids) Widgets.drawMonth(context, manager, id)
   }
 
   override fun onAppWidgetOptionsChanged(context: Context, manager: AppWidgetManager, id: Int, options: Bundle) {
     Widgets.drawMonth(context, manager, id)
+  }
+}
+
+/** This week: a sun for each day of the week. Opens the Diary. */
+class WeekWidget : AppWidgetProvider() {
+  override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
+    for (id in ids) Widgets.drawWeek(context, manager, id)
+  }
+}
+
+/** Today's receipt: today's catches as receipt lines. Opens Today. */
+class ReceiptWidget : AppWidgetProvider() {
+  override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
+    for (id in ids) Widgets.drawReceipt(context, manager, id)
+  }
+
+  override fun onAppWidgetOptionsChanged(context: Context, manager: AppWidgetManager, id: Int, options: Bundle) {
+    Widgets.drawReceipt(context, manager, id)
   }
 }
 
@@ -67,7 +96,10 @@ object Widgets {
       for (id in manager.getAppWidgetIds(ComponentName(context, type))) draw(context, manager, id)
     }
     each(SafeTodayWidget::class.java, ::drawSafe)
-    each(TodayListWidget::class.java, ::drawMonth)
+    each(TodayListWidget::class.java, ::drawList)
+    each(MonthWidget::class.java, ::drawMonth)
+    each(WeekWidget::class.java, ::drawWeek)
+    each(ReceiptWidget::class.java, ::drawReceipt)
     each(StreakWidget::class.java, ::drawStreak)
     each(JarWidget::class.java, ::drawJar)
   }
@@ -119,6 +151,41 @@ object Widgets {
         }
       }
       views
+    }
+
+  fun drawList(context: Context, manager: AppWidgetManager, id: Int) =
+    drawn(context, manager, id, 320 to 320) { canvas, moment, drawings ->
+      val day = moment.day ?: return@drawn null
+      val card = day.card ?: return@drawn null
+      val targets = MoreDrawings(WidgetFaces(context), drawings).list(canvas, moment, day, card)
+      val views = RemoteViews(context.packageName, R.layout.sixpm_widget_today)
+      views.setImageViewBitmap(R.id.sixpm_widget_picture, canvas.bitmap)
+      views.setContentDescription(R.id.sixpm_widget_picture, day.safeText)
+      views.setOnClickPendingIntent(android.R.id.background, open(context, id, 0, moment.postcards?.todayLink))
+      if (targets.scan != null) {
+        views.setOnClickPendingIntent(R.id.sixpm_widget_scan, open(context, id, "scan"))
+        views.setContentDescription(R.id.sixpm_widget_scan, moment.text("scanQr"))
+      }
+      if (targets.add != null) {
+        views.setOnClickPendingIntent(R.id.sixpm_widget_add, open(context, id, "quick-add"))
+        views.setContentDescription(R.id.sixpm_widget_add, moment.text("quickAdd"))
+      }
+      views
+    }
+
+  fun drawWeek(context: Context, manager: AppWidgetManager, id: Int) =
+    drawn(context, manager, id, 160 to 160) { canvas, moment, drawings ->
+      val week = moment.postcards?.week ?: return@drawn null
+      MoreDrawings(WidgetFaces(context), drawings).week(canvas, moment)
+      picture(context, canvas, id, "${week.title} · ${week.line}", moment.postcards.monthLink)
+    }
+
+  fun drawReceipt(context: Context, manager: AppWidgetManager, id: Int) =
+    drawn(context, manager, id, 320 to 160) { canvas, moment, drawings ->
+      val card = moment.day?.card ?: return@drawn null
+      val receipt = moment.postcards?.receipt ?: return@drawn null
+      MoreDrawings(WidgetFaces(context), drawings).receipt(canvas, moment, card)
+      picture(context, canvas, id, "${receipt.title} · ${receipt.left} ${card.amount}", moment.postcards.todayLink)
     }
 
   fun drawMonth(context: Context, manager: AppWidgetManager, id: Int) =

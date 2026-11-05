@@ -55,4 +55,15 @@ export const esWidgets: { readonly [Key in keyof typeof enWidgets]: Entry } = {
   'widgets.close.none': 'Nada en espera',
   'widgets.close.start': 'Empezar',
   'widgets.stamp': 'Cerrado',
+  'widgets.week.title': 'Esta semana',
+  'widgets.week.next': {
+    one: '{count} cerrado, esta noche la siguiente.',
+    other: '{count} cerrados, esta noche la siguiente.',
+  },
+  'widgets.week.first': 'Esta noche es la primera.',
+  'widgets.week.done': '{closed} de {days} cerrados.',
+  'widgets.receipt.title': '{date} · Hoy hasta ahora',
+  'widgets.receipt.no': 'N.º {no}',
+  'widgets.receipt.left': 'Queda hoy',
+  'widgets.receipt.empty': 'Nada capturado aún.',
 };

@@ -55,4 +55,15 @@ export const frWidgets: { readonly [Key in keyof typeof enWidgets]: Entry } = {
   'widgets.close.none': 'Rien en attente',
   'widgets.close.start': 'Commencer',
   'widgets.stamp': 'Clôturé',
+  'widgets.week.title': 'Cette semaine',
+  'widgets.week.next': {
+    one: '{count} clôturé, ce soir le suivant.',
+    other: '{count} clôturés, ce soir le suivant.',
+  },
+  'widgets.week.first': 'Ce soir, c’est le premier.',
+  'widgets.week.done': '{closed} sur {days} clôturés.',
+  'widgets.receipt.title': '{date} · Aujourd’hui jusqu’ici',
+  'widgets.receipt.no': 'N° {no}',
+  'widgets.receipt.left': 'Reste aujourd’hui',
+  'widgets.receipt.empty': 'Rien de capté pour l’instant.',
 };

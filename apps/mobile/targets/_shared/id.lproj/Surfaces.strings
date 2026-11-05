@@ -5,6 +5,8 @@
 "markPaid.title" = "Dibayar";
 "month.description" = "Sebulan sebagai matahari: setiap malam yang kamu tutup.";
 "month.name" = "Bulanku";
+"receipt.description" = "Pengeluaran hari ini, tercetak begitu tercatat.";
+"receipt.name" = "Struk hari ini";
 "safeToday.description" = "Yang bisa kamu pakai hari ini, sekali lirik.";
 "safeToday.name" = "Aman hari ini";
 "setUp" = "Buka 6pm untuk mengatur";
@@ -12,3 +14,5 @@
 "streak.name" = "Beruntun";
 "todayList.description" = "Pengeluaranmu hari ini, yang terbaru di atas.";
 "todayList.name" = "Hari ini";
+"week.description" = "Seminggu sebagai matahari: setiap malam yang kamu tutup.";
+"week.name" = "Minggu ini";

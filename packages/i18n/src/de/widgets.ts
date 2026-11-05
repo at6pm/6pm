@@ -55,4 +55,15 @@ export const deWidgets: { readonly [Key in keyof typeof enWidgets]: Entry } = {
   'widgets.close.none': 'Nichts wartet',
   'widgets.close.start': 'Los',
   'widgets.stamp': 'Abgeschlossen',
+  'widgets.week.title': 'Diese Woche',
+  'widgets.week.next': {
+    one: '{count} abgeschlossen, heute Abend der nächste.',
+    other: '{count} abgeschlossen, heute Abend der nächste.',
+  },
+  'widgets.week.first': 'Heute Abend ist der erste.',
+  'widgets.week.done': '{closed} von {days} abgeschlossen.',
+  'widgets.receipt.title': '{date} · Heute bisher',
+  'widgets.receipt.no': 'Nr. {no}',
+  'widgets.receipt.left': 'Heute übrig',
+  'widgets.receipt.empty': 'Noch nichts erfasst.',
 };

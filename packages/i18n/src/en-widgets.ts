@@ -54,4 +54,15 @@ export const enWidgets = {
   'widgets.close.none': 'Nothing waiting',
   'widgets.close.start': 'Start',
   'widgets.stamp': 'Closed',
+  'widgets.week.title': 'This week',
+  'widgets.week.next': {
+    one: '{count} closed, tonight’s next.',
+    other: '{count} closed, tonight’s next.',
+  },
+  'widgets.week.first': 'Tonight’s the first.',
+  'widgets.week.done': '{closed} of {days} closed.',
+  'widgets.receipt.title': '{date} · Today so far',
+  'widgets.receipt.no': 'Nº {no}',
+  'widgets.receipt.left': 'Left today',
+  'widgets.receipt.empty': 'Nothing caught yet.',
 } as const;

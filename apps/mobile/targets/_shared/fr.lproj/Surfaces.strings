@@ -5,6 +5,8 @@
 "markPaid.title" = "Payé";
 "month.description" = "Le mois en soleils : chaque soir que tu as clôturé.";
 "month.name" = "Mon mois";
+"receipt.description" = "Les dépenses du jour, imprimées dès qu’elles sont captées.";
+"receipt.name" = "Le ticket du jour";
 "safeToday.description" = "Ce que tu peux dépenser aujourd’hui, en un coup d’œil.";
 "safeToday.name" = "À dépenser aujourd’hui";
 "setUp" = "Ouvre 6pm pour commencer";
@@ -12,3 +14,5 @@
 "streak.name" = "Série";
 "todayList.description" = "Ce que tu as dépensé aujourd’hui, du plus récent au plus ancien.";
 "todayList.name" = "Aujourd’hui";
+"week.description" = "La semaine en soleils : chaque soir clôturé.";
+"week.name" = "Cette semaine";
