@@ -134,7 +134,7 @@ export function newYearJarRow(input: {
     kind: 'occasion',
     name: input.name,
     icon: 'local_florist',
-    hue: 20,
+    hue: 85,
     goal: input.goal,
     neededBy: newYearJarMonth(input.window),
     share: null,
@@ -162,4 +162,24 @@ export function newYearArmedJar<T extends Pick<PotRow, 'id' | 'archivedAt' | 'se
   if (!inNewYearWindow(input.day, input.window) || input.window === null) return null;
   const no = input.declinedOn[jar.id];
   return no !== undefined && no >= input.window.start ? null : jar;
+}
+
+/** What one red envelope holds, in Quick add's lì xì chips: 50k to 500k in đồng. */
+const ENVELOPE_AMOUNTS: readonly Vnd[] = [50_000, 100_000, 200_000, 500_000];
+/** The chip Quick add's lì xì starts on: 200k. */
+export const ENVELOPE_START = 2;
+/** The most envelopes one entry holds (+ stops there). */
+export const MOST_ENVELOPES = 99;
+
+/** The lì xì chips in the home currency: the design's đồng, worth the same elsewhere. */
+export function envelopeAmounts(currency: Currency = VND): Vnd[] {
+  return ENVELOPE_AMOUNTS.map((dong) =>
+    currency.code === 'VND' ? dong : designAmount(dong, currency),
+  );
+}
+
+/** What a lì xì of `count` envelopes of `each` comes to; the count kept to 1–99. */
+export function envelopeTotal(count: number, each: Vnd): Vnd {
+  const n = Math.min(MOST_ENVELOPES, Math.max(1, Math.round(count)));
+  return n * Math.max(0, Math.round(each));
 }

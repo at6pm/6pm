@@ -34,6 +34,9 @@ import { TonightCard } from './tonight-card';
 import { useOpenAsk, useOpenSpend } from '../duo/spread-pane';
 import { useTryingOn } from '../looks/look-settings-provider';
 import { JarShelf } from '../pots/shelf';
+import { NewYearOfferCard } from '../pots/new-year-offer-card';
+import { useNewYear } from '../pots/use-new-year';
+import { HoaMai } from './hoa-mai';
 
 /**
  * Today: the hero over the sky, then the sheet that holds the companion, tonight's card, the week
@@ -66,6 +69,7 @@ export function TodayPage({
   const offerUndo = useOfferUndo();
   const { t, language } = useI18n();
   const parked = useParkedClose(snap.today);
+  const season = useNewYear();
   const { pulling, leave } = usePullToAdd(onQuickAdd);
   const onScroll = useHomePageScroll('today', pulling);
   const overscroll = useOverscrollPull('today', pulling);
@@ -137,6 +141,7 @@ export function TodayPage({
               sheetFade,
             ]}
           >
+            <HoaMai />
             {snap.plan ? (
               <CompanionGreeting
                 day={day}
@@ -153,12 +158,18 @@ export function TodayPage({
                           ? 'pastPlan'
                           : day.safe < 0
                             ? 'replan'
-                            : 'idle'
+                            : season.day?.kind === 'countdown'
+                              ? 'seasonCountdown'
+                              : season.day?.kind === 'holiday'
+                                ? 'seasonHoliday'
+                                : 'idle'
                 }
+                festival={season.festival}
                 onPress={() => openAsk()}
               />
             ) : null}
             <FirstCatchCard />
+            <NewYearOfferCard />
             <TonightCard
               moment={view.moment}
               closeAt={snap.plan?.closeAt ?? '18:00'}

@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import {
   FUTURE_YOU_POT_ID,
   isLegacyGoal,
+  newYearJarOf,
   payCycleOn,
   topUpRemoval,
   type BillRow,
@@ -53,6 +54,8 @@ export interface NewPot {
   readonly fill: JarFillChoice;
   /** What it already holds before 6pm ("Already saved"); none when left out. */
   readonly opening?: number;
+  /** The season's jar (the Tết jar): outside the free jars, asked about in its window. */
+  readonly season?: 'newYear' | null;
 }
 
 /**
@@ -182,6 +185,8 @@ export function planActions(store: MoneyStore) {
         hue: input.hue,
         goal: Math.max(0, Math.round(input.goal)),
         ...fillFields(input.fill),
+        // One season's jar at a time: a second Tết jar is an ordinary jar.
+        season: input.season && newYearJarOf(snap.pots) === null ? input.season : null,
         paused: false,
         createdAt: new Date().toISOString(),
         archivedAt: null,

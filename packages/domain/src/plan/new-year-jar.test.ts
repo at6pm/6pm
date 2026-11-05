@@ -6,6 +6,8 @@ import { bonusSplit, looksLikeBonus, moneyInAsk } from '../spend/money-in';
 import { newYearWindow } from '../time/lunar';
 import { dailyNumber, type DailyNumberInput } from './daily-number';
 import {
+  envelopeAmounts,
+  envelopeTotal,
   isNewYearJar,
   newYearArmedJar,
   newYearAskOptions,
@@ -65,6 +67,16 @@ describe('the Tết jar', () => {
     const own = ['a', 'b', 'c'].map((id) => ({ ...tetJar, id, season: null }));
     expect(newJarLocked([...own.slice(0, 2), tetJar], false)).toBe(false);
     expect(newJarLocked(own, false)).toBe(true);
+  });
+});
+
+describe('lì xì by the envelope', () => {
+  it('counts envelopes, not đồng: 5 × 200k is 1tr, and the count stays 1 to 99', () => {
+    expect(envelopeAmounts()).toEqual([50_000, 100_000, 200_000, 500_000]);
+    expect(envelopeTotal(5, 200_000)).toBe(1_000_000);
+    expect(envelopeTotal(0, 200_000)).toBe(200_000);
+    expect(envelopeTotal(150, 100_000)).toBe(9_900_000);
+    expect(envelopeAmounts(currencyOf('USD')).every((n) => n > 0)).toBe(true);
   });
 });
 
