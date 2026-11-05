@@ -12,7 +12,7 @@ final class PhotoPick: NSObject, PHPickerViewControllerDelegate {
   /// The picked picture's data, or nil when the picker was closed without one.
   static func pick() async throws -> Data? {
     guard active == nil else { throw ScanCameraException("busy") }
-    guard let host = topViewController() else { throw ScanCameraException("host") }
+    guard let host = await settledHost() else { throw ScanCameraException("host") }
     let pick = PhotoPick()
     active = pick
     return try await withCheckedThrowingContinuation { continuation in
@@ -47,12 +47,27 @@ final class PhotoPick: NSObject, PHPickerViewControllerDelegate {
     PhotoPick.active = nil
   }
 
-  private static func topViewController() -> UIViewController? {
+  static func topViewController() -> UIViewController? {
     let windows = UIApplication.shared.connectedScenes
       .compactMap { $0 as? UIWindowScene }
       .flatMap(\.windows)
     var top = (windows.first { $0.isKeyWindow } ?? windows.first)?.rootViewController
-    while let next = top?.presentedViewController { top = next }
+    // A menu or sheet on its way out cannot present anything: the one under it does.
+    while let next = top?.presentedViewController, !next.isBeingDismissed { top = next }
     return top
+  }
+
+  /// The top view controller once nothing is moving: a menu picked from is still closing when
+  /// its action runs, and a picker presented over it then would never show.
+  static func settledHost() async -> UIViewController? {
+    for _ in 0..<20 {
+      if let top = topViewController(), top.transitionCoordinator == nil,
+        top.presentedViewController == nil
+      {
+        return top
+      }
+      try? await Task.sleep(nanoseconds: 50_000_000)
+    }
+    return topViewController()
   }
 }

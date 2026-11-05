@@ -9,6 +9,7 @@ import { sql as addSpendMemo } from '../../../db/migrations/0009-spend-memo';
 import { sql as addMoneyIn } from '../../../db/migrations/0010-money-in';
 import { sql as addJars } from '../../../db/migrations/0011-jars';
 import { sql as addImports } from '../../../db/migrations/0012-imports';
+import { sql as addSpendPhoto } from '../../../db/migrations/0013-spend-photo';
 import { createMoneyStore, type MoneyStore } from '../../../data/money-store';
 import type { SqlDatabase, SqlValue } from '../../../data/table';
 
@@ -28,6 +29,7 @@ export function openMemoryDb(): SqlDatabase {
   sqlite.exec(addMoneyIn);
   sqlite.exec(addJars);
   sqlite.exec(addImports);
+  sqlite.exec(addSpendPhoto);
   return {
     getAllAsync: <T>(source: string, params: SqlValue[]) =>
       Promise.resolve(sqlite.prepare(source).all(...params) as T[]),

@@ -25,6 +25,43 @@ public class ScanCameraModule: Module {
       }.value
     }
 
+    /// A picture already on this iPhone (`from`, a `file://` URI) kept as a spend's photo at `to`.
+    AsyncFunction("keepPhoto") { (from: String, to: String) async throws -> [String: Any] in
+      let source = try ScanCameraModule.fileURL(from)
+      let target = try ScanCameraModule.fileURL(to)
+      return try await Task.detached(priority: .userInitiated) {
+        try KeptPhoto.keep(Data(contentsOf: source), to: target)
+      }.value
+    }
+
+    /// A picture picked from Photos kept as a spend's photo at `to`; null when none was picked.
+    AsyncFunction("pickPhoto") { (to: String) async throws -> [String: Any]? in
+      let target = try ScanCameraModule.fileURL(to)
+      guard let data = try await PhotoPick.pick() else { return nil }
+      return try await Task.detached(priority: .userInitiated) {
+        try KeptPhoto.keep(data, to: target)
+      }.value
+    }
+
+    /// Whether this iPhone has a camera to take a spend's photo with (the simulator has none).
+    Function("canTakePhoto") { () -> Bool in
+      CameraPick.available
+    }
+
+    /// A photo taken with the system camera kept at `to`; null when none was taken.
+    AsyncFunction("takePhoto") { (to: String) async throws -> [String: Any]? in
+      let target = try ScanCameraModule.fileURL(to)
+      guard let picture = try await CameraPick.take() else { return nil }
+      return try await Task.detached(priority: .userInitiated) {
+        try KeptPhoto.keep(camera: picture, to: target)
+      }.value
+    }
+
+    /// Makes the kept photos' folder, left out of iCloud and Finder backups.
+    AsyncFunction("preparePhotoFolder") { (uri: String) throws in
+      try KeptPhoto.prepare(folder: ScanCameraModule.fileURL(uri))
+    }
+
     View(ScanCameraView.self) {
       Events("onCode", "onReceipt", "onRunning")
 
@@ -51,6 +88,11 @@ public class ScanCameraModule: Module {
         }.value
       }
     }
+  }
+
+  private static func fileURL(_ uri: String) throws -> URL {
+    guard let url = URL(string: uri), url.isFileURL else { throw ScanCameraException("uri") }
+    return url
   }
 }
 

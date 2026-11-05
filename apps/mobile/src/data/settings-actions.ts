@@ -1,5 +1,6 @@
 import type { MoneyStore } from './money-store';
 import { DEFAULT_PLAN, writePlan, type PlanSettings } from './plan-settings';
+import type { PhotoFiles } from './spend-photos';
 import { inTurn } from './store-queue';
 import { forgetVoice } from '../features/wording/voice-store';
 
@@ -23,7 +24,7 @@ const EVERY_TABLE = [
  * The Settings sheet's writes. A plan change commits first and then reloads, so Today, the close
  * and the theme all move together; deleting everything leaves the phone as it was on first launch.
  */
-export function settingsActions(store: MoneyStore) {
+export function settingsActions(store: MoneyStore, photos?: Pick<PhotoFiles, 'names' | 'remove'>) {
   const { db } = store;
   const reload = () => store.loadInTurn(store.getSnapshot().today);
 
@@ -36,6 +37,8 @@ export function settingsActions(store: MoneyStore) {
       await db.withTransactionAsync(async () => {
         for (const table of EVERY_TABLE) await db.runAsync(`DELETE FROM ${table}`, []);
       });
+      // The spends' photos go with them.
+      if (photos) for (const name of photos.names()) photos.remove(name);
       // The companion's memory went with the settings table; its in-memory copy goes too.
       forgetVoice();
       await reload();

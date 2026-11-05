@@ -25,6 +25,7 @@ import { markHandTake } from './jar-asks';
 import { moneyInActions } from './money-in-actions';
 import { findSpend, type MoneyStore } from './money-store';
 import { syncPaidBill } from './paid-bill-sync';
+import { NO_SPEND_PHOTOS, type SpendPhotos } from './spend-photos';
 
 export interface NewSpend {
   /** Set when the capture already has one (an inbox item), so importing it twice finds it. */
@@ -81,10 +82,18 @@ export type UndoRestore = Partial<Pick<SpendRow, 'amount' | 'categoryId'>>;
 
 /**
  * Every write the app makes to its money. Each one commits to the database first, then publishes
- * the new snapshot, so the screen never shows a state the phone has not saved.
+ * the new snapshot, so the screen never shows a state the phone has not saved. A spend's photo
+ * goes with it: deleting the spend lets the file go (held for the undo), and undoing puts it back.
  */
-export function moneyActions(store: MoneyStore) {
+export function moneyActions(store: MoneyStore, photos: SpendPhotos = NO_SPEND_PHOTOS) {
   const { tables } = store;
+
+  /** The patch that lets a deleted spend's photo go; the file is held for the undo. */
+  const letPhotoGo = async (row: SpendRow): Promise<Partial<SpendRow>> => {
+    if (!row.photo) return {};
+    await photos.letGo(row.id, row.photo);
+    return { photo: null };
+  };
 
   // Writes run one after another, and after any load in flight: each reads the row as the one
   // before it left it, so two quick edits to the same spend (an amount, then a status) never
@@ -288,7 +297,13 @@ export function moneyActions(store: MoneyStore) {
   const withdrawNow = async (capture: Capture): Promise<SpendRow | null> => {
     const row = await current(capture.row.id);
     if (!row) return null;
-    if (!capture.merged) return patchNow(row, { status: 'deleted', previousStatus: row.status });
+    if (!capture.merged) {
+      return patchNow(row, {
+        status: 'deleted',
+        previousStatus: row.status,
+        ...(await letPhotoGo(row)),
+      });
+    }
     const { db } = store;
     const merged = capture.row;
     const untouched =
@@ -375,8 +390,15 @@ export function moneyActions(store: MoneyStore) {
           },
           row.at,
         );
-        await patchNow(row, { status: 'deleted', previousStatus: row.status });
-        return merged.row;
+        // The payment keeps the first photo; one only the priced charge had moves over to it.
+        const adopt = row.photo != null && merged.row.photo == null;
+        const into = adopt ? await patchNow(merged.row, { photo: row.photo }) : merged.row;
+        await patchNow(row, {
+          status: 'deleted',
+          previousStatus: row.status,
+          ...(adopt ? { photo: null } : await letPhotoGo(row)),
+        });
+        return into;
       }),
     update,
     /**
@@ -436,15 +458,71 @@ export function moneyActions(store: MoneyStore) {
         }
         // Saying the same thing twice (a double tap) must not overwrite what undo would restore.
         if (row.status === status) return Object.keys(edit).length > 0 ? patchNow(row, edit) : row;
-        return patchNow(row, { ...edit, status, previousStatus: row.status });
+        const gone = status === 'deleted' ? await letPhotoGo(row) : {};
+        return patchNow(row, { ...edit, ...gone, status, previousStatus: row.status });
       }),
     /** Puts back the status before the last change, and the amount and category an edit changed. */
     undo: (id: string, restore: UndoRestore = {}): Promise<SpendRow | null> =>
       inTurn(async () => {
         const row = await current(id);
-        return row?.previousStatus
-          ? patchNow(row, { ...restore, status: row.previousStatus, previousStatus: null })
-          : null;
+        if (!row?.previousStatus) return null;
+        // A deleted spend comes back with the photo it had.
+        const photo = row.status === 'deleted' ? await photos.bringBack(row.id) : null;
+        return patchNow(row, {
+          ...restore,
+          ...(photo ? { photo } : {}),
+          status: row.previousStatus,
+          previousStatus: null,
+        });
+      }),
+    /**
+     * Keeps a photo with the spend: `write` puts the picture at the URI it is given, and says
+     * false when there was none (the picker was closed). It replaces the photo there was, unless
+     * `ifNone` (a capture seen again keeps its first photo). The picture is written outside the
+     * store's turn, so a picker left open holds nothing up.
+     */
+    attachPhoto: async (
+      id: string,
+      write: (uri: string) => Promise<boolean>,
+      ifNone = false,
+    ): Promise<SpendRow | null> => {
+      const { name, uri } = photos.place(id);
+      try {
+        if (!(await write(uri))) {
+          photos.remove(name);
+          return null;
+        }
+        return await inTurn(async () => {
+          const row = await current(id);
+          if (!row || row.status === 'deleted' || (ifNone && row.photo)) {
+            photos.remove(name);
+            return null;
+          }
+          const next = await patchNow(row, { photo: name });
+          if (row.photo && row.photo !== name) photos.remove(row.photo);
+          return next;
+        });
+      } catch (error) {
+        photos.remove(name);
+        throw error;
+      } finally {
+        photos.placed(name);
+      }
+    },
+    /** "Remove photo": the spend stays; the file is held for the undo. */
+    removePhoto: (id: string): Promise<SpendRow | null> =>
+      inTurn(async () => {
+        const row = await current(id);
+        if (!row?.photo) return null;
+        return patchNow(row, await letPhotoGo(row));
+      }),
+    /** The undo of "Remove photo": the same photo back, when the spend has none since. */
+    restorePhoto: (id: string): Promise<SpendRow | null> =>
+      inTurn(async () => {
+        const row = await current(id);
+        if (!row || row.photo) return null;
+        const photo = await photos.bringBack(id);
+        return photo ? patchNow(row, { photo }) : null;
       }),
     ...moneyInActions(store, { inTurn, current, patchNow, replaceSpend }),
     /** "Was this one for work?" — a work spend moves to Claim back, out of the daily number. */

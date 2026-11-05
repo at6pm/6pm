@@ -12,6 +12,9 @@ const vnd = z.number().int().nonnegative();
 /** The longest transfer memo kept: a bank's transfer message is at most about this long. */
 export const MEMO_MAX = 140;
 
+/** A kept photo's file name: a plain name with no folder in it, so it never points elsewhere. */
+export const PHOTO_NAME = /^[A-Za-z0-9_-]{1,96}\.jpg$/;
+
 export const spendSourceSchema = z.enum([
   'manual',
   'voice',
@@ -101,6 +104,12 @@ export const spendRowSchema = z.object({
    * day 6pm started. Absent on every other spend, and on rows and backups from before it could.
    */
   importId: id.nullable().optional(),
+  /**
+   * The photo kept with it (its file name in the app's photo folder): the receipt it was read from,
+   * or a picture of what was bought. It stays on the phone. Absent on rows and backups from before
+   * a spend could keep one.
+   */
+  photo: z.string().regex(PHOTO_NAME).nullable().optional(),
   createdAt: instant,
   updatedAt: instant,
 });
