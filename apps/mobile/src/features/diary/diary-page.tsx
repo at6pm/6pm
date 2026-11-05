@@ -16,6 +16,7 @@ import { AskEntry } from './ask-entry';
 import { DayReceipt } from './day-receipt';
 import { MoneyDiaries } from './money-diaries';
 import { MonthCalendar } from './month-calendar';
+import { ShareChip } from '../sharing/share-chip';
 import { ScrollReveal } from './scroll-reveal';
 import { useDiary } from './use-diary';
 import { WeekRecapCard } from './week-recap-card';
@@ -127,6 +128,16 @@ export function DiaryPage({ scrollRef }: { readonly scrollRef: AnimatedRef<Anima
           onPage={diary.page}
           stamp={diary.stamp}
           broughtOnly={diary.broughtOnly}
+          footer={
+            diary.shareMonth ? (
+              <ShareChip
+                card="month"
+                of={diary.shareMonth}
+                size="small"
+                label={t('shareCards.chip')}
+              />
+            ) : null
+          }
         />
       </ScrollReveal>
 

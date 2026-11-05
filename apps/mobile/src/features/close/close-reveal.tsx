@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn, ZoomIn } from 'react-native-reanimated';
 
@@ -31,6 +31,11 @@ export function CloseReveal(props: {
   readonly nudge: string;
   readonly doneLabel: string;
   readonly onDone: () => void;
+  /**
+   * A streak milestone reached tonight (7, 30, 100 evenings): the streak line says so and the
+   * quiet chip that shares its card comes in once the number has settled.
+   */
+  readonly milestone?: { readonly line: string; readonly chip: ReactNode } | null;
 }) {
   const { palette, serious } = useTheme();
   const [value, setValue] = useState(props.from);
@@ -120,9 +125,12 @@ export function CloseReveal(props: {
           )}
         </View>
         <View style={{ alignItems: 'center', gap: 3 }}>
-          <Text style={{ ...body(15, 650), color: palette.ink }}>{props.streak}</Text>
+          <Text style={{ ...body(15, 650), color: palette.ink }}>
+            {props.milestone ? props.milestone.line : props.streak}
+          </Text>
           <Text style={{ ...body(13.5), color: palette.inkSoft }}>{props.nudge}</Text>
         </View>
+        {props.milestone ? props.milestone.chip : null}
       </View>
       <View style={{ flex: 1.3 }} />
       <PressScale

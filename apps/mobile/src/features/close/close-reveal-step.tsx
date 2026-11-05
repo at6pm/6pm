@@ -4,8 +4,16 @@ import { localeOf } from '@6pm/i18n';
 import { useMoney } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
+import { ShareChip } from '../sharing/share-chip';
+import { useStreakOffer } from '../sharing/streak-offer';
 import { monthDots } from './month-dots';
 import { CloseReveal } from './close-reveal';
+
+/**
+ * The chip comes in 600 ms after the reveal settles: the number starts rolling at 700 ms and
+ * rolls for about a second.
+ */
+const CHIP_AFTER_MS = 2300;
 
 /** Tomorrow's number for the day just closed, with the month's dots and the companion's line. */
 export function CloseRevealStep({
@@ -20,6 +28,7 @@ export function CloseRevealStep({
   const { t, language } = useI18n();
   const money = useMoneyFormat();
   const snap = useMoney();
+  const milestone = useStreakOffer(day);
   const plan = snap.plan;
   if (!plan) return null;
   const locale = localeOf(language);
@@ -73,6 +82,21 @@ export function CloseRevealStep({
       nudge={t('close.reveal.nudge', { time: plan.closeAt })}
       doneLabel={t('close.reveal.done')}
       onDone={onDone}
+      milestone={
+        milestone === null
+          ? null
+          : {
+              line: t('shareCards.streak.reveal', { count: milestone }),
+              chip: (
+                <ShareChip
+                  card="streak"
+                  of={day}
+                  label={t('shareCards.chipPostcard')}
+                  delay={CHIP_AFTER_MS}
+                />
+              ),
+            }
+      }
     />
   );
 }
