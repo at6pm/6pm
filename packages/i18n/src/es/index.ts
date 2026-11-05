@@ -39,6 +39,7 @@ import { esWidgetsGuide } from './widgets-guide';
 import { esYearBook } from './year-book';
 import { esFirstCatch } from './first-catch';
 import { esImport } from './import';
+import { esOwed } from './owed';
 import { esSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
@@ -86,6 +87,7 @@ export const es: Catalogue = {
   ...esPots,
   ...esFirstCatch,
   ...esImport,
+  ...esOwed,
   ...importSketchMomo,
   ...esSeason,
 };

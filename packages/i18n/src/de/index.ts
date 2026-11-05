@@ -39,6 +39,7 @@ import { deWidgetsGuide } from './widgets-guide';
 import { deYearBook } from './year-book';
 import { deFirstCatch } from './first-catch';
 import { deImport } from './import';
+import { deOwed } from './owed';
 import { deSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
@@ -86,6 +87,7 @@ export const de: Catalogue = {
   ...dePots,
   ...deFirstCatch,
   ...deImport,
+  ...deOwed,
   ...importSketchMomo,
   ...deSeason,
 };

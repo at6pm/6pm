@@ -11,6 +11,7 @@ import { sql as addMoneyIn } from '../db/migrations/0010-money-in';
 import { sql as addJars } from '../db/migrations/0011-jars';
 import { sql as addImports } from '../db/migrations/0012-imports';
 import { sql as addNewYear } from '../db/migrations/0013-new-year';
+import { sql as addOwed } from '../db/migrations/0014-owed';
 import { dayOf, createMoneyStore } from './money-store';
 import {
   completeOnboarding,
@@ -42,6 +43,7 @@ function openStore(today: string) {
   sqlite.exec(addJars);
   sqlite.exec(addImports);
   sqlite.exec(addNewYear);
+  sqlite.exec(addOwed);
   const db: SqlDatabase = {
     getAllAsync: <T>(source: string, params: SqlValue[]) =>
       Promise.resolve(sqlite.prepare(source).all(...params) as T[]),

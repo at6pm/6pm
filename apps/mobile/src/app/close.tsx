@@ -455,6 +455,16 @@ function CloseOpen({
           saveLabel={t('close.edit.save')}
           onCancel={() => setEditing(null)}
           onSave={edit}
+          {...(!editingSpend.paysBill
+            ? {
+                splitLabel: t('owed.edit.split'),
+                onSplit: (amount: number, categoryId: string) => {
+                  const id = editingSpend.id;
+                  edit(amount, categoryId);
+                  router.push({ pathname: '/split', params: { spend: id } });
+                },
+              }
+            : {})}
         />
       ) : null}
       {typingCash ? (

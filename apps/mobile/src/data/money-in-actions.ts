@@ -3,6 +3,7 @@ import { randomUUID } from 'expo-crypto';
 import { FUTURE_YOU, futureYouSavedSplit, type MoneyIn, type SpendRow } from '@6pm/domain';
 
 import type { MoneyStore } from './money-store';
+import { settleByMoneyIn } from './owed-actions';
 
 /** Where the close puts money that came in. */
 export interface MoneyInPlace {
@@ -11,6 +12,8 @@ export interface MoneyInPlace {
   readonly savedTo?: string | null;
   /** For `refund` and `payback`: the spend it answers. */
   readonly givesBack?: string | null;
+  /** For `payback`: the owed lines it pays (`owedPaybackFor`), settled with it. */
+  readonly owed?: readonly string[];
   /**
    * The Tết bonus: this much goes into this jar first (a top-up), and only the rest is spread or
    * saved as `moneyIn` says.
@@ -83,6 +86,7 @@ export function moneyInActions(store: MoneyStore, helpers: Helpers) {
             );
           }
           await store.tables.spends.put(next);
+          await settleByMoneyIn(store, id, place.moneyIn === 'payback' ? (place.owed ?? []) : []);
         });
         // Pot totals and this cycle's top-ups come from every move: read them again.
         await store.loadInTurn(snap.today);
@@ -107,6 +111,7 @@ export function moneyInActions(store: MoneyStore, helpers: Helpers) {
         await store.db.withTransactionAsync(async () => {
           await store.db.runAsync('DELETE FROM pot_moves WHERE id LIKE ?', [`${id}:%`]);
           await store.tables.spends.put(next);
+          await settleByMoneyIn(store, id, []);
         });
         await store.loadInTurn(store.getSnapshot().today);
         replaceSpend(next);

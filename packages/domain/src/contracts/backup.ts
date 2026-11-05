@@ -6,6 +6,7 @@ import {
   closedDayRowSchema,
   importRowSchema,
   merchantRuleRowSchema,
+  owedRowSchema,
   potRowSchema,
   spendRowSchema,
   spendSourceSchema,
@@ -30,9 +31,10 @@ export const BACKUP_FORMAT_VERSION = 1;
  * would count a jar's spending against the daily number again. Format 7 brought history from
  * other apps' exports: a phone from before would count those lines as spending in this cycle.
  * Format 8 brought the Tết jar and lì xì envelopes: a phone from before would count the Tết jar
- * against the free jars and lose how many envelopes each lì xì held.
+ * against the free jars and lose how many envelopes each lì xì held. Format 9 brought who owes
+ * the user what: a phone from before would lose every open line.
  */
-export const BACKUP_SNAPSHOT_VERSION = 8;
+export const BACKUP_SNAPSHOT_VERSION = 9;
 
 /** AES-GCM: a 12-byte nonce in front of the ciphertext, a 16-byte tag behind it. */
 export const BACKUP_IV_BYTES = 12;
@@ -167,6 +169,8 @@ export const backupSnapshotSchema = z.strictObject({
   togetherMoves: z.array(togetherMoveRowSchema).optional(),
   /** Absent in backups taken before history could be brought in. */
   imports: z.array(importRowSchema).optional(),
+  /** Absent in backups taken before splits kept who owes what. */
+  owed: z.array(owedRowSchema).optional(),
   closedDays: z.array(closedDayRowSchema),
 });
 export type BackupSnapshot = z.infer<typeof backupSnapshotSchema>;

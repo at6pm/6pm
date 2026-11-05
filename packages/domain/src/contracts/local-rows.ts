@@ -204,3 +204,31 @@ export const importRowSchema = z.object({
   answerBefore: vnd.nullable(),
 });
 export type ImportRecordRow = z.infer<typeof importRowSchema>;
+
+/** How an owed line was settled (see `OwedSettled`). */
+export const owedSettledSchema = z.enum(['payback', 'cash', 'covered']);
+
+/**
+ * A share of a split spend someone else owes: a person (a typed first name, or nobody named), the
+ * amount, and the spend it is a share of. Open until settled: by money in (`settledSpendId` is
+ * that money in), in cash (the payback kept that day), or covered by the user (the spend it became
+ * that day). Arrived with snapshot format 9.
+ */
+export const owedRowSchema = z.object({
+  id,
+  spendId: id,
+  name: z.string().min(1).nullable(),
+  amount: z.number().int().positive(),
+  /** The spend's day: a payback's reach is counted from it. */
+  day,
+  /** Its place in the split, after the user's own share. */
+  sort: z.number().int().nonnegative(),
+  createdAt: instant,
+  settledAt: instant.nullable(),
+  settledBy: owedSettledSchema.nullable(),
+  settledSpendId: id.nullable(),
+  /** When to remind the user to ask; set and read by reminders, null for none. */
+  remindAt: instant.nullable(),
+  updatedAt: instant,
+});
+export type OwedRow = z.infer<typeof owedRowSchema>;

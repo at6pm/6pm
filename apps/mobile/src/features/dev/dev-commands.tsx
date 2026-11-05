@@ -21,6 +21,7 @@ import { seedDesignJars } from './design-jars-seed';
 import { DEV_MAX, DEV_MAX_KEY } from './dev-max';
 import { useI18n } from '../../i18n/i18n';
 import { seedDesignMoneyIn } from './design-money-in-seed';
+import { seedDesignOwed } from './design-owed-seed';
 import { useYearBook } from '../year-book/use-year-book';
 import { seedDesignYear } from './design-year-seed';
 import { seedDesignTet } from './design-tet-seed';
@@ -44,6 +45,8 @@ const commandSchema = z.object({
   seed: z.enum(['friday', 'year', 'moneyIn']).optional(),
   /** After the seed: the Pots and Plan canvases' jars and states (see `seedDesignJars`). */
   jars: z.enum(['shelf', 'due', 'payday', 'tomorrow', 'over', 'first']).optional(),
+  /** After the seed: a split dinner owed by Linh, Nam and Huy, Linh's payback, or both. */
+  owed: z.enum(['dinner', 'payback', 'both']).optional(),
   /** The friday or year seed's currency (ISO 4217); đồng when not given. */
   currency: z
     .string()
@@ -115,6 +118,7 @@ export function DevCommands() {
       const {
         seed,
         jars,
+        owed,
         currency,
         scale,
         at,
@@ -177,6 +181,7 @@ export function DevCommands() {
           });
         if (seed === 'moneyIn') await seedDesignMoneyIn(store, day);
         if (jars) await seedDesignJars(store, day, jars);
+        if (owed) await seedDesignOwed(store, day, owed);
       });
       // Said yesterday, but after anything seeded: only a catch from now on clears the card.
       if (firstCatch === 'later') {

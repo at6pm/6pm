@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useState, type ReactNode } from 'react';
 import { Text, TextInput, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
@@ -25,6 +26,7 @@ import { useClock } from '../../ui/theme/clock';
 import { useTheme } from '../../ui/theme/theme';
 import { body } from '../../ui/type/fonts';
 import { useRunAction } from '../companion/use-run-action';
+import { useOwed } from '../owed/use-owed';
 import { useWalletOptions } from '../quick-add/use-wallet-options';
 import { FromJarRow } from './from-jar-row';
 import { useAutosavedNote, useAutosavedText } from './use-autosaved-note';
@@ -71,6 +73,11 @@ export function DetailsCard({
   const { t } = useI18n();
   const snap = useMoney();
   const { now } = useClock();
+  const router = useRouter();
+  const { rows: owedRows } = useOwed();
+  const owedHere = owedRows.filter((r) => r.spendId === spend.id).length;
+  // Spending can be split; money in and a bill's payment cannot.
+  const splittable = spend.direction !== 'in' && !spend.paysBill;
   // A spend caught before captures kept their wallet still names the bank its alert or receipt did.
   const caughtFrom =
     spend.direction !== 'in' && (spend.source === 'alert' || spend.source === 'shared')
@@ -166,6 +173,19 @@ export function DetailsCard({
         onSelect: (key) => onUpdate({ forWork: key === 'work' }),
       },
     },
+    ...(splittable
+      ? [
+          {
+            key: 'split',
+            label: t('owed.details.split'),
+            value:
+              owedHere > 0
+                ? t('owed.details.ways', { count: owedHere + 1 })
+                : t('owed.details.none'),
+            onPress: () => router.push({ pathname: '/split', params: { spend: spend.id } }),
+          },
+        ]
+      : []),
     {
       key: 'bill',
       label: t('details.bill'),

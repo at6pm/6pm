@@ -1,4 +1,4 @@
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { Platform, ScrollView, Text, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -28,6 +28,7 @@ import { firstJarFor, FromJarSwitch, FromRow } from '../features/quick-add/walle
 import { jarChoiceOf } from '../features/close/jar-choice-of';
 import { jarsToSpendFrom } from '../features/details/from-jar-row';
 import { jarName } from '../features/pots/jar-name';
+import { SplitSwitch } from '../features/owed/split-switch';
 import { ENVELOPE_CATEGORY_ID, useNewYear } from '../features/pots/use-new-year';
 import {
   LixiMode,
@@ -57,6 +58,9 @@ import { useTheme } from '../ui/theme/theme';
 import { body } from '../ui/type/fonts';
 
 /** Quick add: type it in a few taps, the category most likely at this hour already picked. */
+/** The header's words grow with the text size up to this much, and the middle then gives way. */
+const HEADER_TEXT_MOST = 1.6;
+
 export default function QuickAdd() {
   const { palette } = useTheme();
   const { t, language } = useI18n();
@@ -66,6 +70,12 @@ export default function QuickAdd() {
   const store = useMoneyStore();
   const run = useRunAction();
   const say = useCompanionToast();
+  const router = useRouter();
+  // "Split it next": Keep saves the spend, then the split sheet opens on it.
+  const [splitting, setSplitting] = useState(false);
+  const [leftWidth, setLeftWidth] = useState(0);
+  const [rightWidth, setRightWidth] = useState(0);
+  const side = Math.max(leftWidth, rightWidth);
   const { trip, dongQuote } = useTravel();
   const money = useMoneyFormat();
   // Abroad the keypad opens in the local currency, settled once as the sheet opens.
@@ -239,8 +249,9 @@ export default function QuickAdd() {
     if (amount <= 0 || !category || saving.current) return;
     saving.current = true;
     // Money said to have come in waits for the close, which asks where it goes.
-    const saved = await run(() =>
-      actions.addSpend(
+    let savedId: string | null = null;
+    const saved = await run(async () => {
+      const row = await actions.addSpend(
         voice.incoming
           ? {
               amount,
@@ -262,13 +273,18 @@ export default function QuickAdd() {
               foreignAmount: entry.foreignAmount,
               fromPot,
             },
-      ),
-    );
+      );
+      savedId = row.id;
+    });
     if (!saved) {
       saving.current = false;
       return;
     }
     haptics.success();
+    if (splitting && savedId !== null && !voice.incoming) {
+      router.replace({ pathname: '/split', params: { spend: savedId } });
+      return;
+    }
     say('capture');
     edge.dismiss();
   };
@@ -289,38 +305,67 @@ export default function QuickAdd() {
           opacity: 0.35,
         }}
       />
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <PressScale onPress={edge.dismiss} style={{ width: 60, paddingVertical: 6 }}>
-          <Text style={{ ...body(16), color: palette.inkSoft }}>{t('quick.cancel')}</Text>
-        </PressScale>
-        {envelopesOn ? (
-          <QuickModeSwitch
-            mode={mode}
-            envelope={season.envelope}
-            listening={listeningOpen}
-            onMode={(next) => {
-              haptics.tick();
-              if (listeningOpen) voice.tapMain();
-              setMode(next);
-            }}
-            onVoice={() => {
-              if (listeningOpen) return;
-              setMode('keypad');
-              voice.tapMic();
-            }}
-          />
-        ) : (
-          <Text style={{ ...body(16, 650), color: palette.ink }}>{t('quick.title')}</Text>
-        )}
-        <View style={{ width: 60, alignItems: 'flex-end' }}>
-          {voice.incoming || jars.length === 0 || mode === 'envelopes' ? null : (
-            <FromJarSwitch
-              on={fromPot !== null}
-              onToggle={() =>
-                setFromPot(fromPot !== null ? null : firstJarFor(jars, snap.potSaved, amount))
-              }
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+        {/* Both sides as wide as the wider one, so the middle stays centred in what is left. */}
+        <View style={{ minWidth: side, flexShrink: 0, alignItems: 'flex-start' }}>
+          <PressScale
+            onPress={edge.dismiss}
+            onLayout={(e) => setLeftWidth(e.nativeEvent.layout.width)}
+            style={{ paddingVertical: 6 }}
+          >
+            <Text
+              numberOfLines={1}
+              maxFontSizeMultiplier={HEADER_TEXT_MOST}
+              style={{ ...body(16), color: palette.inkSoft }}
+            >
+              {t('quick.cancel')}
+            </Text>
+          </PressScale>
+        </View>
+        <View style={{ flex: 1, minWidth: 0, alignItems: 'center' }}>
+          {envelopesOn ? (
+            <QuickModeSwitch
+              mode={mode}
+              envelope={season.envelope}
+              listening={listeningOpen}
+              onMode={(next) => {
+                haptics.tick();
+                if (listeningOpen) voice.tapMain();
+                setMode(next);
+              }}
+              onVoice={() => {
+                if (listeningOpen) return;
+                setMode('keypad');
+                voice.tapMic();
+              }}
             />
+          ) : (
+            <Text
+              numberOfLines={1}
+              maxFontSizeMultiplier={HEADER_TEXT_MOST}
+              style={{ ...body(16, 650), color: palette.ink }}
+            >
+              {t('quick.title')}
+            </Text>
           )}
+        </View>
+        <View style={{ minWidth: side, flexShrink: 0, alignItems: 'flex-end' }}>
+          <View
+            onLayout={(e) => setRightWidth(e.nativeEvent.layout.width)}
+            style={{ flexDirection: 'row', gap: 8 }}
+          >
+            {voice.incoming || mode === 'envelopes' ? null : (
+              <SplitSwitch on={splitting} onToggle={() => setSplitting((on) => !on)} />
+            )}
+            {voice.incoming || jars.length === 0 || mode === 'envelopes' ? null : (
+              <FromJarSwitch
+                on={fromPot !== null}
+                onToggle={() =>
+                  setFromPot(fromPot !== null ? null : firstJarFor(jars, snap.potSaved, amount))
+                }
+              />
+            )}
+          </View>
         </View>
       </View>
     </View>
