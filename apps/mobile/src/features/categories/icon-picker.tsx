@@ -105,7 +105,17 @@ function IconCell({
   );
 }
 
-function PackHeader({ pack, locked }: { readonly pack: IconPack; readonly locked: boolean }) {
+/** A pack's dot, name and count; for someone without Max, "Free · 36" or the Max lock too. */
+function PackHeader({
+  pack,
+  locked,
+  max,
+}: {
+  readonly pack: IconPack;
+  readonly locked: boolean;
+  /** With Max every icon is simply theirs: the count stands alone. */
+  readonly max: boolean;
+}) {
   const { palette } = useTheme();
   const { t } = useI18n();
   return (
@@ -120,7 +130,9 @@ function PackHeader({ pack, locked }: { readonly pack: IconPack; readonly locked
       />
       <Text style={{ flex: 1, ...body(13.5, 650), color: palette.ink }}>{t(pack.name)}</Text>
       <Text style={{ ...body(12), color: palette.inkSoft }}>
-        {pack.free ? t('categories.pack.free', { count: pack.icons.length }) : pack.icons.length}
+        {pack.free && !max
+          ? t('categories.pack.free', { count: pack.icons.length })
+          : pack.icons.length}
       </Text>
       {locked ? (
         <View
@@ -182,7 +194,7 @@ export const IconPicker = memo(function IconPicker({
         }
         return (
           <View key={pack.name} style={{ gap: 8 }}>
-            <PackHeader pack={pack} locked={locked} />
+            <PackHeader pack={pack} locked={locked} max={max} />
             {rows.map((row) => (
               <View key={row[0]} style={{ flexDirection: 'row', gap: 6 }}>
                 {row.map((name) => (
