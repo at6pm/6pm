@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
-import { ScrollView, Text, TextInput, View } from 'react-native';
+import { Text, TextInput, View } from 'react-native';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 
 import type { PotRow } from '@6pm/domain';
@@ -12,7 +12,7 @@ import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
 import { Symbol } from '../../ui/icons/symbol';
 import { useDesignInsets } from '../../ui/layout/design-insets';
-import { SheetFrame } from '../../ui/navigation/sheet-frame';
+import { EdgeSheetScroll, FittedSheet } from '../../ui/navigation/edge-sheet';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, families, leading, tabular, UNPADDED } from '../../ui/type/fonts';
@@ -161,9 +161,9 @@ export function NewJarSheet({
       : t('pots.new.noTarget');
 
   return (
-    <SheetFrame header={header}>
-      <ScrollView
-        style={{ flex: 1 }}
+    <FittedSheet>
+      {header}
+      <EdgeSheetScroll
         contentInsetAdjustmentBehavior="never"
         keyboardShouldPersistTaps="handled"
         automaticallyAdjustKeyboardInsets
@@ -318,7 +318,7 @@ export function NewJarSheet({
             </PressScale>
           ) : null}
         </Animated.View>
-      </ScrollView>
+      </EdgeSheetScroll>
       <View style={{ paddingTop: 12, paddingHorizontal: 16, paddingBottom: bottom(34) }}>
         <PressScale
           accessibilityRole="button"
@@ -349,6 +349,6 @@ export function NewJarSheet({
           onClose={() => setKeypad(null)}
         />
       ) : null}
-    </SheetFrame>
+    </FittedSheet>
   );
 }

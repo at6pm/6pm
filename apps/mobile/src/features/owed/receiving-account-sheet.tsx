@@ -1,6 +1,6 @@
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { ScrollView, Text, TextInput, View } from 'react-native';
+import { Text, TextInput, View } from 'react-native';
 
 import {
   BANKS,
@@ -20,7 +20,7 @@ import { BankLogo } from '../../ui/bank-logo/bank-logo';
 import { haptics } from '../../ui/haptics';
 import { Symbol } from '../../ui/icons/symbol';
 import type { SymbolName } from '../../ui/icons/symbols.generated';
-import { SheetFrame } from '../../ui/navigation/sheet-frame';
+import { EdgeSheetScroll, FittedSheet } from '../../ui/navigation/edge-sheet';
 import { ChoiceMenu } from '../../ui/primitives/choice-menu';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
@@ -190,9 +190,9 @@ export function ReceivingAccountSheet({ then }: { readonly then?: string | undef
   } as const;
 
   return (
-    <SheetFrame header={header}>
-      <ScrollView
-        style={{ flex: 1 }}
+    <FittedSheet>
+      {header}
+      <EdgeSheetScroll
         contentInsetAdjustmentBehavior="never"
         automaticallyAdjustKeyboardInsets
         keyboardShouldPersistTaps="handled"
@@ -312,7 +312,7 @@ export function ReceivingAccountSheet({ then }: { readonly then?: string | undef
           <WhereItLives icon="cloud" label={t('owed.account.neverSent')} struck />
           <WhereItLives icon="swap_horiz" label={t('owed.account.movesNothing')} struck />
         </View>
-      </ScrollView>
-    </SheetFrame>
+      </EdgeSheetScroll>
+    </FittedSheet>
   );
 }

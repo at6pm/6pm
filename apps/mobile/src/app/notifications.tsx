@@ -6,7 +6,7 @@ import { SheetScreen } from '../ui/navigation/sheet-screen';
 export default function NotificationsSheet() {
   const { t } = useI18n();
   return (
-    <SheetScreen title={t('notify.settings.title')} gap={26}>
+    <SheetScreen title={t('notify.settings.title')} gap={26} fit>
       <NotificationsScreen />
     </SheetScreen>
   );

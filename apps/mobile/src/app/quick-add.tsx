@@ -389,10 +389,13 @@ export default function QuickAdd() {
         contentContainerStyle={{
           paddingTop: 14,
           paddingHorizontal: 16,
-          // Standing on the bottom edge, Keep stays clear of the home indicator; Android's sheet
-          // runs under its navigation bar, so there it stays clear of that.
-          paddingBottom:
-            edge.drawn || Platform.OS === 'android' ? Math.max(22, safeBottom + 8) : 22,
+          // Standing on the bottom edge, Keep stays clear of the home indicator; on Android the
+          // sheet already keeps its navigation bar clear, so 8 more is all it takes.
+          paddingBottom: edge.drawn
+            ? Math.max(22, safeBottom + 8)
+            : Platform.OS === 'android'
+              ? Math.max(22 - safeBottom, 8)
+              : 22,
           gap: 14,
         }}
       >

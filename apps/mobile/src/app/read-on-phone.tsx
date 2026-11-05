@@ -6,7 +6,7 @@ import { SheetScreen } from '../ui/navigation/sheet-screen';
 export default function ReadOnPhoneSheet() {
   const { t } = useI18n();
   return (
-    <SheetScreen title={t('catch.reading.title')} gap={16}>
+    <SheetScreen title={t('catch.reading.title')} gap={16} fit>
       <ReadOnPhone />
     </SheetScreen>
   );
