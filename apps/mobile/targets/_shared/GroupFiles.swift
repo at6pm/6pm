@@ -64,9 +64,10 @@ enum GroupFiles {
   }
 
   /// The names of the status files extensions leave for the app to read and never import.
-  static let statusNames: Set<String> = ["last-alert"]
+  static let statusNames: Set<String> = ["last-alert", "first-catch-told"]
 
-  /// Leaves a status for the app to show (`last-alert`: the last bank alert read). The newest
+  /// Leaves a status for the app to show (`last-alert`: the last bank alert read;
+  /// `first-catch-told`: when the first catch was said). The newest
   /// replaces the one before; the app only ever reads these.
   static func writeStatus(_ name: String, json: Data) throws {
     guard statusNames.contains(name) else { return }

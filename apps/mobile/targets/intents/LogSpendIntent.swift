@@ -32,10 +32,18 @@ struct LogSpendIntent: AppIntent {
 
   func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
     let logged: LoggedSpend
+    let now = Date()
     do {
-      logged = try LoggedSpend.log(amount: amount ?? "", merchant: merchant, at: Date())
+      logged = try LoggedSpend.log(amount: amount ?? "", merchant: merchant, at: now)
     } catch {
       throw Failure.notLogged
+    }
+    // A Wallet tap names its merchant (Siri never does): Wallet's automation is running, and its
+    // first tap may be the first catch ever.
+    let shop = (merchant ?? "").trimmingCharacters(in: .whitespaces)
+    if !shop.isEmpty && logged.caught {
+      CaptureNotices.wayRan("applePay")
+      await CaptureNotices.firstCatch(amountText: logged.amountText, name: shop, now: now)
     }
     // Only Siri is asked: a Wallet tap names its merchant, and one with no amount is already in the
     // Inbox waiting for it. Asking there would stop the automation with a prompt.
@@ -52,6 +60,8 @@ struct LogSpendIntent: AppIntent {
 
 /// What the domain bundle answered for one spend, and the inbox file it left.
 struct LoggedSpend {
+  /// An item was left in the inbox.
+  let caught: Bool
   let needsAmount: Bool
   let title: String
   let amountText: String
@@ -67,10 +77,13 @@ struct LoggedSpend {
       let object = try JSONSerialization.jsonObject(with: Data(answer.utf8)) as? [String: Any]
     else { throw DomainBridge.Failure.threw("not an object") }
 
+    var caught = false
     if let item = object["item"] as? [String: Any], let id = item["id"] as? String {
       try GroupFiles.writeInbox(id: id, json: JSONSerialization.data(withJSONObject: item))
+      caught = true
     }
     return LoggedSpend(
+      caught: caught,
       needsAmount: object["needsAmount"] as? Bool ?? true,
       title: object["title"] as? String ?? "",
       amountText: object["amountText"] as? String ?? "",

@@ -96,9 +96,16 @@ class AlertListener : NotificationListenerService() {
       val id = item?.optString("id").orEmpty()
       if (item != null && id.isNotEmpty()) {
         SurfaceFiles.writeInbox(context, id, item.toString())
-        CaughtNotice.post(context, id, item, last)
+        val bank = last?.optString("bank")?.takeIf { it.isNotEmpty() && it != "null" }
+        val name = bank ?: item.optString("merchant").trim()
+        val said = CaptureNotices.firstCatch(context, last?.optString("amountText").orEmpty(), name)
+        if (!said) CaughtNotice.post(context, id, item, last)
       }
-      if (last != null) SurfaceFiles.writeStatus(context, "last-alert", last.toString())
+      if (last != null) {
+        SurfaceFiles.writeStatus(context, "last-alert", last.toString())
+        // An alert read, caught or not, says the listener still runs.
+        CaptureNotices.wayRan(context, "alert")
+      }
     }
 
     /** The packages the catalogue names, asked of the domain bundle once per process. */

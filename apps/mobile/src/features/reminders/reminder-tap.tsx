@@ -5,9 +5,10 @@ import { useMoney } from '../../data/money-provider';
 import { deliveredAtOf, routeForTappedNotification } from './reminder-route';
 
 /**
- * Tapping the close reminder opens the close, whether 6pm was running or was started by the tap;
- * one left over from an earlier day opens that day instead. Waits for the navigator, so a launch
- * from the notification does not navigate before it exists.
+ * Tapping a notification opens where it leads (`routeForTappedNotification`), whether 6pm was
+ * running or was started by the tap: the close reminder the close, or an earlier day's that day;
+ * payday the jars; a reminder the person set who owes them; a way gone quiet its set-up. Waits for
+ * the navigator, so a launch from the notification does not navigate before it exists.
  */
 export function ReminderTap() {
   const router = useRouter();
@@ -30,7 +31,10 @@ export function ReminderTap() {
           readonly actionIdentifier: string;
           readonly notification: {
             readonly date: number;
-            readonly request: { readonly identifier: string };
+            readonly request: {
+              readonly identifier: string;
+              readonly content: { readonly data?: Record<string, unknown> | null };
+            };
           };
         }) => {
           if (response.actionIdentifier !== Notifications.DEFAULT_ACTION_IDENTIFIER) return;
@@ -41,7 +45,8 @@ export function ReminderTap() {
           const { snapshot: current, pathname: path } = latest.current;
           if (path === '/close') return;
           const deliveredAt = deliveredAtOf(response.notification.date);
-          const route = routeForTappedNotification(identifier, deliveredAt, current);
+          const data = response.notification.request.content.data ?? {};
+          const route = routeForTappedNotification(identifier, deliveredAt, current, data);
           if (route !== null) router.push(route);
         };
         const sub = Notifications.addNotificationResponseReceivedListener(open);

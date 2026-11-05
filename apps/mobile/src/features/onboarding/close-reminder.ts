@@ -1,7 +1,17 @@
-import { closeRemindersAhead, DEFAULT_CLOSE_AT, type LocalDate } from '@6pm/domain';
-import { Platform } from 'react-native';
+import {
+  closeRemindersAhead,
+  DEFAULT_CLOSE_AT,
+  type LocalDate,
+  type NotificationKind,
+} from '@6pm/domain';
 
 import { t, type Language } from '@6pm/i18n';
+
+import {
+  cancelNotifications,
+  FIRST_CATCH_ID,
+  scheduleNotifications,
+} from '../reminders/notification-schedule';
 
 /**
  * Loaded on first use: a build without the notifications module still opens, and onboarding then
@@ -12,7 +22,7 @@ const notifications = () => import('expo-notifications');
 /** Every close reminder's id: this, then the money day it asks to close ('close-reminder:2026-10-16'). */
 export const CLOSE_REMINDER_PREFIX = 'close-reminder:';
 
-/** The one repeating daily reminder builds before this one scheduled; cancelled on every rebuild. */
+/** The one repeating daily reminder builds before this one scheduled. */
 const REPEATING_REMINDER_ID = 'close-reminder';
 
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
@@ -51,82 +61,49 @@ export async function askForReminders(): Promise<boolean> {
   return answer.granted;
 }
 
-type NotificationsModule = Awaited<ReturnType<typeof notifications>>;
-
-/** Android's channel for the close reminder, its name in the app's language. */
-const CLOSE_CHANNEL = 'close';
-
-/**
- * On Android the reminder rings and shows as a banner, in a channel of its own the person can
- * tune apart from 6pm's quiet caught notifications. Null on the iPhone, which has no channels.
- */
-async function closeChannel(
-  Notifications: NotificationsModule,
-  language: Language,
-): Promise<string | null> {
-  if (Platform.OS !== 'android') return null;
-  await Notifications.setNotificationChannelAsync(CLOSE_CHANNEL, {
-    name: t(language, 'reminder.close.channel'),
-    // No sound named: the channel rings with the phone's own notification sound.
-    importance: Notifications.AndroidImportance.HIGH,
-  });
-  return CLOSE_CHANNEL;
+/** Each kind's Android channel name, in the app's language. */
+export function channelNames(language: Language): Record<NotificationKind, string> {
+  return {
+    close: t(language, 'reminder.close.channel'),
+    payday: t(language, 'notify.channel.payday'),
+    capture: t(language, 'notify.channel.capture'),
+    reminders: t(language, 'notify.channel.reminders'),
+  };
 }
 
-async function cancelAll(Notifications: NotificationsModule): Promise<void> {
-  const pending = await Notifications.getAllScheduledNotificationsAsync();
-  const ids = new Set([REPEATING_REMINDER_ID]);
-  for (const request of pending)
-    if (isCloseReminder(request.identifier)) ids.add(request.identifier);
-  await Promise.all([...ids].map((id) => Notifications.cancelScheduledNotificationAsync(id)));
-}
-
-/** Rebuilds run one after another, so two at once never leave a mix of both. */
-let rebuilding: Promise<void> = Promise.resolve();
+const CLOSE_ONLY: ReadonlySet<NotificationKind> = new Set(['close']);
 
 /**
  * Schedules the close reminder once on each of the coming money days, at the close time, leaving
- * out days already closed. Each call replaces the whole set, so it is rebuilt whenever a day closes,
- * the close time or the language changes, and when the app comes back.
+ * out days already closed, in its plain words. Onboarding and a restore set it up this way; the
+ * reminder sync then rebuilds every notification with the day's news in it.
  */
 export function scheduleCloseReminder(
   language: Language,
   closeAt: string,
   closedDays: Iterable<LocalDate> = [],
 ): Promise<void> {
-  const closed = new Set(closedDays);
-  const run = rebuilding.then(async () => {
-    const Notifications = await notifications();
-    await cancelAll(Notifications);
-    const body = closeReminderText(language, closeAt);
-    const channelId = await closeChannel(Notifications, language);
-    for (const slot of closeRemindersAhead(new Date(), closeAt, closed)) {
-      await Notifications.scheduleNotificationAsync({
-        identifier: `${CLOSE_REMINDER_PREFIX}${slot.day}`,
-        content: { body, sound: 'default' },
-        trigger: {
-          type: Notifications.SchedulableTriggerInputTypes.DATE,
-          date: slot.at,
-          ...(channelId ? { channelId } : {}),
-        },
-      });
-    }
-  });
-  rebuilding = run.catch(() => undefined);
-  return run;
+  const body = closeReminderText(language, closeAt);
+  const requests = closeRemindersAhead(new Date(), closeAt, new Set(closedDays)).map((slot) => ({
+    id: `${CLOSE_REMINDER_PREFIX}${slot.day}`,
+    kind: 'close' as const,
+    at: slot.at,
+    body,
+  }));
+  return scheduleNotifications(requests, channelNames(language), CLOSE_ONLY);
 }
 
 /** No more reminders: after Delete all data, until onboarding sets one again. */
 export function cancelCloseReminder(): Promise<void> {
-  const run = rebuilding.then(async () => cancelAll(await notifications()));
-  rebuilding = run.catch(() => undefined);
-  return run;
+  return cancelNotifications();
 }
 
 /**
  * While 6pm is open, the reminder is not shown as a banner over the app: `onArrive` gets it
  * instead, so the companion can say it in the island. When `quiet` says so (the day it asks about
- * is closed, or the close is already open), it is neither shown nor said. Returns the unsubscribe.
+ * is closed, or the close is already open), it is neither shown nor said. The first catch is not
+ * shown either: 6pm open shows the catch itself. Every other notification shows as usual.
+ * Returns the unsubscribe.
  */
 export function takeOverRemindersWhileOpen(
   onArrive: () => void,
@@ -143,12 +120,12 @@ export function takeOverRemindersWhileOpen(
         handleNotification: (n) => {
           const { identifier } = n.request;
           const ours = isCloseReminder(identifier);
-          const silent = ours && quiet(identifier);
+          const silent = (ours && quiet(identifier)) || identifier === FIRST_CATCH_ID;
           if (ours && !silent) onArrive();
           return Promise.resolve({
-            shouldShowBanner: !ours,
+            shouldShowBanner: !ours && !silent,
             shouldShowList: !silent,
-            shouldPlaySound: !ours,
+            shouldPlaySound: !ours && !silent,
             shouldSetBadge: false,
           });
         },
