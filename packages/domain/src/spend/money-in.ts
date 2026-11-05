@@ -3,6 +3,7 @@ import { foldWords } from '../capture/spoken-spend';
 import { floorToStep, VND, type Currency, type Money } from '../money/currency';
 import type { PayCycle } from '../plan/pay-cycle';
 import { diffDays, type LocalDate } from '../time/local-date';
+import { owedPaybackFor, PAYBACK_DAYS, type OwedLine } from './owed';
 import type { SpendDirection, SpendStatus } from './spend';
 
 /**
@@ -53,8 +54,6 @@ export const BIG_SHARE = 0.2;
 export const PLAN_UPDATE_SHARE = 0.05;
 /** How far back a refund may reach for the spend it gives back. */
 export const REFUND_DAYS = 60;
-/** How far back a friend's payback may reach for the split it answers. */
-export const PAYBACK_DAYS = 21;
 /** How far back a work claim may be repaid. */
 export const CLAIM_DAYS = 120;
 
@@ -183,15 +182,24 @@ export function paybackFor(money: IncomingMoney, spends: readonly GivableSpend[]
   return best?.id ?? null;
 }
 
-/** What the close asks about money in before it is placed, if it looks like anything. */
+/**
+ * What the close asks about money in before it is placed, if it looks like anything. A payback of
+ * owed lines carries them (`owed`) and the person they name, to ask "Linh paying back 300k?".
+ */
 export type MoneyInAsk =
   | { readonly kind: 'pay' }
   | { readonly kind: 'refund'; readonly spendId: string }
-  | { readonly kind: 'payback'; readonly spendId: string };
+  | {
+      readonly kind: 'payback';
+      readonly spendId: string;
+      readonly owed?: readonly string[];
+      readonly name?: string | null;
+    };
 
 /**
- * The one question the close asks about money in: the pay first, then a refund, then a payback.
- * Money that looks like none of them is an ordinary card, to spread or save.
+ * The one question the close asks about money in: the pay first, then a refund, then a payback of
+ * owed lines (`owedPaybackFor`), then of a spend with a note or a work claim. Money that looks like
+ * none of them is an ordinary card, to spread or save.
  */
 export function moneyInAsk(
   money: IncomingMoney,
@@ -199,6 +207,8 @@ export function moneyInAsk(
     readonly income: Money;
     readonly cycle: Pick<PayCycle, 'start' | 'payday'>;
     readonly spends: readonly GivableSpend[];
+    /** Open owed lines not already asked about tonight. */
+    readonly owed?: readonly OwedLine[];
   },
 ): MoneyInAsk | null {
   if (money.hint !== 'refund' && looksLikePay(money, context.income, context.cycle)) {
@@ -206,6 +216,10 @@ export function moneyInAsk(
   }
   const refund = refundFor(money, context.spends);
   if (refund !== null) return { kind: 'refund', spendId: refund };
+  const owed = owedPaybackFor(money, context.owed ?? []);
+  if (owed !== null) {
+    return { kind: 'payback', spendId: owed.spendId, owed: owed.ids, name: owed.name };
+  }
   const payback = paybackFor(money, context.spends);
   return payback === null ? null : { kind: 'payback', spendId: payback };
 }
