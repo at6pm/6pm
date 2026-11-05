@@ -38,6 +38,7 @@ import { deVoice } from './voice';
 import { deWidgetsGuide } from './widgets-guide';
 import { deYearBook } from './year-book';
 import { deFirstCatch } from './first-catch';
+import { dePhoto } from './photo';
 import { deImport } from './import';
 import { deOwed } from './owed';
 import { deSeason } from './season';
@@ -86,6 +87,7 @@ export const de: Catalogue = {
   ...dePotsPlan,
   ...dePots,
   ...deFirstCatch,
+  ...dePhoto,
   ...deImport,
   ...deOwed,
   ...importSketchMomo,

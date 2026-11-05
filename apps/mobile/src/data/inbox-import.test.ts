@@ -7,6 +7,8 @@ import { importInbox, type InboxImportDeps } from './inbox-import';
 import { moneyActions } from './money-actions';
 import { createMoneyStore, type MoneyStore } from './money-store';
 import { DEFAULT_PLAN, writePlan } from './plan-settings';
+import { createSpendPhotos } from './spend-photos';
+import { memoryPhotoFiles } from '../features/backup/test/memory-photos';
 
 jest.mock('expo-crypto', () => ({ randomUUID: () => crypto.randomUUID() }));
 
@@ -86,6 +88,53 @@ describe('importInbox', () => {
     expect(inbox.files.size).toBe(0);
     const row = await store.tables.spends.get(item.id);
     expect(row).toMatchObject({ amount: 45_000, source: 'applePay', status: 'caught', day: TODAY });
+  });
+
+  it('keeps the photo left beside a capture, and a payment seen again keeps its first', async () => {
+    const folder = memoryPhotoFiles();
+    actions = moneyActions(store, createSpendPhotos(folder));
+    const keepPhoto = (from: string, to: string) => folder.keep(from, to);
+    const shared = tap({ source: 'shared', merchant: 'Circle K', amount: 120_000 });
+    const files = memoryInbox([shared]);
+    const inbox = {
+      ...files,
+      readInbox: async () =>
+        (await files.readInbox()).map((file) => ({ ...file, photo: 'file:///group/inbox/a.jpg' })),
+    };
+    await importInbox({
+      store,
+      actions,
+      inbox,
+      report,
+      enrich: (item) => Promise.resolve(item),
+      keepPhoto,
+    });
+    const first = (await store.tables.spends.get(shared.id))?.photo ?? null;
+    expect(first).not.toBeNull();
+    expect(folder.files.get(first ?? '')).toBe(
+      Buffer.from('file:///group/inbox/a.jpg').toString('base64'),
+    );
+
+    // The same payment caught again by its alert, with another photo: the first one stays.
+    const again = memoryInbox([tap({ source: 'alert', merchant: 'CIRCLE K', amount: 120_000 })]);
+    await importInbox({
+      store,
+      actions,
+      inbox: {
+        ...again,
+        readInbox: async () =>
+          (await again.readInbox()).map((file) => ({
+            ...file,
+            photo: 'file:///group/inbox/b.jpg',
+          })),
+      },
+      report,
+      enrich: (item) => Promise.resolve(item),
+      keepPhoto,
+    });
+    expect(store.getSnapshot().cycleSpends).toHaveLength(1);
+    expect((await store.tables.spends.get(shared.id))?.photo).toBe(first);
+    expect(folder.names()).toEqual([first]);
   });
 
   it('marks a bill’s payment as paying the bill the moment it lands, paid from its wallet', async () => {

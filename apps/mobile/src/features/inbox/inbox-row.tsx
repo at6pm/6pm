@@ -13,7 +13,8 @@ import Animated, {
 import { scheduleOnRN } from 'react-native-worklets';
 
 import { useI18n } from '../../i18n/i18n';
-import { CategoryTile } from '../../ui/category-tile';
+import { photoUri } from '../../data/device-photo-files';
+import { TileWithPhoto } from '../../ui/photo/photo-clip';
 import { Symbol } from '../../ui/icons/symbol';
 import { easeOut } from '../../ui/motion/curves';
 import { useTheme } from '../../ui/theme/theme';
@@ -150,7 +151,11 @@ export function InboxRow({
               front,
             ]}
           >
-            <CategoryTile icon={row.icon} hue={row.hue} />
+            <TileWithPhoto
+              icon={row.icon}
+              hue={row.hue}
+              photo={row.photo === null ? null : photoUri(row.photo)}
+            />
             <View style={{ flex: 1, minWidth: 0, gap: 3 }}>
               <Text numberOfLines={1} style={{ ...body(16, 550), color: palette.ink }}>
                 {row.name}

@@ -3,7 +3,7 @@ import type { enNative } from './en-native';
 
 export const viNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.permission.camera':
-    '6pm dùng camera để đọc mã QR và hoá đơn bạn quét. Ảnh ở lại trên iPhone, trừ khi hoá đơn cần đọc kỹ hơn.',
+    '6pm dùng camera để đọc mã QR và hoá đơn bạn quét, và để chụp ảnh bạn kèm vào một khoản chi. Ảnh ở lại trên iPhone, trừ hoá đơn cần đọc kỹ hơn và bản sao lưu đã mã hoá của bạn.',
   'native.permission.microphone':
     '6pm nghe khi bạn nói một khoản chi. Giọng nói được gửi tới một dịch vụ chuyển giọng nói thành chữ, hoặc chỉ ở lại trên iPhone này ở chế độ trên máy.',
   'native.permission.speech': '6pm chuyển lời bạn nói thành số tiền và tên khoản chi.',

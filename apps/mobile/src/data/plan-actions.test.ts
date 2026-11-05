@@ -13,6 +13,7 @@ import { sql as addJars } from '../db/migrations/0011-jars';
 import { sql as addImports } from '../db/migrations/0012-imports';
 import { sql as addNewYear } from '../db/migrations/0013-new-year';
 import { sql as addOwed } from '../db/migrations/0014-owed';
+import { sql as addSpendPhoto } from '../db/migrations/0015-spend-photo';
 import { createMoneyStore, dayOf } from './money-store';
 import { planActions } from './plan-actions';
 import { DEFAULT_PLAN, writePlan } from './plan-settings';
@@ -39,6 +40,7 @@ async function open(today: string, startedOn = '2026-09-01') {
   sqlite.exec(addImports);
   sqlite.exec(addNewYear);
   sqlite.exec(addOwed);
+  sqlite.exec(addSpendPhoto);
   const db: SqlDatabase = {
     getAllAsync: <T>(source: string, params: SqlValue[]) =>
       Promise.resolve(sqlite.prepare(source).all(...params) as T[]),

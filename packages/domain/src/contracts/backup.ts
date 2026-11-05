@@ -7,6 +7,7 @@ import {
   importRowSchema,
   merchantRuleRowSchema,
   owedRowSchema,
+  PHOTO_NAME,
   potRowSchema,
   spendRowSchema,
   spendSourceSchema,
@@ -32,9 +33,10 @@ export const BACKUP_FORMAT_VERSION = 1;
  * other apps' exports: a phone from before would count those lines as spending in this cycle.
  * Format 8 brought the Tết jar and lì xì envelopes: a phone from before would count the Tết jar
  * against the free jars and lose how many envelopes each lì xì held. Format 9 brought who owes
- * the user what: a phone from before would lose every open line.
+ * the user what: a phone from before would lose every open line. Format 10 brought spends'
+ * photos: a phone from before would drop them.
  */
-export const BACKUP_SNAPSHOT_VERSION = 9;
+export const BACKUP_SNAPSHOT_VERSION = 10;
 
 /** AES-GCM: a 12-byte nonce in front of the ciphertext, a 16-byte tag behind it. */
 export const BACKUP_IV_BYTES = 12;
@@ -143,6 +145,55 @@ export const togetherMoveRowSchema = z.object({
 });
 export type TogetherMoveRow = z.infer<typeof togetherMoveRowSchema>;
 
+/** The most a kept photo can be in a backup: the phone keeps them at about 300 KB. */
+export const BACKUP_PHOTO_MAX_BYTES = 600_000;
+const BACKUP_PHOTO_MAX_CHARS = Math.ceil(BACKUP_PHOTO_MAX_BYTES / 3) * 4;
+
+/** A spend's photo, sealed with the rest: its file name and its JPEG, base64. */
+export const backupPhotoSchema = z.strictObject({
+  name: z.string().regex(PHOTO_NAME),
+  jpeg: z
+    .string()
+    .min(4)
+    .max(BACKUP_PHOTO_MAX_CHARS)
+    .regex(base64Pattern)
+    .refine((text) => text.length % 4 === 0, { message: 'A photo is not whole base64' }),
+});
+export type BackupPhoto = z.infer<typeof backupPhotoSchema>;
+
+/**
+ * What is left of the sealed cap for photos, so the rest of the backup never stops fitting: a
+ * margin for the encryption and anything written while the backup is taken.
+ */
+export const BACKUP_PHOTO_MARGIN_BYTES = 256 * 1024;
+
+/** The bytes one photo adds to the snapshot's JSON: its base64, its name and the keys around them. */
+export function backupPhotoBytes(photo: { readonly name: string; readonly jpegBytes: number }) {
+  return Math.ceil(photo.jpegBytes / 3) * 4 + photo.name.length + 24;
+}
+
+/**
+ * The photos a backup carries: the newest first, as many as fit beside everything else under the
+ * sealed cap. A photo that does not fit stays on the phone only; a smaller, older one after it can
+ * still go. `restBytes` is the snapshot's JSON without photos.
+ */
+export function photosThatFit<P extends { readonly name: string; readonly jpegBytes: number }>(
+  newestFirst: readonly P[],
+  restBytes: number,
+  cap: number = BACKUP_MAX_SEALED_BYTES,
+): P[] {
+  let room = cap - BACKUP_PHOTO_MARGIN_BYTES - restBytes;
+  const carried: P[] = [];
+  for (const photo of newestFirst) {
+    if (photo.jpegBytes > BACKUP_PHOTO_MAX_BYTES) continue;
+    const bytes = backupPhotoBytes(photo);
+    if (bytes > room) continue;
+    room -= bytes;
+    carried.push(photo);
+  }
+  return carried;
+}
+
 /**
  * Everything the app keeps, as plain JSON. Rows are exactly the rows of the phone's database, so
  * a restore puts back what was there. Spend sightings come from `spend_sightings` and have no
@@ -172,6 +223,11 @@ export const backupSnapshotSchema = z.strictObject({
   /** Absent in backups taken before splits kept who owes what. */
   owed: z.array(owedRowSchema).optional(),
   closedDays: z.array(closedDayRowSchema),
+  /**
+   * Spends' photos, the newest that fit (`photosThatFit`). Absent in backups taken before spends
+   * kept photos; a spend whose photo is not here comes back without one.
+   */
+  photos: z.array(backupPhotoSchema).optional(),
 });
 export type BackupSnapshot = z.infer<typeof backupSnapshotSchema>;
 

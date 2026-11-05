@@ -34,6 +34,9 @@ struct SharedReceipt {
   let photo: Data?
   /// Read on this iPhone only, to guess the currency of a receipt that prints none; never sent.
   var place: PhotoPlace? = nil
+  /// The copy the spend keeps on this iPhone (`ReceiptReader.keptPixels`, about `keptBytes`); nil
+  /// for a PDF or text. Never sent: only the app's sealed backup carries it.
+  var kept: Data? = nil
 }
 
 /// Turns what was shared (up to ten images, or one PDF, or plain text) into receipt lines, on
@@ -52,6 +55,9 @@ enum ReceiptReader {
   /// The copy kept for a closer look: enough to read a receipt, small enough to send.
   static let lookPixels = 1600
   static let lookBytes = 1_500_000
+  /// The copy the spend keeps: the app's kept photo size.
+  static let keptBytes = 300_000
+  static let keptQualities: [CGFloat] = [0.72, 0.6, 0.5, 0.4, 0.3]
   /// A PDF page with less text than this is a scan, and is read as a picture.
   static let minimumPdfText = 20
   /// Photos are read one after another, each confirmed on its own card; more than ten at once is
@@ -99,7 +105,21 @@ enum ReceiptReader {
     // One bitmap at a time, released before the next, to stay inside the extension's memory.
     let lines = autoreleasepool { downscaled(source).map(recognise) ?? [] }
     let photo = autoreleasepool { lookCopy(source) }
-    return SharedReceipt(lines: lines, photo: photo, place: place(of: source))
+    let kept = autoreleasepool { keptCopy(source) }
+    return SharedReceipt(lines: lines, photo: photo, place: place(of: source), kept: kept)
+  }
+
+  /// The photo as the spend keeps it: 1600 px on its long side (the look copy's size), a JPEG of
+  /// about 300 KB, with no place in it.
+  private static func keptCopy(_ source: CGImageSource) -> Data? {
+    guard let image = downscaled(source, to: lookPixels) else { return nil }
+    let picture = UIImage(cgImage: image)
+    var jpeg: Data?
+    for quality in keptQualities {
+      jpeg = picture.jpegData(compressionQuality: quality)
+      if let jpeg, jpeg.count <= keptBytes { break }
+    }
+    return jpeg
   }
 
   /// The photo's GPS position, when the camera recorded one and the share kept it.

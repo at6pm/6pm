@@ -18,6 +18,10 @@ export const curves = {
   jarIn: [0.3, 1.3, 0.5, 1],
   /** A check mark stamping onto a full jar. */
   jarCheck: [0.3, 1.5, 0.5, 1],
+  /** A photo clipped on: dropped under the clip, a row's clip snapping shut. */
+  photoClip: [0.3, 1.4, 0.5, 1],
+  /** A removed photo falling off its clip. */
+  photoFall: [0.5, 0, 0.75, 0],
 } as const satisfies Record<string, readonly [number, number, number, number]>;
 
 export const durations = {
@@ -37,6 +41,16 @@ export const durations = {
   jarFill: 550,
   /** The shelf jar growing into its page, and back. */
   jarOpen: 420,
+  /** A clipped photo opening full screen, and clipping itself back. */
+  photoOpen: 550,
+  /** A removed photo falling off. */
+  photoFall: 700,
+  /** A photo dropping under the clip (Details and Quick add). */
+  photoDrop: 450,
+  /** A row's slip sliding out and its clip snapping on. */
+  photoMark: 320,
+  /** KEPT ON THIS PHONE stamping after the photo lands. */
+  photoStampDelay: 350,
 } as const;
 
 /** Reanimated `withSpring` configs. */

@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Text, TextInput, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
@@ -37,6 +38,8 @@ export function QuickTicket({
   incoming = false,
   mark = null,
   lineMenu,
+  clip = null,
+  clipRoom = 0,
 }: {
   readonly heading: string;
   readonly stamp: string;
@@ -54,6 +57,9 @@ export function QuickTicket({
   readonly incoming?: boolean;
   /** A spend from a jar: the hint's mark, in the jar's colour. */
   readonly mark?: string | null;
+  /** The clip at the top right that a photo can be clipped under, and the room it takes. */
+  readonly clip?: ReactNode;
+  readonly clipRoom?: number;
   /** The category line opens this menu (which wallet paid). */
   readonly lineMenu?: {
     readonly label: string;
@@ -79,15 +85,34 @@ export function QuickTicket({
           gap: 10,
         }}
       >
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={{ ...mono(10.5, 400, 0.14), color: SOFT, textTransform: 'uppercase' }}>
+        <View
+          style={{ flexDirection: 'row', justifyContent: 'space-between', marginRight: clipRoom }}
+        >
+          <Text
+            style={{
+              ...mono(10.5, 400, 0.14),
+              color: SOFT,
+              textTransform: 'uppercase',
+              flexShrink: 1,
+            }}
+          >
             {heading}
           </Text>
-          <Text style={{ ...mono(10.5, 400, 0.14), color: SOFT, textTransform: 'uppercase' }}>
+          <Text
+            style={{
+              ...mono(10.5, 400, 0.14),
+              color: SOFT,
+              textTransform: 'uppercase',
+              flexShrink: 1,
+              textAlign: 'right',
+            }}
+          >
             {stamp}
           </Text>
         </View>
-        <View style={{ alignItems: 'center', gap: 3, paddingVertical: 2 }}>
+        <View
+          style={{ alignItems: 'center', gap: 3, paddingVertical: 2, paddingHorizontal: clipRoom }}
+        >
           <FitWidth height={60} align="center">
             <AmountText
               parts={typed}
@@ -149,6 +174,7 @@ export function QuickTicket({
         </View>
       </View>
       <PaperEdge color={PAPER} />
+      {clip}
     </Animated.View>
   );
 }

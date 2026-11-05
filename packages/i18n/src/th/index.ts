@@ -38,6 +38,7 @@ import { thVoice } from './voice';
 import { thWidgetsGuide } from './widgets-guide';
 import { thYearBook } from './year-book';
 import { thFirstCatch } from './first-catch';
+import { thPhoto } from './photo';
 import { thImport } from './import';
 import { thOwed } from './owed';
 import { thSeason } from './season';
@@ -86,6 +87,7 @@ export const th: Catalogue = {
   ...thPotsPlan,
   ...thPots,
   ...thFirstCatch,
+  ...thPhoto,
   ...thImport,
   ...thOwed,
   ...importSketchMomo,

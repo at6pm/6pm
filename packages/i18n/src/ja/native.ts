@@ -5,7 +5,7 @@ import type { enNative } from '../en-native';
 // spoken commands with the app name once.
 export const jaNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.permission.camera':
-    'スキャンしたQRコードやレシートを読み取るためにカメラを使用します。レシートを詳しく読む必要がある場合を除き、写真はiPhoneの外に出ません。',
+    'スキャンしたQRコードやレシートを読み取るため、また支出に添える写真を撮るためにカメラを使用します。詳しく読む必要があるレシートと暗号化されたバックアップを除き、写真はiPhoneの外に出ません。',
   'native.permission.microphone':
     '支出を声で記録するときにマイクを使用します。音声は文字に起こすため音声認識サービスに送られます。端末内モードではこのiPhoneから出ません。',
   'native.permission.speech': '話した内容を金額と名前に変換するために使用します。',

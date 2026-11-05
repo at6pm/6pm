@@ -5,6 +5,7 @@ import { AppState } from 'react-native';
 
 import { surfaces } from '../../../modules/surfaces';
 import { billPayments } from '../../data/bill-payments';
+import { keepPhotoAt } from '../../data/device-photo-files';
 import { startReadingCount } from '../../data/first-catch';
 import { importInbox } from '../../data/inbox-import';
 import { useMoneyActions, useMoneyStore } from '../../data/money-provider';
@@ -61,6 +62,7 @@ export function useInboxImport() {
             enrich,
             home: home.code,
             language,
+            keepPhoto: keepPhotoAt,
             report: (message) => Sentry.captureMessage(message),
           }).catch((error: unknown) => {
             Sentry.captureException(error);

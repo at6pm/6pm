@@ -21,6 +21,7 @@ import { moneyInInk, oklchSrgbHex } from '@6pm/theme';
 import { useMoney, useMoneyActions, useMoneyStore } from '../data/money-provider';
 import { useCompanionToast } from '../features/companion/use-companion-toast';
 import { useRunAction } from '../features/companion/use-run-action';
+import { QUICK_PHOTO_ROOM, QuickPhoto, useWaitingPhoto } from '../features/quick-add/quick-photo';
 import { QuickTicket } from '../features/quick-add/quick-ticket';
 import { useWalletOptions } from '../features/quick-add/use-wallet-options';
 import { CASH_WALLET } from '../features/quick-add/wallet-options';
@@ -243,6 +244,9 @@ export default function QuickAdd() {
     edge.dismiss();
   };
 
+  // A photo clipped on the ticket waits until Keep it gives it to the spend.
+  const waitingPhoto = useWaitingPhoto(saving);
+
   const save = async () => {
     if (mode === 'envelopes') return saveEnvelopes();
     // A second tap before the sheet has closed must not write the spend again.
@@ -281,6 +285,7 @@ export default function QuickAdd() {
       return;
     }
     haptics.success();
+    if (savedId !== null) waitingPhoto.keepWith(savedId);
     if (splitting && savedId !== null && !voice.incoming) {
       router.replace({ pathname: '/split', params: { spend: savedId } });
       return;
@@ -427,6 +432,8 @@ export default function QuickAdd() {
         ) : (
           <>
             <QuickTicket
+              clip={<QuickPhoto photo={waitingPhoto.photo} onPick={waitingPhoto.pick} />}
+              clipRoom={QUICK_PHOTO_ROOM}
               heading={t('quick.ticket', {
                 no: String(snap.cycleSpends.length + 1).padStart(3, '0'),
               })}

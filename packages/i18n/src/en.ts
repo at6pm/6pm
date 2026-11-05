@@ -37,6 +37,7 @@ import { enPotsClose } from './en-pots-close';
 import { enPotsPlan } from './en-pots-plan';
 import { enPots } from './en-pots';
 import { enFirstCatch } from './en-first-catch';
+import { enPhoto } from './en-photo';
 import { enImport, importSketchMomo } from './en-import';
 import { enOwed } from './en-owed';
 import { enSeason } from './en-season';
@@ -82,6 +83,7 @@ export const en = {
   ...enPotsPlan,
   ...enPots,
   ...enFirstCatch,
+  ...enPhoto,
   ...enImport,
   ...enOwed,
   ...importSketchMomo,

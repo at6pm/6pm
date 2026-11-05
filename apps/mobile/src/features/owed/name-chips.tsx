@@ -167,7 +167,7 @@ export function NameChips({
               gap: 6,
             }}
           >
-            <Symbol name="person" size={18} color={palette.inkSoft} />
+            <Symbol name="person_add" size={18} color={palette.inkSoft} />
             <Text style={{ ...body(15), color: palette.inkSoft }}>{t('owed.split.name')}</Text>
           </PressScale>
         )}

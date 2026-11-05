@@ -8,6 +8,7 @@ import { oklchSrgbHex } from '@6pm/theme';
 
 import { useMoney, useMoneyStore } from '../data/money-provider';
 import { DEFAULT_PLAN } from '../data/plan-settings';
+import { devicePhotoFiles } from '../data/device-photo-files';
 import { settingsActions } from '../data/settings-actions';
 import { askForReminders, cancelCloseReminder } from '../features/onboarding/close-reminder';
 import {
@@ -53,7 +54,7 @@ export default function Settings() {
   const toast = useToast();
   const snap = useMoney();
   const store = useMoneyStore();
-  const actions = useMemo(() => settingsActions(store), [store]);
+  const actions = useMemo(() => settingsActions(store, devicePhotoFiles), [store]);
   const lookStore = useLookSettingsStore();
   const companionStore = useCompanionSettingsStore();
   const deleteBackup = useDeleteBackup();

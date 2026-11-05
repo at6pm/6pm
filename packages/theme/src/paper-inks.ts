@@ -166,3 +166,33 @@ export const voiceInk = {
   heard: '#3cb371',
   listeningGlow: '0 10px 26px rgba(255,120,70,.4)',
 } as const;
+
+/** A spend's photo, paper-clipped to it: the print's white frame, the clip, the empty slot. */
+export const photoInk = {
+  /** The white border of the print. */
+  frame: '#fffdf9',
+  /** The clip on a sheet (Details, the close card, Quick add). */
+  clip: '#cfc8d6',
+  /** The clip on a row's tile. */
+  tileClip: '#d8d1df',
+  /** The clip printed on the Diary's receipt, in its ink. */
+  paperClip: 'rgba(43,37,48,.55)',
+  /** The clip's drop shadow. */
+  clipShadow: 'rgba(0,0,0,.4)',
+  /** The print's shadow on a sheet. */
+  printShadow: '0 10px 22px rgba(20,6,30,.4)',
+  /** The empty slot waiting under the clip, on paper. */
+  slotFill: 'rgba(251,247,239,.6)',
+  slotEdge: 'rgba(35,26,36,.35)',
+  slotInk: '#3a2f36',
+  /** KEPT ON THIS PHONE, in the KEEP stamp's green, on a slip of paper across the photo. */
+  stamp: '#2f7d55',
+  stampPaper: 'rgba(251,247,239,.9)',
+  /** Behind the photo opened full screen, and its buttons. */
+  viewer: '#0a090d',
+  viewerInk: '#fbf4ec',
+  viewerSoft: 'rgba(251,244,236,.6)',
+  viewerButton: 'rgba(255,255,255,.12)',
+  /** "Remove" in the full view. */
+  remove: oklchSrgbHex(0.74, 0.17, 25),
+} as const;

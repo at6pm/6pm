@@ -4,7 +4,7 @@ import type { enNative } from '../en-native';
 // Permission prompts follow iOS's own Chinese wording; Apple's app names sit in “ ”.
 export const zhHansNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.permission.camera':
-    '6pm 使用相机读取你扫描的二维码和小票。照片会留在你的 iPhone 上，除非某张小票需要更仔细地识别。',
+    '6pm 使用相机读取你扫描的二维码和小票，也用来拍下你附在一笔支出上的照片。照片会留在你的 iPhone 上，除了需要更仔细识别的小票和你的加密备份。',
   'native.permission.microphone':
     '你说出一笔开销时，6pm 会聆听。你的语音会发送到语音转文字服务进行转写；在设备端模式下，则只留在这台 iPhone 上。',
   'native.permission.speech': '6pm 会把你说的话转成金额和名称。',

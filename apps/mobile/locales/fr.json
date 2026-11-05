@@ -1,6 +1,6 @@
 {
   "ios": {
-    "NSCameraUsageDescription": "6pm utilise l’appareil photo pour lire les codes QR et les tickets que tu scannes. Les photos restent sur ton iPhone, sauf si un ticket doit être lu de plus près.",
+    "NSCameraUsageDescription": "6pm utilise l’appareil photo pour lire les codes QR et les tickets que tu scannes, et pour prendre la photo que tu gardes avec une dépense. Les photos restent sur ton iPhone, sauf un ticket à lire de plus près et ta sauvegarde chiffrée.",
     "NSMicrophoneUsageDescription": "6pm t’écoute pendant que tu dictes une dépense. Ta voix est envoyée à un service de transcription pour être écrite, ou reste sur cet iPhone en mode sur l’appareil.",
     "NSSpeechRecognitionUsageDescription": "6pm transforme ce que tu dis en un montant et un nom.",
     "NSPhotoLibraryUsageDescription": "6pm enregistre uniquement ton ticket de clôture et ton journal d’argent dans Photos. Il ne parcourt jamais ta photothèque.",

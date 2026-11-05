@@ -9,6 +9,7 @@ export const sameInBothLanguages: readonly string[] = [
   '6pm',
   'Max',
   'MAX',
+  'PHOTO',
   'Inbox',
   'VietQR',
   'VietQR · NAPAS 247',

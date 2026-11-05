@@ -60,12 +60,7 @@ function WhereItLives({
           justifyContent: 'center',
         }}
       >
-        <Symbol
-          name={icon}
-          size={26}
-          color={palette.ink}
-          {...(icon === 'swap_vert' ? { style: { transform: [{ rotate: '90deg' }] } } : {})}
-        />
+        <Symbol name={icon} size={26} color={palette.ink} />
         {struck ? (
           <View
             style={{
@@ -315,7 +310,7 @@ export function ReceivingAccountSheet({ then }: { readonly then?: string | undef
         <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 8, paddingTop: 4 }}>
           <WhereItLives icon="smartphone" label={t('owed.account.kept')} struck={false} />
           <WhereItLives icon="cloud" label={t('owed.account.neverSent')} struck />
-          <WhereItLives icon="swap_vert" label={t('owed.account.movesNothing')} struck />
+          <WhereItLives icon="swap_horiz" label={t('owed.account.movesNothing')} struck />
         </View>
       </ScrollView>
     </SheetFrame>
