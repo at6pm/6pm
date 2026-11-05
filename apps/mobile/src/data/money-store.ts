@@ -23,6 +23,7 @@ import {
   type LocalDate,
   type PayCycle,
   type PotRow,
+  type OwedRow,
   needsReview,
   type SpendRow,
   startOfWeek,
@@ -76,10 +77,20 @@ export interface MoneySnapshot {
   /** What jars deleted this cycle still take out of free money (`deletedJarsKeep`). */
   readonly deletedJarsKept: number;
   readonly closedDays: readonly ClosedDayRow[];
+  /**
+   * Who owes the user what: every open owed line whose spend still stands, newest first, read on
+   * every load and kept current by the owed actions (`openOwedOf` leaves out a line whose spend
+   * was skipped or deleted since).
+   */
+  readonly owed: readonly OwedRow[];
 }
 
-/** A snapshot's jar fields with no jars, moves or spends from jars: for snapshots built by hand. */
+/**
+ * A snapshot's jar fields with no jars, moves or spends from jars, and nobody owing anything: for
+ * snapshots built by hand.
+ */
 export const NO_JAR_FIELDS = {
+  owed: [],
   deletedPots: [],
   potMoves: [],
   earlierJarSpends: [],
@@ -254,6 +265,7 @@ export function createMoneyStore(db: SqlDatabase, today: LocalDate): MoneyStore 
     potSpentThisCycle: {},
     deletedJarsKept: 0,
     closedDays: [],
+    owed: [],
   };
 
   const publish = (next: MoneySnapshot) => {
@@ -280,6 +292,7 @@ export function createMoneyStore(db: SqlDatabase, today: LocalDate): MoneyStore 
       together,
       deletedPots,
       earlierJarSpends,
+      owed,
     ] = await Promise.all([
       tables.categories.select('WHERE archived_at IS NULL ORDER BY sort', []),
       // History brought in from another app is never counted: the joined cycle's part of it
@@ -304,6 +317,14 @@ export function createMoneyStore(db: SqlDatabase, today: LocalDate): MoneyStore 
       tables.spends.select(
         "WHERE day < ? AND from_pot IS NOT NULL AND status NOT IN ('skipped', 'deleted')",
         [cycle.start],
+      ),
+      tables.owed.select(
+        // Open, or settled by something since taken away (a deleted cash payback or cover).
+        `WHERE (settled_at IS NULL OR settled_spend_id IN (SELECT id FROM spends
+             WHERE status IN ('skipped', 'deleted')))
+           AND spend_id IN (SELECT id FROM spends WHERE status NOT IN ('skipped', 'deleted'))
+           ORDER BY day DESC, sort`,
+        [],
       ),
     ]);
     // Each pay cycle puts the month's set-aside into every pot, once; a launch after missed
@@ -334,6 +355,7 @@ export function createMoneyStore(db: SqlDatabase, today: LocalDate): MoneyStore 
       earlierJarSpends,
       togetherThisCycle: together,
       closedDays,
+      owed,
     });
   };
 

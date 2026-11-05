@@ -18,6 +18,7 @@ import type { SqlDatabase } from './table';
 const CLEARED_IN_ORDER = [
   'spend_sightings',
   'pot_moves',
+  'owed',
   'spends',
   'imports',
   'merchant_rules',
@@ -94,8 +95,8 @@ export async function buildSnapshot(db: SqlDatabase, takenAt: string): Promise<B
     cycle: string;
     at: string;
   }>('SELECT id, pot_id, amount, kind, cycle, at FROM pot_moves ORDER BY id', []);
-  const [categories, bills, pots, closedDays, settings, togetherMoves, imports] = await Promise.all(
-    [
+  const [categories, bills, pots, closedDays, settings, togetherMoves, imports, owed] =
+    await Promise.all([
       tables.categories.all(),
       tables.bills.all(),
       tables.pots.all(),
@@ -103,8 +104,8 @@ export async function buildSnapshot(db: SqlDatabase, takenAt: string): Promise<B
       readSettings(db),
       readTogetherMoves(db),
       tables.imports.all(),
-    ],
-  );
+      tables.owed.all(),
+    ]);
   const spendIds = new Set(spends.map((spend) => spend.id));
   const potIds = new Set(pots.map((pot) => pot.id));
   return {
@@ -137,6 +138,7 @@ export async function buildSnapshot(db: SqlDatabase, takenAt: string): Promise<B
       })),
     togetherMoves,
     imports,
+    owed,
     closedDays,
   };
 }
@@ -237,6 +239,7 @@ export async function restoreSnapshot(db: SqlDatabase, snapshot: BackupSnapshot)
       );
     }
     for (const row of snapshot.imports ?? []) await tables.imports.put(row);
+    for (const row of snapshot.owed ?? []) await tables.owed.put(row);
     for (const row of snapshot.closedDays) await tables.closedDays.put(row);
   });
 }
