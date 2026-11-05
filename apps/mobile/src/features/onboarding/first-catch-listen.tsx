@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
-import { Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import Animated, {
   Easing,
   interpolate,
+  LayoutAnimationConfig,
   useAnimatedStyle,
   useReducedMotion,
   type SharedValue,
@@ -17,10 +18,11 @@ import { Symbol } from '../../ui/icons/symbol';
 import type { SymbolName } from '../../ui/icons/symbols.generated';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { body, display, leading, mono } from '../../ui/type/fonts';
-import type { ListenWay } from './catch-ways';
+import type { ListenWay, SelfCatchingWay } from './catch-ways';
 import { FirstCatchPath } from './first-catch-path';
+import { FirstCatchSetupCards } from './first-catch-setup';
 import { FirstCatchSlip } from './first-catch-slip';
-import { fadeEntering, riseEntering, useLoop } from './onboarding-motion';
+import { fadeEntering, popEntering, riseEntering, useLoop } from './onboarding-motion';
 import type { OnboardingPalette } from './onboarding-palette';
 import type { FirstCatchListen } from './use-first-catch';
 
@@ -37,13 +39,15 @@ const TILE_ICON: Readonly<Record<ListenWay, SymbolName>> = {
 /**
  * The catching step once a way is set up: it waits, live, for one real catch. "Waiting for your
  * first one…" over the companion in its rings, a tile for each way that was set up to make one
- * happen now, and "I'll do it later", which always moves on. After 90 s with nothing it shows
+ * happen now, a card for each way that catches by itself but is not set up yet (set up right
+ * there, it folds away and joins the tiles), and "I'll do it later", which always moves on. After 90 s with nothing it shows
  * the walked way's path and where it may be stuck, still listening. When the catch lands it
  * prints as receipt Nº 001 ("Caught it.") with the companion's line and Continue.
  */
 export function FirstCatchListen({
   pal,
   ways,
+  setupWays,
   walked,
   listen,
   bankId,
@@ -55,6 +59,8 @@ export function FirstCatchListen({
 }: {
   readonly pal: OnboardingPalette;
   readonly ways: readonly ListenWay[];
+  /** The ways that catch by themselves still to set up, each offered as a card. */
+  readonly setupWays: readonly SelfCatchingWay[];
   /** The way last set up or tried, whose path shows when it seems stuck. */
   readonly walked: ListenWay | null;
   readonly listen: FirstCatchListen;
@@ -120,7 +126,14 @@ export function FirstCatchListen({
           <LaterButton pal={pal} onPress={onLater} />
         </View>
       ) : (
-        <Waiting pal={pal} ways={ways} onTry={onTry} onLater={onLater} />
+        <Waiting
+          pal={pal}
+          ways={ways}
+          setupWays={setupWays}
+          onTry={onTry}
+          onSetUp={onFix}
+          onLater={onLater}
+        />
       )}
     </View>
   );
@@ -129,15 +142,20 @@ export function FirstCatchListen({
 function Waiting({
   pal,
   ways,
+  setupWays,
   onTry,
+  onSetUp,
   onLater,
 }: {
   readonly pal: OnboardingPalette;
   readonly ways: readonly ListenWay[];
+  readonly setupWays: readonly SelfCatchingWay[];
   readonly onTry: (way: ListenWay) => void;
+  readonly onSetUp: (way: SelfCatchingWay) => void;
   readonly onLater: () => void;
 }) {
   const { t } = useI18n();
+  const reduceMotion = useReducedMotion();
   const money = useMoneyFormat();
   const step = useHomeCurrency().step;
   const rings = useLoop(RING_MS);
@@ -146,73 +164,90 @@ function Waiting({
     way === 'alerts'
       ? t('firstCatch.tile.alerts', { amount: money.full(step) })
       : t(way === 'share' ? 'firstCatch.tile.share' : 'firstCatch.tile.wallet');
+  // A short phone, a larger text size or set-up cards scroll the wait rather than push
+  // "I'll do it later" off the screen.
   return (
-    <View style={{ flex: 1, gap: 14 }}>
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <ScrollView
+      style={{ flex: 1, marginHorizontal: -20 }}
+      contentContainerStyle={{ flexGrow: 1, gap: 14, paddingHorizontal: 20 }}
+      showsVerticalScrollIndicator={false}
+      alwaysBounceVertical={false}
+    >
+      <View style={{ flex: 1, minHeight: 170, alignItems: 'center', justifyContent: 'center' }}>
         <View style={{ width: 170, height: 170, alignItems: 'center', justifyContent: 'center' }}>
           <Ring clock={rings} offset={0} color={pal.accent} />
           <Ring clock={rings} offset={0.5} color={pal.accent} />
           <Companion size={104} mood="calm" />
         </View>
       </View>
-      <Text
-        style={{
-          ...mono(10.5, 500, 0.14),
-          color: pal.inkSoft,
-          opacity: 0.81,
-          textAlign: 'center',
-        }}
-      >
-        {t('firstCatch.tryHere')}
-      </Text>
-      <View style={{ flexDirection: 'row', gap: 8 }}>
-        {[0, 1, 2].map((slot) => {
-          const way = ways[slot];
-          return (
-            <View key={slot} style={{ flex: 1, minWidth: 0 }}>
-              {way ? (
-                <PressScale
-                  scaleTo={0.95}
-                  accessibilityRole="button"
-                  accessibilityLabel={hint(way)}
-                  onPress={() => {
-                    haptics.tap();
-                    onTry(way);
-                  }}
-                  style={{
-                    height: 132,
-                    borderRadius: 22,
-                    backgroundColor: pal.cell,
-                    boxShadow: pal.cardShadow,
-                    paddingVertical: 12,
-                    paddingHorizontal: 10,
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <BreathingDot clock={breathe} color={pal.accent} />
-                  <View
-                    style={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: 13,
-                      backgroundColor: pal.chipBg,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Symbol name={TILE_ICON[way]} size={22} color={pal.ink} />
-                  </View>
-                  <Text style={{ ...body(13, 650), lineHeight: 16.25, color: pal.ink }}>
-                    {hint(way)}
-                  </Text>
-                </PressScale>
-              ) : null}
-            </View>
-          );
-        })}
-      </View>
+      {ways.length > 0 ? (
+        <Text
+          style={{
+            ...mono(10.5, 500, 0.14),
+            color: pal.inkSoft,
+            opacity: 0.81,
+            textAlign: 'center',
+          }}
+        >
+          {t('firstCatch.tryHere')}
+        </Text>
+      ) : null}
+      {/* A way set up while waiting pops into its tile; the tiles there from the start do not. */}
+      <LayoutAnimationConfig skipEntering>
+        {ways.length > 0 ? (
+          <View style={{ flexDirection: 'row', gap: 8 }}>
+            {[0, 1, 2].map((slot) => {
+              const way = ways[slot];
+              return (
+                <View key={slot} style={{ flex: 1, minWidth: 0 }}>
+                  {way ? (
+                    <Animated.View key={way} entering={popEntering(420, 0, reduceMotion)}>
+                      <PressScale
+                        scaleTo={0.95}
+                        accessibilityRole="button"
+                        accessibilityLabel={hint(way)}
+                        onPress={() => {
+                          haptics.tap();
+                          onTry(way);
+                        }}
+                        style={{
+                          height: 132,
+                          borderRadius: 22,
+                          backgroundColor: pal.cell,
+                          boxShadow: pal.cardShadow,
+                          paddingVertical: 12,
+                          paddingHorizontal: 10,
+                          justifyContent: 'space-between',
+                        }}
+                      >
+                        <BreathingDot clock={breathe} color={pal.accent} />
+                        <View
+                          style={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: 13,
+                            backgroundColor: pal.chipBg,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Symbol name={TILE_ICON[way]} size={22} color={pal.ink} />
+                        </View>
+                        <Text style={{ ...body(13, 650), lineHeight: 16.25, color: pal.ink }}>
+                          {hint(way)}
+                        </Text>
+                      </PressScale>
+                    </Animated.View>
+                  ) : null}
+                </View>
+              );
+            })}
+          </View>
+        ) : null}
+      </LayoutAnimationConfig>
+      <FirstCatchSetupCards pal={pal} ways={setupWays} onSetUp={onSetUp} />
       <LaterButton pal={pal} onPress={onLater} />
-    </View>
+    </ScrollView>
   );
 }
 
