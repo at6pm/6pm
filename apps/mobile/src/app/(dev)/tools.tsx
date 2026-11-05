@@ -35,16 +35,20 @@ export default function DeveloperTools() {
   // `sixpm-dev://tools?seed=friday` loads the fixture without a tap, for scripted design checks.
   useEffect(() => {
     if (seed !== 'friday') return;
-    void seedDesignFriday(store, today, 'VND', language).then(() => router.replace('/'));
+    void store
+      .exclusive(() => seedDesignFriday(store, today, 'VND', language))
+      .then(() => router.replace('/'));
   }, [seed, store, today, router, language]);
   const rows: [string, () => void][] = [
     [
       'Load the designed Friday',
       () => {
-        void seedDesignFriday(store, today, 'VND', language).then(() => {
-          haptics.success();
-          router.back();
-        });
+        void store
+          .exclusive(() => seedDesignFriday(store, today, 'VND', language))
+          .then(() => {
+            haptics.success();
+            router.back();
+          });
       },
     ],
     [

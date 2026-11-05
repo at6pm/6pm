@@ -32,7 +32,6 @@ export const idPotsClose: { readonly [Key in keyof typeof enPotsClose]: Entry } 
   'potsClose.details.counts': 'Dihitung hari ini',
   'potsClose.details.claimNo': 'Tidak',
   'potsClose.details.claimYes': 'Ya',
-  'potsClose.quick.today': 'Hari ini',
   'potsClose.quick.ticket': 'DARI {jar} · HARI INI TETAP {amount}',
   'potsClose.quick.paidWith': 'Dibayar pakai',
   'potsClose.first.title': 'Bayar dirimu di masa depan dulu',

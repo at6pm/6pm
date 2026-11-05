@@ -1,7 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState, type ComponentRef } from 'react';
 import { ScrollView, Text, View, type ScrollViewInstance } from 'react-native';
-import { GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   Easing,
   ReduceMotion,
@@ -23,12 +22,10 @@ import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, tabular } from '../../ui/type/fonts';
 import { sharedPotRoute } from '../together/shared-jar';
-import { FloatChip, HoldRing } from './hold-ring';
 import { Jar } from './jar';
 import { alpha } from './jar-colours';
-import { flyFrom, takeLanding } from './jar-flight';
+import { flyFrom, takeLanding, useJarAwayStyle } from './jar-flight';
 import { newJarRoute, potRoute, potsRoute } from './pot-routes';
-import { useJarHold } from './use-jar-hold';
 import { useJars, type ShelfJar } from './use-jars';
 
 const CELL = 66;
@@ -40,8 +37,8 @@ const landEase = Easing.bezier(...curves.jarIn);
 /**
  * The jar shelf on Today, under tonight's card (Pots canvas, A1): "Pots" and what goes into jars
  * each payday, then one row of small jars, Future you first, one's own, then the shared ones, and
- * a quiet "+" at the end. It never collapses; past five jars it scrolls and snaps. Tap a jar for
- * its page, hold it to top it up.
+ * a quiet "+" at the end. It never collapses; past five jars it scrolls and snaps. Tap a jar and
+ * it grows into its page.
  */
 export function JarShelf() {
   const { palette } = useTheme();
@@ -86,7 +83,7 @@ export function JarShelf() {
         showsHorizontalScrollIndicator={false}
         snapToInterval={CELL + GAP}
         decelerationRate="fast"
-        // The "+100k" chip floats up past the row's top.
+        // A jar New jar just started drops in from above the row's top.
         style={{ marginHorizontal: -16, flexGrow: 0, overflow: 'visible' }}
         contentContainerStyle={{
           gap: GAP,
@@ -131,7 +128,6 @@ export function JarShelf() {
 
 function ShelfCell({ jar, onLanded }: { readonly jar: ShelfJar; readonly onLanded: () => void }) {
   const { palette } = useTheme();
-  const { t } = useI18n();
   const home = useMoneyFormat();
   const router = useRouter();
   const jarView = useRef<ComponentRef<typeof View>>(null);
@@ -143,8 +139,8 @@ function ShelfCell({ jar, onLanded }: { readonly jar: ShelfJar; readonly onLande
     }
     flyFrom(jar.id, jarView.current, () => router.push(potRoute(jar.id)));
   }, [jar.kind, jar.id, router]);
-  const hold = useJarHold(jar, onOpen);
   const money = jar.kind === 'shared' ? jar.money : home;
+  const awayStyle = useJarAwayStyle(jar.id);
 
   // A jar New jar just started drops in after the sheet has gone, with the jarIn curve.
   const [landing] = useState(() => takeLanding());
@@ -179,16 +175,14 @@ function ShelfCell({ jar, onLanded }: { readonly jar: ShelfJar; readonly onLande
   const own = jar.kind === 'own' ? jar : null;
   return (
     <Animated.View style={[{ width: CELL, alignItems: 'center', gap: 7 }, landStyle]}>
-      <GestureDetector gesture={hold.gesture}>
-        <View
-          accessible
-          accessibilityRole="button"
-          accessibilityLabel={`${jar.name}, ${money.spoken(jar.saved)}`}
-          accessibilityHint={t('pots.shelf.holdHint', { amount: hold.chipLabel })}
-          style={{ width: CELL, alignItems: 'center', gap: 7 }}
-        >
-          <View ref={jarView} collapsable={false} style={{ width: JAR_W, height: JAR_H }}>
-            <HoldRing progress={hold.ring} left={-9} top={-2} />
+      <PressScale
+        accessibilityRole="button"
+        accessibilityLabel={`${jar.name}, ${money.spoken(jar.saved)}`}
+        onPress={onOpen}
+        style={{ width: CELL, alignItems: 'center', gap: 7 }}
+      >
+        <View ref={jarView} collapsable={false} style={{ width: JAR_W, height: JAR_H }}>
+          <Animated.View style={awayStyle}>
             <Jar
               width={JAR_W}
               height={JAR_H}
@@ -203,23 +197,21 @@ function ShelfCell({ jar, onLanded }: { readonly jar: ShelfJar; readonly onLande
                   : null
               }
               ringColor={palette.sheet}
-              pressed={hold.pressed}
             />
-            {hold.chips > 0 ? <FloatChip key={hold.chips} label={hold.chipLabel} /> : null}
-          </View>
-          <View style={{ alignItems: 'center', width: '100%' }}>
-            <Text
-              numberOfLines={1}
-              style={{ ...body(12, 650), color: palette.ink, maxWidth: '100%' }}
-            >
-              {jar.name}
-            </Text>
-            <Text style={{ ...body(11), ...tabular, color: alpha(palette.ink, 0.62) }}>
-              {money.short(jar.saved)}
-            </Text>
-          </View>
+          </Animated.View>
         </View>
-      </GestureDetector>
+        <View style={{ alignItems: 'center', width: '100%' }}>
+          <Text
+            numberOfLines={1}
+            style={{ ...body(12, 650), color: palette.ink, maxWidth: '100%' }}
+          >
+            {jar.name}
+          </Text>
+          <Text style={{ ...body(11), ...tabular, color: alpha(palette.ink, 0.62) }}>
+            {money.short(jar.saved)}
+          </Text>
+        </View>
+      </PressScale>
     </Animated.View>
   );
 }

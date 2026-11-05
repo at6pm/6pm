@@ -4,7 +4,9 @@ import { useMemo } from 'react';
 import {
   FUTURE_YOU_POT_ID,
   isLegacyGoal,
+  openingOf,
   payCycleOn,
+  topUpRemoval,
   type BillRow,
   type Payday,
   type PotMove,
@@ -14,7 +16,7 @@ import {
 import { useMoneyStore } from './money-provider';
 import type { MoneyStore } from './money-store';
 import { writePlan } from './plan-settings';
-import { clearCycleSetAside, moveCycleRecords, writeOpening } from './pot-moves';
+import { clearCycleSetAside, moveCycleRecords, takenBackId, writeOpening } from './pot-moves';
 import { inTurn } from './store-queue';
 
 export interface NewBill {
@@ -57,6 +59,20 @@ export type PotPatch = Partial<
     fill: JarFillChoice;
   }
 >;
+
+interface TopUpColumns {
+  readonly id: string;
+  readonly pot_id: string;
+  readonly amount: number;
+  readonly cycle: string;
+  readonly at: string;
+}
+
+/** A top-up removed from a jar's moves, as its undo puts it back. */
+export interface RemovedTopUp {
+  readonly row: TopUpColumns;
+  readonly removal: 'delete' | 'takeBack';
+}
 
 function fillFields(fill: JarFillChoice): Pick<PotRow, 'kind' | 'neededBy' | 'share' | 'monthly'> {
   return {
@@ -200,7 +216,7 @@ export function planActions(store: MoneyStore) {
       await reload();
     },
 
-    /** Hold to add: money put into a jar now, out of this cycle's free money. */
+    /** Add, on a jar's page: money put into a jar now, out of this cycle's free money. */
     topUp: async (potId: string, amount: number) => {
       const snap = store.getSnapshot();
       const move: PotMove = {
@@ -215,6 +231,68 @@ export function planActions(store: MoneyStore) {
         [randomUUID(), potId, move.amount, 'topUp', move.cycle, new Date().toISOString()],
       );
       store.publish({ ...snap, potMoves: [...snap.potMoves, move] });
+    },
+
+    /**
+     * Removes a top-up from a jar's moves: the money goes back to this cycle's free money (M4).
+     * Returns what `restoreTopUp` needs to put it back exactly, or null when there was none.
+     */
+    removeTopUp: async (moveId: string): Promise<RemovedTopUp | null> => {
+      const [row] = await db.getAllAsync<TopUpColumns>(
+        "SELECT id, pot_id, amount, cycle, at FROM pot_moves WHERE id = ? AND kind = 'topUp'",
+        [moveId],
+      );
+      if (!row || row.amount <= 0) return null;
+      const { start } = store.getSnapshot().cycle;
+      const removal = topUpRemoval(
+        { potId: row.pot_id, cycle: row.cycle, amount: row.amount },
+        start,
+      );
+      if (removal.kind === 'delete') {
+        await db.runAsync('DELETE FROM pot_moves WHERE id = ?', [row.id]);
+      } else {
+        await db.runAsync(
+          `INSERT OR REPLACE INTO pot_moves (id, pot_id, amount, kind, cycle, at)
+           VALUES (?, ?, ?, 'topUp', ?, ?)`,
+          [
+            takenBackId(row.id),
+            row.pot_id,
+            removal.move.amount,
+            removal.move.cycle,
+            new Date().toISOString(),
+          ],
+        );
+      }
+      await reload();
+      return { row, removal: removal.kind };
+    },
+    restoreTopUp: async ({ row, removal }: RemovedTopUp) => {
+      if (removal === 'delete') {
+        await db.runAsync(
+          `INSERT OR IGNORE INTO pot_moves (id, pot_id, amount, kind, cycle, at)
+           VALUES (?, ?, ?, 'topUp', ?, ?)`,
+          [row.id, row.pot_id, row.amount, row.cycle, row.at],
+        );
+      } else {
+        await db.runAsync('DELETE FROM pot_moves WHERE id = ?', [takenBackId(row.id)]);
+      }
+      await reload();
+    },
+
+    /**
+     * Removes "Jar started" from a jar's moves: what it held before 6pm is 0 from now on, and the
+     * cycle's set-aside works itself out again. Returns what it held, for the undo
+     * (`updatePot(id, { opening })`).
+     */
+    removeOpening: async (potId: string): Promise<number> => {
+      const held = openingOf(store.getSnapshot().potMoves, potId);
+      if (held <= 0) return 0;
+      await db.withTransactionAsync(async () => {
+        await writeOpening(db, potId, 0, store.getSnapshot().cycle.start);
+        if (potId !== FUTURE_YOU_POT_ID) await refreshSetAsides([potId]);
+      });
+      await reload();
+      return held;
     },
 
     /**

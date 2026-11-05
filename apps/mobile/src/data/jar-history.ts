@@ -1,14 +1,21 @@
 import { jarPartOf, moneyDayOf, type LocalDate, type SpendStatus } from '@6pm/domain';
 
+import { topUpOf } from './pot-moves';
 import type { SqlDatabase } from './table';
 
 /**
- * One line of a jar's page: a payday's set-aside, money added by hand (a hold or Add), a spend
+ * One line of a jar's page: a payday's set-aside, money added by hand (Add on its page), a spend
  * taken from it, or the jar starting (with what it held before 6pm, if anything).
  */
 export type JarHistoryEntry =
   | { readonly kind: 'payday'; readonly day: LocalDate; readonly amount: number }
-  | { readonly kind: 'topUp'; readonly day: LocalDate; readonly amount: number }
+  | {
+      readonly kind: 'topUp';
+      readonly day: LocalDate;
+      readonly amount: number;
+      /** Its row, so it can be removed. */
+      readonly moveId: string;
+    }
   | {
       readonly kind: 'spent';
       readonly day: LocalDate;
@@ -20,6 +27,7 @@ export type JarHistoryEntry =
   | { readonly kind: 'started'; readonly day: LocalDate; readonly amount: number };
 
 interface MoveColumns {
+  readonly id: string;
   readonly kind: string;
   readonly amount: number;
   readonly cycle: string;
@@ -56,9 +64,10 @@ export async function readJarHistory(
   notDaily: ReadonlySet<string>,
 ): Promise<JarHistoryEntry[]> {
   const [moves, spends] = await Promise.all([
-    db.getAllAsync<MoveColumns>('SELECT kind, amount, cycle, at FROM pot_moves WHERE pot_id = ?', [
-      pot.id,
-    ]),
+    db.getAllAsync<MoveColumns>(
+      'SELECT id, kind, amount, cycle, at FROM pot_moves WHERE pot_id = ?',
+      [pot.id],
+    ),
     db.getAllAsync<SpendColumns>(
       `SELECT id, day, at, amount, category_id, merchant, status, for_work, pays_bill, direction,
               from_pot, from_pot_amount
@@ -68,13 +77,18 @@ export async function readJarHistory(
   ]);
   const lines: { entry: JarHistoryEntry; at: string }[] = [];
   let opening = 0;
+  // A top-up from an earlier cycle that was removed stays where it was, taken back this cycle:
+  // neither line shows.
+  const takenBack = new Set(
+    moves.flatMap((m) => (m.kind === 'topUp' && m.amount < 0 ? [topUpOf(m.id)] : [])),
+  );
   for (const m of moves) {
     if (m.kind === 'opening') opening += m.amount;
     else if (m.kind === 'setAside' && m.amount > 0) {
       lines.push({ entry: { kind: 'payday', day: m.cycle, amount: m.amount }, at: m.at });
-    } else if (m.kind === 'topUp' && m.amount > 0) {
+    } else if (m.kind === 'topUp' && m.amount > 0 && !takenBack.has(m.id)) {
       lines.push({
-        entry: { kind: 'topUp', day: moneyDayOf(new Date(m.at)), amount: m.amount },
+        entry: { kind: 'topUp', day: moneyDayOf(new Date(m.at)), amount: m.amount, moveId: m.id },
         at: m.at,
       });
     }

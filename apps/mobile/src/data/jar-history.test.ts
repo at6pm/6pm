@@ -105,3 +105,19 @@ describe('a jar’s moves', () => {
     expect(lines).toHaveLength(2);
   });
 });
+
+describe('a jar’s moves after one was removed', () => {
+  it('names each top-up’s row, and hides an earlier one taken back this cycle', async () => {
+    const db = openMemoryDb();
+    await seed(db);
+    const before = await readJarHistory(db, pot, new Set(['rent']));
+    expect(before.find((l) => l.kind === 'topUp')).toMatchObject({ moveId: 't1' });
+    await db.runAsync(
+      "INSERT INTO pot_moves (id, pot_id, amount, kind, cycle, at) VALUES ('taken-back:t1', 'tet', -100000, 'topUp', '2026-09-30', '2026-10-02T05:00:00.000Z')",
+      [],
+    );
+    const after = await readJarHistory(db, pot, new Set(['rent']));
+    expect(after.some((l) => l.kind === 'topUp')).toBe(false);
+    expect(after).toHaveLength(before.length - 1);
+  });
+});

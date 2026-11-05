@@ -250,7 +250,6 @@ function PlanContent({
                 jars={jars}
                 justPaid={justPaid}
                 fill={filling ? payday : 0}
-                first={split.first}
                 colours={colours}
               />
             </SplitPanel>

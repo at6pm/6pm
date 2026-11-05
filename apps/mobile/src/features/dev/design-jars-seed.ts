@@ -296,5 +296,5 @@ export async function seedDesignJars(
     const bills = await tables.bills.all();
     for (const bill of bills.slice(2)) await tables.bills.remove(bill.id);
   }
-  await store.load(today);
+  await store.loadInTurn(today);
 }

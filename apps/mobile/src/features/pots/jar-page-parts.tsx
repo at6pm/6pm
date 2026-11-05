@@ -1,4 +1,7 @@
 import { Text, View } from 'react-native';
+import Animated, { FadeIn, LinearTransition } from 'react-native-reanimated';
+
+import { canRemoveJarMove } from '@6pm/domain';
 
 import type { SymbolName } from '../../ui/icons/symbols.generated';
 import type { JarHistoryEntry } from '../../data/jar-history';
@@ -8,7 +11,11 @@ import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, tabular } from '../../ui/type/fonts';
 import { alpha, MOVE_IN, MOVE_OUT_TEXT } from './jar-colours';
+import { JarMoveRow } from './jar-move-row';
 import type { JarFormat } from './jar-words';
+
+/** The lines under a removed one close the gap in 250 ms. */
+const settle = LinearTransition.duration(250);
 
 export interface JarAction {
   readonly icon: SymbolName;
@@ -78,20 +85,23 @@ export function StatePill({
 }
 
 /**
- * The jar's moves, newest first: a green dot for money in (paydays, holds, the start), a warm dot
- * and warm amount for a spend taken from it.
+ * The jar's moves, newest first: a green dot for money in (paydays, top-ups, the start), a warm
+ * dot and warm amount for a spend taken from it. Every line but a payday's swipes away (M4, M13);
+ * the lines under it slide up to close the gap, and come back the same way on undo.
  */
 export function JarMoves({
   lines,
   format,
   byChoice,
   categoryName,
+  onRemove,
 }: {
   readonly lines: readonly JarHistoryEntry[];
   readonly format: JarFormat;
   /** Spends from this jar are only ever by choice (Future you, a jar with no date). */
   readonly byChoice: boolean;
   readonly categoryName: (id: string) => string;
+  readonly onRemove: (line: JarHistoryEntry) => void;
 }) {
   const { palette } = useTheme();
   const { t } = useI18n();
@@ -119,9 +129,8 @@ export function JarMoves({
         const when = out && byChoice ? t('pots.move.byChoice', { date: day }) : day;
         const amount =
           line.amount > 0 ? `${out ? '−' : '+'}${format.money.short(line.amount)}` : '';
-        return (
+        const face = (
           <View
-            key={`${line.kind}:${line.day}:${n}`}
             style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 14 }}
           >
             <View
@@ -165,7 +174,38 @@ export function JarMoves({
             </View>
           </View>
         );
+        const key = moveKey(line);
+        return (
+          <Animated.View key={key} layout={settle} entering={FadeIn.duration(200)}>
+            {canRemoveJarMove(line) ? (
+              <JarMoveRow
+                id={key}
+                label={`${what}, ${when}, ${amount}`}
+                removeLabel={t('pots.move.remove')}
+                onRemove={() => onRemove(line)}
+              >
+                {face}
+              </JarMoveRow>
+            ) : (
+              face
+            )}
+          </Animated.View>
+        );
       })}
     </View>
   );
+}
+
+/** A line's own key, the same before and after a removal, so the rest slide instead of redraw. */
+function moveKey(line: JarHistoryEntry): string {
+  switch (line.kind) {
+    case 'topUp':
+      return `topUp:${line.moveId}`;
+    case 'spent':
+      return `spent:${line.spendId}`;
+    case 'started':
+      return 'started';
+    case 'payday':
+      return `payday:${line.day}`;
+  }
 }

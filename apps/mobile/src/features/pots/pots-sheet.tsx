@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
-import { useEffect, useRef, type ComponentRef } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { useContext, useEffect, useRef, type ComponentRef } from 'react';
+import { ScrollView, Text, useWindowDimensions, View } from 'react-native';
 import Animated, {
   Easing,
   ReduceMotion,
@@ -25,7 +25,7 @@ import { body, display, leading, tabular } from '../../ui/type/fonts';
 import { sharedPotRoute } from '../together/shared-jar';
 import { Jar } from './jar';
 import { alpha, FULL_TEXT, jarColours, PAST_DATE_WARM } from './jar-colours';
-import { flyFrom } from './jar-flight';
+import { flyFrom, JarFlightOrigin, useJarAwayStyle, type FlightOrigin } from './jar-flight';
 import { listLine, savedWords, useJarFormat } from './jar-words';
 import { newJarRoute, potRoute } from './pot-routes';
 import { useJars, type ShelfJar } from './use-jars';
@@ -43,6 +43,11 @@ export function PotsSheet() {
   const money = useMoneyFormat();
   const router = useRouter();
   const jars = useJars();
+  // The sheet stands on the bottom of the screen: its top is the screen less its height, which is
+  // where its jars are measured from when one grows into its page.
+  const { height: screen } = useWindowDimensions();
+  const origin = useRef<{ x: number; y: number }>({ x: 0, y: 0 }).current;
+  const flight: FlightOrigin = useRef({ current: origin }).current;
 
   const header = (
     <View style={{ paddingTop: 8, paddingHorizontal: 18, paddingBottom: 6, gap: 6 }}>
@@ -93,52 +98,66 @@ export function PotsSheet() {
 
   const bar = jars.own.filter((j) => j.each > 0);
   return (
-    <SheetFrame header={header}>
-      <ScrollView
+    <JarFlightOrigin.Provider value={flight}>
+      <View
         style={{ flex: 1 }}
-        contentInsetAdjustmentBehavior="never"
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: 6, paddingHorizontal: 16, paddingBottom: 44, gap: 14 }}
+        onLayout={(e) => {
+          origin.y = Math.max(0, screen - e.nativeEvent.layout.height);
+        }}
       >
-        <View style={{ paddingTop: 2, paddingHorizontal: 4, paddingBottom: 6, gap: 10 }}>
-          <Text
-            style={{
-              ...leading(display(34, 500, -0.02), 34 * 1.02),
-              ...tabular,
-              color: palette.ink,
+        <SheetFrame header={header}>
+          <ScrollView
+            style={{ flex: 1 }}
+            contentInsetAdjustmentBehavior="never"
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingTop: 6,
+              paddingHorizontal: 16,
+              paddingBottom: 44,
+              gap: 14,
             }}
           >
-            {t('pots.all.line', { amount: money.short(jars.eachPayday) })}
-          </Text>
-          <EachBar parts={bar.map((j) => ({ id: j.id, each: j.each, hue: j.pot.hue }))} />
-        </View>
-        <View
-          style={{
-            borderRadius: 26,
-            backgroundColor: palette.cell,
-            boxShadow: palette.cardShadow,
-            overflow: 'hidden',
-          }}
-        >
-          {jars.all.map((jar, n) => (
-            <PotRow key={`${jar.kind}:${jar.id}`} jar={jar} first={n === 0} />
-          ))}
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 6,
-          }}
-        >
-          <Symbol name="account_balance" size={15} color={alpha(palette.ink, 0.6)} />
-          <Text style={{ ...body(12.5), color: alpha(palette.ink, 0.6) }}>
-            {t('pots.all.bank')}
-          </Text>
-        </View>
-      </ScrollView>
-    </SheetFrame>
+            <View style={{ paddingTop: 2, paddingHorizontal: 4, paddingBottom: 6, gap: 10 }}>
+              <Text
+                style={{
+                  ...leading(display(34, 500, -0.02), 34 * 1.02),
+                  ...tabular,
+                  color: palette.ink,
+                }}
+              >
+                {t('pots.all.line', { amount: money.short(jars.eachPayday) })}
+              </Text>
+              <EachBar parts={bar.map((j) => ({ id: j.id, each: j.each, hue: j.pot.hue }))} />
+            </View>
+            <View
+              style={{
+                borderRadius: 26,
+                backgroundColor: palette.cell,
+                boxShadow: palette.cardShadow,
+                overflow: 'hidden',
+              }}
+            >
+              {jars.all.map((jar, n) => (
+                <PotRow key={`${jar.kind}:${jar.id}`} jar={jar} first={n === 0} />
+              ))}
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 6,
+              }}
+            >
+              <Symbol name="account_balance" size={15} color={alpha(palette.ink, 0.6)} />
+              <Text style={{ ...body(12.5), color: alpha(palette.ink, 0.6) }}>
+                {t('pots.all.bank')}
+              </Text>
+            </View>
+          </ScrollView>
+        </SheetFrame>
+      </View>
+    </JarFlightOrigin.Provider>
   );
 }
 
@@ -181,6 +200,8 @@ function PotRow({ jar, first }: { readonly jar: ShelfJar; readonly first: boolea
   const format = useJarFormat();
   const now = cycleMonth(useMoney().cycle);
   const jarView = useRef<ComponentRef<typeof View>>(null);
+  const origin = useContext(JarFlightOrigin);
+  const awayStyle = useJarAwayStyle(jar.id);
   const line = listLine(jar, t, format, now);
   const amounts = savedWords(jar, money, t);
   const own = jar.kind === 'own' ? jar : null;
@@ -191,25 +212,29 @@ function PotRow({ jar, first }: { readonly jar: ShelfJar; readonly first: boolea
       onPress={() => {
         haptics.tap();
         if (jar.kind === 'shared') router.push(sharedPotRoute(jar.id));
-        else flyFrom(jar.id, jarView.current, () => router.push(potRoute(jar.id)));
+        else flyFrom(jar.id, jarView.current, () => router.push(potRoute(jar.id)), origin);
       }}
       style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 14 }}
     >
       <View ref={jarView} collapsable={false}>
-        <Jar
-          width={32}
-          height={42}
-          hue={jar.pot.hue}
-          icon={jar.pot.icon}
-          futureYou={own?.futureYou ?? false}
-          level={jar.level}
-          state={own?.state ?? 'normal'}
-          partner={
-            jar.kind === 'shared' ? { initial: jar.partnerInitial, level: jar.partnerLevel } : null
-          }
-          ringColor={palette.cell}
-          plain
-        />
+        <Animated.View style={awayStyle}>
+          <Jar
+            width={32}
+            height={42}
+            hue={jar.pot.hue}
+            icon={jar.pot.icon}
+            futureYou={own?.futureYou ?? false}
+            level={jar.level}
+            state={own?.state ?? 'normal'}
+            partner={
+              jar.kind === 'shared'
+                ? { initial: jar.partnerInitial, level: jar.partnerLevel }
+                : null
+            }
+            ringColor={palette.cell}
+            plain
+          />
+        </Animated.View>
       </View>
       <View
         style={{

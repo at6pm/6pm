@@ -19,9 +19,19 @@ import { body, display, mono, tabular } from '../../ui/type/fonts';
 import type { BillView, PlanJarView } from './plan-view';
 import { Hatch, Rules } from './hatch';
 import type { SplitColours } from './split-colours';
-import { BillsArt, DaysArt, PotsArt, SPLIT_HEIGHT } from './split-part-art';
+import { ART_TOP, BillsArt, DaysArt, PotsArt, SPLIT_HEIGHT, type ArtRoom } from './split-part-art';
 
 const GROW_MS = 700;
+const PART_GAP = 3;
+/** A part's narrowest, as the canvas draws it; less only when the parts would not fit side by side. */
+const PART_MIN = 68;
+/** The art keeps this much clear above the label. */
+const FOOT_CLEAR = 6;
+/** The label and amount sit this far up from the part's foot, and are this tall as designed. */
+const FOOT_BOTTOM = 8;
+const FOOT_DESIGNED = 40;
+/** The foot's words grow with the text size, up to this, so the art always keeps some room. */
+const FOOT_MAX_SCALE = 1.35;
 const GROW_STAGGER = 90;
 const RING_MS = 200;
 const PULSE_MS = 900;
@@ -69,6 +79,14 @@ export function SplitHero({
   const { palette } = useTheme();
   const total = split.parts.reduce((sum, p) => sum + p.amount, 0) || 1;
   const last = split.parts.length - 1;
+  // Every part keeps its narrowest only while they all fit across: with Before and Over beside
+  // Bills, Jars and Free on a narrow phone they share what there is instead of running off.
+  const [rowWidth, setRowWidth] = useState(0);
+  const count = split.parts.length;
+  const minWidth =
+    rowWidth > 0
+      ? Math.min(PART_MIN, (rowWidth - PART_GAP * (count - 1)) / Math.max(1, count))
+      : PART_MIN;
   return (
     <View
       style={{
@@ -86,18 +104,29 @@ export function SplitHero({
           flexDirection: 'row',
           alignItems: 'baseline',
           justifyContent: 'space-between',
+          gap: 8,
           paddingHorizontal: 2,
         }}
       >
-        <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8, flexShrink: 0 }}>
           <Text style={{ ...mono(10.5, 400, 0.14), color: palette.inkSoft }}>
             {words.pay.toUpperCase()}
           </Text>
           <Text style={{ ...display(30, 500, -0.02), color: palette.ink }}>{words.payAmount}</Text>
         </View>
-        <Text style={{ ...body(13, 600), color: palette.inkSoft }}>{words.paid}</Text>
+        <Text
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.7}
+          style={{ ...body(13, 600), color: palette.inkSoft, flexShrink: 1, textAlign: 'right' }}
+        >
+          {words.paid}
+        </Text>
       </View>
-      <View style={{ flexDirection: 'row', height: SPLIT_HEIGHT, gap: 3 }}>
+      <View
+        onLayout={(e) => setRowWidth(e.nativeEvent.layout.width)}
+        style={{ flexDirection: 'row', height: SPLIT_HEIGHT, gap: PART_GAP }}
+      >
         {split.parts.map((part, i) => {
           const scheduled = part.kind === 'pots' && split.lastDay;
           return (
@@ -105,6 +134,7 @@ export function SplitHero({
               key={part.kind}
               index={i}
               share={part.amount / total}
+              minWidth={minWidth}
               radius={radiusOf(i, last)}
               bg={bgOf(part.kind, colours)}
               hatch={hatchOf(part.kind, colours, scheduled)}
@@ -120,18 +150,19 @@ export function SplitHero({
               pulseColour={colours.pots.pulse}
               onPress={() => onSelect(part.kind)}
             >
-              {(width) =>
+              {(room) =>
                 part.kind === 'bills' ? (
-                  <BillsArt bills={bills} colours={colours} />
+                  <BillsArt bills={bills} room={room} colours={colours} />
                 ) : part.kind === 'pots' ? (
                   <PotsArt
                     jars={jars}
+                    room={room}
                     glow={split.daysSincePayday <= 1}
                     colours={colours}
                     ring={colours.pots.bg}
                   />
                 ) : part.kind === 'free' ? (
-                  <DaysArt days={split.days} width={width} colours={colours} />
+                  <DaysArt days={split.days} room={room} colours={colours} />
                 ) : null
               }
             </SplitPart>
@@ -150,9 +181,13 @@ export function SplitHero({
         }}
       >
         <Text
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.6}
           style={{
             ...display(40, 500, -0.03),
             ...tabular,
+            maxWidth: '100%',
             color: split.overspent ? colours.warn : palette.ink,
           }}
         >
@@ -211,6 +246,7 @@ function fgOf(kind: SplitPartKind, c: SplitColours): string {
 function SplitPart({
   index,
   share,
+  minWidth,
   radius,
   bg,
   hatch,
@@ -229,6 +265,7 @@ function SplitPart({
 }: {
   readonly index: number;
   readonly share: number;
+  readonly minWidth: number;
   readonly radius: ReturnType<typeof radiusOf>;
   readonly bg: string;
   readonly hatch: Stripes | undefined;
@@ -243,9 +280,14 @@ function SplitPart({
   readonly pulse: number;
   readonly pulseColour: string;
   readonly onPress: () => void;
-  readonly children: (width: number) => ReactNode;
+  readonly children: (room: ArtRoom) => ReactNode;
 }) {
   const [width, setWidth] = useState(0);
+  // The label and amount are measured, so the art fits above whatever the face and text size make
+  // of them: a wide serif, Vietnamese marks above and below, the largest Dynamic Type.
+  // Until measured, the foot is taken at its designed height, so the art draws in the first frame.
+  const [foot, setFoot] = useState(FOOT_DESIGNED);
+  const room: ArtRoom = { width, height: SPLIT_HEIGHT - ART_TOP - foot - FOOT_BOTTOM - FOOT_CLEAR };
   const drawn = useSharedValue(0);
   const on = useSharedValue(selected ? 1 : 0);
   const ringOn = useSharedValue(selected ? 1 : 0);
@@ -287,7 +329,7 @@ function SplitPart({
     <Animated.View
       onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
       style={[
-        { flexGrow: share, flexShrink: 1, flexBasis: 0, minWidth: 68, transformOrigin: 'left' },
+        { flexGrow: share, flexShrink: 1, flexBasis: 0, minWidth, transformOrigin: 'left' },
         outer,
       ]}
     >
@@ -313,16 +355,27 @@ function SplitPart({
       >
         {hatch ? <Hatch {...hatch} reach={Math.max(width, SPLIT_HEIGHT)} /> : null}
         {ruled ? <Rules color={ruled} every={8} reach={SPLIT_HEIGHT} /> : null}
-        {children(width)}
-        <View style={{ position: 'absolute', left: 9, right: 6, bottom: 8 }}>
-          <Text numberOfLines={1} style={{ ...body(12.5, 700), color: fg }}>
-            {label}
-          </Text>
+        {width > 0 ? children(room) : null}
+        <View
+          onLayout={(e) => setFoot(e.nativeEvent.layout.height)}
+          style={{ position: 'absolute', left: 9, right: 6, bottom: FOOT_BOTTOM, gap: 3 }}
+        >
           <Text
             numberOfLines={1}
             adjustsFontSizeToFit
-            minimumFontScale={0.6}
-            style={{ ...display(21, 600), lineHeight: 23, ...tabular, color: fg }}
+            minimumFontScale={0.7}
+            maxFontSizeMultiplier={FOOT_MAX_SCALE}
+            style={{ ...body(12.5, 700), color: fg }}
+          >
+            {label}
+          </Text>
+          {/* The face's own line height: a fixed one cuts a serif's tall figures off at the top. */}
+          <Text
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.5}
+            maxFontSizeMultiplier={FOOT_MAX_SCALE}
+            style={{ ...display(21, 600), ...tabular, color: fg }}
           >
             {amount}
           </Text>

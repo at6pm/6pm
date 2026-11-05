@@ -32,7 +32,6 @@ export const thPotsClose: { readonly [Key in keyof typeof enPotsClose]: Entry } 
   'potsClose.details.counts': 'นับเป็นของวันนี้',
   'potsClose.details.claimNo': 'ไม่',
   'potsClose.details.claimYes': 'ใช่',
-  'potsClose.quick.today': 'วันนี้',
   'potsClose.quick.ticket': 'จาก {jar} · วันนี้ยังเหลือ {amount}',
   'potsClose.quick.paidWith': 'จ่ายด้วย',
   'potsClose.first.title': 'จ่ายให้ตัวเองในอนาคตก่อน',

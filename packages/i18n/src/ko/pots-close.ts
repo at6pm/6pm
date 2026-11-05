@@ -32,7 +32,6 @@ export const koPotsClose: { readonly [Key in keyof typeof enPotsClose]: Entry } 
   'potsClose.details.counts': '오늘로 계산',
   'potsClose.details.claimNo': '아니요',
   'potsClose.details.claimYes': '예',
-  'potsClose.quick.today': '오늘',
   'potsClose.quick.ticket': '{jar}에서 · 오늘은 그대로 {amount}',
   'potsClose.quick.paidWith': '결제 수단',
   'potsClose.first.title': '미래의 나에게 먼저',

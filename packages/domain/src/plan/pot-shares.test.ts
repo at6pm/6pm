@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import { payCycleOn } from './pay-cycle';
 import { goalMonthly } from './plan-river';
-import { potSetAside, potTopUp, rebalanceShares } from './pots';
+import { potSetAside, rebalanceShares } from './pots';
 
 const percents = (shares: Record<string, number>) =>
   Object.values(shares).map((s) => Math.round(s * 100));
@@ -58,14 +58,5 @@ describe('a goal sets nothing aside below zero', () => {
     };
     const cycle = payCycleOn('2026-10-09', { kind: 'lastDay' });
     expect(potSetAside({ pot, savedBefore: 0, futureYou: 2_000_000, cycle })).toBe(0);
-  });
-});
-
-describe('potTopUp', () => {
-  it('adds the step, only what is left near the goal, and nothing once full', () => {
-    expect(potTopUp(2_000_000, 0, 100_000)).toBe(100_000);
-    expect(potTopUp(2_000_000, 1_950_000, 100_000)).toBe(50_000);
-    expect(potTopUp(2_000_000, 2_000_000, 100_000)).toBe(0);
-    expect(potTopUp(2_000_000, 2_300_000, 100_000)).toBe(0);
   });
 });

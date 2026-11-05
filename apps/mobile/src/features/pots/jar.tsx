@@ -35,7 +35,7 @@ export interface JarProps {
   readonly futureYou?: boolean;
   /**
    * How full, 0 to 1, of the glass: what it holds over its target. A jar with no target is drawn
-   * at a steady level (see `jarLevel`). A shared value moves on the UI thread (a hold, a slider).
+   * at a steady level (see `jarLevel`). A shared value moves on the UI thread (a slider).
    */
   readonly level: number | SharedValue<number>;
   /** The dashed target line near the neck: shown when the jar has a target and is not full. */
@@ -45,8 +45,6 @@ export interface JarProps {
   readonly partner?: { readonly initial: string; readonly level: number } | null;
   /** The page behind the jar, for the ring around a badge. */
   readonly ringColor: string;
-  /** Pressed (a hold to top up): scales to .94. */
-  readonly pressed?: SharedValue<number>;
   /** The surface sloshes slowly (a jar's page). */
   readonly slosh?: boolean;
   /** No icon and no highlight: the Pots list's small jar. */
@@ -86,7 +84,6 @@ export function Jar({
   state = 'normal',
   partner = null,
   ringColor,
-  pressed,
   slosh = false,
   plain = false,
   minFill = 0.05,
@@ -142,9 +139,8 @@ export function Jar({
   const surfaceStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: -3 * k * wave.value }, { scaleY: 1 + 0.04 * wave.value }],
   }));
-  const pressStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: pressed ? 1 - 0.06 * pressed.value : 1 }],
-  }));
+  // The sloshing fill reaches past the glass by more than it sways, so its edge never shows.
+  const sloshReach = Math.ceil(3 * k) + 2;
 
   const glyph = (color: string) =>
     futureYou ? (
@@ -164,7 +160,7 @@ export function Jar({
 
   return (
     <View style={[{ width, height }, style]}>
-      <Animated.View style={[{ width, height }, pressStyle]}>
+      <View style={{ width, height }}>
         <View
           style={{
             position: 'absolute',
@@ -199,8 +195,8 @@ export function Jar({
             style={[
               {
                 position: 'absolute',
-                left: slosh ? -4 : 0,
-                right: slosh ? -4 : 0,
+                left: slosh ? -sloshReach : 0,
+                right: slosh ? -sloshReach : 0,
                 bottom: 0,
                 backgroundColor: c.fill,
                 overflow: 'hidden',
@@ -307,7 +303,7 @@ export function Jar({
         ) : null}
         {state === 'empty' ? <Drip hue={hue} k={k} /> : null}
         {children}
-      </Animated.View>
+      </View>
     </View>
   );
 }

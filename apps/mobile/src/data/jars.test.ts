@@ -247,6 +247,30 @@ describe('spending from a jar', () => {
     expect(dayOf(store.getSnapshot())?.spent).toBe(1_200_000);
   });
 
+  it('a spend taken off its jar on the jar’s page counts today, and undo puts it back exactly', async () => {
+    const { store, money, jar } = await open();
+    const before = dayOf(store.getSnapshot());
+    const row = await money.addSpend({
+      amount: 7_000_000,
+      categoryId: 'food',
+      merchant: 'Vietjet',
+      source: 'manual',
+      status: 'kept',
+      fromPot: jar.id,
+    });
+    const taken = { fromPot: jar.id, fromPotAmount: row.fromPotAmount };
+    await money.takeFromJar(row.id, null);
+    expect(store.getSnapshot().potSaved[jar.id]).toBe(1_500_000);
+    expect(dayOf(store.getSnapshot())?.spent).toBe((before?.spent ?? 0) + 7_000_000);
+    // Meanwhile the jar grew: the undo still covers what it covered, not more.
+    await money.restoreJarTake(row.id, taken);
+    expect(store.getSnapshot().cycleSpends.find((s) => s.id === row.id)?.fromPotAmount).toBe(
+      1_500_000,
+    );
+    expect(store.getSnapshot().potSaved[jar.id]).toBe(0);
+    expect(dayOf(store.getSnapshot())?.spent).toBe((before?.spent ?? 0) + 5_500_000);
+  });
+
   it('a spend bigger than the jar takes what it holds; the rest counts today', async () => {
     const { store, money, jar } = await open();
     const row = await money.addSpend({
@@ -345,6 +369,21 @@ describe('what arms the close’s question', () => {
     expect(await armedNow()).toEqual(new Set([jar.id]));
     await money.takeFromJar(bus.id, null);
     expect(await armedNow()).toEqual(new Set());
+  });
+
+  it('a spend taken off its jar on the jar’s page disarms it; undo arms it again', async () => {
+    const { money, jar, armedNow } = await open();
+    const bus = await money.addSpend({
+      ...spend,
+      amount: 350_000,
+      merchant: 'Bus',
+      fromPot: jar.id,
+    });
+    const taken = { fromPot: jar.id, fromPotAmount: bus.fromPotAmount };
+    await money.takeFromJar(bus.id, null);
+    expect(await armedNow()).toEqual(new Set());
+    await money.restoreJarTake(bus.id, taken);
+    expect(await armedNow()).toEqual(new Set([jar.id]));
   });
 
   it('a No disarms it until the next spend taken from it by hand', async () => {

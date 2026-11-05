@@ -106,5 +106,5 @@ export async function seedDesignMoneyIn(store: MoneyStore, today: LocalDate): Pr
       await tables.spends.put({ ...row, id: randomUUID(), createdAt: iso, updatedAt: iso });
     }
   });
-  await store.load(today);
+  await store.loadInTurn(today);
 }

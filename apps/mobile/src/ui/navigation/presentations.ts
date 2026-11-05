@@ -27,6 +27,16 @@ export const sheet: ScreenOptions = {
 };
 
 /**
+ * A sheet as tall as what it holds (Quick add: the ticket and the keypad), never the full height
+ * when it needs less. When what it holds grows or shrinks (a row opening), iOS animates the sheet
+ * to the new height. Its body is a `SheetFrame` with `fit`.
+ */
+export const fittedSheet: ScreenOptions =
+  Platform.OS === 'ios' && Platform.isPad
+    ? sheet
+    : { ...sheet, sheetAllowedDetents: 'fitToContents' };
+
+/**
  * The iOS page sheet (`UIModalPresentationPageSheet`), for a screen that is a place of its own
  * rather than a step off the page (Ask, Scan): the page behind scales back into a card under the
  * dim, as Mail and Messages do when they compose. It sits at the system's large detent, a few points lower
