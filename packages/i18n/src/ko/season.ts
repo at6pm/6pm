@@ -1,0 +1,62 @@
+import type { Entry } from '../catalogue-types';
+import type { enSeason } from '../en-season';
+
+export const koSeason: { readonly [Key in keyof typeof enSeason]: Entry } = {
+  'season.festival.tet': '뗏',
+  'season.festival.seollal': '설날',
+  'season.festival.chunjie': '춘절',
+  'season.envelope.tet': 'Lì xì',
+  'season.envelope.seollal': '세뱃돈',
+  'season.envelope.chunjie': '홍바오',
+
+  'season.card.title': '{festival} 저금통 만들까요?',
+  'season.card.sub': {
+    other: '{festival}까지 {count}주 남았어요. 월급날마다 조금씩 채워요.',
+  },
+  'season.card.open': '만들기',
+  'season.card.later': '지금은 말고',
+
+  'season.offer.later': '나중에',
+  'season.offer.title': '{festival} 저금통',
+  'season.offer.kicker': { other: '{festival} · {count}주' },
+  'season.offer.perPay': { other: '월급날마다 {amount} · 월급날 {count}번' },
+  'season.offer.ask.gifts': '부모님 선물',
+  'season.offer.ask.trip': '귀성길',
+  'season.offer.none': '없음',
+  'season.offer.daily': '{festival}까지 매일',
+  'season.offer.start': '{festival} 저금통 시작',
+
+  'season.bonus.kicker': '들어온 돈',
+  'season.bonus.title': '{festival} 상여금이에요?',
+  'season.bonus.slipJar': '{festival} 저금통',
+  'season.bonus.jarFull': '{festival} 저금통 · 가득',
+  'season.bonus.jarIn': '{festival} 저금통 · +{amount}',
+  'season.bonus.today': '오늘',
+  'season.bonus.payday': '{date} · 월급날',
+  'season.bonus.spread': '{amount} 나눠 쓰기 · {date}까지 하루 +{daily}',
+  'season.bonus.allIn': '전부 저금통에 넣어요',
+  'season.bonus.yes': '네, 그렇게 나눠요',
+  'season.bonus.yesAll': '네, 저금통에 넣어요',
+  'season.bonus.save': '대신 {amount} 모아 두기',
+
+  'season.quick.keypad': '키패드',
+  'season.quick.voice': '음성',
+  'season.quick.given': '줬어요',
+  'season.quick.received': '받았어요',
+  'season.quick.count': { other: '봉투 {count}개 × {each}' },
+  'season.quick.total': '= {amount}',
+  'season.quick.fromJar': '{festival} 저금통에서',
+  'season.quick.jarLeft': '{from} → {to} 남음',
+  'season.quick.counts': '오늘 쓴 돈으로',
+  'season.quick.countsSub': '꺼내 쓸 {festival} 저금통이 없어요',
+  'season.quick.saved': '미래의 나에게',
+  'season.quick.savedSub': '추천이에요. 오늘 금액이 늘지는 않아요.',
+  'season.quick.keep': '저장',
+  'season.quick.less': '봉투 하나 빼기',
+  'season.quick.more': '봉투 하나 더',
+  'season.quick.merchant': { other: '{name} · 봉투 {count}개' },
+
+  'season.kicker.countdown': { other: '{festival}까지 {count}일' },
+  'season.kicker.holiday': '{festival} {day}일째',
+  'season.card.saved': '추천: 미래의 나에게 모아 두기',
+};

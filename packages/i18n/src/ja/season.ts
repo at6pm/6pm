@@ -1,0 +1,62 @@
+import type { Entry } from '../catalogue-types';
+import type { enSeason } from '../en-season';
+
+export const jaSeason: { readonly [Key in keyof typeof enSeason]: Entry } = {
+  'season.festival.tet': 'テト',
+  'season.festival.seollal': 'ソルラル',
+  'season.festival.chunjie': '春節',
+  'season.envelope.tet': 'Lì xì',
+  'season.envelope.seollal': 'お年玉',
+  'season.envelope.chunjie': '紅包',
+
+  'season.card.title': '{festival}の貯金箱を作りますか？',
+  'season.card.sub': {
+    other: '{festival}まであと{count}週間。給料日ごとに少しずつ貯めましょう。',
+  },
+  'season.card.open': '作る',
+  'season.card.later': '今はいい',
+
+  'season.offer.later': 'あとで',
+  'season.offer.title': '{festival}の貯金箱',
+  'season.offer.kicker': { other: '{festival} · {count}週間' },
+  'season.offer.perPay': { other: '給料日ごとに{amount} · 給料日{count}回' },
+  'season.offer.ask.gifts': '実家へのおみやげ',
+  'season.offer.ask.trip': '帰省の交通費',
+  'season.offer.none': 'なし',
+  'season.offer.daily': '{festival}まで毎日',
+  'season.offer.start': '{festival}の貯金箱を始める',
+
+  'season.bonus.kicker': '入金',
+  'season.bonus.title': '{festival}のボーナスですか？',
+  'season.bonus.slipJar': '{festival}の貯金箱',
+  'season.bonus.jarFull': '{festival}の貯金箱 · 満杯',
+  'season.bonus.jarIn': '{festival}の貯金箱 · +{amount}',
+  'season.bonus.today': '今日',
+  'season.bonus.payday': '{date} · 給料日',
+  'season.bonus.spread': '{amount}を毎日に分ける · {date}まで1日+{daily}',
+  'season.bonus.allIn': '全額を貯金箱へ',
+  'season.bonus.yes': 'はい、その分け方で',
+  'season.bonus.yesAll': 'はい、貯金箱へ',
+  'season.bonus.save': '代わりに{amount}を貯める',
+
+  'season.quick.keypad': 'キーパッド',
+  'season.quick.voice': '音声',
+  'season.quick.given': 'あげた',
+  'season.quick.received': 'もらった',
+  'season.quick.count': { other: 'ポチ袋{count}枚 × {each}' },
+  'season.quick.total': '= {amount}',
+  'season.quick.fromJar': '{festival}の貯金箱から',
+  'season.quick.jarLeft': '{from} → 残り{to}',
+  'season.quick.counts': '今日の分に入れる',
+  'season.quick.countsSub': '使える{festival}の貯金箱がありません',
+  'season.quick.saved': '未来の自分へ',
+  'season.quick.savedSub': 'おすすめです。今日の数字は増えません。',
+  'season.quick.keep': '残す',
+  'season.quick.less': 'ポチ袋を1枚減らす',
+  'season.quick.more': 'ポチ袋をもう1枚',
+  'season.quick.merchant': { other: '{name} · ポチ袋{count}枚' },
+
+  'season.kicker.countdown': { other: '{festival}まであと{count}日' },
+  'season.kicker.holiday': '{festival} {day}日目',
+  'season.card.saved': 'おすすめ：未来の自分へ',
+};

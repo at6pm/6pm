@@ -39,6 +39,7 @@ import { zhHansWidgetsGuide } from './widgets-guide';
 import { zhHansYearBook } from './year-book';
 import { zhHansFirstCatch } from './first-catch';
 import { zhHansImport } from './import';
+import { zhHansSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { zhHansAndroid } from './android';
@@ -86,6 +87,7 @@ export const zhHans: Catalogue = {
   ...zhHansFirstCatch,
   ...zhHansImport,
   ...importSketchMomo,
+  ...zhHansSeason,
 };
 
 /**
