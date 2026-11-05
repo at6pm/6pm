@@ -83,7 +83,13 @@ export function MoneyQuestionStep({
       });
       return;
     }
-    void run(() => actions.placeMoneyIn(spend.id, { moneyIn: ask.kind, givesBack: ask.spendId }));
+    void run(() =>
+      actions.placeMoneyIn(spend.id, {
+        moneyIn: ask.kind,
+        givesBack: ask.spendId,
+        ...(ask.kind === 'payback' && ask.owed ? { owed: ask.owed } : {}),
+      }),
+    );
     dispatch({ type: 'answerMoney', id: card.id, yes: true });
   };
 
@@ -111,6 +117,28 @@ export function MoneyQuestionStep({
 
   const given = givable.find((g) => g.id === ask.spendId);
   if (!given) return null;
+  // A friend's share of a split, named: "Linh paying back 300k?", their strip above the money.
+  if (ask.kind === 'payback' && ask.owed) {
+    const amount = money.short(spend.amount);
+    return (
+      <WorkQuestionStep
+        key={card.id}
+        line={line('paybackQuestion')}
+        mood="happy"
+        receiptLine={{ time: dayMonth(given.day), name: given.merchant, amount: spend.amount }}
+        second={{ ...incoming, time: t('moneyIn.today'), name: t('moneyIn.payback.line') }}
+        title={
+          ask.name
+            ? t('owed.close.title', { name: ask.name, amount })
+            : t('owed.close.titleNoName', { amount })
+        }
+        sub={t('moneyIn.payback.sub')}
+        yes={t('owed.close.yes')}
+        no={t('moneyIn.no')}
+        onAnswer={answer}
+      />
+    );
+  }
   const original = { time: dayMonth(given.day), name: given.merchant, amount: given.amount };
   if (ask.kind === 'refund') {
     return (

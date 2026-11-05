@@ -39,6 +39,7 @@ import { jaWidgetsGuide } from './widgets-guide';
 import { jaYearBook } from './year-book';
 import { jaFirstCatch } from './first-catch';
 import { jaImport } from './import';
+import { jaOwed } from './owed';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { jaAndroid } from './android';
@@ -85,6 +86,7 @@ export const ja: Catalogue = {
   ...jaPots,
   ...jaFirstCatch,
   ...jaImport,
+  ...jaOwed,
   ...importSketchMomo,
 };
 

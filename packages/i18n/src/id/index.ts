@@ -39,6 +39,7 @@ import { idWidgetsGuide } from './widgets-guide';
 import { idYearBook } from './year-book';
 import { idFirstCatch } from './first-catch';
 import { idImport } from './import';
+import { idOwed } from './owed';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { idAndroid } from './android';
@@ -85,6 +86,7 @@ export const id: Catalogue = {
   ...idPots,
   ...idFirstCatch,
   ...idImport,
+  ...idOwed,
   ...importSketchMomo,
 };
 

@@ -12,6 +12,7 @@ export const sameInBothLanguages: readonly string[] = [
   'Inbox',
   'VietQR',
   'VietQR · NAPAS 247',
+  'VIETQR · {bank}',
   'MB Bank',
   'Email',
   'Apple Pay',

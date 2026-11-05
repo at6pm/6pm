@@ -39,6 +39,7 @@ import { koWidgetsGuide } from './widgets-guide';
 import { koYearBook } from './year-book';
 import { koFirstCatch } from './first-catch';
 import { koImport } from './import';
+import { koOwed } from './owed';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { koAndroid } from './android';
@@ -85,6 +86,7 @@ export const ko: Catalogue = {
   ...koPots,
   ...koFirstCatch,
   ...koImport,
+  ...koOwed,
   ...importSketchMomo,
 };
 

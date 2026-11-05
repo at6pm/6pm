@@ -30,6 +30,7 @@ import { SettingsMaxCard } from '../features/settings/settings-max-card';
 import { useMonthReading } from '../features/settings/read-on-phone';
 import { SettingRow, SettingsSection } from '../features/settings/setting-rows';
 import { SettingsBanksRow } from '../features/settings/settings-banks-row';
+import { ReceivingAccountRow } from '../features/owed/receiving-account-row';
 import { useCloseTimeDraft } from '../features/settings/use-close-time-draft';
 import { nativeReach } from '../features/surfaces/native-reach';
 import { TravelRow } from '../features/travel/travel-row';
@@ -138,6 +139,7 @@ export default function Settings() {
           }}
         />
         <SettingsBanksRow />
+        <ReceivingAccountRow />
         <SettingRow
           icon="schedule"
           label={t('settings.closeTime')}

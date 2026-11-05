@@ -170,7 +170,7 @@ export function owedTotal(lines: readonly Pick<OwedLine, 'amount'>[]): Money {
 
 /**
  * "I'll cover it": the spend the share becomes, the user's own spending on the day it is covered
- * (decided 2026-11-02, decision 4), in the original spend's category and shop.
+ * (M15), in the original spend’s category and shop.
  */
 export function coveredSpend(
   line: Pick<OwedLine, 'amount'>,

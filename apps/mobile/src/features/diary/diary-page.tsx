@@ -21,6 +21,7 @@ import { useDiary } from './use-diary';
 import { WeekRecapCard } from './week-recap-card';
 import { useDiaryBridge } from '../duo/diary-bridge';
 import { useOpenAsk } from '../duo/spread-pane';
+import { OwedRow } from '../owed/owed-row';
 
 /**
  * Diary: the week recap, the month's calendar of receipts, the selected day's receipt, the way
@@ -111,6 +112,8 @@ export function DiaryPage({ scrollRef }: { readonly scrollRef: AnimatedRef<Anima
       </Animated.View>
 
       <WeekRecapCard recap={diary.recap} kicker={diary.recapKicker} letters={diary.letters} />
+
+      <OwedRow />
 
       <ScrollReveal>
         <MonthCalendar

@@ -39,6 +39,7 @@ import { thWidgetsGuide } from './widgets-guide';
 import { thYearBook } from './year-book';
 import { thFirstCatch } from './first-catch';
 import { thImport } from './import';
+import { thOwed } from './owed';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { thAndroid } from './android';
@@ -85,6 +86,7 @@ export const th: Catalogue = {
   ...thPots,
   ...thFirstCatch,
   ...thImport,
+  ...thOwed,
   ...importSketchMomo,
 };
 

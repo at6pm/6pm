@@ -194,6 +194,39 @@ export function owedActions(store: MoneyStore) {
         return next;
       }),
 
+    /**
+     * Owed lines for a spend saved as the user's share already (a receipt split on Scan): the
+     * spend is left as it is.
+     */
+    addShares: (spendId: string, shares: readonly Share[]): Promise<void> =>
+      store.exclusive(async () => {
+        const row = await current(spendId);
+        if (!row || row.direction === 'in') return;
+        const at = now();
+        const open = await openLinesOf(spendId);
+        await db.withTransactionAsync(async () => {
+          let sort = open.length;
+          for (const share of shares.filter((s) => s.amount > 0)) {
+            sort += 1;
+            await tables.owed.put({
+              id: randomUUID(),
+              spendId,
+              name: share.name?.trim() ? share.name.trim() : null,
+              amount: share.amount,
+              day: row.day,
+              sort,
+              createdAt: at,
+              settledAt: null,
+              settledBy: null,
+              settledSpendId: null,
+              remindAt: null,
+              updatedAt: at,
+            });
+          }
+        });
+        await reload();
+      }),
+
     /** The open lines of one spend, for the split sheet to start from. */
     linesOf: (spendId: string): Promise<OwedRow[]> => store.exclusive(() => openLinesOf(spendId)),
 
@@ -225,7 +258,7 @@ export function owedActions(store: MoneyStore) {
 
     /**
      * "I'll cover it": the shares become the user's own spending today, in the spend's category
-     * and shop, never on the spend's own day, so no past close changes (decision 4).
+     * and shop, never on the spend's own day, so no past close changes (M15).
      */
     cover: (lineIds: readonly string[], note: string | null): Promise<Settled | null> =>
       store.exclusive(async () => {

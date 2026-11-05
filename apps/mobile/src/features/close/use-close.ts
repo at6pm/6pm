@@ -20,6 +20,7 @@ import {
   type Currency,
   type GivableSpend,
   type MoneyInAsk,
+  type OwedLine,
   type PayCycle,
   type PotRow,
   REPAYMENT,
@@ -32,6 +33,7 @@ import type { MoneyInPlace } from '../../data/money-in-actions';
 
 import { useMoney, useMoneyActions } from '../../data/money-provider';
 import { findSpend } from '../../data/money-store';
+import { openOwedOf, owedLineOf } from '../../data/owed-actions';
 import { homeCurrencyOf } from '../../money/use-money-format';
 import { useI18n } from '../../i18n/i18n';
 import { haptics } from '../../ui/haptics';
@@ -82,6 +84,8 @@ function startOf(
     readonly readyShown: ReadonlySet<string>;
     /** The jars the person armed for "From your {jar}?" (`armedJars`). */
     readonly armed: ReadonlySet<string>;
+    /** Who owes the user what, still open: a payback may answer their lines. */
+    readonly owed: readonly OwedLine[];
   },
 ): Start {
   const parked = parkedClose(day);
@@ -100,11 +104,14 @@ function startOf(
   const asks = new Map(
     billPaymentAsks(spending, bills, cycle).map((ask) => [ask.spendId, ask.billId ?? REPAYMENT]),
   );
-  // Each spend is given back once: a second refund of the same order is an ordinary card.
+  // Each spend is given back once: a second refund of the same order is an ordinary card. Each
+  // owed line is paid once too, though one dinner's lines may each be paid back tonight.
   const taken = new Set<string>();
+  const paid = new Set<string>();
   const moneyAsks: Record<string, MoneyInAsk> = {};
   for (const s of queue.filter(comesIn)) {
     const givable = money.givable.filter((g) => !taken.has(g.id));
+    const owed = money.owed.filter((line) => !paid.has(line.id));
     const ask = moneyInAsk(
       {
         day: s.day,
@@ -114,10 +121,11 @@ function startOf(
         memo: s.memo,
         hint: s.moneyIn === 'refund' ? 'refund' : null,
       },
-      { income: money.income, cycle, spends: givable },
+      { income: money.income, cycle, spends: givable, owed },
     );
     if (ask === null) continue;
-    if (ask.kind !== 'pay') taken.add(ask.spendId);
+    if (ask.kind === 'payback' && ask.owed) for (const id of ask.owed) paid.add(id);
+    else if (ask.kind !== 'pay') taken.add(ask.spendId);
     moneyAsks[s.id] = ask;
   }
   // "From your {jar} jar?": only a dated jar that is due, once a night, its largest spend (M13).
@@ -193,6 +201,7 @@ export function useClose(
         spends: [...snap.cycleSpends, ...snap.earlierJarSpends, ...snap.waitingBefore],
         declined: jarAsks.declined,
       }),
+      owed: openOwedOf(snap).map(owedLineOf),
     }),
   );
   const { queue, moneyAsks } = start;
