@@ -2,6 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 
 import {
   formatShort,
+  futureYouPotRow,
   moneyFormat,
   moneyLocale,
   payCycleOn,
@@ -9,7 +10,10 @@ import {
   surfaceContextSchema,
   surfaceSnapshotSchema,
   type CategoryRow,
+  type ClosedDayRow,
+  type PotRow,
   type SpendRow,
+  type SurfaceSnapshot,
 } from '@6pm/domain';
 import { t as translate, type Language } from '@6pm/i18n';
 import { paletteFor } from '@6pm/theme';
@@ -90,10 +94,38 @@ const vi = words('vi');
 const golden = widgetLook({ max: false, look: 'paper', serious: false });
 const writtenAt = new Date('2026-10-09T11:07:00.000Z');
 
-function snapshotOf(m: MoneySnapshot, language: Language = 'en') {
+function snapshotOf(
+  m: MoneySnapshot,
+  language: Language = 'en',
+  extra: Partial<Parameters<typeof surfaceSnapshot>[0]> = {},
+) {
   const t = language === 'vi' ? vi : en;
   const format = moneyFormat(moneyLocale(VND, language));
-  return surfaceSnapshot({ money: m, look: golden, maxLook: null, t, format, writtenAt });
+  return surfaceSnapshot({
+    money: m,
+    look: golden,
+    maxLook: null,
+    t,
+    format,
+    language,
+    writtenAt,
+    ...extra,
+  });
+}
+
+/** Each money day's first stretch, from its 04:00: today's, then tomorrow's. */
+function firstOfEachDay(snap: SurfaceSnapshot) {
+  return snap.entries.filter((e) => new Date(e.from).getHours() === 4);
+}
+
+/** The stretch shown at a time of the snapshot's day ("13:00", "18:00"). */
+function stretchAt(snap: SurfaceSnapshot, day: string, time: string) {
+  const at = new Date(`${day}T${time}:00`).getTime();
+  return [...snap.entries].reverse().find((e) => new Date(e.from).getTime() <= at);
+}
+
+function closedDay(day: string, closedAt: string, spent = 100_000, line = 300_000): ClosedDayRow {
+  return { day, closedAt, late: false, spent, line, tomorrow: 300_000, note: null };
 }
 
 describe('surfaceSnapshot', () => {
@@ -115,7 +147,7 @@ describe('surfaceSnapshot', () => {
     expect(day).not.toBeNull();
     if (day === null) return;
     expect(surfaceSnapshotSchema.parse(snap)).toEqual(snap);
-    const [now, next] = snap.entries;
+    const [now, next] = firstOfEachDay(snap);
     expect(now?.safeShort).toBe(formatShort(Math.max(0, day.safe), 'en'));
     expect(now?.safeText).toBe(`${formatShort(day.safe, 'en')} left`);
     expect(now?.tomorrowText).toBe(`Tomorrow ≈ ${formatShort(day.tomorrow, 'en')}`);
@@ -156,7 +188,7 @@ describe('surfaceSnapshot', () => {
     const m = money(today, spends);
     const day = dayOf(m);
     if (day === null) throw new Error('no day');
-    const [now, next] = snapshotOf(m).entries;
+    const [now, next] = firstOfEachDay(snapshotOf(m));
     expect(now?.spentText).toBe(`${formatShort(day.spent, 'en')} spent`);
     expect(now?.lineText).toBe(`of ${formatShort(day.line, 'en')}`);
     expect(now?.spentFraction).toBeCloseTo(day.spent / day.line);
@@ -188,7 +220,7 @@ describe('surfaceSnapshot', () => {
     expect(next.cycleSpends).toEqual([]);
     const fresh = dayOf(next);
     if (fresh === null) throw new Error('no day');
-    expect(snapshotOf(m).entries[1]?.safeShort).toBe(formatShort(fresh.safe, 'en'));
+    expect(firstOfEachDay(snapshotOf(m))[1]?.safeShort).toBe(formatShort(fresh.safe, 'en'));
   });
 
   it('writes no entries before the month is set up, and the words to ask for it', () => {
@@ -259,6 +291,173 @@ describe('surfaceSnapshot', () => {
     });
     expect(snapshotKey(a)).toBe(snapshotKey(b));
     expect(moneyDayStart('2026-10-09').getHours()).toBe(4);
+  });
+});
+
+describe('the postcards', () => {
+  const today = '2026-10-09';
+  const spends = [
+    spend(today, 25_000, { merchant: 'Bánh mì Cô Ba' }),
+    spend(today, 45_000, { merchant: 'Phở Hòa', source: 'qr', status: 'pending' }),
+  ];
+
+  it('turns six times a day, from each money day’s 04:00, for today and tomorrow', () => {
+    const snap = snapshotOf(money(today, spends));
+    expect(surfaceSnapshotSchema.parse(snap)).toEqual(snap);
+    const times = snap.entries.map((e) => {
+      const d = new Date(e.from);
+      return `${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
+    });
+    expect(times).toEqual([
+      '9 4:00',
+      '9 7:00',
+      '9 10:00',
+      '9 13:00',
+      '9 16:30',
+      '9 18:00',
+      '9 21:00',
+      '10 4:00',
+      '10 7:00',
+      '10 10:00',
+      '10 13:00',
+      '10 16:30',
+      '10 18:00',
+      '10 21:00',
+    ]);
+  });
+
+  it('says the day before the close, and asks for the close from six', () => {
+    const snap = snapshotOf(money(today, spends));
+    const noon = stretchAt(snap, today, '13:00')?.card;
+    expect(noon).toMatchObject({
+      phase: 'day',
+      kicker: 'FRIDAY · SAFE TO SPEND',
+      kickerShort: 'FRI · TODAY',
+      subShort: 'left today',
+      lockSub: 'close at 18:00',
+      tonight: 'Close at 18:00',
+      sunKind: 'noon',
+    });
+    expect(noon?.sub).toMatch(/^70k used · 2 caught$/);
+    expect(noon?.inline).toMatch(/^Fri 9 · .+ left$/);
+    expect(noon?.inlineHidden).toBe('Fri 9 · ••• left');
+    const six = stretchAt(snap, today, '18:30')?.card;
+    expect(six).toMatchObject({
+      phase: 'due',
+      kicker: 'IT’S SIX · CLOSE YOUR DAY',
+      sub: '1 waiting for the close',
+      tonight: '1 to confirm',
+      sunKind: 'dusk',
+    });
+  });
+
+  it('follows the close the person set', () => {
+    const m = money(today, spends);
+    const late = { ...m, plan: m.plan ? { ...m.plan, closeAt: '19:30' } : null };
+    const snap = snapshotOf(late);
+    expect(stretchAt(snap, today, '18:30')?.card?.phase).toBe('day');
+    expect(stretchAt(snap, today, '19:30')?.card).toMatchObject({ phase: 'due' });
+  });
+
+  it('carries tomorrow’s number once the day is closed', () => {
+    const closedAt = new Date(`${today}T18:04:00`).toISOString();
+    const m = { ...money(today, spends), closedDays: [closedDay(today, closedAt)] };
+    const snap = snapshotOf(m);
+    const night = stretchAt(snap, today, '21:00');
+    const tomorrow = dayOf(nextMoneyDay(m));
+    expect(night?.card).toMatchObject({
+      phase: 'closed',
+      kicker: 'CLOSED · TOMORROW',
+      sub: 'Closed at 18:04',
+      tonight: 'Closed 18:04',
+      used: 0,
+      sunKind: 'night',
+    });
+    expect(night?.safeShort).toBe(formatShort(Math.max(0, tomorrow?.safe ?? 0), 'en'));
+    expect(night?.card?.inline).toBe(`Closed · ${night?.safeShort} tomorrow`);
+  });
+
+  it('words the postcards in Vietnamese', () => {
+    const snap = snapshotOf(money(today, spends), 'vi');
+    const noon = stretchAt(snap, today, '13:00')?.card;
+    expect(noon?.kicker).toBe('THỨ SÁU · ĐƯỢC TIÊU HÔM NAY');
+    expect(snap.strings['streakLine1']).toBe('TỐI');
+    expect(snap.month?.title).toBe('THÁNG 10 · CHỐT LÚC SÁU GIỜ');
+  });
+
+  it('counts the evenings closed in a row and draws each as the sky it closed under', () => {
+    const at = (day: string, time: string) => new Date(`${day}T${time}:00`).toISOString();
+    const history = [
+      closedDay('2026-10-05', at('2026-10-05', '18:04')),
+      closedDay('2026-10-06', at('2026-10-06', '19:40')),
+      closedDay('2026-10-07', at('2026-10-07', '18:10'), 400_000),
+      closedDay('2026-10-08', at('2026-10-08', '18:30')),
+    ];
+    const snap = snapshotOf(money(today, spends), 'en', { closedHistory: history });
+    expect(snap.streak?.count).toBe(4);
+    expect(snap.streak?.open).toBe(true);
+    expect(snap.streak?.bands).toHaveLength(4);
+    const [first, second] = snap.streak?.bands ?? [];
+    expect(first).toEqual(
+      paletteFor({ look: 'golden', hour: 18 + 4 / 60, serious: false }).st.slice(0, 3),
+    );
+    expect(second).not.toEqual(first);
+  });
+
+  it('draws the month as suns, with how many came in under the line', () => {
+    const at = new Date(`2026-10-08T18:04:00`).toISOString();
+    const m = {
+      ...money(today, spends),
+      closedDays: [
+        closedDay('2026-10-06', at),
+        closedDay('2026-10-07', at, 400_000),
+        closedDay('2026-10-08', at),
+      ],
+    };
+    const snap = snapshotOf(m, 'en', { since: '2026-10-05' });
+    expect(snap.month?.headline).toBe('3 sunsets, 2 inside the line.');
+    expect(snap.month?.title).toBe('OCTOBER · CLOSED AT SIX');
+    expect(snap.month?.cells.slice(7, 12)).toEqual(['miss', 'sun', 'half', 'sun', 'today']);
+  });
+
+  it('puts Future you first and counts the Tết jar down to mùng 1', () => {
+    const tet: PotRow = {
+      ...futureYouPotRow(stamp),
+      id: 'tet',
+      kind: 'occasion',
+      name: 'Tết',
+      icon: 'local_florist',
+      hue: 25,
+      goal: 7_000_000,
+      neededBy: '2027-02',
+      season: 'newYear',
+    };
+    const m = {
+      ...money(today, spends),
+      pots: [tet, futureYouPotRow(stamp)],
+      potSaved: { tet: 3_100_000, futureYou: 18_900_000 },
+    };
+    const snap = snapshotOf(m, 'en', { tradition: 'tet' });
+    expect(snap.jars?.map((j) => j.id)).toEqual(['futureYou', 'tet']);
+    expect(snap.jars?.[1]).toMatchObject({
+      name: 'Tết',
+      label: 'TẾT',
+      countText: '120',
+      countUnit: 'days',
+      dayText: 'Sat 6 Feb',
+      newYear: true,
+      path: '/app/pot/tet',
+    });
+    expect(snap.jars?.[1]?.ofText).toBe('3.1M of 7M');
+    expect(snap.jars?.[1]?.level).toBeCloseTo(3.1 / 7);
+  });
+
+  it('carries the hide-amounts choice and the look’s widget materials', () => {
+    const snap = snapshotOf(money(today, spends), 'en', { hideAmounts: true });
+    expect(snap.hideAmounts).toBe(true);
+    expect(snap.look?.id).toBe('golden');
+    expect(snap.look?.jar.icon).toBe(true);
+    expect(snap.links?.today).toBe('/app?tab=today');
   });
 });
 

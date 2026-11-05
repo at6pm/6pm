@@ -9,6 +9,10 @@ export const frWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
     'Garde le chiffre du jour là où tu regardes déjà, et ouvre Scanner QR ou Ajout rapide sans chercher l’app.',
   'widgetsGuide.lookMax': 'Dessinés dans ton look.',
   'widgetsGuide.lookFree': 'Gratuits, en Heure dorée. Avec Max, ils prennent ton look.',
+  'widgetsGuide.hide.title': 'Masquer les montants',
+  'widgetsGuide.hide.what':
+    'Les widgets affichent ••• jusqu’à ce que Face ID déverrouille ton téléphone.',
+  'widgetsGuide.hide.whatAndroid': 'Les widgets affichent ••• à la place de chaque montant.',
   'widgetsGuide.howToAdd': 'Comment l’ajouter',
   'widgetsGuide.whenItShows': 'Quand il s’affiche',
 

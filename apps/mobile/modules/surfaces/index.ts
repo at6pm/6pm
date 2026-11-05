@@ -6,7 +6,15 @@ export interface InboxFile {
   readonly json: string;
 }
 
-export type ActivityKind = 'pendingPay' | 'travel';
+export type ActivityKind = 'pendingPay' | 'travel' | 'close';
+
+/** When an activity starts by itself (iOS 26 and later), goes stale, and what it says as it does. */
+export interface ActivityTiming {
+  readonly startAt?: string;
+  readonly staleAt?: string;
+  readonly alertTitle?: string;
+  readonly alertBody?: string;
+}
 
 export interface RunningActivity {
   readonly id: string;
@@ -24,7 +32,12 @@ interface SurfacesNative {
   readStatus?(name: 'last-alert'): Promise<string | null>;
   activitiesEnabled(): boolean;
   listActivities(): Promise<RunningActivity[]>;
-  startActivity(kind: ActivityKind, key: string, stateJson: string): Promise<string | null>;
+  startActivity(
+    kind: ActivityKind,
+    key: string,
+    stateJson: string,
+    timing?: ActivityTiming | null,
+  ): Promise<string | null>;
   updateActivity(id: string, stateJson: string): Promise<void>;
   endActivity(id: string, finalStateJson: string | null): Promise<void>;
   /** Android: whether this phone can read bank alerts (its WebView runs the domain sandbox). */

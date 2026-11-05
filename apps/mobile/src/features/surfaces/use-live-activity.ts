@@ -1,19 +1,20 @@
 import * as Sentry from '@sentry/react-native';
 import { usePathname } from 'expo-router';
 import { useEffect, useMemo, useRef } from 'react';
-import { AppState } from 'react-native';
+import { AppState, Platform } from 'react-native';
 
-import type { MoneyFormat } from '@6pm/domain';
+import { DEFAULT_CLOSE_AT, hoursOf, type MoneyFormat } from '@6pm/domain';
 import { paletteFor } from '@6pm/theme';
 
 import { surfaces } from '../../../modules/surfaces';
 import { useMoney } from '../../data/money-provider';
-import { dayOf } from '../../data/money-store';
+import { dayOf, waitingOf } from '../../data/money-store';
 import { useI18n } from '../../i18n/i18n';
 import { phoneNumberStyle } from '../../money/device-money';
 import { useClock } from '../../ui/theme/clock';
 import { useTravel } from '../travel/travel-provider';
 import { pendingPayState, travelState } from './activity-state';
+import { closeActivityPlan, closeActivityState, type ClosePlan } from './close-activity-plan';
 import { liveActivityPlan, pendingPayments, type ActivityPlan } from './live-activity-plan';
 import { travelActivityPlan } from './travel-activity-plan';
 import type { WidgetLook } from './surface-palette';
@@ -94,8 +95,37 @@ export function useLiveActivity(look: WidgetLook, format: MoneyFormat) {
             foreground,
             enabled,
           });
+          const closeAt = now.money.plan?.closeAt ?? DEFAULT_CLOSE_AT;
+          const waiting = waitingOf(now.money).length;
+          const closeState = closeActivityState({
+            day: now.money.today,
+            waiting,
+            t: now.t,
+            palette: paletteFor({
+              look: now.look.look,
+              hour: hoursOf(closeAt),
+              serious: now.look.serious,
+              ...(now.look.config ? { config: now.look.config } : {}),
+            }),
+          });
+          // Before the month is set up there is no close to come to.
+          const close = closeActivityPlan({
+            running,
+            today: now.money.today,
+            closed: day === null || now.money.closedDays.some((d) => d.day === now.money.today),
+            closeAt,
+            now: new Date(),
+            foreground,
+            enabled,
+            canSchedule:
+              Platform.OS === 'ios' && Number.parseInt(String(Platform.Version), 10) >= 26,
+            stateJson: JSON.stringify(closeState),
+            alertTitle: closeState.title,
+            alertBody: closeState.detail,
+          });
           await apply(native, pay);
           await apply(native, travel);
+          await apply(native, close);
         })
         .catch((error: unknown) => Sentry.captureException(error));
     };
@@ -107,8 +137,10 @@ export function useLiveActivity(look: WidgetLook, format: MoneyFormat) {
   }, [money, t, format, palette, look, trip, pathname]);
 }
 
-async function apply(native: NonNullable<typeof surfaces>, plan: ActivityPlan) {
+async function apply(native: NonNullable<typeof surfaces>, plan: ActivityPlan | ClosePlan) {
   for (const { id, finalStateJson } of plan.end) await native.endActivity(id, finalStateJson);
   for (const { id, stateJson } of plan.update) await native.updateActivity(id, stateJson);
-  if (plan.start) await native.startActivity(plan.start.kind, plan.start.key, plan.start.stateJson);
+  if (!plan.start) return;
+  const timing = 'timing' in plan.start ? plan.start.timing : null;
+  await native.startActivity(plan.start.kind, plan.start.key, plan.start.stateJson, timing);
 }

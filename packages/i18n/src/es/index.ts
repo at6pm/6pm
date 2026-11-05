@@ -31,6 +31,7 @@ import { esScan } from './scan';
 import { esShareExt } from './share-ext';
 import { esSharing } from './sharing';
 import { esSurfaces } from './surfaces';
+import { esWidgets } from './widgets';
 import { esToday } from './today';
 import { esTogether } from './together';
 import { esTravel } from './travel';
@@ -76,6 +77,7 @@ export const es: Catalogue = {
   ...esCaptureAlerts,
   ...esVoice,
   ...esSurfaces,
+  ...esWidgets,
   ...esTogether,
   ...esReceiptEmail,
   ...esTravel,

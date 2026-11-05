@@ -31,6 +31,7 @@ import { koScan } from './scan';
 import { koShareExt } from './share-ext';
 import { koSharing } from './sharing';
 import { koSurfaces } from './surfaces';
+import { koWidgets } from './widgets';
 import { koToday } from './today';
 import { koTogether } from './together';
 import { koTravel } from './travel';
@@ -76,6 +77,7 @@ export const ko: Catalogue = {
   ...koCaptureAlerts,
   ...koVoice,
   ...koSurfaces,
+  ...koWidgets,
   ...koTogether,
   ...koReceiptEmail,
   ...koTravel,

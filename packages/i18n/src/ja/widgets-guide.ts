@@ -9,6 +9,9 @@ export const jaWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
     '今日使えるお金をいつも見る場所に。アプリを探さずに「QRをスキャン」や「クイック追加」を開けます。',
   'widgetsGuide.lookMax': 'あなたの着せかえで表示。',
   'widgetsGuide.lookFree': '無料版はゴールデンアワー。Maxならあなたの着せかえになります。',
+  'widgetsGuide.hide.title': '金額を隠す',
+  'widgetsGuide.hide.what': 'Face IDでロックを解除するまで、ウィジェットは•••と表示します。',
+  'widgetsGuide.hide.whatAndroid': 'ウィジェットは金額の代わりに•••と表示します。',
   'widgetsGuide.howToAdd': '追加のしかた',
   'widgetsGuide.whenItShows': '表示されるとき',
 

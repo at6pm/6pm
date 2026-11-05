@@ -10,6 +10,9 @@ export const esWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
     'Ten el número de hoy donde ya miras, y abre Escanear QR o Añadir rápido sin buscar la app.',
   'widgetsGuide.lookMax': 'Con tu estilo.',
   'widgetsGuide.lookFree': 'Gratis, en Hora dorada. Con Max llevan tu estilo.',
+  'widgetsGuide.hide.title': 'Ocultar importes',
+  'widgetsGuide.hide.what': 'Los widgets muestran ••• hasta que Face ID desbloquea el teléfono.',
+  'widgetsGuide.hide.whatAndroid': 'Los widgets muestran ••• en lugar de cada importe.',
   'widgetsGuide.howToAdd': 'Cómo añadirlo',
   'widgetsGuide.whenItShows': 'Cuándo aparece',
 

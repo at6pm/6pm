@@ -10,6 +10,9 @@ export const koWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
     '오늘 쓸 수 있는 돈을 늘 보는 곳에 두고, 앱을 찾지 않고도 QR 스캔이나 빠른 추가를 열어요.',
   'widgetsGuide.lookMax': '내 룩으로 그려져요.',
   'widgetsGuide.lookFree': '무료는 골든 아워로. Max면 내 룩을 입어요.',
+  'widgetsGuide.hide.title': '금액 숨기기',
+  'widgetsGuide.hide.what': 'Face ID로 잠금을 풀 때까지 위젯에 •••로 보여요.',
+  'widgetsGuide.hide.whatAndroid': '위젯에 금액 대신 •••로 보여요.',
   'widgetsGuide.howToAdd': '추가하는 법',
   'widgetsGuide.whenItShows': '언제 보이나요',
 

@@ -6,6 +6,9 @@ export const enWidgetsGuide = {
     'Keep today’s safe number where you already look, and open Scan QR or Quick add without finding the app.',
   'widgetsGuide.lookMax': 'Drawn in your look.',
   'widgetsGuide.lookFree': 'Free, in Golden Hour. With Max they wear your look.',
+  'widgetsGuide.hide.title': 'Hide amounts',
+  'widgetsGuide.hide.what': 'Widgets show ••• until Face ID unlocks your phone.',
+  'widgetsGuide.hide.whatAndroid': 'Widgets show ••• in place of every amount.',
   'widgetsGuide.howToAdd': 'How to add',
   'widgetsGuide.whenItShows': 'When it shows',
 

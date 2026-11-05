@@ -9,6 +9,9 @@ export const deWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
     'Behalte den heute verfügbaren Betrag da, wo du sowieso hinschaust, und öffne „QR scannen“ oder „Schnell erfassen“, ohne die App zu suchen.',
   'widgetsGuide.lookMax': 'In deinem Look gezeichnet.',
   'widgetsGuide.lookFree': 'Gratis, in Goldene Stunde. Mit Max tragen sie deinen Look.',
+  'widgetsGuide.hide.title': 'Beträge verbergen',
+  'widgetsGuide.hide.what': 'Widgets zeigen •••, bis Face ID dein iPhone entsperrt.',
+  'widgetsGuide.hide.whatAndroid': 'Widgets zeigen ••• statt jedes Betrags.',
   'widgetsGuide.howToAdd': 'Hinzufügen',
   'widgetsGuide.whenItShows': 'Wann es erscheint',
 

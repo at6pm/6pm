@@ -1,0 +1,57 @@
+/**
+ * The postcard widgets ("6pm Widgets"): the words the app writes for the Home Screen and Lock
+ * Screen widgets and the close's Live Activity. Kickers are written in sentence case; the widgets
+ * set them in capitals.
+ */
+export const enWidgets = {
+  'widgets.kicker.day': '{weekday} · Safe to spend',
+  'widgets.kicker.due': 'It’s six · Close your day',
+  'widgets.kicker.closed': 'Closed · Tomorrow',
+  'widgets.kickerShort.day': '{weekday} · Today',
+  'widgets.kickerShort.due': 'It’s six',
+  'widgets.kickerShort.closed': 'Tomorrow',
+  'widgets.sub.untouched': 'All of it, still.',
+  'widgets.sub.used': {
+    one: '{used} used · {count} caught',
+    other: '{used} used · {count} caught',
+  },
+  'widgets.sub.waiting': {
+    one: '{count} waiting for the close',
+    other: '{count} waiting for the close',
+  },
+  'widgets.sub.ready': 'Ready for the close',
+  'widgets.sub.closedAt': 'Closed at {time}',
+  'widgets.subShort.safe': 'safe to spend',
+  'widgets.subShort.left': 'left today',
+  'widgets.subShort.due': 'tap to close',
+  'widgets.subShort.closed': 'closed {time}',
+  'widgets.inline.left': '{date} · {amount} left',
+  'widgets.inline.closed': 'Closed · {amount} tomorrow',
+  'widgets.lock.closeAt': 'close at {time}',
+  'widgets.lock.due': { one: '{count} waiting · it’s six', other: '{count} waiting · it’s six' },
+  'widgets.lock.dueReady': 'it’s six',
+  'widgets.lock.closed': 'tomorrow · closed',
+  'widgets.tonight': 'Tonight',
+  'widgets.tonight.closeAt': 'Close at {time}',
+  'widgets.tonight.confirm': { one: '{count} to confirm', other: '{count} to confirm' },
+  'widgets.tonight.ready': 'Ready to close',
+  'widgets.tonight.closed': 'Closed {time}',
+  'widgets.month.title': '{month} · Closed at six',
+  'widgets.month.headline': {
+    one: '{count} sunset, {under} inside the line.',
+    other: '{count} sunsets, {under} inside the line.',
+  },
+  'widgets.month.none': 'The first sunset is tonight.',
+  'widgets.streak.line1': 'Evenings',
+  'widgets.streak.line2': 'in a row',
+  'widgets.jar.days': { one: 'day', other: 'days' },
+  'widgets.jar.of': '{amount} of {goal}',
+  'widgets.jar.full': 'full',
+  'widgets.jar.saved': 'saved',
+  'widgets.jar.today': 'today',
+  'widgets.close.title': 'It’s six. Close your day.',
+  'widgets.close.waiting': { one: '{count} waiting', other: '{count} waiting' },
+  'widgets.close.none': 'Nothing waiting',
+  'widgets.close.start': 'Start',
+  'widgets.stamp': 'Closed',
+} as const;

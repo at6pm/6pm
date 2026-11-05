@@ -8,6 +8,9 @@ export const viWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
     'Để số tiêu được hôm nay ở chỗ bạn vẫn nhìn, và mở Quét QR hay Thêm nhanh mà không cần tìm app.',
   'widgetsGuide.lookMax': 'Vẽ theo giao diện của bạn.',
   'widgetsGuide.lookFree': 'Miễn phí, màu Golden Hour. Có Max thì theo giao diện của bạn.',
+  'widgetsGuide.hide.title': 'Ẩn số tiền',
+  'widgetsGuide.hide.what': 'Tiện ích hiện ••• cho đến khi Face ID mở khoá máy.',
+  'widgetsGuide.hide.whatAndroid': 'Tiện ích hiện ••• thay cho mọi số tiền.',
   'widgetsGuide.howToAdd': 'Cách thêm',
   'widgetsGuide.whenItShows': 'Khi nào hiện',
 

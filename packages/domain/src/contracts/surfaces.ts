@@ -172,7 +172,165 @@ export const surfaceEntrySchema = z.object({
   spentFraction: z.number().min(0).max(1).optional(),
   /** "40.000₫": what the spends past the list add up to, beside `moreText`. */
   moreAmountText: z.string().optional(),
+  /**
+   * The postcard this stretch shows, as the widgets' design words it: absent in files from before
+   * the postcards. Every word is in the app's language and every amount already formatted.
+   */
+  card: z
+    .object({
+      /** `day` before the close, `due` from the close until it is made, `closed` after it. */
+      phase: z.enum(['day', 'due', 'closed']),
+      /** The hour of the sky it is drawn in (16.5 is half past four). */
+      hour: z.number().min(0).max(24),
+      /** "FRIDAY · SAFE TO SPEND", "IT’S SIX · CLOSE YOUR DAY", "CLOSED · TOMORROW". */
+      kicker: z.string(),
+      /** The small widget's: "FRI · TODAY", "IT’S SIX", "TOMORROW". */
+      kickerShort: z.string(),
+      /** "351.000": the medium widget's number, without its symbol. */
+      number: z.string(),
+      /** "351.000₫": the Lock Screen card's. */
+      amount: z.string(),
+      /** "All of it, still.", "165k used · 3 caught", "4 waiting for the close". */
+      sub: z.string(),
+      /** "safe to spend", "left today", "tap to close", "closed 18:04". */
+      subShort: z.string(),
+      /** "Fri 9 · 49k left", and the same with the amount hidden. */
+      inline: z.string(),
+      inlineHidden: z.string(),
+      /** Under the Lock Screen card's number: "close at 18:00", "4 waiting · it’s six". */
+      lockSub: z.string(),
+      /** The large widget's foot: "Close at 18:00", "4 to confirm", "Closed 18:04". */
+      tonight: z.string(),
+      /** How much of the day's line is used, 0 to 1: the medium widget's bar. */
+      used: z.number().min(0).max(1),
+      /** Where the sun stands, in fractions of the widget (medium, then small). */
+      sun: z.object({ x: z.number(), y: z.number(), xs: z.number(), ys: z.number() }),
+      /** The sun this hour: the day's, the evening's, or the moon. */
+      sunKind: z.enum(['day', 'noon', 'dusk', 'night']),
+      /** "18:04" on the CLOSED stamp, once the day is closed. */
+      closedAt: z.string().optional(),
+    })
+    .optional(),
 });
+
+/** A colour stop of a gradient the app worked out: a CSS colour at 0 to 1. */
+const stopSchema = z.tuple([z.string(), z.number()]);
+
+/** A CSS box shadow, in points: what the sun glows with and the neon lids hum with. */
+const shadowSchema = z.object({
+  x: z.number(),
+  y: z.number(),
+  blur: z.number(),
+  spread: z.number(),
+  color: z.string(),
+});
+
+/** What a jar, a sun or a day's dot is filled with. */
+const fillSchema = z.object({
+  kind: z.enum(['solid', 'radial', 'linear', 'dots', 'stripes']),
+  stops: z.array(stopSchema),
+  /** A radial fill's centre, in fractions of the shape. */
+  center: z.tuple([z.number(), z.number()]).optional(),
+  /** A linear fill's angle, CSS degrees (180 is top to bottom). */
+  angle: z.number().optional(),
+});
+
+/** One of the person's jars, as the widgets draw it. */
+export const surfaceJarSchema = z.object({
+  id: id,
+  name: z.string(),
+  /** The Lock Screen jar's label: "TẾT". */
+  label: z.string(),
+  /** The Material Symbols glyph itself (its private-use character). */
+  icon: z.string(),
+  /** How full, 0 to 1. */
+  level: z.number().min(0).max(1),
+  /** "3,1tr" under the medium widget's jar. */
+  amountText: z.string(),
+  /** "3,1tr of 7tr" on the small one. */
+  ofText: z.string(),
+  /** "Sat 6 Feb": the day it counts down to; empty for a jar with no date. */
+  dayText: z.string(),
+  /** "119", and "days" under it; for a jar with no date, how full it is. */
+  countText: z.string(),
+  countUnit: z.string(),
+  /** Its colours: what it holds, the line on top, the lid, the glass, the icon low and high. */
+  fill: z.string(),
+  fillTop: z.string(),
+  lid: z.string(),
+  glass: z.string(),
+  iconLow: z.string(),
+  iconHigh: z.string(),
+  /** The season's jar. */
+  newYear: z.boolean(),
+  /** The app's link to the jar's page. */
+  path: z.string(),
+});
+export type SurfaceJar = z.infer<typeof surfaceJarSchema>;
+
+/** The look's widget materials: its sun, its jars, its dots, its type (`widgetInks` in theme). */
+const sunSchema = z.object({ fill: fillSchema, shadows: z.array(shadowSchema) }).nullable();
+const ringSchema = z.object({ width: z.number(), color: z.string() });
+
+export const surfaceLookSchema = z.object({
+  id: z.string(),
+  /** A ground the look's widgets wear instead of the sky (Basic: the system's white and grey). */
+  ground: z.object({ day: z.string(), night: z.string() }).nullable(),
+  suns: z.object({ day: sunSchema, noon: sunSchema, dusk: sunSchema, night: sunSchema }),
+  /** The sun's width over its height (a lantern is taller than wide); 1 is round. */
+  sunAspect: z.number(),
+  /** A ring the sun is drawn as instead of a disc (Neon Alley's tube). */
+  sunRing: ringSchema.nullable(),
+  /** The crease of Cà Phê's bean. */
+  sunCrease: z.string().nullable(),
+  /** Inset lines round the whole widget, outermost first. */
+  frame: z.array(ringSchema),
+  /** The month's dots: a whole sun, half a sun, a missed evening's ring. */
+  dots: z.object({
+    full: fillSchema,
+    half: fillSchema,
+    ring: z.string(),
+    aspect: z.number(),
+    fullRing: ringSchema.nullable(),
+    glow: shadowSchema.nullable(),
+    crease: z.string().nullable(),
+  }),
+  jar: z.object({
+    /** Null for each jar's own lid and glass, and an edge in the sky's ink. */
+    lid: z.string().nullable(),
+    body: fillSchema.nullable(),
+    edge: z.object({ width: z.number(), color: z.string().nullable() }),
+    lidRadius: z.number(),
+    /** Its corners, top and bottom, in points at the medium widget's 34 pt jar. */
+    radiusTop: z.number(),
+    radiusBottom: z.number(),
+    lidGlow: shadowSchema.nullable(),
+    glow: shadowSchema.nullable(),
+    /** What each jar holds, by place on the shelf; empty for each jar's own colour. */
+    fills: z.array(fillSchema),
+    /** The jar's icon is drawn on its glass. */
+    icon: z.boolean(),
+  }),
+  /** The number's offset print, always; its glow once the sky is dark. */
+  numberShadows: z.array(shadowSchema),
+  numberGlow: z.array(shadowSchema),
+  /** The display face's weight, and the medium and small numbers' sizes. */
+  displayWeight: z.number(),
+  numberMedium: z.number(),
+  numberSmall: z.number(),
+  /** Its tracking, in em. */
+  numberTracking: z.number(),
+  /** The kickers are set in the mono face; false sets them in the interface face. */
+  mono: z.boolean(),
+  /** The streak widget's ground, and its line and words. */
+  streakGround: z.string(),
+  streakLine: z.string(),
+  streakWord: z.string(),
+  /** The open evening's hatch and the accent ring of today. */
+  hatch: z.string(),
+  today: z.string(),
+});
+export type SurfaceLook = z.infer<typeof surfaceLookSchema>;
 
 /** What the widgets draw: every number and word decided by the app, in its language. */
 export const surfaceSnapshotSchema = z.object({
@@ -183,8 +341,58 @@ export const surfaceSnapshotSchema = z.object({
   entries: z.array(surfaceEntrySchema),
   palettes: z.array(z.object({ hour: z.number().int(), tokens: z.record(z.string(), z.string()) })),
   strings: z.record(z.string(), z.string()),
+  /** The person asked for amounts to stay hidden until the phone is unlocked. */
+  hideAmounts: z.boolean().optional(),
+  /** Future you first, then the season's jar, then the rest as they were made. */
+  jars: z.array(surfaceJarSchema).optional(),
+  /** The evenings closed in a row: how many, and each one's sky, oldest first. */
+  streak: z
+    .object({
+      count: z.number().int().nonnegative(),
+      /** The sky each evening closed under, as three stops left to right. */
+      bands: z.array(z.tuple([z.string(), z.string(), z.string()])),
+      /** Today is still open: a hatched band waits for it. */
+      open: z.boolean(),
+    })
+    .optional(),
+  /** The month as suns: "OCTOBER · CLOSED AT SIX", "8 sunsets, 6 inside the line.". */
+  month: z
+    .object({
+      title: z.string(),
+      headline: z.string(),
+      cells: z.array(z.enum(['sun', 'half', 'miss', 'today', 'ahead', 'blank'])),
+    })
+    .optional(),
+  look: surfaceLookSchema.optional(),
+  /** The app's links: Today, the Diary's month, the streak's share. */
+  links: z.object({ today: z.string(), month: z.string(), streak: z.string() }).optional(),
+  /** Development builds only: the clock the app was pinned to, which the widgets then follow. */
+  pinnedAt: instant.optional(),
 });
 export type SurfaceSnapshot = z.infer<typeof surfaceSnapshotSchema>;
+
+/**
+ * The close at six, as a Live Activity: "It’s six. Close your day.", a slip for each spend waiting
+ * for it, and Start, which opens the close.
+ */
+export const closeActivitySchema = z.object({
+  v: version,
+  /** The money day it is the close of. */
+  day: z.string(),
+  title: z.string(),
+  /** "4 waiting", "Nothing waiting". */
+  detail: z.string(),
+  /** How many slips to draw (at most a handful). */
+  slips: z.number().int().nonnegative(),
+  start: z.string(),
+  path: z.string(),
+  /** The Material Symbols glyph of the close (its private-use character). */
+  icon: z.string(),
+  accent: z.string(),
+  onAccent: z.string(),
+  paper: z.string(),
+});
+export type CloseActivityState = z.infer<typeof closeActivitySchema>;
 
 /** A currency the card's Edit state can switch to, with its rate when the app has one. */
 export const shareCurrencySchema = z.object({

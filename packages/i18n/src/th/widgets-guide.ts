@@ -10,6 +10,9 @@ export const thWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
     'วางยอดวันนี้ใช้ได้ไว้ตรงที่คุณมองอยู่แล้ว และเปิดสแกนคิวอาร์หรือเพิ่มด่วนได้โดยไม่ต้องหาแอป',
   'widgetsGuide.lookMax': 'วาดตามลุคของคุณ',
   'widgetsGuide.lookFree': 'ฟรีในลุคแสงสีทอง มี Max แล้วจะเป็นลุคของคุณ',
+  'widgetsGuide.hide.title': 'ซ่อนยอดเงิน',
+  'widgetsGuide.hide.what': 'วิดเจ็ตจะแสดง ••• จนกว่า Face ID จะปลดล็อกเครื่อง',
+  'widgetsGuide.hide.whatAndroid': 'วิดเจ็ตจะแสดง ••• แทนทุกยอดเงิน',
   'widgetsGuide.howToAdd': 'วิธีเพิ่ม',
   'widgetsGuide.whenItShows': 'แสดงเมื่อไหร่',
 

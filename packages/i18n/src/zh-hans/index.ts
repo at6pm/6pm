@@ -31,6 +31,7 @@ import { zhHansScan } from './scan';
 import { zhHansShareExt } from './share-ext';
 import { zhHansSharing } from './sharing';
 import { zhHansSurfaces } from './surfaces';
+import { zhHansWidgets } from './widgets';
 import { zhHansToday } from './today';
 import { zhHansTogether } from './together';
 import { zhHansTravel } from './travel';
@@ -76,6 +77,7 @@ export const zhHans: Catalogue = {
   ...zhHansCaptureAlerts,
   ...zhHansVoice,
   ...zhHansSurfaces,
+  ...zhHansWidgets,
   ...zhHansTogether,
   ...zhHansReceiptEmail,
   ...zhHansTravel,

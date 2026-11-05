@@ -31,6 +31,7 @@ import { deScan } from './scan';
 import { deShareExt } from './share-ext';
 import { deSharing } from './sharing';
 import { deSurfaces } from './surfaces';
+import { deWidgets } from './widgets';
 import { deToday } from './today';
 import { deTogether } from './together';
 import { deTravel } from './travel';
@@ -76,6 +77,7 @@ export const de: Catalogue = {
   ...deCaptureAlerts,
   ...deVoice,
   ...deSurfaces,
+  ...deWidgets,
   ...deTogether,
   ...deReceiptEmail,
   ...deTravel,

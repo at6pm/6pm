@@ -31,6 +31,7 @@ import { thScan } from './scan';
 import { thShareExt } from './share-ext';
 import { thSharing } from './sharing';
 import { thSurfaces } from './surfaces';
+import { thWidgets } from './widgets';
 import { thToday } from './today';
 import { thTogether } from './together';
 import { thTravel } from './travel';
@@ -76,6 +77,7 @@ export const th: Catalogue = {
   ...thCaptureAlerts,
   ...thVoice,
   ...thSurfaces,
+  ...thWidgets,
   ...thTogether,
   ...thReceiptEmail,
   ...thTravel,

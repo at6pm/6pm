@@ -18,6 +18,13 @@ export const frNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.surfaces.safeToday.description': 'Ce que tu peux dépenser aujourd’hui, en un coup d’œil.',
   'native.surfaces.setUp': 'Ouvre 6pm pour commencer',
   'native.surfaces.markPaid.title': 'Payé',
+  'native.surfaces.jar.name': 'Un bocal',
+  'native.surfaces.jar.description': 'Un bocal, en compte à rebours jusqu’à son jour.',
+  'native.surfaces.jar.param': 'Bocal',
+  'native.surfaces.streak.name': 'Série',
+  'native.surfaces.streak.description': 'Les soirs clôturés d’affilée, chacun avec son ciel.',
+  'native.surfaces.month.name': 'Mon mois',
+  'native.surfaces.month.description': 'Le mois en soleils : chaque soir que tu as clôturé.',
   'native.surfaces.todayList.name': 'Aujourd’hui',
   'native.surfaces.todayList.description':
     'Ce que tu as dépensé aujourd’hui, du plus récent au plus ancien.',

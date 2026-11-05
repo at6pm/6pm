@@ -8,6 +8,9 @@ export const zhHansWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]
   'widgetsGuide.lede': '把今天可以花的数字放在你常看的地方，不用找 App 就能打开扫码或快速记账。',
   'widgetsGuide.lookMax': '以你的外观绘制。',
   'widgetsGuide.lookFree': '免费，Golden Hour 配色。有 Max 就会换上你的外观。',
+  'widgetsGuide.hide.title': '隐藏金额',
+  'widgetsGuide.hide.what': '在面容 ID 解锁手机前，小组件显示 •••。',
+  'widgetsGuide.hide.whatAndroid': '小组件用 ••• 代替所有金额。',
   'widgetsGuide.howToAdd': '如何添加',
   'widgetsGuide.whenItShows': '何时显示',
 

@@ -10,6 +10,9 @@ export const idWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
     'Taruh angka aman hari ini di tempat yang biasa kamu lihat, dan buka Pindai QR atau Tambah cepat tanpa mencari aplikasinya.',
   'widgetsGuide.lookMax': 'Digambar dengan tampilanmu.',
   'widgetsGuide.lookFree': 'Gratis, dalam Jam Emas. Dengan Max, ikut tampilanmu.',
+  'widgetsGuide.hide.title': 'Sembunyikan jumlah',
+  'widgetsGuide.hide.what': 'Widget menampilkan ••• sampai Face ID membuka kunci ponselmu.',
+  'widgetsGuide.hide.whatAndroid': 'Widget menampilkan ••• sebagai ganti setiap jumlah.',
   'widgetsGuide.howToAdd': 'Cara menambahkan',
   'widgetsGuide.whenItShows': 'Kapan muncul',
 
