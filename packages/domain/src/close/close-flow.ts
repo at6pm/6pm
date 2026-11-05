@@ -37,7 +37,7 @@ export type CloseStep =
 export type CardVerdict = 'kept' | 'edited' | 'notMine' | 'spread' | 'saved';
 
 /** What the close asks about money in before placing it (see `moneyInAsk`). */
-export type MoneyAsk = 'pay' | 'refund' | 'payback';
+export type MoneyAsk = 'pay' | 'bonus' | 'refund' | 'payback';
 
 export interface CloseCard {
   readonly id: string;

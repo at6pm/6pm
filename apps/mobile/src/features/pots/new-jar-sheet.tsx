@@ -95,6 +95,8 @@ export function NewJarSheet({
           hue: draft.hue,
           goal: draft.target,
           fill: jar.fill,
+          // The Tết preset makes the season's jar, which the free jars never count.
+          season: draft.preset === 'tet' && jar.fill.by === 'date' ? 'newYear' : null,
         }),
       );
       if (!ok) expectLanding(false);

@@ -15,7 +15,10 @@ import { useMoney, useMoneyActions } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
+import { useCompanionToast } from '../companion/use-companion-toast';
+import { BonusQuestionStep } from './close-bonus-question';
 import { WorkQuestionStep } from './close-work-question';
+import { useCloseMoney } from './use-close-money';
 
 /**
  * The close's question about money that looks like something: "Is this your pay?", "Is this for
@@ -42,6 +45,8 @@ export function MoneyQuestionStep({
   const actions = useMoneyActions();
   const money = useMoneyFormat();
   const { t, language } = useI18n();
+  const { canSave } = useCloseMoney();
+  const say = useCompanionToast();
   // One answer per question: a second tap while the pay is being split does nothing.
   const answered = useRef<string | null>(null);
   const card = moneyQuestion(state);
@@ -83,9 +88,30 @@ export function MoneyQuestionStep({
       });
       return;
     }
+    // The bonus places itself from its own step.
+    if (ask.kind === 'bonus') return;
     void run(() => actions.placeMoneyIn(spend.id, { moneyIn: ask.kind, givesBack: ask.spendId }));
     dispatch({ type: 'answerMoney', id: card.id, yes: true });
   };
+
+  if (ask.kind === 'bonus') {
+    return (
+      <BonusQuestionStep
+        key={card.id}
+        spend={spend}
+        jarId={ask.jarId}
+        toJar={ask.toJar}
+        canSave={canSave}
+        onPlace={(place) => {
+          if (answered.current === card.id) return;
+          answered.current = card.id;
+          if (!plan.serious) say('seasonBonus');
+          void run(() => actions.placeMoneyIn(spend.id, place));
+          dispatch({ type: 'answerMoney', id: card.id, yes: true });
+        }}
+      />
+    );
+  }
 
   if (ask.kind === 'pay') {
     const extra = payExtra(spend.amount, plan.income);

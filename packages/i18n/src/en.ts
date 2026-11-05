@@ -38,6 +38,7 @@ import { enPotsPlan } from './en-pots-plan';
 import { enPots } from './en-pots';
 import { enFirstCatch } from './en-first-catch';
 import { enImport, importSketchMomo } from './en-import';
+import { enSeason } from './en-season';
 
 /** The source catalogue: every key the app uses, in English. */
 export const en = {
@@ -82,4 +83,5 @@ export const en = {
   ...enFirstCatch,
   ...enImport,
   ...importSketchMomo,
+  ...enSeason,
 } as const;

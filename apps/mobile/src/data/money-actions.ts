@@ -11,6 +11,7 @@ import {
   merchantKeyOf,
   moneyDayOf,
   settleTypedAmount,
+  type CategoryRow,
   type ClosedDayRow,
   type LocalDate,
   type SightedSpend,
@@ -56,6 +57,13 @@ export interface NewSpend {
   readonly moneyIn?: 'refund' | null;
   /** The jar it comes out of (Quick add's "From a jar"); today's money when left out. */
   readonly fromPot?: string | null;
+  /** Red envelopes a lì xì held ("5 bao × 200k"); none when left out. */
+  readonly envelopes?: number | null;
+  /**
+   * The category to make first when the phone has none with its id (the Lì xì category, made the
+   * first time a lì xì is kept).
+   */
+  readonly makeCategory?: CategoryRow;
 }
 
 /**
@@ -272,6 +280,7 @@ export function moneyActions(store: MoneyStore) {
         jar === null || input.direction === 'in'
           ? null
           : jarCover(Math.round(input.amount), snap.potSaved[jar] ?? 0),
+      envelopes: input.envelopes ?? null,
       createdAt: now,
       updatedAt: now,
     };
@@ -322,6 +331,11 @@ export function moneyActions(store: MoneyStore) {
   return {
     addSpend: (input: NewSpend) =>
       inTurn(async () => {
+        const made = input.makeCategory;
+        if (made && !store.getSnapshot().categories.some((c) => c.id === made.id)) {
+          await tables.categories.insertMissing(made);
+          await store.loadInTurn(store.getSnapshot().today);
+        }
         const { row } = await captureNow(input);
         // Quick add "From a jar" is taken by hand: it arms the jar for the close's question.
         if (row.fromPot != null && input.fromPot != null) {

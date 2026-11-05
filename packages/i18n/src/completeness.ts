@@ -22,6 +22,8 @@ export const sameInBothLanguages: readonly string[] = [
   'Nước mía',
   'Xôi',
   'Tết',
+  'Lì xì',
+  '= {amount}',
   'Vietcombank',
   'MoMo',
   'Venmo',

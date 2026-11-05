@@ -22,6 +22,7 @@ import { localeOf } from '@6pm/i18n';
 import { oklchSrgbHex } from '@6pm/theme';
 
 import { markDeclined } from '../../data/jar-asks';
+import { useClock } from '../../ui/theme/clock';
 import { useMoney, useMoneyActions, useMoneyStore } from '../../data/money-provider';
 import { findSpend } from '../../data/money-store';
 import { useI18n } from '../../i18n/i18n';
@@ -110,6 +111,7 @@ function PotQuestion({
   const snap = useMoney();
   const actions = useMoneyActions();
   const store = useMoneyStore();
+  const { now } = useClock();
   // Fixed as the question opens: the answer's write must not redraw the question under the pour.
   const [jar] = useState(() => snap.pots.find((p) => p.id === jarId));
   const [choice] = useState(() => jarChoiceOf(snap, spend, jarId));
@@ -170,7 +172,8 @@ function PotQuestion({
     haptics.tap();
     setAnswer(false);
     // A No disarms the jar until the person next takes a spend from it by hand (M13).
-    void markDeclined(store.db, jar.id).catch(() => undefined);
+    // On the app's clock, so a No in the Tết season disarms the jar for the season it was said in.
+    void markDeclined(store.db, jar.id, now.toISOString()).catch(() => undefined);
   };
 
   return (

@@ -229,6 +229,51 @@ describe('backupSnapshotSchema', () => {
     expect(parsedV6.spends[0]?.fromPotAmount).toBe(6_000_000);
   });
 
+  it('round-trips the Tết jar and lì xì envelopes, and reads a version 7 snapshot without them', () => {
+    const pot = {
+      id: 'tet',
+      kind: 'occasion',
+      name: 'Tết',
+      icon: 'local_florist',
+      hue: 20,
+      goal: 7_000_000,
+      neededBy: '2027-02',
+      share: null,
+      paused: false,
+      createdAt: '2026-12-01T00:00:00.000Z',
+      archivedAt: null,
+    };
+    const spend = {
+      id: 'lixi',
+      day: '2027-02-06',
+      at: '2027-02-06T03:00:00.000Z',
+      amount: 1_000_000,
+      categoryId: 'lixi',
+      merchant: 'Lì xì',
+      note: null,
+      source: 'voice',
+      status: 'kept',
+      previousStatus: null,
+      wallet: null,
+      forWork: false,
+      detail: null,
+      foreignAmount: null,
+      createdAt: '2027-02-06T03:00:00.000Z',
+      updatedAt: '2027-02-06T03:00:00.000Z',
+    };
+    const v7 = backupSnapshotSchema.parse({ ...empty, version: 7, pots: [pot], spends: [spend] });
+    expect(v7.pots[0]).not.toHaveProperty('season');
+    expect(v7.spends[0]).not.toHaveProperty('envelopes');
+    const v8 = backupSnapshotSchema.parse({
+      ...empty,
+      version: 8,
+      pots: [{ ...pot, season: 'newYear' }],
+      spends: [{ ...spend, envelopes: 5, fromPot: 'tet' }],
+    });
+    expect(v8.pots[0]?.season).toBe('newYear');
+    expect(v8.spends[0]?.envelopes).toBe(5);
+  });
+
   it('counts what a person made and would miss', () => {
     expect(backupItemCount(backupSnapshotSchema.parse(empty))).toBe(0);
   });

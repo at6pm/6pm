@@ -11,6 +11,7 @@ import { sql as addSightingCapture } from '../db/migrations/0006-sighting-captur
 import { sql as addMoneyIn } from '../db/migrations/0010-money-in';
 import { sql as addJars } from '../db/migrations/0011-jars';
 import { sql as addImports } from '../db/migrations/0012-imports';
+import { sql as addNewYear } from '../db/migrations/0013-new-year';
 import { createMoneyStore, dayOf } from './money-store';
 import { planActions } from './plan-actions';
 import { DEFAULT_PLAN, writePlan } from './plan-settings';
@@ -35,6 +36,7 @@ async function open(today: string, startedOn = '2026-09-01') {
   sqlite.exec(addMoneyIn);
   sqlite.exec(addJars);
   sqlite.exec(addImports);
+  sqlite.exec(addNewYear);
   const db: SqlDatabase = {
     getAllAsync: <T>(source: string, params: SqlValue[]) =>
       Promise.resolve(sqlite.prepare(source).all(...params) as T[]),

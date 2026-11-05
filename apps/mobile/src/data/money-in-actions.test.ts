@@ -122,6 +122,64 @@ describe('money that came in', () => {
     expect(inDalat()).toBe(before);
   });
 
+  it('a Tết bonus fills the jar first and spreads the rest: the number rises by the rest only', async () => {
+    const before = free();
+    const held = inDalat();
+    const row = await ctx.actions.addSpend({ ...gift, amount: 9_000_000 });
+    await ctx.actions.placeMoneyIn(row.id, {
+      moneyIn: 'spread',
+      jarFirst: { potId: 'dalat', amount: 2_000_000 },
+    });
+    expect(inDalat()).toBe(held + 2_000_000);
+    expect(free()).toBe(before + 7_000_000);
+    // "Save the 7tr instead": the jar's part stays, the rest goes to Future you, today holds.
+    await ctx.actions.placeMoneyIn(row.id, {
+      moneyIn: 'saved',
+      savedTo: FUTURE_YOU,
+      jarFirst: { potId: 'dalat', amount: 2_000_000 },
+    });
+    const snap = ctx.store.getSnapshot();
+    expect(inDalat()).toBe(held + 2_000_000);
+    expect((snap.potSaved['cushion'] ?? 0) + (snap.potSaved['laptop'] ?? 0)).toBe(7_000_000);
+    expect(free()).toBe(before);
+    await ctx.actions.unplaceMoneyIn(row.id);
+    expect(inDalat()).toBe(held);
+  });
+
+  it('a lì xì keeps its envelopes, and makes its category the first time', async () => {
+    const lixi = {
+      id: 'lixi',
+      name: 'Lì xì',
+      icon: 'featured_seasonal_and_gifts',
+      hue: 20,
+      countsDaily: true,
+      sort: 9,
+      archivedAt: null,
+    };
+    const row = await ctx.actions.addSpend({
+      amount: 1_000_000,
+      categoryId: 'lixi',
+      merchant: 'Lì xì',
+      source: 'voice',
+      status: 'kept',
+      envelopes: 5,
+      fromPot: 'dalat',
+      makeCategory: lixi,
+    });
+    expect(row.envelopes).toBe(5);
+    expect(row.fromPot).toBe('dalat');
+    expect(ctx.store.getSnapshot().categories.some((c) => c.id === 'lixi')).toBe(true);
+    await ctx.actions.addSpend({
+      amount: 200_000,
+      categoryId: 'lixi',
+      merchant: 'Lì xì',
+      source: 'manual',
+      status: 'kept',
+      makeCategory: { ...lixi, name: 'Renamed' },
+    });
+    expect(ctx.store.getSnapshot().categories.filter((c) => c.id === 'lixi')).toHaveLength(1);
+  });
+
   it('taken back, waits again with nothing saved', async () => {
     const before = free();
     const held = inDalat();
