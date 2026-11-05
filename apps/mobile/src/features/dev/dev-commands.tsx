@@ -5,9 +5,11 @@ import { useEffect } from 'react';
 import { AppState } from 'react-native';
 import { z } from 'zod';
 
+import { languages } from '@6pm/i18n';
 import { LOOK_IDS } from '@6pm/theme';
 
 import { useMoneyStore } from '../../data/money-provider';
+import { settingsActions } from '../../data/settings-actions';
 import { useLookSettingsStore } from '../looks/look-settings-provider';
 import { setAiMode } from '../privacy/use-ai-mode';
 import { pinClock, useClock } from '../../ui/theme/clock';
@@ -24,6 +26,7 @@ import { seedDesignMoneyIn } from './design-money-in-seed';
 import { useYearBook } from '../year-book/use-year-book';
 import { seedDesignYear } from './design-year-seed';
 import { seedCaptureHealth } from './design-capture-health-seed';
+import { seedDesignStreak, showYearCardAnyDay } from './design-streak-seed';
 import { writeFirstCatch } from '../../data/first-catch';
 import { addDays } from '@6pm/domain';
 
@@ -70,6 +73,14 @@ const commandSchema = z.object({
     .optional(),
   /** "later": onboarding's "I'll do it later" said yesterday, so Today shows its empty slip. */
   firstCatch: z.literal('later').optional(),
+  /** After the seed: this many evenings closed back to back, ending yesterday (share cards). */
+  streak: z.number().int().min(1).max(400).optional(),
+  /** Serious mode on or off, as the Settings switch sets it. */
+  serious: z.boolean().optional(),
+  /** The app's language, as Settings keeps it; "" follows the phone again. */
+  language: z.union([z.enum(languages), z.literal('')]).optional(),
+  /** Shows Today's Year card whatever the date, to check it before 20 December. */
+  yearCard: z.boolean().optional(),
   /** Seeds 14 days of catches per way and this month's receipts read on the phone. */
   captureHealth: z.boolean().optional(),
   /** A file in Documents opened in "Bring your history" as if picked ("momo.xlsx"). */
@@ -82,7 +93,7 @@ const commandSchema = z.object({
 export function DevCommands() {
   const router = useRouter();
   const store = useMoneyStore();
-  const { language } = useI18n();
+  const { language, setLanguage } = useI18n();
   const { today } = useClock();
   const toast = useToast();
   const { bind: bindYear } = useYearBook();
@@ -112,7 +123,13 @@ export function DevCommands() {
         firstCatch,
         captureHealth,
         importFile,
+        streak,
+        yearCard,
+        serious,
+        language: speak,
       } = parsed.data;
+      if (speak !== undefined) setLanguage(speak === '' ? null : speak);
+      if (yearCard !== undefined) showYearCardAnyDay(yearCard);
       if (aiMode !== undefined) setAiMode(db, aiMode);
       if (look !== undefined) lookStore.setLook(look, () => true);
       if (companion !== undefined) pinCompanionForm(companion === '' ? null : companion);
@@ -146,7 +163,9 @@ export function DevCommands() {
           });
         if (seed === 'moneyIn') await seedDesignMoneyIn(store, today);
         if (jars) await seedDesignJars(store, today, jars);
+        if (streak) await seedDesignStreak(store, today, streak);
       });
+      if (serious !== undefined) await settingsActions(store).updatePlan({ serious });
       // Said yesterday, but after anything seeded: only a catch from now on clears the card.
       if (firstCatch === 'later') {
         await writeFirstCatch(store.db, {
@@ -176,7 +195,7 @@ export function DevCommands() {
       if (state === 'active') void run();
     });
     return () => subscription.remove();
-  }, [router, store, today, toast, bindYear, lookStore, db, language]);
+  }, [router, store, today, toast, bindYear, lookStore, db, language, setLanguage]);
 
   return null;
 }
