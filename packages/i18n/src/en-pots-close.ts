@@ -30,7 +30,6 @@ export const enPotsClose = {
   'potsClose.details.counts': 'Counts today',
   'potsClose.details.claimNo': 'No',
   'potsClose.details.claimYes': 'Yes',
-  'potsClose.quick.today': 'Today',
   'potsClose.quick.ticket': 'FROM {jar} · TODAY STAYS {amount}',
   'potsClose.quick.paidWith': 'Paid with',
   'potsClose.first.title': 'Pay future you first',

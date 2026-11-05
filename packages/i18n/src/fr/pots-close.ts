@@ -32,7 +32,6 @@ export const frPotsClose: { readonly [Key in keyof typeof enPotsClose]: Entry } 
   'potsClose.details.counts': 'Compte aujourd’hui',
   'potsClose.details.claimNo': 'Non',
   'potsClose.details.claimYes': 'Oui',
-  'potsClose.quick.today': 'Aujourd’hui',
   'potsClose.quick.ticket': 'DE {jar} · AUJOURD’HUI RESTE {amount}',
   'potsClose.quick.paidWith': 'Payé avec',
   'potsClose.first.title': 'Paie d’abord ton futur toi',

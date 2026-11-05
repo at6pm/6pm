@@ -1,6 +1,7 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated from 'react-native-reanimated';
 
 import {
@@ -20,7 +21,7 @@ import { useRunAction } from '../features/companion/use-run-action';
 import { QuickTicket } from '../features/quick-add/quick-ticket';
 import { useWalletOptions } from '../features/quick-add/use-wallet-options';
 import { CASH_WALLET } from '../features/quick-add/wallet-options';
-import { FromRow } from '../features/quick-add/wallet-row';
+import { firstJarFor, FromJarSwitch, FromRow } from '../features/quick-add/wallet-row';
 import { jarChoiceOf } from '../features/close/jar-choice-of';
 import { jarsToSpendFrom } from '../features/details/from-jar-row';
 import { jarName } from '../features/pots/jar-name';
@@ -70,6 +71,9 @@ export default function QuickAdd() {
   const jars = jarsToSpendFrom(snap.pots, snap.potSaved, fromPot);
   const wallets = useWalletOptions();
   const saving = useRef(false);
+  const { height: screen } = useWindowDimensions();
+  const { top: safeTop } = useSafeAreaInsets();
+  const [headerHeight, setHeaderHeight] = useState(60);
   // What the user taught 6pm: typing a merchant it knows picks that merchant's category.
   const [rules, setRules] = useState<readonly MerchantRuleRow[]>([]);
   useEffect(() => {
@@ -170,7 +174,10 @@ export default function QuickAdd() {
   };
 
   const header = (
-    <View style={{ paddingTop: 8, paddingHorizontal: 16, gap: 8 }}>
+    <View
+      onLayout={(e) => setHeaderHeight(e.nativeEvent.layout.height)}
+      style={{ paddingTop: 8, paddingHorizontal: 16, gap: 8 }}
+    >
       <View
         style={{
           alignSelf: 'center',
@@ -186,14 +193,36 @@ export default function QuickAdd() {
           <Text style={{ ...body(16), color: palette.inkSoft }}>{t('quick.cancel')}</Text>
         </PressScale>
         <Text style={{ ...body(16, 650), color: palette.ink }}>{t('quick.title')}</Text>
-        <View style={{ width: 60 }} />
+        <View style={{ width: 60, alignItems: 'flex-end' }}>
+          {voice.incoming || jars.length === 0 ? null : (
+            <FromJarSwitch
+              on={fromPot !== null}
+              onToggle={() =>
+                setFromPot(fromPot !== null ? null : firstJarFor(jars, snap.potSaved, amount))
+              }
+            />
+          )}
+        </View>
       </View>
     </View>
   );
 
   return (
-    <SheetFrame header={header}>
-      <View style={{ flex: 1, paddingTop: 14, paddingHorizontal: 16, paddingBottom: 22, gap: 14 }}>
+    <SheetFrame header={header} fit>
+      {/* The sheet is as tall as this; past the tallest sheet (a small phone, the largest text)
+          it scrolls instead of cutting off Keep. */}
+      <ScrollView
+        style={{ maxHeight: Math.max(0, screen - safeTop - headerHeight) }}
+        alwaysBounceVertical={false}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{
+          paddingTop: 14,
+          paddingHorizontal: 16,
+          paddingBottom: 22,
+          gap: 14,
+        }}
+      >
         <QuickTicket
           heading={t('quick.ticket', { no: String(snap.cycleSpends.length + 1).padStart(3, '0') })}
           stamp={stamp}
@@ -331,7 +360,7 @@ export default function QuickAdd() {
             onPress={listeningOpen ? voice.tapMain : () => void save()}
           />
         </View>
-      </View>
+      </ScrollView>
     </SheetFrame>
   );
 }

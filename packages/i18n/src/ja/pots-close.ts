@@ -32,7 +32,6 @@ export const jaPotsClose: { readonly [Key in keyof typeof enPotsClose]: Entry } 
   'potsClose.details.counts': '今日の分',
   'potsClose.details.claimNo': 'いいえ',
   'potsClose.details.claimYes': 'はい',
-  'potsClose.quick.today': '今日',
   'potsClose.quick.ticket': '{jar}から · 今日は{amount}のまま',
   'potsClose.quick.paidWith': '支払い方法',
   'potsClose.first.title': 'まず未来の自分に払う',

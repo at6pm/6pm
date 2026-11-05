@@ -32,7 +32,6 @@ export const zhHansPotsClose: { readonly [Key in keyof typeof enPotsClose]: Entr
   'potsClose.details.counts': '算在今天',
   'potsClose.details.claimNo': '否',
   'potsClose.details.claimYes': '是',
-  'potsClose.quick.today': '今天',
   'potsClose.quick.ticket': '来自{jar} · 今天仍是{amount}',
   'potsClose.quick.paidWith': '支付方式',
   'potsClose.first.title': '先付给未来的你',

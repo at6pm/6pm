@@ -32,7 +32,6 @@ export const viPotsClose: { readonly [Key in keyof typeof enPotsClose]: Entry } 
   'potsClose.details.counts': 'Tính vào hôm nay',
   'potsClose.details.claimNo': 'Không',
   'potsClose.details.claimYes': 'Có',
-  'potsClose.quick.today': 'Hôm nay',
   'potsClose.quick.ticket': 'TỪ LỌ {jar} · HÔM NAY VẪN {amount}',
   'potsClose.quick.paidWith': 'Trả bằng',
   'potsClose.first.title': 'Trả cho tương lai trước',

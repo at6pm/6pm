@@ -15,21 +15,24 @@ export function SheetFrame({
   header,
   children,
   background,
+  fit = false,
 }: {
   /** The top: grabber and title row. */
   readonly header?: ReactNode;
   readonly children: ReactNode;
   /** A sheet with its own colour (the Max sheet is always dark). */
   readonly background?: ColorValue;
+  /** A `fittedSheet`: as tall as what it holds, so the body sets the sheet's height. */
+  readonly fit?: boolean;
 }) {
   const { palette } = useTheme();
   return (
     <View
       collapsable={false}
-      style={{ flex: 1, backgroundColor: background ?? palette.sheetSolid }}
+      style={[fit ? null : { flex: 1 }, { backgroundColor: background ?? palette.sheetSolid }]}
     >
       {header === undefined ? null : <View collapsable={false}>{header}</View>}
-      <View collapsable={false} style={{ flex: 1 }}>
+      <View collapsable={false} style={fit ? null : { flex: 1 }}>
         {children}
       </View>
     </View>
