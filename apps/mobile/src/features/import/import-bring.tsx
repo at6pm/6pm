@@ -17,7 +17,7 @@ import { useI18n } from '../../i18n/i18n';
 import { Companion } from '../../ui/companion/companion';
 import { haptics } from '../../ui/haptics';
 import { useTheme } from '../../ui/theme/theme';
-import { body, display, mono } from '../../ui/type/fonts';
+import { body, display, leading, mono } from '../../ui/type/fonts';
 import { inkWash } from '../diary/diary-colours';
 import { useCount, useMonthLabel } from './import-format';
 import { ImportFoot, PillButton } from './import-parts';
@@ -148,7 +148,7 @@ export function ImportBring({
             <Animated.Text
               key={reached.slice(0, 4)}
               entering={FadeIn.duration(200)}
-              style={{ ...display(40, 500), lineHeight: 40, color: palette.ink }}
+              style={{ ...leading(display(40, 500), 40, true), color: palette.ink }}
             >
               {reached.slice(0, 4)}
             </Animated.Text>
@@ -238,7 +238,7 @@ export function ImportBring({
                 backgroundColor: palette.bubbleBg,
               }}
             >
-              <Text style={{ ...display(16.5, 500), lineHeight: 20.6, color: palette.bubbleFg }}>
+              <Text style={{ ...leading(display(16.5, 500), 20.6), color: palette.bubbleFg }}>
                 {years >= 1
                   ? t('import.bring.years', { count: years })
                   : t('import.bring.months', { count: spanMonths })}
