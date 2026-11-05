@@ -211,3 +211,74 @@ describe('already saved', () => {
     expect(openings(sqlite)).toEqual([]);
   });
 });
+
+describe('removing a jar’s moves', () => {
+  const free = (store: Awaited<ReturnType<typeof open>>['store']) =>
+    dayOf(store.getSnapshot())?.startFree ?? 0;
+  const topUpId = (sqlite: InstanceType<typeof DatabaseSync>, potId: string) =>
+    (
+      sqlite
+        .prepare("SELECT id FROM pot_moves WHERE kind = 'topUp' AND pot_id = ? AND amount > 0")
+        .get(potId) as { id: string }
+    ).id;
+
+  it('gives a top-up made this cycle back to free money, and undo takes it again', async () => {
+    const { store, actions, sqlite } = await open('2026-10-11');
+    const made = await actions.createPot(pot);
+    const before = free(store);
+    await actions.topUp(made.id, 200_000);
+    expect(free(store)).toBe(before - 200_000);
+    const removed = await actions.removeTopUp(topUpId(sqlite, made.id));
+    expect(removed?.removal).toBe('delete');
+    expect(free(store)).toBe(before);
+    expect(store.getSnapshot().potSaved[made.id]).toBe(1_500_000);
+    expect(store.getSnapshot().topUpsThisCycle).toBe(0);
+    if (removed) await actions.restoreTopUp(removed);
+    expect(free(store)).toBe(before - 200_000);
+    expect(store.getSnapshot().potSaved[made.id]).toBe(1_700_000);
+    expect(moveCount(sqlite, 'topUp')).toBe(1);
+  });
+
+  it('takes an earlier cycle’s top-up back out this cycle, so this cycle has it free', async () => {
+    const { store, actions, sqlite } = await open('2026-10-11');
+    const made = await actions.createPot(pot);
+    sqlite
+      .prepare(
+        "INSERT INTO pot_moves (id, pot_id, amount, kind, cycle, at) VALUES ('old', ?, 300000, 'topUp', '2026-08-31', '2026-09-10T05:00:00.000Z')",
+      )
+      .run(made.id);
+    await store.load('2026-10-11');
+    const before = free(store);
+    const saved = store.getSnapshot().potSaved[made.id] ?? 0;
+    const removed = await actions.removeTopUp('old');
+    expect(removed?.removal).toBe('takeBack');
+    expect(free(store)).toBe(before + 300_000);
+    expect(store.getSnapshot().potSaved[made.id]).toBe(saved - 300_000);
+    if (removed) await actions.restoreTopUp(removed);
+    expect(free(store)).toBe(before);
+    expect(store.getSnapshot().potSaved[made.id]).toBe(saved);
+    expect(moveCount(sqlite, 'topUp')).toBe(1);
+  });
+
+  it('sets what a jar held before 6pm to 0, and undo puts it back', async () => {
+    const { store, actions } = await open('2026-10-11');
+    const wedding = { ...pot, name: 'Wedding', goal: 50_000_000, fill: byDate('2027-08') };
+    const made = await actions.createPot({ ...wedding, opening: 20_000_000 });
+    const before = store.getSnapshot();
+    const held = await actions.removeOpening(made.id);
+    expect(held).toBe(20_000_000);
+    expect(store.getSnapshot().potSaved[made.id]).toBe(5_000_000);
+    expect(store.getSnapshot().setAsideThisCycle[made.id]).toBe(5_000_000);
+    await actions.updatePot(made.id, { opening: held });
+    expect(store.getSnapshot().potSaved[made.id]).toBe(before.potSaved[made.id]);
+    expect(store.getSnapshot().setAsideThisCycle[made.id]).toBe(before.setAsideThisCycle[made.id]);
+    expect(dayOf(store.getSnapshot())?.startFree).toBe(dayOf(before)?.startFree);
+  });
+
+  it('has nothing to remove from a jar that started empty', async () => {
+    const { actions } = await open('2026-10-11');
+    const made = await actions.createPot(pot);
+    expect(await actions.removeOpening(made.id)).toBe(0);
+    expect(await actions.removeTopUp('missing')).toBeNull();
+  });
+});

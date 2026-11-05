@@ -402,6 +402,22 @@ export function moneyActions(store: MoneyStore) {
         return next;
       }),
     /**
+     * Puts a spend's jar back exactly as it was (the undo of taking it off its jar on the jar's
+     * page): the same jar and the same part it covered, whatever the jar holds now.
+     */
+    restoreJarTake: (
+      id: string,
+      taken: { readonly fromPot: string; readonly fromPotAmount: number | null | undefined },
+    ): Promise<SpendRow | null> =>
+      inTurn(async () => {
+        const row = await current(id);
+        if (!row || row.direction === 'in') return null;
+        return patchNow(row, {
+          fromPot: taken.fromPot,
+          fromPotAmount: taken.fromPotAmount ?? null,
+        });
+      }),
+    /**
      * Keep, not mine, delete: remembers the old status so the undo pill can put it back. An edit
      * made in the same breath (the close's "Save and keep") goes in the same write.
      */

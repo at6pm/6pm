@@ -37,6 +37,18 @@ export async function readPotMoves(db: SqlDatabase): Promise<PotMove[]> {
     }));
 }
 
+const TAKEN_BACK = 'taken-back:';
+
+/** The row that takes an earlier cycle's top-up back out of its jar this cycle (M4). */
+export function takenBackId(topUpId: string): string {
+  return `${TAKEN_BACK}${topUpId}`;
+}
+
+/** The top-up a taking-back row undoes, or '' for any other row. */
+export function topUpOf(id: string): string {
+  return id.startsWith(TAKEN_BACK) ? id.slice(TAKEN_BACK.length) : '';
+}
+
 /** One set-aside per pot and cycle: the id makes a second write of the same cycle a no-op. */
 function setAsideId(potId: string, cycle: LocalDate): string {
   return `set-aside:${potId}:${cycle}`;
@@ -138,6 +150,7 @@ export async function readCycleTopUps(store: MoneyStore): Promise<CycleTopUps> {
      WHERE m.kind = 'topUp' AND m.cycle = ? AND p.archived_at IS NULL GROUP BY p.kind`,
     [store.getSnapshot().cycle.start],
   );
-  const of = (kind: string) => rows.find((r) => r.kind === kind)?.total ?? 0;
+  // A top-up taken back this cycle counts down, never below none.
+  const of = (kind: string) => Math.max(0, rows.find((r) => r.kind === kind)?.total ?? 0);
   return { goal: of('goal'), occasion: of('occasion') };
 }

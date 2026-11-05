@@ -24,9 +24,9 @@ import {
 import { curves, durations } from '@6pm/theme';
 
 import { readJarHistory, type JarHistoryEntry } from '../../data/jar-history';
-import { useMoney, useMoneyStore } from '../../data/money-provider';
+import { useMoney, useMoneyActions, useMoneyStore } from '../../data/money-provider';
 import { dailyInputOf, dayOf } from '../../data/money-store';
-import { usePlanActions } from '../../data/plan-actions';
+import { usePlanActions, type RemovedTopUp } from '../../data/plan-actions';
 import { useI18n } from '../../i18n/i18n';
 import { haptics } from '../../ui/haptics';
 import { Symbol } from '../../ui/icons/symbol';
@@ -54,13 +54,21 @@ const PAGE_JAR_W = 140;
  * What it holds and takes each payday beside it, Future you's what-if under it, then Add, Spend
  * from it and Edit, and the jar's moves.
  */
-export function JarPage({ id }: { readonly id: string }) {
+export function JarPage({
+  id,
+  offerAfterLeaving,
+}: {
+  readonly id: string;
+  /** The undo for putting the jar away, shown once the page has gone. */
+  readonly offerAfterLeaving: ReturnType<typeof useOfferUndo>;
+}) {
   const router = useRouter();
   const { palette } = useTheme();
   const { t } = useI18n();
   const snap = useMoney();
   const store = useMoneyStore();
   const actions = usePlanActions();
+  const money = useMoneyActions();
   const run = useRunAction();
   const offerUndo = useOfferUndo();
   const format = useJarFormat();
@@ -200,7 +208,7 @@ export function JarPage({ id }: { readonly id: string }) {
     leave();
     void run(() => actions.archivePot(jar.id)).then((ok) => {
       if (!ok) return;
-      offerUndo(t('pots.new.deleted', { name: jar.name }), t('pots.new.undo'), () => {
+      offerAfterLeaving(t('pots.new.deleted', { name: jar.name }), t('pots.new.undo'), () => {
         void run(() => actions.restorePot(jar.id));
       });
     });
@@ -214,6 +222,41 @@ export function JarPage({ id }: { readonly id: string }) {
   const edit = () => {
     haptics.tap();
     router.push(editJarRoute(jar.id));
+  };
+  const undoLabel = t('pots.new.undo');
+  // A line swiped off the jar's moves (M4, M13), with Undo in the island.
+  const remove = async (line: JarHistoryEntry) => {
+    const short = format.money.short(line.amount);
+    if (line.kind === 'topUp') {
+      const done: { removed: RemovedTopUp | null } = { removed: null };
+      const ok = await run(async () => {
+        done.removed = await actions.removeTopUp(line.moveId);
+      });
+      const undo = done.removed;
+      if (!ok || undo === null) return;
+      offerUndo(t('pots.move.removedTopUp', { amount: short }), undoLabel, () => {
+        void run(() => actions.restoreTopUp(undo));
+      });
+    } else if (line.kind === 'spent') {
+      const spend = await store.tables.spends.get(line.spendId);
+      if (!spend || spend.fromPot !== jar.id) return;
+      const taken = { fromPot: spend.fromPot, fromPotAmount: spend.fromPotAmount };
+      const ok = await run(() => money.takeFromJar(spend.id, null));
+      if (!ok) return;
+      offerUndo(t('pots.move.removedSpent', { name: line.merchant ?? short }), undoLabel, () => {
+        void run(() => money.restoreJarTake(spend.id, taken));
+      });
+    } else if (line.kind === 'started') {
+      const done = { held: 0 };
+      const ok = await run(async () => {
+        done.held = await actions.removeOpening(jar.id);
+      });
+      const opening = done.held;
+      if (!ok || opening <= 0) return;
+      offerUndo(t('pots.move.removedStarted', { name: jar.name }), undoLabel, () => {
+        void run(() => actions.updatePot(jar.id, { opening }));
+      });
+    }
   };
 
   return (
@@ -336,6 +379,7 @@ export function JarPage({ id }: { readonly id: string }) {
                 format={format}
                 byChoice={jar.futureYou || pot.neededBy === null}
                 categoryName={(c) => snap.categories.find((x) => x.id === c)?.name ?? ''}
+                onRemove={(line) => void remove(line)}
               />
             </Animated.View>
           </ScrollView>
