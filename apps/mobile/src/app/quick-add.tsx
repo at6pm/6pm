@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { ScrollView, Text, useWindowDimensions, View } from 'react-native';
+import { Platform, ScrollView, Text, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated from 'react-native-reanimated';
 
@@ -220,8 +220,10 @@ export default function QuickAdd() {
         contentContainerStyle={{
           paddingTop: 14,
           paddingHorizontal: 16,
-          // Standing on the bottom edge, Keep stays clear of the home indicator.
-          paddingBottom: edge.drawn ? Math.max(22, safeBottom + 8) : 22,
+          // Standing on the bottom edge, Keep stays clear of the home indicator; Android's sheet
+          // runs under its navigation bar, so there it stays clear of that.
+          paddingBottom:
+            edge.drawn || Platform.OS === 'android' ? Math.max(22, safeBottom + 8) : 22,
           gap: 14,
         }}
       >
