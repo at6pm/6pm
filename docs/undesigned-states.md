@@ -475,3 +475,6 @@ fakes behaviour the app cannot fake. Founder review.
 | Details · menu (Android) | Take a photo / Choose from Photos | 6pm's own choice menu with nothing ticked, as other menus on Android | The canvas is the iPhone's system menu |
 | Inbox rows | A caught spend with a photo | The same clip on its tile as Today's rows | The canvas shows Today only |
 | Quick add · clip | The ticket's number and the amount | Keep 86 pt clear on the right for the clip and its photo, so neither is covered | The canvas's ticket has its number on the left only |
+| Details · receipt photo | The largest text sizes | Past 1.3× text the name needs the header's whole width, so the print sits centred under the date instead of at the top right | The canvas is drawn at the default size |
+| Close card · receipt photo | Where the print stands | 6 pt above the card's top edge, not the design's 34 pt: the app's hint line ("Right to keep · left to edit · …") sits in that room | The canvas has no hint line over the card |
+| Details · full view | The largest text sizes | The header, hint and buttons grow with the text size up to 1.35× and no further, one line each, so they never cover the photo | The canvas is drawn at the default size |

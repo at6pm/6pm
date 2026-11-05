@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Text, useWindowDimensions, View } from 'react-native';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 
 import type { SpendRow } from '@6pm/domain';
@@ -26,7 +26,7 @@ import { useCompanionToast } from '../companion/use-companion-toast';
 import { useRunAction } from '../companion/use-run-action';
 import { AmountEditor } from './amount-editor';
 import { DetailsCard } from './details-card';
-import { PRINT_WIDTH, SpendPhoto } from './spend-photo';
+import { PRINT_WIDTH, printBesideName, SpendPhoto } from './spend-photo';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { TodayPill } from './from-jar-row';
 import { useFocusOnPresent } from '../../ui/navigation/use-focus-on-present';
@@ -64,6 +64,7 @@ export function SpendDetails({
   const say = useCompanionToast();
   const run = useRunAction();
   const money = useMoneyFormat();
+  const screen = useWindowDimensions();
   const spend = findSpend(snap, id);
   const [askRule, setAskRule] = useState(false);
   // A catch with no amount opens on the keypad, once the sheet has risen.
@@ -99,6 +100,17 @@ export function SpendDetails({
     month: 'short',
   }).format(new Date(spend.at));
   const update = (patch: Partial<SpendRow>) => void run(() => actions.update(spend.id, patch));
+  // Beside the name at the top right; at the largest text sizes the name needs the whole width,
+  // so the print sits in the header under the date instead.
+  const beside = printBesideName(screen.fontScale);
+  const photo = (
+    <SpendPhoto
+      spend={spend}
+      title={`${spend.merchant} · ${money.full(spend.amount)}`}
+      subtitle={`${when} · ${labels.time(spend.at)}`}
+      inline={!beside}
+    />
+  );
 
   // One line per way it was seen, headed "Seen 2 ways" when more than one source reported it.
   const trail =
@@ -130,15 +142,16 @@ export function SpendDetails({
             ...body(20, 650, -0.02),
             color: palette.ink,
             paddingTop: 4,
-            paddingHorizontal: PRINT_WIDTH + 8,
+            paddingHorizontal: beside ? PRINT_WIDTH + 8 : 0,
             textAlign: 'center',
           }}
         >
           {spend.merchant}
         </Text>
-        <Text style={{ ...body(14), color: palette.inkSoft }}>
+        <Text style={{ ...body(14), color: palette.inkSoft, textAlign: 'center' }}>
           {when} · {labels.time(spend.at)}
         </Text>
+        {beside ? null : photo}
         <AmountEditor
           spend={spend}
           editing={editingAmount}
@@ -146,11 +159,7 @@ export function SpendDetails({
           onSave={({ amount, foreignAmount }) => update({ amount, foreignAmount })}
         />
         <TodayPill spend={spend} />
-        <SpendPhoto
-          spend={spend}
-          title={`${spend.merchant} · ${money.full(spend.amount)}`}
-          subtitle={`${when} · ${labels.time(spend.at)}`}
-        />
+        {beside ? photo : null}
         <Animated.View
           layout={reflow}
           style={{ alignSelf: 'stretch', alignItems: 'center', gap: 6 }}

@@ -7,7 +7,8 @@ import { z } from 'zod';
 
 import { LOOK_IDS } from '@6pm/theme';
 
-import { useMoneyStore } from '../../data/money-provider';
+import { keepPhotoAt } from '../../data/device-photo-files';
+import { useMoneyActions, useMoneyStore } from '../../data/money-provider';
 import { useLookSettingsStore } from '../looks/look-settings-provider';
 import { setAiMode } from '../privacy/use-ai-mode';
 import { pinClock, useClock } from '../../ui/theme/clock';
@@ -35,6 +36,7 @@ import { addDays } from '@6pm/domain';
  *   {"seed": "friday", "at": "18:07", "route": "/close", "toast": "Line to show", "companion": "max"}
  *   {"seed": "friday", "jars": "due", "at": "18:00", "max": true}
  *   {"importFile": "momo-history.xlsx"}
+ *   {"seed": "friday", "photo": "receipt.jpg", "route": "/close"}
  */
 const commandSchema = z.object({
   seed: z.enum(['friday', 'year', 'moneyIn']).optional(),
@@ -77,11 +79,17 @@ const commandSchema = z.object({
     .string()
     .regex(/^[\w.-]+$/)
     .optional(),
+  /** A picture in Documents ("receipt.jpg") kept as the photo of today's shared receipts. */
+  photo: z
+    .string()
+    .regex(/^[\w.-]+$/)
+    .optional(),
 });
 
 export function DevCommands() {
   const router = useRouter();
   const store = useMoneyStore();
+  const actions = useMoneyActions();
   const { language } = useI18n();
   const { today } = useClock();
   const toast = useToast();
@@ -112,6 +120,7 @@ export function DevCommands() {
         firstCatch,
         captureHealth,
         importFile,
+        photo,
       } = parsed.data;
       if (aiMode !== undefined) setAiMode(db, aiMode);
       if (look !== undefined) lookStore.setLook(look, () => true);
@@ -147,6 +156,15 @@ export function DevCommands() {
         if (seed === 'moneyIn') await seedDesignMoneyIn(store, today);
         if (jars) await seedDesignJars(store, today, jars);
       });
+      if (photo) {
+        const picture = new File(Paths.document, photo).uri;
+        const shared = store
+          .getSnapshot()
+          .cycleSpends.filter((s) => s.day === today && s.source === 'shared');
+        for (const s of shared) {
+          await actions.attachPhoto(s.id, (to) => keepPhotoAt(picture, to).then(() => true));
+        }
+      }
       // Said yesterday, but after anything seeded: only a catch from now on clears the card.
       if (firstCatch === 'later') {
         await writeFirstCatch(store.db, {
@@ -176,7 +194,7 @@ export function DevCommands() {
       if (state === 'active') void run();
     });
     return () => subscription.remove();
-  }, [router, store, today, toast, bindYear, lookStore, db, language]);
+  }, [router, store, actions, today, toast, bindYear, lookStore, db, language]);
 
   return null;
 }

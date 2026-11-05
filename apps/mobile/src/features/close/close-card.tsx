@@ -104,6 +104,11 @@ function Stamp({
 
 /** What the clipped receipt covers of the card's right side: its header and name stop short. */
 const PRINT_ROOM = 96;
+/**
+ * How far the print stands above the card. The design stands it 34 pt up, into the room over the
+ * card; the app's hint line ("Right to keep · …") sits there, so it is clipped lower.
+ */
+const PRINT_TOP = -6;
 
 /** The shortest card that still has room for the running total under the name. */
 const FULL_HEIGHT = 300;
@@ -144,7 +149,7 @@ export function CloseCard({
           style={{
             position: 'absolute',
             right: 14,
-            top: -34,
+            top: PRINT_TOP,
             width: 96,
             height: 141,
             zIndex: 1,
@@ -163,7 +168,7 @@ export function CloseCard({
         <PhotoClip
           size={40}
           rotate={8}
-          style={{ position: 'absolute', right: 52, top: -46, zIndex: 2 }}
+          style={{ position: 'absolute', right: 52, top: PRINT_TOP - 12, zIndex: 2 }}
         />
       ) : null}
       {/* The paper casts the shadow, not its torn edge, which would show it between the teeth. */}

@@ -34,6 +34,11 @@ const fall = {
 const chromeFade = { duration: 250 };
 const back = { damping: 22, stiffness: 240, mass: 1 };
 const MAX_ZOOM = 5;
+/**
+ * The view's header, hint and buttons grow with the text size only this far: the photo is what
+ * the view is for, and the bars stay clear of it at the largest sizes.
+ */
+const CHROME_TEXT_MAX = 1.35;
 /** Where the photo stands in the full view: under the header, over the buttons. */
 const TOP = 120;
 const BOTTOM = 170;
@@ -259,6 +264,7 @@ export function PhotoViewer({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 7,
+    paddingHorizontal: 12,
   } as const;
 
   return (
@@ -339,10 +345,18 @@ export function PhotoViewer({
             <Symbol name="close" size={22} color={photoInk.viewerInk} />
           </PressScale>
           <View style={{ flex: 1, minWidth: 0 }}>
-            <Text numberOfLines={1} style={{ ...body(16, 650), color: photoInk.viewerInk }}>
+            <Text
+              numberOfLines={1}
+              maxFontSizeMultiplier={CHROME_TEXT_MAX}
+              style={{ ...body(16, 650), color: photoInk.viewerInk }}
+            >
               {title}
             </Text>
-            <Text numberOfLines={1} style={{ ...body(12.5), color: photoInk.viewerSoft }}>
+            <Text
+              numberOfLines={1}
+              maxFontSizeMultiplier={CHROME_TEXT_MAX}
+              style={{ ...body(12.5), color: photoInk.viewerSoft }}
+            >
               {subtitle}
             </Text>
           </View>
@@ -369,7 +383,13 @@ export function PhotoViewer({
             }}
           >
             <Symbol name="swipe_down" size={16} color={photoInk.viewerSoft} />
-            <Text style={{ ...body(12.5), color: photoInk.viewerSoft }}>{t('photo.hint')}</Text>
+            <Text
+              numberOfLines={1}
+              maxFontSizeMultiplier={CHROME_TEXT_MAX}
+              style={{ ...body(12.5), color: photoInk.viewerSoft, flexShrink: 1 }}
+            >
+              {t('photo.hint')}
+            </Text>
           </View>
           <View style={{ flexDirection: 'row', gap: 10 }}>
             <View style={{ flex: 1 }}>
@@ -383,7 +403,11 @@ export function PhotoViewer({
               >
                 <View style={[button, { width: half }]}>
                   <Symbol name="cached" size={20} color={photoInk.viewerInk} />
-                  <Text style={{ ...body(15, 600), color: photoInk.viewerInk }}>
+                  <Text
+                    numberOfLines={1}
+                    maxFontSizeMultiplier={CHROME_TEXT_MAX}
+                    style={{ ...body(15, 600), color: photoInk.viewerInk, flexShrink: 1 }}
+                  >
                     {t('photo.replace')}
                   </Text>
                 </View>
@@ -396,7 +420,13 @@ export function PhotoViewer({
               style={[button, { flex: 1 }]}
             >
               <Symbol name="delete" size={20} color={photoInk.remove} />
-              <Text style={{ ...body(15, 600), color: photoInk.remove }}>{t('photo.remove')}</Text>
+              <Text
+                numberOfLines={1}
+                maxFontSizeMultiplier={CHROME_TEXT_MAX}
+                style={{ ...body(15, 600), color: photoInk.remove, flexShrink: 1 }}
+              >
+                {t('photo.remove')}
+              </Text>
             </PressScale>
           </View>
         </Animated.View>

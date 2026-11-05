@@ -36,6 +36,14 @@ import {
 export const PRINT_WIDTH = 76;
 export const PRINT_HEIGHT = 112;
 const TURN = 5;
+/** Past this text size the name needs the header's whole width, and the print moves under it. */
+const BESIDE_NAME_MAX_SCALE = 1.3;
+
+/** Whether the print is clipped beside the name, at this text size. */
+export function printBesideName(fontScale: number): boolean {
+  return fontScale <= BESIDE_NAME_MAX_SCALE;
+}
+
 /** KEPT ON THIS PHONE on two lines, wider than the print it is stamped across. */
 const STAMP_WIDTH = 104;
 
@@ -55,12 +63,15 @@ export function SpendPhoto({
   spend,
   title,
   subtitle,
+  inline = false,
 }: {
   readonly spend: SpendRow;
   /** "Circle K · 120.000₫", over the full view. */
   readonly title: string;
   /** "Today · 16:40" */
   readonly subtitle: string;
+  /** In the header's flow, centred, rather than clipped to its top right. */
+  readonly inline?: boolean;
 }) {
   const { t } = useI18n();
   const actions = useMoneyActions();
@@ -153,7 +164,11 @@ export function SpendPhoto({
 
   return (
     <View
-      style={{ position: 'absolute', top: 16, right: 6, width: PRINT_WIDTH, height: PRINT_HEIGHT }}
+      style={
+        inline
+          ? { width: PRINT_WIDTH, height: PRINT_HEIGHT, marginTop: 18, marginBottom: 4 }
+          : { position: 'absolute', top: 16, right: 6, width: PRINT_WIDTH, height: PRINT_HEIGHT }
+      }
     >
       {uri === null ? (
         <ActionMenu actions={menu} onAction={add} label={t('photo.add')}>
