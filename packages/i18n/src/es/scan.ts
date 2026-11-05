@@ -86,6 +86,7 @@ export const esScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.scheme.abapay': 'ABA PAY',
   'scan.scheme.other': 'extranjero',
   'scan.content.link': 'Enlace web',
+  'scan.content.appLink': 'Enlace de app',
   'scan.content.wifi': 'Red wifi',
   'scan.content.phone': 'Número de teléfono',
   'scan.content.sms': 'Mensaje de texto',
