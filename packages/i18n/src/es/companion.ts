@@ -152,4 +152,16 @@ export const esCompanion: { readonly [Key in keyof typeof enCompanion]: Entry } 
     '{amount} de {name}. {daily} más al día. Intenta que algo sobreviva.',
   'companion.moneyInSpread.plain':
     'Han entrado {amount}. Cada día hasta el cobro tiene {daily} más.',
+  'companion.monthCard.soft': '{place}, {count} veces. Cada una valió la pena.',
+  'companion.monthCard.cheeky': '{place} ×{count}. Ni un arrepentimiento.',
+  'companion.monthCard.roast': '{place}, {count} veces. Ya se saben tu nombre.',
+  'companion.monthCard.plain': '{place}: {count} visitas.',
+  'companion.monthCardQuiet.soft': '{closed} noches cerradas. Eso es un hábito.',
+  'companion.monthCardQuiet.cheeky': '{closed} noches cerradas. Fanfarrón.',
+  'companion.monthCardQuiet.roast': '{closed} cierres. ¿Quién eres?',
+  'companion.monthCardQuiet.plain': '{closed} noches cerradas.',
+  'companion.jarCard.soft': '{jar}, lleno pago a pago.',
+  'companion.jarCard.cheeky': '{jar}: lleno. Tu yo del futuro está gritando.',
+  'companion.jarCard.roast': '{jar} está lleno. No lo vacíes el primer día.',
+  'companion.jarCard.plain': '{jar} llegó a su meta.',
 };

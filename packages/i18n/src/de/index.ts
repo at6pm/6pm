@@ -30,6 +30,7 @@ import { deReceiptEmail } from './receipt-email';
 import { deScan } from './scan';
 import { deShareExt } from './share-ext';
 import { deSharing } from './sharing';
+import { deShareCards } from './share-cards';
 import { deSurfaces } from './surfaces';
 import { deToday } from './today';
 import { deTogether } from './together';
@@ -67,6 +68,7 @@ export const de: Catalogue = {
   ...dePrivacyAi,
   ...deNative,
   ...deSharing,
+  ...deShareCards,
   ...deShareExt,
   ...deIntents,
   ...deCaptureWalk,
@@ -94,6 +96,8 @@ export const de: Catalogue = {
  */
 export const deSameAsEnglish: readonly string[] = [
   ...importSketchEnglish,
+  // Instagram's own word for its 9:16 posts.
+  'Story',
   'Alipay',
   'App',
   'Apps',

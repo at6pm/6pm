@@ -150,4 +150,16 @@ export const viCompanion: { readonly [Key in keyof typeof enCompanion]: Entry } 
   'companion.moneyInSpread.roast': '{amount} từ {name}. Thêm {daily} mỗi ngày. Giữ lại chút nha.',
   'companion.moneyInSpread.plain':
     'Có {amount} vừa vào. Mỗi ngày tới ngày lương được thêm {daily}.',
+  'companion.monthCard.soft': '{place}, {count} lần. Lần nào cũng đáng.',
+  'companion.monthCard.cheeky': '{place} ×{count}. Không hối hận lần nào.',
+  'companion.monthCard.roast': '{place} {count} lần. Người ta thuộc mặt bạn rồi.',
+  'companion.monthCard.plain': '{place}: {count} lần.',
+  'companion.monthCardQuiet.soft': 'Đã chốt {closed} tối. Thành nếp rồi đó.',
+  'companion.monthCardQuiet.cheeky': 'Chốt {closed} tối. Làm màu ghê.',
+  'companion.monthCardQuiet.roast': '{closed} lần chốt. Ai đây trời.',
+  'companion.monthCardQuiet.plain': 'Đã chốt {closed} tối.',
+  'companion.jarCard.soft': '{jar}, đầy dần qua từng kỳ lương.',
+  'companion.jarCard.cheeky': '{jar} đầy rồi. Tương lai đang hét lên.',
+  'companion.jarCard.roast': '{jar} đầy rồi. Đừng tiêu sạch ngay hôm đầu.',
+  'companion.jarCard.plain': '{jar} đã đủ mục tiêu.',
 };

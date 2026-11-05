@@ -30,6 +30,7 @@ import { idReceiptEmail } from './receipt-email';
 import { idScan } from './scan';
 import { idShareExt } from './share-ext';
 import { idSharing } from './sharing';
+import { idShareCards } from './share-cards';
 import { idSurfaces } from './surfaces';
 import { idToday } from './today';
 import { idTogether } from './together';
@@ -67,6 +68,7 @@ export const id: Catalogue = {
   ...idPrivacyAi,
   ...idNative,
   ...idSharing,
+  ...idShareCards,
   ...idShareExt,
   ...idIntents,
   ...idCaptureWalk,

@@ -30,6 +30,7 @@ import { zhHansReceiptEmail } from './receipt-email';
 import { zhHansScan } from './scan';
 import { zhHansShareExt } from './share-ext';
 import { zhHansSharing } from './sharing';
+import { zhHansShareCards } from './share-cards';
 import { zhHansSurfaces } from './surfaces';
 import { zhHansToday } from './today';
 import { zhHansTogether } from './together';
@@ -67,6 +68,7 @@ export const zhHans: Catalogue = {
   ...zhHansPrivacyAi,
   ...zhHansNative,
   ...zhHansSharing,
+  ...zhHansShareCards,
   ...zhHansShareExt,
   ...zhHansIntents,
   ...zhHansCaptureWalk,

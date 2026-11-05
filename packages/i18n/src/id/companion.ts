@@ -151,4 +151,16 @@ export const idCompanion: { readonly [Key in keyof typeof enCompanion]: Entry } 
   'companion.moneyInSpread.roast':
     '{amount} dari {name}. {daily} lebih sehari. Coba sisakan sedikit, ya.',
   'companion.moneyInSpread.plain': '{amount} masuk. Setiap hari sampai gajian dapat {daily} lebih.',
+  'companion.monthCard.soft': '{place}, {count} kali. Semuanya sepadan.',
+  'companion.monthCard.cheeky': '{place} ×{count}. Nggak ada yang disesali.',
+  'companion.monthCard.roast': '{place}, {count} kali. Mereka udah hafal namamu.',
+  'companion.monthCard.plain': '{place}: {count} kunjungan.',
+  'companion.monthCardQuiet.soft': '{closed} malam ditutup. Itu namanya kebiasaan.',
+  'companion.monthCardQuiet.cheeky': '{closed} malam ditutup. Pamer.',
+  'companion.monthCardQuiet.roast': '{closed} kali tutup. Kamu siapa sih.',
+  'companion.monthCardQuiet.plain': '{closed} malam ditutup.',
+  'companion.jarCard.soft': '{jar}, terisi dari gajian ke gajian.',
+  'companion.jarCard.cheeky': '{jar}: penuh. Kamu di masa depan teriak senang.',
+  'companion.jarCard.roast': '{jar} penuh. Jangan dikuras di hari pertama.',
+  'companion.jarCard.plain': '{jar} sudah mencapai target.',
 };

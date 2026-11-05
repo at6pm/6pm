@@ -2,6 +2,7 @@ import { enCaptureAlerts } from './en-capture-alerts';
 import { enCaptureWalk } from './en-capture-walk';
 import { enNative } from './en-native';
 import { enSharing } from './en-sharing';
+import { enShareCards } from './en-share-cards';
 import { enShareExt } from './en-share-ext';
 import { enIntents } from './en-intents';
 import { enVoice } from './en-voice';
@@ -63,6 +64,7 @@ export const en = {
   ...enPrivacyAi,
   ...enNative,
   ...enSharing,
+  ...enShareCards,
   ...enShareExt,
   ...enIntents,
   ...enCaptureWalk,

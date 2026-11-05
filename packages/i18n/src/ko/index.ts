@@ -30,6 +30,7 @@ import { koReceiptEmail } from './receipt-email';
 import { koScan } from './scan';
 import { koShareExt } from './share-ext';
 import { koSharing } from './sharing';
+import { koShareCards } from './share-cards';
 import { koSurfaces } from './surfaces';
 import { koToday } from './today';
 import { koTogether } from './together';
@@ -67,6 +68,7 @@ export const ko: Catalogue = {
   ...koPrivacyAi,
   ...koNative,
   ...koSharing,
+  ...koShareCards,
   ...koShareExt,
   ...koIntents,
   ...koCaptureWalk,

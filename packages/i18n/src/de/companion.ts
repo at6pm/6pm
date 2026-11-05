@@ -152,4 +152,16 @@ export const deCompanion: { readonly [Key in keyof typeof enCompanion]: Entry } 
     '{amount} von {name}. {daily} mehr pro Tag. Versuch, was übrig zu lassen.',
   'companion.moneyInSpread.plain':
     'Es sind {amount} eingegangen. Jeder Tag bis zum Zahltag hat {daily} mehr.',
+  'companion.monthCard.soft': '{place}, {count}-mal. Jedes Mal hat sich gelohnt.',
+  'companion.monthCard.cheeky': '{place} ×{count}. Kein bisschen bereut.',
+  'companion.monthCard.roast': '{place}, {count}-mal. Die kennen deinen Namen schon.',
+  'companion.monthCard.plain': '{place}: {count} Besuche.',
+  'companion.monthCardQuiet.soft': '{closed} Abende abgeschlossen. Das ist die Gewohnheit.',
+  'companion.monthCardQuiet.cheeky': '{closed} Abende abgeschlossen. Angeber.',
+  'companion.monthCardQuiet.roast': '{closed} Abschlüsse. Wer bist du denn.',
+  'companion.monthCardQuiet.plain': '{closed} Abende abgeschlossen.',
+  'companion.jarCard.soft': '{jar}, Zahltag für Zahltag gefüllt.',
+  'companion.jarCard.cheeky': '{jar}: voll. Zukunfts-Ich jubelt.',
+  'companion.jarCard.roast': '{jar} ist voll. Nicht gleich am ersten Tag leeren.',
+  'companion.jarCard.plain': '{jar} hat sein Ziel erreicht.',
 };
