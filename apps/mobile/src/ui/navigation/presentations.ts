@@ -43,9 +43,11 @@ const fittedSheet: ScreenOptions =
 export const edgeSheetDrawn = Platform.OS === 'ios' && !Platform.isPad;
 
 /**
- * Quick add's sheet: as tall as what it holds and standing on the bottom edge, its colour under
- * the home indicator. Its body is an `EdgeSheet`, which draws itself on an iPhone (iOS would float
- * a native sheet this short inset from the edges) and is `fittedSheet` elsewhere.
+ * A sheet as tall as what it holds (Quick add, and every sheet that is usually short: a fitted
+ * `SheetScreen` or a `FittedSheet`), standing on the bottom edge with its colour under the home
+ * indicator, and never taller than `sheet`. Its body is an `EdgeSheet`, which draws itself on an
+ * iPhone (iOS would float a native sheet this short inset from the edges) and is `fittedSheet`
+ * elsewhere. Sheets that are always long stay `sheet`.
  */
 export const edgeSheet: ScreenOptions = edgeSheetDrawn
   ? {

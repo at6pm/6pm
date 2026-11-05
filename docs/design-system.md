@@ -33,6 +33,10 @@ The prototype is the spec: `design/prototype/6pm App.dc.html` (+ onboarding v2, 
 | odometer | per-digit rolling column, 1000 + 80·pos ms |
 | bubbleIn, pop, confetti, dot | companion bubble, badges, Max welcome, typing |
 
+## Sheet heights
+
+A sheet is as tall as what it holds, header, body and pinned footer together, standing on the bottom edge with its colour under the home indicator; it never leaves empty sheet under its last section. It grows to the full sheet (its top on the safe area, 62 pt down) only when it needs to, and from there its body scrolls under a pinned footer. When what it holds grows or shrinks, its top edge follows with the sheet curve (`cubic-bezier(.2,.9,.2,1)`, 450 ms). Settings, Categories, Banks, Import, the capture and widget guides, the money diary, the category and shared-pot editors and Max are always long and stay the full native sheet. On an iPhone the fitted sheet is drawn by the app (iOS floats a shorter native sheet as an inset card); on Android it is the native sheet fitted to its content, and on iPad the page sheet.
+
 ## Haptics
 
 Selection: wheel ticks, tab scrub, threshold crossings. Light impact: keep/edit/not-mine, FAB long-press, sheet dismiss, undo. Success: close done, reveal settle, purchase done.

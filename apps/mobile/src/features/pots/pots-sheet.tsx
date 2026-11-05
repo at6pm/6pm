@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useContext, useEffect, useRef, type ComponentRef } from 'react';
-import { ScrollView, Text, useWindowDimensions, View } from 'react-native';
+import { Text, useWindowDimensions, View } from 'react-native';
 import Animated, {
   Easing,
   ReduceMotion,
@@ -18,7 +18,7 @@ import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
 import { Symbol } from '../../ui/icons/symbol';
-import { SheetFrame } from '../../ui/navigation/sheet-frame';
+import { EdgeSheetScroll, edgeSheetRoot, FittedSheet } from '../../ui/navigation/edge-sheet';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading, tabular } from '../../ui/type/fonts';
@@ -101,14 +101,14 @@ export function PotsSheet() {
   return (
     <JarFlightOrigin.Provider value={flight}>
       <View
-        style={{ flex: 1 }}
+        style={edgeSheetRoot}
         onLayout={(e) => {
           origin.y = Math.max(0, screen - e.nativeEvent.layout.height);
         }}
       >
-        <SheetFrame header={header}>
-          <ScrollView
-            style={{ flex: 1 }}
+        <FittedSheet>
+          {header}
+          <EdgeSheetScroll
             contentInsetAdjustmentBehavior="never"
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
@@ -163,8 +163,8 @@ export function PotsSheet() {
                 {t('pots.all.bank')}
               </Text>
             </View>
-          </ScrollView>
-        </SheetFrame>
+          </EdgeSheetScroll>
+        </FittedSheet>
       </View>
     </JarFlightOrigin.Provider>
   );

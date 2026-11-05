@@ -70,7 +70,7 @@ export function TogetherJoin() {
   };
 
   return (
-    <SheetScreen title={t('together.join.title')} gap={12}>
+    <SheetScreen title={t('together.join.title')} gap={12} fit>
       <BackupCard icon="group" title={t('together.intro.title')} sub={t('together.join.sub')} />
       {state.me === null ? (
         <AppleButton join disabled={busy} onPress={() => void join()} />

@@ -152,7 +152,7 @@ function InboxSheet() {
   );
 
   return (
-    <SheetScreen title={t('inbox.title')}>
+    <SheetScreen title={t('inbox.title')} fit>
       {/* Rows and sections fade in only when they move later, never as the sheet opens. */}
       <LayoutAnimationConfig skipEntering>
         {waiting.length === 0 ? (

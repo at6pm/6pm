@@ -37,7 +37,7 @@ export default function Ai() {
     [palette],
   );
   return (
-    <SheetScreen title={t('settings.ai')} gap={18}>
+    <SheetScreen title={t('settings.ai')} gap={18} fit>
       <Text style={{ ...body(15), lineHeight: 21, color: palette.inkSoft, paddingHorizontal: 6 }}>
         {t('privacy.ai.sub')}
       </Text>

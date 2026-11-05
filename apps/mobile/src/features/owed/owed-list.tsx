@@ -19,6 +19,7 @@ import { haptics } from '../../ui/haptics';
 import { Symbol } from '../../ui/icons/symbol';
 import { useMeasuredWidth } from '../../ui/layout/use-measured-width';
 import { easeOut } from '../../ui/motion/curves';
+import { edgeSheetRoot } from '../../ui/navigation/edge-sheet';
 import { SheetScreen } from '../../ui/navigation/sheet-screen';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
@@ -319,8 +320,8 @@ export function OwedList() {
   };
 
   return (
-    <View collapsable={false} style={{ flex: 1 }}>
-      <SheetScreen title={t('owed.list.title')} gap={14}>
+    <View collapsable={false} style={edgeSheetRoot}>
+      <SheetScreen title={t('owed.list.title')} gap={14} fit>
         {people.length > 0 ? (
           <View
             style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8, paddingHorizontal: 2 }}
