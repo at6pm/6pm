@@ -43,4 +43,12 @@ export const zhHansWidgets: { readonly [Key in keyof typeof enWidgets]: Entry } 
   'widgets.close.none': '没有待确认的',
   'widgets.close.start': '开始',
   'widgets.stamp': '已结算',
+  'widgets.week.title': '本周',
+  'widgets.week.next': { other: '已结算 {count} 天，今晚接着来。' },
+  'widgets.week.first': '今晚是第一次。',
+  'widgets.week.done': '{days} 天里结算了 {closed} 天。',
+  'widgets.receipt.title': '{date} · 今天到目前',
+  'widgets.receipt.no': 'No. {no}',
+  'widgets.receipt.left': '今天还剩',
+  'widgets.receipt.empty': '还没有记下什么。',
 };

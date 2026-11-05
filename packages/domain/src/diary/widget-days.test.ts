@@ -1,6 +1,15 @@
 import { describe, expect, it } from 'vitest';
 
-import { closeStreak, daysUntil, jarDay, monthSuns, streakRun, widgetHours } from './widget-days';
+import {
+  closeStreak,
+  daysUntil,
+  jarDay,
+  monthSuns,
+  streakRun,
+  todayReceipt,
+  weekSuns,
+  widgetHours,
+} from './widget-days';
 
 const closed = (day: string, spent = 100_000, line = 200_000) => ({ day, spent, line });
 
@@ -97,5 +106,54 @@ describe('jarDay', () => {
 
   it('never counts below nothing once the day has passed', () => {
     expect(daysUntil('2026-10-09', '2026-10-01')).toBe(0);
+  });
+});
+
+describe('weekSuns', () => {
+  it('draws the design’s week: three suns, a half over the line, tonight’s ring, the rest ahead', () => {
+    const rows = [closed('2026-10-05'), closed('2026-10-06'), closed('2026-10-07')];
+    rows.push(closed('2026-10-08', 250_000));
+    const week = weekSuns({ today: '2026-10-09', closed: rows, since: '2026-10-01' });
+    expect(week.cells).toEqual(['sun', 'sun', 'sun', 'half', 'today', 'ahead', 'ahead']);
+    expect(week).toMatchObject({ closed: 4, days: 5, todayClosed: false });
+  });
+
+  it('counts today in once it is closed, and a missed day as missed', () => {
+    const rows = [closed('2026-10-05'), closed('2026-10-07'), closed('2026-10-09')];
+    const week = weekSuns({ today: '2026-10-09', closed: rows, since: '2026-10-01' });
+    expect(week.cells.slice(0, 5)).toEqual(['sun', 'miss', 'sun', 'miss', 'sun']);
+    expect(week).toMatchObject({ closed: 3, days: 5, todayClosed: true });
+  });
+
+  it('leaves the days before the person started out of the count', () => {
+    const week = weekSuns({ today: '2026-10-09', closed: [], since: '2026-10-08' });
+    expect(week.cells.slice(0, 5)).toEqual(['ahead', 'ahead', 'ahead', 'miss', 'today']);
+    expect(week.days).toBe(2);
+  });
+});
+
+describe('todayReceipt', () => {
+  const spend = (at: string, status = 'kept', day = '2026-10-09') => ({ day, at, status });
+
+  it('prints today’s newest lines oldest first, and says how many came before them', () => {
+    const spends = [
+      spend('2026-10-09T16:40:00Z'),
+      spend('2026-10-09T07:42:00Z'),
+      spend('2026-10-09T12:10:00Z', 'caught'),
+      spend('2026-10-09T08:15:00Z'),
+      spend('2026-10-09T13:30:00Z', 'skipped'),
+      spend('2026-10-09T13:31:00Z'),
+      spend('2026-10-08T20:00:00Z', 'kept', '2026-10-08'),
+    ];
+    const receipt = todayReceipt({ spends, today: '2026-10-09', closedBefore: 8, most: 4 });
+    expect(receipt.lines.map((l) => l.spend.at.slice(11, 16))).toEqual([
+      '08:15',
+      '12:10',
+      '13:31',
+      '16:40',
+    ]);
+    expect(receipt.lines.map((l) => l.confirmed)).toEqual([true, false, true, true]);
+    expect(receipt.earlier).toBe(1);
+    expect(receipt.number).toBe(9);
   });
 });

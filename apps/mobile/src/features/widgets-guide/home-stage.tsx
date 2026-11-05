@@ -16,20 +16,24 @@ import { haptics } from '../../ui/haptics';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body } from '../../ui/type/fonts';
-import { HomeWidget, WIDGET_SIZE, type WidgetSize } from './home-widgets';
+import { HomeWidget, WIDGET_SIZE } from './home-widgets';
 import type { WidgetPreview } from './preview-data';
-import { AppGhost, Stage } from './stage';
+import { Stage } from './stage';
 
-const SIZES: readonly WidgetSize[] = ['small', 'medium', 'large'];
+/** The guide's choices: the three sizes, and the second large widget, My month. */
+type Pick = 'small' | 'medium' | 'large' | 'month';
+const SIZES: readonly Pick[] = ['small', 'medium', 'large', 'month'];
 const LABEL = {
   small: 'widgetsGuide.home.small',
   medium: 'widgetsGuide.home.medium',
   large: 'widgetsGuide.home.large',
+  month: 'widgetsGuide.home.month',
 } as const;
 const WHAT = {
   small: 'widgetsGuide.home.smallWhat',
   medium: 'widgetsGuide.home.mediumWhat',
   large: 'widgetsGuide.home.largeWhat',
+  month: 'widgetsGuide.home.monthWhat',
 } as const;
 /** The Home Screen drawn tall enough for the large widget; the others share it with apps. */
 const HEIGHT = 418;
@@ -53,7 +57,7 @@ export function HomeStage({
 }) {
   const { t } = useI18n();
   const { palette } = useTheme();
-  const [size, setSize] = useState<WidgetSize>('medium');
+  const [size, setSize] = useState<Pick>('medium');
   const still = useSharedValue(0.5);
   return (
     <View style={{ gap: 12 }}>
@@ -79,19 +83,10 @@ export function HomeStage({
   );
 }
 
-function GhostRow() {
-  return (
-    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-      {[0, 1, 2, 3].map((k) => (
-        <AppGhost key={k} />
-      ))}
-    </View>
-  );
-}
-
 /** Where the widget sits among the apps: as iOS lays out each size on the grid. */
-function Layout({ size, preview }: { readonly size: WidgetSize; readonly preview: WidgetPreview }) {
+function Layout({ size, preview }: { readonly size: Pick; readonly preview: WidgetPreview }) {
   if (size === 'large') return <HomeWidget size="large" preview={preview} />;
+  if (size === 'month') return <HomeWidget size="large" kind="month" preview={preview} />;
   return (
     <View style={{ gap: 28 }}>
       {size === 'small' ? (
@@ -102,34 +97,26 @@ function Layout({ size, preview }: { readonly size: WidgetSize; readonly preview
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <HomeWidget size="small" kind="streak" preview={preview} />
-            <View style={{ width: 170, height: 170, justifyContent: 'space-between' }}>
-              {[0, 1].map((r) => (
-                <View key={r} style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <AppGhost />
-                  <AppGhost />
-                </View>
-              ))}
-            </View>
+            <HomeWidget size="small" kind="week" preview={preview} />
           </View>
         </>
       ) : (
         <>
           <HomeWidget size="medium" preview={preview} />
-          <GhostRow />
-          <GhostRow />
+          <HomeWidget size="medium" kind="receipt" preview={preview} />
         </>
       )}
     </View>
   );
 }
 
-/** Small · Medium · Large, with a thumb that slides to the one picked. */
+/** Small · Medium · Large · My month, with a thumb that slides to the one picked. */
 function SizePicker({
   size,
   onSize,
 }: {
-  readonly size: WidgetSize;
-  readonly onSize: (size: WidgetSize) => void;
+  readonly size: Pick;
+  readonly onSize: (size: Pick) => void;
 }) {
   const { t } = useI18n();
   const { palette } = useTheme();
@@ -180,7 +167,12 @@ function SizePicker({
           }}
           style={{ flex: 1, height: 34, alignItems: 'center', justifyContent: 'center' }}
         >
-          <Text style={{ ...body(14, 650), color: s === size ? palette.btnFg : palette.ink }}>
+          <Text
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.8}
+            style={{ ...body(14, 650), color: s === size ? palette.btnFg : palette.ink }}
+          >
             {t(LABEL[s])}
           </Text>
         </PressScale>

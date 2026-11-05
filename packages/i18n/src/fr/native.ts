@@ -25,6 +25,11 @@ export const frNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.surfaces.streak.description': 'Les soirs clôturés d’affilée, chacun avec son ciel.',
   'native.surfaces.month.name': 'Mon mois',
   'native.surfaces.month.description': 'Le mois en soleils : chaque soir que tu as clôturé.',
+  'native.surfaces.week.name': 'Cette semaine',
+  'native.surfaces.week.description': 'La semaine en soleils : chaque soir clôturé.',
+  'native.surfaces.receipt.name': 'Le ticket du jour',
+  'native.surfaces.receipt.description':
+    'Les dépenses du jour, imprimées dès qu’elles sont captées.',
   'native.surfaces.todayList.name': 'Aujourd’hui',
   'native.surfaces.todayList.description':
     'Ce que tu as dépensé aujourd’hui, du plus récent au plus ancien.',

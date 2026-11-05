@@ -9,6 +9,9 @@ struct SixpmWidgets: WidgetBundle {
     SafeTodayWidget()
     JarWidget()
     StreakWidget()
+    WeekWidget()
+    ReceiptWidget()
+    TodayListWidget()
     MonthWidget()
     SurfaceActivityWidget()
     if #available(iOS 18.0, *) {

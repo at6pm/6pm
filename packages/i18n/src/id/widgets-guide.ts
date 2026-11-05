@@ -26,7 +26,9 @@ export const idWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
     'Angka hari ini di langitnya, satu stoples menghitung mundur, atau malam yang kamu tutup berturut-turut.',
   'widgetsGuide.home.mediumWhat':
     'Angka dengan langitnya dan stoplesmu. Ketuk stoples untuk membukanya.',
-  'widgetsGuide.home.largeWhat':
+  'widgetsGuide.home.largeWhat': 'Sisa hari ini, dan pengeluaran terbaru hari ini.',
+  'widgetsGuide.home.month': 'Bulanku',
+  'widgetsGuide.home.monthWhat':
     'Sebulan sebagai matahari: setiap malam yang kamu tutup, dan berapa dalam batas.',
   'widgetsGuide.home.step1':
     'Sentuh dan tahan area kosong di Layar Utama sampai aplikasinya bergoyang.',

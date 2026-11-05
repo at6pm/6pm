@@ -25,7 +25,9 @@ export const deWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
     'Die Zahl von heute auf ihrem Himmel, ein Glas, das herunterzählt, oder deine Abende in Folge.',
   'widgetsGuide.home.mediumWhat':
     'Die Zahl mit ihrem Himmel und deinen Gläsern. Tippe auf ein Glas, um es zu öffnen.',
-  'widgetsGuide.home.largeWhat':
+  'widgetsGuide.home.largeWhat': 'Was übrig ist, und die neuesten Ausgaben von heute.',
+  'widgetsGuide.home.month': 'Mein Monat',
+  'widgetsGuide.home.monthWhat':
     'Der Monat als Sonnen: jeder Abend, den du abgeschlossen hast, und wie viele im Rahmen.',
   'widgetsGuide.home.step1':
     'Lege den Finger auf eine leere Stelle des Home-Bildschirms, bis die Apps wackeln.',

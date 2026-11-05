@@ -211,6 +211,8 @@ export const surfaceEntrySchema = z.object({
       sunKind: z.enum(['day', 'noon', 'dusk', 'night']),
       /** "18:04" on the CLOSED stamp, once the day is closed. */
       closedAt: z.string().optional(),
+      /** The money day the stretch belongs to: today's receipt prints only on today's. */
+      day: z.string().optional(),
     })
     .optional(),
 });
@@ -363,6 +365,50 @@ export const surfaceSnapshotSchema = z.object({
       title: z.string(),
       headline: z.string(),
       cells: z.array(z.enum(['sun', 'half', 'miss', 'today', 'ahead', 'blank'])),
+    })
+    .optional(),
+  /** This week as suns: "THIS WEEK", Monday to Sunday, "4 closed, tonight's next.". */
+  week: z
+    .object({
+      title: z.string(),
+      line: z.string(),
+      /** Each day's initial under its sun: "M", "T"… */
+      letters: z.array(z.string()),
+      cells: z.array(z.enum(['sun', 'half', 'miss', 'today', 'ahead', 'blank'])),
+    })
+    .optional(),
+  /** Today's receipt, printing as the day's spends are caught. */
+  receipt: z
+    .object({
+      /** The money day it is the receipt of. */
+      day: z.string(),
+      /** "FRI 9 OCT · TODAY SO FAR", and "Nº 009". */
+      title: z.string(),
+      number: z.string(),
+      lines: z.array(
+        z.object({
+          time: z.string(),
+          name: z.string(),
+          amount: z.string(),
+          /** Caught and not confirmed yet: printed faint. */
+          confirmed: z.boolean(),
+        }),
+      ),
+      /** "+2 more" above the lines, when the day has more than fit; empty otherwise. */
+      earlier: z.string(),
+      /** "Nothing caught yet", for a day with no spends. */
+      empty: z.string(),
+      /** "LEFT TODAY" beside the number at the foot. */
+      left: z.string(),
+      /** The close receipt's paper (`paperInk`): the same in every look. */
+      paper: z.object({
+        sheet: z.string(),
+        ink: z.string(),
+        soft: z.string(),
+        rule: z.string(),
+        stamp: z.string(),
+        edge: z.string(),
+      }),
     })
     .optional(),
   look: surfaceLookSchema.optional(),

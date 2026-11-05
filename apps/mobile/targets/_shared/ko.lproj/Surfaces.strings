@@ -5,6 +5,8 @@
 "markPaid.title" = "결제 완료";
 "month.description" = "한 달을 해로: 마감한 모든 저녁.";
 "month.name" = "나의 한 달";
+"receipt.description" = "오늘 쓴 돈이 기록되는 대로 찍혀 나와요.";
+"receipt.name" = "오늘의 영수증";
 "safeToday.description" = "오늘 쓸 수 있는 돈을 한눈에.";
 "safeToday.name" = "오늘 쓸 수 있는 돈";
 "setUp" = "6pm을 열어 설정하세요";
@@ -12,3 +14,5 @@
 "streak.name" = "연속 기록";
 "todayList.description" = "오늘 쓴 돈, 최신순으로.";
 "todayList.name" = "오늘";
+"week.description" = "한 주를 해로: 마감한 모든 저녁.";
+"week.name" = "이번 주";

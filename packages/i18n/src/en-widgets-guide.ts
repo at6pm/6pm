@@ -21,7 +21,9 @@ export const enWidgetsGuide = {
   'widgetsGuide.home.smallWhat':
     'Today’s number on its sky, a jar counting down, or the evenings you closed in a row.',
   'widgetsGuide.home.mediumWhat': 'The number with its sky and your jars. Tap a jar to open it.',
-  'widgetsGuide.home.largeWhat':
+  'widgetsGuide.home.largeWhat': 'What’s left, and today’s newest spends.',
+  'widgetsGuide.home.month': 'My month',
+  'widgetsGuide.home.monthWhat':
     'The month as suns: every evening you closed, and how many inside the line.',
   'widgetsGuide.home.step1':
     'Touch and hold an empty spot on your Home Screen until the apps jiggle.',

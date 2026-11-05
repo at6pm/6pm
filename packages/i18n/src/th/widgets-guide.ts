@@ -25,7 +25,9 @@ export const thWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.home.smallWhat':
     'ตัวเลขวันนี้บนฟ้าของมัน โหลที่นับถอยหลัง หรือเย็นที่คุณปิดวันติดต่อกัน',
   'widgetsGuide.home.mediumWhat': 'ตัวเลขกับฟ้าและโหลของคุณ แตะโหลเพื่อเปิด',
-  'widgetsGuide.home.largeWhat':
+  'widgetsGuide.home.largeWhat': 'ยอดที่เหลือ และรายจ่ายล่าสุดของวันนี้',
+  'widgetsGuide.home.month': 'เดือนของฉัน',
+  'widgetsGuide.home.monthWhat':
     'ทั้งเดือนเป็นดวงอาทิตย์: ทุกเย็นที่คุณปิดวัน และกี่ครั้งที่อยู่ในงบ',
   'widgetsGuide.home.step1': 'แตะพื้นที่ว่างบนหน้าจอโฮมค้างไว้จนแอปเริ่มสั่น',
   'widgetsGuide.home.step2': 'แตะแก้ไขที่มุมบน แล้วแตะเพิ่มวิดเจ็ต',

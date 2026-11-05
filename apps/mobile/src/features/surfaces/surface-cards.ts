@@ -86,6 +86,7 @@ export function cardOf(
     amount: format.full(safe),
     sun,
     sunKind,
+    day: day.date,
   };
   if (phase === 'closed' && closed) {
     const time = closed.at;

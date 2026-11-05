@@ -43,4 +43,12 @@ export const thWidgets: { readonly [Key in keyof typeof enWidgets]: Entry } = {
   'widgets.close.none': 'ไม่มีรายการรอ',
   'widgets.close.start': 'เริ่ม',
   'widgets.stamp': 'ปิดแล้ว',
+  'widgets.week.title': 'สัปดาห์นี้',
+  'widgets.week.next': { other: 'ปิดแล้ว {count} วัน คืนนี้ต่อไป' },
+  'widgets.week.first': 'คืนนี้เป็นครั้งแรก',
+  'widgets.week.done': 'ปิดแล้ว {closed} จาก {days} วัน',
+  'widgets.receipt.title': '{date} · วันนี้จนถึงตอนนี้',
+  'widgets.receipt.no': 'เลขที่ {no}',
+  'widgets.receipt.left': 'เหลือวันนี้',
+  'widgets.receipt.empty': 'ยังไม่มีรายการ',
 };

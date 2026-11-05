@@ -5,6 +5,8 @@
 "markPaid.title" = "Bezahlt";
 "month.description" = "Der Monat als Sonnen: jeder Abend, den du abgeschlossen hast.";
 "month.name" = "Mein Monat";
+"receipt.description" = "Was du heute ausgibst, gedruckt, sobald es erfasst ist.";
+"receipt.name" = "Heutiger Beleg";
 "safeToday.description" = "Was du heute ausgeben kannst, auf einen Blick.";
 "safeToday.name" = "Heute verfügbar";
 "setUp" = "6pm zum Einrichten öffnen";
@@ -12,3 +14,5 @@
 "streak.name" = "Serie";
 "todayList.description" = "Was du heute ausgegeben hast, Neuestes zuerst.";
 "todayList.name" = "Heute";
+"week.description" = "Die Woche als Sonnen: jeder Abend, den du abgeschlossen hast.";
+"week.name" = "Diese Woche";

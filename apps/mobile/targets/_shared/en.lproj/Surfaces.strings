@@ -5,6 +5,8 @@
 "markPaid.title" = "Paid";
 "month.description" = "The month as suns: every evening you closed.";
 "month.name" = "My month";
+"receipt.description" = "Today’s spends printing as they’re caught.";
+"receipt.name" = "Today’s receipt";
 "safeToday.description" = "What you can spend today, at a glance.";
 "safeToday.name" = "Safe today";
 "setUp" = "Open 6pm to set up";
@@ -12,3 +14,5 @@
 "streak.name" = "Streak";
 "todayList.description" = "What you spent today, newest first.";
 "todayList.name" = "Today";
+"week.description" = "The week as suns: every evening you closed.";
+"week.name" = "This week";

@@ -24,7 +24,9 @@ export const jaWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.home.smallWhat':
     '空に浮かぶ今日の数字、カウントダウンする瓶、または続けて締めた夜。',
   'widgetsGuide.home.mediumWhat': '空と数字、そしてあなたの瓶。瓶をタップすると開きます。',
-  'widgetsGuide.home.largeWhat': '1か月を太陽で。締めたすべての夜と、予算内だった回数。',
+  'widgetsGuide.home.largeWhat': '残りの額と、今日の最新の支出。',
+  'widgetsGuide.home.month': '今月',
+  'widgetsGuide.home.monthWhat': '1か月を太陽で。締めたすべての夜と、予算内だった回数。',
   'widgetsGuide.home.step1': 'ホーム画面の何もないところを、アプリが揺れはじめるまで長押しします。',
   'widgetsGuide.home.step2': '上の隅の「編集」をタップし、「ウィジェットを追加」をタップします。',
   'widgetsGuide.home.step3':

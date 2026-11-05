@@ -5,6 +5,8 @@
 "markPaid.title" = "Pagado";
 "month.description" = "El mes en soles: cada noche que cerraste.";
 "month.name" = "Mi mes";
+"receipt.description" = "Los gastos de hoy, impresos en cuanto se capturan.";
+"receipt.name" = "El recibo de hoy";
 "safeToday.description" = "Lo que puedes gastar hoy, de un vistazo.";
 "safeToday.name" = "Puedes gastar hoy";
 "setUp" = "Abre 6pm para configurarlo";
@@ -12,3 +14,5 @@
 "streak.name" = "Racha";
 "todayList.description" = "Lo que has gastado hoy, lo más reciente primero.";
 "todayList.name" = "Hoy";
+"week.description" = "La semana en soles: cada noche que cerraste.";
+"week.name" = "Esta semana";

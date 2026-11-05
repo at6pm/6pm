@@ -43,4 +43,12 @@ export const koWidgets: { readonly [Key in keyof typeof enWidgets]: Entry } = {
   'widgets.close.none': '기다리는 건 없어요',
   'widgets.close.start': '시작',
   'widgets.stamp': '마감',
+  'widgets.week.title': '이번 주',
+  'widgets.week.next': { other: '{count}일 마감, 다음은 오늘 밤.' },
+  'widgets.week.first': '오늘 밤이 처음이에요.',
+  'widgets.week.done': '{days}일 중 {closed}일 마감.',
+  'widgets.receipt.title': '{date} · 오늘 지금까지',
+  'widgets.receipt.no': 'No. {no}',
+  'widgets.receipt.left': '오늘 남은 돈',
+  'widgets.receipt.empty': '아직 기록된 게 없어요.',
 };

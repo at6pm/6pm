@@ -43,4 +43,12 @@ export const jaWidgets: { readonly [Key in keyof typeof enWidgets]: Entry } = {
   'widgets.close.none': '待っているものはなし',
   'widgets.close.start': '始める',
   'widgets.stamp': '締め済み',
+  'widgets.week.title': '今週',
+  'widgets.week.next': { other: '{count}日締め済み、次は今夜。' },
+  'widgets.week.first': '今夜が最初。',
+  'widgets.week.done': '{days}日中{closed}日締め済み。',
+  'widgets.receipt.title': '{date} · 今日のここまで',
+  'widgets.receipt.no': 'No. {no}',
+  'widgets.receipt.left': '今日の残り',
+  'widgets.receipt.empty': 'まだ何もありません。',
 };

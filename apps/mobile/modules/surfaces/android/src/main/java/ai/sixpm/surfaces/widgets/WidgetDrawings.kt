@@ -13,16 +13,16 @@ data class JarSpot(val jar: PostcardJar, val rect: RectF)
  * and the month as suns (large). Every word, number and colour was decided by the app.
  */
 class WidgetDrawings(private val faces: WidgetFaces) {
-  private fun color(moment: WidgetMoment, token: String): Int = WidgetInk.color(moment.token(token))
+  fun color(moment: WidgetMoment, token: String): Int = WidgetInk.color(moment.token(token))
 
-  private fun ink(moment: WidgetMoment): Int = color(moment, "skyInk")
+  fun ink(moment: WidgetMoment): Int = color(moment, "skyInk")
 
-  private fun dark(moment: WidgetMoment): Boolean = moment.token("dark") == "1"
+  fun dark(moment: WidgetMoment): Boolean = moment.token("dark") == "1"
 
-  private fun top(paint: TextPaint): Float = -paint.fontMetrics.ascent
+  fun top(paint: TextPaint): Float = -paint.fontMetrics.ascent
 
   /** An amount, or ••• when the person hides them: Android has no locked Home screen to wait for. */
-  private fun amount(moment: WidgetMoment, text: String): String =
+  fun amount(moment: WidgetMoment, text: String): String =
     if (moment.postcards?.hideAmounts == true) moment.text("hidden").ifEmpty { "•••" } else text
 
   /** The look's sky for the stretch's hour, top to bottom, or its own ground (Basic). */
@@ -44,7 +44,7 @@ class WidgetDrawings(private val faces: WidgetFaces) {
   }
 
   /** The stretch's sun, centred where the app put it. */
-  private fun sun(canvas: WidgetCanvas, moment: WidgetMoment, card: PostcardCard, size: Float, small: Boolean) {
+  fun sun(canvas: WidgetCanvas, moment: WidgetMoment, card: PostcardCard, size: Float, small: Boolean) {
     val look = moment.postcards?.ink ?: return
     val fill = look.suns[card.sunKind] ?: return
     val cx = canvas.width * (if (small) card.sunXs else card.sunX).toFloat()
@@ -55,12 +55,12 @@ class WidgetDrawings(private val faces: WidgetFaces) {
     look.sunRing?.let { canvas.strokeOval(rect, 3f, WidgetInk.color(it)) }
   }
 
-  private fun kicker(canvas: WidgetCanvas, moment: WidgetMoment, size: Float, color: Int): TextPaint {
+  fun kicker(canvas: WidgetCanvas, moment: WidgetMoment, size: Float, color: Int): TextPaint {
     val mono = moment.postcards?.ink?.mono != false
     return canvas.ink(if (mono) faces.mono() else faces.body(600), size, WidgetInk.faded(color, 0.8), trackingEm = if (mono) 0.14f else 0.04f)
   }
 
-  private fun number(canvas: WidgetCanvas, moment: WidgetMoment, size: Float, color: Int): TextPaint {
+  fun number(canvas: WidgetCanvas, moment: WidgetMoment, size: Float, color: Int): TextPaint {
     val look = moment.postcards?.ink
     return canvas.ink(faces.display(moment.displayFont, size, look?.displayWeight ?: 500), size, color, trackingEm = look?.numberTracking ?: -0.03f)
   }
@@ -258,20 +258,10 @@ class WidgetDrawings(private val faces: WidgetFaces) {
     val dot = minOf((canvas.width - side * 2 - 12 - gap * 6) / 7, (footTop - y - 8 - (rows - 1) * 6) / rows)
     val gridWidth = dot * 7 + gap * 6
     val left = (canvas.width - gridWidth) / 2
-    val look = cards.ink
     for (k in 0 until rows * 7) {
       val cell = cards.monthCells.getOrNull(k) ?: "blank"
       val rect = RectF(left + (k % 7) * (dot + gap), y + (k / 7) * (dot + 6), left + (k % 7) * (dot + gap) + dot, y + (k / 7) * (dot + 6) + dot)
-      when (cell) {
-        "sun" -> {
-          if (look != null) canvas.oval(rect, canvas.fillPaint(look.dotFull, rect))
-          look?.dotFullRing?.let { canvas.strokeOval(rect, 2f, WidgetInk.color(it)) }
-        }
-        "half" -> if (look != null) canvas.clipped(Path().apply { addOval(rect, Path.Direction.CW) }) { canvas.rect(rect, canvas.fillPaint(look.dotHalf, rect)) }
-        "miss" -> canvas.strokeOval(rect, 1.5f, if (look?.dotRing.isNullOrEmpty()) WidgetInk.faded(ink, 0.35) else WidgetInk.color(look?.dotRing))
-        "today" -> canvas.strokeOval(rect, 2f, WidgetInk.color(look?.today))
-        "ahead" -> canvas.strokeOval(rect, 1f, WidgetInk.faded(ink, if (dark(moment)) 0.2 else 0.18))
-      }
+      daySun(canvas, moment, cell, rect, ink)
     }
     canvas.dashedLine(side, footTop, canvas.width - side, 1f, WidgetInk.faded(ink, if (dark(moment)) 0.4 else 0.3), 3f, 3f)
     val foot = canvas.ink(faces.mono(), 11f, ink)
@@ -279,6 +269,21 @@ class WidgetDrawings(private val faces: WidgetFaces) {
     canvas.text(moment.text("tonight"), side, baseline, foot, canvas.width / 2)
     val tonight = if (moment.state == WidgetMoment.State.STALE) moment.text("openApp") else card.tonight
     canvas.text(tonight, canvas.width - side, baseline, foot, canvas.width / 2, alignEnd = true)
+  }
+
+  /** One day as a sun: whole, half, a missed ring, today's accent ring, or still ahead. */
+  fun daySun(canvas: WidgetCanvas, moment: WidgetMoment, cell: String, rect: RectF, ink: Int) {
+    val look = moment.postcards?.ink
+    when (cell) {
+      "sun" -> {
+        if (look != null) canvas.oval(rect, canvas.fillPaint(look.dotFull, rect))
+        look?.dotFullRing?.let { canvas.strokeOval(rect, 2f, WidgetInk.color(it)) }
+      }
+      "half" -> if (look != null) canvas.clipped(Path().apply { addOval(rect, Path.Direction.CW) }) { canvas.rect(rect, canvas.fillPaint(look.dotHalf, rect)) }
+      "miss" -> canvas.strokeOval(rect, 1.5f, if (look?.dotRing.isNullOrEmpty()) WidgetInk.faded(ink, 0.35) else WidgetInk.color(look?.dotRing))
+      "today" -> canvas.strokeOval(rect, 2f, WidgetInk.color(look?.today))
+      "ahead" -> canvas.strokeOval(rect, 1f, WidgetInk.faded(ink, if (dark(moment)) 0.2 else 0.18))
+    }
   }
 
   /** Before the month is set up: "Open 6pm to set up", on the sky. */

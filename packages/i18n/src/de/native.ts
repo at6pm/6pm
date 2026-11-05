@@ -27,6 +27,11 @@ export const deNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.surfaces.month.name': 'Mein Monat',
   'native.surfaces.month.description':
     'Der Monat als Sonnen: jeder Abend, den du abgeschlossen hast.',
+  'native.surfaces.week.name': 'Diese Woche',
+  'native.surfaces.week.description':
+    'Die Woche als Sonnen: jeder Abend, den du abgeschlossen hast.',
+  'native.surfaces.receipt.name': 'Heutiger Beleg',
+  'native.surfaces.receipt.description': 'Was du heute ausgibst, gedruckt, sobald es erfasst ist.',
   'native.surfaces.todayList.name': 'Heute',
   'native.surfaces.todayList.description': 'Was du heute ausgegeben hast, Neuestes zuerst.',
   'native.share.title': 'Zu 6pm hinzufügen',
