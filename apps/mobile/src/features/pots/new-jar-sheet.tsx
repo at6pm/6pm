@@ -30,7 +30,7 @@ import { AmountKeypadSheet } from '../quick-add/amount-keypad-sheet';
 import { expectLanding } from './jar-flight';
 import { jarLevel } from './jar';
 import { useJarFormat } from './jar-words';
-import { ChoiceChips, DraftJar, FillSegment, PresetTiles } from './new-jar-parts';
+import { ChoiceChips, DraftJar, FillSegment, LookBadge, PresetTiles } from './new-jar-parts';
 import { JarLook } from './new-jar-look';
 import { RollingText } from './rolling-text';
 import { useNewJar, type AskedJar } from './use-new-jar';
@@ -128,6 +128,11 @@ export function NewJarSheet({
     });
   };
 
+  const toggleLook = () => {
+    haptics.tap();
+    setLooking((on) => !on);
+  };
+
   const header = (
     <View style={{ paddingTop: 8, paddingHorizontal: 18, paddingBottom: 6, gap: 6 }}>
       <View
@@ -182,47 +187,24 @@ export function NewJarSheet({
           />
         )}
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16, paddingHorizontal: 4 }}>
-          <PressScale
-            accessibilityRole="button"
-            accessibilityLabel={t('pots.new.look')}
-            accessibilityState={{ expanded: looking }}
-            disabled={fy}
-            scaleTo={0.95}
-            onPress={() => {
-              haptics.tap();
-              setLooking((on) => !on);
-            }}
-          >
-            <DraftJar
-              hue={draft.hue}
-              icon={draft.icon}
-              futureYou={fy}
-              level={editing ? jarLevel(saved, draft.target) : 0}
-            />
-            {fy ? null : (
-              <View
-                pointerEvents="none"
-                style={{
-                  position: 'absolute',
-                  right: -6,
-                  bottom: -2,
-                  width: 28,
-                  height: 28,
-                  borderRadius: 14,
-                  backgroundColor: looking ? palette.btnBg : palette.chipBg,
-                  boxShadow: `0 0 0 2px ${palette.sheetSolid}`,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Symbol
-                  name={looking ? 'check' : 'palette'}
-                  size={16}
-                  color={looking ? palette.btnFg : palette.ink}
-                />
-              </View>
-            )}
-          </PressScale>
+          <View>
+            <PressScale
+              accessibilityRole="button"
+              accessibilityLabel={t('pots.new.look')}
+              accessibilityState={{ expanded: looking }}
+              disabled={fy}
+              scaleTo={0.95}
+              onPress={toggleLook}
+            >
+              <DraftJar
+                hue={draft.hue}
+                icon={draft.icon}
+                futureYou={fy}
+                level={editing ? jarLevel(saved, draft.target) : 0}
+              />
+            </PressScale>
+            {fy ? null : <LookBadge open={looking} onPress={toggleLook} />}
+          </View>
           <View style={{ flex: 1, gap: 4 }}>
             {fy ? (
               <Text style={{ ...leading(display(30, 500), 30 * 1.05, true), color: palette.ink }}>
