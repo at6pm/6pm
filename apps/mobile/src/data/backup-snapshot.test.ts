@@ -1,8 +1,13 @@
 import { describe, expect, it } from '@jest/globals';
 
-import { BACKUP_SNAPSHOT_VERSION, backupSnapshotSchema } from '@6pm/domain';
+import {
+  BACKUP_MAX_SEALED_BYTES,
+  BACKUP_SNAPSHOT_VERSION,
+  backupSnapshotSchema,
+} from '@6pm/domain';
 
 import { openMemoryDb } from '../features/backup/test/memory-db';
+import { memoryPhotoFiles } from '../features/backup/test/memory-photos';
 import { seedMoney } from '../features/backup/test/seed-money';
 import {
   buildSnapshot,
@@ -335,6 +340,102 @@ describe('the snapshot of the phone', () => {
     const snapshot = await buildSnapshot(db, TAKEN);
     expect(snapshot.spendSightings.map((row) => row.spendId)).toEqual(['spend-1']);
     expect(snapshot.potMoves.map((row) => row.id)).toEqual(['move-1']);
+  });
+});
+
+/** A phone whose kept spend has a photo of `kb` kilobytes (its base64 in the folder). */
+async function phoneWithPhoto(kb = 3) {
+  const db = openMemoryDb();
+  await seedMoney(db);
+  const folder = memoryPhotoFiles();
+  const jpeg = 'AwMD'.repeat(Math.ceil((kb * 1000) / 3));
+  folder.files.set('spend-1-mk2.jpg', jpeg);
+  await db.runAsync("UPDATE spends SET photo = 'spend-1-mk2.jpg' WHERE id = 'spend-1'", []);
+  return { db, folder, jpeg };
+}
+
+const photoOf = async (db: ReturnType<typeof openMemoryDb>, id: string) =>
+  (await openMoneyTables(db).spends.get(id))?.photo ?? null;
+
+describe("the spends' photos in the snapshot", () => {
+  it('carries a photo through a backup and puts it back with its spend', async () => {
+    const { db, folder, jpeg } = await phoneWithPhoto();
+    const snapshot = await buildSnapshot(db, TAKEN, folder);
+    expect(snapshot.photos).toEqual([{ name: 'spend-1-mk2.jpg', jpeg }]);
+    expect(backupSnapshotSchema.safeParse(snapshot).success).toBe(true);
+
+    const fresh = openMemoryDb();
+    const freshFolder = memoryPhotoFiles();
+    freshFolder.files.set('from-before.jpg', 'AAAA');
+    await restoreSnapshot(fresh, snapshot, freshFolder);
+
+    expect(await photoOf(fresh, 'spend-1')).toBe('spend-1-mk2.jpg');
+    expect([...freshFolder.files.entries()]).toEqual([['spend-1-mk2.jpg', jpeg]]);
+    expect(await buildSnapshot(fresh, TAKEN, freshFolder)).toEqual(snapshot);
+  });
+
+  it('round-trips a phone with no photos, and leaves the folder empty', async () => {
+    const original = openMemoryDb();
+    await seedMoney(original);
+    const snapshot = await buildSnapshot(original, TAKEN, memoryPhotoFiles());
+    expect(snapshot.photos).toEqual([]);
+
+    const fresh = openMemoryDb();
+    const folder = memoryPhotoFiles();
+    await restoreSnapshot(fresh, snapshot, folder);
+    expect(folder.names()).toEqual([]);
+    expect(await photoOf(fresh, 'spend-1')).toBeNull();
+    expect(await buildSnapshot(fresh, TAKEN, folder)).toEqual(snapshot);
+  });
+
+  it('restores a format 7 backup, from before photos, on a phone that had some', async () => {
+    const { db, folder } = await phoneWithPhoto();
+    const current = await buildSnapshot(db, TAKEN);
+    const older = backupSnapshotSchema.parse({
+      ...current,
+      version: 7,
+      spends: current.spends.map(({ photo: _photo, ...row }) => row),
+    });
+    expect(older.photos).toBeUndefined();
+
+    await restoreSnapshot(db, older, folder);
+
+    expect(await photoOf(db, 'spend-1')).toBeNull();
+    expect(folder.names()).toEqual([]);
+    const back = await buildSnapshot(db, TAKEN);
+    expect(back.spends.map((s) => s.id)).toEqual(older.spends.map((s) => s.id));
+  });
+
+  it('leaves out what does not fit, and that spend comes back without its photo', async () => {
+    const { db, folder } = await phoneWithPhoto(BACKUP_MAX_SEALED_BYTES / 1000 / 2);
+    // Over the size a kept photo can be: it stays on the phone.
+    const snapshot = await buildSnapshot(db, TAKEN, folder);
+    expect(snapshot.photos).toEqual([]);
+
+    const fresh = openMemoryDb();
+    const freshFolder = memoryPhotoFiles();
+    await restoreSnapshot(fresh, snapshot, freshFolder);
+    expect(await photoOf(fresh, 'spend-1')).toBeNull();
+    expect(freshFolder.names()).toEqual([]);
+  });
+
+  it("never writes a photo no spend in the backup holds, or a deleted spend's", async () => {
+    const { db, folder, jpeg } = await phoneWithPhoto();
+    const snapshot = await buildSnapshot(db, TAKEN, folder);
+    const tampered = {
+      ...snapshot,
+      spends: snapshot.spends.map((s) =>
+        s.id === 'spend-2' ? { ...s, photo: 'spend-2-a.jpg' } : s,
+      ),
+      photos: [
+        ...(snapshot.photos ?? []),
+        { name: 'spend-2-a.jpg', jpeg },
+        { name: 'x-1.jpg', jpeg },
+      ],
+    };
+    const fresh = memoryPhotoFiles();
+    await restoreSnapshot(openMemoryDb(), tampered, fresh);
+    expect(fresh.names()).toEqual(['spend-1-mk2.jpg']);
   });
 });
 

@@ -2,9 +2,12 @@ import {
   BACKUP_SETTING_KEYS,
   BACKUP_SNAPSHOT_VERSION,
   backupItemCount,
+  photosThatFit,
+  type BackupPhoto,
   type BackupSettingKey,
   type BackupSnapshot,
   type PotMoveRow,
+  type SpendRow,
   type SpendSightingRow,
   type TogetherMoveRow,
 } from '@6pm/domain';
@@ -12,6 +15,7 @@ import { isLanguage } from '@6pm/i18n';
 
 import { openMoneyTables } from './money-tables';
 import { planSettingsSchema } from './plan-settings';
+import type { PhotoFiles } from './spend-photos';
 import type { SqlDatabase } from './table';
 
 /** Children before parents, so the foreign keys never see an orphan while a restore clears. */
@@ -67,12 +71,61 @@ async function readTogetherMoves(db: SqlDatabase): Promise<TogetherMoveRow[]> {
   }));
 }
 
+/** The UTF-8 length of a string, without encoding it. */
+function utf8Length(text: string): number {
+  let bytes = 0;
+  for (let index = 0; index < text.length; index += 1) {
+    const code = text.charCodeAt(index);
+    if (code < 0x80) bytes += 1;
+    else if (code < 0x800) bytes += 2;
+    else if (code >= 0xd800 && code <= 0xdbff) {
+      bytes += 4;
+      index += 1;
+    } else bytes += 3;
+  }
+  return bytes;
+}
+
+/**
+ * The photos a backup carries: the standing spends' photos, newest spend first, as many as fit
+ * beside the rest under the sealed cap (`photosThatFit`). The rest stay on the phone only.
+ */
+async function photosOf(
+  files: PhotoFiles,
+  spends: readonly SpendRow[],
+  rest: BackupSnapshot,
+): Promise<BackupPhoto[]> {
+  const candidates = spends
+    .filter((s) => s.photo != null && s.status !== 'deleted')
+    .sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0))
+    .flatMap((s) => {
+      const name = s.photo ?? '';
+      const jpegBytes = files.size(name);
+      return jpegBytes === null || jpegBytes === 0 ? [] : [{ name, jpegBytes }];
+    });
+  if (candidates.length === 0) return [];
+  const carried = photosThatFit(candidates, utf8Length(JSON.stringify(rest)));
+  const photos: BackupPhoto[] = [];
+  for (const photo of carried) {
+    try {
+      photos.push({ name: photo.name, jpeg: await files.read(photo.name) });
+    } catch {
+      // A photo that cannot be read now is left out; the spend comes back without it.
+    }
+  }
+  return photos;
+}
+
 /**
  * Every table the app keeps, as plain rows. Rows that others point at are read last, so a row
  * written while this runs never points at one that was missed: spends before their categories,
- * and pot moves before their pots.
+ * and pot moves before their pots. With the photo folder, the spends' photos that fit come too.
  */
-export async function buildSnapshot(db: SqlDatabase, takenAt: string): Promise<BackupSnapshot> {
+export async function buildSnapshot(
+  db: SqlDatabase,
+  takenAt: string,
+  files?: PhotoFiles,
+): Promise<BackupSnapshot> {
   const tables = openMoneyTables(db);
   const spends = await tables.spends.all();
   const sightings = await db.getAllAsync<{
@@ -107,7 +160,7 @@ export async function buildSnapshot(db: SqlDatabase, takenAt: string): Promise<B
   );
   const spendIds = new Set(spends.map((spend) => spend.id));
   const potIds = new Set(pots.map((pot) => pot.id));
-  return {
+  const snapshot: BackupSnapshot = {
     version: BACKUP_SNAPSHOT_VERSION,
     takenAt,
     settings,
@@ -139,6 +192,8 @@ export async function buildSnapshot(db: SqlDatabase, takenAt: string): Promise<B
     imports,
     closedDays,
   };
+  if (!files) return snapshot;
+  return { ...snapshot, photos: await photosOf(files, spends, snapshot) };
 }
 
 /** The number "N items" counts, read from a phone's own database. */
@@ -195,11 +250,29 @@ function checkSettings(settings: BackupSnapshot['settings']): void {
  * said about purchases, where backup stands) are left alone; the four a snapshot carries are
  * replaced, and removed when the snapshot has none. Budget together history is replaced only by a
  * snapshot that carries it: one taken before it was carried says nothing about it, so the phone's
- * own stays.
+ * own stays. With the photo folder, the photos it carries are written first and the folder then
+ * holds only those; a spend whose photo it did not carry comes back without one.
  */
-export async function restoreSnapshot(db: SqlDatabase, snapshot: BackupSnapshot): Promise<void> {
+export async function restoreSnapshot(
+  db: SqlDatabase,
+  snapshot: BackupSnapshot,
+  files?: PhotoFiles,
+): Promise<void> {
   checkSettings(snapshot.settings);
   const tables = openMoneyTables(db);
+  const wanted = new Set(
+    snapshot.spends.flatMap((s) => (s.photo != null && s.status !== 'deleted' ? [s.photo] : [])),
+  );
+  const carried = new Set<string>();
+  if (files) {
+    for (const photo of snapshot.photos ?? []) {
+      if (!wanted.has(photo.name) || carried.has(photo.name)) continue;
+      await files.write(photo.name, photo.jpeg);
+      carried.add(photo.name);
+    }
+  }
+  const photoOf = (row: SpendRow) =>
+    row.photo != null && carried.has(row.photo) ? row.photo : null;
   await db.withTransactionAsync(async () => {
     for (const table of CLEARED_IN_ORDER) await db.runAsync(`DELETE FROM ${table}`, []);
     if (snapshot.togetherMoves !== undefined) await db.runAsync('DELETE FROM together_moves', []);
@@ -214,7 +287,7 @@ export async function restoreSnapshot(db: SqlDatabase, snapshot: BackupSnapshot)
       }
     }
     for (const row of snapshot.categories) await tables.categories.put(row);
-    for (const row of snapshot.spends) await tables.spends.put(row);
+    for (const row of snapshot.spends) await tables.spends.put({ ...row, photo: photoOf(row) });
     for (const row of snapshot.spendSightings) {
       await db.runAsync(
         'INSERT OR REPLACE INTO spend_sightings (spend_id, source, seen_at, detail, capture_id) VALUES (?, ?, ?, ?, ?)',
@@ -239,4 +312,6 @@ export async function restoreSnapshot(db: SqlDatabase, snapshot: BackupSnapshot)
     for (const row of snapshot.imports ?? []) await tables.imports.put(row);
     for (const row of snapshot.closedDays) await tables.closedDays.put(row);
   });
+  // What the phone held before is gone with its spends.
+  if (files) for (const name of files.names()) if (!carried.has(name)) files.remove(name);
 }

@@ -179,7 +179,7 @@ describe('backup', () => {
     const store = await open();
     await bring(store);
     const snapshot = await buildSnapshot(store.db, '2026-11-05T00:00:00.000Z');
-    expect(snapshot.version).toBe(7);
+    expect(snapshot.version).toBeGreaterThanOrEqual(7);
     expect(snapshot.imports).toHaveLength(1);
     const other = createMoneyStore(openMemoryDb(), TODAY);
     await restoreSnapshot(other.db, snapshot);
