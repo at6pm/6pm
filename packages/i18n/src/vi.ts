@@ -41,6 +41,7 @@ import { viFirstCatch } from './vi-first-catch';
 import { viPhoto } from './vi-photo';
 import { viImport } from './vi-import';
 import { viOwed } from './vi-owed';
+import { viNotifications } from './vi-notifications';
 import { viSeason } from './vi-season';
 import { importSketchMomo } from './en-import';
 
@@ -89,4 +90,5 @@ export const vi: Catalogue = {
   ...viOwed,
   ...importSketchMomo,
   ...viSeason,
+  ...viNotifications,
 };

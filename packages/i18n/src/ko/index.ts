@@ -41,6 +41,7 @@ import { koFirstCatch } from './first-catch';
 import { koPhoto } from './photo';
 import { koImport } from './import';
 import { koOwed } from './owed';
+import { koNotifications } from './notifications';
 import { koSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
@@ -92,6 +93,7 @@ export const ko: Catalogue = {
   ...koOwed,
   ...importSketchMomo,
   ...koSeason,
+  ...koNotifications,
 };
 
 /**

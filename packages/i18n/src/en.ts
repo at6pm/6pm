@@ -40,6 +40,7 @@ import { enFirstCatch } from './en-first-catch';
 import { enPhoto } from './en-photo';
 import { enImport, importSketchMomo } from './en-import';
 import { enOwed } from './en-owed';
+import { enNotifications } from './en-notifications';
 import { enSeason } from './en-season';
 
 /** The source catalogue: every key the app uses, in English. */
@@ -88,4 +89,5 @@ export const en = {
   ...enOwed,
   ...importSketchMomo,
   ...enSeason,
+  ...enNotifications,
 } as const;

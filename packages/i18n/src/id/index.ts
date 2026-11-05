@@ -41,6 +41,7 @@ import { idFirstCatch } from './first-catch';
 import { idPhoto } from './photo';
 import { idImport } from './import';
 import { idOwed } from './owed';
+import { idNotifications } from './notifications';
 import { idSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
@@ -92,6 +93,7 @@ export const id: Catalogue = {
   ...idOwed,
   ...importSketchMomo,
   ...idSeason,
+  ...idNotifications,
 };
 
 /**
