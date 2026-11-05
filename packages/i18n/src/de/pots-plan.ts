@@ -40,7 +40,6 @@ export const dePotsPlan: { readonly [Key in keyof typeof enPotsPlan]: Entry } = 
   'potsPlan.pots.title': 'Spargläser',
   'potsPlan.pots.eachPayday': '{amount} pro Zahltag',
   'potsPlan.pots.with': 'Mit {name}',
-  'potsPlan.pots.newJar': 'Neues Sparglas',
   'potsPlan.maths.title': 'Rechenweg für heute',
   'potsPlan.maths.free': 'Frei diesen Monat',
   'potsPlan.maths.before': 'Vor 6pm',

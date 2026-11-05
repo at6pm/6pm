@@ -5,48 +5,34 @@ import { useI18n } from '../../i18n/i18n';
 import { haptics } from '../../ui/haptics';
 import { Symbol } from '../../ui/icons/symbol';
 import { PressScale } from '../../ui/primitives/press-scale';
-import { useTheme } from '../../ui/theme/theme';
 import { body } from '../../ui/type/fonts';
+import { SettingRow } from '../settings/setting-rows';
 import { AppIcons } from './import-parts';
 
 /**
- * "Bring your history · From Money Lover, MISA or MoMo": the first row of Settings › Your data.
- * Their app icons say where it comes from, so the line does not have to.
+ * "Bring your history": the first row of Settings › Your data, a row like the others there. The
+ * apps it brings from are named in the guide it opens.
  */
 export function ImportSettingsRow() {
   const router = useRouter();
-  const { palette } = useTheme();
   const { t } = useI18n();
   return (
-    <PressScale
-      highlight
-      accessibilityRole="button"
-      accessibilityLabel={`${t('import.row.title')}, ${t('import.row.sub')}`}
+    <SettingRow
+      first
+      icon="history"
+      label={t('import.row.title')}
       onPress={() => {
         haptics.tick();
         router.push('/import');
       }}
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 14,
-        paddingVertical: 16,
-        paddingHorizontal: 14,
-      }}
-    >
-      <AppIcons size={30} radius={9} ring={2.5} ringColor={palette.cell} />
-      <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
-        <Text style={{ ...body(16, 650), color: palette.ink }}>{t('import.row.title')}</Text>
-        <Text numberOfLines={1} style={{ ...body(12.5), color: palette.inkSoft }}>
-          {t('import.row.sub')}
-        </Text>
-      </View>
-      <Symbol name="chevron_right" size={18} color={palette.ink} style={{ opacity: 0.45 }} />
-    </PressScale>
+    />
   );
 }
 
-/** The same row on onboarding's first number, under "since payday", on the evening sky. */
+/**
+ * The row on onboarding's first number, under "since payday", on the evening sky: the apps' icons
+ * say where it comes from.
+ */
 export function ImportOnboardingRow({
   chip,
   ink,

@@ -14,37 +14,28 @@ import { Symbol } from '../../ui/icons/symbol';
 import { SheetFrame } from '../../ui/navigation/sheet-frame';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
-import {
-  body,
-  display,
-  faceLineHeight,
-  families,
-  leading,
-  tabular,
-  UNPADDED,
-} from '../../ui/type/fonts';
+import { body, display, families, leading, tabular, UNPADDED } from '../../ui/type/fonts';
 import { useOfferUndo } from '../../ui/undo/undo-host';
 import { useCompanionToast } from '../companion/use-companion-toast';
 import { useRunAction } from '../companion/use-run-action';
 import { AmountKeypadSheet } from '../quick-add/amount-keypad-sheet';
 import { expectLanding } from './jar-flight';
 import { jarLevel } from './jar';
-import { useJarFormat } from './jar-words';
-import { ChoiceChips, DraftJar, FillSegment, PresetTiles } from './new-jar-parts';
+import { DraftJar, FillSegment, LookBadge, PresetTiles } from './new-jar-parts';
+import { FillPicker } from './new-jar-fill';
 import { JarLook } from './new-jar-look';
-import { RollingText } from './rolling-text';
 import { useNewJar, type AskedJar } from './use-new-jar';
 
 type Keypad = 'target' | 'steady' | null;
 
-const CARD_INSET = 16;
 /** Siblings under the icon and colour panel slide to where it leaves them. */
 const settle = LinearTransition.duration(250);
 
 /**
  * New jar (Pots canvas, B, third phone), and a jar's Edit: one sheet. A preset re-tints the jar
  * and swaps its name and target (tap either to change it), "By a date" splits the target over the
- * paydays to a month, "Each payday" puts in a steady amount; what goes in each payday rolls on
+ * paydays to a month on a strip of the two years ahead, "Each payday" puts in a steady amount
+ * from a strip of them or the keypad; what goes in each payday, and for how many paydays, rolls on
  * the odometer over today's line before and after. Start makes it and it flies onto the shelf.
  * Future you's Edit changes only its target.
  */
@@ -59,7 +50,6 @@ export function NewJarSheet({
   const { palette } = useTheme();
   const { t } = useI18n();
   const money = useMoneyFormat();
-  const format = useJarFormat();
   const actions = usePlanActions();
   const run = useRunAction();
   const say = useCompanionToast();
@@ -75,7 +65,7 @@ export function NewJarSheet({
   const snap = useMoney();
   const saved = editing ? (snap.potSaved[editing.id] ?? 0) : 0;
   // Once Start is pressed the numbers hold still while the sheet goes, though the jar now counts.
-  const live = { each: jar.each, before: jar.before, after: jar.after };
+  const live = { each: jar.each, before: jar.before, after: jar.after, paydays: jar.paydays };
   const held = useRef(live);
   if (!working) held.current = live;
   const shown = held.current;
@@ -128,6 +118,11 @@ export function NewJarSheet({
     });
   };
 
+  const toggleLook = () => {
+    haptics.tap();
+    setLooking((on) => !on);
+  };
+
   const header = (
     <View style={{ paddingTop: 8, paddingHorizontal: 18, paddingBottom: 6, gap: 6 }}>
       <View
@@ -160,8 +155,6 @@ export function NewJarSheet({
     draft.target > 0
       ? t('pots.new.target', { amount: short(draft.target) })
       : t('pots.new.noTarget');
-  const steadyIndex = jar.choices.indexOf(draft.steady);
-  const amountStyle = { ...display(34, 500), color: palette.ink };
 
   return (
     <SheetFrame header={header}>
@@ -182,47 +175,24 @@ export function NewJarSheet({
           />
         )}
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16, paddingHorizontal: 4 }}>
-          <PressScale
-            accessibilityRole="button"
-            accessibilityLabel={t('pots.new.look')}
-            accessibilityState={{ expanded: looking }}
-            disabled={fy}
-            scaleTo={0.95}
-            onPress={() => {
-              haptics.tap();
-              setLooking((on) => !on);
-            }}
-          >
-            <DraftJar
-              hue={draft.hue}
-              icon={draft.icon}
-              futureYou={fy}
-              level={editing ? jarLevel(saved, draft.target) : 0}
-            />
-            {fy ? null : (
-              <View
-                pointerEvents="none"
-                style={{
-                  position: 'absolute',
-                  right: -6,
-                  bottom: -2,
-                  width: 28,
-                  height: 28,
-                  borderRadius: 14,
-                  backgroundColor: looking ? palette.btnBg : palette.chipBg,
-                  boxShadow: `0 0 0 2px ${palette.sheetSolid}`,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Symbol
-                  name={looking ? 'check' : 'palette'}
-                  size={16}
-                  color={looking ? palette.btnFg : palette.ink}
-                />
-              </View>
-            )}
-          </PressScale>
+          <View>
+            <PressScale
+              accessibilityRole="button"
+              accessibilityLabel={t('pots.new.look')}
+              accessibilityState={{ expanded: looking }}
+              disabled={fy}
+              scaleTo={0.95}
+              onPress={toggleLook}
+            >
+              <DraftJar
+                hue={draft.hue}
+                icon={draft.icon}
+                futureYou={fy}
+                level={editing ? jarLevel(saved, draft.target) : 0}
+              />
+            </PressScale>
+            {fy ? null : <LookBadge open={looking} onPress={toggleLook} />}
+          </View>
           <View style={{ flex: 1, gap: 4 }}>
             {fy ? (
               <Text style={{ ...leading(display(30, 500), 30 * 1.05, true), color: palette.ink }}>
@@ -303,52 +273,19 @@ export function NewJarSheet({
                 selected={draft.mode}
                 onSelect={(id) => jar.setFill({ mode: id === 'date' ? 'date' : 'steady' })}
               />
-              <View
-                style={{
-                  borderRadius: 22,
-                  backgroundColor: palette.cell,
-                  paddingVertical: 14,
-                  paddingHorizontal: CARD_INSET,
-                  gap: 12,
-                }}
-              >
-                {draft.mode === 'date' ? (
-                  <ChoiceChips
-                    key="months"
-                    chips={jar.months.map((m) => ({ id: m, label: format.chip(m) }))}
-                    selected={draft.month}
-                    onSelect={(month) => jar.setFill({ month })}
-                    inset={CARD_INSET}
-                  />
-                ) : (
-                  <ChoiceChips
-                    key="steady"
-                    chips={jar.choices.map((c) => ({ id: String(c), label: short(c) }))}
-                    selected={steadyIndex >= 0 ? String(draft.steady) : null}
-                    onSelect={(c) => jar.setFill({ steady: Number(c) })}
-                    inset={CARD_INSET}
-                  />
-                )}
-                <PressScale
-                  accessibilityRole="button"
-                  disabled={draft.mode === 'date'}
-                  onPress={() => {
-                    haptics.tap();
-                    setKeypad('steady');
-                  }}
-                  style={{ gap: 2, paddingTop: 4 }}
-                >
-                  {/* Its own line, as tall as the face draws it: a serif's figures are never cut. */}
-                  <RollingText
-                    text={short(shown.each)}
-                    style={amountStyle}
-                    lineHeight={faceLineHeight(amountStyle)}
-                  />
-                  <Text style={{ ...body(14, 600), color: palette.inkSoft }}>
-                    {t('pots.new.each')}
-                  </Text>
-                </PressScale>
-              </View>
+              <FillPicker
+                mode={draft.mode}
+                months={jar.months}
+                month={draft.month}
+                onMonth={(month) => jar.setFill({ month })}
+                amounts={jar.ladder}
+                steady={draft.steady}
+                onSteady={(steady) => jar.setFill({ steady })}
+                onOtherAmount={() => setKeypad('steady')}
+                each={shown.each}
+                paydays={shown.paydays}
+                bleed={16}
+              />
             </>
           )}
           {fy ? null : (

@@ -27,14 +27,32 @@ export const sheet: ScreenOptions = {
 };
 
 /**
- * A sheet as tall as what it holds (Quick add: the ticket and the keypad), never the full height
- * when it needs less. When what it holds grows or shrinks (a row opening), iOS animates the sheet
- * to the new height. Its body is a `SheetFrame` with `fit`.
+ * A sheet as tall as what it holds, never the full height when it needs less, with iOS animating
+ * it to a new height when what it holds grows or shrinks (a row opening). Its body is a
+ * `SheetFrame` with `fit`. On an iPhone iOS floats a sheet this short as an inset card, so there
+ * `edgeSheet` draws it instead; this is that sheet on iPad and Android.
  */
-export const fittedSheet: ScreenOptions =
+const fittedSheet: ScreenOptions =
   Platform.OS === 'ios' && Platform.isPad
     ? sheet
     : { ...sheet, sheetAllowedDetents: 'fitToContents' };
+
+/** Whether `edgeSheet` is drawn by the app (an iPhone) rather than the native sheet. */
+export const edgeSheetDrawn = Platform.OS === 'ios' && !Platform.isPad;
+
+/**
+ * Quick add's sheet: as tall as what it holds and standing on the bottom edge, its colour under
+ * the home indicator. Its body is an `EdgeSheet`, which draws itself on an iPhone (iOS would float
+ * a native sheet this short inset from the edges) and is `fittedSheet` elsewhere.
+ */
+export const edgeSheet: ScreenOptions = edgeSheetDrawn
+  ? {
+      presentation: 'transparentModal',
+      animation: 'none',
+      headerShown: false,
+      contentStyle: { backgroundColor: 'transparent' },
+    }
+  : fittedSheet;
 
 /**
  * The iOS page sheet (`UIModalPresentationPageSheet`), for a screen that is a place of its own

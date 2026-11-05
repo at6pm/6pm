@@ -55,6 +55,16 @@ export const frPots: { readonly [Key in keyof typeof enPots]: Entry } = {
   'pots.new.byDate': 'Pour une date',
   'pots.new.eachPayday': 'À chaque paie',
   'pots.new.each': 'à chaque paie',
+  'pots.new.byDateLine': {
+    one: '{amount} à chaque paie · {count} paie',
+    other: '{amount} à chaque paie · {count} paies',
+  },
+  'pots.new.steadyLine': {
+    one: '{amount} à chaque paie · plein en {count} paie',
+    other: '{amount} à chaque paie · plein en {count} paies',
+  },
+  'pots.new.eachLine': '{amount} à chaque paie',
+  'pots.new.otherAmount': 'Autre montant',
   'pots.new.eachDay': 'Chaque jour',
   'pots.new.start': 'Commencer',
   'pots.new.save': 'Enregistrer',

@@ -15,7 +15,7 @@ import { scheduleOnRN } from 'react-native-worklets';
 import { curves, durations } from '@6pm/theme';
 
 import { haptics } from '../haptics';
-import { display, tabular } from '../type/fonts';
+import { body, display, tabular } from '../type/fonts';
 import {
   cellCentres,
   cellLook,
@@ -33,8 +33,10 @@ const SNAP = { duration: durations.snap, easing: Easing.bezier(...curves.snap) }
 const HEIGHT = 52;
 const CELL = 48;
 const BAND_RADIUS = 15;
-/** The chosen cell's type size; the others are drawn smaller by `cellLook`. */
+/** The chosen cell's type size by default; the others are drawn smaller by `cellLook`. */
 const SIZE = 28;
+/** The row of marks over the cells ("2027" over January), when the strip has any. */
+const MARK = 18;
 /** A phone's card before the strip has measured itself. */
 const FIRST_WIDTH = 358;
 
@@ -53,10 +55,19 @@ export interface StripProps {
   readonly label: string;
   /** Each cell as VoiceOver reads it ("5th", "Last day"). */
   readonly spoken: readonly string[];
+  /** The chosen cell's type size: 28 by default, smaller for words ("Tháng 12"). */
+  readonly size?: number;
+  /** A small word over a cell, as a year over the month it begins; null over the rest. */
+  readonly marks?: readonly (string | null)[];
+  /** The marks' colour. */
+  readonly markInk?: string;
 }
 
 function Cell({
   label,
+  mark,
+  markRoom,
+  markStyle,
   index,
   width,
   position,
@@ -66,6 +77,10 @@ function Cell({
   textStyle,
 }: {
   readonly label: string;
+  readonly mark: string | null;
+  /** The room over the cell for marks: 0 on a strip without any. */
+  readonly markRoom: number;
+  readonly markStyle: TextStyle;
   readonly index: number;
   readonly width: number;
   readonly position: SharedValue<number>;
@@ -85,27 +100,44 @@ function Cell({
     };
   });
   return (
-    <Animated.View
-      style={[
-        {
-          width,
+    <Animated.View style={[{ width, paddingTop: markRoom }, look]}>
+      {markRoom > 0 ? (
+        <Animated.Text
+          numberOfLines={1}
+          allowFontScaling={false}
+          style={[
+            markStyle,
+            {
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: markRoom,
+              textAlign: 'center',
+            },
+          ]}
+        >
+          {mark ?? ''}
+        </Animated.Text>
+      ) : null}
+      <View
+        style={{
           height: CELL,
           alignItems: 'center',
           justifyContent: 'center',
           paddingHorizontal: 6,
-        },
-        look,
-      ]}
-    >
-      <Animated.Text
-        numberOfLines={1}
-        adjustsFontSizeToFit
-        minimumFontScale={0.5}
-        allowFontScaling={false}
-        style={textStyle}
+        }}
       >
-        {label}
-      </Animated.Text>
+        <Animated.Text
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.5}
+          allowFontScaling={false}
+          style={textStyle}
+        >
+          {label}
+        </Animated.Text>
+      </View>
     </Animated.View>
   );
 }
@@ -116,7 +148,20 @@ function Cell({
  * and shrink away from the centre and fade out at the sides; each cell passing the centre ticks,
  * and a tap picks the cell tapped.
  */
-export function Strip({ items, widths, index, onChange, ink, band, label, spoken }: StripProps) {
+export function Strip({
+  items,
+  widths,
+  index,
+  onChange,
+  ink,
+  band,
+  label,
+  spoken,
+  size = SIZE,
+  marks,
+  markInk = ink,
+}: StripProps) {
+  const markRoom = marks ? MARK : 0;
   const count = items.length;
   const centres = useMemo(() => cellCentres(widths), [widths]);
   const position = useSharedValue(index);
@@ -194,7 +239,8 @@ export function Strip({ items, widths, index, onChange, ink, band, label, spoken
     return { width: w, transform: [{ translateX: -w / 2 }] };
   });
 
-  const textStyle: TextStyle = { ...display(SIZE, 600, -0.03), ...tabular, color: ink };
+  const textStyle: TextStyle = { ...display(size, 600, -0.03), ...tabular, color: ink };
+  const markStyle: TextStyle = { ...body(11.5, 650, 0.02), ...tabular, color: markInk };
 
   return (
     <GestureDetector gesture={Gesture.Race(pan, tap)}>
@@ -213,7 +259,7 @@ export function Strip({ items, widths, index, onChange, ink, band, label, spoken
         onLayout={(e) => {
           stripWidth.value = e.nativeEvent.layout.width;
         }}
-        style={{ height: HEIGHT, overflow: 'hidden' }}
+        style={{ height: HEIGHT + markRoom, overflow: 'hidden' }}
       >
         <Animated.View
           pointerEvents="none"
@@ -221,7 +267,7 @@ export function Strip({ items, widths, index, onChange, ink, band, label, spoken
             {
               position: 'absolute',
               left: '50%',
-              top: (HEIGHT - CELL) / 2,
+              top: (HEIGHT - CELL) / 2 + markRoom,
               height: CELL,
               borderRadius: BAND_RADIUS,
               backgroundColor: band,
@@ -240,6 +286,9 @@ export function Strip({ items, widths, index, onChange, ink, band, label, spoken
             <Cell
               key={i}
               label={item}
+              mark={marks?.[i] ?? null}
+              markRoom={markRoom}
+              markStyle={markStyle}
               index={i}
               width={widths[i] ?? CELL}
               position={position}

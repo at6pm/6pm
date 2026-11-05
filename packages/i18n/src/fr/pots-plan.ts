@@ -43,7 +43,6 @@ export const frPotsPlan: { readonly [Key in keyof typeof enPotsPlan]: Entry } = 
   'potsPlan.pots.title': 'Bocaux',
   'potsPlan.pots.eachPayday': '{amount} à chaque paie',
   'potsPlan.pots.with': 'Avec {name}',
-  'potsPlan.pots.newJar': 'Nouveau bocal',
   'potsPlan.maths.title': 'Le calcul du jour',
   'potsPlan.maths.free': 'Libre ce mois-ci',
   'potsPlan.maths.before': 'Avant 6pm',

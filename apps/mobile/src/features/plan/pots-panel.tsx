@@ -24,9 +24,7 @@ import { useTheme } from '../../ui/theme/theme';
 import { body } from '../../ui/type/fonts';
 import { Jar, jarLevel, type JarState } from '../pots/jar';
 import { flyFrom, useJarAwayStyle } from '../pots/jar-flight';
-import { alpha } from '../pots/jar-colours';
-import { JarOutline } from '../pots/jar-outline';
-import { newJarRoute } from '../pots/pot-routes';
+import { NewJarItem } from '../pots/jar-outline';
 import { jarName } from '../pots/jar-name';
 import { useEntitlement } from '../purchases/purchases-provider';
 import { sharedPotRoute } from '../together/shared-jar';
@@ -170,38 +168,19 @@ export function PotsPanel({
           }}
         />
       ))}
-      <PressScale
-        accessibilityRole="button"
-        accessibilityLabel={t('potsPlan.pots.newJar')}
-        onPress={() => {
-          haptics.tap();
-          if (
-            newJarLocked(
-              jars.map((j) => j.pot),
-              max,
-            )
-          ) {
-            router.push({ pathname: '/max', params: { from: 'pots' } });
-          } else router.push(newJarRoute);
-        }}
-        style={{ width: '33.333%', alignItems: 'center', gap: 6 }}
-      >
-        <JarOutline
-          width={JAR_W}
-          height={JAR_H}
-          line={alpha(palette.ink, 0.28)}
-          glyph={palette.inkSoft}
-        />
-        <View style={{ alignItems: 'center', gap: 2, alignSelf: 'stretch' }}>
-          <Text numberOfLines={1} style={{ ...body(11.5, 650), color: palette.inkSoft }}>
-            {t('potsPlan.pots.newJar')}
-          </Text>
-          {/* The row's second line, empty, so the new jar's name sits level with the others'. */}
-          <Text numberOfLines={1} style={{ ...body(10.5), color: 'transparent' }}>
-            {' '}
-          </Text>
-        </View>
-      </PressScale>
+      <NewJarItem
+        locked={newJarLocked(
+          jars.map((j) => j.pot),
+          max,
+        )}
+        jarWidth={JAR_W}
+        jarHeight={JAR_H}
+        width="33.333%"
+        gap={6}
+        label={body(11.5, 650)}
+        under={body(10.5)}
+        lineGap={2}
+      />
     </View>
   );
 }

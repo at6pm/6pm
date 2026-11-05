@@ -17,7 +17,6 @@ import { useMoney } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
-import { Symbol } from '../../ui/icons/symbol';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, tabular } from '../../ui/type/fonts';
@@ -25,7 +24,8 @@ import { sharedPotRoute } from '../together/shared-jar';
 import { Jar } from './jar';
 import { alpha } from './jar-colours';
 import { flyFrom, takeLanding, useJarAwayStyle } from './jar-flight';
-import { newJarRoute, potRoute, potsRoute } from './pot-routes';
+import { NewJarItem } from './jar-outline';
+import { potRoute, potsRoute } from './pot-routes';
 import { useJars, type ShelfJar } from './use-jars';
 
 const CELL = 66;
@@ -33,11 +33,14 @@ const GAP = 6;
 const JAR_W = 52;
 const JAR_H = 66;
 const landEase = Easing.bezier(...curves.jarIn);
+/** A jar's name under it, and what it holds. */
+const NAME = body(12, 650);
+const HELD = { ...body(11), ...tabular };
 
 /**
  * The jar shelf on Today, under tonight's card (Pots canvas, A1): "Pots" and what goes into jars
  * each payday, then one row of small jars, Future you first, one's own, then the shared ones, and
- * a quiet "+" at the end. It never collapses; past five jars it scrolls and snaps. Tap a jar and
+ * New jar at the end, an empty jar at their size. It never collapses; past five jars it scrolls and snaps. Tap a jar and
  * it grows into its page.
  */
 export function JarShelf() {
@@ -50,10 +53,6 @@ export function JarShelf() {
   const hasPlan = useMoney().plan !== null;
 
   if (!hasPlan) return null;
-  const openNew = () => {
-    haptics.tap();
-    router.push(jars.locked ? { pathname: '/max', params: { from: 'pots' } } : newJarRoute);
-  };
 
   return (
     <View style={{ gap: 10 }}>
@@ -99,28 +98,15 @@ export function JarShelf() {
             onLanded={() => scroll.current?.scrollToEnd({ animated: true })}
           />
         ))}
-        <PressScale
-          accessibilityRole="button"
-          accessibilityLabel={t('pots.shelf.new')}
-          onPress={openNew}
-          style={{ width: JAR_W, alignItems: 'center' }}
-        >
-          <View
-            style={{
-              width: 44,
-              height: 44,
-              marginVertical: 11,
-              borderRadius: 22,
-              borderWidth: 1.5,
-              borderStyle: 'dashed',
-              borderColor: 'rgba(255,255,255,0.28)',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Symbol name="add" size={22} color={palette.inkSoft} />
-          </View>
-        </PressScale>
+        <NewJarItem
+          locked={jars.locked}
+          jarWidth={JAR_W}
+          jarHeight={JAR_H}
+          width={CELL}
+          gap={7}
+          label={NAME}
+          under={HELD}
+        />
       </ScrollView>
     </View>
   );
@@ -201,15 +187,10 @@ function ShelfCell({ jar, onLanded }: { readonly jar: ShelfJar; readonly onLande
           </Animated.View>
         </View>
         <View style={{ alignItems: 'center', width: '100%' }}>
-          <Text
-            numberOfLines={1}
-            style={{ ...body(12, 650), color: palette.ink, maxWidth: '100%' }}
-          >
+          <Text numberOfLines={1} style={{ ...NAME, color: palette.ink, maxWidth: '100%' }}>
             {jar.name}
           </Text>
-          <Text style={{ ...body(11), ...tabular, color: alpha(palette.ink, 0.62) }}>
-            {money.short(jar.saved)}
-          </Text>
+          <Text style={{ ...HELD, color: alpha(palette.ink, 0.62) }}>{money.short(jar.saved)}</Text>
         </View>
       </PressScale>
     </Animated.View>

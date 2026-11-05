@@ -55,6 +55,16 @@ export const esPots: { readonly [Key in keyof typeof enPots]: Entry } = {
   'pots.new.byDate': 'Para una fecha',
   'pots.new.eachPayday': 'Cada cobro',
   'pots.new.each': 'cada cobro',
+  'pots.new.byDateLine': {
+    one: '{amount} cada cobro · {count} cobro',
+    other: '{amount} cada cobro · {count} cobros',
+  },
+  'pots.new.steadyLine': {
+    one: '{amount} cada cobro · lleno en {count} cobro',
+    other: '{amount} cada cobro · lleno en {count} cobros',
+  },
+  'pots.new.eachLine': '{amount} cada cobro',
+  'pots.new.otherAmount': 'Otra cantidad',
   'pots.new.eachDay': 'Cada día',
   'pots.new.start': 'Empezar',
   'pots.new.save': 'Guardar',

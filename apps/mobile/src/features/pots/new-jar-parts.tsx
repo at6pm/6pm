@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { ScrollView, Text, View, type ScrollViewInstance } from 'react-native';
+import { useEffect, useState } from 'react';
+import { ScrollView, Text, View } from 'react-native';
 import Animated, {
   Easing,
   FadeIn,
@@ -14,6 +14,7 @@ import Animated, {
 import type { JarPreset } from '@6pm/domain';
 import { curves } from '@6pm/theme';
 
+import { useI18n } from '../../i18n/i18n';
 import { CategoryTile } from '../../ui/category-tile';
 import { haptics } from '../../ui/haptics';
 import { isSymbolName, Symbol } from '../../ui/icons/symbol';
@@ -136,6 +137,58 @@ export function DraftJar({
   );
 }
 
+/**
+ * The palette on the big jar's corner that opens its icons and colours (a check while they are
+ * open): a solid chip, the sheet's raised surface under the chip tint so the glass never shows
+ * through, ringed in the sheet's colour so it sits on the jar; it sinks under the finger.
+ */
+export function LookBadge({
+  open,
+  onPress,
+}: {
+  readonly open: boolean;
+  readonly onPress: () => void;
+}) {
+  const { palette } = useTheme();
+  const { t } = useI18n();
+  return (
+    <PressScale
+      accessibilityRole="button"
+      accessibilityLabel={t('pots.new.look')}
+      accessibilityState={{ expanded: open }}
+      scaleTo={0.88}
+      hitSlop={8}
+      onPress={onPress}
+      style={{
+        position: 'absolute',
+        right: -6,
+        bottom: -2,
+        width: 28,
+        height: 28,
+        borderRadius: 14,
+        backgroundColor: palette.cell,
+        boxShadow: `0 0 0 2px ${palette.sheetSolid}`,
+        overflow: 'hidden',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <View
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundColor: open ? palette.btnBg : palette.chipBg,
+        }}
+      />
+      <Symbol
+        name={open ? 'check' : 'palette'}
+        size={16}
+        color={open ? palette.btnFg : palette.ink}
+      />
+    </PressScale>
+  );
+}
+
 /** "By a date" | "Each payday", the light sliding under the one chosen. */
 export function FillSegment({
   options,
@@ -220,79 +273,6 @@ export function FillSegment({
           </Text>
         </PressScale>
       ))}
-    </View>
-  );
-}
-
-/**
- * A row of choice chips that scrolls sideways from edge to edge of its card: each chip at least a
- * quarter of the row and as wide as its words ("Tháng 12" in a wide serif, at the largest text
- * size), so none is ever cut, and the chosen one is scrolled into view as the row first draws.
- */
-export function ChoiceChips({
-  chips,
-  selected,
-  onSelect,
-  inset,
-}: {
-  readonly chips: readonly { readonly id: string; readonly label: string }[];
-  readonly selected: string | null;
-  readonly onSelect: (id: string) => void;
-  /** The card's padding at the sides: the row reaches past it, its first chip starts on it. */
-  readonly inset: number;
-}) {
-  const { palette } = useTheme();
-  const [width, setWidth] = useState(0);
-  const scroll = useRef<ScrollViewInstance>(null);
-  const shown = useRef(false);
-  const least = width > 0 ? (width - 18) / 4 : 0;
-  return (
-    <View onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
-      <ScrollView
-        ref={scroll}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={{ marginHorizontal: -inset }}
-        contentContainerStyle={{ gap: 6, paddingHorizontal: inset }}
-      >
-        {least > 0
-          ? chips.map((c) => {
-              const on = c.id === selected;
-              return (
-                <PressScale
-                  key={c.id}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: on }}
-                  onPress={() => {
-                    haptics.tick();
-                    onSelect(c.id);
-                  }}
-                  onLayout={(e) => {
-                    if (!on || shown.current) return;
-                    shown.current = true;
-                    const { x, width: w } = e.nativeEvent.layout;
-                    if (x + w > width)
-                      scroll.current?.scrollTo({ x: x + w - width, animated: false });
-                  }}
-                  style={{
-                    minWidth: least,
-                    minHeight: 40,
-                    paddingHorizontal: 12,
-                    paddingVertical: 8,
-                    borderRadius: 12,
-                    backgroundColor: on ? palette.btnBg : palette.chipBg,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Text style={{ ...body(13.5, 650), color: on ? palette.btnFg : palette.ink }}>
-                    {c.label}
-                  </Text>
-                </PressScale>
-              );
-            })
-          : null}
-      </ScrollView>
     </View>
   );
 }

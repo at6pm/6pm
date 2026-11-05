@@ -53,6 +53,16 @@ export const enPots = {
   'pots.new.byDate': 'By a date',
   'pots.new.eachPayday': 'Each payday',
   'pots.new.each': 'each payday',
+  'pots.new.byDateLine': {
+    one: '{amount} each payday · {count} payday',
+    other: '{amount} each payday · {count} paydays',
+  },
+  'pots.new.steadyLine': {
+    one: '{amount} each payday · full in {count} payday',
+    other: '{amount} each payday · full in {count} paydays',
+  },
+  'pots.new.eachLine': '{amount} each payday',
+  'pots.new.otherAmount': 'Other amount',
   'pots.new.eachDay': 'Each day',
   'pots.new.start': 'Start',
   'pots.new.save': 'Save',

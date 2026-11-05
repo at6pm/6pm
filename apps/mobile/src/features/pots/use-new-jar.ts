@@ -5,12 +5,14 @@ import {
   hasTet,
   isFutureYouPot,
   isLegacyGoal,
+  jarPaydaysLeft,
   jarPresets,
   lineWithSetAside,
   newJarMonths,
   potSetAside,
   savedBefore,
   steadyChoices,
+  steadyLadder,
   suggestCategoryIcon,
   type JarPreset,
   type PotRow,
@@ -23,7 +25,7 @@ import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { readDeviceRegion } from '../banks/device-region';
 
-/** How many months "By a date" offers; four show at once and the rest scroll. */
+/** How many months "By a date" offers: two years ahead. */
 const MONTHS = 24;
 
 export type FillMode = 'date' | 'steady';
@@ -62,6 +64,7 @@ export function useNewJar(editing: PotRow | null, asked: AskedJar | null) {
   );
   const months = useMemo(() => newJarMonths(snap.cycle, MONTHS), [snap.cycle]);
   const choices = useMemo(() => steadyChoices(currency), [currency]);
+  const ladder = useMemo(() => steadyLadder(currency), [currency]);
   const presetName = (p: JarPreset) => t(`pots.preset.${p.id}`);
 
   const [draft, setDraft] = useState<NewJarDraft>(() => {
@@ -136,6 +139,14 @@ export function useNewJar(editing: PotRow | null, asked: AskedJar | null) {
   const takes =
     editing && editing.kind === 'occasion' ? (snap.setAsideThisCycle[editing.id] ?? 0) : 0;
   const after = input ? lineWithSetAside(input, futureYou || legacy ? 0 : each - takes) : 0;
+  // How many paydays until it is full, the way it fills now.
+  const paydays = jarPaydaysLeft({
+    goal: draft.target,
+    savedBefore: held,
+    neededBy: draft.mode === 'date' ? draft.month : null,
+    monthly: draft.mode === 'steady' ? draft.steady : null,
+    cycle: snap.cycle,
+  });
   const fill: JarFillChoice =
     draft.mode === 'date'
       ? { by: 'date', neededBy: draft.month }
@@ -151,7 +162,9 @@ export function useNewJar(editing: PotRow | null, asked: AskedJar | null) {
     presetName,
     months,
     choices,
+    ladder,
     each,
+    paydays,
     before,
     after,
     fill,

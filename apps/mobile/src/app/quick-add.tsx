@@ -1,4 +1,4 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { ScrollView, Text, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -42,13 +42,12 @@ import { Keypad } from '../ui/keypad';
 import { isSymbolName } from '../ui/icons/symbol';
 import { PressScale } from '../ui/primitives/press-scale';
 import { useClock } from '../ui/theme/clock';
-import { SheetFrame } from '../ui/navigation/sheet-frame';
+import { EdgeSheet, EdgeSheetScroll, useEdgeSheet } from '../ui/navigation/edge-sheet';
 import { useTheme } from '../ui/theme/theme';
 import { body } from '../ui/type/fonts';
 
 /** Quick add: type it in a few taps, the category most likely at this hour already picked. */
 export default function QuickAdd() {
-  const router = useRouter();
   const { palette } = useTheme();
   const { t, language } = useI18n();
   const { now, hour } = useClock();
@@ -72,7 +71,7 @@ export default function QuickAdd() {
   const wallets = useWalletOptions();
   const saving = useRef(false);
   const { height: screen } = useWindowDimensions();
-  const { top: safeTop } = useSafeAreaInsets();
+  const { top: safeTop, bottom: safeBottom } = useSafeAreaInsets();
   const [headerHeight, setHeaderHeight] = useState(60);
   // What the user taught 6pm: typing a merchant it knows picks that merchant's category.
   const [rules, setRules] = useState<readonly MerchantRuleRow[]>([]);
@@ -170,9 +169,10 @@ export default function QuickAdd() {
     }
     haptics.success();
     say('capture');
-    router.back();
+    edge.dismiss();
   };
 
+  const edge = useEdgeSheet();
   const header = (
     <View
       onLayout={(e) => setHeaderHeight(e.nativeEvent.layout.height)}
@@ -189,7 +189,7 @@ export default function QuickAdd() {
         }}
       />
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <PressScale onPress={() => router.back()} style={{ width: 60, paddingVertical: 6 }}>
+        <PressScale onPress={edge.dismiss} style={{ width: 60, paddingVertical: 6 }}>
           <Text style={{ ...body(16), color: palette.inkSoft }}>{t('quick.cancel')}</Text>
         </PressScale>
         <Text style={{ ...body(16, 650), color: palette.ink }}>{t('quick.title')}</Text>
@@ -208,10 +208,11 @@ export default function QuickAdd() {
   );
 
   return (
-    <SheetFrame header={header} fit>
+    <EdgeSheet sheet={edge}>
+      {header}
       {/* The sheet is as tall as this; past the tallest sheet (a small phone, the largest text)
           it scrolls instead of cutting off Keep. */}
-      <ScrollView
+      <EdgeSheetScroll
         style={{ maxHeight: Math.max(0, screen - safeTop - headerHeight) }}
         alwaysBounceVertical={false}
         showsVerticalScrollIndicator={false}
@@ -219,7 +220,8 @@ export default function QuickAdd() {
         contentContainerStyle={{
           paddingTop: 14,
           paddingHorizontal: 16,
-          paddingBottom: 22,
+          // Standing on the bottom edge, Keep stays clear of the home indicator.
+          paddingBottom: edge.drawn ? Math.max(22, safeBottom + 8) : 22,
           gap: 14,
         }}
       >
@@ -360,7 +362,7 @@ export default function QuickAdd() {
             onPress={listeningOpen ? voice.tapMain : () => void save()}
           />
         </View>
-      </ScrollView>
-    </SheetFrame>
+      </EdgeSheetScroll>
+    </EdgeSheet>
   );
 }

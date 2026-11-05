@@ -40,7 +40,6 @@ export const idPotsPlan: { readonly [Key in keyof typeof enPotsPlan]: Entry } = 
   'potsPlan.pots.title': 'Celengan',
   'potsPlan.pots.eachPayday': '{amount} tiap gajian',
   'potsPlan.pots.with': 'Bersama {name}',
-  'potsPlan.pots.newJar': 'Celengan baru',
   'potsPlan.maths.title': 'Hitungan hari ini',
   'potsPlan.maths.free': 'Bebas bulan ini',
   'potsPlan.maths.before': 'Sebelum pakai 6pm',
