@@ -109,7 +109,12 @@ class WidgetDrawings(private val faces: WidgetFaces) {
     canvas.text(card.kicker, pad, pad + top(head), head, room)
     val sub = canvas.ink(faces.body(600), 12f, WidgetInk.faded(ink, 0.8))
     val subBaseline = canvas.height - pad - sub.fontMetrics.descent
-    val words = if (moment.state == WidgetMoment.State.STALE) moment.text("openApp") else card.sub
+    val words =
+      when {
+        moment.state == WidgetMoment.State.STALE -> moment.text("openApp")
+        moment.postcards?.hideAmounts == true -> card.subHidden ?: card.sub
+        else -> card.sub
+      }
     canvas.text(words, pad, subBaseline, sub, room)
     val barTop = subBaseline + sub.fontMetrics.ascent - 4 - 5
     val bar = RectF(pad, barTop, pad + minOf(140f, room), barTop + 5)

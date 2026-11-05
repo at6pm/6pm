@@ -11,6 +11,8 @@ data class PostcardCard(
   val kickerShort: String,
   val number: String,
   val sub: String,
+  /** `sub` with its amount hidden; null when it names none. */
+  val subHidden: String?,
   val subShort: String,
   val tonight: String,
   val used: Double,
@@ -35,6 +37,7 @@ data class PostcardCard(
         kickerShort = json.optString("kickerShort"),
         number = json.optString("number"),
         sub = json.optString("sub"),
+        subHidden = if (json.has("subHidden")) json.optString("subHidden") else null,
         subShort = json.optString("subShort"),
         tonight = json.optString("tonight"),
         used = json.optDouble("used", 0.0),

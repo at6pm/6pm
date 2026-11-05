@@ -18,7 +18,9 @@ export function fillCss(fill: Fill | null | undefined): string {
     }
     case 'linear':
       return `linear-gradient(${fill.angle ?? 180}deg, ${stops})`;
-    default:
+    case 'solid':
+    case 'dots':
+    case 'stripes':
       return `linear-gradient(${first}, ${first})`;
   }
 }

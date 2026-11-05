@@ -112,7 +112,9 @@ struct SafeMedium: View {
               fill: entry.ink, height: 5
             )
             .frame(width: 140)
-            Text(entry.state == .stale ? entry.text("openApp") : card.sub)
+            PrivateText(
+              text: entry.state == .stale ? entry.text("openApp") : card.sub, entry: entry,
+              mask: entry.state == .stale ? entry.text("openApp") : (card.subHidden ?? card.sub))
               .font(SurfaceFont.body(size: 12, weight: 600))
               .opacity(0.8)
               .lineLimit(1)

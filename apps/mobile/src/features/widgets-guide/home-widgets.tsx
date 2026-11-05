@@ -301,7 +301,7 @@ function Medium({ preview }: { readonly preview: WidgetPreview }) {
               />
             </View>
             <Text numberOfLines={1} style={{ ...body(12, 600), color: ink, opacity: 0.8 }}>
-              {card.sub}
+              {preview.hideAmounts ? (card.subHidden ?? card.sub) : card.sub}
             </Text>
           </View>
         </View>

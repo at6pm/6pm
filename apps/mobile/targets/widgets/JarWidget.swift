@@ -172,14 +172,14 @@ struct JarRing: View {
         RoundedRectangle(cornerRadius: 2).fill(ink).frame(width: 12, height: 4)
       }
       .frame(width: 26, height: 34)
-      .offset(y: -6)
+      .offset(y: -9)
       Text(jar.label)
         .font(SurfaceFont.body(size: 9.5, weight: 800))
         .lineLimit(1)
         .minimumScaleFactor(0.6)
         .padding(.horizontal, 10)
         .frame(maxHeight: .infinity, alignment: .bottom)
-        .padding(.bottom, 9)
+        .padding(.bottom, 7)
     }
     .widgetAccentable()
     .containerBackground(for: .widget) {}

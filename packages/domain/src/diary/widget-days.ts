@@ -71,7 +71,8 @@ export function monthSuns(input: {
         return 'miss';
       case 'blank':
         return 'blank';
-      default:
+      case 'idle':
+      case 'brought':
         return 'ahead';
     }
   });

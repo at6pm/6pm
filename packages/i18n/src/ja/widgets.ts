@@ -17,7 +17,7 @@ export const jaWidgets: { readonly [Key in keyof typeof enWidgets]: Entry } = {
   'widgets.subShort.left': '今日の残り',
   'widgets.subShort.due': 'タップで締める',
   'widgets.subShort.closed': '{time}に締め済み',
-  'widgets.inline.left': '{date} · 残り{amount}',
+  'widgets.inline.left': '残り{amount}',
   'widgets.inline.closed': '締め済み · 明日{amount}',
   'widgets.lock.closeAt': '{time}に締め',
   'widgets.lock.due': { other: '{count}件待ち · 6時です' },

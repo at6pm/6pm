@@ -23,7 +23,7 @@ export const frWidgets: { readonly [Key in keyof typeof enWidgets]: Entry } = {
   'widgets.subShort.left': 'reste aujourd’hui',
   'widgets.subShort.due': 'touche pour clôturer',
   'widgets.subShort.closed': 'clôturé {time}',
-  'widgets.inline.left': '{date} · reste {amount}',
+  'widgets.inline.left': 'reste {amount}',
   'widgets.inline.closed': 'Clôturé · {amount} demain',
   'widgets.lock.closeAt': 'clôture à {time}',
   'widgets.lock.due': {

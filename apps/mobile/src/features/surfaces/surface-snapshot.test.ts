@@ -339,8 +339,8 @@ describe('the postcards', () => {
       sunKind: 'noon',
     });
     expect(noon?.sub).toMatch(/^70k used · 2 caught$/);
-    expect(noon?.inline).toMatch(/^Fri 9 · .+ left$/);
-    expect(noon?.inlineHidden).toBe('Fri 9 · ••• left');
+    expect(noon?.inline).toMatch(/^.+ left$/);
+    expect(noon?.inlineHidden).toBe('••• left');
     const six = stretchAt(snap, today, '18:30')?.card;
     expect(six).toMatchObject({
       phase: 'due',

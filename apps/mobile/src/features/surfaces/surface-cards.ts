@@ -74,7 +74,6 @@ export function cardOf(
   const when = new Date(`${day.date}T12:00:00`);
   const weekday = new Intl.DateTimeFormat(locale, { weekday: 'long' }).format(when);
   const weekdayShort = new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(when);
-  const date = new Intl.DateTimeFormat(locale, { weekday: 'short', day: 'numeric' }).format(when);
   const shown = phase === 'closed' && closed ? closed.next : day.number;
   const safe = Math.max(0, shown.safe);
   const short = format.short(safe);
@@ -105,8 +104,8 @@ export function cardOf(
     };
   }
   const inline = {
-    inline: t('widgets.inline.left', { date, amount: short }),
-    inlineHidden: t('widgets.inline.left', { date, amount: HIDDEN }),
+    inline: t('widgets.inline.left', { amount: short }),
+    inlineHidden: t('widgets.inline.left', { amount: HIDDEN }),
     used: lineUsed(day.number),
   };
   if (phase === 'due') {
@@ -133,6 +132,7 @@ export function cardOf(
       spent > 0
         ? t('widgets.sub.used', { used: format.short(spent), count: day.caught })
         : t('widgets.sub.untouched'),
+    ...(spent > 0 ? { subHidden: t('widgets.sub.used', { used: HIDDEN, count: day.caught }) } : {}),
     subShort: spent > 0 ? t('widgets.subShort.left') : t('widgets.subShort.safe'),
     lockSub: t('widgets.lock.closeAt', { time: closeAt }),
     tonight: t('widgets.tonight.closeAt', { time: closeAt }),

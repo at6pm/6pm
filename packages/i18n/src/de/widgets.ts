@@ -23,7 +23,7 @@ export const deWidgets: { readonly [Key in keyof typeof enWidgets]: Entry } = {
   'widgets.subShort.left': 'heute übrig',
   'widgets.subShort.due': 'tippen zum Abschließen',
   'widgets.subShort.closed': 'abgeschlossen {time}',
-  'widgets.inline.left': '{date} · {amount} übrig',
+  'widgets.inline.left': '{amount} übrig',
   'widgets.inline.closed': 'Abgeschlossen · morgen {amount}',
   'widgets.lock.closeAt': 'Abschluss um {time}',
   'widgets.lock.due': {

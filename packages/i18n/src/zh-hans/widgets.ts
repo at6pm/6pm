@@ -17,7 +17,7 @@ export const zhHansWidgets: { readonly [Key in keyof typeof enWidgets]: Entry } 
   'widgets.subShort.left': '今天还剩',
   'widgets.subShort.due': '点一下结算',
   'widgets.subShort.closed': '{time} 已结算',
-  'widgets.inline.left': '{date} · 还剩 {amount}',
+  'widgets.inline.left': '还剩 {amount}',
   'widgets.inline.closed': '已结算 · 明天 {amount}',
   'widgets.lock.closeAt': '{time} 结算',
   'widgets.lock.due': { other: '{count} 笔待确认 · 六点了' },

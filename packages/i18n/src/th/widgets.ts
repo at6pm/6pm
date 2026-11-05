@@ -17,7 +17,7 @@ export const thWidgets: { readonly [Key in keyof typeof enWidgets]: Entry } = {
   'widgets.subShort.left': 'เหลือวันนี้',
   'widgets.subShort.due': 'แตะเพื่อปิดวัน',
   'widgets.subShort.closed': 'ปิดแล้ว {time}',
-  'widgets.inline.left': '{date} · เหลือ {amount}',
+  'widgets.inline.left': 'เหลือ {amount}',
   'widgets.inline.closed': 'ปิดแล้ว · พรุ่งนี้ {amount}',
   'widgets.lock.closeAt': 'ปิดวันเวลา {time}',
   'widgets.lock.due': { other: 'รอ {count} รายการ · หกโมงแล้ว' },

@@ -54,10 +54,12 @@ extension SurfaceEntry {
 struct PrivateText: View {
   let text: String
   let entry: SurfaceEntry
+  /// What shows while locked; the mask alone when not given.
+  var mask: String? = nil
 
   var body: some View {
     if entry.hideAmounts {
-      Masked(text: text, mask: entry.hidden).privacySensitive()
+      Masked(text: text, mask: mask ?? entry.hidden).privacySensitive()
     } else {
       Text(text)
     }

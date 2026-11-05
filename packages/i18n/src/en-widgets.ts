@@ -25,7 +25,7 @@ export const enWidgets = {
   'widgets.subShort.left': 'left today',
   'widgets.subShort.due': 'tap to close',
   'widgets.subShort.closed': 'closed {time}',
-  'widgets.inline.left': '{date} · {amount} left',
+  'widgets.inline.left': '{amount} left',
   'widgets.inline.closed': 'Closed · {amount} tomorrow',
   'widgets.lock.closeAt': 'close at {time}',
   'widgets.lock.due': { one: '{count} waiting · it’s six', other: '{count} waiting · it’s six' },

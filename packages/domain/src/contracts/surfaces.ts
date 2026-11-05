@@ -192,9 +192,11 @@ export const surfaceEntrySchema = z.object({
       amount: z.string(),
       /** "All of it, still.", "165k used · 3 caught", "4 waiting for the close". */
       sub: z.string(),
+      /** `sub` with its amount hidden ("••• used · 3 caught"); absent when it names none. */
+      subHidden: z.string().optional(),
       /** "safe to spend", "left today", "tap to close", "closed 18:04". */
       subShort: z.string(),
-      /** "Fri 9 · 49k left", and the same with the amount hidden. */
+      /** "49k left" beside the Lock Screen's date ("FRI 9 · 49K LEFT"), and with the amount hidden. */
       inline: z.string(),
       inlineHidden: z.string(),
       /** Under the Lock Screen card's number: "close at 18:00", "4 waiting · it’s six". */

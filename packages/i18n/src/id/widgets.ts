@@ -17,7 +17,7 @@ export const idWidgets: { readonly [Key in keyof typeof enWidgets]: Entry } = {
   'widgets.subShort.left': 'sisa hari ini',
   'widgets.subShort.due': 'ketuk untuk menutup',
   'widgets.subShort.closed': 'ditutup {time}',
-  'widgets.inline.left': '{date} · sisa {amount}',
+  'widgets.inline.left': 'sisa {amount}',
   'widgets.inline.closed': 'Ditutup · {amount} besok',
   'widgets.lock.closeAt': 'tutup pukul {time}',
   'widgets.lock.due': { other: '{count} menunggu · sudah jam enam' },

@@ -17,7 +17,7 @@ export const viWidgets: { readonly [Key in keyof typeof enWidgets]: Entry } = {
   'widgets.subShort.left': 'còn hôm nay',
   'widgets.subShort.due': 'chạm để chốt',
   'widgets.subShort.closed': 'đã chốt {time}',
-  'widgets.inline.left': '{date} · còn {amount}',
+  'widgets.inline.left': 'còn {amount}',
   'widgets.inline.closed': 'Đã chốt · {amount} ngày mai',
   'widgets.lock.closeAt': 'chốt lúc {time}',
   'widgets.lock.due': { other: '{count} khoản chờ · sáu giờ rồi' },

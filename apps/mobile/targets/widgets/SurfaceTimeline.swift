@@ -31,6 +31,7 @@ struct SurfaceSnapshot: Decodable {
     let number: String
     let amount: String
     let sub: String
+    let subHidden: String?
     let subShort: String
     let inline: String
     let inlineHidden: String

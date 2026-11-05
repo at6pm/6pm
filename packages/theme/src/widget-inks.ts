@@ -125,7 +125,7 @@ const allDay = (one: WidgetSun | null) => ({ day: one, noon: one, dusk: one, nig
 const half = (lit: string, faint: string) =>
   linear(180, [lit, 0], [lit, 0.5], [faint, 0.5], [faint, 1]);
 
-/** Golden Hour's open evening, its today ring and the streak's strata ground. */
+/** The open evening's hatch, and today's ring, which every look draws in the same warm orange. */
 const GOLDEN_TODAY = '#ff8552';
 const GOLDEN_HATCH = 'rgba(255,255,255,0.08)';
 
@@ -215,7 +215,6 @@ export const widgetInks: Readonly<Record<LookId, WidgetLookInk>> = {
     streakLine: 'rgba(10,132,255,0.5)',
     streakWord: '#0a84ff',
     hatch: 'rgba(255,255,255,0.1)',
-    today: '#0a84ff',
   },
   lacquer: {
     ...base,
@@ -248,7 +247,6 @@ export const widgetInks: Readonly<Record<LookId, WidgetLookInk>> = {
     streakGround: '#0c0706',
     streakLine: 'rgba(226,184,99,0.5)',
     streakWord: '#e2b863',
-    today: '#e2b863',
   },
   glaze: {
     ...base,
@@ -290,7 +288,6 @@ export const widgetInks: Readonly<Record<LookId, WidgetLookInk>> = {
     streakGround: '#101c3a',
     streakLine: 'rgba(185,201,242,0.5)',
     streakWord: '#b9c9f2',
-    today: '#2a4fb0',
   },
   riso: {
     ...base,
@@ -323,7 +320,6 @@ export const widgetInks: Readonly<Record<LookId, WidgetLookInk>> = {
     streakGround: '#1d2b62',
     streakLine: 'rgba(255,79,168,0.6)',
     streakWord: '#ff4fa8',
-    today: '#ff4fa8',
   },
   monsoon: {
     ...base,
@@ -375,7 +371,6 @@ export const widgetInks: Readonly<Record<LookId, WidgetLookInk>> = {
     streakGround: '#121b20',
     streakLine: 'rgba(143,214,200,0.5)',
     streakWord: '#8fd6c8',
-    today: '#8fd6c8',
   },
   cafe: {
     ...base,
@@ -413,7 +408,6 @@ export const widgetInks: Readonly<Record<LookId, WidgetLookInk>> = {
     streakGround: '#20130d',
     streakLine: 'rgba(231,163,92,0.5)',
     streakWord: '#e7a35c',
-    today: '#e7a35c',
   },
   neon: {
     ...base,
@@ -448,7 +442,6 @@ export const widgetInks: Readonly<Record<LookId, WidgetLookInk>> = {
     streakGround: '#070f0e',
     streakLine: 'rgba(255,79,158,0.6)',
     streakWord: '#ff4f9e',
-    today: '#ff4f9e',
   },
   expo: {
     ...base,
@@ -498,7 +491,6 @@ export const widgetInks: Readonly<Record<LookId, WidgetLookInk>> = {
     streakGround: '#04060f',
     streakLine: 'rgba(255,179,71,0.5)',
     streakWord: '#ffb347',
-    today: '#ffb347',
   },
   paper: {
     ...base,
@@ -539,7 +531,6 @@ export const widgetInks: Readonly<Record<LookId, WidgetLookInk>> = {
     streakGround: '#2a221c',
     streakLine: 'rgba(255,211,110,0.5)',
     streakWord: '#ffd36e',
-    today: '#e0902e',
   },
   lantern: {
     ...base,
@@ -578,7 +569,6 @@ export const widgetInks: Readonly<Record<LookId, WidgetLookInk>> = {
     streakGround: '#140810',
     streakLine: 'rgba(255,194,58,0.5)',
     streakWord: '#ffc23a',
-    today: '#ffb347',
   },
 };
 
@@ -597,12 +587,13 @@ const SUN_STOPS: readonly SunStop[] = [
 ];
 
 /**
- * The other looks keep their one sun clear of the number ("6pm Widgets in Looks"): high through
- * the day, and at six low on the small widget and high on the medium one.
+ * The other looks keep their one sun clear of the kicker and the number ("6pm Widgets in Looks"
+ * places it at noon and six): beside the number on the medium widget all day, and at the small
+ * one's right, dropping to its corner at six.
  */
 const LOOK_SUN_STOPS: readonly SunStop[] = [
-  [13, 0.46, 0.2, 0.74, 0.2],
-  [18, 0.46, 0.235, 0.82, 0.753],
+  [13, 0.6, 0.36, 0.78, 0.4],
+  [18, 0.6, 0.36, 0.82, 0.753],
 ];
 
 export function widgetSunAt(

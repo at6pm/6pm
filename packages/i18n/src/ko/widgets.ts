@@ -17,7 +17,7 @@ export const koWidgets: { readonly [Key in keyof typeof enWidgets]: Entry } = {
   'widgets.subShort.left': '오늘 남은 돈',
   'widgets.subShort.due': '눌러서 마감',
   'widgets.subShort.closed': '{time} 마감',
-  'widgets.inline.left': '{date} · {amount} 남음',
+  'widgets.inline.left': '{amount} 남음',
   'widgets.inline.closed': '마감함 · 내일 {amount}',
   'widgets.lock.closeAt': '{time}에 마감',
   'widgets.lock.due': { other: '{count}건 대기 · 6시예요' },
