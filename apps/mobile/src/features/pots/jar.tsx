@@ -139,6 +139,8 @@ export function Jar({
   const surfaceStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: -3 * k * wave.value }, { scaleY: 1 + 0.04 * wave.value }],
   }));
+  // The sloshing fill reaches past the glass by more than it sways, so its edge never shows.
+  const sloshReach = Math.ceil(3 * k) + 2;
 
   const glyph = (color: string) =>
     futureYou ? (
@@ -193,8 +195,8 @@ export function Jar({
             style={[
               {
                 position: 'absolute',
-                left: slosh ? -4 : 0,
-                right: slosh ? -4 : 0,
+                left: slosh ? -sloshReach : 0,
+                right: slosh ? -sloshReach : 0,
                 bottom: 0,
                 backgroundColor: c.fill,
                 overflow: 'hidden',

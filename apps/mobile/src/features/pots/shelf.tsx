@@ -24,7 +24,7 @@ import { body, tabular } from '../../ui/type/fonts';
 import { sharedPotRoute } from '../together/shared-jar';
 import { Jar } from './jar';
 import { alpha } from './jar-colours';
-import { flyFrom, takeLanding } from './jar-flight';
+import { flyFrom, takeLanding, useJarAwayStyle } from './jar-flight';
 import { newJarRoute, potRoute, potsRoute } from './pot-routes';
 import { useJars, type ShelfJar } from './use-jars';
 
@@ -140,6 +140,7 @@ function ShelfCell({ jar, onLanded }: { readonly jar: ShelfJar; readonly onLande
     flyFrom(jar.id, jarView.current, () => router.push(potRoute(jar.id)));
   }, [jar.kind, jar.id, router]);
   const money = jar.kind === 'shared' ? jar.money : home;
+  const awayStyle = useJarAwayStyle(jar.id);
 
   // A jar New jar just started drops in after the sheet has gone, with the jarIn curve.
   const [landing] = useState(() => takeLanding());
@@ -181,21 +182,23 @@ function ShelfCell({ jar, onLanded }: { readonly jar: ShelfJar; readonly onLande
         style={{ width: CELL, alignItems: 'center', gap: 7 }}
       >
         <View ref={jarView} collapsable={false} style={{ width: JAR_W, height: JAR_H }}>
-          <Jar
-            width={JAR_W}
-            height={JAR_H}
-            hue={jar.pot.hue}
-            icon={jar.pot.icon}
-            futureYou={own?.futureYou ?? false}
-            level={jar.level}
-            state={own?.state ?? 'normal'}
-            partner={
-              jar.kind === 'shared'
-                ? { initial: jar.partnerInitial, level: jar.partnerLevel }
-                : null
-            }
-            ringColor={palette.sheet}
-          />
+          <Animated.View style={awayStyle}>
+            <Jar
+              width={JAR_W}
+              height={JAR_H}
+              hue={jar.pot.hue}
+              icon={jar.pot.icon}
+              futureYou={own?.futureYou ?? false}
+              level={jar.level}
+              state={own?.state ?? 'normal'}
+              partner={
+                jar.kind === 'shared'
+                  ? { initial: jar.partnerInitial, level: jar.partnerLevel }
+                  : null
+              }
+              ringColor={palette.sheet}
+            />
+          </Animated.View>
         </View>
         <View style={{ alignItems: 'center', width: '100%' }}>
           <Text

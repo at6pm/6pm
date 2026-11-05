@@ -38,7 +38,7 @@ import { useOfferUndo } from '../../ui/undo/undo-host';
 import { useRunAction } from '../companion/use-run-action';
 import { AmountKeypadSheet } from '../quick-add/amount-keypad-sheet';
 import { JarHero } from './jar-hero';
-import { takeFlightSource } from './jar-flight';
+import { setJarAway, takeFlightSource } from './jar-flight';
 import { JarActions, JarMoves } from './jar-page-parts';
 import { useJarFormat } from './jar-words';
 import { JarWhatIf } from './jar-what-if';
@@ -88,17 +88,25 @@ export function JarPage({ id }: { readonly id: string }) {
       dx.value = from.x + from.width / 2 - (x + w / 2);
       dy.value = from.y + from.height / 2 - (y + h / 2);
       ready.value = 1;
+      setJarAway(id);
       shown.value = withTiming(1, timing);
     });
   };
   const leave = useCallback(() => {
     if (leaving.current) return;
     leaving.current = true;
-    const back = () => router.back();
+    // Landed back on the jar tapped: that one shows again under it, then the page goes.
+    const back = () => {
+      setJarAway(null);
+      router.back();
+    };
     shown.value = withTiming(0, timing, (done) => {
       if (done) scheduleOnRN(back);
     });
   }, [router, shown]);
+
+  // However the page goes, the jar it grew from is never left hidden.
+  useEffect(() => () => setJarAway(null), []);
 
   // The jar is gone (deleted elsewhere, or put away here): nothing left to show.
   useEffect(() => {

@@ -1,5 +1,5 @@
 import { useRouter, type Href } from 'expo-router';
-import { useEffect } from 'react';
+import { useEffect, useRef, type ComponentRef } from 'react';
 import { Text, View } from 'react-native';
 import Animated, {
   Easing,
@@ -24,6 +24,7 @@ import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body } from '../../ui/type/fonts';
 import { Jar, jarLevel, type JarState } from '../pots/jar';
+import { flyFrom, useJarAwayStyle } from '../pots/jar-flight';
 import { jarName } from '../pots/jar-name';
 import { useEntitlement } from '../purchases/purchases-provider';
 import { sharedPotRoute } from '../together/shared-jar';
@@ -56,6 +57,8 @@ interface Cell {
   readonly partner: { readonly initial: string; readonly level: number } | null;
   readonly chip: string | null;
   readonly route: Href;
+  /** One's own jar grows out of its cell into its page; a shared one opens its sheet. */
+  readonly own: boolean;
 }
 
 /**
@@ -109,6 +112,7 @@ export function PotsPanel({
       chip:
         justPaid && isFutureYouPot(j.pot) && j.setAside > 0 ? `+${money.short(j.setAside)}` : null,
       route: planRoutes.pot(j.pot.id),
+      own: true,
     };
   });
   const shared: Cell[] =
@@ -136,6 +140,7 @@ export function PotsPanel({
           : { initial: initialOf(name), level: pot.goal > 0 ? theirs / pot.goal : 0 },
       chip: null,
       route: sharedPotRoute(pot.id),
+      own: false,
     };
   }
   const cells = [...own, ...shared];
@@ -158,9 +163,10 @@ export function PotsPanel({
           fill={fill}
           ring={palette.cell}
           colours={colours}
-          onPress={() => {
+          onPress={(jarView) => {
             haptics.tap();
-            router.push(cell.route);
+            if (cell.own) flyFrom(cell.key, jarView, () => router.push(cell.route));
+            else router.push(cell.route);
           }}
         />
       ))}
@@ -212,9 +218,12 @@ function JarCell({
   readonly fill: number;
   readonly ring: string;
   readonly colours: SplitColours;
-  readonly onPress: () => void;
+  /** Given the jar, measured for the flight into its page. */
+  readonly onPress: (jarView: ComponentRef<typeof View> | null) => void;
 }) {
   const { palette } = useTheme();
+  const jarView = useRef<ComponentRef<typeof View>>(null);
+  const awayStyle = useJarAwayStyle(cell.key);
   const level = useSharedValue(fill > 0 ? cell.from : cell.level);
   const glow = useSharedValue(0);
   useEffect(() => {
@@ -247,43 +256,47 @@ function JarCell({
     <PressScale
       accessibilityRole="button"
       accessibilityLabel={`${cell.name}, ${cell.each}`}
-      onPress={onPress}
+      onPress={() => onPress(jarView.current)}
       style={{ width: '33.333%', alignItems: 'center', gap: 6 }}
     >
-      <Jar
-        width={JAR_W}
-        height={JAR_H}
-        hue={cell.hue}
-        icon={cell.icon}
-        futureYou={cell.futureYou}
-        level={level}
-        target={cell.target}
-        state={cell.state}
-        partner={cell.partner}
-        ringColor={ring}
-      >
-        {cell.chip !== null ? (
-          <Animated.View
-            pointerEvents="none"
-            style={[
-              {
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                top: bodyTop,
-                bottom: 0,
-                borderTopLeftRadius: 13,
-                borderTopRightRadius: 13,
-                borderBottomLeftRadius: 16,
-                borderBottomRightRadius: 16,
-                borderWidth: 2,
-                borderColor: colours.pots.pulse,
-              },
-              glowStyle,
-            ]}
-          />
-        ) : null}
-      </Jar>
+      <View ref={jarView} collapsable={false}>
+        <Animated.View style={awayStyle}>
+          <Jar
+            width={JAR_W}
+            height={JAR_H}
+            hue={cell.hue}
+            icon={cell.icon}
+            futureYou={cell.futureYou}
+            level={level}
+            target={cell.target}
+            state={cell.state}
+            partner={cell.partner}
+            ringColor={ring}
+          >
+            {cell.chip !== null ? (
+              <Animated.View
+                pointerEvents="none"
+                style={[
+                  {
+                    position: 'absolute',
+                    left: 0,
+                    right: 0,
+                    top: bodyTop,
+                    bottom: 0,
+                    borderTopLeftRadius: 13,
+                    borderTopRightRadius: 13,
+                    borderBottomLeftRadius: 16,
+                    borderBottomRightRadius: 16,
+                    borderWidth: 2,
+                    borderColor: colours.pots.pulse,
+                  },
+                  glowStyle,
+                ]}
+              />
+            ) : null}
+          </Jar>
+        </Animated.View>
+      </View>
       {cell.chip !== null ? (
         <View
           pointerEvents="none"
