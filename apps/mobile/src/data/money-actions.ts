@@ -88,10 +88,16 @@ export type UndoRestore = Partial<Pick<SpendRow, 'amount' | 'categoryId'>>;
 export function moneyActions(store: MoneyStore, photos: SpendPhotos = NO_SPEND_PHOTOS) {
   const { tables } = store;
 
-  /** The patch that lets a deleted spend's photo go; the file is held for the undo. */
-  const letPhotoGo = async (row: SpendRow): Promise<Partial<SpendRow>> => {
+  /**
+   * The patch that lets a spend's photo go; the file is held for that undo only: the spend's
+   * delete brings back what the delete took, "Remove photo" what it took.
+   */
+  const letPhotoGo = async (
+    row: SpendRow,
+    why: 'deleted' | 'removed' = 'deleted',
+  ): Promise<Partial<SpendRow>> => {
     if (!row.photo) return {};
-    await photos.letGo(row.id, row.photo);
+    await photos.letGo(`${why}:${row.id}`, row.photo);
     return { photo: null };
   };
 
@@ -467,7 +473,7 @@ export function moneyActions(store: MoneyStore, photos: SpendPhotos = NO_SPEND_P
         const row = await current(id);
         if (!row?.previousStatus) return null;
         // A deleted spend comes back with the photo it had.
-        const photo = row.status === 'deleted' ? await photos.bringBack(row.id) : null;
+        const photo = row.status === 'deleted' ? await photos.bringBack(`deleted:${row.id}`) : null;
         return patchNow(row, {
           ...restore,
           ...(photo ? { photo } : {}),
@@ -514,14 +520,14 @@ export function moneyActions(store: MoneyStore, photos: SpendPhotos = NO_SPEND_P
       inTurn(async () => {
         const row = await current(id);
         if (!row?.photo) return null;
-        return patchNow(row, await letPhotoGo(row));
+        return patchNow(row, await letPhotoGo(row, 'removed'));
       }),
     /** The undo of "Remove photo": the same photo back, when the spend has none since. */
     restorePhoto: (id: string): Promise<SpendRow | null> =>
       inTurn(async () => {
         const row = await current(id);
         if (!row || row.photo) return null;
-        const photo = await photos.bringBack(id);
+        const photo = await photos.bringBack(`removed:${id}`);
         return photo ? patchNow(row, { photo }) : null;
       }),
     ...moneyInActions(store, { inTurn, current, patchNow, replaceSpend }),

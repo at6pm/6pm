@@ -157,6 +157,17 @@ describe('the photo store', () => {
     expect(folder.files.get(second ?? '')).toBe(Buffer.from('second').toString('base64'));
   });
 
+  it("never brings back a removed photo with the spend's own undo", async () => {
+    const { store, folder, actions } = ctx;
+    const spend = await actions.addSpend(shoes);
+    await actions.attachPhoto(spend.id, picture(folder, 'shoes'));
+    await actions.removePhoto(spend.id);
+    await actions.setStatus(spend.id, 'deleted');
+    await actions.undo(spend.id);
+    expect(await photoOf(store, spend.id)).toBeNull();
+    expect(folder.names()).toEqual([]);
+  });
+
   it('keeps the first photo of a payment seen again, and nothing when the picker is closed', async () => {
     const { store, folder, actions } = ctx;
     const spend = await actions.addSpend(shoes);

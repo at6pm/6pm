@@ -101,12 +101,12 @@ export interface SpendPhotos {
   /** Takes the file away now. */
   remove(name: string): void;
   /**
-   * Takes the file away now, held in memory for the undo: the spend was deleted or its photo
-   * removed. Only the last few are held; an app that quits lets them go.
+   * Takes the file away now, held in memory under `hold` for the undo of what let it go (the
+   * spend's delete, or "Remove photo"). Only the last few are held; an app that quits lets them go.
    */
-  letGo(spendId: string, name: string): Promise<void>;
-  /** Puts the photo `letGo` held back under its name; null when none is held. */
-  bringBack(spendId: string): Promise<string | null>;
+  letGo(hold: string, name: string): Promise<void>;
+  /** Puts the photo held under `hold` back under its name; null when none is held. */
+  bringBack(hold: string): Promise<string | null>;
 }
 
 export function createSpendPhotos(files: PhotoFiles, now: () => number = Date.now): SpendPhotos {
@@ -123,10 +123,10 @@ export function createSpendPhotos(files: PhotoFiles, now: () => number = Date.no
       placing.delete(name);
     },
     remove: (name) => files.remove(name),
-    letGo: async (spendId, name) => {
+    letGo: async (hold, name) => {
       if (files.size(name) !== null) {
-        held.delete(spendId);
-        held.set(spendId, { name, base64: await files.read(name) });
+        held.delete(hold);
+        held.set(hold, { name, base64: await files.read(name) });
         while (held.size > UNDO_HELD) {
           const oldest = held.keys().next().value;
           if (oldest === undefined) break;
@@ -135,10 +135,10 @@ export function createSpendPhotos(files: PhotoFiles, now: () => number = Date.no
       }
       files.remove(name);
     },
-    bringBack: async (spendId) => {
-      const photo = held.get(spendId);
+    bringBack: async (hold) => {
+      const photo = held.get(hold);
       if (!photo) return null;
-      held.delete(spendId);
+      held.delete(hold);
       await files.write(photo.name, photo.base64);
       return photo.name;
     },
