@@ -43,4 +43,5 @@ export const enCategories = {
   'categories.pack.out': 'Going out',
   'categories.pack.people': 'People & pets',
   'categories.pack.money': 'Money, gifts & Tết',
+  'categories.other': 'Other',
 } as const;

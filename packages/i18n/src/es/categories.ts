@@ -46,4 +46,5 @@ export const esCategories: { readonly [Key in keyof typeof enCategories]: Entry 
   'categories.pack.out': 'Salir',
   'categories.pack.people': 'Gente y mascotas',
   'categories.pack.money': 'Dinero, regalos y Tết',
+  'categories.other': 'Otros',
 };

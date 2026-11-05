@@ -1,7 +1,7 @@
 import { strToU8 } from 'fflate';
 import { describe, expect, it } from 'vitest';
 
-import { importTargetOf } from './category-words';
+import { importTargetOf, labelTargetOf, looksLikePerson, payeeTargetOf } from './category-words';
 import { columnSamples, mainSheet, planOf, planReads, valueShape } from './columns';
 import { misa, momoHistory, momoLocked, moneyLover } from './fixtures/export-files';
 import {
@@ -263,5 +263,102 @@ describe('importTargetOf', () => {
     ['Trả nợ', null],
   ])('puts %s in %s', (name, target) => {
     expect(importTargetOf(name)).toBe(target);
+  });
+});
+
+describe('payeeTargetOf', () => {
+  it.each([
+    ['GRAB', 'transport'],
+    ['MAI LINH', 'transport'],
+    ['CIRCLE K', 'groceries'],
+    ['Highlands Coffee', 'drinks'],
+    ['Điện lực Hồ Chí Minh', 'bills'],
+    ['data vinaphone trực tiếp', 'bills'],
+    ['VNPT', 'bills'],
+    ['Phở Thìn', 'food'],
+    // People, transfers and the wallet's own names are the person's to pick.
+    ['NGUYEN VAN AN', null],
+    ['TRẦN THỊ BÍCH', null],
+    ['LE MI', null],
+    ['Chuyển tiền', null],
+    ['dư nợ Ví Trả Sau', null],
+    ['Ví Trả Sau', null],
+    // Words inside a shop's name never make it Not daily.
+    ['Phí Dịch Vụ ABC', null],
+    ['Công ty Đầu tư XYZ', null],
+    ['FastMoney', null],
+    ['Apple Services', null],
+    ['Google', null],
+  ])('puts %s in %s', (payee, target) => {
+    expect(payeeTargetOf(payee)).toBe(target);
+  });
+
+  it('reads a MoMo history’s labels as payees, and other apps’ as their categories', () => {
+    expect(labelTargetOf('momo', 'Đầu tư')).toBeNull();
+    expect(labelTargetOf('moneyLover', 'Đầu tư')).toBe('notDaily');
+    expect(labelTargetOf('momo', 'GRAB')).toBe('transport');
+  });
+
+  it('tells a full name in capitals from a shop', () => {
+    expect(looksLikePerson('NGUYEN VAN AN')).toBe(true);
+    expect(looksLikePerson('PHẠM MINH')).toBe(true);
+    expect(looksLikePerson('Nguyen Van An')).toBe(false);
+    expect(looksLikePerson('CIRCLE K')).toBe(false);
+    expect(looksLikePerson('SUKIYA')).toBe(false);
+    expect(looksLikePerson('LE 123')).toBe(false);
+  });
+});
+
+describe('a MoMo history’s pay-later', () => {
+  const header = [
+    'STT',
+    'Thời gian ',
+    'Mã giao dịch',
+    'Loại giao dịch',
+    'Tài khoản chuyển',
+    'Tên định danh\n Tài khoản chuyển',
+    'Tài khoản nhận',
+    'Tên định danh \nTài khoản nhận',
+    'Số Tiền',
+    'Số Dư Sau giao dịch',
+    'Trạng Thái GD',
+  ];
+  const line = (n: number, note: string, from: string, to: string, amount: number) => [
+    n,
+    `0${n}/10/2026 12:00:00`,
+    `${9_000_000 + n}`,
+    note,
+    '',
+    from,
+    '',
+    to,
+    -amount,
+    0,
+    'Thành công',
+  ];
+
+  it('keeps what pay-later paid for and sets aside paying the pay-later balance off', () => {
+    const sheet: Sheet = {
+      name: '',
+      rows: [
+        header,
+        line(1, 'Thanh toán GRAB', 'Ví Trả Sau', 'GRAB', 61_000),
+        line(2, 'Thanh toán SHOP ONE', 'Ví Trả Sau', 'SHOP ONE', 39_000),
+        line(3, 'Thanh toán dư nợ Ví Trả Sau', 'NGUYEN VAN AN', 'dư nợ Ví Trả Sau', 100_000),
+      ],
+    };
+    const plan = planOf(sheet);
+    expect(plan.app).toBe('momo');
+    const lines = readLines(sheet, plan, VND);
+    expect(lines.rows.map((r) => [r.label, r.amount, r.payLater])).toEqual([
+      ['GRAB', 61_000, true],
+      ['SHOP ONE', 39_000, true],
+    ]);
+    expect(lines.setAside.debt).toBe(1);
+    const summary = summariseImport(lines, '2026-11-01');
+    expect(summary.labels.map((l) => [l.label, l.target])).toEqual([
+      ['SHOP ONE', null],
+      ['GRAB', 'transport'],
+    ]);
   });
 });

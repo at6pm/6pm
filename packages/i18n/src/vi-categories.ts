@@ -39,4 +39,5 @@ export const viCategories: { readonly [Key in keyof typeof enCategories]: Entry 
   'categories.pack.out': 'Đi chơi',
   'categories.pack.people': 'Gia đình & thú cưng',
   'categories.pack.money': 'Tiền, quà & Tết',
+  'categories.other': 'Khác',
 };

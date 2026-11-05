@@ -39,4 +39,5 @@ export const thCategories: { readonly [Key in keyof typeof enCategories]: Entry 
   'categories.pack.out': 'ออกไปเที่ยว',
   'categories.pack.people': 'คนและสัตว์เลี้ยง',
   'categories.pack.money': 'เงิน ของขวัญ และเทศกาล',
+  'categories.other': 'อื่นๆ',
 };

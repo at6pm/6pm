@@ -47,4 +47,5 @@ export const frCategories: { readonly [Key in keyof typeof enCategories]: Entry 
   'categories.pack.out': 'Sorties',
   'categories.pack.people': 'Proches et animaux',
   'categories.pack.money': 'Argent, cadeaux et Tết',
+  'categories.other': 'Autre',
 };

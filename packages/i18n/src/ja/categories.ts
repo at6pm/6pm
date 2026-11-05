@@ -40,4 +40,5 @@ export const jaCategories: { readonly [Key in keyof typeof enCategories]: Entry 
   'categories.pack.out': 'おでかけ',
   'categories.pack.people': '人とペット',
   'categories.pack.money': 'お金、贈り物、テト',
+  'categories.other': 'その他',
 };

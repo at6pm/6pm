@@ -40,4 +40,5 @@ export const zhHansCategories: { readonly [Key in keyof typeof enCategories]: En
   'categories.pack.out': '外出玩乐',
   'categories.pack.people': '家人和宠物',
   'categories.pack.money': '钱、礼物和春节',
+  'categories.other': '其他',
 };

@@ -40,4 +40,5 @@ export const idCategories: { readonly [Key in keyof typeof enCategories]: Entry 
   'categories.pack.out': 'Jalan-jalan',
   'categories.pack.people': 'Orang & hewan',
   'categories.pack.money': 'Uang, hadiah & Tết',
+  'categories.other': 'Lainnya',
 };

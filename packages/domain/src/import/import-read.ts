@@ -174,6 +174,11 @@ const MOMO_OWN_MOVES = [
   'chuyen tien tu vi',
 ];
 const MOMO_WALLETS = ['vi momo', 'vi tra sau', 'tui than tai', 'momo'];
+const MOMO_PAY_LATER_DEBT = [
+  'du no vi tra sau',
+  'thanh toan du no vi tra sau',
+  'tra no vi tra sau',
+];
 
 interface Columns {
   readonly at: (role: FullRole) => number;
@@ -248,7 +253,10 @@ export function readLines(
       const fromKey = foldWords(from).trim();
       const toKey = foldWords(to).trim();
       if (status !== '' && status !== 'thanh cong') reason = 'failed';
-      else if (has(described, ['tien loi'])) reason = null;
+      // Paying off pay-later: its spending already came in, line by line, when it happened.
+      else if (has(described, MOMO_PAY_LATER_DEBT) || MOMO_PAY_LATER_DEBT.includes(toKey)) {
+        reason = 'debt';
+      } else if (has(described, ['tien loi'])) reason = null;
       else if (
         // Into or out of the savings pocket, from or to the wallet; a shop paid straight from the
         // pocket (or a refund into it) is spending and money in like any other.

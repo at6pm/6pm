@@ -39,4 +39,5 @@ export const koCategories: { readonly [Key in keyof typeof enCategories]: Entry 
   'categories.pack.out': '외출',
   'categories.pack.people': '사람·반려동물',
   'categories.pack.money': '돈·선물·설',
+  'categories.other': '기타',
 };
