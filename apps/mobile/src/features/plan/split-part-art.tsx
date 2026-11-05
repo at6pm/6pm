@@ -114,26 +114,18 @@ export function PotsArt({
       {jars.slice(0, rows * cols).map((j) => {
         const fy = isFutureYouPot(j.pot);
         return (
-          <View
+          <Jar
             key={j.pot.id}
-            style={{
-              width: w,
-              height: h,
-              borderRadius: 5,
-              boxShadow: glow && fy ? `0 0 8px 2px ${colours.pots.glow}` : undefined,
-            }}
-          >
-            <Jar
-              width={w}
-              height={h}
-              hue={j.pot.hue}
-              icon={j.pot.icon}
-              futureYou={fy}
-              level={jarLevel(j.saved, j.pot.goal)}
-              state={j.state}
-              ringColor={ring}
-            />
-          </View>
+            width={w}
+            height={h}
+            hue={j.pot.hue}
+            icon={j.pot.icon}
+            futureYou={fy}
+            level={jarLevel(j.saved, j.pot.goal)}
+            state={j.state}
+            ringColor={ring}
+            {...(glow && fy ? { halo: { color: colours.pots.glow, blur: 8, spread: 2 } } : {})}
+          />
         );
       })}
     </View>
