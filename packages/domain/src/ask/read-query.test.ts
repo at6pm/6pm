@@ -85,6 +85,18 @@ describe('readQuery', () => {
     ).toMatchObject({ category: 'Đi lại' });
   });
 
+  it('hears "lọ" as a jar, like "hũ", and leaves "lo" and "lọc" alone', () => {
+    expect(readQuery('bao giờ lọ Đà Lạt đầy', names)).toEqual({ kind: 'potFull', pot: 'Đà Lạt' });
+    expect(readQuery('khi nào lọ đầy')).toEqual({ kind: 'potFull' });
+    expect(readQuery('lọ là gì')).toEqual({ kind: 'howTo', topic: 'pot' });
+    expect(readQuery('tạo lọ du lịch 10tr')).toMatchObject({ kind: 'makePot', name: 'Du lịch' });
+    expect(readQuery('khi nào Lọ Tết đầy', { pots: ['Lọ Tết'] })).toEqual({
+      kind: 'potFull',
+      pot: 'Lọ Tết',
+    });
+    expect(readQuery('tao lo tiền nhà quá')).not.toMatchObject({ kind: 'makePot' });
+  });
+
   it('keeps a spend question that names its place about that place', () => {
     expect(readQuery('how much did I spend at Phở Hòa?')).toEqual({
       kind: 'spend',

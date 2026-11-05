@@ -5,7 +5,7 @@ export const viAskChat: { readonly [Key in keyof typeof enAskChat]: Entry } = {
   'ask.chat.greeting.soft': 'Chào bạn! Muốn xem gì về tiền nong cứ hỏi mình nha.',
   'ask.chat.greeting.cheeky': 'Hé lô! Hỏi gì về tiền cũng được, số liệu mình nắm hết rồi.',
   'ask.chat.greeting.roast': 'Ồ, bạn đó hả. Tới hỏi xem tình hình tệ cỡ nào à?',
-  'ask.chat.greeting.plain': 'Chào bạn. Bạn có thể hỏi về chi tiêu, hóa đơn hoặc các lọ.',
+  'ask.chat.greeting.plain': 'Chào bạn. Bạn có thể hỏi về chi tiêu, hóa đơn hoặc các hũ.',
   'ask.chat.thanks.soft': 'Có gì đâu. Hôm nay nhớ chăm sóc bản thân nha.',
   'ask.chat.thanks.cheeky': 'Không có chi! Trả công mình bằng vài ngày chốt đúng giờ là được.',
   'ask.chat.thanks.roast': 'Khỏi cảm ơn mình. Cảm ơn cái ngân sách bạn suýt giữ được ấy.',
@@ -18,7 +18,7 @@ export const viAskChat: { readonly [Key in keyof typeof enAskChat]: Entry } = {
   'ask.chat.identity':
     'Mình là bạn đồng hành của bạn trong 6pm. Mọi con số mình đưa ra đều được tính ngay trên điện thoại, từ chính các khoản chi của bạn. Mình là chương trình, không phải người thật nha.',
   'ask.chat.privacy':
-    'Mình không thấy tài khoản ngân hàng của bạn. Mình chỉ biết những gì có trong 6pm, và chúng nằm trên điện thoại của bạn. Để hiểu câu hỏi, máy chủ chỉ nhận câu hỏi cùng tên danh mục và tên lọ; để viết một câu, chỉ vài thông tin trong câu đó.',
+    'Mình không thấy tài khoản ngân hàng của bạn. Mình chỉ biết những gì có trong 6pm, và chúng nằm trên điện thoại của bạn. Để hiểu câu hỏi, máy chủ chỉ nhận câu hỏi cùng tên danh mục và tên hũ; để viết một câu, chỉ vài thông tin trong câu đó.',
   'ask.chat.venting.soft': 'Nghe mệt ghê. Bạn không phải gánh một mình đâu.',
   'ask.chat.venting.cheeky': 'Căng ha. Hít thở cái đã, chỉ là con số thôi, không phải bản án.',
   'ask.chat.venting.plain': 'Áp lực tiền bạc là có thật.',
@@ -43,7 +43,7 @@ export const viAskChat: { readonly [Key in keyof typeof enAskChat]: Entry } = {
   'ask.chat.distress':
     'Mình rất tiếc khi bạn đang thấy như vậy. Bạn không phải chịu một mình đâu: hãy nói chuyện với người bạn tin, hoặc gọi Đường dây nóng Ngày Mai 096 306 1414 (13h đến 20h30, thứ Tư đến Chủ nhật). Nếu bạn đang gặp nguy hiểm ngay lúc này, hãy gọi 115.',
   'ask.chat.investing':
-    'Mình không thể khuyên nên đầu tư vào đâu hay lúc nào, việc đó cần chuyên gia có giấy phép. Mình có thể cho bạn xem mỗi tháng dư bao nhiêu, hoặc một lọ đang đầy nhanh cỡ nào.',
+    'Mình không thể khuyên nên đầu tư vào đâu hay lúc nào, việc đó cần chuyên gia có giấy phép. Mình có thể cho bạn xem mỗi tháng dư bao nhiêu, hoặc một hũ đang đầy nhanh cỡ nào.',
   'ask.chat.unsafe':
-    'Cái này mình không giúp được. Nếu đang kẹt tiền, mình có thể cho bạn xem còn bao nhiêu tới ngày lương, hoặc các lọ đỡ được bao nhiêu. Nếu bị bên cho vay trái phép đe dọa, hãy gọi 113.',
+    'Cái này mình không giúp được. Nếu đang kẹt tiền, mình có thể cho bạn xem còn bao nhiêu tới ngày lương, hoặc các hũ đỡ được bao nhiêu. Nếu bị bên cho vay trái phép đe dọa, hãy gọi 113.',
 };

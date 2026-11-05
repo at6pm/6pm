@@ -156,6 +156,33 @@ describe('the snapshot of the phone', () => {
     ]);
   });
 
+  it('carries each add of money already saved back with its own amount and day', async () => {
+    const source = openMemoryDb();
+    await seedMoney(source);
+    const rows = [
+      ['opening:pot-1', 'pot-1', 2_000_000, 'opening', '2026-09-25', '2026-10-02T00:00:00.000Z'],
+      ['already-saved:a', 'pot-1', 3_000_000, 'opening', '2026-09-25', '2026-10-05T00:00:00.000Z'],
+      ['already-saved:b', 'pot-1', 400_000, 'opening', '2026-09-25', '2026-10-09T00:00:00.000Z'],
+    ] as const;
+    for (const row of rows) {
+      await source.runAsync(
+        'INSERT INTO pot_moves (id, pot_id, amount, kind, cycle, at) VALUES (?, ?, ?, ?, ?, ?)',
+        [...row],
+      );
+    }
+    const snapshot = await buildSnapshot(source, TAKEN);
+    expect(backupSnapshotSchema.safeParse(snapshot).success).toBe(true);
+    const phone = openMemoryDb();
+    await restoreSnapshot(phone, snapshot);
+    const read = (db: typeof source) =>
+      db.getAllAsync(
+        "SELECT id, amount, cycle, at FROM pot_moves WHERE kind = 'opening' ORDER BY id",
+        [],
+      );
+    expect(await read(phone)).toEqual(await read(source));
+    expect(await read(phone)).toHaveLength(3);
+  });
+
   it('carries steady jars and spends from a jar back, and a format 5 snapshot restores without them', async () => {
     const source = openMemoryDb();
     await seedMoney(source);

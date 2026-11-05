@@ -1,7 +1,7 @@
 import type { Entry } from './catalogue-types';
 import type { enMoneyIn } from './en-money-in';
 
-// A jar is a "lọ"; Future you is "Tương lai" (see vi-pots.ts).
+// A jar is a "hũ"; Future you is "Tương lai" (see vi-pots.ts).
 export const viMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'moneyIn.name': 'Tiền vào',
   'moneyIn.hint': 'Phải để chia đều · lên để để dành',
@@ -56,7 +56,7 @@ export const viMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'moneyIn.goesTo.effectSpread': 'Mỗi ngày tới ngày lương được thêm {amount}.',
   'moneyIn.goesTo.effectSaved': 'Con số hôm nay giữ nguyên.',
   'moneyIn.goesTo.effectPot':
-    'Con số hôm nay giữ nguyên, và lọ {pot} cần ít hơn mỗi tháng từ ngày lương tới.',
+    'Con số hôm nay giữ nguyên, và hũ {pot} cần ít hơn mỗi tháng từ ngày lương tới.',
   'moneyIn.goesTo.effectPayback': 'Con số giữ nguyên.',
   'moneyIn.goesTo.done': 'Xong',
 

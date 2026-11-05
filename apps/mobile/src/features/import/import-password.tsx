@@ -16,7 +16,7 @@ import { useI18n } from '../../i18n/i18n';
 import { haptics } from '../../ui/haptics';
 import { Symbol } from '../../ui/icons/symbol';
 import { useTheme } from '../../ui/theme/theme';
-import { body, display, families } from '../../ui/type/fonts';
+import { body, display, families, leading } from '../../ui/type/fonts';
 import { FileCard, ImportFoot, PillButton, PrivacyLine } from './import-parts';
 
 /** "05011970" → "05 / 01 / 1970", as far as it is typed. */
@@ -69,7 +69,7 @@ export function ImportPassword({
               <Symbol name="lock" size={18} fill={1} color={palette.accent} />
             </View>
           </View>
-          <Text style={{ flex: 1, ...display(22, 500), lineHeight: 25.3, color: palette.ink }}>
+          <Text style={{ flex: 1, ...leading(display(22, 500), 25.3), color: palette.ink }}>
             {t('import.password.title')}
           </Text>
         </View>

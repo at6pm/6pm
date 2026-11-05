@@ -7,9 +7,10 @@ import { goalMonthly, monthsBetween, potMonthlyNeed } from './plan-river';
 
 /**
  * Jars only count: 6pm never moves money. Each pay cycle writes one `setAside` move per jar, what
- * goes in that payday, so the jar fills as the months go by. An `opening` move is what the jar
- * already held before 6pm ("Already saved"): one per jar at most, it counts in what the jar holds
- * and never in a cycle's top-ups, so it never lowers the daily number. A `spent` move is a spend
+ * goes in that payday, so the jar fills as the months go by. An `opening` move is money the jar
+ * holds that was saved before ("Already saved"): what it held when it started, and each later add
+ * of money already saved. It counts in what the jar holds, before every cycle, and never in a
+ * cycle's top-ups, so it never lowers the daily number. A `spent` move is a spend
  * taken from the jar (M13): positive, and taken away from what the jar holds.
  */
 export type PotMoveKind = 'setAside' | 'topUp' | 'spent' | 'opening';
@@ -133,7 +134,7 @@ export function savedBefore(moves: readonly PotMove[], potId: string, cycleStart
   return Math.max(0, held);
 }
 
-/** What a pot already held before 6pm: its opening move, 0 when it has none. */
+/** What a pot holds that was already saved before: its opening moves, 0 when it has none. */
 export function openingOf(moves: readonly PotMove[], potId: string): Vnd {
   return moves.reduce(
     (sum, m) => (m.potId === potId && m.kind === 'opening' ? sum + m.amount : sum),

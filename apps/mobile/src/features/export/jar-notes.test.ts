@@ -95,7 +95,7 @@ describe('withJarNotes', () => {
     const name = fromJarLabeller([futureYouPotRow(at)], (key, ...params) =>
       t('vi', key, ...params),
     );
-    expect(name(FUTURE_YOU_POT_ID)).toBe('Từ lọ Tương lai');
+    expect(name(FUTURE_YOU_POT_ID)).toBe('Từ hũ Tương lai');
     expect(name('gone')).toBe(t('vi', 'potsClose.fromJar'));
   });
 });

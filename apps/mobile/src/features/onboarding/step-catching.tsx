@@ -22,7 +22,13 @@ import { VoiceDemo, WalletDemo } from './catch-demos-tap-voice';
 import { AlertsDemo } from './catch-demos-alerts';
 import { CatchRail } from './catch-rail';
 import { CatchSetupSheet } from './catch-setup-sheet';
-import { catchWaysFor, type CatchWay, type ListenWay, type WalkedWay } from './catch-ways';
+import {
+  catchWaysFor,
+  type CatchWay,
+  type ListenWay,
+  type SelfCatchingWay,
+  type WalkedWay,
+} from './catch-ways';
 import { FirstCatchListen } from './first-catch-listen';
 import type { OnboardingPalette } from './onboarding-palette';
 import { StepHeading } from './step-parts';
@@ -48,6 +54,7 @@ export function StepCatching({
   listening,
   listen,
   listenWays,
+  setupWays,
   walked,
   bankId,
   onWalked,
@@ -66,6 +73,8 @@ export function StepCatching({
   readonly listening: boolean;
   readonly listen: Listen;
   readonly listenWays: readonly ListenWay[];
+  /** The ways that catch by themselves still to set up, offered as cards while waiting. */
+  readonly setupWays: readonly SelfCatchingWay[];
   readonly walked: ListenWay | null;
   readonly bankId: string | null;
   /** A way's set-up was walked (its Shortcut added or opened). */
@@ -204,6 +213,7 @@ export function StepCatching({
         <FirstCatchListen
           pal={pal}
           ways={listenWays}
+          setupWays={setupWays}
           walked={walked}
           listen={listen}
           bankId={bankId}

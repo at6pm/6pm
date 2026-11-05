@@ -2,8 +2,11 @@ import type { Vnd } from '../money/format';
 import type { LocalDate } from '../time/local-date';
 import type { PotMove } from './pots';
 
-/** A line of a jar's moves: a payday's set-aside, a top-up, a spend taken from it, its start. */
-export type JarMoveKind = 'payday' | 'topUp' | 'spent' | 'started';
+/**
+ * A line of a jar's moves: a payday's set-aside, a top-up, money added that was already saved, a
+ * spend taken from it, its start.
+ */
+export type JarMoveKind = 'payday' | 'topUp' | 'alreadySaved' | 'spent' | 'started';
 
 /**
  * Whether a line of a jar's moves can be removed (M4, M13). A payday's set-aside never can: it is

@@ -26,6 +26,12 @@ import { body, mono } from '../ui/type/fonts';
 const MONTH = /^\d{4}-\d{2}$/;
 /** Page around the shared card: room for the tilt, and for its shadow below. */
 const CARD_MARGIN = { side: 36, top: 36, bottom: 64 };
+/**
+ * How far the pages reach up under the header: the masthead's tall letters (a Didone's capitals,
+ * Vietnamese marks) rise above its line, and the scroll view would cut them off at its edge. The
+ * pages start this much higher and are padded back down, so they rest where they were.
+ */
+const UNDER_HEADER = 16;
 
 /**
  * A month's Money diary, bound on the 1st: the headline, four stats, where it went, the quietest
@@ -57,6 +63,8 @@ export default function MoneyDiary() {
         paddingHorizontal: 20,
         paddingBottom: 4,
         gap: 4,
+        // Above the pages that reach up under it, so Done still takes every tap.
+        zIndex: 1,
       }}
     >
       <View
@@ -101,7 +109,13 @@ export default function MoneyDiary() {
           <Animated.View entering={FadeIn.duration(250)} style={{ flex: 1 }}>
             <ScrollView
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 48, gap: 30 }}
+              style={{ marginTop: -UNDER_HEADER }}
+              contentContainerStyle={{
+                paddingTop: UNDER_HEADER,
+                paddingHorizontal: 20,
+                paddingBottom: 48,
+                gap: 30,
+              }}
             >
               <ZineCover
                 title={zine.title}

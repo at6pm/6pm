@@ -167,11 +167,14 @@ function ChoiceGlyph({
   size,
   radius,
   glyph,
+  onCard = false,
 }: {
   readonly tile: ChoiceTile;
   readonly size: number;
   readonly radius: number;
   readonly glyph: number;
+  /** On the dark "goes in…" card, whatever the look. */
+  readonly onCard?: boolean;
 }) {
   const { palette } = useTheme();
   const icon = isSymbolName(tile.icon) ? tile.icon : 'category';
@@ -182,12 +185,17 @@ function ChoiceGlyph({
           width: size,
           height: size,
           borderRadius: radius,
-          backgroundColor: palette.chipBg,
+          backgroundColor: onCard ? importInk.pickChip : palette.chipBg,
           alignItems: 'center',
           justifyContent: 'center',
         }}
       >
-        <Symbol name={icon} size={glyph} fill={1} color={palette.ink} />
+        <Symbol
+          name={icon}
+          size={glyph}
+          fill={1}
+          color={onCard ? importInk.pickInk : palette.ink}
+        />
       </View>
     );
   }
@@ -348,7 +356,7 @@ export function ImportLabels({
               gap: 10,
             }}
           >
-            <Text style={{ ...body(13, 600), color: palette.ink, opacity: 0.8 }}>
+            <Text style={{ ...body(13, 600), color: importInk.pickInk, opacity: 0.8 }}>
               {t('import.labels.goesIn', { name: picking })}
             </Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', rowGap: 6 }}>
@@ -365,10 +373,10 @@ export function ImportLabels({
                   }}
                   style={{ width: '25%', alignItems: 'center', gap: 4, paddingVertical: 4 }}
                 >
-                  <ChoiceGlyph tile={tile} size={40} radius={13} glyph={21} />
+                  <ChoiceGlyph tile={tile} size={40} radius={13} glyph={21} onCard />
                   <Text
                     numberOfLines={1}
-                    style={{ ...body(10.5, 600), color: palette.ink, maxWidth: '96%' }}
+                    style={{ ...body(10.5, 600), color: importInk.pickInk, maxWidth: '96%' }}
                   >
                     {tile.name}
                   </Text>

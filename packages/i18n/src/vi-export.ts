@@ -22,6 +22,6 @@ export const viExport: { readonly [Key in keyof typeof enExport]: string } = {
   'export.csv.currency': 'Tiền tệ',
   'export.csv.yes': 'Có',
   'export.csv.no': 'Không',
-  'export.csv.fromJar': 'Từ lọ {jar}',
-  'export.csv.fromJarPart': 'Từ lọ {jar}: {amount}',
+  'export.csv.fromJar': 'Từ hũ {jar}',
+  'export.csv.fromJarPart': 'Từ hũ {jar}: {amount}',
 };

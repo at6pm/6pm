@@ -15,6 +15,7 @@ import { ImportGuide } from './import-guide';
 import { ImportLabels } from './import-labels';
 import { ImportHeader } from './import-parts';
 import { ImportOpening, ImportPassword } from './import-password';
+import { useRemovedImports } from './import-undo';
 import { pickImportFile, readImportFile } from './open-file';
 import { useImportFlow, type ImportStep } from './use-import-flow';
 
@@ -52,6 +53,7 @@ export function ImportFlowView({
   const { today } = useMoney();
   const flow = useImportFlow();
   const reduceMotion = useReducedMotion();
+  const [removed, markRemoved] = useRemovedImports();
   const { step, setStep, open } = flow;
   const last = useRef(step.kind);
   const direction: 1 | -1 = ORDER[step.kind] >= ORDER[last.current] ? 1 : -1;
@@ -119,7 +121,9 @@ export function ImportFlowView({
   const body = (() => {
     switch (step.kind) {
       case 'guide':
-        return <ImportGuide error={step.error} onPick={pick} />;
+        return (
+          <ImportGuide error={step.error} onPick={pick} removed={removed} onRemoved={markRemoved} />
+        );
       case 'opening':
         return <ImportOpening locked={step.locked} />;
       case 'password':

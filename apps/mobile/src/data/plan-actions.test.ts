@@ -282,3 +282,81 @@ describe('removing a jar’s moves', () => {
     expect(await actions.removeTopUp('missing')).toBeNull();
   });
 });
+
+describe('adding money already saved', () => {
+  const wedding = { ...pot, name: 'Wedding', goal: 50_000_000, fill: byDate('2027-08') };
+  const free = (store: Awaited<ReturnType<typeof open>>['store']) =>
+    dayOf(store.getSnapshot())?.startFree ?? 0;
+  const savedIds = (sqlite: InstanceType<typeof DatabaseSync>) =>
+    (
+      sqlite
+        .prepare("SELECT id FROM pot_moves WHERE id LIKE 'already-saved:%' ORDER BY amount")
+        .all() as { id: string }[]
+    ).map((r) => r.id);
+
+  it('counts in the jar and leaves today’s number and this cycle’s set-aside alone', async () => {
+    const { store, actions } = await open('2026-10-11');
+    const made = await actions.createPot(wedding);
+    const before = store.getSnapshot();
+    const line = dayOf(before)?.line;
+    await actions.addAlreadySaved(made.id, 10_000_000);
+    const snap = store.getSnapshot();
+    expect(snap.potSaved[made.id]).toBe((before.potSaved[made.id] ?? 0) + 10_000_000);
+    expect(snap.setAsideThisCycle[made.id]).toBe(5_000_000);
+    expect(snap.topUpsThisCycle).toBe(0);
+    expect(free(store)).toBe(dayOf(before)?.startFree);
+    expect(dayOf(snap)?.line).toBe(line);
+    // The same after a reload, as on the next launch.
+    await store.load('2026-10-11');
+    expect(free(store)).toBe(dayOf(before)?.startFree);
+    expect(store.getSnapshot().setAsideThisCycle[made.id]).toBe(5_000_000);
+  });
+
+  it('lowers what a dated jar takes from the next payday on', async () => {
+    const { store, actions } = await open('2026-10-11');
+    const made = await actions.createPot(wedding);
+    await actions.addAlreadySaved(made.id, 10_000_000);
+    await store.load('2026-11-02');
+    // 15tr held by the new cycle: 35tr left over 9 months is 3.9tr, not 5tr.
+    expect(store.getSnapshot().setAsideThisCycle[made.id]).toBe(3_900_000);
+  });
+
+  it('removes only the one add, and undo puts that row back exactly', async () => {
+    const { store, actions, sqlite } = await open('2026-10-11');
+    const made = await actions.createPot({ ...wedding, opening: 20_000_000 });
+    await actions.addAlreadySaved(made.id, 2_000_000);
+    await actions.addAlreadySaved(made.id, 3_000_000);
+    const before = store.getSnapshot();
+    const rows = sqlite.prepare("SELECT * FROM pot_moves WHERE kind = 'opening' ORDER BY id").all();
+    const [small] = savedIds(sqlite);
+    const removed = await actions.removeAlreadySaved(small ?? '');
+    expect(removed?.amount).toBe(2_000_000);
+    expect(store.getSnapshot().potSaved[made.id]).toBe((before.potSaved[made.id] ?? 0) - 2_000_000);
+    expect(store.getSnapshot().setAsideThisCycle[made.id]).toBe(before.setAsideThisCycle[made.id]);
+    expect(free(store)).toBe(dayOf(before)?.startFree);
+    expect(savedIds(sqlite)).toHaveLength(1);
+    if (removed) await actions.restoreAlreadySaved(removed);
+    expect(
+      sqlite.prepare("SELECT * FROM pot_moves WHERE kind = 'opening' ORDER BY id").all(),
+    ).toEqual(rows);
+    expect(store.getSnapshot().potSaved[made.id]).toBe(before.potSaved[made.id]);
+    expect(free(store)).toBe(dayOf(before)?.startFree);
+  });
+
+  it('keeps later adds when “Jar started” is removed', async () => {
+    const { store, actions, sqlite } = await open('2026-10-11');
+    const made = await actions.createPot({ ...wedding, opening: 20_000_000 });
+    await actions.addAlreadySaved(made.id, 3_000_000);
+    expect(await actions.removeOpening(made.id)).toBe(20_000_000);
+    expect(savedIds(sqlite)).toHaveLength(1);
+    expect(await actions.removeAlreadySaved(`opening:${made.id}`)).toBeNull();
+    expect(store.getSnapshot().potSaved[made.id]).toBeGreaterThanOrEqual(3_000_000);
+  });
+
+  it('writes nothing for nothing', async () => {
+    const { actions, sqlite } = await open('2026-10-11');
+    const made = await actions.createPot(wedding);
+    await actions.addAlreadySaved(made.id, 0);
+    expect(savedIds(sqlite)).toEqual([]);
+  });
+});

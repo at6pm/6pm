@@ -47,6 +47,8 @@ describe('readIntent', () => {
       kind: 'potFull',
       pot: 'Tết',
     });
+    expect(readIntent('bao giờ lọ đầy')).toEqual({ kind: 'potFull' });
+    expect(readIntent('máy lọc nước')).toEqual({ kind: 'unknown' });
     expect(readIntent('hello')).toEqual({ kind: 'unknown' });
   });
 });

@@ -4,7 +4,6 @@ import { useMemo } from 'react';
 import {
   FUTURE_YOU_POT_ID,
   isLegacyGoal,
-  openingOf,
   payCycleOn,
   topUpRemoval,
   type BillRow,
@@ -16,7 +15,15 @@ import {
 import { useMoneyStore } from './money-provider';
 import type { MoneyStore } from './money-store';
 import { writePlan } from './plan-settings';
-import { clearCycleSetAside, moveCycleRecords, takenBackId, writeOpening } from './pot-moves';
+import {
+  alreadySavedId,
+  clearCycleSetAside,
+  isAlreadySavedId,
+  moveCycleRecords,
+  openingId,
+  takenBackId,
+  writeOpening,
+} from './pot-moves';
 import { inTurn } from './store-queue';
 
 export interface NewBill {
@@ -67,6 +74,9 @@ interface TopUpColumns {
   readonly cycle: string;
   readonly at: string;
 }
+
+/** An add of money already saved, removed from a jar's moves, as its undo puts it back. */
+export type RemovedAlreadySaved = TopUpColumns;
 
 /** A top-up removed from a jar's moves, as its undo puts it back. */
 export interface RemovedTopUp {
@@ -234,6 +244,58 @@ export function planActions(store: MoneyStore) {
     },
 
     /**
+     * Add, on a jar's page, of money already saved (in the bank, from before): it counts in what
+     * the jar holds like what it started with, never in this cycle's top-ups, so today's number
+     * stays. This cycle's set-aside stays too; a dated jar takes less from the next payday on (M4).
+     */
+    addAlreadySaved: async (potId: string, amount: number) => {
+      const snap = store.getSnapshot();
+      const move: PotMove = {
+        potId,
+        kind: 'opening',
+        cycle: snap.cycle.start,
+        amount: Math.max(0, Math.round(amount)),
+      };
+      if (move.amount === 0) return;
+      await db.runAsync(
+        'INSERT INTO pot_moves (id, pot_id, amount, kind, cycle, at) VALUES (?, ?, ?, ?, ?, ?)',
+        [
+          alreadySavedId(randomUUID()),
+          potId,
+          move.amount,
+          'opening',
+          move.cycle,
+          new Date().toISOString(),
+        ],
+      );
+      store.publish({ ...snap, potMoves: [...snap.potMoves, move] });
+    },
+
+    /**
+     * Removes one add of money already saved: the jar holds that much less from before 6pm, and
+     * nothing else moves. Returns the row for `restoreAlreadySaved`, or null when there was none.
+     */
+    removeAlreadySaved: async (moveId: string): Promise<RemovedAlreadySaved | null> => {
+      if (!isAlreadySavedId(moveId)) return null;
+      const [row] = await db.getAllAsync<TopUpColumns>(
+        "SELECT id, pot_id, amount, cycle, at FROM pot_moves WHERE id = ? AND kind = 'opening'",
+        [moveId],
+      );
+      if (!row || row.amount <= 0) return null;
+      await db.runAsync('DELETE FROM pot_moves WHERE id = ?', [row.id]);
+      await reload();
+      return row;
+    },
+    restoreAlreadySaved: async (row: RemovedAlreadySaved) => {
+      await db.runAsync(
+        `INSERT OR IGNORE INTO pot_moves (id, pot_id, amount, kind, cycle, at)
+         VALUES (?, ?, ?, 'opening', ?, ?)`,
+        [row.id, row.pot_id, row.amount, row.cycle, row.at],
+      );
+      await reload();
+    },
+
+    /**
      * Removes a top-up from a jar's moves: the money goes back to this cycle's free money (M4).
      * Returns what `restoreTopUp` needs to put it back exactly, or null when there was none.
      */
@@ -281,11 +343,15 @@ export function planActions(store: MoneyStore) {
 
     /**
      * Removes "Jar started" from a jar's moves: what it held before 6pm is 0 from now on, and the
-     * cycle's set-aside works itself out again. Returns what it held, for the undo
-     * (`updatePot(id, { opening })`).
+     * cycle's set-aside works itself out again. Money already saved that was added later stays.
+     * Returns what it held, for the undo (`updatePot(id, { opening })`).
      */
     removeOpening: async (potId: string): Promise<number> => {
-      const held = openingOf(store.getSnapshot().potMoves, potId);
+      const [row] = await db.getAllAsync<{ amount: number }>(
+        'SELECT amount FROM pot_moves WHERE id = ?',
+        [openingId(potId)],
+      );
+      const held = row?.amount ?? 0;
       if (held <= 0) return 0;
       await db.withTransactionAsync(async () => {
         await writeOpening(db, potId, 0, store.getSnapshot().cycle.start);

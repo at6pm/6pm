@@ -18,6 +18,7 @@ import { isSymbolName, Symbol } from '../../ui/icons/symbol';
 import { useTheme } from '../../ui/theme/theme';
 import { jarColours, PARTNER_BADGE, PAST_DATE_WARM, TARGET_LINE } from './jar-colours';
 import { jarGeometry } from './jar-geometry';
+import { JarLight, type JarGlow } from './jar-light';
 
 const FILL_EASE = Easing.bezier(...curves.jarFill);
 const CHECK_EASE = Easing.bezier(...curves.jarCheck);
@@ -51,6 +52,11 @@ export interface JarProps {
   readonly plain?: boolean;
   /** The least it is drawn holding; the canvases keep a sliver (5%) in an empty jar. */
   readonly minFill?: number;
+  /**
+   * A light behind the jar, beside a full jar's own glow: Plan's Future you the day after payday.
+   * It takes the jar's shape, lid and all, and sits under the glass.
+   */
+  readonly halo?: JarGlow;
   readonly children?: ReactNode;
   readonly style?: ViewProps['style'];
 }
@@ -87,6 +93,7 @@ export function Jar({
   slosh = false,
   plain = false,
   minFill = 0.05,
+  halo,
   children,
   style,
 }: JarProps) {
@@ -153,14 +160,18 @@ export function Jar({
     state === 'paused' || state === 'full'
       ? 'rgba(255,255,255,0.25)'
       : `rgba(255,255,255,${g.borderAlpha})`;
-  const glow = state === 'full' ? `0 0 ${Math.round(26 * Math.min(1.4, k))}px ${c.glow}` : null;
+  const glow: JarGlow | null =
+    state === 'full' ? { color: c.glow, blur: Math.round(26 * Math.min(1.4, k)) } : null;
   const inner = width >= 120 ? 'inset 0 -14px 26px rgba(0,0,0,0.16)' : null;
+  // Lights behind the jar are drawn first, so they never wash over its lid.
+  const behind = [glow, halo ?? null].filter((l) => l !== null);
   // Small jars wear the partner's initial at the foot; the larger ones carry badges up top.
   const badgeHigh = width >= 64;
 
   return (
     <View style={[{ width, height }, style]}>
       <View style={{ width, height }}>
+        {behind.length > 0 ? <JarLight g={g} width={width} height={height} glows={behind} /> : null}
         <View
           style={{
             position: 'absolute',
@@ -188,7 +199,7 @@ export function Jar({
             borderStyle: state === 'paused' ? 'dashed' : 'solid',
             borderColor,
             overflow: 'hidden',
-            boxShadow: [glow, inner].filter((s) => s !== null).join(', ') || undefined,
+            boxShadow: inner ?? undefined,
           }}
         >
           <Animated.View

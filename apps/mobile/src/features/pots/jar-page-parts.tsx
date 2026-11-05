@@ -85,9 +85,10 @@ export function StatePill({
 }
 
 /**
- * The jar's moves, newest first: a green dot for money in (paydays, top-ups, the start), a warm
- * dot and warm amount for a spend taken from it. Every line but a payday's swipes away (M4, M13);
- * the lines under it slide up to close the gap, and come back the same way on undo.
+ * The jar's moves, newest first: a green dot for money in (paydays, top-ups, money already saved,
+ * the start), a warm dot and warm amount for a spend taken from it. Every line but a payday's
+ * swipes away (M4, M13); the lines under it slide up to close the gap, and come back the same way
+ * on undo.
  */
 export function JarMoves({
   lines,
@@ -122,9 +123,11 @@ export function JarMoves({
             ? t('pots.move.payday')
             : line.kind === 'topUp'
               ? t('pots.move.topUp')
-              : line.kind === 'started'
-                ? t('pots.move.started')
-                : (line.merchant ?? categoryName(line.categoryId));
+              : line.kind === 'alreadySaved'
+                ? t('pots.move.alreadySaved')
+                : line.kind === 'started'
+                  ? t('pots.move.started')
+                  : (line.merchant ?? categoryName(line.categoryId));
         const day = format.day(line.day);
         const when = out && byChoice ? t('pots.move.byChoice', { date: day }) : day;
         const amount =
@@ -201,6 +204,8 @@ function moveKey(line: JarHistoryEntry): string {
   switch (line.kind) {
     case 'topUp':
       return `topUp:${line.moveId}`;
+    case 'alreadySaved':
+      return `alreadySaved:${line.moveId}`;
     case 'spent':
       return `spent:${line.spendId}`;
     case 'started':

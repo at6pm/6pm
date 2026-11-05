@@ -6,6 +6,19 @@ import type { AskRangePreset } from './ask-query';
 export const words = (...list: string[]) => list.map((w) => ` ${w} `);
 export const has = (f: string, list: readonly string[]) => list.some((w) => f.includes(w));
 
+/**
+ * A jar is a "hũ", but many say "lọ": read the word as "hũ" so every jar phrase catches it.
+ * Accented only, before folding, so "lo" (worry) and "lọc" stay what they are.
+ */
+export function jarAsHu(question: string): string {
+  return question
+    .normalize('NFC')
+    .replace(
+      /(?<![\p{L}\p{M}])([Ll])([ọỌ])(?![\p{L}\p{M}])/gu,
+      (_, l: string, o: string) => (l === 'L' ? 'H' : 'h') + (o === 'Ọ' ? 'Ũ' : 'ũ'),
+    );
+}
+
 /** Spans in the order they are tried: "last" before "this", so "last week" is not "this week". */
 export const RANGE_WORDS: readonly (readonly [AskRangePreset, readonly string[]])[] = [
   ['yesterday', words('yesterday', 'hom qua', 'hqua')],
@@ -237,6 +250,7 @@ export const POT_GENERIC = new Set([
   'mua',
   'quy',
   'hu',
+  'lo',
   'tien',
   'tiet',
   'kiem',

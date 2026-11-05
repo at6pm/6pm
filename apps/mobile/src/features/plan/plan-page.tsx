@@ -197,7 +197,7 @@ function PlanContent({
               justifyContent: 'center',
             }}
           >
-            <Symbol name="tune" size={20} color={palette.ink} />
+            <Symbol name="edit" size={20} color={palette.ink} />
           </PressScale>
         </View>
       </Animated.View>

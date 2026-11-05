@@ -111,15 +111,10 @@ export const deImport: { readonly [Key in keyof typeof enImport]: Entry } = {
   'import.diary.summary': 'Mitgebracht aus {app}',
   'import.diary.receiptNote': 'Mitgebracht aus {app}. Nie abgeschlossen, nie gezählt.',
   'import.details.from': 'Mitgebracht aus {app}',
-  'import.undo.title': 'Halten, um das Mitbringen rückgängig zu machen',
-  'import.undo.sub': 'Aus {app}, {when}. Nur diese Zeilen gehen.',
   'import.undo.today': 'heute',
-  'import.undo.done': {
-    one: '{n} mitgebrachte Zeile entfernt',
-    other: '{n} mitgebrachte Zeilen entfernt',
-  },
-  'import.undo.doneSub':
-    'Deine abgeschlossenen Tage bleiben unberührt. Tippe, um sie zurückzuholen.',
+  'import.undo.section': 'Mitgebracht',
+  'import.undo.lines': { one: '{n} Zeile', other: '{n} Zeilen' },
+  'import.undo.removed': 'Entfernt · Tippe, um sie zurückzuholen',
   'import.undo.hint': 'Kurz halten, um das Mitgebrachte zu entfernen',
   'import.columns.title': 'Welche Spalte ist was?',
   'import.role.date': 'Datum',

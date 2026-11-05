@@ -103,3 +103,27 @@ export function listenWaysOf(
     (way) => ways.includes(way) && (way === 'share' || setUp.includes(way)),
   );
 }
+
+/** The ways that catch by themselves once set up outside 6pm, as the wait offers to set them up. */
+export type SelfCatchingWay = Extract<ListenWay, 'alerts' | 'wallet'>;
+const SELF_CATCHING: readonly SelfCatchingWay[] = ['alerts', 'wallet'];
+
+/**
+ * The ways the wait for a first catch offers to set up right there: the bank alert and Wallet
+ * automations shown on this phone that are not yet among the ways to try. `alertAccess` is
+ * Android's Notification access (null where alerts come through a Shortcuts automation): while it
+ * is unknown there is nothing to switch on, so no card.
+ */
+export function setupCardsOf(
+  ways: readonly CatchWay[],
+  listening: readonly ListenWay[],
+  alertAccess: boolean | null,
+  alertListener: boolean,
+): readonly SelfCatchingWay[] {
+  return SELF_CATCHING.filter(
+    (way) =>
+      ways.includes(way) &&
+      !listening.includes(way) &&
+      !(way === 'alerts' && alertListener && alertAccess !== false),
+  );
+}

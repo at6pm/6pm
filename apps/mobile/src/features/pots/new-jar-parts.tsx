@@ -18,6 +18,7 @@ import { useI18n } from '../../i18n/i18n';
 import { CategoryTile } from '../../ui/category-tile';
 import { haptics } from '../../ui/haptics';
 import { isSymbolName, Symbol } from '../../ui/icons/symbol';
+import type { SymbolName } from '../../ui/icons/symbols.generated';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body } from '../../ui/type/fonts';
@@ -189,7 +190,10 @@ export function LookBadge({
   );
 }
 
-/** "By a date" | "Each payday", the light sliding under the one chosen. */
+/**
+ * "By a date" | "Each payday", the light sliding under the one chosen. Add on a jar's page uses it
+ * too, for where the money comes from.
+ */
 export function FillSegment({
   options,
   selected,
@@ -197,7 +201,7 @@ export function FillSegment({
 }: {
   readonly options: readonly {
     readonly id: string;
-    readonly icon: 'calendar_month' | 'autorenew';
+    readonly icon: SymbolName;
     readonly label: string;
   }[];
   readonly selected: string;

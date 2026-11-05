@@ -88,5 +88,5 @@ export const viDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.zine.showAmountsSub': 'Mặc định tắt. Tiền bạc là chuyện riêng.',
   'diary.cal.previous': 'Tháng trước',
   'diary.cal.next': 'Tháng sau',
-  'diary.fromJar': 'Từ lọ {jar}',
+  'diary.fromJar': 'Từ hũ {jar}',
 };

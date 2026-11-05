@@ -12,12 +12,14 @@ import { haptics } from '../../ui/haptics';
 import { Symbol } from '../../ui/icons/symbol';
 import { useDesignInsets } from '../../ui/layout/design-insets';
 import { PressScale } from '../../ui/primitives/press-scale';
-import { useAlertAccess } from '../capture-guide/alert-access';
+import { openAlertAccess, useAlertAccess } from '../capture-guide/alert-access';
+import { useCaptureHealth } from '../capture-guide/use-capture-health';
 import { useAiMode } from '../privacy/use-ai-mode';
 import { nativeReach } from '../surfaces/native-reach';
 import {
   catchWaysFor,
   listenWaysOf,
+  setupCardsOf,
   type CatchWay,
   type ListenWay,
 } from '../onboarding/catch-ways';
@@ -46,10 +48,17 @@ export function FirstCatchScreen() {
   const [walked, setWalked] = useState<ListenWay | null>(null);
   const [bankId, setBankId] = useState<string | null>(null);
   const listen = useFirstCatch(true, since.current);
-  const ways = listenWaysOf(
-    catchWaysFor(useHomeCurrency(), aiMode, nativeReach),
-    alertAccess === true ? [...setUp, 'alerts'] : setUp,
-  );
+  const catchWays = catchWaysFor(useHomeCurrency(), aiMode, nativeReach);
+  const ranBefore = useCaptureHealth()
+    .filter((row) => row.state.kind === 'caught' || row.state.kind === 'quiet')
+    .map((row) => row.way)
+    .filter((way): way is 'alerts' | 'wallet' => way === 'alerts' || way === 'wallet');
+  const ways = listenWaysOf(catchWays, [
+    ...setUp,
+    ...ranBefore,
+    ...(alertAccess === true ? (['alerts'] as const) : []),
+  ]);
+  const setupWays = setupCardsOf(catchWays, ways, alertAccess, nativeReach.alertListener);
 
   useEffect(() => {
     void (async () => {
@@ -92,6 +101,7 @@ export function FirstCatchScreen() {
         <FirstCatchListen
           pal={pal}
           ways={ways}
+          setupWays={setupWays}
           walked={walked}
           listen={listen}
           bankId={bankId}
@@ -102,7 +112,8 @@ export function FirstCatchScreen() {
           }}
           onFix={(way) => {
             haptics.tap();
-            router.push({ pathname: '/capture-guide', params: { source: way } });
+            if (way === 'alerts' && nativeReach.alertListener) openAlertAccess();
+            else router.push({ pathname: '/capture-guide', params: { source: way } });
           }}
           onLater={close}
           onContinue={close}

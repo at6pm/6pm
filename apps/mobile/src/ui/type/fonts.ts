@@ -4,7 +4,7 @@ import type { Language } from '@6pm/i18n';
 
 import { axesOf, familyOf, withAxes } from './font-axes';
 import { faceOf, variableFamily, type Face } from './faces';
-import { FONT_LINE_HEIGHT } from './font-metrics.generated';
+import { FONT_METRICS } from './font-metrics.generated';
 
 /** Family names as the font files register them (tools/fonts/build_fonts.py); see `variableFamily`. */
 export const families = {
@@ -189,30 +189,80 @@ export function withOpticalSize(style: TextStyle, opsz: number | null): TextStyl
 /** SF Pro's line height in ems, as `UIFont.systemFont(ofSize:).lineHeight` gives it. */
 const SYSTEM_LINE_HEIGHT = 1.1934;
 
+/** The line height in ems iOS sets a style's face in, SF Pro's for the system face. */
+function faceEm(style: TextStyle): number {
+  const family = familyOf(style);
+  return (family === undefined ? undefined : FONT_METRICS[family]?.line) ?? SYSTEM_LINE_HEIGHT;
+}
+
 /**
  * A text style set at `lineHeight`, drawn where the browser draws it. Below the face's own line
  * height iOS sits each line's baseline at the bottom of the line and cuts off what rises above the
  * text's box, where the browser centres the line and lets it overflow. The text gets that room
- * back and its margins hold the box where it was (adding to any the style already sets). Text that wraps takes the room as top padding,
- * so its lines stay `lineHeight` apart; `oneLine` text is set at the face's own line height
- * instead, so a row aligned on baselines still finds its baseline (iOS leaves padding out of it).
+ * back and its margins hold the box where it was (adding to any the style already sets). Text
+ * that wraps takes the room as top padding, so its lines stay `lineHeight` apart; `oneLine` text
+ * is set at the face's own line height instead, so a row aligned on baselines still finds its
+ * baseline (iOS leaves padding out of it).
+ *
+ * iOS also draws nothing outside a text's box, and a face's tallest letters (a figure in a
+ * Didone, Vietnamese stacked marks: Ẳ, Ỗ) and lowest (ỵ) reach past its own ascent and descent.
+ * The box grows by that much as padding, and its margins take the same back, so the text and
+ * everything around it stay where they were and only the ink that was cut off is drawn.
  */
 export function leading(style: TextStyle, designed: number, oneLine = false): TextStyle {
-  const lineHeight = Math.max(designed, (style.fontSize ?? 14) * scriptMinLeading);
-  const family = familyOf(style);
-  const faceEm =
-    family === undefined ? SYSTEM_LINE_HEIGHT : (FONT_LINE_HEIGHT[family] ?? SYSTEM_LINE_HEIGHT);
-  const em = Math.max(faceEm, scriptLineHeight);
-  const natural = (style.fontSize ?? 14) * em;
+  const size = style.fontSize ?? 14;
+  const lineHeight = Math.max(designed, size * scriptMinLeading);
+  const natural = size * Math.max(faceEm(style), scriptLineHeight);
   const lost = natural - lineHeight;
-  if (Platform.OS !== 'ios' || lost <= 0) return { ...style, lineHeight };
-  const box = {
-    marginTop: num(style.marginTop) - lost / 2,
-    marginBottom: num(style.marginBottom) - lost / 2,
+  if (Platform.OS !== 'ios') return { ...style, lineHeight };
+  const set = lost <= 0 ? lineHeight : oneLine ? natural : lineHeight;
+  const padTop = lost > 0 && !oneLine ? lost : 0;
+  const ink = inkRoom(style, set, padTop);
+  const top = padTop + ink.top;
+  const shift = lost > 0 ? lost / 2 : 0;
+  return {
+    ...style,
+    lineHeight: set,
+    ...(top > 0 || shift > 0
+      ? {
+          marginTop: num(style.marginTop) - shift - ink.top,
+          paddingTop: num(style.paddingTop) + top,
+        }
+      : {}),
+    ...(ink.bottom > 0 || shift > 0
+      ? {
+          marginBottom: num(style.marginBottom) - shift - ink.bottom,
+          ...(ink.bottom > 0 ? { paddingBottom: num(style.paddingBottom) + ink.bottom } : {}),
+        }
+      : {}),
   };
-  return oneLine
-    ? { ...style, ...box, lineHeight: natural }
-    : { ...style, ...box, lineHeight, paddingTop: num(style.paddingTop) + lost };
+}
+
+/**
+ * How far, in points, a style's face draws above its box and below it on iOS, set at
+ * `lineHeight` under `padTop` of padding: a line at least the face's own height is centred on it
+ * (React Native lifts the text by half the difference), a shorter one sits its baseline a descent
+ * above the line's foot. The system face, whose metrics the app does not ship, draws within its
+ * line.
+ */
+function inkRoom(
+  style: TextStyle,
+  lineHeight: number,
+  padTop: number,
+): { top: number; bottom: number } {
+  const family = familyOf(style);
+  const face = family === undefined ? undefined : FONT_METRICS[family];
+  if (!face) return { top: 0, bottom: 0 };
+  const size = style.fontSize ?? 14;
+  const own = face.line * size;
+  const half = Math.max(0, (lineHeight - own) / 2);
+  const above =
+    padTop + (lineHeight >= own ? face.ascent * size + half : lineHeight - face.descent * size);
+  const below = face.descent * size + half;
+  return {
+    top: Math.max(0, Math.ceil(face.inkTop * size - above)),
+    bottom: Math.max(0, Math.ceil(face.inkBottom * size - below)),
+  };
 }
 
 /**
@@ -221,10 +271,7 @@ export function leading(style: TextStyle, designed: number, oneLine = false): Te
  * it (an odometer's digits) is this tall, so a tall serif's figures are never cut off.
  */
 export function faceLineHeight(style: TextStyle): number {
-  const family = familyOf(style);
-  const faceEm =
-    family === undefined ? SYSTEM_LINE_HEIGHT : (FONT_LINE_HEIGHT[family] ?? SYSTEM_LINE_HEIGHT);
-  return Math.ceil((style.fontSize ?? 14) * Math.max(faceEm, scriptLineHeight));
+  return Math.ceil((style.fontSize ?? 14) * Math.max(faceEm(style), scriptLineHeight));
 }
 
 /** A margin or padding the style sets in points, 0 when it sets none. */

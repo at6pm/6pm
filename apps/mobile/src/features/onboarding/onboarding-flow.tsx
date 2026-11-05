@@ -12,8 +12,16 @@ import { useDesignInsets } from '../../ui/layout/design-insets';
 import type { AiMode } from '../privacy/ai-mode';
 import { useAiMode } from '../privacy/use-ai-mode';
 import { useAlertAccess } from '../capture-guide/alert-access';
+import { useCaptureHealth } from '../capture-guide/use-capture-health';
 import { nativeReach } from '../surfaces/native-reach';
-import { catchWaysFor, listenWaysOf, readyWays, type CatchWay, type ListenWay } from './catch-ways';
+import {
+  catchWaysFor,
+  listenWaysOf,
+  readyWays,
+  setupCardsOf,
+  type CatchWay,
+  type ListenWay,
+} from './catch-ways';
 import { ownBankOf, tryWay } from './first-catch-try';
 import { CompanionLine, OnboardingCta, OnboardingHeader } from './onboarding-chrome';
 import { stepEntering } from './onboarding-motion';
@@ -137,7 +145,19 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
   const [setUp, setSetUp] = useState<readonly CatchWay[]>([]);
   const [walked, setWalked] = useState<ListenWay | null>(null);
   const catchWays = catchWaysFor(o.currency, aiMode, nativeReach);
-  const listenWays = listenWaysOf(catchWays, alertAccess === true ? [...setUp, 'alerts'] : setUp);
+  // A way that catches by itself counts as set up once walked here, once Android's access is on,
+  // or once it has caught something (an automation set up before), as Settings' heartbeat says.
+  const health = useCaptureHealth();
+  const ranBefore = health
+    .filter((row) => row.state.kind === 'caught' || row.state.kind === 'quiet')
+    .map((row) => row.way)
+    .filter((way): way is 'alerts' | 'wallet' => way === 'alerts' || way === 'wallet');
+  const listenWays = listenWaysOf(catchWays, [
+    ...setUp,
+    ...ranBefore,
+    ...(alertAccess === true ? (['alerts'] as const) : []),
+  ]);
+  const setupWays = setupCardsOf(catchWays, listenWays, alertAccess, nativeReach.alertListener);
   const listen = useFirstCatch(onCatchStep && listening, since.current ?? '');
   const waiting = onCatchStep && listening;
   useEffect(() => {
@@ -219,6 +239,7 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
             listening={listening}
             listen={listen}
             listenWays={listenWays}
+            setupWays={setupWays}
             walked={walked}
             bankId={ownBankOf(o.wallets)}
             onWalked={(way) => {
@@ -295,7 +316,11 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
             icon={cta.icon}
             hot={o.step === LAST_STEP}
             pal={pal}
-            onPress={onCatchStep && listenWays.length > 0 ? () => setListening(true) : o.next}
+            onPress={
+              onCatchStep && (listenWays.length > 0 || setupWays.length > 0)
+                ? () => setListening(true)
+                : o.next
+            }
           />
         )}
       </View>

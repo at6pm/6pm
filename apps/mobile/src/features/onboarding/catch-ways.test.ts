@@ -2,7 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 
 import { currencyOf, VND } from '@6pm/domain';
 
-import { catchWaysFor, listenWaysOf, readyWays } from './catch-ways';
+import { catchWaysFor, listenWaysOf, readyWays, setupCardsOf } from './catch-ways';
 
 describe('the ways onboarding shows', () => {
   it('offers receipt email in server mode', () => {
@@ -86,5 +86,44 @@ describe('the ways onboarding waits on', () => {
     });
     expect(listenWaysOf(android, [])).toEqual([]);
     expect(listenWaysOf(android, ['alerts'])).toEqual(['alerts']);
+  });
+});
+
+describe('the set-up cards while waiting for a first catch', () => {
+  const iphone = catchWaysFor(VND, 'server', {
+    scan: true,
+    share: true,
+    wallet: true,
+    widgets: true,
+    alertListener: false,
+    bankAlerts: true,
+  });
+  const android = catchWaysFor(VND, 'server', {
+    scan: true,
+    share: false,
+    wallet: false,
+    widgets: false,
+    alertListener: true,
+  });
+
+  it('offers both automations on an iPhone until each is set up', () => {
+    expect(setupCardsOf(iphone, listenWaysOf(iphone, []), null, false)).toEqual([
+      'alerts',
+      'wallet',
+    ]);
+    expect(setupCardsOf(iphone, listenWaysOf(iphone, ['wallet']), null, false)).toEqual(['alerts']);
+    expect(setupCardsOf(iphone, listenWaysOf(iphone, ['alerts', 'wallet']), null, false)).toEqual(
+      [],
+    );
+  });
+
+  it('offers Notification access on Android only while it is off', () => {
+    expect(setupCardsOf(android, listenWaysOf(android, []), false, true)).toEqual(['alerts']);
+    expect(setupCardsOf(android, listenWaysOf(android, ['alerts']), true, true)).toEqual([]);
+    expect(setupCardsOf(android, listenWaysOf(android, []), null, true)).toEqual([]);
+  });
+
+  it('offers nothing a phone does not show', () => {
+    expect(setupCardsOf(catchWaysFor(VND), [], null, false)).toEqual(['wallet']);
   });
 });

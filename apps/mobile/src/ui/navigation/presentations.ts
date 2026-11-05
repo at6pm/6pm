@@ -30,12 +30,14 @@ export const sheet: ScreenOptions = {
  * A sheet as tall as what it holds, never the full height when it needs less, with iOS animating
  * it to a new height when what it holds grows or shrinks (a row opening). Its body is a
  * `SheetFrame` with `fit`. On an iPhone iOS floats a sheet this short as an inset card, so there
- * `edgeSheet` draws it instead; this is that sheet on iPad and Android.
+ * `edgeSheet` draws it instead; this is that sheet on iPad and Android. Android's animated resize
+ * leaves the sheet at its first height when what it holds grows, pushing its foot off the screen,
+ * so there it takes the new height at once.
  */
 const fittedSheet: ScreenOptions =
   Platform.OS === 'ios' && Platform.isPad
     ? sheet
-    : { ...sheet, sheetAllowedDetents: 'fitToContents' };
+    : { ...sheet, sheetAllowedDetents: 'fitToContents', sheetResizeAnimationEnabled: false };
 
 /** Whether `edgeSheet` is drawn by the app (an iPhone) rather than the native sheet. */
 export const edgeSheetDrawn = Platform.OS === 'ios' && !Platform.isPad;
