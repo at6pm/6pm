@@ -1,6 +1,6 @@
 {
   "ios": {
-    "NSCameraUsageDescription": "6pm ใช้กล้องเพื่ออ่านคิวอาร์โค้ดและใบเสร็จที่คุณสแกน รูปจะอยู่บน iPhone ของคุณ เว้นแต่ใบเสร็จนั้นต้องอ่านละเอียดขึ้น",
+    "NSCameraUsageDescription": "6pm ใช้กล้องเพื่ออ่านคิวอาร์โค้ดและใบเสร็จที่คุณสแกน และเพื่อถ่ายรูปที่คุณแนบไว้กับรายจ่าย รูปจะอยู่บน iPhone ของคุณ ยกเว้นใบเสร็จที่ต้องอ่านละเอียดขึ้นและข้อมูลสำรองที่เข้ารหัสของคุณ",
     "NSMicrophoneUsageDescription": "6pm ฟังขณะที่คุณพูดรายจ่าย เสียงของคุณจะถูกส่งไปยังบริการแปลงเสียงเป็นข้อความ หรืออยู่บน iPhone เครื่องนี้เท่านั้นในโหมดบนอุปกรณ์",
     "NSSpeechRecognitionUsageDescription": "6pm แปลงสิ่งที่คุณพูดเป็นยอดเงินและชื่อรายการ",
     "NSPhotoLibraryUsageDescription": "6pm บันทึกเฉพาะใบเสร็จปิดวันและไดอารี่เงินของคุณลงในรูปภาพ และจะไม่เปิดดูคลังรูปภาพของคุณ",
@@ -14,6 +14,16 @@
     "sixpm_widget_safe_description": "ยอดที่คุณใช้ได้วันนี้ ดูได้ในพริบตา",
     "sixpm_widget_today_name": "วันนี้",
     "sixpm_widget_today_description": "รายจ่ายวันนี้ ล่าสุดอยู่บนสุด",
+    "sixpm_widget_month_name": "เดือนของฉัน",
+    "sixpm_widget_month_description": "ทั้งเดือนเป็นดวงอาทิตย์: ทุกเย็นที่คุณปิดวัน",
+    "sixpm_widget_week_name": "สัปดาห์นี้",
+    "sixpm_widget_week_description": "ทั้งสัปดาห์เป็นดวงอาทิตย์: ทุกเย็นที่คุณปิดวัน",
+    "sixpm_widget_receipt_name": "ใบเสร็จวันนี้",
+    "sixpm_widget_receipt_description": "รายจ่ายวันนี้ พิมพ์ออกมาทันทีที่จับได้",
+    "sixpm_widget_streak_name": "สถิติต่อเนื่อง",
+    "sixpm_widget_streak_description": "เย็นที่คุณปิดวันติดต่อกัน แต่ละวันมีฟ้าของมัน",
+    "sixpm_widget_jar_name": "โหลหนึ่งใบ",
+    "sixpm_widget_jar_description": "โหลหนึ่งใบ นับถอยหลังถึงวันของมัน",
     "sixpm_widget_set_up": "เปิด 6pm เพื่อตั้งค่า"
   }
 }

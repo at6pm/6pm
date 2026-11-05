@@ -1,3 +1,9 @@
+/** How full a jar is drawn: its share of the target, or a steady level for one with none. */
+export function jarLevel(saved: number, target: number): number {
+  if (target > 0) return Math.max(0, Math.min(1, saved / target));
+  return saved > 0 ? 0.62 : 0;
+}
+
 /**
  * The jar's proportions at each size the Pots canvases draw it (CSS px = pt): the Pots list's
  * 32 × 42, the shelf's 52 × 66, the edge states' and Plan's 72 × 94, New jar's 84 × 110 and a jar's

@@ -1,6 +1,6 @@
 {
   "ios": {
-    "NSCameraUsageDescription": "6pm uses the camera to read the QR codes and receipts you scan. Photos stay on your iPhone unless a receipt needs a closer look.",
+    "NSCameraUsageDescription": "6pm uses the camera to read the QR codes and receipts you scan, and to take a photo you keep with a spend. Photos stay on your iPhone, apart from a receipt that needs a closer look and your encrypted backup.",
     "NSMicrophoneUsageDescription": "6pm listens while you say a spend. Your voice goes to a speech-to-text service to be written down, or stays on this iPhone in on-device mode.",
     "NSSpeechRecognitionUsageDescription": "6pm turns what you say into an amount and a name.",
     "NSPhotoLibraryUsageDescription": "6pm only saves your close receipt and money diary to Photos. It never looks through your library.",
@@ -14,6 +14,16 @@
     "sixpm_widget_safe_description": "What you can spend today, at a glance.",
     "sixpm_widget_today_name": "Today",
     "sixpm_widget_today_description": "What you spent today, newest first.",
+    "sixpm_widget_month_name": "My month",
+    "sixpm_widget_month_description": "The month as suns: every evening you closed.",
+    "sixpm_widget_week_name": "This week",
+    "sixpm_widget_week_description": "The week as suns: every evening you closed.",
+    "sixpm_widget_receipt_name": "Today’s receipt",
+    "sixpm_widget_receipt_description": "Today’s spends printing as they’re caught.",
+    "sixpm_widget_streak_name": "Streak",
+    "sixpm_widget_streak_description": "The evenings you closed in a row, each one its sky.",
+    "sixpm_widget_jar_name": "A jar",
+    "sixpm_widget_jar_description": "One jar, counting down to its day.",
     "sixpm_widget_set_up": "Open 6pm to set up"
   }
 }

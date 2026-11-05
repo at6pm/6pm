@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Safe today, medium: the picture, and a tap area over each drawn jar (34 dp wide, 5 dp apart,
+     16 dp in from the right and bottom, 46 dp of jar over its amount), lined up from the right.
+     The jars not drawn are gone, so the rest stay over theirs. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@android:id/background"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+  <ImageView
+    android:id="@+id/sixpm_widget_picture"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scaleType="fitXY" />
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="66dp"
+    android:layout_gravity="bottom|end"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="16dp"
+    android:orientation="horizontal">
+    <FrameLayout
+      android:id="@+id/sixpm_widget_jar0"
+      android:layout_width="34dp"
+      android:layout_height="match_parent" />
+    <FrameLayout
+      android:id="@+id/sixpm_widget_jar1"
+      android:layout_width="34dp"
+      android:layout_height="match_parent"
+      android:layout_marginStart="5dp" />
+    <FrameLayout
+      android:id="@+id/sixpm_widget_jar2"
+      android:layout_width="34dp"
+      android:layout_height="match_parent"
+      android:layout_marginStart="5dp" />
+    <FrameLayout
+      android:id="@+id/sixpm_widget_jar3"
+      android:layout_width="34dp"
+      android:layout_height="match_parent"
+      android:layout_marginStart="5dp" />
+  </LinearLayout>
+</FrameLayout>

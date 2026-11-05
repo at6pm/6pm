@@ -80,6 +80,9 @@ class WidgetFaces(private val context: Context) {
     return file(family, axes) ?: body(weight)
   }
 
+  /** The postcards' kickers: IBM Plex Mono. */
+  fun mono(): Typeface = file("IBMPlexMono-Medium", null) ?: Typeface.MONOSPACE
+
   /** Material Symbols Rounded, outlined or filled, at a size. */
   fun symbol(size: Float, filled: Boolean = false, weight: Int = 400): Typeface =
     file(

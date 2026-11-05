@@ -7,7 +7,7 @@ module.exports = (config) => ({
   type: 'app-intent',
   bundleIdentifier: '.intents',
   deploymentTarget: '17.0',
-  frameworks: ['AppIntents', 'JavaScriptCore', 'SwiftUI'],
+  frameworks: ['AppIntents', 'JavaScriptCore', 'SwiftUI', 'UserNotifications'],
   entitlements: {
     'com.apple.security.application-groups':
       config.ios.entitlements['com.apple.security.application-groups'],

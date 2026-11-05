@@ -23,7 +23,7 @@ export function AndroidSurfaces({
   const { t } = useI18n();
   // The tiles already in Quick Settings: their button says so (a toast would sit under the sheet).
   const [inShade, setInShade] = useState<ReadonlySet<'scan' | 'add'>>(new Set());
-  const pin = (kind: 'safe' | 'today') => () => {
+  const pin = (kind: 'safe' | 'month' | 'streak' | 'jar') => () => {
     haptics.tap();
     void surfaces?.pinWidget?.(kind).catch(() => false);
   };
@@ -58,7 +58,9 @@ export function AndroidSurfaces({
           canPin
             ? [
                 { label: t('widgetsGuide.home.addSafe'), onPress: pin('safe') },
-                { label: t('widgetsGuide.home.addToday'), onPress: pin('today') },
+                { label: t('widgetsGuide.home.addJar'), onPress: pin('jar') },
+                { label: t('widgetsGuide.home.addStreak'), onPress: pin('streak') },
+                { label: t('widgetsGuide.home.addToday'), onPress: pin('month') },
               ]
             : []
         }

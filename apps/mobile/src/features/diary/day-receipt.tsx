@@ -1,11 +1,12 @@
 import { Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
-import { moneyInInk } from '@6pm/theme';
+import { moneyInInk, photoInk } from '@6pm/theme';
 
 import { useMoneyFormat } from '../../money/use-money-format';
 import { DashedRule } from '../../ui/dashed-rule';
 import { PaperEdge } from '../../ui/paper-edge';
+import { PhotoClip } from '../../ui/photo/photo-clip';
 import { families, mono, tabular } from '../../ui/type/fonts';
 import { paper } from './diary-colours';
 
@@ -23,6 +24,8 @@ export interface DayReceiptView {
     readonly amount: number;
     /** Given back since ("BACK 27 OCT"): the line is struck through and stamped. */
     readonly back?: string;
+    /** A photo is kept with it: the same clip as on Today's tile, in the receipt's ink. */
+    readonly photo?: boolean;
   }[];
   /**
    * "FROM ĐÀ LẠT": under the spends, what each jar covered of them. The rows less these lines add
@@ -97,6 +100,11 @@ export function DayReceipt({ receipt }: { readonly receipt: DayReceiptView }) {
               >
                 {r.name}
               </Text>
+              {r.photo ? (
+                <View style={{ justifyContent: 'center' }}>
+                  <PhotoClip size={14} rotate={40} color={photoInk.paperClip} shadow={false} />
+                </View>
+              ) : null}
               <Text style={{ ...line, ...tabular, opacity: r.back ? 0.55 : 1 }}>
                 {money.number(r.amount)}
               </Text>

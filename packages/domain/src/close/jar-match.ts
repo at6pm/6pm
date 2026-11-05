@@ -3,11 +3,13 @@ import type { Vnd } from '../money/format';
 import { isTripJar } from '../plan/jar-presets';
 import { FUTURE_YOU_POT_ID } from '../plan/pots';
 import type { LocalDate } from '../time/local-date';
+import { inNewYearWindow, type NewYearWindow } from '../time/lunar';
 
 export type MatchableJar = Pick<
   PotRow,
   'id' | 'kind' | 'icon' | 'goal' | 'neededBy' | 'paused' | 'archivedAt'
->;
+> &
+  Partial<Pick<PotRow, 'season'>>;
 
 export interface JarMatchSpend {
   readonly day: LocalDate;
@@ -59,14 +61,20 @@ export function armedJars(input: {
 /** When to ask: Travel mode on (trip jars are due up to their month), and the jars armed. */
 export interface JarAskOptions {
   readonly travelling: boolean;
-  /** The jars the person armed (`armedJars`); no other jar is ever asked about. */
+  /**
+   * The jars armed (`armedJars`, and the season's jar inside its window, `newYearArmedJar`); no
+   * other jar is ever asked about.
+   */
   readonly armed: ReadonlySet<string>;
+  /** The Lunar New Year season around the close, for the season's jar; null or absent for none. */
+  readonly season?: NewYearWindow | null;
 }
 
 /**
  * The dated jar a spend falls due in, for the close's "From your {jar}?" (M13), or null. Only a
- * jar the person armed by taking a spend from it by hand (`armedJars`). A jar is due in its own
- * month; a trip jar also while Travel mode is on. Future you and jars with no date are never asked
+ * jar the person armed by taking a spend from it by hand (`armedJars`), or the season's Tết jar,
+ * which arms itself in its window. A jar is due in its own month; a trip jar also while Travel mode
+ * is on; the Tết jar on every day of its season (23 tháng Chạp to mùng 6). Future you and jars with no date are never asked
  * about: they are spent from by choice, in Details or Quick add. An empty jar, a paused or deleted
  * one, money in, work, a bill's payment or a spend already from a jar are never asked. When two
  * are due, the one in its own month and able to cover it all goes first.
@@ -88,8 +96,9 @@ export function dueJarFor<T extends MatchableJar>(
     if (held <= 0) continue;
     const inMonth = jar.neededBy === month;
     const trip = options.travelling && isTripJar(jar) && month <= jar.neededBy;
-    if (!inMonth && !trip) continue;
-    const score = (inMonth ? 2 : 0) + (held >= spend.amount ? 1 : 0);
+    const season = jar.season === 'newYear' && inNewYearWindow(spend.day, options.season ?? null);
+    if (!inMonth && !trip && !season) continue;
+    const score = (inMonth || season ? 2 : 0) + (held >= spend.amount ? 1 : 0);
     if (best === null || score > best.score) best = { jar, score };
   }
   return best?.jar ?? null;

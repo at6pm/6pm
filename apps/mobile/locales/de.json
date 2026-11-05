@@ -1,6 +1,6 @@
 {
   "ios": {
-    "NSCameraUsageDescription": "6pm verwendet die Kamera, um die QR-Codes und Belege zu lesen, die du scannst. Fotos bleiben auf deinem iPhone, außer ein Beleg muss genauer gelesen werden.",
+    "NSCameraUsageDescription": "6pm verwendet die Kamera, um die QR-Codes und Belege zu lesen, die du scannst, und um das Foto aufzunehmen, das du zu einer Ausgabe behältst. Fotos bleiben auf deinem iPhone, bis auf einen Beleg, der genauer gelesen werden muss, und dein verschlüsseltes Backup.",
     "NSMicrophoneUsageDescription": "6pm hört zu, während du eine Ausgabe sagst. Deine Stimme wird zum Verschriftlichen an einen Spracherkennungsdienst gesendet oder bleibt im Modus „Auf dem Gerät“ auf diesem iPhone.",
     "NSSpeechRecognitionUsageDescription": "6pm macht aus dem, was du sagst, einen Betrag und einen Namen.",
     "NSPhotoLibraryUsageDescription": "6pm sichert nur deinen Tagesbeleg und dein Geldtagebuch in Fotos. Deine Mediathek wird nie durchsucht.",
@@ -14,6 +14,16 @@
     "sixpm_widget_safe_description": "Was du heute ausgeben kannst, auf einen Blick.",
     "sixpm_widget_today_name": "Heute",
     "sixpm_widget_today_description": "Was du heute ausgegeben hast, Neuestes zuerst.",
+    "sixpm_widget_month_name": "Mein Monat",
+    "sixpm_widget_month_description": "Der Monat als Sonnen: jeder Abend, den du abgeschlossen hast.",
+    "sixpm_widget_week_name": "Diese Woche",
+    "sixpm_widget_week_description": "Die Woche als Sonnen: jeder Abend, den du abgeschlossen hast.",
+    "sixpm_widget_receipt_name": "Heutiger Beleg",
+    "sixpm_widget_receipt_description": "Was du heute ausgibst, gedruckt, sobald es erfasst ist.",
+    "sixpm_widget_streak_name": "Serie",
+    "sixpm_widget_streak_description": "Die Abende, die du in Folge abgeschlossen hast, jeder mit seinem Himmel.",
+    "sixpm_widget_jar_name": "Ein Glas",
+    "sixpm_widget_jar_description": "Ein Glas, das bis zu seinem Tag herunterzählt.",
     "sixpm_widget_set_up": "6pm zum Einrichten öffnen"
   }
 }

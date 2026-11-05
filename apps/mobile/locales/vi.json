@@ -1,6 +1,6 @@
 {
   "ios": {
-    "NSCameraUsageDescription": "6pm dùng camera để đọc mã QR và hoá đơn bạn quét. Ảnh ở lại trên iPhone, trừ khi hoá đơn cần đọc kỹ hơn.",
+    "NSCameraUsageDescription": "6pm dùng camera để đọc mã QR và hoá đơn bạn quét, và để chụp ảnh bạn kèm vào một khoản chi. Ảnh ở lại trên iPhone, trừ hoá đơn cần đọc kỹ hơn và bản sao lưu đã mã hoá của bạn.",
     "NSMicrophoneUsageDescription": "6pm nghe khi bạn nói một khoản chi. Giọng nói được gửi tới một dịch vụ chuyển giọng nói thành chữ, hoặc chỉ ở lại trên iPhone này ở chế độ trên máy.",
     "NSSpeechRecognitionUsageDescription": "6pm chuyển lời bạn nói thành số tiền và tên khoản chi.",
     "NSPhotoLibraryUsageDescription": "6pm chỉ lưu biên lai cuối ngày và nhật ký tiêu tiền vào Ảnh. 6pm không bao giờ xem thư viện ảnh của bạn.",
@@ -14,6 +14,16 @@
     "sixpm_widget_safe_description": "Số tiền bạn có thể tiêu hôm nay, nhìn là thấy.",
     "sixpm_widget_today_name": "Hôm nay",
     "sixpm_widget_today_description": "Những khoản đã tiêu hôm nay, mới nhất trước.",
+    "sixpm_widget_month_name": "Tháng của tôi",
+    "sixpm_widget_month_description": "Cả tháng thành những mặt trời: mỗi tối bạn đã chốt.",
+    "sixpm_widget_week_name": "Tuần này",
+    "sixpm_widget_week_description": "Cả tuần thành những mặt trời: mỗi tối bạn đã chốt.",
+    "sixpm_widget_receipt_name": "Hoá đơn hôm nay",
+    "sixpm_widget_receipt_description": "Các khoản hôm nay in ra ngay khi bắt được.",
+    "sixpm_widget_streak_name": "Chuỗi tối",
+    "sixpm_widget_streak_description": "Những tối bạn chốt liên tiếp, mỗi tối một bầu trời.",
+    "sixpm_widget_jar_name": "Một hũ",
+    "sixpm_widget_jar_description": "Một hũ, đếm ngược đến ngày của nó.",
     "sixpm_widget_set_up": "Mở 6pm để cài đặt"
   }
 }

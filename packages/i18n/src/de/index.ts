@@ -32,6 +32,7 @@ import { deShareExt } from './share-ext';
 import { deSharing } from './sharing';
 import { deShareCards } from './share-cards';
 import { deSurfaces } from './surfaces';
+import { deWidgets } from './widgets';
 import { deToday } from './today';
 import { deTogether } from './together';
 import { deTravel } from './travel';
@@ -39,7 +40,11 @@ import { deVoice } from './voice';
 import { deWidgetsGuide } from './widgets-guide';
 import { deYearBook } from './year-book';
 import { deFirstCatch } from './first-catch';
+import { dePhoto } from './photo';
 import { deImport } from './import';
+import { deOwed } from './owed';
+import { deNotifications } from './notifications';
+import { deSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { deAndroid } from './android';
@@ -75,6 +80,7 @@ export const de: Catalogue = {
   ...deCaptureAlerts,
   ...deVoice,
   ...deSurfaces,
+  ...deWidgets,
   ...deTogether,
   ...deReceiptEmail,
   ...deTravel,
@@ -86,8 +92,12 @@ export const de: Catalogue = {
   ...dePotsPlan,
   ...dePots,
   ...deFirstCatch,
+  ...dePhoto,
   ...deImport,
+  ...deOwed,
   ...importSketchMomo,
+  ...deSeason,
+  ...deNotifications,
 };
 
 /**

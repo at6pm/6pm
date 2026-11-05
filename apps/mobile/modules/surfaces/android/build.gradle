@@ -28,6 +28,8 @@ android {
 tasks.named('preBuild') { dependsOn(copyDomainBundle) }
 
 dependencies {
+  // Takes away a scheduled "Nothing from MB in 3 days" the moment an alert is read.
+  implementation project(':expo-notifications')
   implementation 'androidx.core:core-ktx:1.17.0'
   implementation 'androidx.javascriptengine:javascriptengine:1.1.1'
 }

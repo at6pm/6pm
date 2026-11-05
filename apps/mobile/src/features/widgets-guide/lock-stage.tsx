@@ -7,8 +7,9 @@ import { activityInk } from '@6pm/theme';
 import { localeOf } from '@6pm/i18n';
 
 import { useI18n } from '../../i18n/i18n';
+import { Symbol } from '../../ui/icons/symbol';
 import { FitText } from '../../ui/type/fit-text';
-import { body, display } from '../../ui/type/fonts';
+import { body } from '../../ui/type/fonts';
 import { Reveal } from '../capture-guide/walkthrough/moving-parts';
 import { stage } from '../capture-guide/walkthrough/timeline';
 import type { WidgetPreview } from './preview-data';
@@ -44,7 +45,7 @@ export function LockStage({
         <Text style={{ ...body(104, 700, -0.02), color: stageInk.white, lineHeight: 118 }}>
           9:41
         </Text>
-        <View style={{ flexDirection: 'row', gap: 14, marginTop: 10 }}>
+        <View style={{ flexDirection: 'row', gap: 10, marginTop: 10 }}>
           <Reveal
             t={clock}
             from={0.12}
@@ -68,6 +69,18 @@ export function LockStage({
             <Card preview={preview} />
             <Text style={{ ...body(12, 600), color: stageInk.whiteSoft }}>
               {t('widgetsGuide.lock.card')}
+            </Text>
+          </Reveal>
+          <Reveal
+            t={clock}
+            from={0.36}
+            to={0.56}
+            fromScale={0.7}
+            style={{ alignItems: 'center', gap: 8 }}
+          >
+            <JarCircle preview={preview} />
+            <Text style={{ ...body(12, 600), color: stageInk.whiteSoft }}>
+              {t('widgetsGuide.lock.jar')}
             </Text>
           </Reveal>
         </View>
@@ -122,53 +135,121 @@ function Ring({
         minimumFontScale={0.6}
         style={{ ...body(17, 700, -0.02), color: activityInk.ink, maxWidth: RING - 14 }}
       >
-        {preview.entry?.safeShort ?? '–'}
-      </Text>
-      <Text style={{ ...body(10, 600), color: activityInk.ink, opacity: 0.75 }}>
-        {preview.strings['left']}
+        {preview.hideAmounts
+          ? (preview.strings['hidden'] ?? '')
+          : (preview.entry?.safeShort ?? '–')}
       </Text>
     </View>
   );
 }
 
-/** The card: "6pm · Safe today", the number, and what is pending. */
+/** The card: "6PM", the number in a line, and when the close is. */
 function Card({ preview }: { readonly preview: WidgetPreview }) {
-  const entry = preview.entry;
+  const card = preview.card;
+  const soft = { color: activityInk.ink, opacity: 0.85 };
   return (
     <View
       style={{
-        width: 172,
+        width: 160,
         height: RING,
         borderRadius: 20,
         backgroundColor: stageInk.ccGlass,
-        paddingHorizontal: 14,
+        paddingHorizontal: 12,
         paddingVertical: 10,
-        justifyContent: 'center',
-        gap: 2,
+        justifyContent: 'space-between',
       }}
     >
-      {entry ? (
+      {card ? (
         <>
-          <Text
-            numberOfLines={1}
-            style={{ ...body(12, 600), color: activityInk.ink, opacity: 0.75 }}
-          >
-            {preview.strings['brandSafe']}
-          </Text>
-          <FitText
-            style={{ ...display(28, 500, 0, preview.palette.dispFont), color: activityInk.ink }}
-          >
-            {entry.safeShort}
-          </FitText>
-          {entry.pendingText ? (
-            <Text style={{ ...body(12, 600), color: activityInk.ink, opacity: 0.75 }}>
-              {entry.pendingText}
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+            <Symbol name="wb_twilight" size={14} color={activityInk.ink} />
+            <Text style={{ ...body(12, 700), ...soft }}>
+              {(preview.strings['brand'] ?? '').toUpperCase()}
             </Text>
-          ) : null}
+          </View>
+          <FitText style={{ ...body(20, 700), color: activityInk.ink }}>
+            {preview.hideAmounts ? (preview.strings['hidden'] ?? '') : card.amount}
+          </FitText>
+          <Text numberOfLines={1} style={{ ...body(12, 600), ...soft }}>
+            {card.lockSub}
+          </Text>
         </>
       ) : (
         <Text style={{ ...body(12, 600), color: activityInk.ink }}>{preview.strings['setUp']}</Text>
       )}
+    </View>
+  );
+}
+
+/** A jar on the Lock Screen: its outline filled to its level over its short name. */
+function JarCircle({ preview }: { readonly preview: WidgetPreview }) {
+  const jar =
+    preview.jars.find((j) => j.newYear) ?? preview.jars.find((j) => j.dayText) ?? preview.jars[0];
+  const ink = activityInk.ink;
+  return (
+    <View
+      style={{
+        width: RING,
+        height: RING,
+        borderRadius: RING / 2,
+        backgroundColor: stageInk.ccGlass,
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      {jar ? (
+        <>
+          <View style={{ width: 26, height: 34, marginTop: -10 }}>
+            <View
+              style={{
+                position: 'absolute',
+                top: 3,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                borderRadius: 8,
+                borderWidth: 2,
+                borderColor: ink,
+                overflow: 'hidden',
+              }}
+            >
+              <View
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  height: `${Math.round(jar.level * 100)}%`,
+                  backgroundColor: ink,
+                }}
+              />
+            </View>
+            <View
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 7,
+                right: 7,
+                height: 4,
+                borderRadius: 2,
+                backgroundColor: ink,
+              }}
+            />
+          </View>
+          <Text
+            numberOfLines={1}
+            style={{
+              ...body(9.5, 800),
+              color: ink,
+              position: 'absolute',
+              bottom: 9,
+              maxWidth: RING - 20,
+            }}
+          >
+            {jar.label}
+          </Text>
+        </>
+      ) : null}
     </View>
   );
 }

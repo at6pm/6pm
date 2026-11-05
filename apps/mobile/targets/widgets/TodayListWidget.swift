@@ -1,8 +1,9 @@
 import SwiftUI
 import WidgetKit
 
-/// Today (large, `SS:121-127`): what is left, the day's spend against its line, then today's newest
-/// three spends and "+N more" with what they add up to.
+/// Today (large): what is left on the hour's sky, the day's spend against its line, then today's
+/// newest three spends and "+N more" with what they add up to. A postcard like the rest, in the
+/// look's sky and type; its list leaves no room for the sun. Opens Today.
 struct TodayListWidget: Widget {
   var body: some WidgetConfiguration {
     StaticConfiguration(kind: "TodayList", provider: SurfaceTimelineProvider()) { entry in
@@ -16,60 +17,55 @@ struct TodayListWidget: Widget {
 }
 
 struct TodayListView: View {
-  @Environment(\.colorScheme) private var scheme
   let entry: SurfaceEntry
 
   var body: some View {
-    if let day = entry.entry {
-      // Free, the card turns to the night card on a dark Home Screen, as the small one does.
-      let dark = scheme == .dark && !entry.inLook
-      let ink = dark ? ThemeTokens.PlainNight.ink : entry.color("cardInk")
+    if let day = entry.entry, let card = entry.card {
+      let ink = entry.ink
       VStack(alignment: .leading, spacing: 0) {
-        HStack(alignment: .lastTextBaseline) {
-          HStack(spacing: 8) {
-            CompanionPicture(image: entry.companion(size: 22), size: 22)
-            Text(entry.text("today")).font(SurfaceFont.body(size: 15, weight: 700))
-          }
+        HStack(alignment: .firstTextBaseline) {
+          Kicker(text: card.kicker, entry: entry)
           Spacer(minLength: 8)
-          Text(day.safeText)
-            .font(SurfaceFont.display(entry.displayFont, size: 24))
-            .lineLimit(1)
-            .widgetAccentable()
+          Text(entry.text("brand"))
+            .font(SurfaceFont.display(entry.displayFont, size: 15, weight: 600))
         }
+        PostcardNumber(text: card.number, entry: entry, size: entry.look.numberMedium)
+          .padding(.top, 14)
         if let fraction = day.spentFraction {
           VStack(spacing: 5) {
-            LineBar(fraction: fraction, track: ink.opacity(0.08), fill: entry.color("accent"))
+            LineBar(
+              fraction: fraction, track: ink.opacity(entry.dark ? 0.22 : 0.14), fill: ink, height: 5)
             HStack {
-              Text(day.spentText ?? "")
+              PrivateText(text: day.spentText ?? "", entry: entry)
               Spacer(minLength: 8)
-              Text(day.lineText ?? "")
+              PrivateText(text: day.lineText ?? "", entry: entry)
             }
             .font(SurfaceFont.body(size: 11, weight: 600))
-            .foregroundStyle(ink.opacity(0.55))
+            .opacity(0.7)
             .lineLimit(1)
           }
-          .padding(EdgeInsets(top: 6, leading: 0, bottom: 8, trailing: 0))
+          .padding(EdgeInsets(top: 8, leading: 0, bottom: 10, trailing: 0))
         } else {
-          Spacer().frame(height: 6)
+          Spacer().frame(height: 10)
         }
         if day.list.isEmpty {
           ListLine(ink: ink) {
-            Text(entry.text("listEmpty")).opacity(0.55)
+            Text(entry.text("listEmpty")).opacity(0.7)
             Spacer(minLength: 0)
           }
         }
         ForEach(Array(day.list.enumerated()), id: \.offset) { _, row in
           SpendLine(
             row: row, entry: entry, ink: ink,
-            pendingInk: entry.color(dark ? "pendingInkDark" : "pendingInk"))
+            pendingInk: entry.color(entry.dark ? "pendingInkDark" : "pendingInk"))
         }
         if !day.moreText.isEmpty {
           ListLine(ink: ink, vertical: 7) {
             Text(day.moreText)
             Spacer(minLength: 0)
-            Text(day.moreAmountText ?? "")
+            PrivateText(text: day.moreAmountText ?? "", entry: entry)
           }
-          .opacity(0.55)
+          .opacity(0.7)
         }
         if entry.state == .stale {
           ListLine(ink: ink, vertical: 7) {
@@ -81,9 +77,9 @@ struct TodayListView: View {
       }
       .font(SurfaceFont.body(size: 14, weight: 400))
       .foregroundStyle(ink)
-      .padding(EdgeInsets(top: 14, leading: 16, bottom: 6, trailing: 16))
-      .containerBackground(
-        dark ? ThemeTokens.PlainNight.sheetSolid : entry.color("cardBg"), for: .widget)
+      .padding(EdgeInsets(top: 18, leading: 18, bottom: 12, trailing: 18))
+      .containerBackground(for: .widget) { PostcardBackground(entry: entry) }
+      .widgetURL(entry.link(entry.snapshot?.links?.today ?? "/app"))
     } else {
       SetUpView(entry: entry)
     }
@@ -100,7 +96,7 @@ struct ListLine<Content: View>: View {
     HStack(spacing: 9, content: content)
       .padding(.vertical, vertical)
       .overlay(alignment: .top) {
-        Rectangle().fill(ink.opacity(0.1)).frame(height: 0.5)
+        Rectangle().fill(ink.opacity(0.14)).frame(height: 0.5)
       }
   }
 }
@@ -136,7 +132,9 @@ struct SpendLine: View {
         }
       }
       Spacer(minLength: 8)
-      Text(row.amountText).font(SurfaceFont.body(size: 14, weight: 600))
+      PrivateText(text: row.amountText, entry: entry)
+        .font(SurfaceFont.body(size: 14, weight: 600))
+        .monospacedDigit()
     }
   }
 }

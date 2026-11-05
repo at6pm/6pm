@@ -1,6 +1,6 @@
 {
   "ios": {
-    "NSCameraUsageDescription": "6pm 使用相机读取你扫描的二维码和小票。照片会留在你的 iPhone 上，除非某张小票需要更仔细地识别。",
+    "NSCameraUsageDescription": "6pm 使用相机读取你扫描的二维码和小票，也用来拍下你附在一笔支出上的照片。照片会留在你的 iPhone 上，除了需要更仔细识别的小票和你的加密备份。",
     "NSMicrophoneUsageDescription": "你说出一笔开销时，6pm 会聆听。你的语音会发送到语音转文字服务进行转写；在设备端模式下，则只留在这台 iPhone 上。",
     "NSSpeechRecognitionUsageDescription": "6pm 会把你说的话转成金额和名称。",
     "NSPhotoLibraryUsageDescription": "6pm 只会把你的日结小票和消费日记存到“照片”，绝不会浏览你的图库。",
@@ -14,6 +14,16 @@
     "sixpm_widget_safe_description": "今天还能花多少，一眼就知道。",
     "sixpm_widget_today_name": "今天",
     "sixpm_widget_today_description": "今天花了哪些钱，最新的在前。",
+    "sixpm_widget_month_name": "我的一个月",
+    "sixpm_widget_month_description": "整个月化作太阳：你结算过的每个晚上。",
+    "sixpm_widget_week_name": "本周",
+    "sixpm_widget_week_description": "一周化作太阳：你结算过的每个晚上。",
+    "sixpm_widget_receipt_name": "今日小票",
+    "sixpm_widget_receipt_description": "今天的花销，记下就打印出来。",
+    "sixpm_widget_streak_name": "连续记录",
+    "sixpm_widget_streak_description": "连续结算的晚上，每晚都是它的天空。",
+    "sixpm_widget_jar_name": "一个罐子",
+    "sixpm_widget_jar_description": "一个罐子，倒数到它的那一天。",
     "sixpm_widget_set_up": "打开 6pm 进行设置"
   }
 }

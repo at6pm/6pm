@@ -57,6 +57,7 @@ export function useVoiceEntry({
   setKeys,
   setNote,
   setPicked,
+  onEnvelopes,
 }: {
   readonly language: Language;
   readonly categories: readonly Category[];
@@ -64,6 +65,16 @@ export function useVoiceEntry({
   readonly setKeys: (keys: KeypadState) => void;
   readonly setNote: (note: string) => void;
   readonly setPicked: (categoryId: string | null) => void;
+  /**
+   * Lì xì said by the envelope ("lì xì 5 bao 200k"): Quick add's lì xì mode takes it, when it has
+   * one; return true to say it did, and the ticket is left as it was.
+   */
+  readonly onEnvelopes?: (said: {
+    readonly count: number;
+    readonly each: number;
+    readonly incoming: boolean;
+    readonly heard: string;
+  }) => boolean;
 }): VoiceEntry {
   const [chips, setChips] = useState<readonly VoiceChip[]>([]);
   const [open, setOpen] = useState(false);
@@ -83,6 +94,18 @@ export function useVoiceEntry({
     setChips(spokenChips(spend, category, money));
     // Without an amount the ticket keeps what the keypad had; the panel says what is missing.
     if (spend.amount === null) return;
+    if (
+      spend.envelopes &&
+      onEnvelopes?.({
+        count: spend.envelopes.count,
+        each: spend.envelopes.each,
+        incoming: spend.direction === 'in',
+        heard: state.settled,
+      }) === true
+    ) {
+      setSaid(true);
+      return;
+    }
     setHeard(state.settled);
     setSaid(true);
     setIncoming(spend.direction === 'in');

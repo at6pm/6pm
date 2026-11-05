@@ -6,8 +6,12 @@ import {
   BACKUP_SNAPSHOT_VERSION,
   backupEnvelopeSchema,
   backupItemCount,
+  backupPhotoBytes,
   backupSnapshotSchema,
   base64DecodedLength,
+  BACKUP_PHOTO_MARGIN_BYTES,
+  BACKUP_PHOTO_MAX_BYTES,
+  photosThatFit,
 } from './backup';
 
 /** Base64 of `bytes` bytes that are all 3: three of them are "AwMD", so a long string is cheap. */
@@ -229,7 +233,135 @@ describe('backupSnapshotSchema', () => {
     expect(parsedV6.spends[0]?.fromPotAmount).toBe(6_000_000);
   });
 
+  it('round-trips the Tết jar and lì xì envelopes, and reads a version 7 snapshot without them', () => {
+    const pot = {
+      id: 'tet',
+      kind: 'occasion',
+      name: 'Tết',
+      icon: 'local_florist',
+      hue: 20,
+      goal: 7_000_000,
+      neededBy: '2027-02',
+      share: null,
+      paused: false,
+      createdAt: '2026-12-01T00:00:00.000Z',
+      archivedAt: null,
+    };
+    const spend = {
+      id: 'lixi',
+      day: '2027-02-06',
+      at: '2027-02-06T03:00:00.000Z',
+      amount: 1_000_000,
+      categoryId: 'lixi',
+      merchant: 'Lì xì',
+      note: null,
+      source: 'voice',
+      status: 'kept',
+      previousStatus: null,
+      wallet: null,
+      forWork: false,
+      detail: null,
+      foreignAmount: null,
+      createdAt: '2027-02-06T03:00:00.000Z',
+      updatedAt: '2027-02-06T03:00:00.000Z',
+    };
+    const v7 = backupSnapshotSchema.parse({ ...empty, version: 7, pots: [pot], spends: [spend] });
+    expect(v7.pots[0]).not.toHaveProperty('season');
+    expect(v7.spends[0]).not.toHaveProperty('envelopes');
+    const v8 = backupSnapshotSchema.parse({
+      ...empty,
+      version: 8,
+      pots: [{ ...pot, season: 'newYear' }],
+      spends: [{ ...spend, envelopes: 5, fromPot: 'tet' }],
+    });
+    expect(v8.pots[0]?.season).toBe('newYear');
+    expect(v8.spends[0]?.envelopes).toBe(5);
+  });
+
+  it("carries spends' photos in format 10, and reads formats 7, 8 and 9 that have none", () => {
+    const spend = {
+      id: 'spend-1',
+      day: '2026-10-05',
+      at: '2026-10-05T03:00:00.000Z',
+      amount: 120_000,
+      categoryId: 'shopping',
+      merchant: 'Circle K',
+      note: null,
+      source: 'shared',
+      status: 'kept',
+      previousStatus: null,
+      wallet: null,
+      forWork: false,
+      detail: null,
+      foreignAmount: null,
+      createdAt: '2026-10-05T03:00:00.000Z',
+      updatedAt: '2026-10-05T03:00:00.000Z',
+    };
+    for (const version of [7, 8, 9]) {
+      const older = backupSnapshotSchema.parse({ ...empty, version, spends: [spend] });
+      expect(older.photos).toBeUndefined();
+      expect(older.spends[0]).not.toHaveProperty('photo');
+    }
+
+    const photo = { name: 'spend-1-mk2.jpg', jpeg: sealed(3_000) };
+    const v10 = backupSnapshotSchema.parse({
+      ...empty,
+      spends: [{ ...spend, photo: photo.name }],
+      photos: [photo],
+    });
+    expect(v10.version).toBe(10);
+    expect(v10.spends[0]?.photo).toBe('spend-1-mk2.jpg');
+    expect(v10.photos?.[0]?.name).toBe('spend-1-mk2.jpg');
+
+    for (const name of ['../spend-1.jpg', 'spend-1.png', 'a/b.jpg', '']) {
+      expect(
+        backupSnapshotSchema.safeParse({ ...empty, photos: [{ ...photo, name }] }).success,
+      ).toBe(false);
+      expect(
+        backupSnapshotSchema.safeParse({ ...empty, spends: [{ ...spend, photo: name }] }).success,
+      ).toBe(false);
+    }
+    expect(
+      backupSnapshotSchema.safeParse({ ...empty, photos: [{ ...photo, jpeg: 'not base64!' }] })
+        .success,
+    ).toBe(false);
+    expect(
+      backupSnapshotSchema.safeParse({
+        ...empty,
+        photos: [{ ...photo, jpeg: sealed(BACKUP_PHOTO_MAX_BYTES + 3) }],
+      }).success,
+    ).toBe(false);
+  });
+
   it('counts what a person made and would miss', () => {
     expect(backupItemCount(backupSnapshotSchema.parse(empty))).toBe(0);
+  });
+});
+
+describe('photosThatFit', () => {
+  const photo = (name: string, kb: number) => ({ name: `${name}.jpg`, jpegBytes: kb * 1000 });
+  const cap = 2_000_000;
+
+  it('carries every photo when there is room, newest first', () => {
+    const photos = [photo('c', 300), photo('b', 250), photo('a', 200)];
+    expect(photosThatFit(photos, 10_000, cap).map((p) => p.name)).toEqual([
+      'c.jpg',
+      'b.jpg',
+      'a.jpg',
+    ]);
+  });
+
+  it('stops before the sealed cap, keeping its margin, and lets a smaller older one through', () => {
+    const photos = [photo('d', 300), photo('c', 300), photo('b', 900), photo('a', 100)];
+    const rest = cap - BACKUP_PHOTO_MARGIN_BYTES - 2 * backupPhotoBytes(photo('x', 300)) - 140_000;
+    const carried = photosThatFit(photos, rest, cap);
+    expect(carried.map((p) => p.name)).toEqual(['d.jpg', 'c.jpg', 'a.jpg']);
+    const used = carried.reduce((sum, p) => sum + backupPhotoBytes(p), 0);
+    expect(rest + used).toBeLessThanOrEqual(cap - BACKUP_PHOTO_MARGIN_BYTES);
+  });
+
+  it('carries none when the rest of the backup already fills it, and never an outsized photo', () => {
+    expect(photosThatFit([photo('a', 10)], cap, cap)).toEqual([]);
+    expect(photosThatFit([photo('big', BACKUP_PHOTO_MAX_BYTES / 1000 + 1)], 0, cap)).toEqual([]);
   });
 });

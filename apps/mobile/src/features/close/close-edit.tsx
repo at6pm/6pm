@@ -34,6 +34,8 @@ export function CloseEdit({
   saveLabel,
   onSave,
   onCancel,
+  splitLabel,
+  onSplit,
 }: {
   readonly name: string;
   readonly amount: number;
@@ -42,6 +44,9 @@ export function CloseEdit({
   readonly saveLabel: string;
   readonly onSave: (amount: number, categoryId: string) => void;
   readonly onCancel: () => void;
+  /** "Split": keeps it as edited, then tears the bill (left out for money that cannot be split). */
+  readonly splitLabel?: string;
+  readonly onSplit?: (amount: number, categoryId: string) => void;
 }) {
   const { palette } = useTheme();
   const { bottom, rail } = useDesignInsets();
@@ -177,6 +182,29 @@ export function CloseEdit({
                 );
               })}
             </View>
+            {onSplit && splitLabel ? (
+              <PressScale
+                scaleTo={0.97}
+                accessibilityRole="button"
+                onPress={() => {
+                  haptics.tap();
+                  onSplit(value, category);
+                }}
+                style={{
+                  height: 50,
+                  borderRadius: 18,
+                  backgroundColor: palette.chipBg,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 7,
+                  marginBottom: -8,
+                }}
+              >
+                <Symbol name="content_cut" size={19} color={palette.ink} />
+                <Text style={{ ...body(15, 600), color: palette.ink }}>{splitLabel}</Text>
+              </PressScale>
+            ) : null}
             <PressScale
               scaleTo={0.97}
               onPress={() => onSave(value, category)}

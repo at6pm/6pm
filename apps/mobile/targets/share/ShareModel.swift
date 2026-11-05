@@ -25,6 +25,8 @@ final class ShareModel: ObservableObject {
     var cardJson: String
     var card: ShareCardData?
     let photo: Data?
+    /// The copy the spend keeps, left beside the inbox item on Confirm.
+    let kept: Data?
     var looking = false
   }
 
@@ -98,7 +100,7 @@ final class ShareModel: ObservableObject {
 
   private func readOne(_ source: ReceiptReader.Source?) async -> Receipt {
     let contextJson = contextJson
-    let made: (DomainBridge?, String, String, String, Data?) = await Task.detached(
+    let made: (DomainBridge?, String, String, String, Data?, Data?) = await Task.detached(
       priority: .userInitiated
     ) {
       var shared = SharedReceipt(lines: [], photo: nil)
@@ -110,17 +112,17 @@ final class ShareModel: ObservableObject {
         shared.place.flatMap { try? JSONEncoder().encode($0) }
         .flatMap { String(data: $0, encoding: .utf8) } ?? "null"
       guard let bridge = try? DomainBridge() else {
-        return (nil, linesJson, placeJson, "null", shared.photo)
+        return (nil, linesJson, placeJson, "null", shared.photo, shared.kept)
       }
       let json =
         (try? bridge.call("shareCard", [linesJson, contextJson, ShareModel.now(), placeJson]))
         ?? "null"
-      return (bridge, linesJson, placeJson, json, shared.photo)
+      return (bridge, linesJson, placeJson, json, shared.photo, shared.kept)
     }.value
     if bridge == nil { bridge = made.0 }
     return Receipt(
       linesJson: made.1, placeJson: made.2, cardJson: made.3, card: ShareCardData.decode(made.3),
-      photo: made.4)
+      photo: made.4, kept: made.5)
   }
 
   nonisolated private static func now() -> String {
@@ -290,6 +292,9 @@ final class ShareModel: ObservableObject {
       let data = try? JSONSerialization.data(withJSONObject: item)
     else { return .failed }
     do {
+      // The photo first: the app never imports the spend without the receipt it was read from.
+      // One that cannot be written leaves the spend without it rather than failing Confirm.
+      if let kept = receipt?.kept { try? GroupFiles.writeInboxPhoto(id: id, jpeg: kept) }
       try GroupFiles.writeInbox(id: id, json: data)
     } catch {
       return .failed

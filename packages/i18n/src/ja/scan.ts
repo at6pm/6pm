@@ -84,6 +84,7 @@ export const jaScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.scheme.abapay': 'ABA PAY',
   'scan.scheme.other': '海外',
   'scan.content.link': 'Webリンク',
+  'scan.content.appLink': 'アプリのリンク',
   'scan.content.wifi': 'Wi-Fiネットワーク',
   'scan.content.phone': '電話番号',
   'scan.content.sms': 'テキストメッセージ',

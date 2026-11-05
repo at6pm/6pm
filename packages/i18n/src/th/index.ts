@@ -32,6 +32,7 @@ import { thShareExt } from './share-ext';
 import { thSharing } from './sharing';
 import { thShareCards } from './share-cards';
 import { thSurfaces } from './surfaces';
+import { thWidgets } from './widgets';
 import { thToday } from './today';
 import { thTogether } from './together';
 import { thTravel } from './travel';
@@ -39,7 +40,11 @@ import { thVoice } from './voice';
 import { thWidgetsGuide } from './widgets-guide';
 import { thYearBook } from './year-book';
 import { thFirstCatch } from './first-catch';
+import { thPhoto } from './photo';
 import { thImport } from './import';
+import { thOwed } from './owed';
+import { thNotifications } from './notifications';
+import { thSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { thAndroid } from './android';
@@ -75,6 +80,7 @@ export const th: Catalogue = {
   ...thCaptureAlerts,
   ...thVoice,
   ...thSurfaces,
+  ...thWidgets,
   ...thTogether,
   ...thReceiptEmail,
   ...thTravel,
@@ -86,8 +92,12 @@ export const th: Catalogue = {
   ...thPotsPlan,
   ...thPots,
   ...thFirstCatch,
+  ...thPhoto,
   ...thImport,
+  ...thOwed,
   ...importSketchMomo,
+  ...thSeason,
+  ...thNotifications,
 };
 
 /**

@@ -1,6 +1,8 @@
 /** What an everyday QR code (not a payment) says, read for what Scan offers to do with it. */
 export type QrContent =
   | { readonly kind: 'link'; readonly url: string; readonly host: string }
+  /** Another app's link (`scheme://…`), opened only when the user taps Open. */
+  | { readonly kind: 'appLink'; readonly url: string; readonly scheme: string }
   | {
       readonly kind: 'wifi';
       readonly network: string;
@@ -43,14 +45,28 @@ const MAX_TEXT = 4000;
 const CONTROL = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/;
 const HTTP = /^(https?):\/\/([^\s/?#@]*@)?([^\s/?#:]+)(:\d{1,5})?([/?#]\S*)?$/i;
 const WWW = /^www\.[^\s/?#]+\.[a-z]{2,}([/?#]\S*)?$/i;
+const APP_LINK = /^([a-z][a-z0-9+.-]{1,31}):\/\/\S*$/i;
+// Schemes that run code, read files or reach into other apps' insides stay text.
+const UNSAFE_SCHEMES = new Set([
+  'javascript',
+  'vbscript',
+  'data',
+  'file',
+  'content',
+  'about',
+  'blob',
+  'intent',
+  'android-app',
+]);
 const NUMBER = /^\+?[0-9][0-9 ().-]{2,19}$/;
 const ADDRESS = /^[^\s@<>()]+@[^\s@<>()]+\.[^\s@<>()]{2,}$/;
 
 /**
  * Reads a scanned code that is not a payment: a web link, Wi-Fi sign-in, phone number, text
- * message, email, place, contact card (vCard or MECARD) or plain text. Only `http` and `https`
- * make a link, so a code can never ask the phone to open another app's scheme. Null for an empty
- * or unreadable payload.
+ * message, email, place, contact card (vCard or MECARD), another app's link or plain text. Only
+ * `http` and `https` make a web link; any other `scheme://` link is named by its scheme and opens
+ * its app only on a tap, and schemes that run code or read files stay text. Null for an empty or
+ * unreadable payload.
  */
 export function readQrContent(input: string): QrContent | null {
   const raw = input.trim();
@@ -59,7 +75,7 @@ export function readQrContent(input: string): QrContent | null {
 
   const link = readLink(raw);
   if (link) return link;
-  if (lower.startsWith('momo://app?')) return readMomoPayment(raw) ?? text(raw);
+  if (lower.startsWith('momo://app?')) return readMomoPayment(raw) ?? appLink(raw) ?? text(raw);
   if (lower.startsWith('wifi:')) return readWifi(raw.slice(5)) ?? text(raw);
   if (lower.startsWith('tel:')) return phone(raw.slice(4)) ?? text(raw);
   if (lower.startsWith('smsto:') || lower.startsWith('sms:')) return readSms(raw) ?? text(raw);
@@ -68,7 +84,13 @@ export function readQrContent(input: string): QrContent | null {
   if (lower.startsWith('geo:')) return readGeo(raw.slice(4)) ?? text(raw);
   if (lower.startsWith('begin:vcard')) return readVCard(raw) ?? text(raw);
   if (lower.startsWith('mecard:')) return readMeCard(raw.slice(7)) ?? text(raw);
-  return text(raw);
+  return appLink(raw) ?? text(raw);
+}
+
+function appLink(raw: string): QrContent | null {
+  const scheme = APP_LINK.exec(raw)?.[1]?.toLowerCase();
+  if (scheme === undefined || UNSAFE_SCHEMES.has(scheme)) return null;
+  return { kind: 'appLink', url: raw, scheme };
 }
 
 function text(value: string): QrContent {

@@ -32,6 +32,7 @@ import { zhHansShareExt } from './share-ext';
 import { zhHansSharing } from './sharing';
 import { zhHansShareCards } from './share-cards';
 import { zhHansSurfaces } from './surfaces';
+import { zhHansWidgets } from './widgets';
 import { zhHansToday } from './today';
 import { zhHansTogether } from './together';
 import { zhHansTravel } from './travel';
@@ -39,7 +40,11 @@ import { zhHansVoice } from './voice';
 import { zhHansWidgetsGuide } from './widgets-guide';
 import { zhHansYearBook } from './year-book';
 import { zhHansFirstCatch } from './first-catch';
+import { zhHansPhoto } from './photo';
 import { zhHansImport } from './import';
+import { zhHansOwed } from './owed';
+import { zhHansNotifications } from './notifications';
+import { zhHansSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { zhHansAndroid } from './android';
@@ -75,6 +80,7 @@ export const zhHans: Catalogue = {
   ...zhHansCaptureAlerts,
   ...zhHansVoice,
   ...zhHansSurfaces,
+  ...zhHansWidgets,
   ...zhHansTogether,
   ...zhHansReceiptEmail,
   ...zhHansTravel,
@@ -86,8 +92,12 @@ export const zhHans: Catalogue = {
   ...zhHansPotsPlan,
   ...zhHansPots,
   ...zhHansFirstCatch,
+  ...zhHansPhoto,
   ...zhHansImport,
+  ...zhHansOwed,
   ...importSketchMomo,
+  ...zhHansSeason,
+  ...zhHansNotifications,
 };
 
 /**

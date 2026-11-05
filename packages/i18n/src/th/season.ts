@@ -1,0 +1,62 @@
+import type { Entry } from '../catalogue-types';
+import type { enSeason } from '../en-season';
+
+export const thSeason: { readonly [Key in keyof typeof enSeason]: Entry } = {
+  'season.festival.tet': 'เต๊ต',
+  'season.festival.seollal': 'ซอลลัล',
+  'season.festival.chunjie': 'ตรุษจีน',
+  'season.envelope.tet': 'Lì xì',
+  'season.envelope.seollal': 'เงินปีใหม่',
+  'season.envelope.chunjie': 'อั่งเปา',
+
+  'season.card.title': 'ทำกระปุก{festival}ไหม?',
+  'season.card.sub': {
+    other: 'อีก {count} สัปดาห์จะถึง{festival} ค่อยๆ เติมทุกวันเงินเดือนออก',
+  },
+  'season.card.open': 'ตั้งเลย',
+  'season.card.later': 'ไว้ก่อน',
+
+  'season.offer.later': 'ทีหลัง',
+  'season.offer.title': 'กระปุก{festival}',
+  'season.offer.kicker': { other: '{festival} · {count} สัปดาห์' },
+  'season.offer.perPay': { other: '{amount} ทุกวันเงินเดือนออก · {count} รอบ' },
+  'season.offer.ask.gifts': 'ของฝากที่บ้าน',
+  'season.offer.ask.trip': 'ค่าเดินทางกลับบ้าน',
+  'season.offer.none': 'ไม่มี',
+  'season.offer.daily': 'ทุกวันจนถึง{festival}',
+  'season.offer.start': 'เริ่มกระปุก{festival}',
+
+  'season.bonus.kicker': 'เงินเข้า',
+  'season.bonus.title': 'โบนัส{festival}ของคุณใช่ไหม?',
+  'season.bonus.slipJar': 'กระปุก{festival}',
+  'season.bonus.jarFull': 'กระปุก{festival} · เต็ม',
+  'season.bonus.jarIn': 'กระปุก{festival} · +{amount}',
+  'season.bonus.today': 'วันนี้',
+  'season.bonus.payday': '{date} · วันเงินเดือนออก',
+  'season.bonus.spread': 'กระจาย {amount} · +{daily} ต่อวันถึง {date}',
+  'season.bonus.allIn': 'ใส่กระปุกทั้งหมด',
+  'season.bonus.yes': 'ใช่ แบ่งแบบนี้เลย',
+  'season.bonus.yesAll': 'ใช่ ใส่กระปุกเลย',
+  'season.bonus.save': 'เก็บ {amount} แทน',
+
+  'season.quick.keypad': 'แป้นตัวเลข',
+  'season.quick.voice': 'เสียง',
+  'season.quick.given': 'ให้ไป',
+  'season.quick.received': 'ได้รับ',
+  'season.quick.count': { other: '{count} ซอง × {each}' },
+  'season.quick.total': '= {amount}',
+  'season.quick.fromJar': 'จากกระปุก{festival}',
+  'season.quick.jarLeft': '{from} → เหลือ {to}',
+  'season.quick.counts': 'นับรวมวันนี้',
+  'season.quick.countsSub': 'ยังไม่มีกระปุก{festival}ให้หักออก',
+  'season.quick.saved': 'เก็บให้ตัวคุณในอนาคต',
+  'season.quick.savedSub': 'คำแนะนำ ยอดวันนี้จะไม่เพิ่มขึ้น',
+  'season.quick.keep': 'เก็บไว้',
+  'season.quick.less': 'ลดหนึ่งซอง',
+  'season.quick.more': 'เพิ่มอีกซอง',
+  'season.quick.merchant': { other: '{name} · {count} ซอง' },
+
+  'season.kicker.countdown': { other: 'อีก {count} วันถึง{festival}' },
+  'season.kicker.holiday': '{festival} วันที่ {day}',
+  'season.card.saved': 'แนะนำ: เก็บให้ตัวคุณในอนาคต',
+};

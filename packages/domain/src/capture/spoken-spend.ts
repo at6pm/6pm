@@ -28,6 +28,11 @@ export interface SpokenSpend {
   readonly categoryHint: StarterCategoryId | null;
   /** `in` when it was money coming in ("mẹ cho 500k", "got paid 18 million"); absent for a spend. */
   readonly direction?: 'in';
+  /**
+   * Lì xì said by the envelope: "lì xì 5 bao 200k" is 5 envelopes of 200k, and `amount` their
+   * 1tr. Absent for anything that is not lì xì.
+   */
+  readonly envelopes?: { readonly count: number; readonly each: Money };
 }
 
 /**
@@ -147,7 +152,7 @@ function nameFrom(rest: string): string {
 
 /** "Got paid …", "nhận …", "lương …": money in said with what it was; the verb is dropped. */
 const INCOME_VERB =
-  /^(?:i\s+)?(?:got\s+paid|got\s+back|received|receive|refunded|nhận\s+được|nhận|được\s+trả|hoàn\s+tiền)(?!\p{L})\s*/iu;
+  /^(?:i\s+)?(?:got\s+paid|got\s+back|received|receive|refunded|nhận\s+được|nhận|được\s+trả|được(?=\s+lì\s+xì)|hoàn\s+tiền)(?!\p{L})\s*/iu;
 /** "Lương …", "thưởng …", "bonus …", "salary …": money in, named by the word. */
 const INCOME_NAME =
   /^(?:lương|thưởng|tiền\s+lương|tiền\s+thưởng|salary|bonus|pay\s*cheque|paycheck)(?!\p{L})/iu;
@@ -178,8 +183,59 @@ function moneyInWords(text: string): string | null {
 export function parseSpokenSpend(text: string, currency: Currency = VND): SpokenSpend {
   const said = text.normalize('NFC').trim();
   const money = moneyInWords(said);
-  const spend = parseSpendWords(money ?? said, currency);
+  // "Bà lì xì 2 bao 200k": the giver's verb is gone from the money's words, so ask the words said.
+  const lixi = LIXI_WORD.test(said) ? lixiOf(money ?? said, currency) : null;
+  const spend = lixi ?? parseSpendWords(money ?? said, currency);
   return money === null ? spend : { ...spend, categoryHint: null, direction: 'in' };
+}
+
+/** Saying it is lì xì: "lì xì", "mừng tuổi", "red envelope". */
+const LIXI_WORD =
+  /(?:^|[^\p{L}])(?:lì\s*xì|li\s*xi|lixi|mừng\s+tuổi|red\s+envelopes?|lucky\s+money)(?!\p{L})/iu;
+/** What follows a count of envelopes: "5 bao", "5 phong bì", "5 envelopes", "5 cái". */
+const ENVELOPE_AFTER = /^\s*(?:bao|phong\s+bao|phong\s+bì|envelopes?|cái|x\b|×)/iu;
+/** What comes before a count said after the amount: "200k × 5", "200k x 5". */
+const TIMES_BEFORE = /(?:×|\bx)\s*$/iu;
+/** The most envelopes one entry holds. */
+const MOST_ENVELOPES = 99;
+
+/**
+ * Lì xì said out loud, by the envelope: "lì xì 5 bao 200k" (or "5 bao mỗi bao 200k", "200k × 5")
+ * is 5 envelopes of 200k, a spend of 1tr; "lì xì 500k" is one envelope. Null when it is not lì xì
+ * or no amount was said. The name is what is left once the lì xì words, the count and the amount
+ * are taken out ("cho cháu"), often nothing.
+ */
+function lixiOf(text: string, currency: Currency): SpokenSpend | null {
+  const numbers = readSpokenNumbers(text);
+  const isCount = (n: (typeof numbers)[number]) =>
+    !n.scaled &&
+    Number.isInteger(n.value) &&
+    n.value >= 1 &&
+    n.value <= MOST_ENVELOPES &&
+    (ENVELOPE_AFTER.test(text.slice(n.end)) || TIMES_BEFORE.test(text.slice(0, n.start)));
+  const count = numbers.find(isCount) ?? null;
+  const rest = numbers.filter((n) => n !== count);
+  const spoken = [...rest].reverse().find((n) => n.scaled) ?? rest[rest.length - 1];
+  const each = spoken ? spokenAmount(spoken, currency) : null;
+  if (each === null || !spoken) return null;
+  const envelopes = count?.value ?? 1;
+  let left = text;
+  for (const n of [spoken, ...(count ? [count] : [])].sort((a, b) => b.start - a.start)) {
+    left = `${left.slice(0, n.start)} ${left.slice(n.end)}`;
+  }
+  left = left
+    .replace(LIXI_WORD, ' ')
+    .replace(
+      /(?:^|\s)(?:mỗi\s+bao|each|một\s+bao|bao|phong\s+bì|envelopes?|cái|x|×)(?=\s|$)/giu,
+      ' ',
+    )
+    .replace(CURRENCY_AFTER, ' ');
+  return {
+    name: nameFrom(left),
+    amount: each * envelopes,
+    categoryHint: 'gifts',
+    envelopes: { count: envelopes, each },
+  };
 }
 
 /** The name, amount and category hint of what was said, money in or out. */

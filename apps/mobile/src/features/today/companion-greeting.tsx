@@ -22,7 +22,15 @@ import { useClock } from '../../ui/theme/clock';
 import { useTheme } from '../../ui/theme/theme';
 import { display, leading } from '../../ui/type/fonts';
 
-type HomeEvent = 'idle' | 'closedIdle' | 'late' | 'replan' | 'pastPlan' | 'paused';
+type HomeEvent =
+  | 'idle'
+  | 'closedIdle'
+  | 'late'
+  | 'replan'
+  | 'pastPlan'
+  | 'paused'
+  | 'seasonCountdown'
+  | 'seasonHoliday';
 /** A calm day while Today waits for the first catch: the companion asks to be let in. */
 type SaidEvent = HomeEvent | 'firstCatchWaiting';
 
@@ -46,6 +54,7 @@ export function CompanionGreeting({
   event,
   spread,
   onPress,
+  festival = '',
 }: {
   readonly day: DailyNumber;
   readonly plan: PlanSettings;
@@ -60,6 +69,8 @@ export function CompanionGreeting({
     readonly daily: number;
   } | null;
   readonly onPress: () => void;
+  /** The festival's name for the season's lines ("Tết"). */
+  readonly festival?: string;
 }) {
   const { palette, serious } = useTheme();
   const { t } = useI18n();
@@ -91,11 +102,13 @@ export function CompanionGreeting({
         `companion.moneyInSpread.${told.name === '' ? 'plain' : plan.persona}` as 'companion.moneyInSpread.soft',
         { name: told.name, amount: money.short(told.amount), daily: money.short(told.daily) },
       )
-    : (own?.text ??
-      t(`companion.${said}.${plan.persona}` as 'companion.replan.cheeky', {
-        t: money.short(day.tomorrow),
-        b: money.short(day.line),
-      }));
+    : said === 'seasonCountdown' || said === 'seasonHoliday'
+      ? t(`companion.${said}.${plan.persona}` as 'companion.seasonCountdown.soft', { festival })
+      : (own?.text ??
+        t(`companion.${said}.${plan.persona}` as 'companion.replan.cheeky', {
+          t: money.short(day.tomorrow),
+          b: money.short(day.line),
+        }));
   return (
     <>
       <View

@@ -166,7 +166,7 @@ internal object ReceiptPhoto {
   }
 
   /** The picture no larger than `pixels` on its long side. */
-  private fun scaled(image: Bitmap, pixels: Int): Bitmap {
+  fun scaled(image: Bitmap, pixels: Int): Bitmap {
     val long = max(image.width, image.height)
     if (long <= pixels) return image
     val scale = pixels.toDouble() / long

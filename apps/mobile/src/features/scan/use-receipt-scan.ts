@@ -11,6 +11,7 @@ import {
   receiptReadResponseSchema,
   scannedReceiptCard,
   scannedReceiptItem,
+  splitEqually,
   type ScannedCard,
   type ScannedEdits,
   type SurfaceContext,
@@ -18,6 +19,7 @@ import {
 
 import type { ScannedReceipt } from '../../../modules/scan-camera';
 import { useBillPayments } from '../../data/bill-payments';
+import { keepPhotoAt } from '../../data/device-photo-files';
 import { saveInboxSpend } from '../../data/inbox-import';
 import { useMoneyActions, useMoneyStore } from '../../data/money-provider';
 import { usePlanActions } from '../../data/plan-actions';
@@ -30,6 +32,7 @@ import { createEnrichShared } from '../capture/enrich-shared';
 import { BILL_CARDS } from '../onboarding/bill-deck';
 import { requireServerAi } from '../privacy/ai-mode';
 import { contextStrings, hostOf, surfaceContext } from '../surfaces/surface-context';
+import { useOwedActions } from '../owed/use-owed';
 import { useTravel } from '../travel/travel-provider';
 
 /** The server's closer look gets as long as Share to 6pm gives it. */
@@ -82,6 +85,7 @@ export function useReceiptScan() {
   const actions = useMoneyActions();
   const plan = usePlanActions();
   const billPayments = useBillPayments();
+  const owed = useOwedActions();
   const api = useApi();
   const db = useSQLiteContext();
   const { t, language } = useI18n();
@@ -221,6 +225,22 @@ export function useReceiptScan() {
       if (item === null) return 'empty';
       const spendId = await saveInboxSpend({ store, actions, enrich, home: home.code }, item);
       if (spendId === null) return 'already';
+      // Split on the card: the spend is the user's share, and each other share is owed, unnamed.
+      const people = edits.people ?? 1;
+      const whole = edits.amount ?? phase.card.amount;
+      if (people > 1 && whole !== null) {
+        const split = splitEqually(whole, people, home);
+        await owed.addShares(
+          spendId,
+          split.others.map((amount) => ({ name: null, amount })),
+        );
+      }
+      // The squared-up cut-out stays with the spend, not the camera's whole frame; a payment seen
+      // another way first keeps the photo it has. A photo that cannot be kept leaves the spend saved.
+      const cutOut = phase.receipt.uri;
+      await actions
+        .attachPhoto(spendId, (to) => keepPhotoAt(cutOut, to).then(() => true), true)
+        .catch(() => null);
       const { pays, add } = phase.bill;
       if (bill === 'pays' && pays !== null) await billPayments.setPaysBill(spendId, pays.id);
       // The bill it looked like, turned off: answered, so a later catch never marks it as paid.
@@ -235,7 +255,7 @@ export function useReceiptScan() {
       }
       return 'saved';
     },
-    [phase, store, actions, enrich, home.code, billPayments, plan],
+    [phase, store, actions, enrich, home, billPayments, plan, owed],
   );
 
   return { phase, take, show, retake, save };

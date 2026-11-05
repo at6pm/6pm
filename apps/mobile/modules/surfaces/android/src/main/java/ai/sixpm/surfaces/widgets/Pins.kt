@@ -19,6 +19,11 @@ object Pins {
     when (kind) {
       "safe" -> ComponentName(context, SafeTodayWidget::class.java)
       "today" -> ComponentName(context, TodayListWidget::class.java)
+      "month" -> ComponentName(context, MonthWidget::class.java)
+      "week" -> ComponentName(context, WeekWidget::class.java)
+      "receipt" -> ComponentName(context, ReceiptWidget::class.java)
+      "streak" -> ComponentName(context, StreakWidget::class.java)
+      "jar" -> ComponentName(context, JarWidget::class.java)
       else -> null
     }
 

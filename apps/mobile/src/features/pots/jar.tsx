@@ -61,11 +61,7 @@ export interface JarProps {
   readonly style?: ViewProps['style'];
 }
 
-/** How full a jar is drawn: its share of the target, or a steady level for one with none. */
-export function jarLevel(saved: number, target: number): number {
-  if (target > 0) return Math.max(0, Math.min(1, saved / target));
-  return saved > 0 ? 0.62 : 0;
-}
+export { jarLevel } from './jar-geometry';
 
 /** Future you's jar on its page: the fill rises with the slice, as the canvas's slider moves it. */
 export function futureYouLevel(slicePercent: number): number {

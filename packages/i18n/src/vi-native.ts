@@ -3,7 +3,7 @@ import type { enNative } from './en-native';
 
 export const viNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.permission.camera':
-    '6pm dùng camera để đọc mã QR và hoá đơn bạn quét. Ảnh ở lại trên iPhone, trừ khi hoá đơn cần đọc kỹ hơn.',
+    '6pm dùng camera để đọc mã QR và hoá đơn bạn quét, và để chụp ảnh bạn kèm vào một khoản chi. Ảnh ở lại trên iPhone, trừ hoá đơn cần đọc kỹ hơn và bản sao lưu đã mã hoá của bạn.',
   'native.permission.microphone':
     '6pm nghe khi bạn nói một khoản chi. Giọng nói được gửi tới một dịch vụ chuyển giọng nói thành chữ, hoặc chỉ ở lại trên iPhone này ở chế độ trên máy.',
   'native.permission.speech': '6pm chuyển lời bạn nói thành số tiền và tên khoản chi.',
@@ -17,6 +17,17 @@ export const viNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.surfaces.safeToday.description': 'Số tiền bạn có thể tiêu hôm nay, nhìn là thấy.',
   'native.surfaces.setUp': 'Mở 6pm để cài đặt',
   'native.surfaces.markPaid.title': 'Đã trả',
+  'native.surfaces.jar.name': 'Một hũ',
+  'native.surfaces.jar.description': 'Một hũ, đếm ngược đến ngày của nó.',
+  'native.surfaces.jar.param': 'Hũ',
+  'native.surfaces.streak.name': 'Chuỗi tối',
+  'native.surfaces.streak.description': 'Những tối bạn chốt liên tiếp, mỗi tối một bầu trời.',
+  'native.surfaces.month.name': 'Tháng của tôi',
+  'native.surfaces.month.description': 'Cả tháng thành những mặt trời: mỗi tối bạn đã chốt.',
+  'native.surfaces.week.name': 'Tuần này',
+  'native.surfaces.week.description': 'Cả tuần thành những mặt trời: mỗi tối bạn đã chốt.',
+  'native.surfaces.receipt.name': 'Hoá đơn hôm nay',
+  'native.surfaces.receipt.description': 'Các khoản hôm nay in ra ngay khi bắt được.',
   'native.surfaces.todayList.name': 'Hôm nay',
   'native.surfaces.todayList.description': 'Những khoản đã tiêu hôm nay, mới nhất trước.',
   'native.share.title': 'Thêm vào 6pm',

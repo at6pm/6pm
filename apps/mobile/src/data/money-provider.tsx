@@ -13,8 +13,10 @@ import {
 } from 'react';
 
 import { useClock } from '../ui/theme/clock';
+import { devicePhotoFiles, deviceSpendPhotos } from './device-photo-files';
 import { moneyActions, type MoneyActions } from './money-actions';
 import { createMoneyStore, dayOf, type MoneySnapshot, type MoneyStore } from './money-store';
+import { prunePhotos } from './spend-photos';
 
 const StoreContext = createContext<{ store: MoneyStore; actions: MoneyActions } | null>(null);
 
@@ -34,7 +36,7 @@ export function MoneyProvider({
   const { today } = useClock();
   const value = useMemo(() => {
     const store = createMoneyStore(db, today);
-    return { store, actions: moneyActions(store) };
+    return { store, actions: moneyActions(store, deviceSpendPhotos) };
     // Made once per database; a new day reloads it below instead of making a new store.
   }, [db]);
 
@@ -56,6 +58,16 @@ export function MoneyProvider({
       },
     );
   }, [value, today, attempt]);
+
+  // Once a launch, after the first read: photos no standing spend holds are removed, and a spend
+  // whose photo is gone is told so.
+  const ready = state === 'ready';
+  useEffect(() => {
+    if (!ready) return;
+    prunePhotos(value.store, devicePhotoFiles, deviceSpendPhotos).catch((error: unknown) =>
+      Sentry.captureException(error),
+    );
+  }, [value, ready]);
 
   if (state === 'failed') {
     return failed(() => {

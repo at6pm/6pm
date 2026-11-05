@@ -11,15 +11,15 @@ export function offersSplit(amount: Money | null, home: Currency): boolean {
 }
 
 /**
- * One person's share of a total split `people` ways, in minor units: rounded up to a whole step
- * (1.000₫ in Vietnam, where nobody hands over 735.250₫), else to the minor unit, so the shares
- * never come to less than the bill.
+ * The user's share of a total split `people` ways, in minor units. Every other share is the even
+ * share rounded down to a whole step (1.000₫ in Vietnam, where nobody hands over 735.250₫; the
+ * minor unit elsewhere), and what rounding leaves is the user's, so the shares add up to the bill.
  */
 export function splitShare(total: Money, people: number, home: Currency): Money {
   const ways = Math.min(Math.max(1, Math.round(people)), SPLIT_MOST);
   if (ways === 1) return total;
   const unit = home.code === 'VND' ? home.step : 1;
-  return Math.ceil(total / ways / unit) * unit;
+  return total - Math.floor(total / ways / unit) * unit * (ways - 1);
 }
 
 /** A foreign total ("68.80") split `people` ways, as printed: two decimals at most, rounded up. */

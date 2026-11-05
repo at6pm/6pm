@@ -85,6 +85,7 @@ export const koScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.scheme.abapay': 'ABA PAY',
   'scan.scheme.other': '해외',
   'scan.content.link': '웹 링크',
+  'scan.content.appLink': '앱 링크',
   'scan.content.wifi': 'Wi-Fi 네트워크',
   'scan.content.phone': '전화번호',
   'scan.content.sms': '문자 메시지',

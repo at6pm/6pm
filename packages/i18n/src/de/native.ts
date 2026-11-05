@@ -4,7 +4,7 @@ import type { enNative } from '../en-native';
 // Permission prompts follow iOS's German register; App Shortcut phrases are spoken commands.
 export const deNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.permission.camera':
-    '6pm verwendet die Kamera, um die QR-Codes und Belege zu lesen, die du scannst. Fotos bleiben auf deinem iPhone, außer ein Beleg muss genauer gelesen werden.',
+    '6pm verwendet die Kamera, um die QR-Codes und Belege zu lesen, die du scannst, und um das Foto aufzunehmen, das du zu einer Ausgabe behältst. Fotos bleiben auf deinem iPhone, bis auf einen Beleg, der genauer gelesen werden muss, und dein verschlüsseltes Backup.',
   'native.permission.microphone':
     '6pm hört zu, während du eine Ausgabe sagst. Deine Stimme wird zum Verschriftlichen an einen Spracherkennungsdienst gesendet oder bleibt im Modus „Auf dem Gerät“ auf diesem iPhone.',
   'native.permission.speech': '6pm macht aus dem, was du sagst, einen Betrag und einen Namen.',
@@ -18,6 +18,20 @@ export const deNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.surfaces.safeToday.description': 'Was du heute ausgeben kannst, auf einen Blick.',
   'native.surfaces.setUp': '6pm zum Einrichten öffnen',
   'native.surfaces.markPaid.title': 'Bezahlt',
+  'native.surfaces.jar.name': 'Ein Glas',
+  'native.surfaces.jar.description': 'Ein Glas, das bis zu seinem Tag herunterzählt.',
+  'native.surfaces.jar.param': 'Glas',
+  'native.surfaces.streak.name': 'Serie',
+  'native.surfaces.streak.description':
+    'Die Abende, die du in Folge abgeschlossen hast, jeder mit seinem Himmel.',
+  'native.surfaces.month.name': 'Mein Monat',
+  'native.surfaces.month.description':
+    'Der Monat als Sonnen: jeder Abend, den du abgeschlossen hast.',
+  'native.surfaces.week.name': 'Diese Woche',
+  'native.surfaces.week.description':
+    'Die Woche als Sonnen: jeder Abend, den du abgeschlossen hast.',
+  'native.surfaces.receipt.name': 'Heutiger Beleg',
+  'native.surfaces.receipt.description': 'Was du heute ausgibst, gedruckt, sobald es erfasst ist.',
   'native.surfaces.todayList.name': 'Heute',
   'native.surfaces.todayList.description': 'Was du heute ausgegeben hast, Neuestes zuerst.',
   'native.share.title': 'Zu 6pm hinzufügen',

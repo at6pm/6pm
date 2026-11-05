@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Text, useWindowDimensions, View } from 'react-native';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 
 import type { SpendRow } from '@6pm/domain';
@@ -26,6 +26,8 @@ import { useCompanionToast } from '../companion/use-companion-toast';
 import { useRunAction } from '../companion/use-run-action';
 import { AmountEditor } from './amount-editor';
 import { DetailsCard } from './details-card';
+import { PRINT_WIDTH, printBesideName, SpendPhoto } from './spend-photo';
+import { useMoneyFormat } from '../../money/use-money-format';
 import { TodayPill } from './from-jar-row';
 import { useFocusOnPresent } from '../../ui/navigation/use-focus-on-present';
 import { easeInOut } from '../../ui/motion/curves';
@@ -41,19 +43,28 @@ const reflow = LinearTransition.duration(200).easing(easeInOut);
 export function SpendDetails({
   id,
   onDeleted,
+  offerDeleteUndo,
 }: {
   readonly id: string;
   /** The spend is gone: close the sheet, or turn the page back to the month. */
   readonly onDeleted: () => void;
+  /**
+   * Where the delete's undo is offered: in the sheet, the app's own bar, since the sheet closes
+   * as the spend goes. The photo's undo stays with the nearest bar.
+   */
+  readonly offerDeleteUndo?: ReturnType<typeof useOfferUndo>;
 }) {
   const { palette } = useTheme();
   const { t, language, weekdayDate } = useI18n();
   const snap = useMoney();
   const actions = useMoneyActions();
   const labels = useSpendLabels();
-  const offerUndo = useOfferUndo();
+  const nearestUndo = useOfferUndo();
+  const offerUndo = offerDeleteUndo ?? nearestUndo;
   const say = useCompanionToast();
   const run = useRunAction();
+  const money = useMoneyFormat();
+  const screen = useWindowDimensions();
   const spend = findSpend(snap, id);
   const [askRule, setAskRule] = useState(false);
   // A catch with no amount opens on the keypad, once the sheet has risen.
@@ -89,6 +100,17 @@ export function SpendDetails({
     month: 'short',
   }).format(new Date(spend.at));
   const update = (patch: Partial<SpendRow>) => void run(() => actions.update(spend.id, patch));
+  // Beside the name at the top right; at the largest text sizes the name needs the whole width,
+  // so the print sits in the header under the date instead.
+  const beside = printBesideName(screen.fontScale);
+  const photo = (
+    <SpendPhoto
+      spend={spend}
+      title={`${spend.merchant} · ${money.full(spend.amount)}`}
+      subtitle={`${when} · ${labels.time(spend.at)}`}
+      inline={!beside}
+    />
+  );
 
   // One line per way it was seen, headed "Seen 2 ways" when more than one source reported it.
   const trail =
@@ -114,12 +136,22 @@ export function SpendDetails({
     <>
       <View style={{ alignItems: 'center', gap: 6, paddingVertical: 4 }}>
         <CategoryTile icon={icon} hue={category?.hue ?? 80} size={56} radius={19} glyph={31} />
-        <Text style={{ ...body(20, 650, -0.02), color: palette.ink, paddingTop: 4 }}>
+        {/* The name keeps clear of the photo clipped at the top right. */}
+        <Text
+          style={{
+            ...body(20, 650, -0.02),
+            color: palette.ink,
+            paddingTop: 4,
+            paddingHorizontal: beside ? PRINT_WIDTH + 8 : 0,
+            textAlign: 'center',
+          }}
+        >
           {spend.merchant}
         </Text>
-        <Text style={{ ...body(14), color: palette.inkSoft }}>
+        <Text style={{ ...body(14), color: palette.inkSoft, textAlign: 'center' }}>
           {when} · {labels.time(spend.at)}
         </Text>
+        {beside ? null : photo}
         <AmountEditor
           spend={spend}
           editing={editingAmount}
@@ -127,6 +159,7 @@ export function SpendDetails({
           onSave={({ amount, foreignAmount }) => update({ amount, foreignAmount })}
         />
         <TodayPill spend={spend} />
+        {beside ? photo : null}
         <Animated.View
           layout={reflow}
           style={{ alignSelf: 'stretch', alignItems: 'center', gap: 6 }}

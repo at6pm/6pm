@@ -15,7 +15,10 @@ import { useMoney, useMoneyActions } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
+import { useCompanionToast } from '../companion/use-companion-toast';
+import { BonusQuestionStep } from './close-bonus-question';
 import { WorkQuestionStep } from './close-work-question';
+import { useCloseMoney } from './use-close-money';
 
 /**
  * The close's question about money that looks like something: "Is this your pay?", "Is this for
@@ -42,6 +45,8 @@ export function MoneyQuestionStep({
   const actions = useMoneyActions();
   const money = useMoneyFormat();
   const { t, language } = useI18n();
+  const { canSave } = useCloseMoney();
+  const say = useCompanionToast();
   // One answer per question: a second tap while the pay is being split does nothing.
   const answered = useRef<string | null>(null);
   const card = moneyQuestion(state);
@@ -83,9 +88,36 @@ export function MoneyQuestionStep({
       });
       return;
     }
-    void run(() => actions.placeMoneyIn(spend.id, { moneyIn: ask.kind, givesBack: ask.spendId }));
+    // The bonus places itself from its own step.
+    if (ask.kind === 'bonus') return;
+    void run(() =>
+      actions.placeMoneyIn(spend.id, {
+        moneyIn: ask.kind,
+        givesBack: ask.spendId,
+        ...(ask.kind === 'payback' && ask.owed ? { owed: ask.owed } : {}),
+      }),
+    );
     dispatch({ type: 'answerMoney', id: card.id, yes: true });
   };
+
+  if (ask.kind === 'bonus') {
+    return (
+      <BonusQuestionStep
+        key={card.id}
+        spend={spend}
+        jarId={ask.jarId}
+        toJar={ask.toJar}
+        canSave={canSave}
+        onPlace={(place) => {
+          if (answered.current === card.id) return;
+          answered.current = card.id;
+          if (!plan.serious) say('seasonBonus');
+          void run(() => actions.placeMoneyIn(spend.id, place));
+          dispatch({ type: 'answerMoney', id: card.id, yes: true });
+        }}
+      />
+    );
+  }
 
   if (ask.kind === 'pay') {
     const extra = payExtra(spend.amount, plan.income);
@@ -111,6 +143,28 @@ export function MoneyQuestionStep({
 
   const given = givable.find((g) => g.id === ask.spendId);
   if (!given) return null;
+  // A friend's share of a split, named: "Linh paying back 300k?", their strip above the money.
+  if (ask.kind === 'payback' && ask.owed) {
+    const amount = money.short(spend.amount);
+    return (
+      <WorkQuestionStep
+        key={card.id}
+        line={line('paybackQuestion')}
+        mood="happy"
+        receiptLine={{ time: dayMonth(given.day), name: given.merchant, amount: spend.amount }}
+        second={{ ...incoming, time: t('moneyIn.today'), name: t('moneyIn.payback.line') }}
+        title={
+          ask.name
+            ? t('owed.close.title', { name: ask.name, amount })
+            : t('owed.close.titleNoName', { amount })
+        }
+        sub={t('moneyIn.payback.sub')}
+        yes={t('owed.close.yes')}
+        no={t('moneyIn.no')}
+        onAnswer={answer}
+      />
+    );
+  }
   const original = { time: dayMonth(given.day), name: given.merchant, amount: given.amount };
   if (ask.kind === 'refund') {
     return (

@@ -32,6 +32,7 @@ import { frShareExt } from './share-ext';
 import { frSharing } from './sharing';
 import { frShareCards } from './share-cards';
 import { frSurfaces } from './surfaces';
+import { frWidgets } from './widgets';
 import { frToday } from './today';
 import { frTogether } from './together';
 import { frTravel } from './travel';
@@ -39,7 +40,11 @@ import { frVoice } from './voice';
 import { frWidgetsGuide } from './widgets-guide';
 import { frYearBook } from './year-book';
 import { frFirstCatch } from './first-catch';
+import { frPhoto } from './photo';
 import { frImport } from './import';
+import { frOwed } from './owed';
+import { frNotifications } from './notifications';
+import { frSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { frAndroid } from './android';
@@ -75,6 +80,7 @@ export const fr: Catalogue = {
   ...frCaptureAlerts,
   ...frVoice,
   ...frSurfaces,
+  ...frWidgets,
   ...frTogether,
   ...frReceiptEmail,
   ...frTravel,
@@ -86,8 +92,12 @@ export const fr: Catalogue = {
   ...frPotsPlan,
   ...frPots,
   ...frFirstCatch,
+  ...frPhoto,
   ...frImport,
+  ...frOwed,
   ...importSketchMomo,
+  ...frSeason,
+  ...frNotifications,
 };
 
 /**
@@ -113,6 +123,7 @@ export const frSameAsEnglish: readonly string[] = [
   'Note',
   'Notification',
   'Notification › Date',
+  'Notifications',
   'Parking',
   'Plan',
   'QR',

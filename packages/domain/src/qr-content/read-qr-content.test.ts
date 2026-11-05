@@ -23,14 +23,37 @@ describe('readQrContent', () => {
     });
   });
 
-  it('never makes a link of another scheme', () => {
-    for (const scheme of [
-      'javascript:alert(1)',
+  it('never makes a web link of another scheme', () => {
+    for (const scheme of ['javascript:alert(1)', 'momo://app', 'ftp://a.b/c']) {
+      expect(readQrContent(scheme)?.kind).not.toBe('link');
+    }
+  });
+
+  it("reads another app's link by its scheme, keeping unsafe schemes as text", () => {
+    const install = 'itms-services://?action=download-manifest&url=https%3A%2F%2Fa.b%2Fm.plist';
+    expect(readQrContent(install)).toEqual({
+      kind: 'appLink',
+      url: install,
+      scheme: 'itms-services',
+    });
+    expect(readQrContent('zalo://conversation?phone=0901234567')).toMatchObject({
+      kind: 'appLink',
+      scheme: 'zalo',
+    });
+    expect(readQrContent('momo://app?action=p2p&extra=x')).toMatchObject({
+      kind: 'appLink',
+      scheme: 'momo',
+    });
+    for (const unsafe of [
+      'javascript://%0Aalert(1)',
       'intent://x#Intent;end',
-      'momo://app',
-      'ftp://a.b/c',
+      'file:///etc/hosts',
+      'data://text/html,x',
+      'content://contacts/people',
+      'zalo:// two words',
+      'Ghi chú://không phải link',
     ]) {
-      expect(readQrContent(scheme)?.kind).toBe('text');
+      expect(readQrContent(unsafe)?.kind).toBe('text');
     }
   });
 
@@ -42,8 +65,8 @@ describe('readQrContent', () => {
       kind: 'momoPayment',
       amount: null,
     });
-    expect(readQrContent('momo://app?action=p2p&extra=x')?.kind).toBe('text');
-    expect(readQrContent('momo://?action=payWithApp')?.kind).toBe('text');
+    expect(readQrContent('momo://app?action=p2p&extra=x')?.kind).toBe('appLink');
+    expect(readQrContent('momo://?action=payWithApp')?.kind).toBe('appLink');
   });
 
   it('reads Wi-Fi sign-in, with escapes and a hidden network', () => {

@@ -115,6 +115,7 @@ export function toRowViews(
       reviewable: needsReview(s),
       skipped: s.status === 'skipped',
       first: i === 0,
+      photo: s.photo ?? null,
     };
   });
 }

@@ -95,6 +95,11 @@ enum SurfaceFont {
       name ?? defaultDisplay, size: size, axes: [wght: weight, opsz: min(96, max(12, size))])
   }
 
+  /// The postcards' kickers: IBM Plex Mono, as the prototype's mono face.
+  static func mono(size: CGFloat) -> Font {
+    Font(UIFont(name: "IBMPlexMono-Medium", size: size) ?? .monospacedSystemFont(ofSize: size, weight: .medium))
+  }
+
   /// A Material Symbols glyph at a size, filled or outlined.
   static func symbol(size: CGFloat, filled: Bool = false, weight: CGFloat = 400) -> Font {
     font(

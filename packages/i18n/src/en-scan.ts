@@ -84,6 +84,7 @@ export const enScan = {
   'scan.scheme.abapay': 'ABA PAY',
   'scan.scheme.other': 'foreign',
   'scan.content.link': 'Web link',
+  'scan.content.appLink': 'App link',
   'scan.content.wifi': 'Wi-Fi network',
   'scan.content.phone': 'Phone number',
   'scan.content.sms': 'Text message',

@@ -39,6 +39,16 @@ export function pinClock(at: Date | null): void {
   for (const listener of pinListeners) listener();
 }
 
+/** Now, on the clock the app shows: the pinned time in a developer build that pinned one. */
+export function clockNow(): Date {
+  return pinned ?? new Date();
+}
+
+/** The time the clock is pinned to, or null while it follows the real time. */
+export function pinnedClock(): Date | null {
+  return pinned;
+}
+
 /**
  * The phone's clock, ticking on each minute boundary and refreshed when the app comes back, so the
  * sky, the daily number and the close follow the real time of day.

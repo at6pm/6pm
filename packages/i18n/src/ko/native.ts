@@ -5,7 +5,7 @@ import type { enNative } from '../en-native';
 // commands; 에 and 에서 after the app's name read the same whatever its last sound.
 export const koNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.permission.camera':
-    '6pm은 스캔하는 QR 코드와 영수증을 읽기 위해 카메라를 사용해요. 영수증을 더 자세히 봐야 할 때가 아니면 사진은 iPhone 밖으로 나가지 않아요.',
+    '6pm은 스캔하는 QR 코드와 영수증을 읽고, 지출에 끼워 둘 사진을 찍기 위해 카메라를 사용해요. 더 자세히 봐야 하는 영수증과 암호화된 백업을 빼면 사진은 iPhone 밖으로 나가지 않아요.',
   'native.permission.microphone':
     '6pm은 지출을 말로 입력하는 동안 음성을 들어요. 음성은 텍스트로 바꾸기 위해 음성 인식 서비스로 전송되며, 기기 내 모드에서는 이 iPhone에만 남아요.',
   'native.permission.speech': '6pm은 말한 내용을 금액과 이름으로 바꿔요.',
@@ -18,6 +18,17 @@ export const koNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.surfaces.safeToday.description': '오늘 쓸 수 있는 돈을 한눈에.',
   'native.surfaces.setUp': '6pm을 열어 설정하세요',
   'native.surfaces.markPaid.title': '결제 완료',
+  'native.surfaces.jar.name': '저금통 하나',
+  'native.surfaces.jar.description': '저금통 하나, 그날까지 카운트다운.',
+  'native.surfaces.jar.param': '저금통',
+  'native.surfaces.streak.name': '연속 기록',
+  'native.surfaces.streak.description': '연속으로 마감한 저녁, 저녁마다 그날의 하늘.',
+  'native.surfaces.month.name': '나의 한 달',
+  'native.surfaces.month.description': '한 달을 해로: 마감한 모든 저녁.',
+  'native.surfaces.week.name': '이번 주',
+  'native.surfaces.week.description': '한 주를 해로: 마감한 모든 저녁.',
+  'native.surfaces.receipt.name': '오늘의 영수증',
+  'native.surfaces.receipt.description': '오늘 쓴 돈이 기록되는 대로 찍혀 나와요.',
   'native.surfaces.todayList.name': '오늘',
   'native.surfaces.todayList.description': '오늘 쓴 돈, 최신순으로.',
   'native.share.title': '6pm에 추가',

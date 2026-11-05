@@ -13,9 +13,9 @@ const {
 /* eslint-enable @typescript-eslint/no-require-imports */
 
 /**
- * 6pm's Home screen widgets and Quick Settings tiles on Android, the iPhone's widgets and controls:
- * Safe today (small, or medium with Scan QR and Quick add), Today (the day's spends), and the Scan
- * QR and Quick add tiles. They are drawn by `modules/surfaces` (`ai.sixpm.surfaces.widgets`) from
+ * 6pm's Home screen widgets and Quick Settings tiles on Android, the iPhone's postcards and controls:
+ * Safe today (the number on its sky, small, or with the jars, medium), My month (the month as
+ * suns), Streak, a jar counting down, and the Scan QR and Quick add tiles. They are drawn by `modules/surfaces` (`ai.sixpm.surfaces.widgets`) from
  * the snapshot the app writes; this declares them to the launcher. Their names and descriptions
  * are `sixpm_widget_*` strings from `locales/<lang>.json` (`android`), and the tiles share the
  * launcher shortcuts' labels.
@@ -49,6 +49,56 @@ const WIDGETS = [
     description: 'sixpm_widget_today_description',
     preview: 'sixpm_widget_today_preview',
   },
+  {
+    receiver: 'MonthWidget',
+    info: 'sixpm_widget_month',
+    cells: [4, 4],
+    min: [250, 250],
+    resize: [250, 250],
+    name: 'sixpm_widget_month_name',
+    description: 'sixpm_widget_month_description',
+    preview: 'sixpm_widget_month_preview',
+  },
+  {
+    receiver: 'WeekWidget',
+    info: 'sixpm_widget_week',
+    cells: [2, 2],
+    min: [110, 110],
+    resize: [110, 110],
+    name: 'sixpm_widget_week_name',
+    description: 'sixpm_widget_week_description',
+    preview: 'sixpm_widget_week_preview',
+  },
+  {
+    receiver: 'ReceiptWidget',
+    info: 'sixpm_widget_receipt',
+    cells: [4, 2],
+    min: [250, 110],
+    resize: [250, 110],
+    name: 'sixpm_widget_receipt_name',
+    description: 'sixpm_widget_receipt_description',
+    preview: 'sixpm_widget_receipt_preview',
+  },
+  {
+    receiver: 'StreakWidget',
+    info: 'sixpm_widget_streak',
+    cells: [2, 2],
+    min: [110, 110],
+    resize: [110, 110],
+    name: 'sixpm_widget_streak_name',
+    description: 'sixpm_widget_streak_description',
+    preview: null,
+  },
+  {
+    receiver: 'JarWidget',
+    info: 'sixpm_widget_jar',
+    cells: [2, 2],
+    min: [110, 110],
+    resize: [110, 110],
+    name: 'sixpm_widget_jar_name',
+    description: 'sixpm_widget_jar_description',
+    preview: null,
+  },
 ];
 
 /** Each tile: its service, label and icon. */
@@ -74,8 +124,9 @@ function providerXml(widget) {
   android:resizeMode="horizontal|vertical"
   android:widgetCategory="home_screen"
   android:updatePeriodMillis="1800000"
-  android:initialLayout="@layout/sixpm_widget_loading"
-  android:previewImage="@drawable/${widget.preview}"
+  android:initialLayout="@layout/sixpm_widget_loading"${
+    widget.preview ? `\n  android:previewImage="@drawable/${widget.preview}"` : ''
+  }
   android:description="@string/${widget.description}" />
 `;
 }

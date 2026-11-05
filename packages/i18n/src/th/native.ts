@@ -4,7 +4,7 @@ import type { enNative } from '../en-native';
 // Permission prompts read like Thai iOS: "6pm ใช้…เพื่อ…". Apple's own names follow the Thai iPhone (รูปภาพ, กระเป๋าสตางค์).
 export const thNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.permission.camera':
-    '6pm ใช้กล้องเพื่ออ่านคิวอาร์โค้ดและใบเสร็จที่คุณสแกน รูปจะอยู่บน iPhone ของคุณ เว้นแต่ใบเสร็จนั้นต้องอ่านละเอียดขึ้น',
+    '6pm ใช้กล้องเพื่ออ่านคิวอาร์โค้ดและใบเสร็จที่คุณสแกน และเพื่อถ่ายรูปที่คุณแนบไว้กับรายจ่าย รูปจะอยู่บน iPhone ของคุณ ยกเว้นใบเสร็จที่ต้องอ่านละเอียดขึ้นและข้อมูลสำรองที่เข้ารหัสของคุณ',
   'native.permission.microphone':
     '6pm ฟังขณะที่คุณพูดรายจ่าย เสียงของคุณจะถูกส่งไปยังบริการแปลงเสียงเป็นข้อความ หรืออยู่บน iPhone เครื่องนี้เท่านั้นในโหมดบนอุปกรณ์',
   'native.permission.speech': '6pm แปลงสิ่งที่คุณพูดเป็นยอดเงินและชื่อรายการ',
@@ -18,6 +18,17 @@ export const thNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.surfaces.safeToday.description': 'ยอดที่คุณใช้ได้วันนี้ ดูได้ในพริบตา',
   'native.surfaces.setUp': 'เปิด 6pm เพื่อตั้งค่า',
   'native.surfaces.markPaid.title': 'จ่ายแล้ว',
+  'native.surfaces.jar.name': 'โหลหนึ่งใบ',
+  'native.surfaces.jar.description': 'โหลหนึ่งใบ นับถอยหลังถึงวันของมัน',
+  'native.surfaces.jar.param': 'โหล',
+  'native.surfaces.streak.name': 'สถิติต่อเนื่อง',
+  'native.surfaces.streak.description': 'เย็นที่คุณปิดวันติดต่อกัน แต่ละวันมีฟ้าของมัน',
+  'native.surfaces.month.name': 'เดือนของฉัน',
+  'native.surfaces.month.description': 'ทั้งเดือนเป็นดวงอาทิตย์: ทุกเย็นที่คุณปิดวัน',
+  'native.surfaces.week.name': 'สัปดาห์นี้',
+  'native.surfaces.week.description': 'ทั้งสัปดาห์เป็นดวงอาทิตย์: ทุกเย็นที่คุณปิดวัน',
+  'native.surfaces.receipt.name': 'ใบเสร็จวันนี้',
+  'native.surfaces.receipt.description': 'รายจ่ายวันนี้ พิมพ์ออกมาทันทีที่จับได้',
   'native.surfaces.todayList.name': 'วันนี้',
   'native.surfaces.todayList.description': 'รายจ่ายวันนี้ ล่าสุดอยู่บนสุด',
   'native.share.title': 'เพิ่มใน 6pm',

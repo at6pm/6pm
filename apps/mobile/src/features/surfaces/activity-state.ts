@@ -11,7 +11,7 @@ import { planInk, type Palette } from '@6pm/theme';
 
 import type { I18n } from '../../i18n/i18n';
 import type { Trip } from '../travel/trip';
-import { glyphOf } from './surface-snapshot';
+import { glyphOf } from './surface-glyph';
 
 /**
  * What a Live Activity shows, as the JSON in its content state. Every word and number is worded by

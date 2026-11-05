@@ -1,4 +1,5 @@
 import {
+  parseSpokenSpend,
   readSpokenNumbers,
   spokenAmount,
   type Currency,
@@ -108,6 +109,8 @@ export function spokenCategory(
  */
 export function spendIn(spend: SpokenSpend, text: string, currency: Currency): SpokenSpend {
   if (currency.code === 'VND' || spend.amount === null) return spend;
+  // Lì xì by the envelope: each envelope's amount in the home currency, times the envelopes.
+  if (spend.envelopes) return parseSpokenSpend(text, currency);
   const numbers = readSpokenNumbers(text.normalize('NFC').trim());
   const spoken = [...numbers].reverse().find((n) => n.scaled) ?? numbers[numbers.length - 1];
   return { ...spend, amount: spoken ? spokenAmount(spoken, currency) : null };

@@ -7,6 +7,7 @@ import { enShareExt } from './en-share-ext';
 import { enIntents } from './en-intents';
 import { enVoice } from './en-voice';
 import { enSurfaces } from './en-surfaces';
+import { enWidgets } from './en-widgets';
 import { enTogether } from './en-together';
 import { enReceiptEmail } from './en-receipt-email';
 import { enBackup } from './en-backup';
@@ -38,7 +39,11 @@ import { enPotsClose } from './en-pots-close';
 import { enPotsPlan } from './en-pots-plan';
 import { enPots } from './en-pots';
 import { enFirstCatch } from './en-first-catch';
+import { enPhoto } from './en-photo';
 import { enImport, importSketchMomo } from './en-import';
+import { enOwed } from './en-owed';
+import { enNotifications } from './en-notifications';
+import { enSeason } from './en-season';
 
 /** The source catalogue: every key the app uses, in English. */
 export const en = {
@@ -71,6 +76,7 @@ export const en = {
   ...enCaptureAlerts,
   ...enVoice,
   ...enSurfaces,
+  ...enWidgets,
   ...enTogether,
   ...enReceiptEmail,
   ...enTravel,
@@ -82,6 +88,10 @@ export const en = {
   ...enPotsPlan,
   ...enPots,
   ...enFirstCatch,
+  ...enPhoto,
   ...enImport,
+  ...enOwed,
   ...importSketchMomo,
+  ...enSeason,
+  ...enNotifications,
 } as const;

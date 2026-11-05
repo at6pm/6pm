@@ -30,6 +30,8 @@ data class WidgetDay(
   val lineText: String?,
   val spentFraction: Double?,
   val moreAmountText: String?,
+  /** The postcard this stretch shows; null in a snapshot from before the postcards. */
+  val card: PostcardCard?,
 )
 
 /**
@@ -45,6 +47,8 @@ class WidgetMoment(
   /** Drawn in the user's look (Max): the look's own ground and display face. */
   val inLook: Boolean,
   val serious: Boolean,
+  /** The jars, the streak, the month and the look's materials. */
+  val postcards: Postcards? = null,
 ) {
   enum class State {
     /** The app has not set the month up, or has not written anything yet. */
@@ -79,20 +83,23 @@ class WidgetMoment(
         return WidgetMoment(State.SET_UP, null, emptyMap(), emptyMap(), false, false)
       }
       val strings = stringMap(json.optJSONObject("strings"))
-      val tokens = tokensAt(json, now)
       val inLook = !json.isNull("maxLook") && json.optString("maxLook").isNotEmpty()
       val serious = json.optBoolean("serious")
+      val postcards = Postcards.of(json)
       val days = json.optJSONArray("entries")?.let { list -> (0 until list.length()).map { dayOf(list.getJSONObject(it)) } }
-      if (days.isNullOrEmpty()) return WidgetMoment(State.SET_UP, null, tokens, strings, inLook, serious)
+      if (days.isNullOrEmpty()) {
+        return WidgetMoment(State.SET_UP, null, tokensAt(json, now, null), strings, inLook, serious, postcards)
+      }
       val end = days.last().from.plusMillis(LAST_STRETCH_MS)
       val day = days.lastOrNull { !it.from.isAfter(now) } ?: days.first()
       val state = if (now.isBefore(end)) State.DAY else State.STALE
-      return WidgetMoment(state, day, tokens, strings, inLook, serious)
+      return WidgetMoment(state, day, tokensAt(json, now, day.card?.hour), strings, inLook, serious, postcards)
     }
 
-    private fun tokensAt(json: JSONObject, now: Instant): Map<String, String> {
+    /** The colours of the stretch's own hour, else of the clock's. */
+    private fun tokensAt(json: JSONObject, now: Instant, cardHour: Double?): Map<String, String> {
       val palettes = json.optJSONArray("palettes") ?: return emptyMap()
-      val hour = LocalDateTime.ofInstant(now, ZoneId.systemDefault()).hour
+      val hour = cardHour?.toInt() ?: LocalDateTime.ofInstant(now, ZoneId.systemDefault()).hour
       var first: Map<String, String>? = null
       for (k in 0 until palettes.length()) {
         val palette = palettes.getJSONObject(k)
@@ -127,6 +134,7 @@ class WidgetMoment(
         lineText = json.optStringOrNull("lineText"),
         spentFraction = if (json.has("spentFraction")) json.optDouble("spentFraction") else null,
         moreAmountText = json.optStringOrNull("moreAmountText"),
+        card = PostcardCard.of(json.optJSONObject("card")),
       )
     }
 

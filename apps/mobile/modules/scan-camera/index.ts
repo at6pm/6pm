@@ -56,9 +56,26 @@ export interface ScanCameraViewProps extends ViewProps {
   readonly onRunning?: (event: NativeSyntheticEvent<{ readonly running: boolean }>) => void;
 }
 
+/** A spend's photo as it was kept: upright, at most 1600 px on its long side, about 300 KB. */
+export interface KeptPhoto {
+  readonly width: number;
+  readonly height: number;
+  readonly bytes: number;
+}
+
 interface ScanCameraNative {
   readImage(uri: string): Promise<PickedImage>;
   pickImage(): Promise<PickedImage | null>;
+  /** A picture on this phone (`from`) kept as a spend's photo at `to` (both `file://`). */
+  keepPhoto(from: string, to: string): Promise<KeptPhoto>;
+  /** A picture picked from Photos kept at `to`; null when none was picked. */
+  pickPhoto(to: string): Promise<KeptPhoto | null>;
+  /** Whether there is a camera to take a spend's photo with. */
+  canTakePhoto(): boolean;
+  /** A photo taken with the system camera kept at `to`; null when none was taken. */
+  takePhoto(to: string): Promise<KeptPhoto | null>;
+  /** Makes the kept photos' folder, left out of the phone's own backups. */
+  preparePhotoFolder(uri: string): Promise<void>;
 }
 
 /**

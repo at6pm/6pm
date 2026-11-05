@@ -170,7 +170,7 @@ fakes behaviour the app cannot fake. Founder review.
 | Onboarding · Bills | Due day | A small day wheel beside the amount wheels, captioned "Due day" | The deck asks only the amount |
 | Diary · Calendar | Earlier months | Round chevrons beside the month title | The design shows one month |
 | Diary · Shelf | This month’s cover | Opens the money diary as it stands | The prototype leaves it inert |
-| Settings | Notifications off | A "Close reminder: Off" row under Close time; asks once if iOS still can, else opens iOS Settings; gone once allowed | The prototype has no off state |
+| Settings | Notifications | A "Notifications" row under Close time, "On" or "Off" (the phone's permission), opening Settings › Your day › Notifications | The prototype has no notification settings |
 | Settings | Close time | Tapping the row opens the onboarding wheels inline, 15:00–23:45 in 15-minute steps | The prototype cycles five stops; product decisions require the full range |
 | Settings | Delete all busy or failed | The button reads "Deleting…"; on failure a toast, and the sheet stays |  |
 | Scan | Bank app opened but 6pm never left the foreground | "I’m back" fades in after 4 s | A stuck overlay on a modal that cannot be swiped away |
@@ -475,3 +475,62 @@ fakes behaviour the app cannot fake. Founder review.
 | Share cards · Plan | Where "Share your split" sits | At the foot of Plan, under the open panel | The canvas places it "under the river" without a drawing |
 | Share cards · Jar ready (close) | Share on a full jar | The round share button opens the full jar's card; on a jar whose month came it still shares the jar card as shown | Only a full jar has a card |
 | Today · Year card | Tapping the card | Opens My year's preview, as its chip does | The canvas says "Tap for the whole year" without a destination |
+| Today · Tết jar offer card | Where the offer starts, from 1 December | A card under the companion, as the canvas's Today jar row (26 pt radius, the cell colour): a small Tết jar with one envelope, "A jar for Tết?" and "Tết is 9 weeks away. Fill it a little each payday.", "Set it up" (opens the offer) and "Not now" (folds the card away, 400 ms, until the next payday) | The canvas says "from a card on Today" and draws only the sheet |
+| Tết jar offer | The jar's colour and icon | The canvas's gold (hue 85) with hoa mai (`local_florist`), not the Pots preset's hue 20 | The Tết canvas draws the jar gold everywhere |
+| Quick add · Lì xì | Given with no Tết jar, or an empty one | The destination row reads "Counts today · No Tết jar to take it from"; the spend counts in today's number | Only "From the Tết jar" and "Saved for Future you" are drawn |
+| Quick add · Lì xì | Voice | The Voice segment opens the microphone over the keypad, as the mic button does; "lì xì 5 bao 200k" heard switches to the Lì xì mode with five 200k envelopes | The canvas draws only the Lì xì segment selected |
+| Close · Your Tết bonus? | The jar takes all of it | No day bars: "All of it goes in the jar", one button "Yes, into the jar" | The canvas draws a bonus larger than what the jar misses |
+| Close · Your Tết bonus? | No Future you to save into | "Save … instead" is left out | — |
+| Close · Your Tết bonus? | The step's kicker | The close's own top bar ("Quick check · 3/5") stands where the canvas prints "MONEY IN" | Every close step keeps the same bar |
+| Close · money card | Lì xì received | The card's hint reads "Suggested: save it for Future you"; spreading stays a swipe away | The canvas says received is "suggested" saved, with no card drawn |
+| Today · countdown | Lantern River | The countdown's own string hangs over the scene's lanterns; the scene is not changed | The canvas draws the countdown on a plain sky; Lantern River, Sơn Mài, Basic and serious variants are open on it |
+| Today · countdown | Serious mode | The words only ("7 days to Tết"), no lanterns, no hoa mai, no companion | The canvas says "off in serious mode" |
+| Today · Diary | "Owed to you" row | A card row under the jar shelf (Today) and the week recap (Diary): up to three avatars, "Owed to you", the total, a chevron; only while something is owed. It opens the owed list | The plan puts the line on Today and in the Diary; the v2 canvas has no drawing of it (and names Plan instead of Today) |
+| Owed to you | Nobody owes anything | The total and strip count go; one soft line, "Nobody owes you anything right now." | The canvas always shows people |
+| Owed to you · Cover it | The person sheet | Drawn inside the owed list sheet over its dim (the close's Edit sheet), dragged down to close; it settles all the person's open strips at once. Cover it and Paid in cash end with the undo bar ("Covered 300k · Undo", "300k paid in cash · Undo") | The canvas draws one strip's sheet over the sky; a person with two strips needs one answer for both |
+| Owed to you · Cover it | The tag above the slid strip | "+150k on today" instead of "≈ 7k a day to payday" | Decision 4: a covered share counts today, not spread to payday |
+| Ask | "Brightened" | Left out: the screen's brightness is not raised | Raising brightness needs a native module this build does not carry |
+| Split · Ask | The "Brightened" mark beside the QR | Not drawn; the "Name" chip (`person_add`) and "Moves nothing" (`swap_horiz`) draw the canvas's own glyphs | The icon font carries `brightness_high` too, for when the mark is built |
+| Split | Adding someone with no name | Return on an empty Name field adds "Someone"; Return after a name adds it and keeps the field open for the next | The canvas shows only named chips |
+| Split · By amount | Typing a share | A tap on a friend's strip opens the keypad sheet titled "Linh's strip", the line under it saying what is left as yours; shares over the bill say so under the torn bill and the button dims | The canvas animates preset amounts |
+| Quick add | Splitting a new spend | A scissors switch beside "From a jar": on, Keep saves the spend and opens the split sheet on it | The canvas names Quick add as a way in without drawing it |
+| Close · Edit | Split | A "Split" button over "Save and keep": it keeps the card as edited, then opens the split sheet over the close | The canvas says "swipe left › split" without drawing it |
+| Receiving account | No banks picked | The bank menu offers every bank in Vietnam; the first is chosen until another is picked | The canvas assumes a picked bank |
+| Ask | Sent image | The strip tilted on the sky with a small "made with 6pm" line under it, shared with a short message beside it where the receiving app takes both (iOS) | The canvas describes the image without drawing it |
+| Details · receipt photo | Where the print is clipped | At the top right of Details' centred header, 76 × 112 pt (the design's 92 × 135, a little smaller), turned 5°, the clip at its top; the name keeps clear of it. The empty slot sits in the same place on the sheet | The v2 canvas draws Details as a paper ticket with the name left; the app's Details is centred |
+| Details · receipt photo | KEPT ON THIS PHONE | Stamped on the print's lower left after a photo is added, and gone once Details closes | The canvas stamps it on the ticket, which the app's Details does not have |
+| Details · receipt photo | The camera is off for 6pm | "The camera is off for 6pm. Turn it on in Settings." and 6pm's page in Settings opens; a photo that cannot be kept says "That photo could not be kept." | Undesigned failures |
+| Details · receipt photo | No camera (the simulator, an iPad without one) | The menu shows only "Choose from Photos" | The canvas shows both lines |
+| Details · full view | Zoomed in | The pinch zooms the photo inside its frame (up to 5×, a double tap toggles 2.5× at the tapped point) and a drag moves it; the swipe down to clip it back works once it is whole again | The canvas shows the whole photo only |
+| Details · full view | Replace | Opens the same camera-or-Photos menu over the button; the photo clips itself back first and the new one drops under the clip | The canvas draws the button only |
+| Details · menu (Android) | Take a photo / Choose from Photos | 6pm's own choice menu with nothing ticked, as other menus on Android | The canvas is the iPhone's system menu |
+| Inbox rows | A caught spend with a photo | The same clip on its tile as Today's rows | The canvas shows Today only |
+| Quick add · clip | The ticket's number and the amount | Keep 86 pt clear on the right for the clip and its photo, so neither is covered | The canvas's ticket has its number on the left only |
+| Details · receipt photo | The largest text sizes | Past 1.3× text the name needs the header's whole width, so the print sits centred under the date instead of at the top right | The canvas is drawn at the default size |
+| Close card · receipt photo | Where the print stands | 6 pt above the card's top edge, not the design's 34 pt: the app's hint line ("Right to keep · left to edit · …") sits in that room | The canvas has no hint line over the card |
+| Details · full view | The largest text sizes | The header, hint and buttons grow with the text size up to 1.35× and no further, one line each, so they never cover the photo | The canvas is drawn at the default size |
+| Settings › Notifications | The whole screen | Settings' own sections and rows: "On this phone" (Allowed, Turn on, which asks once, or Off in Settings, which opens iOS Settings), "What 6pm sends" with a switch per kind and what each sends under its name, "Lock screen" with Show amounts on the lock screen (off), and the one-a-day rule as a note | No canvas; the plan names the switches |
+| Who owes me · person sheet | Remind me | A full-width button under Paid in cash and Ask again, in their style; tapped, it opens into three outlined chips (In 3 days, In a week, On payday) and, once one is set, Don't remind me; the button then reads "Reminding you Sat 28 Nov" and a toast says when | The canvas has no reminder |
+| Who owes me · opened from a reminder | Ask ready | The person's Ask opens over the list (the receiving account first when none is typed); outside đồng, their sheet opens instead | The canvas has no reminder |
+| Notifications | Words without amounts | Every kind has a line with no number, used until amounts are allowed on the lock screen | iOS cannot hide a part of a notification on the lock screen only |
+| Notifications · Android | Their channels | Close reminder and Reminders you set ring with a banner; Payday and Capture ring without one; the quiet "Caught" stays in its own silent channel | Android groups notifications by channel |
+| First catch | 6pm open when it lands | No notification: the catching step (or Today) shows the catch itself; a first catch between 22:00 and 08:00 is not said at all | The rule allows nothing at night but the close |
+| Widgets · Streak | No evening closed in a row yet | "0" over the strata, with only tonight's hatched band | The canvas shows a run of 8 |
+| Widgets · Streak | In a look other than Golden Hour | The look's darkest ground, its accent for the line and the words, its dusk sun setting into the line; Basic's evenings, all one black, are drawn in the system's blue to purple | The canvases draw the streak in Golden Hour only |
+| Widgets · A jar | A jar with no date | The count is how full it is ("62%" over "full"), or what it holds over "saved" with no target | The canvas shows the Tết jar counting down |
+| Widgets · A jar | A dated jar | Counts down to the first of the month it is needed by, and says that day | The canvas shows the Tết jar's mùng 1 only |
+| Widgets · Medium | Fewer than four jars | The jars stand at the right edge, as many as there are | The canvas shows four |
+| Widgets · all | 04:00 to 07:00 | The money day's first stretch, in the sky and the moon of that hour, with the day's words | The canvas starts at 07:00 |
+| Widgets · all | A look other than Golden Hour, through the day | The look's one sun stays high (the small widget's top right, the medium's top centre) and drops to the small widget's corner at six, so it never sits under the number | "Widgets in Looks" draws noon and 18:00 only |
+| Widgets · My month | A month of six weeks | The suns are drawn a little smaller so the six rows fit | The canvas shows a five-week October |
+| Widgets · Lock Screen card | The close's line under the number | "close at 18:00" follows the person's close time | The canvas shows 18:00 |
+| Widgets & controls | Hide amounts | A row with the switch under the look line, in the cell colour, built from the Settings switch | No canvas shows where the switch lives |
+| Widgets · Today list (large) | As a postcard | The kicker and "6pm" over the number on the look's sky, the day's bar in the sky's ink, today's newest three spends and "+N more"; no sun, which would sit on the list | The canvas has no large list; it is drawn from the postcards' parts |
+| Widgets · Today list (large) | After the close | Keeps today's spends under tomorrow's number until the next money day | No canvas shows the list after the close |
+| Widgets · This week | In a look other than Golden Hour | On the look's sky with its dots, as "Widgets in Looks" draws it; Golden Hour too, where the first canvas shows a dark ground | The two canvases differ |
+| Widgets · This week | Nothing closed yet this week | "Tonight's the first." | The canvas shows four closed |
+| Widgets · This week | Today's ring | Drawn still: WidgetKit cannot run the canvas's pulse | The canvas pulses it |
+| Widgets · Today's receipt | No spends yet today, and the next money day | "Nothing caught yet." under the head; the head is empty on the next day's stretches | The canvas shows four lines |
+| Widgets · Today's receipt | More than four spends | "+2 more" above the four newest lines | The canvas shows four |
+| Widgets · Today's receipt | The torn foot | The teeth's soft shadow along the bottom edge (a widget cannot cut through to the wallpaper) | The canvas bites the teeth out |
+| Widgets & controls · guide | My month beside the Today list | A fourth choice, My month, after Large in the size picker | The guide's picker had three sizes |

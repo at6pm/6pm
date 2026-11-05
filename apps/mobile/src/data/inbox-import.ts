@@ -25,7 +25,10 @@ import { seedStarterCategories } from './onboarding';
 
 /** The App Group inbox as the surfaces module exposes it. */
 export interface InboxSource {
-  readInbox(): Promise<readonly { readonly id: string; readonly json: string }[]>;
+  /** Each capture, and the photo the share extension left beside it (a `file://` URI). */
+  readInbox(): Promise<
+    readonly { readonly id: string; readonly json: string; readonly photo?: string }[]
+  >;
   removeInbox(ids: readonly string[]): Promise<void>;
 }
 
@@ -47,6 +50,11 @@ export interface InboxImportDeps {
    * before onboarding has made the starter categories makes them, named in it.
    */
   readonly language?: Language;
+  /**
+   * Keeps the photo a capture was read from (`from`) as its spend's (at `to`); left out, the
+   * photo stays behind and goes with the capture's file.
+   */
+  readonly keepPhoto?: (from: string, to: string) => Promise<void>;
 }
 
 /** What one import did, for the caller to refresh what the extensions show. */
@@ -82,14 +90,40 @@ export async function importInbox(deps: InboxImportDeps): Promise<InboxImportRes
       if (await markPaid(deps, item)) saved += 1;
     } else if (item.kind === 'kept') {
       if (await markKept(deps, item)) saved += 1;
-    } else if ((await saveInboxSpend(deps, item)) !== null) {
-      saved += 1;
+    } else {
+      const spendId = await saveInboxSpend(deps, item);
+      if (spendId !== null) {
+        saved += 1;
+        if (file.photo) await keepInboxPhoto(deps, spendId, file.photo);
+      }
     }
     await remove(file.id);
   }
   // A bill's payment caught now, or before this build could tell, is marked as paying it at once.
   await billPayments(deps.store).markCaught();
   return { saved, removed };
+}
+
+/**
+ * The receipt's photo kept with its spend before the capture's file (and the photo beside it) is
+ * removed. A payment seen another way first keeps the photo it has (M9). A photo that cannot be
+ * kept never stops the spend from being saved.
+ */
+async function keepInboxPhoto(deps: InboxImportDeps, spendId: string, from: string) {
+  const keep = deps.keepPhoto;
+  if (!keep) return;
+  try {
+    await deps.actions.attachPhoto(
+      spendId,
+      async (to) => {
+        await keep(from, to);
+        return true;
+      },
+      true,
+    );
+  } catch {
+    deps.report('inbox: a capture photo could not be kept');
+  }
 }
 
 function parseJson(json: string): unknown {

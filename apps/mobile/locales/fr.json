@@ -1,6 +1,6 @@
 {
   "ios": {
-    "NSCameraUsageDescription": "6pm utilise l’appareil photo pour lire les codes QR et les tickets que tu scannes. Les photos restent sur ton iPhone, sauf si un ticket doit être lu de plus près.",
+    "NSCameraUsageDescription": "6pm utilise l’appareil photo pour lire les codes QR et les tickets que tu scannes, et pour prendre la photo que tu gardes avec une dépense. Les photos restent sur ton iPhone, sauf un ticket à lire de plus près et ta sauvegarde chiffrée.",
     "NSMicrophoneUsageDescription": "6pm t’écoute pendant que tu dictes une dépense. Ta voix est envoyée à un service de transcription pour être écrite, ou reste sur cet iPhone en mode sur l’appareil.",
     "NSSpeechRecognitionUsageDescription": "6pm transforme ce que tu dis en un montant et un nom.",
     "NSPhotoLibraryUsageDescription": "6pm enregistre uniquement ton ticket de clôture et ton journal d’argent dans Photos. Il ne parcourt jamais ta photothèque.",
@@ -14,6 +14,16 @@
     "sixpm_widget_safe_description": "Ce que tu peux dépenser aujourd’hui, en un coup d’œil.",
     "sixpm_widget_today_name": "Aujourd’hui",
     "sixpm_widget_today_description": "Ce que tu as dépensé aujourd’hui, du plus récent au plus ancien.",
+    "sixpm_widget_month_name": "Mon mois",
+    "sixpm_widget_month_description": "Le mois en soleils : chaque soir que tu as clôturé.",
+    "sixpm_widget_week_name": "Cette semaine",
+    "sixpm_widget_week_description": "La semaine en soleils : chaque soir clôturé.",
+    "sixpm_widget_receipt_name": "Le ticket du jour",
+    "sixpm_widget_receipt_description": "Les dépenses du jour, imprimées dès qu’elles sont captées.",
+    "sixpm_widget_streak_name": "Série",
+    "sixpm_widget_streak_description": "Les soirs clôturés d’affilée, chacun avec son ciel.",
+    "sixpm_widget_jar_name": "Un bocal",
+    "sixpm_widget_jar_description": "Un bocal, en compte à rebours jusqu’à son jour.",
     "sixpm_widget_set_up": "Ouvre 6pm pour commencer"
   }
 }

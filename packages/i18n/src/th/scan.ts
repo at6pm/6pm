@@ -85,6 +85,7 @@ export const thScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.scheme.abapay': 'ABA PAY',
   'scan.scheme.other': 'ต่างประเทศ',
   'scan.content.link': 'ลิงก์เว็บ',
+  'scan.content.appLink': 'ลิงก์แอป',
   'scan.content.wifi': 'เครือข่าย Wi-Fi',
   'scan.content.phone': 'หมายเลขโทรศัพท์',
   'scan.content.sms': 'ข้อความ SMS',

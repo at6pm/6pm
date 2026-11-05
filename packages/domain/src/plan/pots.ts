@@ -392,8 +392,9 @@ function topUpStepsIn(currency: Currency): Vnd[] {
 }
 
 /**
- * Jars of one's own without Max: dated, steady, by hand and 2.1 goals alike. Future you's jar and
- * jars shared through Budget together never count. Jars already made are always kept.
+ * Jars of one's own without Max: dated, steady, by hand and 2.1 goals alike. Future you's jar, the
+ * season's Tết jar and jars shared through Budget together never count. Jars already made are
+ * always kept.
  */
 export const FREE_OWN_JARS = 3;
 
@@ -402,9 +403,11 @@ export const FREE_OWN_JARS = 3;
  * not Max. `pots` are the phone's own jars (shared jars live apart and are never passed here).
  */
 export function newJarLocked(
-  pots: readonly Pick<PotRow, 'id' | 'archivedAt'>[],
+  pots: readonly Pick<PotRow, 'id' | 'archivedAt' | 'season'>[],
   max: boolean,
 ): boolean {
-  const own = pots.filter((p) => p.id !== FUTURE_YOU_POT_ID && p.archivedAt === null);
+  const own = pots.filter(
+    (p) => p.id !== FUTURE_YOU_POT_ID && p.archivedAt === null && p.season !== 'newYear',
+  );
   return !max && own.length >= FREE_OWN_JARS;
 }

@@ -8,6 +8,7 @@ import {
   snapshotItemCount,
 } from '../../data/backup-snapshot';
 import { createBackupStateStore } from '../../data/backup-state';
+import { devicePhotoFiles } from '../../data/device-photo-files';
 import { createBackupService, type BackupService, type DeleteOutcome } from './backup-service';
 import { createBackupVault } from './backup-vault';
 import { nativeBackupCrypto } from './native-crypto';
@@ -25,8 +26,8 @@ function serviceFor(db: SQLiteDatabase): BackupService {
       vault: createBackupVault(keychainSecretStore),
       api: nativeBackupApi(),
       data: {
-        build: (takenAt) => buildSnapshot(db, takenAt),
-        restore: (snapshot) => restoreSnapshot(db, snapshot),
+        build: (takenAt) => buildSnapshot(db, takenAt, devicePhotoFiles),
+        restore: (snapshot) => restoreSnapshot(db, snapshot, devicePhotoFiles),
         isFresh: () => isFreshDatabase(db),
         itemCount: snapshotItemCount,
       },

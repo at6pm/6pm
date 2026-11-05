@@ -7,6 +7,7 @@ import { viShareExt } from './vi-share-ext';
 import { viIntents } from './vi-intents';
 import { viVoice } from './vi-voice';
 import { viSurfaces } from './vi-surfaces';
+import { viWidgets } from './vi-widgets';
 import { viTogether } from './vi-together';
 import { viReceiptEmail } from './vi-receipt-email';
 import { viBackup } from './vi-backup';
@@ -39,7 +40,11 @@ import { viPotsClose } from './vi-pots-close';
 import { viPotsPlan } from './vi-pots-plan';
 import { viPots } from './vi-pots';
 import { viFirstCatch } from './vi-first-catch';
+import { viPhoto } from './vi-photo';
 import { viImport } from './vi-import';
+import { viOwed } from './vi-owed';
+import { viNotifications } from './vi-notifications';
+import { viSeason } from './vi-season';
 import { importSketchMomo } from './en-import';
 
 export const vi: Catalogue = {
@@ -72,6 +77,7 @@ export const vi: Catalogue = {
   ...viCaptureAlerts,
   ...viVoice,
   ...viSurfaces,
+  ...viWidgets,
   ...viTogether,
   ...viReceiptEmail,
   ...viTravel,
@@ -83,6 +89,10 @@ export const vi: Catalogue = {
   ...viPotsPlan,
   ...viPots,
   ...viFirstCatch,
+  ...viPhoto,
   ...viImport,
+  ...viOwed,
   ...importSketchMomo,
+  ...viSeason,
+  ...viNotifications,
 };

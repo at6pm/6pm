@@ -5,11 +5,10 @@ import { useEffect } from 'react';
 import { AppState } from 'react-native';
 import { z } from 'zod';
 
-import { languages } from '@6pm/i18n';
 import { LOOK_IDS } from '@6pm/theme';
 
-import { useMoneyStore } from '../../data/money-provider';
-import { settingsActions } from '../../data/settings-actions';
+import { keepPhotoAt } from '../../data/device-photo-files';
+import { useMoneyActions, useMoneyStore } from '../../data/money-provider';
 import { useLookSettingsStore } from '../looks/look-settings-provider';
 import { setAiMode } from '../privacy/use-ai-mode';
 import { pinClock, useClock } from '../../ui/theme/clock';
@@ -23,12 +22,23 @@ import { seedDesignJars } from './design-jars-seed';
 import { DEV_MAX, DEV_MAX_KEY } from './dev-max';
 import { useI18n } from '../../i18n/i18n';
 import { seedDesignMoneyIn } from './design-money-in-seed';
+import { seedDesignOwed } from './design-owed-seed';
 import { useYearBook } from '../year-book/use-year-book';
 import { seedDesignYear } from './design-year-seed';
+import { seedDesignTet } from './design-tet-seed';
+import { resetSeasonOffer } from '../pots/use-new-year';
+import { languages } from '@6pm/i18n';
 import { seedCaptureHealth } from './design-capture-health-seed';
 import { seedDesignStreak, showYearCardAnyDay } from './design-streak-seed';
+import { settingsActions } from '../../data/settings-actions';
 import { writeFirstCatch } from '../../data/first-catch';
 import { addDays } from '@6pm/domain';
+import {
+  applyNotifyCommand,
+  dumpScheduledNotifications,
+  notifyCommandSchema,
+  remindOpenLinesIn,
+} from './dev-notifications';
 
 /**
  * Lets scripts drive a developer build with no taps: write `dev-command.json` into the app's
@@ -38,11 +48,16 @@ import { addDays } from '@6pm/domain';
  *   {"seed": "friday", "at": "18:07", "route": "/close", "toast": "Line to show", "companion": "max"}
  *   {"seed": "friday", "jars": "due", "at": "18:00", "max": true}
  *   {"importFile": "momo-history.xlsx"}
+ *   {"tet": "bonus", "on": "2027-01-25", "at": "18:00", "route": "/close"}
+ *   {"seed": "friday", "photo": "receipt.jpg", "route": "/close"}
+ *   {"notify": {"amounts": true}, "dumpNotifications": true}
  */
 const commandSchema = z.object({
   seed: z.enum(['friday', 'year', 'moneyIn']).optional(),
   /** After the seed: the Pots and Plan canvases' jars and states (see `seedDesignJars`). */
   jars: z.enum(['shelf', 'due', 'payday', 'tomorrow', 'over', 'first']).optional(),
+  /** After the seed: a split dinner owed by Linh, Nam and Huy, Linh's payback, or both. */
+  owed: z.enum(['dinner', 'payback', 'both']).optional(),
   /** The friday or year seed's currency (ISO 4217); đồng when not given. */
   currency: z
     .string()
@@ -50,6 +65,18 @@ const commandSchema = z.object({
     .optional(),
   /** Multiplies the year seed's earlier days, for long amounts. */
   scale: z.number().positive().optional(),
+  /**
+   * Moves the app's day to this date (with `at`, or 18:00): the Tết season can be checked before
+   * Tết. "" unpins, as `at: ""` does.
+   */
+  on: z
+    .string()
+    .regex(/^(\d{4}-\d{2}-\d{2})?$/)
+    .optional(),
+  /** The Tết Season canvas's states on the designed Friday (see `seedDesignTet`); with `on`. */
+  tet: z.enum(['offer', 'bonus', 'window']).optional(),
+  /** Speaks this language, as Settings › Language picks it. */
+  language: z.enum(languages).optional(),
   /** Pin the clock to today at HH:MM; "" unpins. */
   at: z
     .string()
@@ -75,12 +102,10 @@ const commandSchema = z.object({
   firstCatch: z.literal('later').optional(),
   /** After the seed: this many evenings closed back to back, ending yesterday (share cards). */
   streak: z.number().int().min(1).max(400).optional(),
-  /** Serious mode on or off, as the Settings switch sets it. */
-  serious: z.boolean().optional(),
-  /** The app's language, as Settings keeps it; "" follows the phone again. */
-  language: z.union([z.enum(languages), z.literal('')]).optional(),
   /** Shows Today's Year card whatever the date, to check it before 20 December. */
   yearCard: z.boolean().optional(),
+  /** Serious mode on or off, as the Settings switch sets it. */
+  serious: z.boolean().optional(),
   /** Seeds 14 days of catches per way and this month's receipts read on the phone. */
   captureHealth: z.boolean().optional(),
   /** A file in Documents opened in "Bring your history" as if picked ("momo.xlsx"). */
@@ -88,11 +113,23 @@ const commandSchema = z.object({
     .string()
     .regex(/^[\w.-]+$/)
     .optional(),
+  /** A picture in Documents ("receipt.jpg") kept with today's shared receipts and split spends. */
+  photo: z
+    .string()
+    .regex(/^[\w.-]+$/)
+    .optional(),
+  /** Settings › Notifications' switches: a kind's switch, or amounts on the lock screen. */
+  notify: notifyCommandSchema.optional(),
+  /** Writes what is scheduled into Documents as `notifications.json`, a moment later. */
+  dumpNotifications: z.boolean().optional(),
+  /** "Remind me" on every open owed line, due this many seconds from now (on the real clock). */
+  remindSoon: z.number().int().positive().optional(),
 });
 
 export function DevCommands() {
   const router = useRouter();
   const store = useMoneyStore();
+  const actions = useMoneyActions();
   const { language, setLanguage } = useI18n();
   const { today } = useClock();
   const toast = useToast();
@@ -110,6 +147,7 @@ export function DevCommands() {
       const {
         seed,
         jars,
+        owed,
         currency,
         scale,
         at,
@@ -123,15 +161,22 @@ export function DevCommands() {
         firstCatch,
         captureHealth,
         importFile,
+        photo,
+        on,
+        tet,
+        notify,
+        dumpNotifications,
+        remindSoon,
+        language: speak,
         streak,
         yearCard,
         serious,
-        language: speak,
       } = parsed.data;
-      if (speak !== undefined) setLanguage(speak === '' ? null : speak);
       if (yearCard !== undefined) showYearCardAnyDay(yearCard);
+      if (speak !== undefined) setLanguage(speak);
       if (aiMode !== undefined) setAiMode(db, aiMode);
       if (look !== undefined) lookStore.setLook(look, () => true);
+      if (notify !== undefined) await applyNotifyCommand(store, notify);
       if (companion !== undefined) pinCompanionForm(companion === '' ? null : companion);
       if (max !== undefined) {
         const customer = max ? { ...FREE_CUSTOMER, max: DEV_MAX } : FREE_CUSTOMER;
@@ -145,27 +190,56 @@ export function DevCommands() {
           max ? '1' : '0',
         ]);
       }
-      if (at !== undefined) {
+      // The day seeds file under: the pinned one when `on` moves it.
+      let day = today;
+      if (on !== undefined && on !== '') {
+        const [y = 0, mo = 1, d = 1] = on.split('-').map(Number);
+        const [h = 18, m = 0] = (at || '18:00').split(':').map(Number);
+        pinClock(new Date(y, mo - 1, d, h, m, 0, 0));
+        day = on;
+      } else if (at !== undefined) {
         const [h = 0, m = 0] = at.split(':').map(Number);
         const pin = new Date();
         pin.setHours(h, m, 0, 0);
-        pinClock(at === '' ? null : pin);
-      }
+        pinClock(at === '' || on === '' ? null : pin);
+      } else if (on === '') pinClock(null);
       // In the store's turn, so a load or write already under way never meets a half-cleared
       // database (a set-aside written for a jar the seed has just deleted).
       await store.exclusive(async () => {
-        if (captureHealth) await seedCaptureHealth(store, today);
-        if (seed === 'friday') await seedDesignFriday(store, today, currency, language);
+        if (captureHealth) await seedCaptureHealth(store, day);
+        if (seed === 'friday') await seedDesignFriday(store, day, currency, language);
+        if (tet) {
+          await seedDesignTet(store, day, tet, currency, speak ?? language);
+          await resetSeasonOffer(store.db);
+        }
         if (seed === 'year')
-          await seedDesignYear(store, today, {
+          await seedDesignYear(store, day, {
             ...(currency ? { code: currency } : {}),
             ...(scale ? { scale } : {}),
           });
-        if (seed === 'moneyIn') await seedDesignMoneyIn(store, today);
-        if (jars) await seedDesignJars(store, today, jars);
-        if (streak) await seedDesignStreak(store, today, streak);
+        if (seed === 'moneyIn') await seedDesignMoneyIn(store, day);
+        if (jars) await seedDesignJars(store, day, jars);
+        if (owed) await seedDesignOwed(store, day, owed);
+        if (streak) await seedDesignStreak(store, day, streak);
       });
       if (serious !== undefined) await settingsActions(store).updatePlan({ serious });
+      if (photo) {
+        const picture = new File(Paths.document, photo).uri;
+        const split = await store.db.getAllAsync<{ spend_id: string }>(
+          'SELECT DISTINCT spend_id FROM owed',
+          [],
+        );
+        const ids = [
+          ...store
+            .getSnapshot()
+            .cycleSpends.filter((s) => s.day === today && s.source === 'shared')
+            .map((s) => s.id),
+          ...split.map((row) => row.spend_id),
+        ];
+        for (const id of ids) {
+          await actions.attachPhoto(id, (to) => keepPhotoAt(picture, to).then(() => true));
+        }
+      }
       // Said yesterday, but after anything seeded: only a catch from now on clears the card.
       if (firstCatch === 'later') {
         await writeFirstCatch(store.db, {
@@ -189,13 +263,15 @@ export function DevCommands() {
       // Held long enough for a headless screenshot to catch it.
       if (line) setTimeout(() => toast(line, 20_000), 1200);
       if (yearBook) setTimeout(() => void bindYear(yearBook), 1200);
+      if (remindSoon) await remindOpenLinesIn(store, remindSoon);
+      if (dumpNotifications) dumpScheduledNotifications();
     };
     void run();
     const subscription = AppState.addEventListener('change', (state) => {
       if (state === 'active') void run();
     });
     return () => subscription.remove();
-  }, [router, store, today, toast, bindYear, lookStore, db, language, setLanguage]);
+  }, [router, store, actions, today, toast, bindYear, lookStore, db, language, setLanguage]);
 
   return null;
 }

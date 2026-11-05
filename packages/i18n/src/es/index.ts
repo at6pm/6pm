@@ -32,6 +32,7 @@ import { esShareExt } from './share-ext';
 import { esSharing } from './sharing';
 import { esShareCards } from './share-cards';
 import { esSurfaces } from './surfaces';
+import { esWidgets } from './widgets';
 import { esToday } from './today';
 import { esTogether } from './together';
 import { esTravel } from './travel';
@@ -39,7 +40,11 @@ import { esVoice } from './voice';
 import { esWidgetsGuide } from './widgets-guide';
 import { esYearBook } from './year-book';
 import { esFirstCatch } from './first-catch';
+import { esPhoto } from './photo';
 import { esImport } from './import';
+import { esOwed } from './owed';
+import { esNotifications } from './notifications';
+import { esSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { esAndroid } from './android';
@@ -75,6 +80,7 @@ export const es: Catalogue = {
   ...esCaptureAlerts,
   ...esVoice,
   ...esSurfaces,
+  ...esWidgets,
   ...esTogether,
   ...esReceiptEmail,
   ...esTravel,
@@ -86,8 +92,12 @@ export const es: Catalogue = {
   ...esPotsPlan,
   ...esPots,
   ...esFirstCatch,
+  ...esPhoto,
   ...esImport,
+  ...esOwed,
   ...importSketchMomo,
+  ...esSeason,
+  ...esNotifications,
 };
 
 /**

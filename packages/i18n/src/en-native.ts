@@ -5,7 +5,7 @@
  */
 export const enNative = {
   'native.permission.camera':
-    '6pm uses the camera to read the QR codes and receipts you scan. Photos stay on your iPhone unless a receipt needs a closer look.',
+    '6pm uses the camera to read the QR codes and receipts you scan, and to take a photo you keep with a spend. Photos stay on your iPhone, apart from a receipt that needs a closer look and your encrypted backup.',
   'native.permission.microphone':
     '6pm listens while you say a spend. Your voice goes to a speech-to-text service to be written down, or stays on this iPhone in on-device mode.',
   'native.permission.speech': '6pm turns what you say into an amount and a name.',
@@ -19,6 +19,17 @@ export const enNative = {
   'native.surfaces.safeToday.description': 'What you can spend today, at a glance.',
   'native.surfaces.setUp': 'Open 6pm to set up',
   'native.surfaces.markPaid.title': 'Paid',
+  'native.surfaces.jar.name': 'A jar',
+  'native.surfaces.jar.description': 'One jar, counting down to its day.',
+  'native.surfaces.jar.param': 'Jar',
+  'native.surfaces.streak.name': 'Streak',
+  'native.surfaces.streak.description': 'The evenings you closed in a row, each one its sky.',
+  'native.surfaces.month.name': 'My month',
+  'native.surfaces.month.description': 'The month as suns: every evening you closed.',
+  'native.surfaces.week.name': 'This week',
+  'native.surfaces.week.description': 'The week as suns: every evening you closed.',
+  'native.surfaces.receipt.name': 'Today’s receipt',
+  'native.surfaces.receipt.description': 'Today’s spends printing as they’re caught.',
   'native.surfaces.todayList.name': 'Today',
   'native.surfaces.todayList.description': 'What you spent today, newest first.',
   'native.share.title': 'Add to 6pm',

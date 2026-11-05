@@ -4,7 +4,7 @@ import type { enNative } from '../en-native';
 // Permission prompts follow iOS's own Chinese wording; Apple's app names sit in “ ”.
 export const zhHansNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.permission.camera':
-    '6pm 使用相机读取你扫描的二维码和小票。照片会留在你的 iPhone 上，除非某张小票需要更仔细地识别。',
+    '6pm 使用相机读取你扫描的二维码和小票，也用来拍下你附在一笔支出上的照片。照片会留在你的 iPhone 上，除了需要更仔细识别的小票和你的加密备份。',
   'native.permission.microphone':
     '你说出一笔开销时，6pm 会聆听。你的语音会发送到语音转文字服务进行转写；在设备端模式下，则只留在这台 iPhone 上。',
   'native.permission.speech': '6pm 会把你说的话转成金额和名称。',
@@ -15,6 +15,17 @@ export const zhHansNative: { readonly [Key in keyof typeof enNative]: Entry } = 
   'native.surfaces.safeToday.description': '今天还能花多少，一眼就知道。',
   'native.surfaces.setUp': '打开 6pm 进行设置',
   'native.surfaces.markPaid.title': '已付',
+  'native.surfaces.jar.name': '一个罐子',
+  'native.surfaces.jar.description': '一个罐子，倒数到它的那一天。',
+  'native.surfaces.jar.param': '罐子',
+  'native.surfaces.streak.name': '连续记录',
+  'native.surfaces.streak.description': '连续结算的晚上，每晚都是它的天空。',
+  'native.surfaces.month.name': '我的一个月',
+  'native.surfaces.month.description': '整个月化作太阳：你结算过的每个晚上。',
+  'native.surfaces.week.name': '本周',
+  'native.surfaces.week.description': '一周化作太阳：你结算过的每个晚上。',
+  'native.surfaces.receipt.name': '今日小票',
+  'native.surfaces.receipt.description': '今天的花销，记下就打印出来。',
   'native.surfaces.todayList.name': '今天',
   'native.surfaces.todayList.description': '今天花了哪些钱，最新的在前。',
   'native.share.title': '添加到 6pm',

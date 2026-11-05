@@ -5,7 +5,7 @@ import type { enNative } from '../en-native';
 // spoken commands with the app name once.
 export const jaNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.permission.camera':
-    'スキャンしたQRコードやレシートを読み取るためにカメラを使用します。レシートを詳しく読む必要がある場合を除き、写真はiPhoneの外に出ません。',
+    'スキャンしたQRコードやレシートを読み取るため、また支出に添える写真を撮るためにカメラを使用します。詳しく読む必要があるレシートと暗号化されたバックアップを除き、写真はiPhoneの外に出ません。',
   'native.permission.microphone':
     '支出を声で記録するときにマイクを使用します。音声は文字に起こすため音声認識サービスに送られます。端末内モードではこのiPhoneから出ません。',
   'native.permission.speech': '話した内容を金額と名前に変換するために使用します。',
@@ -17,6 +17,17 @@ export const jaNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.surfaces.safeToday.description': '今日使えるお金がひと目で分かります。',
   'native.surfaces.setUp': '6pmを開いて設定',
   'native.surfaces.markPaid.title': '支払い済み',
+  'native.surfaces.jar.name': 'ひとつの瓶',
+  'native.surfaces.jar.description': 'ひとつの瓶を、その日までカウントダウン。',
+  'native.surfaces.jar.param': '瓶',
+  'native.surfaces.streak.name': '連続記録',
+  'native.surfaces.streak.description': '続けて締めた夜を、それぞれの空で。',
+  'native.surfaces.month.name': '今月',
+  'native.surfaces.month.description': '1か月を太陽で。締めたすべての夜。',
+  'native.surfaces.week.name': '今週',
+  'native.surfaces.week.description': '1週間を太陽で。締めたすべての夜。',
+  'native.surfaces.receipt.name': '今日のレシート',
+  'native.surfaces.receipt.description': '今日の支出をキャッチしたそばから印字。',
   'native.surfaces.todayList.name': '今日',
   'native.surfaces.todayList.description': '今日の支出を新しい順に表示します。',
   'native.share.title': '6pmに追加',

@@ -5,7 +5,7 @@ import type { enNative } from '../en-native';
 // phrases are what a Spanish speaker says to Siri: "Apunta un gasto en 6pm".
 export const esNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.permission.camera':
-    '6pm usa la cámara para leer los códigos QR y los tickets que escaneas. Las fotos se quedan en tu iPhone, salvo que un ticket necesite una lectura más detallada.',
+    '6pm usa la cámara para leer los códigos QR y los tickets que escaneas, y para hacer la foto que guardas con un gasto. Las fotos se quedan en tu iPhone, salvo un ticket que necesite una lectura más detallada y tu copia cifrada.',
   'native.permission.microphone':
     '6pm te escucha mientras dices un gasto. Tu voz va a un servicio de voz a texto para transcribirla, o se queda en este iPhone en el modo en el dispositivo.',
   'native.permission.speech': '6pm convierte lo que dices en un importe y un nombre.',
@@ -19,6 +19,17 @@ export const esNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.surfaces.safeToday.description': 'Lo que puedes gastar hoy, de un vistazo.',
   'native.surfaces.setUp': 'Abre 6pm para configurarlo',
   'native.surfaces.markPaid.title': 'Pagado',
+  'native.surfaces.jar.name': 'Un bote',
+  'native.surfaces.jar.description': 'Un bote, en cuenta atrás hasta su día.',
+  'native.surfaces.jar.param': 'Bote',
+  'native.surfaces.streak.name': 'Racha',
+  'native.surfaces.streak.description': 'Las noches que cerraste seguidas, cada una con su cielo.',
+  'native.surfaces.month.name': 'Mi mes',
+  'native.surfaces.month.description': 'El mes en soles: cada noche que cerraste.',
+  'native.surfaces.week.name': 'Esta semana',
+  'native.surfaces.week.description': 'La semana en soles: cada noche que cerraste.',
+  'native.surfaces.receipt.name': 'El recibo de hoy',
+  'native.surfaces.receipt.description': 'Los gastos de hoy, impresos en cuanto se capturan.',
   'native.surfaces.todayList.name': 'Hoy',
   'native.surfaces.todayList.description': 'Lo que has gastado hoy, lo más reciente primero.',
   'native.share.title': 'Añadir a 6pm',

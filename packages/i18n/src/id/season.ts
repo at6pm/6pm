@@ -1,0 +1,62 @@
+import type { Entry } from '../catalogue-types';
+import type { enSeason } from '../en-season';
+
+export const idSeason: { readonly [Key in keyof typeof enSeason]: Entry } = {
+  'season.festival.tet': 'Tết',
+  'season.festival.seollal': 'Tahun Baru Korea',
+  'season.festival.chunjie': 'Imlek',
+  'season.envelope.tet': 'Lì xì',
+  'season.envelope.seollal': 'Uang Tahun Baru',
+  'season.envelope.chunjie': 'Angpao',
+
+  'season.card.title': 'Celengan untuk {festival}?',
+  'season.card.sub': {
+    other: '{festival} tinggal {count} minggu lagi. Isi sedikit tiap gajian.',
+  },
+  'season.card.open': 'Atur',
+  'season.card.later': 'Nanti saja',
+
+  'season.offer.later': 'Nanti',
+  'season.offer.title': 'Celengan {festival}',
+  'season.offer.kicker': { other: '{festival} · {count} minggu' },
+  'season.offer.perPay': { other: '{amount} tiap gajian · {count} kali gajian' },
+  'season.offer.ask.gifts': 'Oleh-oleh keluarga',
+  'season.offer.ask.trip': 'Ongkos mudik',
+  'season.offer.none': 'Tidak ada',
+  'season.offer.daily': 'Tiap hari sampai {festival}',
+  'season.offer.start': 'Mulai celengan {festival}',
+
+  'season.bonus.kicker': 'UANG MASUK',
+  'season.bonus.title': 'Bonus {festival}-mu?',
+  'season.bonus.slipJar': 'Celengan {festival}',
+  'season.bonus.jarFull': 'Celengan {festival} · penuh',
+  'season.bonus.jarIn': 'Celengan {festival} · +{amount}',
+  'season.bonus.today': 'HARI INI',
+  'season.bonus.payday': '{date} · GAJIAN',
+  'season.bonus.spread': '{amount} dibagi rata · +{daily} sehari sampai {date}',
+  'season.bonus.allIn': 'Semuanya masuk celengan',
+  'season.bonus.yes': 'Ya, bagi seperti itu',
+  'season.bonus.yesAll': 'Ya, masuk celengan',
+  'season.bonus.save': 'Simpan {amount} saja',
+
+  'season.quick.keypad': 'Papan angka',
+  'season.quick.voice': 'Suara',
+  'season.quick.given': 'Memberi',
+  'season.quick.received': 'Menerima',
+  'season.quick.count': { other: '{count} amplop × {each}' },
+  'season.quick.total': '= {amount}',
+  'season.quick.fromJar': 'Dari celengan {festival}',
+  'season.quick.jarLeft': '{from} → sisa {to}',
+  'season.quick.counts': 'Dihitung hari ini',
+  'season.quick.countsSub': 'Belum ada celengan {festival} untuk diambil',
+  'season.quick.saved': 'Untuk kamu di masa depan',
+  'season.quick.savedSub': 'Saran. Tidak menaikkan angka hari ini.',
+  'season.quick.keep': 'Simpan',
+  'season.quick.less': 'Kurangi satu amplop',
+  'season.quick.more': 'Tambah satu amplop',
+  'season.quick.merchant': { other: '{name} · {count} amplop' },
+
+  'season.kicker.countdown': { other: '{count} hari lagi {festival}' },
+  'season.kicker.holiday': '{festival}, hari ke-{day}',
+  'season.card.saved': 'Saran: simpan untuk kamu di masa depan',
+};

@@ -40,8 +40,8 @@ function query(params: Readonly<Record<string, string | null>>, first: '?' | '&'
 
 /**
  * A code that is not a payment, read and offered for what it is: a link to open, Wi-Fi sign-in to
- * copy, a number to call, a place to see, a contact to reach. Nothing opens by itself; every
- * action is a tap, and only web links open in a browser.
+ * copy, a number to call, a place to see, a contact to reach, another app's link to open. Nothing
+ * opens by itself; every action is a tap, and only web links open in a browser.
  */
 export function ContentCard({
   content,
@@ -122,6 +122,15 @@ function planFor(
         title: t('scan.content.link'),
         headline: content.host,
         detail: content.url,
+        primary: { label: t('scan.content.open'), run: open(content.url) },
+        copy: content.url,
+      };
+    case 'appLink':
+      return {
+        icon: 'open_in_new',
+        title: t('scan.content.appLink'),
+        headline: content.url,
+        detail: null,
         primary: { label: t('scan.content.open'), run: open(content.url) },
         copy: content.url,
       };

@@ -32,6 +32,7 @@ import { idShareExt } from './share-ext';
 import { idSharing } from './sharing';
 import { idShareCards } from './share-cards';
 import { idSurfaces } from './surfaces';
+import { idWidgets } from './widgets';
 import { idToday } from './today';
 import { idTogether } from './together';
 import { idTravel } from './travel';
@@ -39,7 +40,11 @@ import { idVoice } from './voice';
 import { idWidgetsGuide } from './widgets-guide';
 import { idYearBook } from './year-book';
 import { idFirstCatch } from './first-catch';
+import { idPhoto } from './photo';
 import { idImport } from './import';
+import { idOwed } from './owed';
+import { idNotifications } from './notifications';
+import { idSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { idAndroid } from './android';
@@ -75,6 +80,7 @@ export const id: Catalogue = {
   ...idCaptureAlerts,
   ...idVoice,
   ...idSurfaces,
+  ...idWidgets,
   ...idTogether,
   ...idReceiptEmail,
   ...idTravel,
@@ -86,8 +92,12 @@ export const id: Catalogue = {
   ...idPotsPlan,
   ...idPots,
   ...idFirstCatch,
+  ...idPhoto,
   ...idImport,
+  ...idOwed,
   ...importSketchMomo,
+  ...idSeason,
+  ...idNotifications,
 };
 
 /**

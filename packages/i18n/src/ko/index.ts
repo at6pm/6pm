@@ -32,6 +32,7 @@ import { koShareExt } from './share-ext';
 import { koSharing } from './sharing';
 import { koShareCards } from './share-cards';
 import { koSurfaces } from './surfaces';
+import { koWidgets } from './widgets';
 import { koToday } from './today';
 import { koTogether } from './together';
 import { koTravel } from './travel';
@@ -39,7 +40,11 @@ import { koVoice } from './voice';
 import { koWidgetsGuide } from './widgets-guide';
 import { koYearBook } from './year-book';
 import { koFirstCatch } from './first-catch';
+import { koPhoto } from './photo';
 import { koImport } from './import';
+import { koOwed } from './owed';
+import { koNotifications } from './notifications';
+import { koSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
 export { koAndroid } from './android';
@@ -75,6 +80,7 @@ export const ko: Catalogue = {
   ...koCaptureAlerts,
   ...koVoice,
   ...koSurfaces,
+  ...koWidgets,
   ...koTogether,
   ...koReceiptEmail,
   ...koTravel,
@@ -86,8 +92,12 @@ export const ko: Catalogue = {
   ...koPotsPlan,
   ...koPots,
   ...koFirstCatch,
+  ...koPhoto,
   ...koImport,
+  ...koOwed,
   ...importSketchMomo,
+  ...koSeason,
+  ...koNotifications,
 };
 
 /**

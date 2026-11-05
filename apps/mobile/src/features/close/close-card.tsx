@@ -1,9 +1,11 @@
-import { Text, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 
-import { moneyInInk } from '@6pm/theme';
+import { moneyInInk, photoInk } from '@6pm/theme';
 import Animated, { useAnimatedStyle, type SharedValue } from 'react-native-reanimated';
 
+import { photoUri } from '../../data/device-photo-files';
 import { CategoryTile } from '../../ui/category-tile';
+import { PhotoClip } from '../../ui/photo/photo-clip';
 import { DashedRule } from '../../ui/dashed-rule';
 import { FitWidth } from '../../ui/layout/fit-width';
 import { PaperEdge } from '../../ui/paper-edge';
@@ -100,6 +102,14 @@ function Stamp({
   );
 }
 
+/** What the clipped receipt covers of the card's right side: its header and name stop short. */
+const PRINT_ROOM = 96;
+/**
+ * How far the print stands above the card. The design stands it 34 pt up, into the room over the
+ * card; the app's hint line ("Right to keep · …") sits there, so it is clipped lower.
+ */
+const PRINT_TOP = -6;
+
 /** The shortest card that still has room for the running total under the name. */
 const FULL_HEIGHT = 300;
 /** The shortest card at all: header, name, amount and where it was read from. */
@@ -128,8 +138,39 @@ export function CloseCard({
   const { numK } = useTheme().palette;
   // Too short for the running total (a short screen): the receipt keeps its name and amount.
   const compact = height < FULL_HEIGHT;
+  // The receipt is clipped to the card, so it rides the swipe; the header makes room for it.
+  const photo = row.photo === null ? null : photoUri(row.photo);
+  const besidePhoto = photo === null ? null : { marginRight: PRINT_ROOM };
   return (
     <View>
+      {photo !== null ? (
+        <View
+          pointerEvents="none"
+          style={{
+            position: 'absolute',
+            right: 14,
+            top: PRINT_TOP,
+            width: 96,
+            height: 141,
+            zIndex: 1,
+            borderWidth: 4,
+            borderColor: photoInk.frame,
+            backgroundColor: photoInk.frame,
+            boxShadow: '0 12px 22px rgba(20,6,30,.4)',
+            transform: [{ rotate: '6deg' }],
+            overflow: 'hidden',
+          }}
+        >
+          <Image source={{ uri: photo }} resizeMode="cover" style={{ flex: 1 }} />
+        </View>
+      ) : null}
+      {photo !== null ? (
+        <PhotoClip
+          size={40}
+          rotate={8}
+          style={{ position: 'absolute', right: 52, top: PRINT_TOP - 12, zIndex: 2 }}
+        />
+      ) : null}
       {/* The paper casts the shadow, not its torn edge, which would show it between the teeth. */}
       <View
         style={{
@@ -151,7 +192,7 @@ export function CloseCard({
             experimental_backgroundImage: `linear-gradient(180deg, #fdfaf3, ${PAPER})`,
           }}
         >
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View style={[{ flexDirection: 'row', justifyContent: 'space-between' }, besidePhoto]}>
             <Text
               numberOfLines={1}
               style={{ ...mono(11.5, 400, 0.1), color: INK_SOFT, flexShrink: 1 }}
@@ -160,8 +201,10 @@ export function CloseCard({
             </Text>
             <Text style={{ ...mono(11.5, 400, 0.1), color: INK_SOFT }}>{content.time}</Text>
           </View>
-          <DashedRule color={RULE} />
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+          <View style={besidePhoto}>
+            <DashedRule color={RULE} />
+          </View>
+          <View style={[{ flexDirection: 'row', alignItems: 'center', gap: 12 }, besidePhoto]}>
             <CategoryTile
               icon={moneyIn ? 'payments' : row.icon}
               hue={moneyIn ? moneyInInk.hue : row.hue}

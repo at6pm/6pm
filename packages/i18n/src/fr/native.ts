@@ -4,7 +4,7 @@ import type { enNative } from '../en-native';
 // Permission prompts read like iOS's own French strings; Wallet is « Cartes » on a French iPhone.
 export const frNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.permission.camera':
-    '6pm utilise l’appareil photo pour lire les codes QR et les tickets que tu scannes. Les photos restent sur ton iPhone, sauf si un ticket doit être lu de plus près.',
+    '6pm utilise l’appareil photo pour lire les codes QR et les tickets que tu scannes, et pour prendre la photo que tu gardes avec une dépense. Les photos restent sur ton iPhone, sauf un ticket à lire de plus près et ta sauvegarde chiffrée.',
   'native.permission.microphone':
     '6pm t’écoute pendant que tu dictes une dépense. Ta voix est envoyée à un service de transcription pour être écrite, ou reste sur cet iPhone en mode sur l’appareil.',
   'native.permission.speech': '6pm transforme ce que tu dis en un montant et un nom.',
@@ -18,6 +18,18 @@ export const frNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.surfaces.safeToday.description': 'Ce que tu peux dépenser aujourd’hui, en un coup d’œil.',
   'native.surfaces.setUp': 'Ouvre 6pm pour commencer',
   'native.surfaces.markPaid.title': 'Payé',
+  'native.surfaces.jar.name': 'Un bocal',
+  'native.surfaces.jar.description': 'Un bocal, en compte à rebours jusqu’à son jour.',
+  'native.surfaces.jar.param': 'Bocal',
+  'native.surfaces.streak.name': 'Série',
+  'native.surfaces.streak.description': 'Les soirs clôturés d’affilée, chacun avec son ciel.',
+  'native.surfaces.month.name': 'Mon mois',
+  'native.surfaces.month.description': 'Le mois en soleils : chaque soir que tu as clôturé.',
+  'native.surfaces.week.name': 'Cette semaine',
+  'native.surfaces.week.description': 'La semaine en soleils : chaque soir clôturé.',
+  'native.surfaces.receipt.name': 'Le ticket du jour',
+  'native.surfaces.receipt.description':
+    'Les dépenses du jour, imprimées dès qu’elles sont captées.',
   'native.surfaces.todayList.name': 'Aujourd’hui',
   'native.surfaces.todayList.description':
     'Ce que tu as dépensé aujourd’hui, du plus récent au plus ancien.',

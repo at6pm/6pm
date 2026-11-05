@@ -55,10 +55,17 @@ enum GroupFiles {
     try write(json, to: folder("inbox").appendingPathComponent("\(id).json"))
   }
 
-  /// The names of the status files extensions leave for the app to read and never import.
-  static let statusNames: Set<String> = ["last-alert"]
+  /// Leaves the photo a capture was read from beside it (`<id>.jpg`), for the app to keep with
+  /// the spend. Written before the capture itself, so the app never imports one without it.
+  static func writeInboxPhoto(id: String, jpeg: Data) throws {
+    try write(jpeg, to: folder("inbox").appendingPathComponent("\(id).jpg"))
+  }
 
-  /// Leaves a status for the app to show (`last-alert`: the last bank alert read). The newest
+  /// The names of the status files extensions leave for the app to read and never import.
+  static let statusNames: Set<String> = ["last-alert", "first-catch-told"]
+
+  /// Leaves a status for the app to show (`last-alert`: the last bank alert read;
+  /// `first-catch-told`: when the first catch was said). The newest
   /// replaces the one before; the app only ever reads these.
   static func writeStatus(_ name: String, json: Data) throws {
     guard statusNames.contains(name) else { return }

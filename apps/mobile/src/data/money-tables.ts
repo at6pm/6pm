@@ -4,6 +4,7 @@ import {
   closedDayRowSchema,
   importRowSchema,
   merchantRuleRowSchema,
+  owedRowSchema,
   potRowSchema,
   spendRowSchema,
 } from '@6pm/domain';
@@ -46,6 +47,7 @@ export function openMoneyTables(db: SqlDatabase) {
       key: 'id',
       booleans: ['answered'],
     }),
+    owed: createTable(db, { name: 'owed', schema: owedRowSchema, key: 'id' }),
   };
 }
 

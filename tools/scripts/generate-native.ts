@@ -76,6 +76,16 @@ const ANDROID_STRINGS: Readonly<Record<string, string>> = {
   sixpm_widget_safe_description: 'native.surfaces.safeToday.description',
   sixpm_widget_today_name: 'native.surfaces.todayList.name',
   sixpm_widget_today_description: 'native.surfaces.todayList.description',
+  sixpm_widget_month_name: 'native.surfaces.month.name',
+  sixpm_widget_month_description: 'native.surfaces.month.description',
+  sixpm_widget_week_name: 'native.surfaces.week.name',
+  sixpm_widget_week_description: 'native.surfaces.week.description',
+  sixpm_widget_receipt_name: 'native.surfaces.receipt.name',
+  sixpm_widget_receipt_description: 'native.surfaces.receipt.description',
+  sixpm_widget_streak_name: 'native.surfaces.streak.name',
+  sixpm_widget_streak_description: 'native.surfaces.streak.description',
+  sixpm_widget_jar_name: 'native.surfaces.jar.name',
+  sixpm_widget_jar_description: 'native.surfaces.jar.description',
   sixpm_widget_set_up: 'native.surfaces.setUp',
 };
 

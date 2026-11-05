@@ -27,6 +27,11 @@ class SurfacesModule : Module() {
   override fun definition() = ModuleDefinition {
     Name("Surfaces")
 
+    // The first catch is said only while 6pm is away; on screen, 6pm shows it itself.
+    OnActivityEntersForeground { CaptureNotices.appVisible = true }
+    OnActivityEntersBackground { CaptureNotices.appVisible = false }
+    OnActivityDestroys { CaptureNotices.appVisible = false }
+
     AsyncFunction("writeSurface") { name: String, json: String ->
       SurfaceFiles.writeSurface(context, name, json)
       // The widgets draw what the app last wrote.

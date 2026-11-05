@@ -57,8 +57,36 @@ describe('where the close reminder leads', () => {
     expect(routeForTappedNotification(tonight, sixToday, { ...open, plan: null })).toBeNull();
   });
 
-  it('ignores notifications that are not the close reminder', () => {
+  it('ignores notifications that lead nowhere of their own', () => {
     expect(routeForTappedNotification('something-else', sixToday, open)).toBeNull();
+    expect(routeForTappedNotification('first-catch', sixToday, open)).toBeNull();
+  });
+});
+
+describe('where the other notifications lead', () => {
+  it('opens the jars from payday', () => {
+    expect(routeForTappedNotification('payday:2026-10-31', sixToday, open)).toBe('/pots');
+  });
+
+  it("opens who owes you, with the one person's Ask ready", () => {
+    expect(
+      routeForTappedNotification('owed-remind:2026-10-14', sixToday, open, { person: 'linh' }),
+    ).toBe('/owed?ask=linh');
+    expect(routeForTappedNotification('owed-remind:2026-10-14', sixToday, open)).toBe('/owed');
+  });
+
+  it("opens a quiet way's set-up", () => {
+    expect(routeForTappedNotification('capture-quiet:alert', sixToday, open)).toBe(
+      '/capture-guide?source=alerts',
+    );
+    expect(routeForTappedNotification('capture-quiet:applePay', sixToday, open)).toBe(
+      '/capture-guide?source=wallet',
+    );
+  });
+
+  it('stays on the app before a plan exists', () => {
+    const none = { ...open, plan: null };
+    expect(routeForTappedNotification('payday:2026-10-31', sixToday, none)).toBeNull();
   });
 });
 
