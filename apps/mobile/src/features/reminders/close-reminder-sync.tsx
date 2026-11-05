@@ -16,9 +16,10 @@ import { useI18n, type I18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { clockNow } from '../../ui/theme/clock';
 import { useLastAlert } from '../capture-guide/last-alert';
-import { channelNames } from '../onboarding/close-reminder';
+import { CLOSE_REMINDER_PREFIX, channelNames } from '../onboarding/close-reminder';
 import { useNewYear } from '../pots/use-new-year';
 import { nativeReach } from '../surfaces/native-reach';
+import { activityRingsFor, setCloseAlert } from './close-alert';
 import { memoryAfter, paydayOf, plannedNotifications, quietWaysOf } from './notification-inputs';
 import { useNotificationSettings } from './notification-prefs';
 import { scheduleNotifications, type NotificationRequest } from './notification-schedule';
@@ -175,7 +176,17 @@ async function rebuild(
       ...(data ? { data } : {}),
     };
   });
-  await scheduleNotifications(requests, channelNames(i18n.language));
+  const todays = requests.find(
+    (r) => r.kind === 'close' && r.id === `${CLOSE_REMINDER_PREFIX}${snapshot.today}`,
+  );
+  setCloseAlert(todays ? { id: todays.id, day: snapshot.today, body: todays.body } : null);
+  // The close's Live Activity rings for today with the same words where iOS starts it by itself.
+  const ringing = todays !== undefined && (await activityRingsFor(snapshot.today));
+  if (!live()) return;
+  await scheduleNotifications(
+    ringing ? requests.filter((r) => r !== todays) : requests,
+    channelNames(i18n.language),
+  );
   const next = memoryAfter(memory, planned, now);
   if (JSON.stringify(next) !== JSON.stringify(memory)) await writeNotificationMemory(store, next);
 }

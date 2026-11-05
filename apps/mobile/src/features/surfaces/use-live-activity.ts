@@ -12,6 +12,8 @@ import { dayOf, waitingOf } from '../../data/money-store';
 import { useI18n } from '../../i18n/i18n';
 import { phoneNumberStyle } from '../../money/device-money';
 import { useClock } from '../../ui/theme/clock';
+import { useCloseAlert } from '../reminders/close-alert';
+import { cancelNotification } from '../reminders/notification-schedule';
 import { useTravel } from '../travel/travel-provider';
 import { pendingPayState, travelState } from './activity-state';
 import { closeActivityPlan, closeActivityState, type ClosePlan } from './close-activity-plan';
@@ -34,6 +36,7 @@ export function useLiveActivity(look: WidgetLook, format: MoneyFormat) {
   const hour = Math.floor(useClock().hour);
   const pathname = usePathname();
   const { trip } = useTravel();
+  const closeAlert = useCloseAlert();
 
   const palette = useMemo(
     () =>
@@ -45,8 +48,9 @@ export function useLiveActivity(look: WidgetLook, format: MoneyFormat) {
       }),
     [look, hour],
   );
-  const inputs = useRef({ money, t, format, palette, look, trip, held: pathname === SCAN_ROUTE });
-  inputs.current = { money, t, format, palette, look, trip, held: pathname === SCAN_ROUTE };
+  const held = pathname === SCAN_ROUTE;
+  const inputs = useRef({ money, t, format, palette, look, trip, held, closeAlert });
+  inputs.current = { money, t, format, palette, look, trip, held, closeAlert };
   const running = useRef<Promise<unknown>>(Promise.resolve());
 
   useEffect(() => {
@@ -109,6 +113,7 @@ export function useLiveActivity(look: WidgetLook, format: MoneyFormat) {
             }),
           });
           // Before the month is set up there is no close to come to.
+          const reminder = now.closeAlert?.day === now.money.today ? now.closeAlert : null;
           const close = closeActivityPlan({
             running,
             today: now.money.today,
@@ -117,15 +122,18 @@ export function useLiveActivity(look: WidgetLook, format: MoneyFormat) {
             now: new Date(),
             foreground,
             enabled,
-            canSchedule:
-              Platform.OS === 'ios' && Number.parseInt(String(Platform.Version), 10) >= 26,
+            canSchedule: reminder !== null && schedulesAhead(),
             stateJson: JSON.stringify(closeState),
             alertTitle: closeState.title,
-            alertBody: closeState.detail,
+            alertBody: reminder?.body ?? closeState.detail,
           });
           await apply(native, pay);
           await apply(native, travel);
-          await apply(native, close);
+          const started = await apply(native, close);
+          // Asked for ahead, the activity rings at the close in the reminder's place.
+          if (reminder && started && close.start?.timing.startAt) {
+            await cancelNotification(reminder.id);
+          }
         })
         .catch((error: unknown) => Sentry.captureException(error));
     };
@@ -134,13 +142,22 @@ export function useLiveActivity(look: WidgetLook, format: MoneyFormat) {
       if (state === 'active') run();
     });
     return () => sub.remove();
-  }, [money, t, format, palette, look, trip, pathname]);
+  }, [money, t, format, palette, look, trip, pathname, closeAlert]);
 }
 
-async function apply(native: NonNullable<typeof surfaces>, plan: ActivityPlan | ClosePlan) {
+/** iOS 26 and later start an activity at a time of the app's choosing. */
+function schedulesAhead(): boolean {
+  return Platform.OS === 'ios' && Number.parseInt(String(Platform.Version), 10) >= 26;
+}
+
+/** Runs a plan; the id of the activity it started, or null when it started none. */
+async function apply(
+  native: NonNullable<typeof surfaces>,
+  plan: ActivityPlan | ClosePlan,
+): Promise<string | null> {
   for (const { id, finalStateJson } of plan.end) await native.endActivity(id, finalStateJson);
   for (const { id, stateJson } of plan.update) await native.updateActivity(id, stateJson);
-  if (!plan.start) return;
+  if (!plan.start) return null;
   const timing = 'timing' in plan.start ? plan.start.timing : null;
-  await native.startActivity(plan.start.kind, plan.start.key, plan.start.stateJson, timing);
+  return native.startActivity(plan.start.kind, plan.start.key, plan.start.stateJson, timing);
 }

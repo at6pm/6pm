@@ -129,6 +129,11 @@ export function scheduleNotifications(
   });
 }
 
+/** Takes back one scheduled notification, in turn with the rebuilds. */
+export function cancelNotification(id: string): Promise<void> {
+  return inTurn((Notifications) => Notifications.cancelScheduledNotificationAsync(id));
+}
+
 /** Nothing scheduled any more: after Delete all data, until onboarding sets it up again. */
 export function cancelNotifications(): Promise<void> {
   return inTurn((Notifications) => cancelKinds(Notifications, EVERY_KIND));
