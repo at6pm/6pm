@@ -98,7 +98,7 @@ const commandSchema = z.object({
     .string()
     .regex(/^[\w.-]+$/)
     .optional(),
-  /** A picture in Documents ("receipt.jpg") kept as the photo of today's shared receipts. */
+  /** A picture in Documents ("receipt.jpg") kept with today's shared receipts and split spends. */
   photo: z
     .string()
     .regex(/^[\w.-]+$/)
@@ -194,11 +194,19 @@ export function DevCommands() {
       });
       if (photo) {
         const picture = new File(Paths.document, photo).uri;
-        const shared = store
-          .getSnapshot()
-          .cycleSpends.filter((s) => s.day === today && s.source === 'shared');
-        for (const s of shared) {
-          await actions.attachPhoto(s.id, (to) => keepPhotoAt(picture, to).then(() => true));
+        const split = await store.db.getAllAsync<{ spend_id: string }>(
+          'SELECT DISTINCT spend_id FROM owed',
+          [],
+        );
+        const ids = [
+          ...store
+            .getSnapshot()
+            .cycleSpends.filter((s) => s.day === today && s.source === 'shared')
+            .map((s) => s.id),
+          ...split.map((row) => row.spend_id),
+        ];
+        for (const id of ids) {
+          await actions.attachPhoto(id, (to) => keepPhotoAt(picture, to).then(() => true));
         }
       }
       // Said yesterday, but after anything seeded: only a catch from now on clears the card.

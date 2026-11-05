@@ -142,7 +142,10 @@ export function QuickPhoto({
             ]}
           >
             <Symbol name="add_a_photo" size={20} color={photoInk.slotInk} />
-            <Text style={{ ...mono(8.5, 500, 0.1), color: photoInk.slotInk }}>
+            <Text
+              maxFontSizeMultiplier={1}
+              style={{ ...mono(8.5, 500, 0.1), color: photoInk.slotInk }}
+            >
               {t('photo.clipOne')}
             </Text>
           </Animated.View>

@@ -88,10 +88,25 @@ export function QuickTicket({
         <View
           style={{ flexDirection: 'row', justifyContent: 'space-between', marginRight: clipRoom }}
         >
-          <Text style={{ ...mono(10.5, 400, 0.14), color: SOFT, textTransform: 'uppercase' }}>
+          <Text
+            style={{
+              ...mono(10.5, 400, 0.14),
+              color: SOFT,
+              textTransform: 'uppercase',
+              flexShrink: 1,
+            }}
+          >
             {heading}
           </Text>
-          <Text style={{ ...mono(10.5, 400, 0.14), color: SOFT, textTransform: 'uppercase' }}>
+          <Text
+            style={{
+              ...mono(10.5, 400, 0.14),
+              color: SOFT,
+              textTransform: 'uppercase',
+              flexShrink: 1,
+              textAlign: 'right',
+            }}
+          >
             {stamp}
           </Text>
         </View>

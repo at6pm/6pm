@@ -188,7 +188,10 @@ export function SpendPhoto({
             }}
           >
             <Symbol name="add_a_photo" size={22} color={photoInk.slotInk} />
-            <Text style={{ ...mono(9, 500, 0.12), color: photoInk.slotInk }}>
+            <Text
+              maxFontSizeMultiplier={1}
+              style={{ ...mono(9, 500, 0.12), color: photoInk.slotInk }}
+            >
               {t('photo.slot')}
             </Text>
           </View>
@@ -237,6 +240,7 @@ export function SpendPhoto({
               ]}
             >
               <Text
+                maxFontSizeMultiplier={1}
                 style={{
                   ...mono(8.5, 600, 0.12),
                   lineHeight: 10.5,
