@@ -1,6 +1,6 @@
 {
   "ios": {
-    "NSCameraUsageDescription": "6pm verwendet die Kamera, um die QR-Codes und Belege zu lesen, die du scannst. Fotos bleiben auf deinem iPhone, außer ein Beleg muss genauer gelesen werden.",
+    "NSCameraUsageDescription": "6pm verwendet die Kamera, um die QR-Codes und Belege zu lesen, die du scannst, und um das Foto aufzunehmen, das du zu einer Ausgabe behältst. Fotos bleiben auf deinem iPhone, bis auf einen Beleg, der genauer gelesen werden muss, und dein verschlüsseltes Backup.",
     "NSMicrophoneUsageDescription": "6pm hört zu, während du eine Ausgabe sagst. Deine Stimme wird zum Verschriftlichen an einen Spracherkennungsdienst gesendet oder bleibt im Modus „Auf dem Gerät“ auf diesem iPhone.",
     "NSSpeechRecognitionUsageDescription": "6pm macht aus dem, was du sagst, einen Betrag und einen Namen.",
     "NSPhotoLibraryUsageDescription": "6pm sichert nur deinen Tagesbeleg und dein Geldtagebuch in Fotos. Deine Mediathek wird nie durchsucht.",

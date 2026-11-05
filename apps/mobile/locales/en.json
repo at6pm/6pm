@@ -1,6 +1,6 @@
 {
   "ios": {
-    "NSCameraUsageDescription": "6pm uses the camera to read the QR codes and receipts you scan. Photos stay on your iPhone unless a receipt needs a closer look.",
+    "NSCameraUsageDescription": "6pm uses the camera to read the QR codes and receipts you scan, and to take a photo you keep with a spend. Photos stay on your iPhone, apart from a receipt that needs a closer look and your encrypted backup.",
     "NSMicrophoneUsageDescription": "6pm listens while you say a spend. Your voice goes to a speech-to-text service to be written down, or stays on this iPhone in on-device mode.",
     "NSSpeechRecognitionUsageDescription": "6pm turns what you say into an amount and a name.",
     "NSPhotoLibraryUsageDescription": "6pm only saves your close receipt and money diary to Photos. It never looks through your library.",

@@ -18,6 +18,7 @@ import {
 
 import type { ScannedReceipt } from '../../../modules/scan-camera';
 import { useBillPayments } from '../../data/bill-payments';
+import { keepPhotoAt } from '../../data/device-photo-files';
 import { saveInboxSpend } from '../../data/inbox-import';
 import { useMoneyActions, useMoneyStore } from '../../data/money-provider';
 import { usePlanActions } from '../../data/plan-actions';
@@ -221,6 +222,12 @@ export function useReceiptScan() {
       if (item === null) return 'empty';
       const spendId = await saveInboxSpend({ store, actions, enrich, home: home.code }, item);
       if (spendId === null) return 'already';
+      // The squared-up cut-out stays with the spend, not the camera's whole frame; a payment seen
+      // another way first keeps the photo it has. A photo that cannot be kept leaves the spend saved.
+      const cutOut = phase.receipt.uri;
+      await actions
+        .attachPhoto(spendId, (to) => keepPhotoAt(cutOut, to).then(() => true), true)
+        .catch(() => null);
       const { pays, add } = phase.bill;
       if (bill === 'pays' && pays !== null) await billPayments.setPaysBill(spendId, pays.id);
       // The bill it looked like, turned off: answered, so a later catch never marks it as paid.
