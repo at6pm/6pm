@@ -95,22 +95,30 @@ function Layout({ size, preview }: { readonly size: WidgetSize; readonly preview
   return (
     <View style={{ gap: 28 }}>
       {size === 'small' ? (
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <HomeWidget size="small" preview={preview} />
-          <View style={{ width: 170, height: 170, justifyContent: 'space-between' }}>
-            {[0, 1].map((r) => (
-              <View key={r} style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <AppGhost />
-                <AppGhost />
-              </View>
-            ))}
+        <>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <HomeWidget size="small" preview={preview} />
+            <HomeWidget size="small" kind="jar" preview={preview} />
           </View>
-        </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <HomeWidget size="small" kind="streak" preview={preview} />
+            <View style={{ width: 170, height: 170, justifyContent: 'space-between' }}>
+              {[0, 1].map((r) => (
+                <View key={r} style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <AppGhost />
+                  <AppGhost />
+                </View>
+              ))}
+            </View>
+          </View>
+        </>
       ) : (
-        <HomeWidget size="medium" preview={preview} />
+        <>
+          <HomeWidget size="medium" preview={preview} />
+          <GhostRow />
+          <GhostRow />
+        </>
       )}
-      <GhostRow />
-      <GhostRow />
     </View>
   );
 }

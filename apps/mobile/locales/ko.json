@@ -12,8 +12,12 @@
     "sixpm_shortcut_quick_add": "빠른 추가",
     "sixpm_widget_safe_name": "오늘 쓸 수 있는 돈",
     "sixpm_widget_safe_description": "오늘 쓸 수 있는 돈을 한눈에.",
-    "sixpm_widget_today_name": "오늘",
-    "sixpm_widget_today_description": "오늘 쓴 돈, 최신순으로.",
+    "sixpm_widget_today_name": "나의 한 달",
+    "sixpm_widget_today_description": "한 달을 해로: 마감한 모든 저녁.",
+    "sixpm_widget_streak_name": "연속 기록",
+    "sixpm_widget_streak_description": "연속으로 마감한 저녁, 저녁마다 그날의 하늘.",
+    "sixpm_widget_jar_name": "저금통 하나",
+    "sixpm_widget_jar_description": "저금통 하나, 그날까지 카운트다운.",
     "sixpm_widget_set_up": "6pm을 열어 설정하세요"
   }
 }

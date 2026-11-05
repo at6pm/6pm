@@ -31,6 +31,7 @@ import { idScan } from './scan';
 import { idShareExt } from './share-ext';
 import { idSharing } from './sharing';
 import { idSurfaces } from './surfaces';
+import { idWidgets } from './widgets';
 import { idToday } from './today';
 import { idTogether } from './together';
 import { idTravel } from './travel';
@@ -76,6 +77,7 @@ export const id: Catalogue = {
   ...idCaptureAlerts,
   ...idVoice,
   ...idSurfaces,
+  ...idWidgets,
   ...idTogether,
   ...idReceiptEmail,
   ...idTravel,

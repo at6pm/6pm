@@ -31,6 +31,7 @@ import { frScan } from './scan';
 import { frShareExt } from './share-ext';
 import { frSharing } from './sharing';
 import { frSurfaces } from './surfaces';
+import { frWidgets } from './widgets';
 import { frToday } from './today';
 import { frTogether } from './together';
 import { frTravel } from './travel';
@@ -76,6 +77,7 @@ export const fr: Catalogue = {
   ...frCaptureAlerts,
   ...frVoice,
   ...frSurfaces,
+  ...frWidgets,
   ...frTogether,
   ...frReceiptEmail,
   ...frTravel,

@@ -6,6 +6,7 @@ import { viShareExt } from './vi-share-ext';
 import { viIntents } from './vi-intents';
 import { viVoice } from './vi-voice';
 import { viSurfaces } from './vi-surfaces';
+import { viWidgets } from './vi-widgets';
 import { viTogether } from './vi-together';
 import { viReceiptEmail } from './vi-receipt-email';
 import { viBackup } from './vi-backup';
@@ -73,6 +74,7 @@ export const vi: Catalogue = {
   ...viCaptureAlerts,
   ...viVoice,
   ...viSurfaces,
+  ...viWidgets,
   ...viTogether,
   ...viReceiptEmail,
   ...viTravel,

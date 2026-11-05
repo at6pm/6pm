@@ -9,6 +9,8 @@ import { CategoryTile } from '../../ui/category-tile';
 import { Symbol } from '../../ui/icons/symbol';
 import { SheetFrame } from '../../ui/navigation/sheet-frame';
 import { PressScale } from '../../ui/primitives/press-scale';
+import { Switch } from '../../ui/primitives/switch';
+import { useHideAmounts } from '../surfaces/use-hide-amounts';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading } from '../../ui/type/fonts';
 import { WordFitText } from '../../ui/type/word-fit-text';
@@ -43,6 +45,7 @@ export function WidgetsGuideSheet() {
   const { t } = useI18n();
   const router = useRouter();
   const preview = useWidgetPreview();
+  const [hideAmounts, setHideAmounts] = useHideAmounts();
   const window = useWindowDimensions();
   // The sheet's own width (narrower than the window on a wide screen), less its 16 pt margins
   // and the card's 16 pt padding.
@@ -114,6 +117,35 @@ export function WidgetsGuideSheet() {
               <Text style={{ ...body(13.5, 600), color: palette.inkSoft, flex: 1 }}>
                 {t(preview.ownLook ? 'widgetsGuide.lookMax' : 'widgetsGuide.lookFree')}
               </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 12,
+                padding: 14,
+                borderRadius: 18,
+                backgroundColor: palette.cell,
+              }}
+            >
+              <Symbol name="visibility_off" size={22} color={palette.ink} />
+              <View style={{ flex: 1, gap: 2 }}>
+                <Text style={{ ...body(15, 650), color: palette.ink }}>
+                  {t('widgetsGuide.hide.title')}
+                </Text>
+                <Text style={{ ...body(13), lineHeight: 18, color: palette.inkSoft }}>
+                  {t(
+                    Platform.OS === 'android'
+                      ? 'widgetsGuide.hide.whatAndroid'
+                      : 'widgetsGuide.hide.what',
+                  )}
+                </Text>
+              </View>
+              <Switch
+                value={hideAmounts}
+                onChange={setHideAmounts}
+                accessibilityLabel={t('widgetsGuide.hide.title')}
+              />
             </View>
           </Animated.View>
 

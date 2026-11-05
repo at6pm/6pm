@@ -33,8 +33,9 @@ public class SurfacesModule: Module {
       LiveActivities.list()
     }
 
-    AsyncFunction("startActivity") { (kind: String, key: String, stateJson: String) -> String? in
-      LiveActivities.start(kind: kind, key: key, stateJson: stateJson)
+    AsyncFunction("startActivity") {
+      (kind: String, key: String, stateJson: String, timing: ActivityTiming?) -> String? in
+      LiveActivities.start(kind: kind, key: key, stateJson: stateJson, timing: timing)
     }
 
     AsyncFunction("updateActivity") { (id: String, stateJson: String) in

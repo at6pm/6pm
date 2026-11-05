@@ -56,7 +56,8 @@ extension SurfaceAttributes.ContentState {
 /// The look's display face, as the widgets last wrote it.
 var activityDisplayFont: String? { SurfaceSnapshot.load()?.strings["font.display"] }
 
-/// The one Live Activity type: a waiting QR payment (`pendingPay`) or a trip (`travel`).
+/// The one Live Activity type: a waiting QR payment (`pendingPay`), a trip (`travel`) or the
+/// close at six (`close`).
 struct SurfaceActivityWidget: Widget {
   var body: some WidgetConfiguration {
     ActivityConfiguration(for: SurfaceAttributes.self) { context in
@@ -68,23 +69,33 @@ struct SurfaceActivityWidget: Widget {
       let state = context.state
       let pay = attributes.kind == "pendingPay" ? state.decoded(PendingPayState.self) : nil
       let trip = attributes.kind == "travel" ? state.decoded(TravelState.self) : nil
+      let close = attributes.kind == "close" ? state.decoded(CloseState.self) : nil
       return DynamicIsland {
         DynamicIslandExpandedRegion(.bottom) {
           if let pay {
             PendingPayExpanded(state: pay)
           } else if let trip {
             TravelExpanded(state: trip)
+          } else if let close {
+            CloseExpanded(state: close)
           }
         }
       } compactLeading: {
-        if let pay {
+        if let close {
+          FilledGlyph(glyph: close.icon, size: 20).foregroundStyle(Color(css: close.accent))
+        } else if let pay {
           CompanionOrNothing(name: pay.companion, size: 24)
         } else if let trip {
           FilledGlyph(glyph: trip.icon, size: 21)
             .foregroundStyle(Color(css: trip.accent))
         }
       } compactTrailing: {
-        if let pay {
+        if let close {
+          Text(close.detail)
+            .font(SurfaceFont.body(size: 14, weight: 650))
+            .foregroundStyle(Color(css: close.accent))
+            .lineLimit(1)
+        } else if let pay {
           Text(pay.short)
             .font(SurfaceFont.body(size: 14, weight: 650))
             .foregroundStyle(Color(css: pay.accent))
@@ -94,7 +105,9 @@ struct SurfaceActivityWidget: Widget {
             .foregroundStyle(Color(css: trip.accent))
         }
       } minimal: {
-        if let pay {
+        if let close {
+          FilledGlyph(glyph: close.icon, size: 16).foregroundStyle(Color(css: close.accent))
+        } else if let pay {
           if pay.companion == nil {
             Text(pay.short)
               .font(SurfaceFont.body(size: 12, weight: 650))
@@ -107,7 +120,7 @@ struct SurfaceActivityWidget: Widget {
           TravelMinimal(state: trip)
         }
       }
-      .widgetURL(appLink(pay?.path ?? trip?.path ?? "/app"))
+      .widgetURL(appLink(close?.path ?? pay?.path ?? trip?.path ?? "/app"))
     }
   }
 }
@@ -139,6 +152,10 @@ struct LockBanner: View {
         TravelLock(state: trip)
           .padding(EdgeInsets(top: 14, leading: 16, bottom: 16, trailing: 16))
           .widgetURL(appLink(trip.path))
+      } else if attributes.kind == "close", let close = state.decoded(CloseState.self) {
+        CloseLock(state: close)
+          .padding(EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16))
+          .widgetURL(appLink(close.path))
       }
     }
     .foregroundStyle(ThemeTokens.Activity.ink)

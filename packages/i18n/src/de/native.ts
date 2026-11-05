@@ -18,6 +18,15 @@ export const deNative: { readonly [Key in keyof typeof enNative]: Entry } = {
   'native.surfaces.safeToday.description': 'Was du heute ausgeben kannst, auf einen Blick.',
   'native.surfaces.setUp': '6pm zum Einrichten öffnen',
   'native.surfaces.markPaid.title': 'Bezahlt',
+  'native.surfaces.jar.name': 'Ein Glas',
+  'native.surfaces.jar.description': 'Ein Glas, das bis zu seinem Tag herunterzählt.',
+  'native.surfaces.jar.param': 'Glas',
+  'native.surfaces.streak.name': 'Serie',
+  'native.surfaces.streak.description':
+    'Die Abende, die du in Folge abgeschlossen hast, jeder mit seinem Himmel.',
+  'native.surfaces.month.name': 'Mein Monat',
+  'native.surfaces.month.description':
+    'Der Monat als Sonnen: jeder Abend, den du abgeschlossen hast.',
   'native.surfaces.todayList.name': 'Heute',
   'native.surfaces.todayList.description': 'Was du heute ausgegeben hast, Neuestes zuerst.',
   'native.share.title': 'Zu 6pm hinzufügen',

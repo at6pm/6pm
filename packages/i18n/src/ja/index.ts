@@ -31,6 +31,7 @@ import { jaScan } from './scan';
 import { jaShareExt } from './share-ext';
 import { jaSharing } from './sharing';
 import { jaSurfaces } from './surfaces';
+import { jaWidgets } from './widgets';
 import { jaToday } from './today';
 import { jaTogether } from './together';
 import { jaTravel } from './travel';
@@ -76,6 +77,7 @@ export const ja: Catalogue = {
   ...jaCaptureAlerts,
   ...jaVoice,
   ...jaSurfaces,
+  ...jaWidgets,
   ...jaTogether,
   ...jaReceiptEmail,
   ...jaTravel,

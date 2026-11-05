@@ -9,17 +9,22 @@ export const jaWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
     '今日使えるお金をいつも見る場所に。アプリを探さずに「QRをスキャン」や「クイック追加」を開けます。',
   'widgetsGuide.lookMax': 'あなたの着せかえで表示。',
   'widgetsGuide.lookFree': '無料版はゴールデンアワー。Maxならあなたの着せかえになります。',
+  'widgetsGuide.hide.title': '金額を隠す',
+  'widgetsGuide.hide.what': 'Face IDでロックを解除するまで、ウィジェットは•••と表示します。',
+  'widgetsGuide.hide.whatAndroid': 'ウィジェットは金額の代わりに•••と表示します。',
   'widgetsGuide.howToAdd': '追加のしかた',
   'widgetsGuide.whenItShows': '表示されるとき',
 
   'widgetsGuide.home.title': 'ホーム画面ウィジェット',
-  'widgetsGuide.home.what': '今日使えるお金がひと目で。タップすると6pmが開きます。',
+  'widgetsGuide.home.what':
+    '1日の小さなポストカード。その時間の本当の空、今の太陽の位置、そしてひとつの数字。',
   'widgetsGuide.home.small': '小',
   'widgetsGuide.home.medium': '中',
   'widgetsGuide.home.large': '大',
-  'widgetsGuide.home.smallWhat': '今日使えるお金。',
-  'widgetsGuide.home.mediumWhat': '数字の横に「QRをスキャン」と「クイック追加」。',
-  'widgetsGuide.home.largeWhat': '残りの額と、今日の最新の支出。',
+  'widgetsGuide.home.smallWhat':
+    '空に浮かぶ今日の数字、カウントダウンする瓶、または続けて締めた夜。',
+  'widgetsGuide.home.mediumWhat': '空と数字、そしてあなたの瓶。瓶をタップすると開きます。',
+  'widgetsGuide.home.largeWhat': '1か月を太陽で。締めたすべての夜と、予算内だった回数。',
   'widgetsGuide.home.step1': 'ホーム画面の何もないところを、アプリが揺れはじめるまで長押しします。',
   'widgetsGuide.home.step2': '上の隅の「編集」をタップし、「ウィジェットを追加」をタップします。',
   'widgetsGuide.home.step3':
@@ -31,7 +36,7 @@ export const jaWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.lock.card': 'カード',
   'widgetsGuide.lock.step1': 'ロック画面を長押しして、「カスタマイズ」をタップします。',
   'widgetsGuide.lock.step2': '「ロック画面」を選び、時計の下のスペースをタップします。',
-  'widgetsGuide.lock.step3': '6pmをタップして、リングかカードを選びます。',
+  'widgetsGuide.lock.step3': '6pmをタップして、リング、1行の数字、または瓶を選びます。',
 
   'widgetsGuide.control.title': 'コントロールセンター',
   'widgetsGuide.control.what':
@@ -55,7 +60,8 @@ export const jaWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
     '声のほうがいい？ Siriに「6pmで記録」と言って、金額を伝えてください。',
 
   'widgetsGuide.live.title': 'ライブアクティビティ',
-  'widgetsGuide.live.what': 'QR決済の待ち中と、旅行中に自動で表示されます。',
+  'widgetsGuide.live.what':
+    '6時になると締めがロック画面に届きます。QR決済の待ちや旅行中もそこに表示されます。',
   'widgetsGuide.live.step1':
     'QRをスキャンして銀行アプリで支払います。支払いはロック画面で待っています。',
   'widgetsGuide.live.step2': 'お金が出たら「支払い済み」をタップ。自動で閉じます。',
@@ -63,7 +69,10 @@ export const jaWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
     '表示されない？ 設定で6pmを開き、「ライブアクティビティ」をオンにしてください。',
 
   'widgetsGuide.home.addSafe': '「今日使えるお金」を追加',
-  'widgetsGuide.home.addToday': '「今日」を追加',
+  'widgetsGuide.lock.jar': '瓶',
+  'widgetsGuide.home.addStreak': '連続記録を追加',
+  'widgetsGuide.home.addJar': '瓶を追加',
+  'widgetsGuide.home.addToday': '今月を追加',
   'widgetsGuide.tiles.title': 'クイック設定のタイル',
   'widgetsGuide.tiles.what':
     '下にスワイプして一度タップすれば、QRをスキャンかクイック追加が開きます。',
