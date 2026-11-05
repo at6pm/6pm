@@ -21,6 +21,9 @@ export const androidBetaGroupEmail = '6pm-android-beta@googlegroups.com';
  */
 export const playTestUrl = 'https://play.google.com/apps/testing/app.at6pm';
 
+/** 6pm's Google Play listing (package `app.at6pm`), where the share cards send Android phones. */
+export const playStoreUrl = 'https://play.google.com/store/apps/details?id=app.at6pm';
+
 /** The public TestFlight beta, open to anyone with the link until and after the launch. */
 export const testFlightUrl = 'https://testflight.apple.com/join/a8UrvT5P';
 
