@@ -37,8 +37,10 @@ export const importInk = {
   unknownRow: 'rgba(255,133,82,.07)',
   unknownPicking: 'rgba(255,133,82,.16)',
   unknownRing: 'rgba(255,133,82,.2)',
-  /** The "goes in…" card under the labels. */
+  /** The "goes in…" card under the labels, dark in every look, with its light ink and chip. */
   pickCard: '#2e2d55',
+  pickInk: '#fbf7ef',
+  pickChip: 'rgba(251,247,239,.14)',
   /** The button's fill as the lines are written. */
   progress: 'rgba(255,133,82,.35)',
   /** The hold-to-undo ring, and the undo icon before it is held. */
