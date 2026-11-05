@@ -106,7 +106,7 @@ export const viNotifications: { readonly [Key in keyof typeof enNotifications]: 
   'notify.kind.payday': 'Ngày lương',
   'notify.kind.payday.sub': 'Sáng ngày lương về, lúc 08:30',
   'notify.kind.capture': 'Bắt chi tiêu',
-  'notify.kind.capture.sub': 'Khoản bắt được đầu tiên, và cách bắt bỗng im lặng',
+  'notify.kind.capture.sub': 'Khoản đầu tiên, và cách bắt bỗng im lặng',
   'notify.kind.reminders': 'Nhắc bạn đã hẹn',
   'notify.kind.reminders.sub': 'Ai nợ bạn, vào ngày bạn chọn',
   'notify.settings.lockScreen': 'Màn hình khóa',

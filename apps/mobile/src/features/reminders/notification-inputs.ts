@@ -7,6 +7,7 @@ import {
   owedByPerson,
   paydayPreview,
   planReminders,
+  receiptBankOf,
   type CloseNews,
   type LocalDate,
   type LunarTradition,
@@ -80,16 +81,20 @@ export function quietWaysOf(input: {
   const out: QuietWayInput[] = [];
   for (const way of WATCHED_WAYS) {
     if (!input.ways[way]) continue;
-    const days = input.catches.filter((c) => c.source === way).map((c) => c.day);
-    if (days.length === 0) continue;
-    let last = days.reduce((a, b) => (b > a ? b : a));
+    const own = input.catches.filter((c) => c.source === way);
+    const latest = own.reduce<CatchSeen | null>(
+      (a, c) => (a === null || c.at > a.at ? c : a),
+      null,
+    );
+    if (latest === null) continue;
+    let last = latest.day;
     if (way === 'alert' && input.lastAlert && input.lastAlert.day > last) {
       last = input.lastAlert.day;
     }
     out.push({
       way,
       lastCatch: last,
-      bank: way === 'alert' ? (input.lastAlert?.bank ?? null) : null,
+      bank: way === 'alert' ? (input.lastAlert?.bank ?? receiptBankOf(latest.detail)) : null,
       told: input.memory.quietTold[way] ?? null,
     });
   }

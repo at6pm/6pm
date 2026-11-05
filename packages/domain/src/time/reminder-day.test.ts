@@ -201,6 +201,20 @@ describe('at most two a day', () => {
     expect(day[0]).toMatchObject({ kind: 'close', line: { kind: 'jarReady', jarId: 'dalat' } });
   });
 
+  it('names a ready jar on the first coming day only; the days after count down', () => {
+    const news: CloseNews = {
+      ...quiet,
+      jars: [daLat],
+      saved: { dalat: 4_000_000 },
+      tradition: 'tet',
+    };
+    const lines = planReminders(plan({ now: new Date(2027, 0, 31, 9, 0), news }))
+      .filter((n) => n.kind === 'close')
+      .slice(0, 2)
+      .map((n) => (n.kind === 'close' ? n.line.kind : null));
+    expect(lines).toEqual(['jarReady', 'countdown']);
+  });
+
   it('keeps payday and the close reminder, and leaves that close reminder plain', () => {
     const news = { ...quiet, waiting: [{ kind: 'pay' as const, name: null }] };
     const all = planReminders(plan({ payday: '2026-11-30', news }));

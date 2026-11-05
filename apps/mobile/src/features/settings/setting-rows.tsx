@@ -59,6 +59,7 @@ export function SettingRow({
   sub,
   value,
   first = false,
+  subLines = 1,
   onPress,
   trailing,
 }: {
@@ -67,6 +68,8 @@ export function SettingRow({
   readonly sub?: string;
   readonly value?: string;
   readonly first?: boolean;
+  /** Lines the sub may take before it is cut short: one, unless a screen needs its words whole. */
+  readonly subLines?: number;
   readonly onPress?: () => void;
   readonly trailing?: ReactNode;
 }) {
@@ -105,7 +108,7 @@ export function SettingRow({
         <View style={{ flex: 1, gap: 2 }}>
           <Text style={{ ...body(16), color: palette.ink }}>{label}</Text>
           {sub ? (
-            <Text numberOfLines={1} style={{ ...body(12.5), color: palette.inkSoft }}>
+            <Text numberOfLines={subLines} style={{ ...body(12.5), color: palette.inkSoft }}>
               {sub}
             </Text>
           ) : null}

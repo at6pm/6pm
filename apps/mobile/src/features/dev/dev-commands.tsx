@@ -35,6 +35,7 @@ import {
   applyNotifyCommand,
   dumpScheduledNotifications,
   notifyCommandSchema,
+  remindOpenLinesIn,
 } from './dev-notifications';
 
 /**
@@ -113,6 +114,8 @@ const commandSchema = z.object({
   notify: notifyCommandSchema.optional(),
   /** Writes what is scheduled into Documents as `notifications.json`, a moment later. */
   dumpNotifications: z.boolean().optional(),
+  /** "Remind me" on every open owed line, due this many seconds from now (on the real clock). */
+  remindSoon: z.number().int().positive().optional(),
 });
 
 export function DevCommands() {
@@ -155,6 +158,7 @@ export function DevCommands() {
         tet,
         notify,
         dumpNotifications,
+        remindSoon,
         language: speak,
       } = parsed.data;
       if (speak !== undefined) setLanguage(speak);
@@ -245,6 +249,7 @@ export function DevCommands() {
       // Held long enough for a headless screenshot to catch it.
       if (line) setTimeout(() => toast(line, 20_000), 1200);
       if (yearBook) setTimeout(() => void bindYear(yearBook), 1200);
+      if (remindSoon) await remindOpenLinesIn(store, remindSoon);
       if (dumpNotifications) dumpScheduledNotifications();
     };
     void run();

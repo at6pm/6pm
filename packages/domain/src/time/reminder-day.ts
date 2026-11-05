@@ -1,4 +1,4 @@
-import { readyJarFor, type JarReadyReason, type MatchableJar } from '../close/jar-match';
+import { readyJarFor, readyKey, type JarReadyReason, type MatchableJar } from '../close/jar-match';
 import type { Money } from '../money/currency';
 import { closeRemindersAhead, hoursOf, type ClockTime } from './close-time';
 import { addDays, diffDays, hourOf, localDateOf, parts, type LocalDate } from './local-date';
@@ -320,14 +320,20 @@ export function planReminders(input: ReminderPlanInput): PlannedNotification[] {
 
   const planned: PlannedNotification[] = [...kept.values()];
   if (on.close && input.closeAt !== null) {
+    // A jar named ready on one day is shown by that day's close: the days after say their own news.
+    const shown = new Set(input.news.readyShown);
     for (const slot of closeRemindersAhead(now, input.closeAt, input.closedDays)) {
       const paydaySent = kept.get(slot.day)?.kind === 'payday';
+      const line: CloseLine = paydaySent
+        ? { kind: 'plain' }
+        : closeLineFor(slot.day, { ...input.news, readyShown: shown });
+      if (line.kind === 'jarReady') shown.add(readyKey(line.jarId, line.reason));
       planned.push({
         kind: 'close',
         id: `close-reminder:${slot.day}`,
         day: slot.day,
         at: slot.at,
-        line: paydaySent ? { kind: 'plain' } : closeLineFor(slot.day, input.news),
+        line,
       });
     }
   }

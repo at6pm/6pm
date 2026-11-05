@@ -8,6 +8,7 @@ import {
   readNotificationSettings,
   writeNotificationSettings,
 } from '../../data/notification-settings';
+import { openOwedOf, owedActions } from '../../data/owed-actions';
 import { reloadNotificationSettings } from '../reminders/notification-prefs';
 import { scheduledNotifications } from '../reminders/notification-schedule';
 
@@ -55,4 +56,11 @@ export function dumpScheduledNotifications(): void {
       })
       .catch(() => undefined);
   }, DUMP_AFTER_MS);
+}
+
+/** Sets "Remind me" on every open owed line for `seconds` from now, to see one arrive. */
+export async function remindOpenLinesIn(store: MoneyStore, seconds: number): Promise<void> {
+  const ids = openOwedOf(store.getSnapshot()).map((line) => line.id);
+  const at = new Date(Date.now() + seconds * 1000).toISOString();
+  await owedActions(store).setRemindAt(ids, at);
 }
