@@ -506,3 +506,13 @@ fakes behaviour the app cannot fake. Founder review.
 | Notifications | Words without amounts | Every kind has a line with no number, used until amounts are allowed on the lock screen | iOS cannot hide a part of a notification on the lock screen only |
 | Notifications · Android | Their channels | Close reminder and Reminders you set ring with a banner; Payday and Capture ring without one; the quiet "Caught" stays in its own silent channel | Android groups notifications by channel |
 | First catch | 6pm open when it lands | No notification: the catching step (or Today) shows the catch itself; a first catch between 22:00 and 08:00 is not said at all | The rule allows nothing at night but the close |
+| Widgets · Streak | No evening closed in a row yet | "0" over the strata, with only tonight's hatched band | The canvas shows a run of 8 |
+| Widgets · Streak | In a look other than Golden Hour | The look's darkest ground, its accent for the line and the words, its dusk sun setting into the line; Basic's evenings, all one black, are drawn in the system's blue to purple | The canvases draw the streak in Golden Hour only |
+| Widgets · A jar | A jar with no date | The count is how full it is ("62%" over "full"), or what it holds over "saved" with no target | The canvas shows the Tết jar counting down |
+| Widgets · A jar | A dated jar | Counts down to the first of the month it is needed by, and says that day | The canvas shows the Tết jar's mùng 1 only |
+| Widgets · Medium | Fewer than four jars | The jars stand at the right edge, as many as there are | The canvas shows four |
+| Widgets · all | 04:00 to 07:00 | The money day's first stretch, in the sky and the moon of that hour, with the day's words | The canvas starts at 07:00 |
+| Widgets · all | A look other than Golden Hour, through the day | The look's one sun stays high (the small widget's top right, the medium's top centre) and drops to the small widget's corner at six, so it never sits under the number | "Widgets in Looks" draws noon and 18:00 only |
+| Widgets · My month | A month of six weeks | The suns are drawn a little smaller so the six rows fit | The canvas shows a five-week October |
+| Widgets · Lock Screen card | The close's line under the number | "close at 18:00" follows the person's close time | The canvas shows 18:00 |
+| Widgets & controls | Hide amounts | A row with the switch under the look line, in the cell colour, built from the Settings switch | No canvas shows where the switch lives |

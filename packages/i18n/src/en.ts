@@ -6,6 +6,7 @@ import { enShareExt } from './en-share-ext';
 import { enIntents } from './en-intents';
 import { enVoice } from './en-voice';
 import { enSurfaces } from './en-surfaces';
+import { enWidgets } from './en-widgets';
 import { enTogether } from './en-together';
 import { enReceiptEmail } from './en-receipt-email';
 import { enBackup } from './en-backup';
@@ -73,6 +74,7 @@ export const en = {
   ...enCaptureAlerts,
   ...enVoice,
   ...enSurfaces,
+  ...enWidgets,
   ...enTogether,
   ...enReceiptEmail,
   ...enTravel,

@@ -12,8 +12,12 @@
     "sixpm_shortcut_quick_add": "Añadir rápido",
     "sixpm_widget_safe_name": "Puedes gastar hoy",
     "sixpm_widget_safe_description": "Lo que puedes gastar hoy, de un vistazo.",
-    "sixpm_widget_today_name": "Hoy",
-    "sixpm_widget_today_description": "Lo que has gastado hoy, lo más reciente primero.",
+    "sixpm_widget_today_name": "Mi mes",
+    "sixpm_widget_today_description": "El mes en soles: cada noche que cerraste.",
+    "sixpm_widget_streak_name": "Racha",
+    "sixpm_widget_streak_description": "Las noches que cerraste seguidas, cada una con su cielo.",
+    "sixpm_widget_jar_name": "Un bote",
+    "sixpm_widget_jar_description": "Un bote, en cuenta atrás hasta su día.",
     "sixpm_widget_set_up": "Abre 6pm para configurarlo"
   }
 }

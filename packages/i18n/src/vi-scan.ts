@@ -82,6 +82,7 @@ export const viScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.scheme.abapay': 'ABA PAY',
   'scan.scheme.other': 'nước ngoài',
   'scan.content.link': 'Liên kết web',
+  'scan.content.appLink': 'Liên kết ứng dụng',
   'scan.content.wifi': 'Mạng Wi-Fi',
   'scan.content.phone': 'Số điện thoại',
   'scan.content.sms': 'Tin nhắn',

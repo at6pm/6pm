@@ -13,8 +13,12 @@ import { resolveLook } from '../purchases/entitlement';
 import { useMemberCompanionForm } from '../purchases/member-companion-form';
 import { useEntitlement } from '../purchases/purchases-provider';
 import { useTravel } from '../travel/travel-provider';
+import { useNewYear } from '../pots/use-new-year';
+import { pinnedClock, useClock } from '../../ui/theme/clock';
 import { useFirstCatchNotice } from '../reminders/first-catch-notice';
 import { renderCompanions } from './companion-images';
+import { useClosedHistory } from './use-closed-history';
+import { useHideAmounts } from './use-hide-amounts';
 import { contextStrings, hostOf, surfaceContext } from './surface-context';
 import { nativeReach } from './native-reach';
 import { widgetLook } from './surface-palette';
@@ -55,6 +59,12 @@ export function useSurfaceWriters() {
     () => widgetLook({ max, look: worn, serious, ...(ownConfig ? { config: ownConfig } : {}) }),
     [max, worn, ownConfig, serious],
   );
+  const { tradition } = useNewYear();
+  const [hideAmounts] = useHideAmounts();
+  const history = useClosedHistory();
+  const { now } = useClock();
+  // The pinned minute moves the widgets along with the app, in development only.
+  const pinnedNow = __DEV__ && pinnedClock() !== null ? now : null;
   const snapshot = useMemo(
     () =>
       surfaceSnapshot({
@@ -63,9 +73,14 @@ export function useSurfaceWriters() {
         maxLook: max ? worn : null,
         t,
         format,
+        language,
         writtenAt: new Date(),
+        ...(history ? { closedHistory: history.closed, since: history.since } : {}),
+        tradition,
+        hideAmounts,
+        pinnedAt: pinnedNow,
       }),
-    [money, widget, max, worn, t, format],
+    [money, widget, max, worn, t, format, language, history, tradition, hideAmounts, pinnedNow],
   );
   const key = snapshotKey(snapshot);
 

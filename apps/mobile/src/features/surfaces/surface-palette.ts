@@ -53,6 +53,8 @@ export function widgetTokens(palette: Palette): Record<string, string> {
     onAccent: planInk.onAccent,
     pendingInk: planInk.recapWord.light,
     pendingInkDark: planInk.recapWord.dark,
+    // The sky is dark this hour: a look's own ground turns to its night side (Basic).
+    dark: palette.dark ? '1' : '0',
   };
 }
 

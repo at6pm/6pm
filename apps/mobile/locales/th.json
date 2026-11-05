@@ -12,8 +12,12 @@
     "sixpm_shortcut_quick_add": "เพิ่มด่วน",
     "sixpm_widget_safe_name": "วันนี้ใช้ได้",
     "sixpm_widget_safe_description": "ยอดที่คุณใช้ได้วันนี้ ดูได้ในพริบตา",
-    "sixpm_widget_today_name": "วันนี้",
-    "sixpm_widget_today_description": "รายจ่ายวันนี้ ล่าสุดอยู่บนสุด",
+    "sixpm_widget_today_name": "เดือนของฉัน",
+    "sixpm_widget_today_description": "ทั้งเดือนเป็นดวงอาทิตย์: ทุกเย็นที่คุณปิดวัน",
+    "sixpm_widget_streak_name": "สถิติต่อเนื่อง",
+    "sixpm_widget_streak_description": "เย็นที่คุณปิดวันติดต่อกัน แต่ละวันมีฟ้าของมัน",
+    "sixpm_widget_jar_name": "โหลหนึ่งใบ",
+    "sixpm_widget_jar_description": "โหลหนึ่งใบ นับถอยหลังถึงวันของมัน",
     "sixpm_widget_set_up": "เปิด 6pm เพื่อตั้งค่า"
   }
 }
