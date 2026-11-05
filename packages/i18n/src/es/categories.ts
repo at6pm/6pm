@@ -47,4 +47,9 @@ export const esCategories: { readonly [Key in keyof typeof enCategories]: Entry 
   'categories.pack.people': 'Gente y mascotas',
   'categories.pack.money': 'Dinero, regalos y Tết',
   'categories.other': 'Otros',
+  'categories.delete': 'Eliminar',
+  'categories.moved': { one: '{count} movido a {name}', other: '{count} movidos a {name}' },
+  'categories.moveUp': 'Subir',
+  'categories.moveDown': 'Bajar',
+  'categories.dragHint': 'Mantén pulsado y arrastra para ordenar',
 };

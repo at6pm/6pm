@@ -12,7 +12,8 @@ import { sql as addJars } from '../db/migrations/0011-jars';
 import { sql as addImports } from '../db/migrations/0012-imports';
 import { categoryActions, tallyByCategory } from './category-actions';
 import { moneyActions } from './money-actions';
-import { createMoneyStore } from './money-store';
+import { createMoneyStore, dayOf } from './money-store';
+import { DEFAULT_PLAN, writePlan } from './plan-settings';
 import type { SqlDatabase, SqlValue } from './table';
 
 jest.mock('expo-crypto', () => ({ randomUUID: () => crypto.randomUUID() }));
@@ -48,6 +49,7 @@ async function openStore() {
     },
   };
   const store = createMoneyStore(db, '2026-10-10');
+  await writePlan(db, { ...DEFAULT_PLAN, income: 20_000_000 });
   for (const [sort, [id, name]] of [
     ['food', 'Food'],
     ['drinks', 'Drinks'],
@@ -116,7 +118,7 @@ describe('category actions', () => {
     expect(store.getSnapshot().cycleSpends[0]?.categoryId).toBe('drinks');
   });
 
-  it('moves spends to the fallback, drops the rules and refuses the last one', async () => {
+  it('moves a daily category’s spends to one Other, drops its rules and refuses the last one', async () => {
     const store = await openStore();
     const money = moneyActions(store);
     const spend = await money.addSpend({
@@ -130,19 +132,126 @@ describe('category actions', () => {
     await money.rememberMerchant('Phở Thìn', 'food');
     await money.rememberMerchant('Highlands', 'drinks');
     const actions = categoryActions(store);
+    const before = dayOf(store.getSnapshot())?.safe;
 
-    expect((await actions.deleteCategory('food'))?.id).toBe('drinks');
+    const deleted = await actions.deleteCategory('food', 'vi');
+    expect(deleted).toMatchObject({ to: { id: 'other', name: 'Khác', countsDaily: true } });
+    expect(deleted?.moved).toEqual([spend.id]);
+    expect(deleted?.standing).toBe(1);
     const snap = store.getSnapshot();
-    expect(snap.categories.map((c) => c.id)).toEqual(['drinks']);
-    expect(snap.cycleSpends.find((s) => s.id === spend.id)?.categoryId).toBe('drinks');
+    expect(snap.categories.map((c) => c.id)).toEqual(['drinks', 'other']);
+    expect(snap.cycleSpends.find((s) => s.id === spend.id)?.categoryId).toBe('other');
+    expect(dayOf(snap)?.safe).toBe(before);
     expect((await actions.readRules()).map((r) => r.merchant)).toEqual(['Highlands']);
     expect((await store.tables.categories.get('food'))?.archivedAt).not.toBeNull();
+    // What the screen saw at once is what the database now holds.
+    await store.load('2026-10-10');
+    expect(store.getSnapshot().categories.map((c) => c.id)).toEqual(['drinks', 'other']);
 
-    expect(await actions.deleteCategory('drinks')).toBeNull();
-    expect(store.getSnapshot().categories.map((c) => c.id)).toEqual(['drinks']);
+    // A second delete files into the same Other.
+    const again = await actions.deleteCategory('drinks', 'vi');
+    expect(again?.to.id).toBe('other');
+    expect(again?.made).toBeNull();
+    expect(await actions.deleteCategory('other', 'vi')).toBeNull();
+    expect(store.getSnapshot().categories.map((c) => c.id)).toEqual(['other']);
 
     await actions.removeRule('highlands');
     expect(await actions.readRules()).toEqual([]);
+  });
+
+  it('puts a deleted category back exactly with Undo, and Other away again', async () => {
+    const store = await openStore();
+    const money = moneyActions(store);
+    const kept = await money.addSpend({
+      amount: 45_000,
+      categoryId: 'food',
+      merchant: 'Phở Thìn',
+      source: 'manual',
+      status: 'kept',
+      at,
+    });
+    const other = await money.addSpend({
+      amount: 20_000,
+      categoryId: 'drinks',
+      merchant: 'Highlands',
+      source: 'manual',
+      status: 'kept',
+      at,
+    });
+    await money.rememberMerchant('Phở Thìn', 'food');
+    const actions = categoryActions(store);
+    const rulesBefore = await store.tables.rules.all();
+    const before = store.getSnapshot();
+
+    const deleted = await actions.deleteCategory('food', 'en');
+    if (!deleted) throw new Error('not deleted');
+    await actions.restoreCategory(deleted);
+    const after = store.getSnapshot();
+    expect(after.categories).toEqual(before.categories);
+    expect(after.cycleSpends.find((s) => s.id === kept.id)?.categoryId).toBe('food');
+    expect(after.cycleSpends.find((s) => s.id === other.id)?.categoryId).toBe('drinks');
+    expect(await store.tables.rules.all()).toEqual(rulesBefore);
+    expect((await store.tables.categories.get('other'))?.archivedAt).not.toBeNull();
+    expect(dayOf(after)?.safe).toBe(dayOf(before)?.safe);
+  });
+
+  it('moves a not-daily category’s spends to one Other · not daily, never into the day', async () => {
+    const store = await openStore();
+    const actions = categoryActions(store);
+    const work = await actions.saveCategory({
+      name: 'Work',
+      icon: 'work',
+      hue: 85,
+      countsDaily: false,
+    });
+    if (!work) throw new Error('not made');
+    const money = moneyActions(store);
+    await money.addSpend({
+      amount: 300_000,
+      categoryId: work.id,
+      merchant: 'Taxi',
+      source: 'manual',
+      status: 'kept',
+      at,
+    });
+    const before = dayOf(store.getSnapshot())?.safe;
+    const deleted = await actions.deleteCategory(work.id, 'en');
+    expect(deleted?.to).toMatchObject({
+      id: 'other-not-daily',
+      name: 'Other · not daily',
+      countsDaily: false,
+    });
+    expect(dayOf(store.getSnapshot())?.safe).toBe(before);
+    // Nothing to move makes nothing.
+    const empty = await actions.saveCategory({
+      name: 'Spare',
+      icon: 'pets',
+      hue: 1,
+      countsDaily: true,
+    });
+    const gone = await actions.deleteCategory(empty?.id ?? '', 'en');
+    expect(gone).toMatchObject({ standing: 0, made: null });
+    expect(store.getSnapshot().categories.some((c) => c.id === 'other')).toBe(false);
+  });
+
+  it('keeps a new order, in the snapshot at once and in the database', async () => {
+    const store = await openStore();
+    const actions = categoryActions(store);
+    const pets = await actions.saveCategory({
+      name: 'Pets',
+      icon: 'pets',
+      hue: 200,
+      countsDaily: true,
+    });
+    const id = pets?.id ?? '';
+    await actions.reorderCategories([id, 'food', 'drinks']);
+    expect(store.getSnapshot().categories.map((c) => c.id)).toEqual([id, 'food', 'drinks']);
+    await store.load('2026-10-10');
+    expect(store.getSnapshot().categories.map((c) => [c.id, c.sort])).toEqual([
+      [id, 0],
+      ['food', 1],
+      ['drinks', 2],
+    ]);
   });
 });
 

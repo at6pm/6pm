@@ -41,4 +41,9 @@ export const jaCategories: { readonly [Key in keyof typeof enCategories]: Entry 
   'categories.pack.people': '人とペット',
   'categories.pack.money': 'お金、贈り物、テト',
   'categories.other': 'その他',
+  'categories.delete': '削除',
+  'categories.moved': { other: '{count}件を{name}に移しました' },
+  'categories.moveUp': '上へ',
+  'categories.moveDown': '下へ',
+  'categories.dragHint': '長押ししてドラッグで並べ替え',
 };

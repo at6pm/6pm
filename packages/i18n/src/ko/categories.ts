@@ -40,4 +40,9 @@ export const koCategories: { readonly [Key in keyof typeof enCategories]: Entry 
   'categories.pack.people': '사람·반려동물',
   'categories.pack.money': '돈·선물·설',
   'categories.other': '기타',
+  'categories.delete': '삭제',
+  'categories.moved': { other: '{count}건을 {name}(으)로 옮겼어요' },
+  'categories.moveUp': '위로',
+  'categories.moveDown': '아래로',
+  'categories.dragHint': '길게 눌러 끌면 순서가 바뀌어요',
 };

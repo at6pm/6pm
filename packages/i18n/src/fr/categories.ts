@@ -48,4 +48,12 @@ export const frCategories: { readonly [Key in keyof typeof enCategories]: Entry 
   'categories.pack.people': 'Proches et animaux',
   'categories.pack.money': 'Argent, cadeaux et Tết',
   'categories.other': 'Autre',
+  'categories.delete': 'Supprimer',
+  'categories.moved': {
+    one: '{count} déplacée vers {name}',
+    other: '{count} déplacées vers {name}',
+  },
+  'categories.moveUp': 'Monter',
+  'categories.moveDown': 'Descendre',
+  'categories.dragHint': 'Maintenez puis glissez pour réordonner',
 };

@@ -41,4 +41,9 @@ export const zhHansCategories: { readonly [Key in keyof typeof enCategories]: En
   'categories.pack.people': '家人和宠物',
   'categories.pack.money': '钱、礼物和春节',
   'categories.other': '其他',
+  'categories.delete': '删除',
+  'categories.moved': { other: '已将 {count} 笔移到{name}' },
+  'categories.moveUp': '上移',
+  'categories.moveDown': '下移',
+  'categories.dragHint': '按住拖动以排序',
 };
