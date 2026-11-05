@@ -40,7 +40,6 @@ export const jaPotsPlan: { readonly [Key in keyof typeof enPotsPlan]: Entry } = 
   'potsPlan.pots.title': '貯金びん',
   'potsPlan.pots.eachPayday': '給料日ごとに{amount}',
   'potsPlan.pots.with': '{name}と',
-  'potsPlan.pots.newJar': '新しい貯金びん',
   'potsPlan.maths.title': '今日の計算',
   'potsPlan.maths.free': '今月の自由分',
   'potsPlan.maths.before': '6pm以前',

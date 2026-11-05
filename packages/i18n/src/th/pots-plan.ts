@@ -40,7 +40,6 @@ export const thPotsPlan: { readonly [Key in keyof typeof enPotsPlan]: Entry } = 
   'potsPlan.pots.title': 'กระปุก',
   'potsPlan.pots.eachPayday': '{amount} ทุกเงินเดือนออก',
   'potsPlan.pots.with': 'กับ {name}',
-  'potsPlan.pots.newJar': 'กระปุกใหม่',
   'potsPlan.maths.title': 'คำนวณวันนี้',
   'potsPlan.maths.free': 'อิสระเดือนนี้',
   'potsPlan.maths.before': 'ก่อนใช้ 6pm',

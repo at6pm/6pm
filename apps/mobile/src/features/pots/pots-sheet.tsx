@@ -25,6 +25,7 @@ import { body, display, leading, tabular } from '../../ui/type/fonts';
 import { sharedPotRoute } from '../together/shared-jar';
 import { Jar } from './jar';
 import { alpha, FULL_TEXT, jarColours, PAST_DATE_WARM } from './jar-colours';
+import { NewJarItem } from './jar-outline';
 import { flyFrom, JarFlightOrigin, useJarAwayStyle, type FlightOrigin } from './jar-flight';
 import { listLine, savedWords, useJarFormat } from './jar-words';
 import { newJarRoute, potRoute } from './pot-routes';
@@ -35,7 +36,7 @@ const grow = Easing.bezier(...curves.enter);
 /**
  * All pots (Pots canvas, A2), opened from the shelf's header: "+" for a new jar, the plan's one
  * line in big type with a bar of the jars' colours sized by what each takes per payday, one list
- * with Future you first, and the bank line, which appears only here.
+ * with Future you first and New jar last, and the bank line, which appears only here.
  */
 export function PotsSheet() {
   const { palette } = useTheme();
@@ -140,6 +141,14 @@ export function PotsSheet() {
               {jars.all.map((jar, n) => (
                 <PotRow key={`${jar.kind}:${jar.id}`} jar={jar} first={n === 0} />
               ))}
+              <NewJarItem
+                row
+                locked={jars.locked}
+                jarWidth={32}
+                jarHeight={42}
+                gap={12}
+                label={body(16, 600)}
+              />
             </View>
             <View
               style={{

@@ -40,7 +40,6 @@ export const viPotsPlan: { readonly [Key in keyof typeof enPotsPlan]: Entry } = 
   'potsPlan.pots.title': 'Lọ',
   'potsPlan.pots.eachPayday': '{amount} mỗi kỳ lương',
   'potsPlan.pots.with': 'Cùng {name}',
-  'potsPlan.pots.newJar': 'Lọ mới',
   'potsPlan.maths.title': 'Phép tính hôm nay',
   'potsPlan.maths.free': 'Tự do tháng này',
   'potsPlan.maths.before': 'Trước khi dùng 6pm',

@@ -38,7 +38,6 @@ export const enPotsPlan = {
   'potsPlan.pots.title': 'Pots',
   'potsPlan.pots.eachPayday': '{amount} each payday',
   'potsPlan.pots.with': 'With {name}',
-  'potsPlan.pots.newJar': 'New jar',
   'potsPlan.maths.title': 'Today’s maths',
   'potsPlan.maths.free': 'Free this month',
   'potsPlan.maths.before': 'Before you joined',

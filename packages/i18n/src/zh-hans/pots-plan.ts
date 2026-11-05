@@ -40,7 +40,6 @@ export const zhHansPotsPlan: { readonly [Key in keyof typeof enPotsPlan]: Entry 
   'potsPlan.pots.title': '存钱罐',
   'potsPlan.pots.eachPayday': '每个发薪日 {amount}',
   'potsPlan.pots.with': '和 {name} 一起',
-  'potsPlan.pots.newJar': '新存钱罐',
   'potsPlan.maths.title': '今天怎么算',
   'potsPlan.maths.free': '本月可自由花',
   'potsPlan.maths.before': '用 6pm 之前',

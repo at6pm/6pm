@@ -40,7 +40,6 @@ export const koPotsPlan: { readonly [Key in keyof typeof enPotsPlan]: Entry } = 
   'potsPlan.pots.title': '저금통',
   'potsPlan.pots.eachPayday': '월급날마다 {amount}',
   'potsPlan.pots.with': '함께 · {name}',
-  'potsPlan.pots.newJar': '새 저금통',
   'potsPlan.maths.title': '오늘의 계산',
   'potsPlan.maths.free': '이번 달 여윳돈',
   'potsPlan.maths.before': '6pm 이전',
