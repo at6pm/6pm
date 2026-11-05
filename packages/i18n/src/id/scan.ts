@@ -84,6 +84,7 @@ export const idScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.scheme.abapay': 'ABA PAY',
   'scan.scheme.other': 'luar negeri',
   'scan.content.link': 'Tautan web',
+  'scan.content.appLink': 'Tautan aplikasi',
   'scan.content.wifi': 'Jaringan Wi-Fi',
   'scan.content.phone': 'Nomor telepon',
   'scan.content.sms': 'Pesan teks',

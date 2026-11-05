@@ -83,6 +83,7 @@ export const zhHansScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.scheme.abapay': 'ABA PAY',
   'scan.scheme.other': '境外',
   'scan.content.link': '网页链接',
+  'scan.content.appLink': '应用链接',
   'scan.content.wifi': 'Wi-Fi 网络',
   'scan.content.phone': '电话号码',
   'scan.content.sms': '短信',

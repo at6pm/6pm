@@ -85,6 +85,7 @@ export const frScan: { readonly [Key in keyof typeof enScan]: Entry } = {
   'scan.scheme.abapay': 'ABA PAY',
   'scan.scheme.other': 'étranger',
   'scan.content.link': 'Lien web',
+  'scan.content.appLink': 'Lien d’app',
   'scan.content.wifi': 'Réseau Wi-Fi',
   'scan.content.phone': 'Numéro de téléphone',
   'scan.content.sms': 'SMS',
