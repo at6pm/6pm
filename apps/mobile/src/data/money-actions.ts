@@ -558,6 +558,8 @@ export function moneyActions(store: MoneyStore, photos: SpendPhotos = NO_SPEND_P
     /** "Always file Circle K as Shopping": the next catch from this merchant gets this category. */
     rememberMerchant: (merchant: string, categoryId: string) =>
       inTurn(async () => {
+        // A spend with no merchant has nothing to learn; an empty key is not a valid rule.
+        if (merchant.trim() === '') return;
         const existing = await tables.rules.get(merchantKeyOf(merchant));
         await tables.rules.put(learnedRule(existing, merchant, categoryId));
       }),
