@@ -23,31 +23,32 @@
           "diary",
           "cash"
         ],
-        "promoText": "Launching 6 Nov at 18:00. Catch every spend all day, swipe once at six, wake up to one number you can safely spend. Free, private, no bank login.",
+        "promoText": "Catch every spend all day, swipe once at six, wake up to one number you can safely spend. Free, private, no bank login.",
         "marketingUrl": "https://at6pm.app",
         "supportUrl": "https://at6pm.app",
         "privacyPolicyUrl": "https://at6pm.app/privacy"
       },
       "vi": {
-        "title": "6pm: Safe to Spend",
-        "subtitle": "Quản lý chi tiêu mỗi ngày",
+        "title": "6pm: Quản lý chi tiêu",
+        "subtitle": "Sổ thu chi tự ghi, chốt lúc 6h",
         "description": "Phần lớn app chi tiêu cần một giờ mỗi tuần. 6pm chỉ cần một phút mỗi ngày. Cả ngày, app tự ghi: VietQR, biên lai, email từ 31 ngân hàng và ví, giọng nói. Sáu giờ tối, bạn vuốt một lần để chốt ngày. Sáng mai, chỉ một con số: hôm nay tiêu được bao nhiêu.\n\nBIẾT HÔM NAY TIÊU ĐƯỢC BAO NHIÊU\nMột con số trên màn hình Hôm nay, tính từ lương, hoá đơn và những gì bạn đã tiêu. Hôm nay tiêu ít hơn, ngày mai con số lớn hơn.\n\nCHỐT NGÀY BẰNG MỘT CÚ VUỐT\nSáu giờ tối, 6pm cho bạn xem những gì đã ghi. Giữ, sửa hoặc đánh dấu không phải của bạn, rồi vuốt một lần. Ngày đã chốt.\n\nSÁU CÁCH GHI, MỘT HỘP THƯ\nQuét VietQR, chụp biên lai, chuyển tiếp email ngân hàng, Apple Pay, giọng nói và bàn phím nhanh. Mọi khoản về một hộp thư để chốt ngày.\n\nHỎI TRƯỚC KHI TIÊU\nThứ Bảy đi ăn 2 triệu có được không? Hỏi 6pm trả lời từ chính con số của bạn.\n\nKẾ HOẠCH CHI TIÊU TRẢ CHO BẠN TRƯỚC\nHoá đơn được để riêng, các hũ được nạp mỗi kỳ lương trước khi tính tiền được tiêu.\n\nNHẬT KÝ CHI TIÊU BẠN SẼ GIỮ ĐƯỢC\nMỗi ngày đã chốt là một trang. Nhìn lại cả tháng trong một cái liếc.\n\nGIAO DIỆN VÀ BẠN ĐỒNG HÀNH\nMười một giao diện, từ Sơn Mài đến Neon Alley, đổi theo giờ thật từ bình minh đến nửa đêm. Sáu bạn đồng hành ở bên bạn, và icon trên màn hình chính có thể theo bạn đồng hành bạn chọn.\n\nRIÊNG TƯ TỪ ĐẦU\nKhông bao giờ hỏi mật khẩu ngân hàng. Dữ liệu được mã hoá trên iPhone. Hỏi 6pm có thể chạy ngay trên máy, không cần mạng. 6pm là mã nguồn mở.\n\n6pm miễn phí. 6pm Max mở mọi giao diện, Hỏi và hũ không giới hạn, chế độ Du lịch, Sổ năm, sao lưu mã hoá và xuất dữ liệu, cùng widget theo giao diện của bạn.\n\n6pm không liên kết với, và không được bảo trợ bởi, bất kỳ ngân hàng, ví điện tử hay mạng thanh toán nào. Tên ngân hàng và ví thuộc về chủ sở hữu của chúng.\n\nĐiều khoản sử dụng: https://at6pm.app/vi/terms\nChính sách quyền riêng tư: https://at6pm.app/vi/privacy",
         "keywords": [
           "ngân sách",
           "tiết kiệm",
-          "thu chi",
-          "sổ",
           "ghi chép",
+          "tiền",
+          "cá nhân",
+          "tài chính",
+          "hũ",
+          "lọ",
           "vietqr",
           "hoá đơn",
           "biên lai",
+          "lương",
           "ví",
-          "hũ",
-          "du lịch",
-          "cặp đôi",
-          "tài chính"
+          "kế hoạch"
         ],
-        "promoText": "Ra mắt 18:00 ngày 6/11. Tự ghi mọi khoản chi, vuốt một lần lúc sáu giờ, sáng mai chỉ một con số để tiêu. Miễn phí, riêng tư, không đăng nhập ngân hàng.",
+        "promoText": "Tự ghi mọi khoản chi, vuốt một lần lúc sáu giờ, sáng mai chỉ một con số để tiêu. Miễn phí, riêng tư, không đăng nhập ngân hàng.",
         "marketingUrl": "https://at6pm.app/vi",
         "supportUrl": "https://at6pm.app/vi",
         "privacyPolicyUrl": "https://at6pm.app/vi/privacy"
