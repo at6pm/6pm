@@ -53,6 +53,24 @@ describe('Max pricing from the store’s prices', () => {
     expect(anyTrialDays(both)).toBe(7);
     expect(anyTrialDays({ looks: {}, max: {} })).toBeNull();
   });
+
+  it('leaves Max bought once out of the saving, the quote and the trial', () => {
+    const lifetime: MaxOffer = {
+      plan: 'lifetime',
+      productId: 'ai.sixpm.app.max.lifetime',
+      priceText: '799.000₫',
+      price: 799_000,
+      perMonthText: null,
+      perMonth: null,
+      trialDays: null,
+    };
+    const all: Offerings = { looks: {}, max: { monthly, yearly, lifetime } };
+    expect(yearlySavingPercent(all)).toBe(33);
+    expect(quotedOffer(all)).toBe(yearly);
+    expect(quotedOffer({ looks: {}, max: { lifetime } })).toBeNull();
+    expect(trialDaysFor(all, 'lifetime')).toBeNull();
+    expect(anyTrialDays({ looks: {}, max: { lifetime } })).toBeNull();
+  });
 });
 
 describe('what a Max customer is told about their plan', () => {
@@ -75,6 +93,11 @@ describe('what a Max customer is told about their plan', () => {
       kind: 'ends',
       at: 300,
     });
+  });
+  it('tells someone who bought Max once that it is theirs, with no date', () => {
+    const once = { ...active, plan: 'lifetime' as const, renewsAt: null, willRenew: false };
+    expect(maxStatus(once)).toEqual({ kind: 'forGood' });
+    expect(maxStatus({ ...once, active: false })).toBeNull();
   });
   it('says nothing when Max is off or the store gave no date', () => {
     expect(maxStatus({ ...active, active: false })).toBeNull();

@@ -31,8 +31,8 @@ import { MAX_CREAM, MAX_FONT, MAX_SOFT } from './max-colours';
  * The 6pm Max sheet (prototype `App:1044-1134`, its states in `Max States`). It opens for a
  * reason (`from`), which picks the hero's picture and the headline and leads the tiles. Opened by
  * itself after a close (`closed`), the headline is the days closed so far. Prices, the yearly
- * saving and the trial all come from the store; what the store has not told us is left out, and
- * the button waits.
+ * saving, the trial and whether Max can be bought once all come from the store; what the store
+ * has not told us is left out, and the button waits.
  */
 export function MaxSheet() {
   const router = useRouter();
@@ -135,20 +135,24 @@ export function MaxSheet() {
     ? t('max.cta.done')
     : busy || loading
       ? t('max.cta.waiting')
-      : trial !== null
-        ? t('max.cta.trial', { count: trial })
-        : t('max.cta.subscribe');
+      : plan === 'lifetime'
+        ? t('max.cta.lifetime')
+        : trial !== null
+          ? t('max.cta.trial', { count: trial })
+          : t('max.cta.subscribe');
   const ctaOff = !on && (busy || !offer);
   const terms = on
     ? (statusLine ?? '')
     : offer
-      ? trial !== null
-        ? plan === 'yearly'
-          ? t('max.terms.trialYear', { count: trial, price: offer.priceText })
-          : t('max.terms.trialMonth', { count: trial, price: offer.priceText })
-        : plan === 'yearly'
-          ? t('max.terms.year', { price: offer.priceText })
-          : t('max.terms.month', { price: offer.priceText })
+      ? plan === 'lifetime'
+        ? t('max.terms.lifetime', { price: offer.priceText })
+        : trial !== null
+          ? plan === 'yearly'
+            ? t('max.terms.trialYear', { count: trial, price: offer.priceText })
+            : t('max.terms.trialMonth', { count: trial, price: offer.priceText })
+          : plan === 'yearly'
+            ? t('max.terms.year', { price: offer.priceText })
+            : t('max.terms.month', { price: offer.priceText })
       : offeringsStatus === 'unavailable'
         ? t('max.terms.storeOff')
         : '';
@@ -236,6 +240,7 @@ export function MaxSheet() {
         >
           <MaxFooter
             on={on}
+            manageable={customer.max.plan !== 'lifetime'}
             plan={plan}
             offerings={offerings}
             loading={loading}

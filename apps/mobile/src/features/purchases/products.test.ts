@@ -1,6 +1,12 @@
 import { describe, expect, it } from '@jest/globals';
 
-import { daysOfPeriod, lookOfProduct, maxPlanOfProduct, storeProductOf } from './products';
+import {
+  daysOfPeriod,
+  isSubscriptionProduct,
+  lookOfProduct,
+  maxPlanOfProduct,
+  storeProductOf,
+} from './products';
 
 describe('store identifiers', () => {
   it('reads a Google Play subscription named with its base plan as the product', () => {
@@ -14,6 +20,14 @@ describe('store identifiers', () => {
     expect(lookOfProduct('ai.sixpm.app.look.neon')).toBe('neon');
     expect(maxPlanOfProduct('ai.sixpm.app.look.neon')).toBeNull();
     expect(lookOfProduct('something.else')).toBeNull();
+  });
+
+  it('knows Max bought once from the plans that renew', () => {
+    expect(maxPlanOfProduct('ai.sixpm.app.max.lifetime')).toBe('lifetime');
+    expect(isSubscriptionProduct('ai.sixpm.app.max.lifetime')).toBe(false);
+    expect(isSubscriptionProduct('ai.sixpm.app.max.yearly')).toBe(true);
+    expect(isSubscriptionProduct('ai.sixpm.app.max.monthly:monthly')).toBe(true);
+    expect(isSubscriptionProduct('ai.sixpm.app.look.neon')).toBe(false);
   });
 });
 
