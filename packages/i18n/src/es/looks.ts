@@ -83,6 +83,8 @@ export const esLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   'max.head.buddy': 'Conoce a tus compañeros Max.',
   'max.sub.buddy':
     'El sol de medianoche con su anillo, sus lunas y su brillo, y Hạc Giấy, una grulla de papel rojo.',
+  'max.head.closed': { one: '{count} día cerrado.', other: '{count} días cerrados.' },
+  'max.sub.closed': 'Esto es lo que añade 6pm Max. El cierre sigue gratis de todos modos.',
   'max.head.on': 'Tienes Max.',
   'max.sub.on': 'Todo lo de abajo está desbloqueado.',
   'max.tile.looks': 'Todos los estilos',

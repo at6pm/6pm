@@ -84,6 +84,8 @@ export const deLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   'max.head.buddy': 'Lern deine Max-Begleiter kennen.',
   'max.sub.buddy':
     'Die Mitternachtssonne mit Ring, Monden und Funkeln, und Hạc Giấy, ein Kranich aus rotem Papier.',
+  'max.head.closed': { one: '{count} Tag abgeschlossen.', other: '{count} Tage abgeschlossen.' },
+  'max.sub.closed': 'Das kommt mit 6pm Max dazu. Der Tagesabschluss bleibt so oder so gratis.',
   'max.head.on': 'Du hast Max.',
   'max.sub.on': 'Alles hier unten ist freigeschaltet.',
   'max.tile.looks': 'Jeder Look',

@@ -10,7 +10,8 @@ import * as StoreReview from 'expo-store-review';
 
 import { sql as createSettings } from '../../db/migrations/0001-create-settings';
 import type { SqlDatabase, SqlValue } from '../../data/table';
-import { askForRatingAfterClose, ratingAskSettled } from './rating-ask';
+import { closeFollowUpSettled, followUpAfterClose } from '../close/close-follow-up';
+import { ratingAskFor } from './rating-ask';
 import { RATING_ASKED_KEY, readRatingAsked, recordRatingAsked } from './rating-store';
 
 // A real SQLite database in memory, from Node's own module (see look-settings.test.ts).
@@ -39,9 +40,9 @@ const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
 
 /** A close finishing, then the screen beneath finishing appearing. */
 async function finishClose(db: SqlDatabase, number = inside, closedDays = 3) {
-  askForRatingAfterClose({ db, number, closedDays: () => Promise.resolve(closedDays) });
+  followUpAfterClose(ratingAskFor({ db, number, closedDays: () => Promise.resolve(closedDays) }));
   await flush();
-  ratingAskSettled();
+  closeFollowUpSettled();
   await flush();
 }
 
@@ -57,11 +58,11 @@ afterEach(() => {
 describe('the rating ask after a close', () => {
   it('asks once the screen beneath settles, and remembers the version it asked in', async () => {
     const { db } = openDb();
-    askForRatingAfterClose({ db, number: inside, closedDays: () => Promise.resolve(3) });
+    followUpAfterClose(ratingAskFor({ db, number: inside, closedDays: () => Promise.resolve(3) }));
     await flush();
     // Nothing comes up while the Close is still leaving.
     expect(request).not.toHaveBeenCalled();
-    ratingAskSettled();
+    closeFollowUpSettled();
     await flush();
     expect(request).toHaveBeenCalledTimes(1);
     const asked = await readRatingAsked(db);
@@ -96,16 +97,16 @@ describe('the rating ask after a close', () => {
     const { db } = openDb();
     const start = Date.now();
     const clock = jest.spyOn(Date, 'now').mockReturnValue(start);
-    askForRatingAfterClose({ db, number: inside, closedDays: () => Promise.resolve(3) });
+    followUpAfterClose(ratingAskFor({ db, number: inside, closedDays: () => Promise.resolve(3) }));
     await flush();
     clock.mockReturnValue(start + 60_000);
-    ratingAskSettled();
+    closeFollowUpSettled();
     await flush();
     expect(request).not.toHaveBeenCalled();
   });
 
   it('does nothing when a screen settles with no close behind it', async () => {
-    ratingAskSettled();
+    closeFollowUpSettled();
     await flush();
     expect(request).not.toHaveBeenCalled();
   });

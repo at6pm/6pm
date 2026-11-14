@@ -16,7 +16,7 @@ import { useCompanionToast } from '../companion/use-companion-toast';
 import { useLookSettings, useLookSettingsStore } from '../looks/look-settings-provider';
 import { canUseCompanion, canUseLook } from './entitlement';
 import { MaxHero } from './max-hero';
-import { parseMaxCompanion, parseMaxFrom } from './max-context';
+import { parseMaxClosedDays, parseMaxCompanion, parseMaxFrom } from './max-context';
 import { MaxFooter } from './max-footer';
 import { MaxMakers } from './max-makers';
 import { MaxTiles } from './max-tiles';
@@ -29,13 +29,17 @@ import { MAX_CREAM, MAX_FONT, MAX_SOFT } from './max-colours';
 
 /**
  * The 6pm Max sheet (prototype `App:1044-1134`, its states in `Max States`). It opens for a
- * reason (`from`), which picks the hero's picture and the headline and leads the tiles. Prices, the yearly saving and the trial all come from the store; what
- * the store has not told us is left out, and the button waits.
+ * reason (`from`), which picks the hero's picture and the headline and leads the tiles. Opened by
+ * itself after a close (`closed`), the headline is the days closed so far. Prices, the yearly
+ * saving and the trial all come from the store; what the store has not told us is left out, and
+ * the button waits.
  */
 export function MaxSheet() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ from?: string; companion?: string }>();
+  const params = useLocalSearchParams<{ from?: string; companion?: string; closed?: string }>();
   const from = parseMaxFrom(params.from);
+  /** The days closed so far, when a finished close opened the sheet. */
+  const closedDays = parseMaxClosedDays(params.closed);
   /** A Max companion tapped in the picker: the hero shows it, and buying Max puts it on. */
   const wanted = parseMaxCompanion(params.companion);
   const companionStore = useCompanionSettingsStore();
@@ -114,14 +118,18 @@ export function MaxSheet() {
 
   const head = on
     ? t('max.head.on')
-    : from === 'looks'
-      ? t('max.head.looks')
-      : t(`max.head.${from}`);
+    : closedDays !== null
+      ? t('max.head.closed', { count: closedDays })
+      : from === 'looks'
+        ? t('max.head.looks')
+        : t(`max.head.${from}`);
   const sub = on
     ? t('max.sub.on')
-    : from === 'looks'
-      ? t('max.sub.looks', { count: PAID_LOOKS.length })
-      : t(`max.sub.${from}`);
+    : closedDays !== null
+      ? t('max.sub.closed')
+      : from === 'looks'
+        ? t('max.sub.looks', { count: PAID_LOOKS.length })
+        : t(`max.sub.${from}`);
 
   const cta = on
     ? t('max.cta.done')

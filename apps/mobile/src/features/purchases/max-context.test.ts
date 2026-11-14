@@ -1,6 +1,13 @@
 import { describe, expect, it } from '@jest/globals';
 
-import { MAX_TILES, parseMaxFrom, tileOrder, tileRows, welcomeAction } from './max-context';
+import {
+  MAX_TILES,
+  parseMaxClosedDays,
+  parseMaxFrom,
+  tileOrder,
+  tileRows,
+  welcomeAction,
+} from './max-context';
 
 describe('where Max was offered from', () => {
   it('reads the route parameter, and opens on the looks for anything else', () => {
@@ -8,6 +15,16 @@ describe('where Max was offered from', () => {
     expect(parseMaxFrom(['pots', 'ask'])).toBe('pots');
     expect(parseMaxFrom('nonsense')).toBe('looks');
     expect(parseMaxFrom(undefined)).toBe('looks');
+  });
+
+  it('reads the days closed only from a sheet a close opened', () => {
+    expect(parseMaxClosedDays('3')).toBe(3);
+    expect(parseMaxClosedDays(['12', '3'])).toBe(12);
+    expect(parseMaxClosedDays(undefined)).toBeNull();
+    expect(parseMaxClosedDays('0')).toBeNull();
+    expect(parseMaxClosedDays('-3')).toBeNull();
+    expect(parseMaxClosedDays('3.5')).toBeNull();
+    expect(parseMaxClosedDays('three')).toBeNull();
   });
 });
 

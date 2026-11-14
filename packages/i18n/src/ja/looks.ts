@@ -82,6 +82,8 @@ export const jaLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   'max.sub.icons': '無料版は36個。Maxなら8パックすべて。',
   'max.head.buddy': 'Maxの相棒に会おう。',
   'max.sub.buddy': '輪っかと月ときらめきをまとった真夜中の太陽と、赤い紙で折った鶴のHạc Giấy。',
+  'max.head.closed': { other: '{count}日、締めました。' },
+  'max.sub.closed': '6pm Maxで増えるのはこちら。締めはどちらでもずっと無料です。',
   'max.head.on': 'Max利用中です。',
   'max.sub.on': '下のすべてが解放されています。',
   'max.tile.looks': '着せかえ全部',
