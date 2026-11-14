@@ -55,6 +55,27 @@ describe('customerFromStore', () => {
     expect(max).toMatchObject({ plan: 'monthly', renewsAt: null, endsAt: 1_800_000_000_000 });
   });
 
+  it('reads Max bought once as Max with no trial and no dates, and keeps it between launches', () => {
+    const once = entitlement({
+      willRenew: false,
+      productIdentifier: 'ai.sixpm.app.max.lifetime',
+      expirationDateMillis: null,
+    });
+    const customer = customerFromStore(store({ entitlements: { active: { max: once }, all: {} } }));
+    expect(customer.max).toEqual({
+      active: true,
+      plan: 'lifetime',
+      inTrial: false,
+      trialEndsAt: null,
+      renewsAt: null,
+      endsAt: null,
+      willRenew: false,
+    });
+    // Kept offline for years, it is still Max: there is no end to pass.
+    const later = Date.UTC(2040, 0, 1);
+    expect(parseCustomer(serializeCustomer(customer), later).max.plan).toBe('lifetime');
+  });
+
   it('gives an earlier 6pm subscriber Max through the same entitlement', () => {
     const v1 = entitlement({ productIdentifier: 'growth_monthly' });
     const { max } = customerFromStore(store({ entitlements: { active: { max: v1 }, all: {} } }));

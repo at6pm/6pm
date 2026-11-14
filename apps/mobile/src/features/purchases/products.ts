@@ -28,17 +28,25 @@ export function lookEntitlementId(look: PaidLookId): string {
   return `look_${look}`;
 }
 
-export const MAX_PLANS = ['monthly', 'yearly'] as const;
+export const MAX_PLANS = ['monthly', 'yearly', 'lifetime'] as const;
 export type MaxPlan = (typeof MAX_PLANS)[number];
 
-/** Max, one month or one year, in the existing "Premium Subscriptions" group. */
+/** The plans that renew: subscriptions in the existing "Premium Subscriptions" group. */
+export const MAX_SUBSCRIPTIONS = ['monthly', 'yearly'] as const satisfies readonly MaxPlan[];
+export type MaxSubscription = (typeof MAX_SUBSCRIPTIONS)[number];
+
+/**
+ * Max by the month or the year, and Max bought once: a one-time purchase (a non-consumable) that
+ * never renews. The store decides where each is sold; a plan it does not list is not offered.
+ */
 export const MAX_PRODUCTS: Readonly<Record<MaxPlan, string>> = {
   monthly: `${STORE_PREFIX}.max.monthly`,
   yearly: `${STORE_PREFIX}.max.yearly`,
+  lifetime: `${STORE_PREFIX}.max.lifetime`,
 };
 
 /**
- * The one entitlement Max is. RevenueCat grants it for both Max products and for the earlier
+ * The one entitlement Max is. RevenueCat grants it for every Max product and for the earlier
  * subscriptions, so the app only ever asks for this and never for a product identifier.
  */
 export const MAX_ENTITLEMENT = 'max';
@@ -65,6 +73,12 @@ export function lookOfProduct(productId: string): PaidLookId | null {
 export function maxPlanOfProduct(productId: string): MaxPlan | null {
   const product = storeProductOf(productId);
   return MAX_PLANS.find((plan) => MAX_PRODUCTS[plan] === product) ?? null;
+}
+
+/** Whether the store sells this product as a subscription; everything else is bought once. */
+export function isSubscriptionProduct(productId: string): boolean {
+  const plan = maxPlanOfProduct(productId);
+  return plan !== null && (MAX_SUBSCRIPTIONS as readonly MaxPlan[]).includes(plan);
 }
 
 const DAYS_IN: Readonly<Record<string, number>> = { D: 1, W: 7, M: 30, Y: 365 };
