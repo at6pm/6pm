@@ -82,6 +82,8 @@ export const koLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   'max.sub.icons': '무료는 36개. Max는 여덟 팩 전부.',
   'max.head.buddy': 'Max 짝꿍을 만나 봐요.',
   'max.sub.buddy': '고리와 달, 반짝임을 두른 한밤의 해, 그리고 빨간 종이로 접은 학 Hạc Giấy.',
+  'max.head.closed': { other: '{count}일 마감했어요.' },
+  'max.sub.closed': '6pm Max로 더해지는 것들이에요. 마감은 어느 쪽이든 계속 무료예요.',
   'max.head.on': 'Max 이용 중이에요.',
   'max.sub.on': '아래 전부 잠금 해제됐어요.',
   'max.tile.looks': '모든 룩',

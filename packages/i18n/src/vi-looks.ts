@@ -81,6 +81,8 @@ export const viLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   'max.head.buddy': 'Gặp các bạn đồng hành Max.',
   'max.sub.buddy':
     'Mặt trời nửa đêm với vành đai, mặt trăng và ánh lấp lánh, cùng Hạc Giấy gấp từ giấy đỏ.',
+  'max.head.closed': { other: 'Đã chốt {count} ngày.' },
+  'max.sub.closed': 'Đây là những gì 6pm Max có thêm. Chốt ngày thì vẫn luôn miễn phí.',
   'max.head.on': 'Bạn đang dùng Max.',
   'max.sub.on': 'Mọi thứ bên dưới đã được mở khoá.',
   'max.tile.looks': 'Mọi giao diện',

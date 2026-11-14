@@ -83,6 +83,8 @@ export const idLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   'max.head.buddy': 'Kenalan dengan teman Max.',
   'max.sub.buddy':
     'Matahari tengah malam dengan cincin, bulan, dan kilaunya, serta Hạc Giấy, bangau yang dilipat dari kertas merah.',
+  'max.head.closed': { other: '{count} hari ditutup.' },
+  'max.sub.closed': 'Ini yang ditambahkan 6pm Max. Tutup hari tetap gratis, apa pun pilihanmu.',
   'max.head.on': 'Kamu sudah Max.',
   'max.sub.on': 'Semua di bawah ini sudah terbuka.',
   'max.tile.looks': 'Semua tampilan',

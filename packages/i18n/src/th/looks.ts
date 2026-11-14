@@ -83,6 +83,8 @@ export const thLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   'max.head.buddy': 'พบกับเพื่อนคู่ใจของ Max',
   'max.sub.buddy':
     'ตะวันเที่ยงคืนกับวงแหวน ดวงจันทร์ และประกายระยิบระยับ และ Hạc Giấy นกกระเรียนที่พับจากกระดาษสีแดง',
+  'max.head.closed': { other: 'ปิดวันมาแล้ว {count} วัน' },
+  'max.sub.closed': 'นี่คือสิ่งที่ 6pm Max เพิ่มให้ การปิดวันยังฟรีเหมือนเดิมไม่ว่าจะเลือกแบบไหน',
   'max.head.on': 'คุณใช้ Max อยู่',
   'max.sub.on': 'ทุกอย่างด้านล่างปลดล็อคแล้ว',
   'max.tile.looks': 'ทุกลุค',

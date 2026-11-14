@@ -83,6 +83,8 @@ export const zhHansLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   'max.sub.icons': '免费版有 36 个。Max 解锁全部八套。',
   'max.head.buddy': '认识你的 Max 小伙伴。',
   'max.sub.buddy': '带着光环、月亮和点点星光的午夜太阳，还有用红纸折成的纸鹤 Hạc Giấy。',
+  'max.head.closed': { other: '已日结 {count} 天。' },
+  'max.sub.closed': '这些是 6pm Max 多出来的。日结无论如何都免费。',
   'max.head.on': '你已开通 Max。',
   'max.sub.on': '下面的一切都已解锁。',
   'max.tile.looks': '所有外观',

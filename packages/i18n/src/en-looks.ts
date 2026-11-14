@@ -84,6 +84,8 @@ export const enLooks = {
   'max.head.buddy': 'Meet your Max companions.',
   'max.sub.buddy':
     'The midnight sun with its ring, moons and sparkle, and Hạc Giấy, a crane folded from red paper.',
+  'max.head.closed': { one: '{count} day closed.', other: '{count} days closed.' },
+  'max.sub.closed': 'Here’s what 6pm Max adds. The Close stays free either way.',
   'max.head.on': 'You’re on Max.',
   'max.sub.on': 'Everything below is unlocked.',
   'max.tile.looks': 'Every look',
