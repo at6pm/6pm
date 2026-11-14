@@ -113,6 +113,7 @@ fakes behaviour the app cannot fake. Founder review.
 | Shop / Max | Restore finds nothing, or fails | Toast: "Nothing to restore on this Apple ID." / "Couldn't reach the App Store. Try again." (found uses the companion's `restored` line) | Undesigned |
 | Max sheet | Trial not offered to this Apple ID (already used) | Button "Subscribe to Max", terms without a trial | Trial eligibility is the store's answer |
 | Max sheet | Max on | Plan tiles hidden, status line (trial ends / renews / ends, store dates), "Manage subscription" opens Apple's sheet | Prototype turned Max off locally |
+| Max sheet | Opened by itself after a close | The looks sheet with its own headline, the days closed so far (“3 days closed.”) over “Here’s what 6pm Max adds. The Close stays free either way.”; a week in, the backup sheet as it is. Each comes up once, over Today, when the Close has finished leaving, and closes like any Max sheet | The prototype opens Max only from a gate or Settings; see product decisions §5, Offering Max |
 | Max welcome | Gate whose screen is not built (sharing, widgets, companion) | Single button "Back to my day" | No destination exists yet |
 | Max sheet | Terms / Privacy links | Terms = `https://6pm.oddeggs.studio/terms`; Privacy = `https://6pm.oddeggs.studio/privacy` | The site serves both, in English and Vietnamese |
 | Look detail | Intensity slider | Own Gesture Handler slider (4 pt track in the accent, 28 pt white thumb) | The render set has no try-on frame; the prototype used a browser range input |
