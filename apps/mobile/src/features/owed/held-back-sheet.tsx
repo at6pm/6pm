@@ -19,12 +19,12 @@ import { useMoneyFormat } from '../../money/use-money-format';
 import { DashedRule } from '../../ui/dashed-rule';
 import { haptics } from '../../ui/haptics';
 import { SheetScreen } from '../../ui/navigation/sheet-screen';
-import { PaperEdge } from '../../ui/paper-edge';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, mono } from '../../ui/type/fonts';
 import { WorkStamp } from '../work/work-stamp';
 import { CertificateStamp } from './certificate-stamp';
+import { TornSlip } from './torn-slip';
 import { Avatar } from './owed-parts';
 import { dayMonthOf } from './request-words';
 
@@ -90,101 +90,91 @@ export function HeldBackSheet({ spend }: { readonly spend: SpendRow }) {
 
   return (
     <SheetScreen title={t('heldBack.title')} gap={16} fit>
-      <View style={{ transform: [{ rotate: '-1deg' }], marginHorizontal: 4 }}>
-        <View style={{ transform: [{ scaleY: -1 }] }}>
-          <PaperEdge color={requestInk.paper} shadow={false} />
+      <TornSlip
+        color={requestInk.paper}
+        tilt={-0.8}
+        style={{ paddingHorizontal: 16, paddingTop: 10, paddingBottom: 12, gap: 10 }}
+      >
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 12 }}>
+          <Text style={{ ...mono(10, 400, 0.14), color: requestInk.paperSoft }}>
+            {kicker.toLocaleUpperCase(locale)}
+          </Text>
+          <Text numberOfLines={1} style={{ ...mono(10, 400, 0.14), color: requestInk.paperSoft }}>
+            {(spend.wallet ?? '').toLocaleUpperCase(locale)}
+          </Text>
         </View>
-        <View
-          style={{
-            backgroundColor: requestInk.paper,
-            paddingHorizontal: 16,
-            paddingTop: 10,
-            paddingBottom: 12,
-            gap: 10,
-          }}
-        >
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 12 }}>
-            <Text style={{ ...mono(10, 400, 0.14), color: requestInk.paperSoft }}>
-              {kicker.toLocaleUpperCase(locale)}
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+          <Avatar name={spend.merchant || null} size={34} square />
+          <View style={{ flex: 1 }}>
+            <Text numberOfLines={1} style={{ ...body(17, 650), color: requestInk.paperInk }}>
+              {spend.merchant.trim() || t('moneyIn.name')}
             </Text>
-            <Text numberOfLines={1} style={{ ...mono(10, 400, 0.14), color: requestInk.paperSoft }}>
-              {(spend.wallet ?? '').toLocaleUpperCase(locale)}
-            </Text>
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-            <Avatar name={spend.merchant || null} size={34} square />
-            <View style={{ flex: 1 }}>
-              <Text numberOfLines={1} style={{ ...body(17, 650), color: requestInk.paperInk }}>
-                {spend.merchant.trim() || t('moneyIn.name')}
+            {spend.note ? (
+              <Text numberOfLines={1} style={{ ...body(12.5), color: requestInk.paperSoft }}>
+                {spend.note}
               </Text>
-              {spend.note ? (
-                <Text numberOfLines={1} style={{ ...body(12.5), color: requestInk.paperSoft }}>
-                  {spend.note}
-                </Text>
-              ) : null}
-            </View>
-            {spend.forWork ? (
-              <WorkStamp
-                face="always"
-                small
-                labels={{ inked: t('work.stamp'), offered: t('work.stampOffered') }}
-              />
             ) : null}
           </View>
-          <DashedRule color={requestInk.paperRule} />
-          <Line label={t('heldBack.billed')} value={money.number(lines.billed)} />
-          <Line
-            strong
-            label={kind === 'tenth' ? t('heldBack.heldTenth') : t('heldBack.held')}
-            value={lines.heldBack > 0 ? `−${money.number(lines.heldBack)}` : money.number(0)}
-          />
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'baseline',
-            }}
-          >
-            <Text style={{ ...mono(11.5, 600, 0.1), color: requestInk.paperInk }}>
-              {t('heldBack.landed')}
-            </Text>
-            <Text style={{ ...display(30, 500, -0.02), color: requestInk.landed }}>
-              +{money.number(lines.landed)}
-            </Text>
-          </View>
-          {lines.heldBack > 0 ? (
-            <>
-              <DashedRule color={requestInk.paperRule} />
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  minHeight: 34,
-                }}
-              >
-                <Text style={{ ...mono(10, 400, 0.14), color: requestInk.paperSoft }}>
-                  {t('heldBack.certificate')}
-                </Text>
-                <CertificateStamp
-                  inked={certified}
-                  label={
-                    certified
-                      ? `${t('heldBack.certificateInked')} ${spend.certificateOn ? dayMonthOf(spend.certificateOn, language).toLocaleUpperCase(locale) : ''}`.trim()
-                      : t('heldBack.arrived')
-                  }
-                  onPress={() => {
-                    if (!certified) haptics.success();
-                    else haptics.tap();
-                    void actions.toggleCertificate(spend.id, snap.today);
-                  }}
-                />
-              </View>
-            </>
+          {spend.forWork ? (
+            <WorkStamp
+              face="always"
+              small
+              labels={{ inked: t('work.stamp'), offered: t('work.stampOffered') }}
+            />
           ) : null}
         </View>
-        <PaperEdge color={requestInk.paper} shadow={false} />
-      </View>
+        <DashedRule color={requestInk.paperRule} />
+        <Line label={t('heldBack.billed')} value={money.number(lines.billed)} />
+        <Line
+          strong
+          label={kind === 'tenth' ? t('heldBack.heldTenth') : t('heldBack.held')}
+          value={lines.heldBack > 0 ? `−${money.number(lines.heldBack)}` : money.number(0)}
+        />
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'baseline',
+          }}
+        >
+          <Text style={{ ...mono(11.5, 600, 0.1), color: requestInk.paperInk }}>
+            {t('heldBack.landed')}
+          </Text>
+          <Text style={{ ...display(30, 500, -0.02), color: requestInk.landed }}>
+            +{money.number(lines.landed)}
+          </Text>
+        </View>
+        {lines.heldBack > 0 ? (
+          <>
+            <DashedRule color={requestInk.paperRule} />
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                minHeight: 34,
+              }}
+            >
+              <Text style={{ ...mono(10, 400, 0.14), color: requestInk.paperSoft }}>
+                {t('heldBack.certificate')}
+              </Text>
+              <CertificateStamp
+                inked={certified}
+                label={
+                  certified
+                    ? `${t('heldBack.certificateInked')} ${spend.certificateOn ? dayMonthOf(spend.certificateOn, language).toLocaleUpperCase(locale) : ''}`.trim()
+                    : t('heldBack.arrived')
+                }
+                onPress={() => {
+                  if (!certified) haptics.success();
+                  else haptics.tap();
+                  void actions.toggleCertificate(spend.id, snap.today);
+                }}
+              />
+            </View>
+          </>
+        ) : null}
+      </TornSlip>
 
       <Text style={{ ...mono(11, 500, 0.14), color: palette.inkSoft, paddingHorizontal: 4 }}>
         {t('heldBack.switch').toLocaleUpperCase(locale)}

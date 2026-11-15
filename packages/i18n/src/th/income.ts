@@ -129,6 +129,8 @@ export const thIncome: { readonly [Key in keyof typeof enIncome]: Entry } = {
   'income.maths.wait': 'ที่เหลือและเงินสำรอง ระหว่างรอ',
   'income.maths.held': 'ต่อวัน เท่าเดิม',
   'income.lmaths.ahead': 'บิลที่จะมาถึง{date}',
+  'income.lmaths.aheadFutureYou': 'ตัวคุณในอนาคต งวดหน้า',
+  'income.lmaths.aheadJars': 'ตัวคุณในอนาคตและกระปุก งวดหน้า',
   'companion.income.inNoHand': '{amount} จาก {name} เข้าแล้ว {setAside} วันละ {line}',
   'companion.income.inPlain': {
     other: '{amount} จาก {name} เข้าแล้ว วันละ {line} และมีสำรองอีก {count} วัน',

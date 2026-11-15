@@ -50,6 +50,8 @@ export const viRequests: { readonly [Key in keyof typeof enRequests]: Entry } = 
   'request.close.asked': 'ĐÃ ĐÒI {date}',
   'request.close.intoDays': 'Vào các ngày',
   'request.close.asWork': 'Giữ là tiền việc',
+  'request.close.addsDays': { other: '+{count} ngày' },
+  'request.close.coveredTo': '· đủ đến {date}',
   'request.close.keep': 'Giữ',
   'request.close.notThis': 'Không phải khoản này',
   'request.hand.line': 'Khoản này không có mã. Có phải tiền việc không?',

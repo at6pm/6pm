@@ -3,6 +3,7 @@ export const enPots = {
   'pots.futureYou': 'Future you',
   'pots.shelf.title': 'Pots',
   'pots.shelf.each': '{amount} each payday',
+  'pots.shelf.eachMonth': '{amount} each month',
   'pots.shelf.new': 'New jar',
   'pots.all.title': 'Pots',
   'pots.all.line': '{amount} into pots\neach payday',

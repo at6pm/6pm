@@ -7,7 +7,7 @@ import { parseAmount } from '@6pm/domain';
 import { useMoney, useMoneyStore } from '../../data/money-provider';
 import { accountReady } from '../../data/receiving-account';
 import { requestActions } from '../../data/request-actions';
-import { workOf } from '../../data/work-money';
+import { hasWorkMoney } from '../../data/work-money';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
@@ -35,7 +35,8 @@ export function RequestSheet() {
   const money = useMoneyFormat();
   const toast = useToast();
   const { account } = useReceivingAccount();
-  const workOn = workOf(snap) !== null;
+  // Anyone with work money (a seller, a freelancer) starts a request stamped as work (7a).
+  const workOn = hasWorkMoney(snap);
   const [name, setName] = useState('');
   const [job, setJob] = useState('');
   const [typed, setTyped] = useState('');

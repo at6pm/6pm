@@ -92,14 +92,14 @@ export function moneyInActions(store: MoneyStore, helpers: Helpers) {
         };
         if (first && jarPart > 0) split[first.potId] = (split[first.potId] ?? 0) + jarPart;
         const at = new Date().toISOString();
-        // A sender remembered holding back tax arrives with it held back again (4c).
-        const held =
-          place.moneyIn === 'payback' || place.moneyIn === 'refund'
-            ? 0
-            : await rememberedHeldBack(store, row);
+        // A sender remembered holding back tax arrives with it held back again (4c); money given
+        // back (a refund, a payback) never had tax held from it.
+        const givenBack = place.moneyIn === 'payback' || place.moneyIn === 'refund';
+        const held = givenBack ? 0 : await rememberedHeldBack(store, row);
         const next: SpendRow = {
           ...row,
           ...(held > 0 ? { heldBack: held } : {}),
+          ...(givenBack ? { heldBack: null, certificate: null, certificateOn: null } : {}),
           status: 'kept',
           previousStatus: row.status === 'kept' ? row.previousStatus : row.status,
           moneyIn: place.moneyIn,

@@ -80,12 +80,19 @@ export interface ComingDuesInput {
  * The bills and jars of the months after this one, by the day each falls due (a bill on its due
  * day, the jars on the month's first day), through `last`. This month's are already set aside.
  */
-function comingDues(input: ComingDuesInput, last: LocalDate): Map<LocalDate, Vnd> {
+function comingDues(
+  input: ComingDuesInput,
+  last: LocalDate,
+  only: 'all' | 'jars' = 'all',
+): Map<LocalDate, Vnd> {
   const dues = new Map<LocalDate, Vnd>();
   const add = (on: LocalDate, amount: Vnd) => dues.set(on, (dues.get(on) ?? 0) + amount);
   for (let month = payCycleOn(input.cycle.payday, input.anchor); month.start <= last;) {
     add(month.start, input.jars);
-    for (const bill of input.bills) add(billDueIn(month, bill.dueDay), billThisCycle(bill, month));
+    if (only === 'all') {
+      for (const bill of input.bills)
+        add(billDueIn(month, bill.dueDay), billThisCycle(bill, month));
+    }
     const next = payCycleOn(month.payday, input.anchor);
     if (next.start <= month.start) break;
     month = next;
@@ -140,6 +147,17 @@ export function aheadOf(
   return dueBetween(comingDues(input, last), input.day, last);
 }
 
+/**
+ * Of what `aheadOf` keeps out, the part for the coming months' jars (Future you and the others):
+ * the rest is their bills. The maths names the two apart, so a jar is never called a bill.
+ */
+export function aheadJarsOf(
+  input: ComingDuesInput & { readonly day: LocalDate; readonly days: number },
+): Vnd {
+  const last = addDays(input.day, Math.max(1, input.days) - 1);
+  return dueBetween(comingDues(input, last, 'jars'), input.day, last);
+}
+
 /** How far money that only lands reaches from today, at the line it gives. */
 export interface Reach {
   /** Today through the day it lasts to (`on`): the days at the line. */
@@ -150,6 +168,8 @@ export interface Reach {
   readonly through: LocalDate;
   /** What the coming months' bills and jars take within them, kept out before dividing. */
   readonly ahead: Vnd;
+  /** Of `ahead`, what the coming months' jars take. */
+  readonly aheadJars: Vnd;
   /** What is left for the days, over the days to `on`, before any cap or spread. */
   readonly evenly: Vnd;
   /** The day's line: spread over `spreadDays`, never above the usual day's cap. */
@@ -200,6 +220,7 @@ export function landedReach(
     spreadDays,
     through: addDays(input.day, spreadDays - 1),
     ahead,
+    aheadJars: aheadJarsOf({ ...input, days: spreadDays }),
     evenly,
     line,
     capped: input.cap !== null && input.cap < spread ? input.cap : null,

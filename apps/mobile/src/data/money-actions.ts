@@ -26,6 +26,8 @@ import { markHandTake } from './jar-asks';
 import { moneyInActions } from './money-in-actions';
 import { findSpend, type MoneyStore } from './money-store';
 import { syncPaidBill } from './paid-bill-sync';
+import { arrivingHeldBack } from './request-actions';
+import { readSightings } from './sightings';
 import { NO_SPEND_PHOTOS, type SpendPhotos } from './spend-photos';
 
 export interface NewSpend {
@@ -78,12 +80,7 @@ export interface Capture {
   readonly sighting: { readonly source: SpendRow['source']; readonly seenAt: string };
 }
 
-/** One way a spend was seen: the source trail on Details. */
-export interface Sighting {
-  readonly source: SpendRow['source'];
-  readonly seenAt: string;
-  readonly detail: string | null;
-}
+export type { Sighting } from './sightings';
 
 /** What an undo puts back besides the status: the amount and category an edit changed. */
 export type UndoRestore = Partial<Pick<SpendRow, 'amount' | 'categoryId'>>;
@@ -268,7 +265,7 @@ export function moneyActions(store: MoneyStore, photos: SpendPhotos = NO_SPEND_P
     }
     const now = new Date().toISOString();
     const jar = input.fromPot ?? null;
-    const row: SpendRow = {
+    const row: SpendRow = await arrivingHeldBack(store, {
       id: input.id ?? randomUUID(),
       // Captured now, it belongs to the day the screens are showing; a recorded time files itself.
       day: input.day ?? (input.at ? moneyDayOf(input.at) : snap.today),
@@ -298,7 +295,7 @@ export function moneyActions(store: MoneyStore, photos: SpendPhotos = NO_SPEND_P
       envelopes: input.envelopes ?? null,
       createdAt: now,
       updatedAt: now,
-    };
+    });
     await tables.spends.put(row);
     replaceSpend(row);
     return { row, merged: false, before: null, sighting: { source: row.source, seenAt: row.at } };
@@ -564,17 +561,7 @@ export function moneyActions(store: MoneyStore, photos: SpendPhotos = NO_SPEND_P
         await tables.rules.put(learnedRule(existing, merchant, categoryId));
       }),
     /** Every way a spend was seen, oldest first. Empty for a spend seen only once. */
-    sightings: async (spendId: string): Promise<Sighting[]> => {
-      const rows = await store.db.getAllAsync<{
-        source: SpendRow['source'];
-        seen_at: string;
-        detail: string | null;
-      }>(
-        'SELECT source, seen_at, detail FROM spend_sightings WHERE spend_id = ? ORDER BY seen_at',
-        [spendId],
-      );
-      return rows.map((r) => ({ source: r.source, seenAt: r.seen_at, detail: r.detail }));
-    },
+    sightings: (spendId: string) => readSightings(store.db, spendId),
     /** Files the day's receipt: the Diary, the week strip and the streak read it. */
     closeDay: (row: ClosedDayRow) =>
       inTurn(async () => {

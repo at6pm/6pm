@@ -107,10 +107,12 @@ describe('a seller’s number', () => {
     // Thursday kept 425.000; Friday is not closed, so its takings wait; the lunch is hers.
     expect(dayOf(snap)?.startFree).toBe(425_000);
     expect(dayOf(snap)?.spent).toBe(45_000);
+    // The card counts what is kept: Friday's caught takings wait for the close, its kept costs
+    // count as they stand.
     expect(workMonthOf(snap)).toEqual({
-      in: 2_610_000,
+      in: 1_120_000,
       out: 1_845_000,
-      kept: 765_000,
+      kept: -725_000,
       landed: 425_000,
       waiting: 0,
     });
@@ -349,6 +351,7 @@ describe('the seller’s Sunday close (takings 2.250.000, costs 550.000, kept 1.
       owed: 2_500_000,
       held: 0,
     });
-    expect(periodOf(sat)).toMatchObject({ kind: 'counted', waiting: false });
+    // November is still a month that lands: the wage that began in it is a landing until December.
+    expect(periodOf(sat)).toMatchObject({ kind: 'landed', waiting: false });
   });
 });

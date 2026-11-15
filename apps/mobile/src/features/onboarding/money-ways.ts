@@ -5,6 +5,7 @@ import {
   moneyNext,
   monthlyIncomeOf,
   payCycleOn,
+  SALARY_INCOME_ID,
   weekdayMondayFirst,
   type Income,
   type LocalDate,
@@ -28,8 +29,7 @@ export type LastFor =
   | { readonly kind: 'monthEnd' }
   | { readonly kind: 'date'; readonly date: LocalDate };
 
-/** The salary's income id: its pay is placed under it, whether its day is known or varies. */
-const SALARY_ID = 'salary';
+const SALARY_ID = SALARY_INCOME_ID;
 
 /** The answers the step gathers. */
 export interface MoneyWaysAnswers {

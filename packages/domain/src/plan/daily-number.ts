@@ -76,6 +76,12 @@ export interface DailyNumberInput {
      * within the days it is spread over, for money that only lands (`landedReach`).
      */
     readonly ahead?: Vnd;
+    /**
+     * The line today closed with, once it is closed: a closed day keeps it. Money that reached the
+     * days at or after the close (the day's takings, a landing kept during the close) still adds to
+     * free money, so it reaches tomorrow and the days after, never the closed day itself.
+     */
+    readonly closedLine?: Vnd | null;
   };
 }
 
@@ -157,10 +163,17 @@ export function dailyNumber(input: DailyNumberInput): DailyNumber {
     input.period?.hold ?? Number.POSITIVE_INFINITY,
   );
   const ahead = Math.max(0, input.period?.ahead ?? 0);
-  const line = Math.max(
-    0,
-    Math.min(most, floorToStep((startFree - ahead) / Math.max(daysLeft + 1, minDays), currency)),
-  );
+  const closedLine = input.period?.closedLine;
+  const line =
+    closedLine != null && Number.isFinite(closedLine)
+      ? Math.max(0, closedLine)
+      : Math.max(
+          0,
+          Math.min(
+            most,
+            floorToStep((startFree - ahead) / Math.max(daysLeft + 1, minDays), currency),
+          ),
+        );
   const spent = sumDayPart(input.today, input.notDaily);
   const free = startFree - spent;
   // While a late pay is waited for, tomorrow waits too: it holds where today does, from what is left.

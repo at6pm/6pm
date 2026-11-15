@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import type { SpendRow } from '@6pm/domain';
 
 import { useMoney, useMoneyStore } from '../../data/money-provider';
-import { findSpend } from '../../data/money-store';
+import { findSpend, readSpend } from '../../data/money-store';
 
 /**
  * A spend or money in by id: this month's from the snapshot (so it follows every write), an older
@@ -17,8 +17,7 @@ export function useSpendRow(id: string | undefined): SpendRow | null | undefined
   useEffect(() => {
     if (!id || live) return;
     let on = true;
-    store.tables.spends
-      .get(id)
+    readSpend(store, id)
       .then((row) => on && setRead(row))
       .catch(() => on && setRead(null));
     return () => {

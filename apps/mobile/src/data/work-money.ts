@@ -1,8 +1,10 @@
 import {
   addDays,
+  isFreelanceIncome,
   isTakings,
   wageLedger,
   workLanded,
+  workMoneyOn,
   workMonth,
   type ClosedDayRow,
   type LocalDate,
@@ -34,6 +36,41 @@ export function workOf(snapshot: Pick<WorkSnapshot, 'plan'>): WorkSetting | null
   if (plan?.work === undefined || plan.incomes === undefined) return null;
   return plan.work;
 }
+
+/**
+ * Whether the person has work money (`workMoneyOn`): requests to clients with a code, tax held
+ * back, the year and the work stamp on money in. A seller has it, and so does someone whose money
+ * comes when it comes; a monthly salary with no work has none of it. A seller's shop (`workOf`) is
+ * more than this.
+ */
+export function hasWorkMoney(snapshot: Pick<WorkSnapshot, 'plan'>): boolean {
+  return snapshot.plan !== null && workMoneyOn(snapshot.plan);
+}
+
+/**
+ * The work stamp's setting for money in: the seller's banks, or, for someone with work money and
+ * no shop, none answered, so the stamp is offered and a sender remembered as work arrives inked.
+ * Null with no work money.
+ */
+export function stampSettingOf(snapshot: Pick<WorkSnapshot, 'plan'>): WorkSetting | null {
+  return workOf(snapshot) ?? (hasWorkMoney(snapshot) ? WORK_MONEY_ONLY : null);
+}
+
+/**
+ * Where work money in goes once it is kept: for a seller it is takings, which reach the days as
+ * the shop keeps them; for someone with work money and no shop it is a landing of their money that
+ * comes when it comes (`pay` of that income), exactly as their other landings. Null for a seller.
+ */
+export function workLandingOf(
+  snapshot: Pick<WorkSnapshot, 'plan'>,
+): { readonly moneyIn: 'pay'; readonly incomeId: string } | { readonly moneyIn: 'spread' } | null {
+  if (workOf(snapshot) !== null) return null;
+  const income = snapshot.plan?.incomes?.find(isFreelanceIncome);
+  return income ? { moneyIn: 'pay', incomeId: income.id } : { moneyIn: 'spread' };
+}
+
+/** Work money with no shop: nothing is answered per bank, and the shop's bookkeeping is off. */
+const WORK_MONEY_ONLY: WorkSetting = { mode: 'asItComes' };
 
 /** The days of the snapshot that are closed. */
 function closedOf(snapshot: WorkSnapshot): ReadonlySet<LocalDate> {
@@ -97,9 +134,13 @@ export function moneyInRowsOf(snapshot: WorkSnapshot): readonly SpendRow[] {
   return snapshot.cycleSpends.filter((s) => !isTakings(s));
 }
 
-/** The work's month to today, for Plan's Work card; null with no work. */
+/**
+ * The work's month to today, for Plan's Work card: what came in and went out and what it kept,
+ * counted once kept. For someone with work money and no shop, their work money in already reached
+ * their days as it landed, so nothing waits with a shop. Null with no work money.
+ */
 export function workMonthOf(snapshot: WorkSnapshot): WorkMonth | null {
-  const work = workOf(snapshot);
+  const work = workOf(snapshot) ?? (hasWorkMoney(snapshot) ? WORK_MONEY_ONLY : null);
   const plan = snapshot.plan;
   if (work === null || plan?.incomes === undefined) return null;
   return workMonth({

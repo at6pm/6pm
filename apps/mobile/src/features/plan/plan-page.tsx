@@ -10,7 +10,7 @@ import { cycleMonth, type PlanSplit, type SplitPartKind } from '@6pm/domain';
 
 import type { MoneySnapshot } from '../../data/money-store';
 import { useMoney, useMoneyStore } from '../../data/money-provider';
-import { workOf } from '../../data/work-money';
+import { hasWorkMoney } from '../../data/work-money';
 import { WorkCard } from '../work/work-card';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
@@ -72,8 +72,8 @@ export function PlanPage({ scrollRef, active = true }: PlanPageProps) {
       ) : (
         <PlanContent snap={snap} y={y} active={active} />
       )}
-      {/* Work of one's own: one card with the month's in, out and kept, and who has not paid. */}
-      {workOf(snap) === null ? null : <WorkCard />}
+      {/* Work money: one card with the month's in, out and kept, and who has not paid. */}
+      {hasWorkMoney(snap) ? <WorkCard /> : null}
     </Animated.ScrollView>
   );
 }

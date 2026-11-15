@@ -1,9 +1,11 @@
+import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { Easing, FadeIn, Keyframe } from 'react-native-reanimated';
 
 import {
   addDays,
+  isTakings,
   isWorkCost,
   startOfWeek,
   workDayOf,
@@ -18,6 +20,7 @@ import { useMoney, useMoneyStore } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { DashedRule } from '../../ui/dashed-rule';
+import { haptics } from '../../ui/haptics';
 import { Symbol } from '../../ui/icons/symbol';
 import { PaperEdge } from '../../ui/paper-edge';
 import { PressScale } from '../../ui/primitives/press-scale';
@@ -213,7 +216,11 @@ export function WorkDiary() {
   );
 }
 
-/** One closed day's work receipt. */
+/**
+ * One closed day's work receipt. Each line opens what it is: a cost its Details, and the takings
+ * (tapped, the caught transfers and the cash are listed one by one) each money in's Details, where
+ * what a client held back is set or corrected after the close.
+ */
 function WorkReceipt({
   day,
   rows,
@@ -229,8 +236,24 @@ function WorkReceipt({
 }) {
   const { t } = useI18n();
   const money = useMoneyFormat();
+  const router = useRouter();
+  const [listed, setListed] = useState(false);
   const work = workDayOf(rows, day);
   const costs = rows.filter((r) => r.day === day && isWorkCost(r));
+  const ins = rows.filter((r) => r.day === day && isTakings(r));
+  const open = (id: string) => {
+    haptics.tick();
+    router.push(`/spend/${id}`);
+  };
+  // One money in opens at once; more are listed first.
+  const tapIn = () => {
+    const only = ins.length === 1 ? ins[0] : undefined;
+    if (only) open(only.id);
+    else {
+      haptics.tick();
+      setListed((was) => !was);
+    }
+  };
   const time = (iso: string) =>
     new Date(iso).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
   const line = { ...mono(12), color: paperInk.ink } as const;
@@ -264,32 +287,64 @@ function WorkReceipt({
         </View>
         <DashedRule color={paperInk.rule} />
         {work.transfers > 0 ? (
-          <View style={{ flexDirection: 'row', gap: 10 }}>
+          <PressScale
+            accessibilityRole="button"
+            accessibilityState={{ expanded: listed }}
+            onPress={tapIn}
+            style={{ flexDirection: 'row', gap: 10 }}
+          >
             <Text style={lead}>{t('work.diary.in')}</Text>
             <Text numberOfLines={1} style={[inLine, { flex: 1 }]}>
               {t('work.diary.caught', { count: work.transfers })}
             </Text>
             <Text style={[inLine, tabular]}>{money.number(work.caught)}</Text>
-          </View>
+          </PressScale>
         ) : null}
         {work.cash > 0 ? (
-          <View style={{ flexDirection: 'row', gap: 10 }}>
+          <PressScale
+            accessibilityRole="button"
+            accessibilityState={{ expanded: listed }}
+            onPress={tapIn}
+            style={{ flexDirection: 'row', gap: 10 }}
+          >
             <Text style={lead}>{work.transfers > 0 ? '' : t('work.diary.in')}</Text>
             <Text numberOfLines={1} style={[inLine, { flex: 1 }]}>
               {t('work.takings.cash')}
             </Text>
             <Text style={[inLine, tabular]}>{money.number(work.cash)}</Text>
-          </View>
+          </PressScale>
         ) : null}
+        {listed
+          ? ins.map((r) => (
+              <Animated.View key={r.id} entering={FadeIn.duration(200)}>
+                <PressScale
+                  accessibilityRole="button"
+                  onPress={() => open(r.id)}
+                  style={{ flexDirection: 'row', gap: 10 }}
+                >
+                  <Text style={lead}>{time(r.at)}</Text>
+                  <Text numberOfLines={1} style={[inLine, { flex: 1 }]}>
+                    {r.merchant.trim() ? r.merchant.toUpperCase() : t('work.takings.cash')}
+                  </Text>
+                  <Text style={[inLine, tabular]}>{money.number(r.amount)}</Text>
+                </PressScale>
+              </Animated.View>
+            ))
+          : null}
         {costs.length > 0 ? <DashedRule color={paperInk.rule} /> : null}
         {costs.map((c) => (
-          <View key={c.id} style={{ flexDirection: 'row', gap: 10 }}>
+          <PressScale
+            key={c.id}
+            accessibilityRole="button"
+            onPress={() => open(c.id)}
+            style={{ flexDirection: 'row', gap: 10 }}
+          >
             <Text style={lead}>{time(c.at)}</Text>
             <Text numberOfLines={1} style={[line, { flex: 1 }]}>
               {c.merchant.toUpperCase()}
             </Text>
             <Text style={[line, tabular]}>−{money.number(c.amount)}</Text>
-          </View>
+          </PressScale>
         ))}
         <DashedRule color={paperInk.rule} />
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>

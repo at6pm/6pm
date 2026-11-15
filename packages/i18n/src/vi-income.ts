@@ -134,6 +134,8 @@ export const viIncome: { readonly [Key in keyof typeof enIncome]: Entry } = {
   'income.maths.wait': 'Còn lại và dự phòng, trong lúc chờ',
   'income.maths.held': 'Mỗi ngày, như cũ',
   'income.lmaths.ahead': 'Hoá đơn sắp tới, đến {date}',
+  'income.lmaths.aheadFutureYou': 'Tương lai, sắp tới',
+  'income.lmaths.aheadJars': 'Tương lai và hũ, sắp tới',
   'companion.income.inNoHand': '{amount} của {name} đã về. {setAside}; mỗi ngày của bạn là {line}.',
   'companion.income.inPlain': {
     other: '{amount} của {name} đã về. Mỗi ngày của bạn là {line}, và còn {count} ngày dự phòng.',

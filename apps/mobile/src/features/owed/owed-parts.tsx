@@ -70,6 +70,7 @@ export function Slip({
   big = false,
   stamp,
   work = false,
+  foot,
 }: {
   readonly what: string;
   readonly amount: string;
@@ -79,6 +80,8 @@ export function Slip({
   readonly stamp?: ReactNode;
   /** A request for work wears the WORK stamp where nothing else is stamped. */
   readonly work?: boolean;
+  /** Printed on the strip under the amount: a request's code and when it was asked (7d). */
+  readonly foot?: ReactNode;
 }) {
   const { t } = useI18n();
   const mark =
@@ -118,6 +121,7 @@ export function Slip({
         >
           {amount}
         </Text>
+        {foot ?? null}
         {mark ? (
           <View
             style={{

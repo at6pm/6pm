@@ -26,7 +26,7 @@ import {
   periodOf,
   type MoneySnapshot,
 } from '../../data/money-store';
-import { workKeptOf } from '../../data/work-money';
+import { wagesOf, workKeptOf } from '../../data/work-money';
 
 /** One landing of the month, as the maths lists it. */
 export interface Landing {
@@ -67,10 +67,17 @@ export type IncomePlanView = PayPlanView | LandedPlanView;
 
 /**
  * This month's landings: money in placed as the pay of an income with nothing counted on, and
- * what work kept through its closed days for someone who takes it as it comes.
+ * what work brought: what it kept through its closed days for someone who takes it as it comes,
+ * and, in the month someone began paying themselves, the wages paid since (they land then).
  */
 export function landingsOf(snap: MoneySnapshot): Landing[] {
-  const work = workKeptOf(snap);
+  const landedIds = new Set(
+    (periodInputOf(snap)?.incomes ?? []).filter((i) => i.amount <= 0).map((i) => i.id),
+  );
+  const wages = wagesOf(snap)
+    .filter((pay) => landedIds.has(pay.incomeId))
+    .reduce((sum, pay) => sum + pay.amount, 0);
+  const work = workKeptOf(snap) + wages;
   const placed = placedLandingsOf(snap);
   return work > 0 ? [...placed, { name: '', amount: work, day: snap.today, work: true }] : placed;
 }

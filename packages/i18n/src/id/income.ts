@@ -134,6 +134,8 @@ export const idIncome: { readonly [Key in keyof typeof enIncome]: Entry } = {
   'income.maths.wait': 'Sisa dan cadangan, sambil menunggu',
   'income.maths.held': 'Per hari, seperti tadi',
   'income.lmaths.ahead': 'Tagihan mendatang, sampai {date}',
+  'income.lmaths.aheadFutureYou': 'Kamu di masa depan, berikutnya',
+  'income.lmaths.aheadJars': 'Kamu di masa depan dan celengan, berikutnya',
   'companion.income.inNoHand': '{amount} dari {name} sudah masuk. {setAside}; harimu {line}.',
   'companion.income.inPlain': {
     other: '{amount} dari {name} sudah masuk. Harimu {line}, dan ada {count} hari cadangan lagi.',

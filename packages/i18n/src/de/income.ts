@@ -157,6 +157,8 @@ export const deIncome: { readonly [Key in keyof typeof enIncome]: Entry } = {
   'income.maths.wait': 'Rest und Reserve, bis er da ist',
   'income.maths.held': 'Pro Tag, wie bisher',
   'income.lmaths.ahead': 'Kommende Rechnungen bis {date}',
+  'income.lmaths.aheadFutureYou': 'Kommendes Zukunfts-Ich',
+  'income.lmaths.aheadJars': 'Kommendes Zukunfts-Ich und Spargläser',
   'companion.income.inNoHand': '{amount} von {name} sind da. {setAside}; dein Tag ist {line}.',
   'companion.income.inPlain': {
     one: '{amount} von {name} sind da. Dein Tag ist {line}, und {count} weiterer Tag ist in Reserve.',

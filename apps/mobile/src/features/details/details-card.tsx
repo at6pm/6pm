@@ -16,7 +16,7 @@ import {
 
 import { useBillPayments } from '../../data/bill-payments';
 import { useMoney } from '../../data/money-provider';
-import { workOf } from '../../data/work-money';
+import { hasWorkMoney, workOf } from '../../data/work-money';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
@@ -163,8 +163,12 @@ export function DetailsCard({
     },
     {
       key: 'pot',
-      // Someone with work on marks a work cost here, not a claim an employer pays back.
-      label: workOf(snap) === null ? t('details.claimBack') : t('work.card.title'),
+      // A seller marks a work cost here, not a claim an employer pays back; anyone with work money
+      // marks their money in as work.
+      label:
+        workOf(snap) !== null || (spend.direction === 'in' && hasWorkMoney(snap))
+          ? t('work.card.title')
+          : t('details.claimBack'),
       value: spend.forWork ? t('potsClose.details.claimYes') : t('potsClose.details.claimNo'),
       menu: {
         choices: [
@@ -195,7 +199,7 @@ export function DetailsCard({
             key: 'heldBack',
             label: t('request.diary.heldBack'),
             value:
-              (spend.heldBack ?? 0) > 0 ? money.short(spend.heldBack ?? 0) : t('owed.details.none'),
+              (spend.heldBack ?? 0) > 0 ? money.short(spend.heldBack ?? 0) : t('heldBack.nothing'),
             onPress: () => router.push({ pathname: '/held-back', params: { id: spend.id } }),
           },
         ]

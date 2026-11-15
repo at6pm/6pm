@@ -2,12 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 
 import {
   bankWorkOf,
-  futureYouIn,
-  joinedCycle,
-  landingDays,
   lastMoneyIn,
   merchantKeyOf,
-  occasionsOf,
   rememberedSenders,
   typedMoneyIn,
   workMarkOf,
@@ -17,11 +13,11 @@ import {
   type TypedMoneyIn,
 } from '@6pm/domain';
 
-import { dayOf, periodOf, type MoneySnapshot } from '../../data/money-store';
+import { landingDaysOf } from '../../data/landing-days';
+import type { MoneySnapshot } from '../../data/money-store';
 import { useMoney, useMoneyActions, useMoneyStore } from '../../data/money-provider';
-import { joinedAnswersOf } from '../../data/plan-settings';
 import { rememberWork } from '../../data/work-actions';
-import { workOf } from '../../data/work-money';
+import { stampSettingOf, workOf } from '../../data/work-money';
 import { useI18n } from '../../i18n/i18n';
 import { jarName } from '../pots/jar-name';
 import { coveredDate } from './ticket-stamp';
@@ -32,25 +28,10 @@ import { coveredDate } from './ticket-stamp';
  */
 function landingOf(snap: MoneySnapshot, amount: number, place: TypedMoneyIn): LandingDays | null {
   const { plan } = snap;
-  if (plan === null || amount <= 0) return null;
-  const period = periodOf(snap);
-  const day = dayOf(snap);
-  if (period === null || day === null || period.kind !== 'landed') return null;
+  if (plan === null) return null;
   const landed = (id: string) => (plan.incomes ?? []).some((i) => i.id === id && i.amount <= 0);
   const adds = place.moneyIn === 'spread' || (place.moneyIn === 'pay' && landed(place.incomeId));
-  if (!adds) return null;
-  const joined = joinedCycle(snap.cycle, joinedAnswersOf(plan));
-  return landingDays({
-    day: snap.today,
-    pool: day.startFree,
-    line: day.line,
-    cycle: snap.cycle,
-    anchor: plan.payday,
-    bills: snap.bills,
-    jars: futureYouIn(plan.futureYou, joined) + occasionsOf(snap.pots, snap.setAsideThisCycle),
-    amount,
-    cap: period.cap,
-  });
+  return adds ? landingDaysOf(snap, amount) : null;
 }
 
 /**
@@ -115,7 +96,9 @@ export function useMoneyInFace({
     },
   );
   // Work of one's own: the WORK stamp, offered or inked as its bank and sender say, tapped to change.
-  const work = workOf(snap);
+  // A seller's stamped money is takings; anyone else with work money keeps it as theirs, stamped.
+  const work = stampSettingOf(snap);
+  const shop = workOf(snap) !== null;
   const [stampedByHand, setStamped] = useState<{
     readonly key: string;
     readonly on: boolean;
@@ -150,8 +133,8 @@ export function useMoneyInFace({
       rule && snap.categories.some((c) => c.id === rule.categoryId)
         ? rule.categoryId
         : entry.categoryId;
-    // Stamped as work, it is today's takings: kept as they are, for the close to count.
-    const takings = stamped === true;
+    // A seller's money stamped as work is today's takings: kept as they are, for the close.
+    const takings = shop && stamped === true;
     const row = await actions.addSpend({
       amount,
       categoryId,
@@ -163,9 +146,9 @@ export function useMoneyInFace({
       direction: 'in',
     });
     if (work !== null) {
-      if (takings) await actions.markForWork(row.id, true);
+      if (stamped === true) await actions.markForWork(row.id, true);
       if (stamped !== null && bankWorkOf(entry.wallet, work.banks) !== 'always') {
-        await rememberWork(store, { merchant: sender, categoryId }, takings);
+        await rememberWork(store, { merchant: sender, categoryId }, stamped);
       }
       if (takings) return row.id;
     }

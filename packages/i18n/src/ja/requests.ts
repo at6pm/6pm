@@ -50,6 +50,8 @@ export const jaRequests: { readonly [Key in keyof typeof enRequests]: Entry } = 
   'request.close.asked': '{date}に依頼',
   'request.close.intoDays': '毎日のお金へ',
   'request.close.asWork': '仕事のお金として',
+  'request.close.addsDays': { other: '+{count}日' },
+  'request.close.coveredTo': '· {date}まで足りる',
   'request.close.keep': 'これでOK',
   'request.close.notThis': 'これではない',
   'request.hand.line': 'コードがありません。仕事の入金ですか？',

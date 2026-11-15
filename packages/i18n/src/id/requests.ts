@@ -51,6 +51,8 @@ export const idRequests: { readonly [Key in keyof typeof enRequests]: Entry } = 
   'request.close.asked': 'DIMINTA {date}',
   'request.close.intoDays': 'Ke hari-harimu',
   'request.close.asWork': 'Disimpan sebagai kerja',
+  'request.close.addsDays': { other: '+{count} hari' },
+  'request.close.coveredTo': '· cukup sampai {date}',
   'request.close.keep': 'Simpan',
   'request.close.notThis': 'Bukan yang ini',
   'request.hand.line': 'Yang ini tanpa kode. Untuk pekerjaan?',

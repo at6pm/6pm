@@ -12,9 +12,11 @@ import {
 import { localeOf } from '@6pm/i18n';
 import { owedInk, requestInk } from '@6pm/theme';
 
+import { landingDaysOf } from '../../data/landing-days';
 import { useMoney, useMoneyActions, useMoneyStore } from '../../data/money-provider';
 import { openOwedOf, owedLineOf } from '../../data/owed-actions';
 import { readPayers, requestActions } from '../../data/request-actions';
+import { workLandingOf } from '../../data/work-money';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { Companion } from '../../ui/companion/companion';
@@ -143,8 +145,10 @@ function Buttons({
 
 /**
  * 7d, the code finds its strip: no question to ask. The strip is stamped paid as the card rises
- * (the PAID stamp's curve, a success haptic) and the card says what the money becomes. "Keep it"
- * settles it; "Not this one" lifts the stamp and the money is an ordinary card.
+ * (the PAID stamp's curve, a success haptic), its code and when it was asked printed on it, and the
+ * card says what the money becomes: into the days, with the days it adds when the day is at its
+ * cap, or a seller's takings. "Keep it" settles it; "Not this one" lifts the stamp and the money
+ * is an ordinary card.
  */
 function CodeMatch({
   spend,
@@ -158,13 +162,17 @@ function CodeMatch({
   readonly onAnswer: (yes: boolean) => void;
 }) {
   const { palette } = useTheme();
-  const { t, language } = useI18n();
+  const { t, language, weekdayDayShort } = useI18n();
   const money = useMoneyFormat();
+  const snap = useMoney();
   useEffect(() => {
     haptics.success();
   }, []);
   const name = row.name ?? t('owed.someone');
   const work = row.work === true;
+  // A seller's work money is takings; anyone else's lands in their days, adding days at the cap.
+  const takings = work && workLandingOf(snap) === null;
+  const [adds] = useState(() => (takings ? null : landingDaysOf(snap, spend.amount)));
   return (
     <Animated.View entering={FadeInDown.duration(450)} style={{ flex: 1, gap: 18, paddingTop: 56 }}>
       <WordFitText style={{ ...leading(display(40, 500, -0.01), 42), color: palette.ink }}>
@@ -185,15 +193,17 @@ function CodeMatch({
                 <PaidStamp size={11} />
               </Animated.View>
             }
+            foot={
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, paddingTop: 3 }}>
+                <CodeChip code={row.code ?? ''} size={9} />
+                <Text numberOfLines={1} style={{ ...mono(9, 400, 0.1), color: owedInk.soft }}>
+                  {`· ${t('request.close.asked', {
+                    date: dayMonthOf(askedOn(row), language).toLocaleUpperCase(localeOf(language)),
+                  })}`}
+                </Text>
+              </View>
+            }
           />
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingTop: 6 }}>
-            <CodeChip code={row.code ?? ''} size={10} />
-            <Text style={{ ...mono(10, 400, 0.1), color: palette.inkSoft }}>
-              {t('request.close.asked', {
-                date: dayMonthOf(askedOn(row), language).toLocaleUpperCase(localeOf(language)),
-              })}
-            </Text>
-          </View>
         </View>
         <Text style={{ ...body(13.5), lineHeight: 19, color: palette.inkSoft, flex: 1 }}>
           {work ? t('request.close.byCode') : t('request.close.byCodePlain')}
@@ -210,7 +220,20 @@ function CodeMatch({
         }}
       >
         <Text style={{ ...body(14, 650), color: palette.ink }}>
-          {work ? t('request.close.asWork') : t('request.close.intoDays')}
+          {takings ? t('request.close.asWork') : t('request.close.intoDays')}
+          {adds ? (
+            <>
+              {'  '}
+              <Text style={{ ...body(14, 700), color: palette.ink }}>
+                {t('request.close.addsDays', { count: adds.days })}
+              </Text>
+              <Text style={{ ...body(14, 500), color: palette.inkSoft }}>
+                {` ${t('request.close.coveredTo', {
+                  date: weekdayDayShort(new Date(`${adds.to}T12:00:00`)),
+                })}`}
+              </Text>
+            </>
+          ) : null}
         </Text>
       </View>
       <View style={{ flex: 1 }} />

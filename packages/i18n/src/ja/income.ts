@@ -130,6 +130,8 @@ export const jaIncome: { readonly [Key in keyof typeof enIncome]: Entry } = {
   'income.maths.wait': '残りと予備、待つあいだ',
   'income.maths.held': '1日あたり、そのまま',
   'income.lmaths.ahead': '{date}までの請求',
+  'income.lmaths.aheadFutureYou': 'これからの未来の自分',
+  'income.lmaths.aheadJars': 'これからの未来の自分と貯金びん',
   'companion.income.inNoHand': '{name}から{amount}が入ったよ。{setAside}。1日{line}。',
   'companion.income.inPlain': {
     other: '{name}から{amount}が入ったよ。1日{line}で、予備があと{count}日分。',

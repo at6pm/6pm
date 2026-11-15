@@ -178,6 +178,10 @@ export function landedLines(
         return line(t('potsPlan.maths.spentBefore'));
       case 'ahead':
         return line(t('income.lmaths.ahead', { date: words.date(r.on ?? '') }));
+      case 'aheadJars':
+        return line(
+          words.futureYouOnly ? t('income.lmaths.aheadFutureYou') : t('income.lmaths.aheadJars'),
+        );
       case 'evenly':
         return line(t('income.lmaths.evenly', { count: r.count ?? 1, date: words.on }));
       case 'cap':

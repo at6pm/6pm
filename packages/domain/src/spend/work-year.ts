@@ -2,12 +2,14 @@ import { csvField, CSV_BOM, CSV_EOL, textCell } from '../export/spends-csv';
 import type { Money } from '../money/currency';
 import type { LocalDate } from '../time/local-date';
 import { certificateOf } from './held-back';
-import { isTakings, isWorkCost, type WorkRow } from './work';
+import { isKeptWorkCost, isKeptWorkIn, type WorkRow } from './work';
 
 /**
  * The work year: work money in counted as billed (what landed plus what a client held back for
  * tax), what was held back and which certificates have not come, work costs, and what was kept.
- * The year is the calendar year. 6pm files nothing: this is a list for whoever does.
+ * Money in and costs count once they are kept (`isKeptWorkIn`, `isKeptWorkCost`), as Plan's Work
+ * card counts them: a seller's takings still waiting for the close are not in the year yet. The year is the calendar year. 6pm
+ * files nothing: this is a list for whoever does.
  */
 
 /** A work row as the year reads it: money in may carry tax held back and its certificate. */
@@ -58,7 +60,7 @@ export function yearWork(rows: readonly YearWorkRow[], year: number): WorkYear {
   const months = Array.from({ length: 12 }, () => 0);
   for (const row of rows) {
     if (yearOf(row.day) !== year) continue;
-    if (isTakings(row)) {
+    if (isKeptWorkIn(row)) {
       const held = Math.max(0, row.heldBack ?? 0);
       const bill = row.amount + held;
       billed += bill;
@@ -71,7 +73,7 @@ export function yearWork(rows: readonly YearWorkRow[], year: number): WorkYear {
           uncertifiedAmount += held;
         }
       }
-    } else if (isWorkCost(row)) {
+    } else if (isKeptWorkCost(row)) {
       costs += row.amount;
     }
   }
@@ -125,7 +127,7 @@ export function heldBackList<Row extends YearWorkRow>(
   year: number,
 ): HeldBackEntry<Row>[] {
   return rows
-    .filter((row) => yearOf(row.day) === year && isTakings(row) && (row.heldBack ?? 0) > 0)
+    .filter((row) => yearOf(row.day) === year && isKeptWorkIn(row) && (row.heldBack ?? 0) > 0)
     .sort((a, b) => (a.day < b.day ? -1 : a.day > b.day ? 1 : 0))
     .map((row) => {
       const mark = certificateOf(row);
@@ -190,7 +192,7 @@ export function workYearCsv(
   } = {},
 ): { readonly income: string; readonly costs: string; readonly incomeRows: number } {
   const ofYear = rows.filter((row) => yearOf(row.day) === year).sort(byDayThenTime);
-  const income = ofYear.filter(isTakings).map((row) => {
+  const income = ofYear.filter(isKeptWorkIn).map((row) => {
     const held = Math.max(0, row.heldBack ?? 0);
     const mark = certificateOf(row);
     return [
@@ -204,7 +206,7 @@ export function workYearCsv(
     ];
   });
   const costs = ofYear
-    .filter(isWorkCost)
+    .filter(isKeptWorkCost)
     .map((row) => [
       row.day,
       textCell(row.merchant.trim()),

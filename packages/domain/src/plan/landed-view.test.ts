@@ -161,9 +161,14 @@ describe('the landing becomes the number (Sun 8 Nov, example B)', () => {
       amount: 257_000,
       count: 42,
     });
+    // December's rent and its Future you are two lines: Future you is not a bill.
+    expect(view.aheadJars).toBe(500_000);
     expect(landedMaths(view, [18_000_000]).find((r) => r.kind === 'ahead')).toMatchObject({
-      amount: -3_500_000,
+      amount: -3_000_000,
       on: '2026-12-19',
+    });
+    expect(landedMaths(view, [18_000_000]).find((r) => r.kind === 'aheadJars')).toMatchObject({
+      amount: -500_000,
     });
   });
 });

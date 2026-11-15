@@ -14,7 +14,7 @@ import { workInk } from '@6pm/theme';
 
 import { useMoney } from '../../data/money-provider';
 import { owedLineOf } from '../../data/owed-actions';
-import { wageLedgerOf, workMonthOf } from '../../data/work-money';
+import { wageLedgerOf, workMonthOf, workOf } from '../../data/work-money';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
@@ -35,9 +35,10 @@ const GROW_MS = 500;
 const grow = Easing.bezier(0.2, 0.9, 0.2, 1);
 
 /**
- * Plan's Work card, only for someone with work on: what came in, what went out and what the work
+ * Plan's Work card, for someone with work money: what came in, what went out and what the work
  * kept this month, a bar of in (hatched out, solid kept), who has not paid with the same Ask as a
- * friend's strip, and the way into the Work diary. Its title opens how work pays the person.
+ * friend's strip (and, while nobody owes anything, the way to ask to be paid), and the ways into
+ * the Work diary and the year. For a seller its title opens how work pays them.
  */
 export function WorkCard() {
   const snap = useMoney();
@@ -48,6 +49,8 @@ export function WorkCard() {
   const money = useMoneyFormat();
   const format = usePlanFormat(snap.today);
   const month = workMonthOf(snap);
+  // How work pays the person is a shop's question: a freelancer's money lands as it comes.
+  const shop = workOf(snap) !== null;
   // A wage bigger than what the shop held is paid as far as it reaches; the rest is owed.
   const owedToYou = wageLedgerOf(snap)?.owed ?? 0;
   const { rows } = useOwed();
@@ -100,11 +103,12 @@ export function WorkCard() {
     >
       <PressScale
         scaleTo={0.98}
+        disabled={!shop}
         onPress={() => {
           haptics.tick();
           router.push('/work-money');
         }}
-        accessibilityRole="button"
+        accessibilityRole={shop ? 'button' : 'header'}
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
@@ -174,18 +178,49 @@ export function WorkCard() {
           </Text>
         ) : null}
       </View>
-      {people.length > 0 ? (
-        <Text
+      <Text
+        style={{
+          ...body(13, 600, 0.04),
+          color: palette.inkSoft,
+          paddingTop: 16,
+          paddingHorizontal: 16,
+          paddingBottom: 4,
+        }}
+      >
+        {t('work.card.notPaid')}
+      </Text>
+      {people.length === 0 ? (
+        // Nobody owes anything yet: the first "Ask to be paid" starts here.
+        <PressScale
+          highlight
+          onPress={() => {
+            haptics.tick();
+            router.push('/owed-request');
+          }}
+          accessibilityRole="button"
           style={{
-            ...body(13, 600, 0.04),
-            color: palette.inkSoft,
-            paddingTop: 16,
-            paddingHorizontal: 16,
-            paddingBottom: 4,
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 12,
+            marginHorizontal: 14,
+            paddingVertical: 10,
           }}
         >
-          {t('work.card.notPaid')}
-        </Text>
+          <View
+            style={{
+              width: 34,
+              height: 34,
+              borderRadius: 11,
+              backgroundColor: palette.chipBg,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Symbol name="add" size={19} color={palette.ink} />
+          </View>
+          <Text style={{ ...body(15, 600), color: palette.ink, flex: 1 }}>{t('request.ask')}</Text>
+          <Symbol name="chevron_right" size={20} color={palette.ink} style={{ opacity: 0.6 }} />
+        </PressScale>
       ) : null}
       {people.map((person, i) => {
         const oldest = person.lines.reduce(
@@ -246,7 +281,6 @@ export function WorkCard() {
           marginHorizontal: 14,
           paddingTop: 10,
           paddingBottom: 12,
-          marginTop: people.length > 0 ? 0 : 10,
           borderTopWidth: 0.5,
           borderTopColor: palette.hair,
         }}

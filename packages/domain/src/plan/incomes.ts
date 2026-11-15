@@ -52,6 +52,9 @@ export interface PayEvent {
 /** The plan's own monthly pay, when no incomes have been set. */
 export const PLAN_INCOME_ID = 'plan';
 
+/** The salary's income id: its pay is placed under it, whether its day is known or varies. */
+export const SALARY_INCOME_ID = 'salary';
+
 /** The part of the plan the incomes are read from. */
 export interface IncomePlan {
   readonly income: Vnd;
@@ -204,6 +207,27 @@ export function incomesInEffect(incomes: readonly Income[], day: LocalDate): rea
     const first = firstPayOf({ ...income, from: income.from });
     return first !== null && first <= day;
   });
+}
+
+/**
+ * The incomes as the budget month that began on `monthStart` counts them on `day`
+ * (`incomesInEffect`). An income that began after the month's first day (a wage someone started
+ * paying themselves part-way through it), in a month nothing else is counted on, is counted in
+ * that month as money that lands: each pay is a landing, and the month keeps the shape it had, so
+ * what was set aside and what the jars hold do not change with the switch. From the next month it
+ * is the pay it was set as.
+ */
+export function incomesOfMonth(
+  incomes: readonly Income[],
+  day: LocalDate,
+  monthStart: LocalDate,
+): readonly Income[] {
+  const inEffect = incomesInEffect(incomes, day);
+  const began = (income: Income) => income.from !== undefined && income.from > monthStart;
+  if (!inEffect.some(began)) return inEffect;
+  // Beside another counted pay the month is that pay's, and the new one counts as it always did.
+  if (inEffect.some((income) => !began(income) && income.amount > 0)) return inEffect;
+  return inEffect.map((income) => (began(income) ? { ...income, amount: 0 } : income));
 }
 
 /** The first day after `today` that an income with a counted-on amount pays, if any does. */

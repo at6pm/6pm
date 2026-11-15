@@ -61,6 +61,8 @@ export interface LandedView {
    * out before dividing (`landedReach`), and the last of those days.
    */
   readonly ahead: Vnd;
+  /** Of `ahead`, what the coming months' jars (Future you and the others) take; the rest is bills. */
+  readonly aheadJars: Vnd;
   readonly through: LocalDate;
   /** The pool, less `ahead`, over the days through `on`, today included, before any cap. */
   readonly evenly: Vnd;
@@ -161,6 +163,7 @@ export function landedView(input: LandedViewInput): LandedView {
     toShare: period.credited - period.reserved,
     pool,
     ahead: reach.ahead,
+    aheadJars: reach.aheadJars,
     through: reach.through,
     evenly: reach.evenly,
     capped: reach.capped,
@@ -294,8 +297,10 @@ export type LandedRowKind =
   | 'toShare'
   /** Spent before today. */
   | 'spentBefore'
-  /** The coming months' bills and jars that fall due within the days spread over (`on`). */
+  /** The coming months' bills that fall due within the days spread over (`on`). */
   | 'ahead'
+  /** The coming months' jars (Future you and the others) that fall due within those days. */
+  | 'aheadJars'
   /** The pool evenly over the days through the day it lasts to (`count`). */
   | 'evenly'
   /** The usual day's cap, when it holds the line. */
@@ -316,7 +321,7 @@ export interface LandedRow {
   readonly result: boolean;
   readonly index?: number;
   readonly count?: number;
-  /** For `ahead`: the last day it reaches. */
+  /** For `ahead` and `aheadJars`: the last day it reaches. */
   readonly on?: LocalDate;
 }
 
@@ -327,7 +332,8 @@ const LANDING_ROWS = 3;
  * Today's maths for money that only lands: each landing, what is set aside, what there was to
  * share, then how the line was made (evenly, capped or spread) and what waits in hand, or, with no
  * whole day in hand, what is left over and stays free. The rows add up: `toShare` less
- * `spentBefore` is the pool; less `ahead`, `atLine` and `beyond` or `leftOver` make it again.
+ * `spentBefore` is the pool; less `ahead` and `aheadJars`, `atLine` and `beyond` or `leftOver`
+ * make it again.
  */
 export function landedMaths(view: LandedView, landings: readonly Vnd[]): LandedRow[] {
   const row = (
@@ -344,7 +350,10 @@ export function landedMaths(view: LandedView, landings: readonly Vnd[]): LandedR
   if (view.jars > 0) rows.push(row('jars', -view.jars));
   rows.push(row('toShare', view.toShare, { total: true }));
   if (view.toShare !== view.pool) rows.push(row('spentBefore', view.pool - view.toShare));
-  if (view.ahead > 0) rows.push(row('ahead', -view.ahead, { on: view.through }));
+  // The coming months' bills and their jars are two lines: Future you is never called a bill.
+  const aheadBills = view.ahead - view.aheadJars;
+  if (aheadBills > 0) rows.push(row('ahead', -aheadBills, { on: view.through }));
+  if (view.aheadJars > 0) rows.push(row('aheadJars', -view.aheadJars, { on: view.through }));
   rows.push(row('evenly', view.evenly, { count: view.stretchDays }));
   if (view.capped !== null) rows.push(row('cap', view.capped));
   if (view.spreadDays !== null) rows.push(row('spread', view.line, { count: view.spreadDays }));

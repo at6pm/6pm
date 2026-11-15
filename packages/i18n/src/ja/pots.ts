@@ -5,6 +5,7 @@ export const jaPots: { readonly [Key in keyof typeof enPots]: Entry } = {
   'pots.futureYou': '未来の自分',
   'pots.shelf.title': '貯金びん',
   'pots.shelf.each': '給料日ごとに{amount}',
+  'pots.shelf.eachMonth': '毎月{amount}',
   'pots.shelf.new': '新しい貯金びん',
   'pots.all.title': '貯金びん',
   'pots.all.line': '給料日ごとに\n{amount}をびんへ',

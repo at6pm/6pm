@@ -48,6 +48,8 @@ export const thRequests: { readonly [Key in keyof typeof enRequests]: Entry } = 
   'request.close.asked': 'ขอเมื่อ {date}',
   'request.close.intoDays': 'เข้าวันของคุณ',
   'request.close.asWork': 'เก็บเป็นเงินงาน',
+  'request.close.addsDays': { other: '+{count} วัน' },
+  'request.close.coveredTo': '· พอถึง {date}',
   'request.close.keep': 'เก็บไว้',
   'request.close.notThis': 'ไม่ใช่อันนี้',
   'request.hand.line': 'อันนี้ไม่มีโค้ด เป็นค่างานไหม?',

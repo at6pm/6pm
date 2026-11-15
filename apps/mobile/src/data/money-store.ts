@@ -10,7 +10,7 @@ import {
   futureYouIn,
   futureYouStartsOn,
   incomePeriod,
-  incomesInEffect,
+  incomesOfMonth,
   type IncomePeriod,
   monthlyIncomeOf,
   joinedCycle,
@@ -173,6 +173,8 @@ export function dailyInputOf(snapshot: MoneySnapshot): DailyNumberInput | null {
   const landed = new Set(plan.incomes.filter((i) => i.amount <= 0).map((i) => i.id));
   // Takings reach the number only as what the work kept (`workMoneyIn`, or in `credited`).
   const rows = moneyInRowsOf(snapshot);
+  // A closed day keeps the line it closed with; what reached the days since is tomorrow's.
+  const closedToday = snapshot.closedDays.find((d) => d.day === today);
   return {
     ...input,
     // The month's income as the views measure against it (the what-if's range, a slice's share).
@@ -191,6 +193,7 @@ export function dailyInputOf(snapshot: MoneySnapshot): DailyNumberInput | null {
       bills: period.bills,
       coming: period.coming,
       ahead: period.ahead,
+      ...(closedToday ? { closedLine: closedToday.line } : {}),
     },
     // Paid by the week or the fortnight, joining is counted from the pay it came in, not estimated.
     ...(period.monthly ? {} : { share: 1, beforeJoining: null }),
@@ -260,8 +263,9 @@ export function periodInputOf(snapshot: MoneySnapshot): PeriodInput | null {
     cycle: snapshot.cycle,
     anchor: plan.payday,
     // A wage someone starts paying themselves counts once its first day comes; until then the
-    // month is counted as it was.
-    incomes: incomesInEffect(plan.incomes, today),
+    // month is counted as it was. In the month it began, a month that only lands takes each wage
+    // as a landing, so the switch changes neither what is set aside nor what the jars hold.
+    incomes: incomesOfMonth(plan.incomes, today, snapshot.cycle.start),
     lastUntil: plan.lastUntil ?? null,
     bills: snapshot.bills,
     jars:
@@ -349,6 +353,19 @@ export function findSpend(snapshot: MoneySnapshot, id: string): SpendRow | undef
   return (
     snapshot.cycleSpends.find((s) => s.id === id) ?? snapshot.waitingBefore.find((s) => s.id === id)
   );
+}
+
+/**
+ * A spend or money in by id, for its Details: this month's from the snapshot, an older one (a work
+ * money in on the year's lists, a closed day of an earlier week) from its table. Null when there is
+ * none, or it was deleted.
+ */
+export async function readSpend(
+  store: Pick<MoneyStore, 'getSnapshot' | 'tables'>,
+  id: string,
+): Promise<SpendRow | null> {
+  const row = findSpend(store.getSnapshot(), id) ?? (await store.tables.spends.get(id));
+  return row && row.status !== 'deleted' ? row : null;
 }
 
 /** The one number for the snapshot's today. */

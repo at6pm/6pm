@@ -49,6 +49,8 @@ export const koRequests: { readonly [Key in keyof typeof enRequests]: Entry } = 
   'request.close.asked': '{date} 요청',
   'request.close.intoDays': '내 하루하루로',
   'request.close.asWork': '일한 돈으로',
+  'request.close.addsDays': { other: '+{count}일' },
+  'request.close.coveredTo': '· {date}까지 충분',
   'request.close.keep': '그대로 두기',
   'request.close.notThis': '이게 아니에요',
   'request.hand.line': '코드가 없어요. 작업 대금인가요?',

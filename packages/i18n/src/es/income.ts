@@ -153,6 +153,8 @@ export const esIncome: { readonly [Key in keyof typeof enIncome]: Entry } = {
   'income.maths.wait': 'Sobrante y reserva, mientras esperas',
   'income.maths.held': 'Cada día, como estaba',
   'income.lmaths.ahead': 'Facturas por venir, hasta el {date}',
+  'income.lmaths.aheadFutureYou': 'Tu yo futuro, por venir',
+  'income.lmaths.aheadJars': 'Tu yo futuro y botes, por venir',
   'companion.income.inNoHand': 'Entraron los {amount} de {name}. {setAside}; tu día es {line}.',
   'companion.income.inPlain': {
     one: 'Entraron los {amount} de {name}. Tu día es {line}, y hay {count} día más de reserva.',

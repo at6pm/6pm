@@ -131,6 +131,8 @@ export const koIncome: { readonly [Key in keyof typeof enIncome]: Entry } = {
   'income.maths.wait': '남은 돈과 여유분, 기다리는 동안',
   'income.maths.held': '하루, 그대로',
   'income.lmaths.ahead': '{date}까지 나갈 청구서',
+  'income.lmaths.aheadFutureYou': '앞으로의 미래의 나',
+  'income.lmaths.aheadJars': '앞으로의 미래의 나와 저금통',
   'companion.income.inNoHand': '{name}에서 {amount} 들어왔어요. {setAside}. 하루 {line}이에요.',
   'companion.income.inPlain': {
     other: '{name}에서 {amount} 들어왔어요. 하루 {line}에 여유분이 {count}일 더 있어요.',

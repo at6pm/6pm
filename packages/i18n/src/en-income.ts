@@ -155,6 +155,8 @@ export const enIncome = {
   'income.maths.wait': 'Left and in hand, while you wait',
   'income.maths.held': 'Each day, as it was',
   'income.lmaths.ahead': 'Bills to come, by {date}',
+  'income.lmaths.aheadFutureYou': 'Future you to come',
+  'income.lmaths.aheadJars': 'Future you and jars to come',
   'companion.income.inNoHand': '{name}’s {amount} is in. {setAside}; your day is {line}.',
   'companion.income.inPlain': {
     one: '{name}’s {amount} is in. Your day is {line}, and {count} more day is in hand.',

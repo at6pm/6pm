@@ -10,14 +10,14 @@ import {
 import { dayOf, type MoneySnapshot } from './money-store';
 import { workOf } from './work-money';
 
-/** A closed day as the close is about to file it: only that it is closed counts here. */
-function closingRow(day: LocalDate): ClosedDayRow {
+/** A closed day as the close is about to file it: that it is closed, and the line it keeps. */
+function closingRow(day: LocalDate, line = 0): ClosedDayRow {
   return {
     day,
     closedAt: new Date().toISOString(),
     late: false,
     spent: 0,
-    line: 0,
+    line,
     tomorrow: 0,
     note: null,
   };
@@ -25,19 +25,31 @@ function closingRow(day: LocalDate): ClosedDayRow {
 
 /**
  * The snapshot with `day` counted as closed, as it will be once the close in progress files it:
- * what the day's work kept has landed (`workKeptOf` counts closed days only). Every number the
- * close shows (Today's takings' "a day from tomorrow", the receipt's Safe tomorrow, the reveal,
- * and the row the close files) is read from this, so they agree with each other and with Today
- * after the close. For anyone without work it changes nothing.
+ * what the day's work kept has landed (`workKeptOf` counts closed days only), and the day keeps
+ * `line`, the line the close found it at (by default the day's line as it stands, still open).
+ * Money that reached the days during the close (the day's takings, a landing kept in it) adds to
+ * tomorrow and never to the day being closed. Every number the close shows (Today's takings' "a
+ * day from tomorrow", the receipt's Safe tomorrow, the reveal, and the row the close files) is read
+ * from this, so they agree with each other, with Today after the close and with the Diary. A
+ * monthly salary's number is counted as it always was.
  */
-export function withDayClosed(snapshot: MoneySnapshot, day: LocalDate): MoneySnapshot {
+export function withDayClosed(
+  snapshot: MoneySnapshot,
+  day: LocalDate,
+  line?: number,
+): MoneySnapshot {
   if (snapshot.closedDays.some((d) => d.day === day)) return snapshot;
-  return { ...snapshot, closedDays: [...snapshot.closedDays, closingRow(day)] };
+  const found = line ?? (snapshot.today === day ? (dayOf(snapshot)?.line ?? 0) : 0);
+  return { ...snapshot, closedDays: [...snapshot.closedDays, closingRow(day, found)] };
 }
 
 /** The number of the day being closed, counted as the close will file it (`withDayClosed`). */
-export function closingNumberOf(snapshot: MoneySnapshot, day: LocalDate): DailyNumber | null {
-  return dayOf(withDayClosed(snapshot, day));
+export function closingNumberOf(
+  snapshot: MoneySnapshot,
+  day: LocalDate,
+  line?: number,
+): DailyNumber | null {
+  return dayOf(withDayClosed(snapshot, day, line));
 }
 
 /**

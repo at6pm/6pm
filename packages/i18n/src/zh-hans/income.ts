@@ -126,6 +126,8 @@ export const zhHansIncome: { readonly [Key in keyof typeof enIncome]: Entry } = 
   'income.maths.wait': '剩余和备用，等待期间',
   'income.maths.held': '每天，保持不变',
   'income.lmaths.ahead': '到{date}的待付账单',
+  'income.lmaths.aheadFutureYou': '待存的未来的你',
+  'income.lmaths.aheadJars': '待存的未来的你和存钱罐',
   'companion.income.inNoHand': '{name}的{amount}到账了。{setAside}；你每天{line}。',
   'companion.income.inPlain': {
     other: '{name}的{amount}到账了。你每天{line}，还有{count}天备用。',

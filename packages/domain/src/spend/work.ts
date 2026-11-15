@@ -1,7 +1,7 @@
 import { merchantKeyOf } from '../capture/merchant-rule';
 import type { MerchantRuleRow } from '../contracts/local-rows';
 import type { Vnd } from '../money/format';
-import { payEvents, type Income } from '../plan/incomes';
+import { payEvents, SALARY_INCOME_ID, type Income } from '../plan/incomes';
 import type { PlacedPay } from '../plan/income-period';
 import type { Payday } from '../plan/pay-cycle';
 import { addDays, type LocalDate } from '../time/local-date';
@@ -33,6 +33,36 @@ export interface WorkSetting {
   readonly mode: WorkMode;
   /** Each bank or wallet's answer, by its saved code ("MB", "CASH", "name:Chase"). */
   readonly banks?: Readonly<Record<string, BankWork>> | undefined;
+}
+
+/**
+ * Money that comes when it comes, apart from a salary whose day varies: what a freelancer, a
+ * shift worker or someone on commission answered in onboarding. Such money is often a client's.
+ */
+export function isFreelanceIncome(income: Income): boolean {
+  return (
+    income.rhythm.kind === 'none' &&
+    income.amount <= 0 &&
+    income.fromWork !== true &&
+    income.id !== SALARY_INCOME_ID
+  );
+}
+
+/**
+ * Whether the person has work money: requests to clients with a code, tax a client held back, the
+ * work year and the work stamp on money in. Someone who sells has it (`work` is set), and so does
+ * someone whose money comes when it comes, from that answer alone, so nothing more is asked. A plan
+ * never asked about its incomes (a monthly salary) has none of it.
+ *
+ * This is not the shop's bookkeeping: work costs that never touch the number, Today's takings and
+ * kept money landing at the close belong to someone who sells (`work`) only.
+ */
+export function workMoneyOn(plan: {
+  readonly incomes?: readonly Income[] | undefined;
+  readonly work?: unknown;
+}): boolean {
+  if (plan.incomes === undefined) return false;
+  return plan.work !== undefined || plan.incomes.some(isFreelanceIncome);
 }
 
 /** The saved code for cash among the chosen banks and wallets. */
@@ -151,6 +181,20 @@ export function isWorkCost(row: WorkRow): boolean {
   return row.direction !== 'in' && row.forWork === true && !gone(row);
 }
 
+/**
+ * Work money in that counts: kept. One rule for Plan's Work card, the Diary's week and the year:
+ * what is kept counts, and what still waits (a seller's takings caught before the close, a payment
+ * not yet placed) does not.
+ */
+export function isKeptWorkIn(row: WorkRow): boolean {
+  return isTakings(row) && row.status === 'kept';
+}
+
+/** A work cost that counts, by the same rule: kept, not still waiting for the close. */
+export function isKeptWorkCost(row: WorkRow): boolean {
+  return isWorkCost(row) && row.status === 'kept';
+}
+
 /** Takings typed as cash at the close: one line a day, kept under the day's own id. */
 export function cashTakingsId(day: LocalDate): string {
   return `takings-cash-${day}`;
@@ -209,7 +253,10 @@ export function workDaysOf(rows: readonly WorkRow[], from: LocalDate, to: LocalD
   return days.map((day) => workDayOf(rows, day));
 }
 
-/** In, out and kept over some days: Plan's Work card, the Diary's week line. */
+/**
+ * In, out and kept over some days: Plan's Work card, the Diary's week line. Money in and costs
+ * count once they are kept (`isKeptWorkIn`, `isKeptWorkCost`), as the year counts them.
+ */
 export interface WorkTotals {
   readonly in: Vnd;
   readonly out: Vnd;
@@ -221,8 +268,8 @@ export function workTotals(rows: readonly WorkRow[], from: LocalDate, to: LocalD
   let costs = 0;
   for (const row of rows) {
     if (row.day < from || row.day > to) continue;
-    if (isTakings(row)) takings += row.amount;
-    else if (isWorkCost(row)) costs += row.amount;
+    if (isKeptWorkIn(row)) takings += row.amount;
+    else if (isKeptWorkCost(row)) costs += row.amount;
   }
   return { in: takings, out: costs, kept: takings - costs };
 }

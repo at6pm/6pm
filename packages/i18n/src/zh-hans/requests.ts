@@ -46,6 +46,8 @@ export const zhHansRequests: { readonly [Key in keyof typeof enRequests]: Entry 
   'request.close.asked': '{date} 已请求',
   'request.close.intoDays': '进入你的每一天',
   'request.close.asWork': '记为工作收入',
+  'request.close.addsDays': { other: '+{count} 天' },
+  'request.close.coveredTo': '· 够用到 {date}',
   'request.close.keep': '就这样',
   'request.close.notThis': '不是这笔',
   'request.hand.line': '这笔没有代码。是工作款吗？',

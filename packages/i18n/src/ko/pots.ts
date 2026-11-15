@@ -5,6 +5,7 @@ export const koPots: { readonly [Key in keyof typeof enPots]: Entry } = {
   'pots.futureYou': '미래의 나',
   'pots.shelf.title': '저금통',
   'pots.shelf.each': '월급날마다 {amount}',
+  'pots.shelf.eachMonth': '매달 {amount}',
   'pots.shelf.new': '새 저금통',
   'pots.all.title': '저금통',
   'pots.all.line': '월급날마다\n저금통에 {amount}',

@@ -2,7 +2,7 @@ import { floorToStep, VND, type Currency } from '../money/currency';
 import type { Vnd } from '../money/format';
 import { addDays, diffDays, type LocalDate } from '../time/local-date';
 import { leadIncome, reservedOn, type PeriodBill } from './income-period';
-import { payEvents, type Income } from './incomes';
+import { payEvents, type Income, type IncomePlan } from './incomes';
 import { payCycleOn, type Payday } from './pay-cycle';
 
 export interface NextPayInput {
@@ -101,4 +101,13 @@ export function nextPayJarLine(
     before: pay.daily,
     after: lineFrom(input, pay.on, pay.until, input.jars - took),
   };
+}
+
+/**
+ * Whether the plan has a payday the jars fill on: a plan never asked about its incomes (as it
+ * always was), or one with a pay it counts on. Money that only lands has none: its jars fill each
+ * month, from what lands.
+ */
+export function hasPayday(plan: Pick<IncomePlan, 'incomes'>): boolean {
+  return plan.incomes === undefined || leadIncome(plan.incomes) !== null;
 }

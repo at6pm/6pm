@@ -53,6 +53,11 @@ export const enRequests = {
   'request.close.asked': 'ASKED {date}',
   'request.close.intoDays': 'Into your days',
   'request.close.asWork': 'Kept as work',
+  'request.close.addsDays': {
+    one: '+{count} day',
+    other: '+{count} days',
+  },
+  'request.close.coveredTo': '· covered to {date}',
   'request.close.keep': 'Keep it',
   'request.close.notThis': 'Not this one',
   'request.hand.line': 'No code on this one. Is it for a job?',

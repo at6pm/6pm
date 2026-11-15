@@ -154,6 +154,8 @@ export const frIncome: { readonly [Key in keyof typeof enIncome]: Entry } = {
   'income.maths.wait': 'Reste et réserve, en attendant',
   'income.maths.held': 'Par jour, comme avant',
   'income.lmaths.ahead': 'Factures à venir, d’ici le {date}',
+  'income.lmaths.aheadFutureYou': 'Toi du futur, à venir',
+  'income.lmaths.aheadJars': 'Toi du futur et bocaux, à venir',
   'companion.income.inNoHand':
     'Les {amount} de {name} sont arrivés. {setAside} ; ta journée est à {line}.',
   'companion.income.inPlain': {

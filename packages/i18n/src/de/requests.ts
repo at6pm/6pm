@@ -49,6 +49,11 @@ export const deRequests: { readonly [Key in keyof typeof enRequests]: Entry } = 
   'request.close.asked': 'ANGEFRAGT {date}',
   'request.close.intoDays': 'In deine Tage',
   'request.close.asWork': 'Als Arbeit behalten',
+  'request.close.addsDays': {
+    one: '+{count} Tag',
+    other: '+{count} Tage',
+  },
+  'request.close.coveredTo': '· reicht bis {date}',
   'request.close.keep': 'Behalten',
   'request.close.notThis': 'Nicht dieser',
   'request.hand.line': 'Hier steht kein Code. Ist das für einen Auftrag?',

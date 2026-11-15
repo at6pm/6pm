@@ -14,6 +14,7 @@ import {
 } from '@6pm/domain';
 
 import { findSpend, type MoneyStore } from './money-store';
+import { workLandingOf } from './work-money';
 
 /** What "Ask to be paid" makes: who, the job, the amount, and the two marks. */
 export interface NewRequest {
@@ -119,8 +120,8 @@ export function requestActions(store: MoneyStore) {
       }),
 
     /**
-     * "Paid in cash": the request is settled by money in of its amount kept today, in cash: work
-     * money in for a work request (takings), money into the days for any other.
+     * "Paid in cash": the request is settled by money in of its amount kept today, in cash: for a
+     * work request a seller's takings, or anyone else's landing; money into the days for any other.
      */
     paidInCash: (lineId: string): Promise<SpendRow | null> =>
       store.exclusive(async () => {
@@ -129,6 +130,8 @@ export function requestActions(store: MoneyStore) {
         const snap = store.getSnapshot();
         const at = now();
         const work = line.work === true;
+        // A seller's work money is takings; anyone else's lands in their days.
+        const landing = work ? workLandingOf(snap) : { moneyIn: 'spread' as const };
         const row: SpendRow = {
           id: randomUUID(),
           day: snap.today,
@@ -147,7 +150,8 @@ export function requestActions(store: MoneyStore) {
           currencyGuessed: false,
           memo: null,
           direction: 'in',
-          moneyIn: work ? null : 'spread',
+          moneyIn: landing?.moneyIn ?? null,
+          ...(landing?.moneyIn === 'pay' ? { incomeId: landing.incomeId } : {}),
           givesBack: null,
           savedTo: null,
           fromPot: null,
@@ -182,8 +186,9 @@ export function requestActions(store: MoneyStore) {
      * Money in pays a request (by its code, or matched by hand): the strip is stamped paid, the
      * money is kept, carrying the request's work stamp and what the client held back, and its
      * sender is remembered (so it is no longer a name nobody knows, and holds back the same next
-     * time). Work money in is takings, which reach the days as the work keeps them; other money
-     * in goes into the days.
+     * time). A seller's work money in is takings, which reach the days as the work keeps them;
+     * anyone else's work money lands as their money that comes when it comes; other money in goes
+     * into the days.
      */
     match: (moneyInId: string, lineId: string, heldBack: number): Promise<Matched | null> =>
       store.exclusive(async () => {
@@ -193,12 +198,15 @@ export function requestActions(store: MoneyStore) {
         const at = now();
         const held = Math.max(0, Math.round(heldBack));
         const work = line.work === true;
+        // A seller's work money is takings; anyone else's lands in their days, as 7d draws it.
+        const landing = work ? workLandingOf(store.getSnapshot()) : { moneyIn: 'spread' as const };
         const next: SpendRow = {
           ...row,
           status: 'kept',
           previousStatus: row.status === 'kept' ? row.previousStatus : row.status,
           forWork: work || row.forWork,
-          moneyIn: work ? (row.moneyIn ?? null) : 'spread',
+          moneyIn: landing === null ? (row.moneyIn ?? null) : landing.moneyIn,
+          ...(landing?.moneyIn === 'pay' ? { incomeId: landing.incomeId } : {}),
           heldBack: held > 0 ? held : (row.heldBack ?? null),
           note: row.note ?? line.job ?? null,
           updatedAt: at,
@@ -315,6 +323,20 @@ export function readWorkYearRows(
      ORDER BY day, at`,
     [`${year}-01-01`, `${year}-12-31`],
   );
+}
+
+/**
+ * A capture as it is first saved: money in from a sender remembered holding back tax arrives with
+ * it held back (4c), however it was caught (an alert, a mail, a receipt, typed). A refund, and
+ * everything else, is as it came.
+ */
+export async function arrivingHeldBack(
+  store: Pick<MoneyStore, 'tables'>,
+  row: SpendRow,
+): Promise<SpendRow> {
+  if (row.moneyIn === 'refund' || row.moneyIn === 'payback') return row;
+  const held = await rememberedHeldBack(store, row);
+  return held > 0 ? { ...row, heldBack: held } : row;
 }
 
 /**

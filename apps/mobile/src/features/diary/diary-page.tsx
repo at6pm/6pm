@@ -23,7 +23,7 @@ import { useDiaryBridge } from '../duo/diary-bridge';
 import { useOpenAsk } from '../duo/spread-pane';
 import { OwedRow } from '../owed/owed-row';
 import { useMoney } from '../../data/money-provider';
-import { workOf } from '../../data/work-money';
+import { hasWorkMoney } from '../../data/work-money';
 import { WorkDiary, WorkFilter } from '../work/work-diary';
 import { useWorkDiaryRequest } from '../work/work-diary-request';
 
@@ -48,8 +48,8 @@ export function DiaryPage({ scrollRef }: { readonly scrollRef: AnimatedRef<Anima
   const shown = useHomePageShown();
   const { y } = useHomeScroll();
   const diary = useDiary();
-  // Someone with work on can filter the Diary to work; it holds until the Diary is left.
-  const workOn = workOf(useMoney()) !== null;
+  // Someone with work money can filter the Diary to work; it holds until the Diary is left.
+  const workOn = hasWorkMoney(useMoney());
   const [onlyWork, setOnlyWork] = useState(false);
   const asked = useWorkDiaryRequest();
   useEffect(() => {

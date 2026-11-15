@@ -20,7 +20,8 @@ import {
 import type { MoneyActions } from './money-actions';
 import { findSpend, type MoneySnapshot, type MoneyStore } from './money-store';
 import { readPlan, writePlan } from './plan-settings';
-import { workOf } from './work-money';
+import { rememberedHeldBack } from './request-actions';
+import { stampSettingOf, workOf } from './work-money';
 
 /** The shops and senders whose work mark was answered, by merchant key. */
 export async function readWorkRules(
@@ -48,8 +49,9 @@ export async function rememberWork(
 }
 
 /**
- * Today's takings kept at the close: the caught transfers kept as takings, and the cash typed in
- * as one line for the day (replaced when typed again, gone when it is nothing).
+ * Today's takings kept at the close: the caught transfers kept as takings, each from a sender
+ * remembered holding back tax with it held back (4c), and the cash typed in as one line for the
+ * day (replaced when typed again, gone when it is nothing).
  */
 export async function keepTakings(
   store: MoneyStore,
@@ -60,7 +62,9 @@ export async function keepTakings(
   const snap = store.getSnapshot();
   for (const row of snap.cycleSpends) {
     if (row.day <= day && isTakings(row) && row.status === 'caught') {
+      const held = await rememberedHeldBack(store, row);
       await actions.setStatus(row.id, 'kept');
+      if (held > 0) await actions.update(row.id, { heldBack: held });
     }
   }
   const id = cashTakingsId(day);
@@ -146,16 +150,20 @@ export function setWorkMode(
 }
 
 /**
- * A capture as it arrives, for someone with work on: inked at once when its bank is always work,
- * or its shop or sender was stamped before (`workMarkOf`), so it never counts in the meantime.
+ * A capture as it arrives, for someone with work money: inked at once when its bank is always work,
+ * or its shop or sender was stamped before (`workMarkOf`), so a seller's never counts in the
+ * meantime and a freelancer's regular client arrives as work.
  */
 export async function stampOnArrival(
   store: MoneyStore,
   actions: Pick<MoneyActions, 'markForWork'>,
   row: SpendRow,
 ): Promise<void> {
-  const work = workOf(store.getSnapshot());
+  const snap = store.getSnapshot();
+  const work = stampSettingOf(snap);
   if (work === null || row.forWork || row.status !== 'caught') return;
+  // Without a shop only money in is work; a spend keeps its own meaning (Claim back).
+  if (workOf(snap) === null && row.direction !== 'in') return;
   const rule = await store.tables.rules.get(merchantKeyOf(row.merchant));
   if (workMarkOf({ work, wallet: row.wallet, rule }) === 'inked') {
     await actions.markForWork(row.id, true);

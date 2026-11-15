@@ -7,9 +7,9 @@ import { localeOf } from '@6pm/i18n';
 import { oklchSrgbHex } from '@6pm/theme';
 
 import { useMoney, useMoneyActions } from '../../data/money-provider';
-import { findSpend } from '../../data/money-store';
 import type { Sighting } from '../../data/money-actions';
 import { merchantIcon } from '../today/merchant-icon';
+import { useSpendRow } from '../owed/use-spend-row';
 import { useSpendLabels } from '../today/use-spend-rows';
 import { useI18n } from '../../i18n/i18n';
 import { CategoryTile } from '../../ui/category-tile';
@@ -65,7 +65,8 @@ export function SpendDetails({
   const run = useRunAction();
   const money = useMoneyFormat();
   const screen = useWindowDimensions();
-  const spend = findSpend(snap, id);
+  // This month's from the snapshot; an older one (a work money in from the year's list) read once.
+  const spend = useSpendRow(id) ?? undefined;
   const [askRule, setAskRule] = useState(false);
   // A catch with no amount opens on the keypad, once the sheet has risen.
   const [editingAmount, setEditingAmount] = useState(false);
