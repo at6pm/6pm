@@ -177,6 +177,8 @@ export function landedLines(
         return line(t('income.lmaths.toShare'));
       case 'spentBefore':
         return line(t('potsPlan.maths.spentBefore'));
+      case 'otherIn':
+        return { ...line(t('moneyIn.name')), v: `+${v}` };
       case 'ahead':
         return line(t('income.lmaths.ahead', { date: words.date(r.on ?? '') }));
       case 'aheadJars':

@@ -1,4 +1,4 @@
-import { useRouter, type Href } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 
 import { isTakings, isWorkCost, workDayOf } from '@6pm/domain';
@@ -48,7 +48,7 @@ export function TakingsLine({ takings }: { readonly takings: number }) {
       hitSlop={8}
       onPress={() => {
         haptics.tick();
-        router.push('/takings' as Href);
+        router.push('/takings');
       }}
       accessibilityRole="button"
       style={{ flexDirection: 'row', alignItems: 'center', gap: 7, paddingTop: 12 }}

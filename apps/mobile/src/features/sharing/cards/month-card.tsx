@@ -128,7 +128,9 @@ function MonthLayout({ data, format, amounts, inks, serious }: CardLayoutProps<M
   const rows = Math.ceil(card.suns.length / 7);
   // Story: the suns fill the column (24 pt padding each side, 2 inside); feed: 22 pt suns.
   const gap = story ? 7 : 6;
-  const cell = story ? (CARD_WIDTH - 48 - 4 - gap * 6) / 7 : 22;
+  const wide = story ? (CARD_WIDTH - 48 - 4 - gap * 6) / 7 : 22;
+  // A month across six weeks keeps the height of five, so the mark below is never pushed off.
+  const cell = rows > 5 ? (wide * 5 + gap * 4 - gap * (rows - 1)) / rows : wide;
   const grid = useMemo(() => sunBoxes(card.suns, inks, cell, gap), [card.suns, inks, cell, gap]);
   const gridW = cell * 7 + gap * 6;
   const gridH = cell * rows + gap * (rows - 1);

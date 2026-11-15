@@ -142,6 +142,17 @@ describe('the landing becomes the number (Sun 8 Nov, example B)', () => {
     ]);
   });
 
+  it('calls a pool above what there was to share money in, never spending', () => {
+    const { view, landings } = viewOn('2026-11-10', {}, -1_800_000);
+    const rows = landedMaths(view, landings);
+    expect(rows.find((r) => r.kind === 'spentBefore')).toBeUndefined();
+    expect(rows.find((r) => r.kind === 'otherIn')?.amount).toBe(1_800_000);
+    const spent = viewOn('2026-11-10', {}, 400_000);
+    const after = landedMaths(spent.view, spent.landings);
+    expect(after.find((r) => r.kind === 'spentBefore')?.amount).toBe(-400_000);
+    expect(after.find((r) => r.kind === 'otherIn')).toBeUndefined();
+  });
+
   it('spreads over six weeks before there are seven closed days, paying December on the way', () => {
     const { view, number } = viewOn('2026-11-08', { closedDays: closed('2026-11-08', 6) });
     // Six weeks from 8 Nov reach 19 Dec: December's jars (1 Dec) and rent (10 Dec) come out first,

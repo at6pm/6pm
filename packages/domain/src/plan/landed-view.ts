@@ -297,6 +297,8 @@ export type LandedRowKind =
   | 'toShare'
   /** Spent before today. */
   | 'spentBefore'
+  /** Money in since that was spread over the days and is no landing. */
+  | 'otherIn'
   /** The coming months' bills that fall due within the days spread over (`on`). */
   | 'ahead'
   /** The coming months' jars (Future you and the others) that fall due within those days. */
@@ -349,7 +351,10 @@ export function landedMaths(view: LandedView, landings: readonly Vnd[]): LandedR
   if (view.bills > 0) rows.push(row('bills', -view.bills));
   if (view.jars > 0) rows.push(row('jars', -view.jars));
   rows.push(row('toShare', view.toShare, { total: true }));
-  if (view.toShare !== view.pool) rows.push(row('spentBefore', view.pool - view.toShare));
+  // The gap is what was spent before today; a pool above what there was to share is money in
+  // spread over the days, never spending.
+  if (view.pool < view.toShare) rows.push(row('spentBefore', view.pool - view.toShare));
+  if (view.pool > view.toShare) rows.push(row('otherIn', view.pool - view.toShare));
   // The coming months' bills and their jars are two lines: Future you is never called a bill.
   const aheadBills = view.ahead - view.aheadJars;
   if (aheadBills > 0) rows.push(row('ahead', -aheadBills, { on: view.through }));
