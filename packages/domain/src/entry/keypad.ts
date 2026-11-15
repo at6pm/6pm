@@ -125,6 +125,23 @@ export function keypadHomeMinor(state: KeypadState): number {
   return toMinor(keypadValue(state), currencyOf(homeOf(state)));
 }
 
+/**
+ * A keypad in the home currency already holding `amount` (minor units), as if it had been typed:
+ * the pay the close says landed, opened on Quick add. Nothing for an amount of none or less.
+ */
+export function keypadHolding(home: Currency, amount: number): KeypadState {
+  const empty = homeKeypad(home);
+  if (!Number.isFinite(amount) || amount <= 0) return empty;
+  const minor = Math.round(amount);
+  const places = home.minorDigits;
+  if (places === 0) return { ...empty, digits: String(minor) };
+  const whole = Math.floor(minor / 10 ** places);
+  const cents = String(minor % 10 ** places)
+    .padStart(places, '0')
+    .replace(/0+$/, '');
+  return { ...empty, digits: cents === '' ? String(whole) : `${whole}.${cents}` };
+}
+
 /** Whether what is typed is in the home currency rather than the other one. */
 export function keypadInHome(state: KeypadState): boolean {
   return state.currency === homeOf(state);

@@ -115,6 +115,20 @@ export const spendRowSchema = z.object({
    * a spend could keep one.
    */
   photo: z.string().regex(PHOTO_NAME).nullable().optional(),
+  /**
+   * Money in only: the income it was (an id from the plan's incomes). Null or absent when it was
+   * none of them, and on rows and backups from before incomes were kept.
+   */
+  incomeId: id.nullable().optional(),
+  /** Money in only: what the client held back from it (tax withheld). Null or absent: nothing. */
+  heldBack: vnd.nullable().optional(),
+  /**
+   * Money in that had some held back: whether the certificate for it came. Null or absent while
+   * nothing was held back, or before it was asked.
+   */
+  certificate: z.boolean().nullable().optional(),
+  /** The day the certificate came, while `certificate` is true. Null or absent otherwise. */
+  certificateOn: day.nullable().optional(),
   createdAt: instant,
   updatedAt: instant,
 });
@@ -126,6 +140,20 @@ export const merchantRuleRowSchema = z.object({
   categoryId: id,
   learnedTimes: z.number().int().nonnegative(),
   setByUser: z.boolean(),
+  /**
+   * What is remembered for this sender or shop, each null or absent until it is: whether it is
+   * work (spending as a work cost, money in as takings), what money in from it was, the jar it was
+   * saved to, and the income it was. Absent on rows and backups from before they were kept.
+   */
+  work: z.boolean().nullable().optional(),
+  moneyIn: moneyInSchema.nullable().optional(),
+  savedTo: id.nullable().optional(),
+  incomeId: id.nullable().optional(),
+  /**
+   * The share a sender holds back from what it pays (tax), as whole percent: its next payment
+   * arrives with that held back. Null or absent: nothing remembered.
+   */
+  heldBackShare: z.number().int().min(1).max(99).nullable().optional(),
 });
 export type MerchantRuleRow = z.infer<typeof merchantRuleRowSchema>;
 
@@ -238,6 +266,18 @@ export const owedRowSchema = z.object({
   settledSpendId: id.nullable(),
   /** When to remind the user to ask; set and read by reminders, null for none. */
   remindAt: instant.nullable(),
+  /**
+   * A request to be paid (Ask to be paid), made without a split: its own id is its `spendId`, and
+   * it keeps the code its transfer note carries, the job, whether it is work and whether the client
+   * is a shop or a company, when it was asked and when a reminder was last sent. Null or absent on
+   * a share of a split, and on rows and backups from before requests.
+   */
+  code: z.string().min(1).nullable().optional(),
+  job: z.string().min(1).nullable().optional(),
+  work: z.boolean().nullable().optional(),
+  company: z.boolean().nullable().optional(),
+  askedAt: instant.nullable().optional(),
+  remindedAt: instant.nullable().optional(),
   updatedAt: instant,
 });
 export type OwedRow = z.infer<typeof owedRowSchema>;

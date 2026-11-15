@@ -306,6 +306,7 @@ describe('backupSnapshotSchema', () => {
     const photo = { name: 'spend-1-mk2.jpg', jpeg: sealed(3_000) };
     const v10 = backupSnapshotSchema.parse({
       ...empty,
+      version: 10,
       spends: [{ ...spend, photo: photo.name }],
       photos: [photo],
     });

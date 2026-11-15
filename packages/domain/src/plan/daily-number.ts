@@ -50,6 +50,33 @@ export interface DailyNumberInput {
   readonly futureYouSkipped?: boolean;
   /** The home currency: lines floor to its step. Đồng when not given. */
   readonly currency?: Currency;
+  /**
+   * For a plan that holds its incomes (`incomePeriod`): the money that came in this budget month
+   * by today and what it has had to set aside, counted in place of the plan's income less bills,
+   * Future you and occasions. Left out, the month is the plan's own, as it always was.
+   */
+  readonly period?: {
+    readonly credited: Vnd;
+    readonly reserved: Vnd;
+    /** The most a line can be: the usual day's cap, for money that only lands. */
+    readonly cap?: Vnd | null;
+    /** The fewest days the money is spread over, today included. */
+    readonly minDays?: number;
+    /**
+     * The line held while a counted pay is late (with `daysLeft` 0): no line is more than it, and
+     * tomorrow's holds there too, from what is left.
+     */
+    readonly hold?: Vnd | null;
+    /** Of `reserved`, the part for bills (Plan's split); the rest is jars. Nothing when left out. */
+    readonly bills?: Vnd;
+    /** What the next money brings (Plan's "tomorrow" row). Nothing when left out. */
+    readonly coming?: Vnd;
+    /**
+     * Kept out of free money before it is divided: what the coming months' bills and jars take
+     * within the days it is spread over, for money that only lands (`landedReach`).
+     */
+    readonly ahead?: Vnd;
+  };
 }
 
 export interface DailyNumber {
@@ -118,14 +145,28 @@ export function dailyNumber(input: DailyNumberInput): DailyNumber {
   const { plan, share = 1, currency = VND } = input;
   const daysLeft = Number.isFinite(input.daysLeft) ? Math.max(0, input.daysLeft) : 0;
   const futureYou = cycleFutureYou(input);
-  const planned = plan.income - plan.bills - futureYou - plan.occasions;
+  const planned = input.period
+    ? input.period.credited - input.period.reserved
+    : plan.income - plan.bills - futureYou - plan.occasions;
   const moneyIn = Number.isFinite(input.moneyIn) ? Math.max(0, input.moneyIn ?? 0) : 0;
   const startFree =
     joinedFree(planned, share, input.beforeJoining) + moneyIn - plan.topUps - input.spentBefore;
-  const line = Math.max(0, floorToStep(startFree / (daysLeft + 1), currency));
+  const minDays = Math.max(0, input.period?.minDays ?? 0);
+  const most = Math.min(
+    input.period?.cap ?? Number.POSITIVE_INFINITY,
+    input.period?.hold ?? Number.POSITIVE_INFINITY,
+  );
+  const ahead = Math.max(0, input.period?.ahead ?? 0);
+  const line = Math.max(
+    0,
+    Math.min(most, floorToStep((startFree - ahead) / Math.max(daysLeft + 1, minDays), currency)),
+  );
   const spent = sumDayPart(input.today, input.notDaily);
   const free = startFree - spent;
-  const tomorrow = daysLeft > 0 ? Math.max(0, floorToStep(free / daysLeft, currency)) : 0;
+  // While a late pay is waited for, tomorrow waits too: it holds where today does, from what is left.
+  const after = Math.max(daysLeft, minDays - 1, input.period?.hold != null ? 1 : 0);
+  const tomorrow =
+    after > 0 ? Math.max(0, Math.min(most, floorToStep((free - ahead) / after, currency))) : 0;
   const overspent = free < 0;
   return {
     startFree,

@@ -4,8 +4,11 @@ import { addDays, diffDays, type LocalDate } from '../time/local-date';
 import { cycleFutureYou, dailyNumber, joinedFree, type DailyNumberInput } from './daily-number';
 import type { PayCycle } from './pay-cycle';
 
-/** The parts the pay splits into, left to right. */
-export type SplitPartKind = 'bills' | 'pots' | 'before' | 'free' | 'over';
+/**
+ * The parts the pay splits into, left to right. `inHand` is only drawn for a plan that holds its
+ * incomes: money beyond what the stretch needs, waiting as days.
+ */
+export type SplitPartKind = 'bills' | 'pots' | 'before' | 'free' | 'over' | 'inHand';
 
 export interface SplitPart {
   readonly kind: SplitPartKind;
@@ -126,11 +129,17 @@ export function planSplit(split: PlanSplitInput): PlanSplit {
   const { plan, share = 1 } = input;
   const day = dailyNumber(input);
   const moneyIn = Number.isFinite(input.moneyIn) ? Math.max(0, input.moneyIn ?? 0) : 0;
-  const pay = plan.income + moneyIn;
-  const pots = cycleFutureYou(input) + plan.occasions + plan.topUps;
-  const planned = plan.income - plan.bills - cycleFutureYou(input) - plan.occasions;
+  // A plan that holds its incomes: the month's money is what came in and is in hand, and what it
+  // reserves splits into its bills and the rest (jars, and what extra pays keep).
+  const { period } = input;
+  const income = period ? period.credited : plan.income;
+  const bills = period ? (period.bills ?? 0) : plan.bills;
+  const jars = period ? period.reserved - bills : cycleFutureYou(input) + plan.occasions;
+  const pay = income + moneyIn;
+  const pots = jars + plan.topUps;
+  const planned = income - bills - jars;
   const before = planned - joinedFree(planned, share, input.beforeJoining);
-  const freeThisMonth = pay - plan.bills - pots;
+  const freeThisMonth = pay - bills - pots;
   const free = freeThisMonth - before;
   const over = day.overspent ? -day.free : 0;
   const daysLeft = Math.max(0, input.daysLeft);
@@ -151,13 +160,14 @@ export function planSplit(split: PlanSplitInput): PlanSplit {
       maths.push(row(spentRow ?? 'spentBefore', -input.spentBefore));
     }
     if (maths.length > 1) maths.push(row('left', day.startFree, { total: true }));
-    maths.push(row('divide', day.line, { total: true, result: true, count: daysLeft + 1 }));
-    if (daysLeft === 1) maths.push(row('tomorrow', plan.income));
+    const count = Math.max(daysLeft + 1, period?.minDays ?? 0);
+    maths.push(row('divide', day.line, { total: true, result: true, count }));
+    if (daysLeft === 1) maths.push(row('tomorrow', period ? (period.coming ?? 0) : plan.income));
   }
 
   return {
     pay,
-    bills: plan.bills,
+    bills,
     pots,
     before,
     free,
@@ -169,7 +179,7 @@ export function planSplit(split: PlanSplitInput): PlanSplit {
     lastDay: daysLeft === 1,
     first,
     parts: [
-      { kind: 'bills', amount: Math.max(0, plan.bills) },
+      { kind: 'bills', amount: Math.max(0, bills) },
       { kind: 'pots', amount: Math.max(0, pots) },
       ...(before > 0 ? [{ kind: 'before' as const, amount: before }] : []),
       { kind: 'free', amount: Math.max(0, free) },

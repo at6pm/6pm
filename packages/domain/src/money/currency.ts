@@ -149,6 +149,11 @@ export function floorToStep(amount: Money, currency: Currency): Money {
   return Math.floor(amount / currency.step) * currency.step;
 }
 
+/** Ceils to a whole step, as a pay's slice of a bill does: the bill is never short. */
+export function ceilToStep(amount: Money, currency: Currency): Money {
+  return Math.ceil(amount / currency.step) * currency.step;
+}
+
 /** Rounds to the nearest step. */
 export function roundToStep(amount: Money, currency: Currency): Money {
   return Math.round(amount / currency.step) * currency.step;

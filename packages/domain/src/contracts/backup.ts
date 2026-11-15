@@ -34,9 +34,14 @@ export const BACKUP_FORMAT_VERSION = 1;
  * Format 8 brought the Tết jar and lì xì envelopes: a phone from before would count the Tết jar
  * against the free jars and lose how many envelopes each lì xì held. Format 9 brought who owes
  * the user what: a phone from before would lose every open line. Format 10 brought spends'
- * photos: a phone from before would drop them.
+ * photos: a phone from before would drop them. Format 11 brought incomes for every kind of earner
+ * (the plan's incomes, money in named by its income, what was held back, and what each sender and
+ * shop is remembered as): a phone from before would drop the incomes and count the plan's monthly
+ * income in full. Requests to be paid (owed lines with a code and a job), the day a tax
+ * certificate came and the share a sender holds back arrived in the same format, as optional
+ * fields.
  */
-export const BACKUP_SNAPSHOT_VERSION = 10;
+export const BACKUP_SNAPSHOT_VERSION = 11;
 
 /** AES-GCM: a 12-byte nonce in front of the ciphertext, a 16-byte tag behind it. */
 export const BACKUP_IV_BYTES = 12;
