@@ -360,6 +360,8 @@ export function useDiary() {
     recapKicker: t('diary.recap.kicker', { range: dates.range(monday, today) }),
     letters: dates.letters(monday),
     monthTitle: dates.month(month),
+    /** The month shown, when it has a closed evening to put on a card. */
+    shareMonth: monthClosed.length > 0 ? month : null,
     summary:
       monthClosed.length === 0 && brought.days.size > 0
         ? t('import.diary.summary', { app: appName })

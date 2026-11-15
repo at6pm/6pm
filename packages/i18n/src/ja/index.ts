@@ -30,6 +30,7 @@ import { jaReceiptEmail } from './receipt-email';
 import { jaScan } from './scan';
 import { jaShareExt } from './share-ext';
 import { jaSharing } from './sharing';
+import { jaShareCards } from './share-cards';
 import { jaSurfaces } from './surfaces';
 import { jaWidgets } from './widgets';
 import { jaToday } from './today';
@@ -72,6 +73,7 @@ export const ja: Catalogue = {
   ...jaPrivacyAi,
   ...jaNative,
   ...jaSharing,
+  ...jaShareCards,
   ...jaShareExt,
   ...jaIntents,
   ...jaCaptureWalk,

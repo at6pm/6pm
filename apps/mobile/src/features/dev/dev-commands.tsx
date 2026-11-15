@@ -29,6 +29,8 @@ import { seedDesignTet } from './design-tet-seed';
 import { resetSeasonOffer } from '../pots/use-new-year';
 import { languages } from '@6pm/i18n';
 import { seedCaptureHealth } from './design-capture-health-seed';
+import { seedDesignStreak, showYearCardAnyDay } from './design-streak-seed';
+import { settingsActions } from '../../data/settings-actions';
 import { writeFirstCatch } from '../../data/first-catch';
 import { addDays } from '@6pm/domain';
 import {
@@ -98,6 +100,12 @@ const commandSchema = z.object({
     .optional(),
   /** "later": onboarding's "I'll do it later" said yesterday, so Today shows its empty slip. */
   firstCatch: z.literal('later').optional(),
+  /** After the seed: this many evenings closed back to back, ending yesterday (share cards). */
+  streak: z.number().int().min(1).max(400).optional(),
+  /** Shows Today's Year card whatever the date, to check it before 20 December. */
+  yearCard: z.boolean().optional(),
+  /** Serious mode on or off, as the Settings switch sets it. */
+  serious: z.boolean().optional(),
   /** Seeds 14 days of catches per way and this month's receipts read on the phone. */
   captureHealth: z.boolean().optional(),
   /** A file in Documents opened in "Bring your history" as if picked ("momo.xlsx"). */
@@ -160,7 +168,11 @@ export function DevCommands() {
         dumpNotifications,
         remindSoon,
         language: speak,
+        streak,
+        yearCard,
+        serious,
       } = parsed.data;
+      if (yearCard !== undefined) showYearCardAnyDay(yearCard);
       if (speak !== undefined) setLanguage(speak);
       if (aiMode !== undefined) setAiMode(db, aiMode);
       if (look !== undefined) lookStore.setLook(look, () => true);
@@ -208,7 +220,9 @@ export function DevCommands() {
         if (seed === 'moneyIn') await seedDesignMoneyIn(store, day);
         if (jars) await seedDesignJars(store, day, jars);
         if (owed) await seedDesignOwed(store, day, owed);
+        if (streak) await seedDesignStreak(store, day, streak);
       });
+      if (serious !== undefined) await settingsActions(store).updatePlan({ serious });
       if (photo) {
         const picture = new File(Paths.document, photo).uri;
         const split = await store.db.getAllAsync<{ spend_id: string }>(

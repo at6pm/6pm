@@ -1,22 +1,49 @@
-import { addDays, payCycleOn, replanWorded, type DailyNumber, type LocalDate } from '@6pm/domain';
+import { useState } from 'react';
+
+import {
+  addDays,
+  payCycleOn,
+  replanWorded,
+  type DailyNumber,
+  type LocalDate,
+  type StreakMilestone,
+} from '@6pm/domain';
 import { localeOf } from '@6pm/i18n';
 
 import { useMoney } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
+import { ShareChip } from '../sharing/share-chip';
+import { StreakSunset } from '../sharing/streak-sunset';
+import { useMarkStreakOffered } from '../sharing/streak-offer';
 import { monthDots } from './month-dots';
 import { CloseReveal } from './close-reveal';
 
-/** Tomorrow's number for the day just closed, with the month's dots and the companion's line. */
+/**
+ * The chip comes in 600 ms after the reveal settles: the number starts rolling at 700 ms and
+ * rolls for about a second.
+ */
+const CHIP_AFTER_MS = 2300;
+
+/**
+ * Tomorrow's number for the day just closed, with the month's dots and the companion's line; on a
+ * streak milestone, the streak as sunsets and the chip that shares its card.
+ */
 export function CloseRevealStep({
   day,
   number,
+  milestone: found,
   onDone,
 }: {
   readonly day: LocalDate;
   readonly number: DailyNumber;
+  /** The streak milestone tonight reaches (`useStreakMilestone`, read as the close opened). */
+  readonly milestone: StreakMilestone | null;
   readonly onDone: () => void;
 }) {
+  // Kept as the reveal first drew it: a milestone read late never swaps the dots for the suns.
+  const [milestone] = useState(found);
+  useMarkStreakOffered(milestone);
   const { t, language } = useI18n();
   const money = useMoneyFormat();
   const snap = useMoney();
@@ -73,6 +100,22 @@ export function CloseRevealStep({
       nudge={t('close.reveal.nudge', { time: plan.closeAt })}
       doneLabel={t('close.reveal.done')}
       onDone={onDone}
+      milestone={
+        milestone === null
+          ? null
+          : {
+              art: <StreakSunset />,
+              line: t('shareCards.streak.reveal', { count: milestone }),
+              chip: (
+                <ShareChip
+                  card="streak"
+                  of={day}
+                  label={t('shareCards.chipPostcard')}
+                  delay={CHIP_AFTER_MS}
+                />
+              ),
+            }
+      }
     />
   );
 }

@@ -30,6 +30,7 @@ import { thReceiptEmail } from './receipt-email';
 import { thScan } from './scan';
 import { thShareExt } from './share-ext';
 import { thSharing } from './sharing';
+import { thShareCards } from './share-cards';
 import { thSurfaces } from './surfaces';
 import { thWidgets } from './widgets';
 import { thToday } from './today';
@@ -72,6 +73,7 @@ export const th: Catalogue = {
   ...thPrivacyAi,
   ...thNative,
   ...thSharing,
+  ...thShareCards,
   ...thShareExt,
   ...thIntents,
   ...thCaptureWalk,

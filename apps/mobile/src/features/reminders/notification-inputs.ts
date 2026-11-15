@@ -118,10 +118,10 @@ export function paydayOf(snapshot: MoneySnapshot): PaydayPreview | null {
 }
 
 /**
- * Whether this build has a year card to offer on 31 December: it has none, so that day's close
- * reminder carries whatever else the day has.
+ * Whether this build has a year card to offer on 31 December: it has (My year, on Today from 20
+ * December), so that day's close reminder says so.
  */
-const YEAR_CARD = false;
+const YEAR_CARD = true;
 
 /** Everything to schedule now, worked out by the domain from the snapshot and the switches. */
 export function plannedNotifications(input: {

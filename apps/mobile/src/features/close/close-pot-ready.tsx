@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useEffect, useRef, useState, type ComponentRef } from 'react';
 import { Text, View } from 'react-native';
 import Animated, {
@@ -40,6 +41,7 @@ import { jarColours } from '../pots/jar-colours';
 import { jarName } from '../pots/jar-name';
 import { captureView } from '../sharing/capture-view';
 import { shareFileName } from '../sharing/share-file';
+import { shareCardHref } from '../sharing/share-chip';
 import { useShareImage } from '../sharing/use-share-image';
 import { CLOSE_SHADE } from './jar-split';
 
@@ -109,6 +111,7 @@ function PotReady({
   const money = useMoneyFormat();
   const snap = useMoney();
   const { share } = useShareImage();
+  const router = useRouter();
   const card = useRef<ComponentRef<typeof View>>(null);
   const c = jarColours(jar.hue);
   const name = jarName(jar, t);
@@ -340,7 +343,13 @@ function PotReady({
         </PressScale>
         <PressScale
           accessibilityLabel={t('potsClose.ready.share')}
-          onPress={() => void share(shareFileName('jar', jar.id), () => captureView(card))}
+          onPress={() => {
+            // A full jar opens its card to share; a jar whose month came shares this card as is.
+            if (full) {
+              haptics.tap();
+              router.push(shareCardHref('jar', jar.id));
+            } else void share(shareFileName('jar', jar.id), () => captureView(card));
+          }}
           style={{
             width: 56,
             height: 56,

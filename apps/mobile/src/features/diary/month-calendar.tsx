@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
@@ -248,6 +249,7 @@ export function MonthCalendar({
   onPage,
   stamp = null,
   broughtOnly = false,
+  footer = null,
 }: {
   readonly title: string;
   readonly summary: string;
@@ -265,6 +267,8 @@ export function MonthCalendar({
   readonly stamp?: string | null;
   /** Every day with something is brought in: the card is drawn as an outline, not filled. */
   readonly broughtOnly?: boolean;
+  /** Under the weeks, at the right: the quiet chip that shares the month. */
+  readonly footer?: ReactNode;
 }) {
   const { palette } = useTheme();
   const { t } = useI18n();
@@ -368,6 +372,9 @@ export function MonthCalendar({
           </View>
         ))}
       </View>
+      {footer ? (
+        <View style={{ alignItems: 'flex-end', paddingHorizontal: 2 }}>{footer}</View>
+      ) : null}
       {stamp ? (
         <View
           pointerEvents="none"

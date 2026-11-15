@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn, ZoomIn } from 'react-native-reanimated';
 
@@ -31,6 +31,16 @@ export function CloseReveal(props: {
   readonly nudge: string;
   readonly doneLabel: string;
   readonly onDone: () => void;
+  /**
+   * A streak milestone reached tonight (7, 30, 100 evenings): the month's dots give way to the
+   * streak as sunsets (`art`), the line says how many evenings in a row, and the quiet chip that
+   * shares its card comes in once the number has settled.
+   */
+  readonly milestone?: {
+    readonly art: ReactNode;
+    readonly line: string;
+    readonly chip: ReactNode;
+  } | null;
 }) {
   const { palette, serious } = useTheme();
   const [value, setValue] = useState(props.from);
@@ -94,36 +104,49 @@ export function CloseReveal(props: {
         </Text>
       ) : null}
       <Text style={{ ...mono(12, 400, 0.04), color: palette.inkSoft }}>{props.sub}</Text>
-      <View style={{ alignItems: 'center', gap: 12, marginTop: 22 }}>
-        <Text style={{ ...mono(10.5, 400, 0.16), color: palette.inkSoft }}>{props.month}</Text>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', width: 16 * 10 + 15 * 6, gap: 6 }}>
-          {props.monthDays.map((d, i) =>
-            d === 'today' ? (
-              <Animated.View
-                key={i}
-                entering={ZoomIn.delay(900).springify().damping(10)}
-                style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: palette.accent }}
-              />
-            ) : (
-              <View
-                key={i}
-                style={{
-                  width: 10,
-                  height: 10,
-                  borderRadius: 5,
-                  backgroundColor: d === 'closed' ? palette.accent : 'transparent',
-                  borderWidth: d === 'closed' ? 0 : 1.5,
-                  borderColor: palette.hair,
-                }}
-              />
-            ),
-          )}
+      {props.milestone ? (
+        <View style={{ alignItems: 'center', gap: 10 }}>
+          {props.milestone.art}
+          <Text style={{ ...display(24, 500), color: palette.ink }}>{props.milestone.line}</Text>
+          {props.milestone.chip}
         </View>
-        <View style={{ alignItems: 'center', gap: 3 }}>
-          <Text style={{ ...body(15, 650), color: palette.ink }}>{props.streak}</Text>
-          <Text style={{ ...body(13.5), color: palette.inkSoft }}>{props.nudge}</Text>
+      ) : (
+        <View style={{ alignItems: 'center', gap: 12, marginTop: 22 }}>
+          <Text style={{ ...mono(10.5, 400, 0.16), color: palette.inkSoft }}>{props.month}</Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', width: 16 * 10 + 15 * 6, gap: 6 }}>
+            {props.monthDays.map((d, i) =>
+              d === 'today' ? (
+                <Animated.View
+                  key={i}
+                  entering={ZoomIn.delay(900).springify().damping(10)}
+                  style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: 5,
+                    backgroundColor: palette.accent,
+                  }}
+                />
+              ) : (
+                <View
+                  key={i}
+                  style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: 5,
+                    backgroundColor: d === 'closed' ? palette.accent : 'transparent',
+                    borderWidth: d === 'closed' ? 0 : 1.5,
+                    borderColor: palette.hair,
+                  }}
+                />
+              ),
+            )}
+          </View>
+          <View style={{ alignItems: 'center', gap: 3 }}>
+            <Text style={{ ...body(15, 650), color: palette.ink }}>{props.streak}</Text>
+            <Text style={{ ...body(13.5), color: palette.inkSoft }}>{props.nudge}</Text>
+          </View>
         </View>
-      </View>
+      )}
       <View style={{ flex: 1.3 }} />
       <PressScale
         scaleTo={0.97}

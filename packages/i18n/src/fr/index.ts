@@ -30,6 +30,7 @@ import { frReceiptEmail } from './receipt-email';
 import { frScan } from './scan';
 import { frShareExt } from './share-ext';
 import { frSharing } from './sharing';
+import { frShareCards } from './share-cards';
 import { frSurfaces } from './surfaces';
 import { frWidgets } from './widgets';
 import { frToday } from './today';
@@ -72,6 +73,7 @@ export const fr: Catalogue = {
   ...frPrivacyAi,
   ...frNative,
   ...frSharing,
+  ...frShareCards,
   ...frShareExt,
   ...frIntents,
   ...frCaptureWalk,
@@ -104,6 +106,8 @@ export const fr: Catalogue = {
  */
 export const frSameAsEnglish: readonly string[] = [
   ...importSketchEnglish,
+  // Instagram's own word for its 9:16 posts.
+  'Story',
   'App',
   'Apps',
   'Auto',

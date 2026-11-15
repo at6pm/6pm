@@ -24,6 +24,7 @@ import { useHeaderMeasure, type HeaderShape } from '../home/header-measure';
 import { useHomePageScroll } from '../home/home-scroll';
 import { markPaydayShown, paydayShown } from './payday-shown';
 import { usePlanFormat, type PlanFormat } from './plan-format';
+import { ShareChip } from '../sharing/share-chip';
 import { PanelSwitch } from './panel-switch';
 import { planRoutes } from './plan-routes';
 import { beforeEditable, billViews, planJarsOf, planSplitOf, type BillView } from './plan-view';
@@ -266,6 +267,12 @@ function PlanContent({
           )
         }
       </PanelSwitch>
+
+      {snap.plan && snap.plan.income > 0 ? (
+        <View style={{ alignItems: 'center', paddingTop: 4 }}>
+          <ShareChip card="split" label={t('shareCards.chipSplit')} />
+        </View>
+      ) : null}
     </>
   );
 }

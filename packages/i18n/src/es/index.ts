@@ -30,6 +30,7 @@ import { esReceiptEmail } from './receipt-email';
 import { esScan } from './scan';
 import { esShareExt } from './share-ext';
 import { esSharing } from './sharing';
+import { esShareCards } from './share-cards';
 import { esSurfaces } from './surfaces';
 import { esWidgets } from './widgets';
 import { esToday } from './today';
@@ -72,6 +73,7 @@ export const es: Catalogue = {
   ...esPrivacyAi,
   ...esNative,
   ...esSharing,
+  ...esShareCards,
   ...esShareExt,
   ...esIntents,
   ...esCaptureWalk,

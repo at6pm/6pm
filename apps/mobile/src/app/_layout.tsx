@@ -90,6 +90,7 @@ function Screens() {
         <Stack.Screen name="receiving-account" options={edgeSheet} />
         <Stack.Screen name="missed-day" options={drawnSheet} />
         <Stack.Screen name="money-diary" options={sheet} />
+        <Stack.Screen name="share-card" options={sheet} />
         <Stack.Screen name="new-pot" options={edgeSheet} />
         <Stack.Screen name="new-year-jar" options={edgeSheet} />
         <Stack.Screen name="pots" options={edgeSheet} />

@@ -34,6 +34,7 @@ import { TonightCard } from './tonight-card';
 import { useOpenAsk, useOpenSpend } from '../duo/spread-pane';
 import { useTryingOn } from '../looks/look-settings-provider';
 import { JarShelf } from '../pots/shelf';
+import { YearOnToday } from '../sharing/year-on-today';
 import { OwedRow } from '../owed/owed-row';
 import { NewYearOfferCard } from '../pots/new-year-offer-card';
 import { useNewYear } from '../pots/use-new-year';
@@ -186,6 +187,7 @@ export function TodayPage({
               onOpenDay={openWeekDay}
               onOpenReceipt={() => showDiary(snap.today)}
             />
+            <YearOnToday />
             <JarShelf />
             <OwedRow />
             <TodayList

@@ -2,6 +2,7 @@ import { viCaptureAlerts } from './vi-capture-alerts';
 import { viCaptureWalk } from './vi-capture-walk';
 import { viNative } from './vi-native';
 import { viSharing } from './vi-sharing';
+import { viShareCards } from './vi-share-cards';
 import { viShareExt } from './vi-share-ext';
 import { viIntents } from './vi-intents';
 import { viVoice } from './vi-voice';
@@ -69,6 +70,7 @@ export const vi: Catalogue = {
   ...viPrivacyAi,
   ...viNative,
   ...viSharing,
+  ...viShareCards,
   ...viShareExt,
   ...viIntents,
   ...viCaptureWalk,

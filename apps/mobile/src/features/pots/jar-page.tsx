@@ -47,6 +47,7 @@ import { useOfferUndo } from '../../ui/undo/undo-host';
 import { useRunAction } from '../companion/use-run-action';
 import { AmountKeypadSheet } from '../quick-add/amount-keypad-sheet';
 import { JarAddChoice, JarAddLines } from './jar-add-from';
+import { ShareChip } from '../sharing/share-chip';
 import { JarHero } from './jar-hero';
 import { setJarAway, takeFlightSource } from './jar-flight';
 import { JarActions, JarMoves } from './jar-page-parts';
@@ -413,6 +414,11 @@ export function JarPage({
                   { icon: 'tune', label: t('pots.page.edit'), onPress: edit },
                 ]}
               />
+              {jar.state === 'full' ? (
+                <View style={{ alignItems: 'center' }}>
+                  <ShareChip card="jar" of={jar.id} label={t('shareCards.chip')} />
+                </View>
+              ) : null}
               <JarMoves
                 lines={moves}
                 format={format}
