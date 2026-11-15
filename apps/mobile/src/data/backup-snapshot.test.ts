@@ -370,6 +370,127 @@ describe('the snapshot of the phone', () => {
   });
 });
 
+/** Every sighting row as the database holds it, every column. */
+const sightingRows = (db: ReturnType<typeof openMemoryDb>) =>
+  db.getAllAsync<Record<string, unknown>>(
+    'SELECT * FROM spend_sightings ORDER BY spend_id, seen_at',
+    [],
+  );
+
+describe('what a sighting kept in the snapshot', () => {
+  /** A phone whose second spend was seen by its bank's alert, with every word the alert gave. */
+  async function phoneWithAlert() {
+    const db = openMemoryDb();
+    await seedMoney(db);
+    await db.runAsync(
+      `INSERT INTO spend_sightings (spend_id, source, seen_at, detail, capture_id, channel,
+        witness_kind, witness_name, what, amount, currency, direction, at_kind, reference,
+        account_tail, bank, payee, memo, words)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        'spend-2',
+        'alert',
+        '2026-10-10T03:31:00.000Z',
+        'MB Bank',
+        'capture-9',
+        'alert',
+        'bank',
+        'MB Bank',
+        'payment',
+        85_000,
+        'VND',
+        'out',
+        'printed',
+        'FT26283123456',
+        '6789',
+        'MB Bank',
+        'HIGHLANDS COFFEE',
+        'thanh toan ca phe',
+        'mb:3f9a1c',
+      ],
+    );
+    return db;
+  }
+
+  it('carries what the witness said and puts every column back', async () => {
+    const original = await phoneWithAlert();
+    const [written] = (await sightingRows(original)).filter((row) => row.spend_id === 'spend-2');
+    // Every column is filled, so one added later and not carried fails here.
+    expect(Object.values(written ?? {}).every((value) => value !== null)).toBe(true);
+    const snapshot = await buildSnapshot(original, TAKEN);
+
+    expect(backupSnapshotSchema.safeParse(snapshot).success).toBe(true);
+    expect(snapshot.spendSightings.find((row) => row.spendId === 'spend-2')).toEqual({
+      spendId: 'spend-2',
+      source: 'alert',
+      seenAt: '2026-10-10T03:31:00.000Z',
+      detail: 'MB Bank',
+      captureId: 'capture-9',
+      channel: 'alert',
+      witnessKind: 'bank',
+      witnessName: 'MB Bank',
+      what: 'payment',
+      amount: 85_000,
+      currency: 'VND',
+      direction: 'out',
+      atKind: 'printed',
+      reference: 'FT26283123456',
+      accountTail: '6789',
+      bank: 'MB Bank',
+      payee: 'HIGHLANDS COFFEE',
+      memo: 'thanh toan ca phe',
+      words: 'mb:3f9a1c',
+    });
+
+    const fresh = openMemoryDb();
+    await restoreSnapshot(fresh, snapshot);
+    expect(await sightingRows(fresh)).toEqual(await sightingRows(original));
+    expect(await buildSnapshot(fresh, TAKEN)).toEqual(snapshot);
+  });
+
+  it('leaves out what a sighting kept before them never said', async () => {
+    const snapshot = await buildSnapshot(await phoneWithAlert(), TAKEN);
+    expect(snapshot.spendSightings.find((row) => row.spendId === 'spend-1')).toEqual({
+      spendId: 'spend-1',
+      source: 'email',
+      seenAt: '2026-10-10T05:13:00.000Z',
+      detail: 'Duplicate merged',
+      captureId: null,
+    });
+  });
+
+  it('restores a snapshot taken before sightings kept them, with their columns empty', async () => {
+    const source = await phoneWithAlert();
+    const current = await buildSnapshot(source, TAKEN);
+    const older = {
+      ...current,
+      version: 10,
+      spendSightings: current.spendSightings.map(({ spendId, source, seenAt, detail }) => ({
+        spendId,
+        source,
+        seenAt,
+        detail,
+      })),
+    };
+    const parsed = backupSnapshotSchema.safeParse(older);
+    expect(parsed.success).toBe(true);
+
+    const phone = openMemoryDb();
+    await restoreSnapshot(phone, parsed.data ?? older);
+    const rows = await sightingRows(phone);
+    expect(rows.map((row) => row.spend_id)).toEqual(['spend-1', 'spend-2']);
+    const kept = new Set(['spend_id', 'source', 'seen_at', 'detail']);
+    for (const row of rows) {
+      const said = Object.entries(row).filter(([column]) => !kept.has(column));
+      expect(said.length).toBeGreaterThan(0);
+      expect(said.every(([, value]) => value === null)).toBe(true);
+    }
+    expect((await buildSnapshot(phone, TAKEN)).spendSightings).toEqual(
+      older.spendSightings.map((row) => ({ ...row, captureId: null })),
+    );
+  });
+});
+
 /** A phone whose kept spend has a photo of `kb` kilobytes (its base64 in the folder). */
 async function phoneWithPhoto(kb = 3) {
   const db = openMemoryDb();

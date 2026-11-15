@@ -82,6 +82,43 @@ describe('backupSnapshotSchema', () => {
     expect(backupSnapshotSchema.safeParse({ ...empty, extra: [] }).success).toBe(false);
   });
 
+  it("carries what a sighting's witness said, and reads sightings kept before it was kept", () => {
+    const older = {
+      spendId: 'spend-1',
+      source: 'alert',
+      seenAt: '2026-10-10T03:31:00.000Z',
+      detail: null,
+    };
+    const said = {
+      ...older,
+      captureId: 'capture-9',
+      channel: 'alert',
+      witnessKind: 'bank',
+      witnessName: 'MB Bank',
+      what: 'reversal',
+      amount: 85_000,
+      currency: 'VND',
+      direction: 'out',
+      atKind: 'printed',
+      reference: 'FT26283123456',
+      accountTail: '6789',
+      bank: 'MB Bank',
+      payee: 'HIGHLANDS COFFEE',
+      memo: 'thanh toan',
+      words: 'mb:3f9a1c',
+    };
+    const read = (sighting: object) =>
+      backupSnapshotSchema.safeParse({ ...empty, spendSightings: [sighting] });
+    expect(read(older).success).toBe(true);
+    expect(
+      backupSnapshotSchema.safeParse({ ...empty, version: 10, spendSightings: [older] }).success,
+    ).toBe(true);
+    expect(read(said).data?.spendSightings[0]).toEqual(said);
+    expect(read({ ...said, channel: 'fax' }).success).toBe(false);
+    expect(read({ ...said, what: 'gift' }).success).toBe(false);
+    expect(read({ ...said, amount: 1.5 }).success).toBe(false);
+  });
+
   it('reads an older snapshot without Budget together history, and a newer one with it', () => {
     expect(backupSnapshotSchema.safeParse({ ...empty, version: 1 }).success).toBe(true);
     const move = {

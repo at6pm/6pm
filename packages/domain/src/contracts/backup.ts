@@ -9,9 +9,16 @@ import {
   owedRowSchema,
   PHOTO_NAME,
   potRowSchema,
+  spendDirectionSchema,
   spendRowSchema,
   spendSourceSchema,
 } from './local-rows';
+import type {
+  SightingAtKind,
+  SightingChannel,
+  SightingWhat,
+  SightingWitness,
+} from '../capture/sighting';
 
 /**
  * End-to-end encrypted backup. The phone seals a snapshot of its database with a random AES-256
@@ -109,6 +116,46 @@ export type BackupSettingKey = (typeof BACKUP_SETTING_KEYS)[number];
 
 const settingText = z.string().max(100_000).optional();
 
+/** Each set is whole for its type: a value added there must be added here, or this fails to build. */
+const SIGHTING_CHANNELS = {
+  alert: true,
+  email: true,
+  shared: true,
+  receiptPhoto: true,
+  qr: true,
+  wallet: true,
+  typed: true,
+  voice: true,
+  cash: true,
+  import: true,
+} as const satisfies Record<SightingChannel, true>;
+const SIGHTING_WITNESSES = {
+  bank: true,
+  wallet: true,
+  shop: true,
+  person: true,
+} as const satisfies Record<SightingWitness['kind'], true>;
+const SIGHTING_WHATS = {
+  payment: true,
+  incoming: true,
+  refund: true,
+  reversal: true,
+  failed: true,
+  ownTransfer: true,
+} as const satisfies Record<SightingWhat, true>;
+const SIGHTING_AT_KINDS = {
+  printed: true,
+  delivered: true,
+  sent: true,
+  now: true,
+} as const satisfies Record<SightingAtKind, true>;
+
+const keysOf = <K extends string>(set: Readonly<Record<K, true>>) =>
+  Object.keys(set) as [K, ...K[]];
+
+/** A text a sighting keeps from its witness, absent when the witness did not say it. */
+const sightingText = z.string().nullable().optional();
+
 export const spendSightingRowSchema = z.object({
   spendId: z.string().min(1),
   source: spendSourceSchema,
@@ -116,6 +163,25 @@ export const spendSightingRowSchema = z.object({
   detail: z.string().nullable(),
   /** The capture it came from; absent in backups taken before sightings kept it. */
   captureId: z.string().nullable().optional(),
+  /**
+   * What the witness said (`CaptureSighting`), each absent when it did not say it and in backups
+   * taken before sightings kept it; such a sighting comes back as one kept before.
+   */
+  channel: z.enum(keysOf(SIGHTING_CHANNELS)).nullable().optional(),
+  witnessKind: z.enum(keysOf(SIGHTING_WITNESSES)).nullable().optional(),
+  witnessName: sightingText,
+  what: z.enum(keysOf(SIGHTING_WHATS)).nullable().optional(),
+  /** In minor units of `currency`, as the witness gave it. */
+  amount: z.number().int().nullable().optional(),
+  currency: sightingText,
+  direction: spendDirectionSchema.nullable().optional(),
+  atKind: z.enum(keysOf(SIGHTING_AT_KINDS)).nullable().optional(),
+  reference: sightingText,
+  accountTail: sightingText,
+  bank: sightingText,
+  payee: sightingText,
+  memo: sightingText,
+  words: sightingText,
 });
 export type SpendSightingRow = z.infer<typeof spendSightingRowSchema>;
 
