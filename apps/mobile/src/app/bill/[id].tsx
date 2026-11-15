@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { ScrollView, Text, TextInput, type TextInputInstance, View } from 'react-native';
+import { Text, TextInput, type TextInputInstance, View } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 import { lastMonthAfter, monthsLeftOf, type BillKind } from '@6pm/domain';
@@ -15,7 +15,7 @@ import { BillRepaymentCard } from '../../features/plan/bill-repayment-card';
 import { PotCard, SheetHeader } from '../../features/plan/pot-rows';
 import { useI18n } from '../../i18n/i18n';
 import { haptics } from '../../ui/haptics';
-import { SheetFrame } from '../../ui/navigation/sheet-frame';
+import { EdgeSheetScroll, FittedSheet } from '../../ui/navigation/edge-sheet';
 import { useFocusOnPresent } from '../../ui/navigation/use-focus-on-present';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
@@ -120,10 +120,9 @@ export default function BillSheet() {
   };
 
   return (
-    <SheetFrame
-      header={<SheetHeader title={bill ? t('plan.bill.editTitle') : t('plan.bill.newTitle')} />}
-    >
-      <ScrollView
+    <FittedSheet>
+      {<SheetHeader title={bill ? t('plan.bill.editTitle') : t('plan.bill.newTitle')} />}
+      <EdgeSheetScroll
         keyboardShouldPersistTaps="handled"
         automaticallyAdjustKeyboardInsets
         showsVerticalScrollIndicator={false}
@@ -222,7 +221,7 @@ export default function BillSheet() {
             </Text>
           </PressScale>
         ) : null}
-      </ScrollView>
-    </SheetFrame>
+      </EdgeSheetScroll>
+    </FittedSheet>
   );
 }

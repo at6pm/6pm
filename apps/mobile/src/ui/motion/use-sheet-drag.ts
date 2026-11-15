@@ -141,6 +141,10 @@ export function useSheetDrag({
 
 export interface ScrollDismiss {
   readonly ref: AnimatedRef<Animated.ScrollView>;
+  /** How far the content is scrolled. */
+  readonly offset: ReturnType<typeof useSharedValue<number>>;
+  /** How far it can scroll: its content less what shows, as of its last scroll. */
+  readonly extent: ReturnType<typeof useSharedValue<number>>;
   readonly onScroll: ReturnType<typeof useAnimatedScrollHandler>;
   /** Goes on a GestureDetector around the ScrollView. */
   readonly gesture: ReturnType<typeof Gesture.Simultaneous>;
@@ -154,12 +158,14 @@ export interface ScrollDismiss {
 export function useScrollDismiss(sheet: SheetDrag): ScrollDismiss {
   const ref = useAnimatedRef<Animated.ScrollView>();
   const offset = useSharedValue(0);
+  const extent = useSharedValue(0);
   const pulling = useSharedValue(false);
   const from = useSharedValue(0);
 
   const onScroll = useAnimatedScrollHandler({
     onScroll: (e) => {
       offset.set(e.contentOffset.y);
+      extent.set(Math.max(0, e.contentSize.height - e.layoutMeasurement.height));
     },
   });
 
@@ -193,5 +199,8 @@ export function useScrollDismiss(sheet: SheetDrag): ScrollDismiss {
     return Gesture.Simultaneous(pan, native);
   }, [sheet, ref, offset, pulling, from]);
 
-  return { ref, onScroll, gesture };
+  return useMemo(
+    () => ({ ref, offset, extent, onScroll, gesture }),
+    [ref, offset, extent, onScroll, gesture],
+  );
 }

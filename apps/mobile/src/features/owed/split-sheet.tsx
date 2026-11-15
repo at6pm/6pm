@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import Animated, {
   Easing,
   FadeIn,
@@ -19,7 +19,7 @@ import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
 import { Symbol } from '../../ui/icons/symbol';
 import { FitWidth } from '../../ui/layout/fit-width';
-import { SheetFrame } from '../../ui/navigation/sheet-frame';
+import { EdgeSheetScroll, FittedSheet } from '../../ui/navigation/edge-sheet';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, tabular } from '../../ui/type/fonts';
@@ -236,9 +236,9 @@ export function SplitSheet({ spendId }: { readonly spendId: string }) {
   );
 
   return (
-    <SheetFrame header={header}>
-      <ScrollView
-        style={{ flex: 1 }}
+    <FittedSheet>
+      {header}
+      <EdgeSheetScroll
         contentInsetAdjustmentBehavior="never"
         keyboardShouldPersistTaps="handled"
         automaticallyAdjustKeyboardInsets
@@ -317,7 +317,7 @@ export function SplitSheet({ spendId }: { readonly spendId: string }) {
             }}
           />
         </View>
-      </ScrollView>
+      </EdgeSheetScroll>
       <View style={{ paddingTop: 12, paddingHorizontal: 16, paddingBottom: 34 }}>
         <PressScale
           scaleTo={0.97}
@@ -369,6 +369,6 @@ export function SplitSheet({ spendId }: { readonly spendId: string }) {
           onClose={() => setTyping(null)}
         />
       ) : null}
-    </SheetFrame>
+    </FittedSheet>
   );
 }

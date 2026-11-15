@@ -7,9 +7,10 @@ import Purchases, {
 
 import {
   LOOK_PRODUCT_IDS,
-  MAX_PLANS,
   MAX_PRODUCTS,
+  MAX_SUBSCRIPTIONS,
   daysOfPeriod,
+  isSubscriptionProduct,
   lookOfProduct,
   maxPlanOfProduct,
   type MaxPlan,
@@ -105,10 +106,10 @@ export function revenueCatPurchases(apiKey: string | undefined): PurchasesPort {
   return {
     available: true,
     offerings: async (): Promise<Offerings> => {
-      const subscriptions = MAX_PLANS.map((plan) => MAX_PRODUCTS[plan]);
+      const subscriptions = MAX_SUBSCRIPTIONS.map((plan) => MAX_PRODUCTS[plan]);
       const [plans, singles] = await Promise.all([
         load(subscriptions, PRODUCT_CATEGORY.SUBSCRIPTION),
-        load(LOOK_PRODUCT_IDS, PRODUCT_CATEGORY.NON_SUBSCRIPTION),
+        load([...LOOK_PRODUCT_IDS, MAX_PRODUCTS.lifetime], PRODUCT_CATEGORY.NON_SUBSCRIPTION),
       ]);
       const open = await trialsOpenFor(plans);
       const looks: Partial<Record<PaidLookId, LookOffer>> = {};
@@ -117,6 +118,19 @@ export function revenueCatPurchases(apiKey: string | undefined): PurchasesPort {
         if (look) looks[look] = { productId: product.identifier, priceText: product.priceString };
       }
       const max: Partial<Record<MaxPlan, MaxOffer>> = {};
+      // Max bought once is listed with the one-time products, where the store sells it at all.
+      const once = singles.find((p) => maxPlanOfProduct(p.identifier) === 'lifetime');
+      if (once) {
+        max.lifetime = {
+          plan: 'lifetime',
+          productId: once.identifier,
+          priceText: once.priceString,
+          price: once.price,
+          perMonthText: null,
+          perMonth: null,
+          trialDays: null,
+        };
+      }
       for (const product of plans) {
         const plan = maxPlanOfProduct(product.identifier);
         if (!plan) continue;
@@ -142,7 +156,7 @@ export function revenueCatPurchases(apiKey: string | undefined): PurchasesPort {
           (
             await load(
               [productId],
-              maxPlanOfProduct(productId) !== null
+              isSubscriptionProduct(productId)
                 ? PRODUCT_CATEGORY.SUBSCRIPTION
                 : PRODUCT_CATEGORY.NON_SUBSCRIPTION,
             )

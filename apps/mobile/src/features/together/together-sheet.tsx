@@ -78,7 +78,7 @@ export function TogetherSheet() {
 
   if (me === null) {
     return (
-      <SheetScreen title={t('together.title')} gap={12}>
+      <SheetScreen title={t('together.title')} gap={12} fit>
         <BackupCard icon="group" title={t('together.intro.title')} sub={t('together.intro.sub')} />
         <AppleButton disabled={busy} onPress={() => void act(actions.signIn)} />
         {error === null ? null : <BackupNote error>{error}</BackupNote>}
@@ -89,7 +89,7 @@ export function TogetherSheet() {
 
   const total = kept.reduce((sum, k) => sum + k.amount, 0);
   return (
-    <SheetScreen title={t('together.title')} gap={12}>
+    <SheetScreen title={t('together.title')} gap={12} fit>
       {offline ? <BackupNote>{t('together.offline')}</BackupNote> : null}
       <BackupCard
         icon="group"

@@ -5,7 +5,10 @@ import { PAID_LOOKS, type MaxPlan, type PaidLookId } from './products';
 /** What the store says about Max for this Apple ID. Every date is the store's, never the phone's. */
 export interface MaxState {
   readonly active: boolean;
-  /** The plan that holds Max; `legacy` is an earlier 6pm subscription that also grants it. */
+  /**
+   * The plan that holds Max; `legacy` is an earlier 6pm subscription that also grants it.
+   * `lifetime` was bought once: it has no trial and no dates, and never ends.
+   */
   readonly plan: MaxPlan | 'legacy' | null;
   readonly inTrial: boolean;
   /** When the trial ends and the first charge is made; null outside a trial. */
@@ -39,7 +42,7 @@ export const FREE_CUSTOMER: CustomerState = { max: NO_MAX, ownedLooks: [] };
 export const customerSchema = z.object({
   max: z.object({
     active: z.boolean(),
-    plan: z.enum(['monthly', 'yearly', 'legacy']).nullable(),
+    plan: z.enum(['monthly', 'yearly', 'lifetime', 'legacy']).nullable(),
     inTrial: z.boolean(),
     trialEndsAt: z.number().nullable(),
     renewsAt: z.number().nullable(),
@@ -61,7 +64,7 @@ export interface MaxOffer {
   readonly priceText: string;
   /** The price in the store's currency, for comparing the plans. */
   readonly price: number;
-  /** The store's own per-month figure for the plan, as localised text. */
+  /** The store's own per-month figure for a plan that renews, as localised text. */
   readonly perMonthText: string | null;
   readonly perMonth: number | null;
   /** The free trial this Apple ID is still offered on the plan, in days; null when there is none. */

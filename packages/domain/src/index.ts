@@ -29,6 +29,7 @@ export * from './qr-content';
 export * from './vietqr';
 export * from './close/close-flow';
 export * from './close/close-queue';
+export * from './close/max-offer';
 export * from './close/rating-ask';
 export * from './capture/bill-payment';
 export * from './capture/duplicate';

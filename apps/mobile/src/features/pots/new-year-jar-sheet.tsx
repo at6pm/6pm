@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useMemo, useRef, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import {
   designAmount,
@@ -27,7 +27,7 @@ import { haptics } from '../../ui/haptics';
 import { Symbol } from '../../ui/icons/symbol';
 import type { SymbolName } from '../../ui/icons/symbols.generated';
 import { useDesignInsets } from '../../ui/layout/design-insets';
-import { SheetFrame } from '../../ui/navigation/sheet-frame';
+import { EdgeSheetScroll, FittedSheet } from '../../ui/navigation/edge-sheet';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading, mono, tabular } from '../../ui/type/fonts';
@@ -166,9 +166,9 @@ export function NewYearJarSheet() {
   );
 
   return (
-    <SheetFrame header={header}>
-      <ScrollView
-        style={{ flex: 1 }}
+    <FittedSheet>
+      {header}
+      <EdgeSheetScroll
         contentInsetAdjustmentBehavior="never"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingTop: 4, paddingHorizontal: 18, paddingBottom: 12, gap: 16 }}
@@ -266,7 +266,7 @@ export function NewYearJarSheet() {
             {money.short(plan.before)} → {money.short(plan.after)}
           </Text>
         </View>
-      </ScrollView>
+      </EdgeSheetScroll>
       <View style={{ paddingTop: 12, paddingHorizontal: 18, paddingBottom: bottom(34) }}>
         <PressScale
           accessibilityRole="button"
@@ -286,6 +286,6 @@ export function NewYearJarSheet() {
           </Text>
         </PressScale>
       </View>
-    </SheetFrame>
+    </FittedSheet>
   );
 }

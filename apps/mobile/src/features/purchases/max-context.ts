@@ -31,6 +31,17 @@ export function parseMaxCompanion(raw: unknown): CompanionForm | undefined {
   return parsed.success ? parsed.data : undefined;
 }
 
+/**
+ * Reads the `closed` route parameter: the days closed so far, when the sheet opened by itself
+ * after a close. Null from every gate, and for anything that is not a whole number of days.
+ */
+export function parseMaxClosedDays(raw: unknown): number | null {
+  const value: unknown = Array.isArray(raw) ? raw[0] : raw;
+  if (typeof value !== 'string' || !/^\d{1,5}$/.test(value)) return null;
+  const days = Number(value);
+  return days > 0 ? days : null;
+}
+
 /** The feature tiles in the order the design lists them. */
 export const MAX_TILES = [
   'looks',

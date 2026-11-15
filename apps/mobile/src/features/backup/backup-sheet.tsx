@@ -14,7 +14,7 @@ export function BackupSheet() {
   const { restore } = useLocalSearchParams<{ restore?: string }>();
   const restoring = restore === '1';
   return (
-    <SheetScreen title={restoring ? t('backup.restore.title') : t('backup.title')} gap={12}>
+    <SheetScreen title={restoring ? t('backup.restore.title') : t('backup.title')} gap={12} fit>
       {restoring ? <BackupRestore /> : <BackupManage />}
     </SheetScreen>
   );

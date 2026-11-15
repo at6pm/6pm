@@ -56,7 +56,7 @@ export function SharedPotSheet() {
 
   if (pot === undefined || state.me === null) {
     return (
-      <SheetScreen title={t('together.pots.title')} gap={12}>
+      <SheetScreen title={t('together.pots.title')} gap={12} fit>
         <BackupNote>{t('together.pot.gone')}</BackupNote>
       </SheetScreen>
     );
@@ -86,7 +86,7 @@ export function SharedPotSheet() {
   };
 
   return (
-    <SheetScreen title={pot.name} gap={12}>
+    <SheetScreen title={pot.name} gap={12} fit>
       <View style={{ alignItems: 'center', gap: 10, paddingVertical: 6 }}>
         <CategoryTile
           icon={isSymbolName(pot.icon) ? pot.icon : 'group'}

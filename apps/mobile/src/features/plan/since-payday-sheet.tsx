@@ -1,13 +1,13 @@
 import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { dayOf } from '../../data/money-store';
 import { useMoney, useMoneyStore } from '../../data/money-provider';
 import { setSpentSincePayday } from '../../data/since-payday';
 import { useI18n } from '../../i18n/i18n';
 import { haptics } from '../../ui/haptics';
-import { SheetFrame } from '../../ui/navigation/sheet-frame';
+import { EdgeSheetScroll, FittedSheet } from '../../ui/navigation/edge-sheet';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body } from '../../ui/type/fonts';
@@ -48,8 +48,9 @@ export function SincePaydaySheet() {
   };
 
   return (
-    <SheetFrame header={<SheetHeader title={t('plan.sincePayday.title')} />}>
-      <ScrollView
+    <FittedSheet>
+      {<SheetHeader title={t('plan.sincePayday.title')} />}
+      <EdgeSheetScroll
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingTop: 14,
@@ -84,7 +85,7 @@ export function SincePaydaySheet() {
             {t('plan.sincePayday.save')}
           </Text>
         </PressScale>
-      </ScrollView>
-    </SheetFrame>
+      </EdgeSheetScroll>
+    </FittedSheet>
   );
 }

@@ -9,10 +9,10 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { MoneyProvider, useMoney } from '../data/money-provider';
 import { DatabaseGate } from '../db/database-gate';
 import { BackupHost } from '../features/backup/backup-host';
+import { closeFollowUpSettled } from '../features/close/close-follow-up';
 import { CloseNudge } from '../features/companion/close-nudge';
 import { DevCommands } from '../features/dev/dev-commands';
 import { CloseReminderSync } from '../features/reminders/close-reminder-sync';
-import { ratingAskSettled } from '../features/rating/rating-ask';
 import { ReminderTap } from '../features/reminders/reminder-tap';
 import { SurfacesSync } from '../features/surfaces/surfaces-sync';
 import { LookSettingsProvider, useThemeLook } from '../features/looks/look-settings-provider';
@@ -61,10 +61,10 @@ function Screens() {
           contentStyle: { backgroundColor: palette.sheetSolid },
         }}
         // A screen finished appearing, with no transition under way: the moment a good close,
-        // just faded out, may bring up the store's rating prompt.
+        // just faded out, may bring up Max or the store's rating prompt.
         screenListeners={{
           transitionEnd: (event) => {
-            if (!event.data.closing) ratingAskSettled();
+            if (!event.data.closing) closeFollowUpSettled();
           },
         }}
       >
@@ -74,41 +74,41 @@ function Screens() {
         <Stack.Screen name="capture-guide" options={sheet} />
         <Stack.Screen name="categories" options={sheet} />
         <Stack.Screen name="banks" options={sheet} />
-        <Stack.Screen name="ai" options={sheet} />
+        <Stack.Screen name="ai" options={edgeSheet} />
         <Stack.Screen name="language" options={drawnSheet} />
         <Stack.Screen name="category/[id]" options={sheet} />
         <Stack.Screen name="quick-add" options={edgeSheet} />
         <Stack.Screen name="scan" options={hinged ? takeover : pageSheet} />
         <Stack.Screen name="ask" options={pageSheet} />
-        <Stack.Screen name="inbox" options={sheet} />
+        <Stack.Screen name="inbox" options={edgeSheet} />
         <Stack.Screen name="close" options={takeover} />
         <Stack.Screen name="first-catch" options={takeover} />
-        <Stack.Screen name="spend/[id]" options={sheet} />
-        <Stack.Screen name="split" options={sheet} />
-        <Stack.Screen name="owed" options={sheet} />
+        <Stack.Screen name="spend/[id]" options={edgeSheet} />
+        <Stack.Screen name="split" options={edgeSheet} />
+        <Stack.Screen name="owed" options={edgeSheet} />
         <Stack.Screen name="owed-ask" options={takeover} />
-        <Stack.Screen name="receiving-account" options={sheet} />
+        <Stack.Screen name="receiving-account" options={edgeSheet} />
         <Stack.Screen name="missed-day" options={drawnSheet} />
         <Stack.Screen name="money-diary" options={sheet} />
         <Stack.Screen name="share-card" options={sheet} />
-        <Stack.Screen name="new-pot" options={sheet} />
-        <Stack.Screen name="new-year-jar" options={sheet} />
-        <Stack.Screen name="pots" options={sheet} />
+        <Stack.Screen name="new-pot" options={edgeSheet} />
+        <Stack.Screen name="new-year-jar" options={edgeSheet} />
+        <Stack.Screen name="pots" options={edgeSheet} />
         <Stack.Screen name="pot/[id]" options={drawnSheet} />
-        <Stack.Screen name="bill/[id]" options={sheet} />
-        <Stack.Screen name="month" options={sheet} />
-        <Stack.Screen name="since-payday" options={sheet} />
+        <Stack.Screen name="bill/[id]" options={edgeSheet} />
+        <Stack.Screen name="month" options={edgeSheet} />
+        <Stack.Screen name="since-payday" options={edgeSheet} />
         <Stack.Screen name="looks" options={drawnSheet} />
         <Stack.Screen name="look/[id]" options={drawnSheet} />
         <Stack.Screen name="max" options={sheet} />
         <Stack.Screen name="max-welcome" options={takeover} />
-        <Stack.Screen name="backup" options={sheet} />
-        <Stack.Screen name="read-on-phone" options={sheet} />
-        <Stack.Screen name="notifications" options={sheet} />
+        <Stack.Screen name="backup" options={edgeSheet} />
+        <Stack.Screen name="read-on-phone" options={edgeSheet} />
+        <Stack.Screen name="notifications" options={edgeSheet} />
         <Stack.Screen name="import" options={sheet} />
-        <Stack.Screen name="together/index" options={sheet} />
-        <Stack.Screen name="together/[code]" options={sheet} />
-        <Stack.Screen name="shared-pot/[id]" options={sheet} />
+        <Stack.Screen name="together/index" options={edgeSheet} />
+        <Stack.Screen name="together/[code]" options={edgeSheet} />
+        <Stack.Screen name="shared-pot/[id]" options={edgeSheet} />
         <Stack.Screen name="new-shared-pot" options={sheet} />
         <Stack.Screen name="(dev)/tools" options={sheet} />
       </Stack>

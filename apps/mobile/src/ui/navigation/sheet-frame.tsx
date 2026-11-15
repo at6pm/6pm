@@ -16,6 +16,7 @@ export function SheetFrame({
   children,
   background,
   fit = false,
+  maxHeight,
 }: {
   /** The top: grabber and title row. */
   readonly header?: ReactNode;
@@ -24,15 +25,20 @@ export function SheetFrame({
   readonly background?: ColorValue;
   /** A `fittedSheet`: as tall as what it holds, so the body sets the sheet's height. */
   readonly fit?: boolean;
+  /** A fitted sheet's cap: past it the body shrinks, and its scroll scrolls. */
+  readonly maxHeight?: number;
 }) {
   const { palette } = useTheme();
   return (
     <View
       collapsable={false}
-      style={[fit ? null : { flex: 1 }, { backgroundColor: background ?? palette.sheetSolid }]}
+      style={[
+        fit ? { maxHeight } : { flex: 1 },
+        { backgroundColor: background ?? palette.sheetSolid },
+      ]}
     >
       {header === undefined ? null : <View collapsable={false}>{header}</View>}
-      <View collapsable={false} style={fit ? null : { flex: 1 }}>
+      <View collapsable={false} style={fit ? { flexShrink: 1 } : { flex: 1 }}>
         {children}
       </View>
     </View>

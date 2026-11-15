@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import type { Payday } from '@6pm/domain';
 
@@ -15,7 +15,7 @@ import {
 import { PotCard, SheetHeader } from '../features/plan/pot-rows';
 import { useI18n } from '../i18n/i18n';
 import { haptics } from '../ui/haptics';
-import { SheetFrame } from '../ui/navigation/sheet-frame';
+import { EdgeSheetScroll, FittedSheet } from '../ui/navigation/edge-sheet';
 import { PressScale } from '../ui/primitives/press-scale';
 import { useTheme } from '../ui/theme/theme';
 import { body } from '../ui/type/fonts';
@@ -61,8 +61,9 @@ export default function MonthSheet() {
   };
 
   return (
-    <SheetFrame header={<SheetHeader title={t('plan.month.title')} />}>
-      <ScrollView
+    <FittedSheet>
+      {<SheetHeader title={t('plan.month.title')} />}
+      <EdgeSheetScroll
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingTop: 14,
@@ -104,7 +105,7 @@ export default function MonthSheet() {
         >
           <Text style={{ ...body(17, 650), color: palette.btnFg }}>{t('plan.month.save')}</Text>
         </PressScale>
-      </ScrollView>
-    </SheetFrame>
+      </EdgeSheetScroll>
+    </FittedSheet>
   );
 }

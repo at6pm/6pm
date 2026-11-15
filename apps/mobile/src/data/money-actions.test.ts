@@ -179,6 +179,11 @@ describe('moneyActions', () => {
     expect(await ctx.actions.ruleCategory('   ')).toBeNull();
   });
 
+  it('learns nothing from a spend with no merchant', async () => {
+    await expect(ctx.actions.rememberMerchant('   ', 'shopping')).resolves.toBeUndefined();
+    expect(await ctx.store.tables.rules.get('')).toBeNull();
+  });
+
   it('numbers receipts by every day closed before, not only this pay cycle', async () => {
     for (const day of ['2026-08-30', '2026-09-30', '2026-10-09']) {
       await ctx.actions.closeDay({

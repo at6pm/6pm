@@ -22,7 +22,7 @@ export default function SpendSheet() {
   const found = findSpend(useMoney(), id) !== undefined;
   return (
     <UndoHost lift={UNDO_LIFT}>
-      <SheetScreen title={t('details.title')}>
+      <SheetScreen title={t('details.title')} fit>
         {found ? (
           <SpendDetails id={id} onDeleted={() => router.back()} offerDeleteUndo={offerAppUndo} />
         ) : null}

@@ -86,6 +86,8 @@ export const frLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   'max.head.buddy': 'Découvre tes compagnons Max.',
   'max.sub.buddy':
     'Le soleil de minuit avec son anneau, ses lunes et ses étincelles, et Hạc Giấy, une grue pliée dans du papier rouge.',
+  'max.head.closed': { one: '{count} jour clôturé.', other: '{count} jours clôturés.' },
+  'max.sub.closed': 'Voici ce que 6pm Max ajoute. La clôture reste gratuite dans tous les cas.',
   'max.head.on': 'Tu as Max.',
   'max.sub.on': 'Tout ce qui suit est débloqué.',
   'max.tile.looks': 'Tous les looks',
@@ -124,6 +126,8 @@ export const frLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   'max.tile.buddy': 'Compagnons Max',
   'max.plan.yearly': 'Annuel',
   'max.plan.monthly': 'Mensuel',
+  'max.plan.lifetime': 'À vie',
+  'max.plan.once': 'paiement unique, sans abonnement',
   'max.perMonth': '{price}/mois',
   'max.perYear': '{price}/an',
   'max.cta.trial': {
@@ -131,6 +135,7 @@ export const frLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
     other: 'Démarrer {count} jours offerts',
   },
   'max.cta.subscribe': 'S’abonner à Max',
+  'max.cta.lifetime': 'Acheter Max une fois',
   'max.cta.done': 'OK',
   'max.cta.waiting': 'En attente de l’App Store…',
   'max.terms.trialYear': {
@@ -143,10 +148,12 @@ export const frLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   },
   'max.terms.year': '{price} par an. Résiliable à tout moment.',
   'max.terms.month': '{price} par mois. Résiliable à tout moment.',
+  'max.terms.lifetime': '{price} une seule fois. Sans renouvellement.',
   'max.terms.storeOff': 'Max ne peut pas être acheté pour l’instant : l’App Store ne répond pas.',
   'max.terms.trialEnds': 'Fin de l’essai le {date}.',
   'max.terms.renews': 'Renouvellement le {date}.',
   'max.terms.ends': 'Se termine le {date}.',
+  'max.terms.forGood': 'À toi pour toujours.',
   'max.terms': 'Conditions',
   'max.makers.kicker': 'De la part des créateurs',
   'max.makers.title': '6pm est fait par des développeurs indépendants, et il est open source.',

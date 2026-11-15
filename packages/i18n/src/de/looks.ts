@@ -84,6 +84,8 @@ export const deLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   'max.head.buddy': 'Lern deine Max-Begleiter kennen.',
   'max.sub.buddy':
     'Die Mitternachtssonne mit Ring, Monden und Funkeln, und Hạc Giấy, ein Kranich aus rotem Papier.',
+  'max.head.closed': { one: '{count} Tag abgeschlossen.', other: '{count} Tage abgeschlossen.' },
+  'max.sub.closed': 'Das kommt mit 6pm Max dazu. Der Tagesabschluss bleibt so oder so gratis.',
   'max.head.on': 'Du hast Max.',
   'max.sub.on': 'Alles hier unten ist freigeschaltet.',
   'max.tile.looks': 'Jeder Look',
@@ -122,6 +124,8 @@ export const deLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   'max.tile.buddy': 'Max-Begleiter',
   'max.plan.yearly': 'Jährlich',
   'max.plan.monthly': 'Monatlich',
+  'max.plan.lifetime': 'Für immer',
+  'max.plan.once': 'einmal zahlen, kein Abo',
   'max.perMonth': '{price}/Monat',
   'max.perYear': '{price}/Jahr',
   'max.cta.trial': {
@@ -129,6 +133,7 @@ export const deLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
     other: '{count} Tage gratis testen',
   },
   'max.cta.subscribe': 'Max abonnieren',
+  'max.cta.lifetime': 'Max einmal kaufen',
   'max.cta.done': 'Fertig',
   'max.cta.waiting': 'Warte auf den App Store …',
   'max.terms.trialYear': {
@@ -141,10 +146,12 @@ export const deLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   },
   'max.terms.year': '{price} pro Jahr. Jederzeit kündbar.',
   'max.terms.month': '{price} pro Monat. Jederzeit kündbar.',
+  'max.terms.lifetime': '{price} einmalig. Keine Verlängerung.',
   'max.terms.storeOff': 'Max lässt sich gerade nicht kaufen: Der App Store antwortet nicht.',
   'max.terms.trialEnds': 'Test endet am {date}.',
   'max.terms.renews': 'Verlängert sich am {date}.',
   'max.terms.ends': 'Endet am {date}.',
+  'max.terms.forGood': 'Für immer deins.',
   'max.terms': 'Bedingungen',
   'max.makers.kicker': 'Von den Machern',
   'max.makers.title': '6pm kommt von Indie-Entwicklern und ist Open Source.',

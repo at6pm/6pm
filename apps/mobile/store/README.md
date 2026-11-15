@@ -47,7 +47,8 @@ for the 6.9″ iPhone slot; App Store Connect scales them down for smaller iPhon
 | 09 | living scenes · Lantern River |
 | 10 | on-device AI · offline · Gemma · Qwen · Claude |
 
-01–03 share one sunset across the search results, so keep them first and together. The privacy
+01–03 share one sunset across the search results, so keep them first and together. In the Vietnam set
+the line above 01's caption, and above the search result's, names the category: APP QUẢN LÝ CHI TIÊU. The privacy
 shot (encrypted · open source) was dropped for the ten-shot limit; the Privacy first custom product
 page leads with 01 instead.
 
