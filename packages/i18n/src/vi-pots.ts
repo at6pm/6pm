@@ -5,6 +5,7 @@ export const viPots: { readonly [Key in keyof typeof enPots]: Entry } = {
   'pots.futureYou': 'Tương lai',
   'pots.shelf.title': 'Hũ',
   'pots.shelf.each': '{amount} mỗi kỳ lương',
+  'pots.shelf.eachMonth': '{amount} mỗi tháng',
   'pots.shelf.new': 'Hũ mới',
   'pots.all.title': 'Hũ',
   'pots.all.line': '{amount} vào hũ\nmỗi kỳ lương',

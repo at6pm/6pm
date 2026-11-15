@@ -19,6 +19,7 @@ import { zhHansInsightsHabits } from './insights-habits';
 import { zhHansIntents } from './intents';
 import { zhHansLooks } from './looks';
 import { zhHansMoneyIn } from './money-in';
+import { zhHansQuickAdd } from './quick-add';
 import { zhHansPotsClose } from './pots-close';
 import { zhHansPotsPlan } from './pots-plan';
 import { zhHansPots } from './pots';
@@ -42,6 +43,11 @@ import { zhHansYearBook } from './year-book';
 import { zhHansFirstCatch } from './first-catch';
 import { zhHansCaptureLog } from './capture-log';
 import { zhHansPhoto } from './photo';
+import { zhHansMoneyReaches } from './money-reaches';
+import { zhHansIncome } from './income';
+import { zhHansWork } from './work';
+import { zhHansRequests } from './requests';
+import { zhHansWorkYear } from './work-year';
 import { zhHansImport } from './import';
 import { zhHansOwed } from './owed';
 import { zhHansNotifications } from './notifications';
@@ -89,12 +95,18 @@ export const zhHans: Catalogue = {
   ...zhHansWidgetsGuide,
   ...zhHansDuo,
   ...zhHansMoneyIn,
+  ...zhHansQuickAdd,
   ...zhHansPotsClose,
   ...zhHansPotsPlan,
   ...zhHansPots,
   ...zhHansFirstCatch,
   ...zhHansCaptureLog,
   ...zhHansPhoto,
+  ...zhHansMoneyReaches,
+  ...zhHansIncome,
+  ...zhHansWork,
+  ...zhHansRequests,
+  ...zhHansWorkYear,
   ...zhHansImport,
   ...zhHansOwed,
   ...importSketchMomo,
@@ -107,6 +119,8 @@ export const zhHans: Catalogue = {
  * beyond the list every language shares.
  */
 export const zhHansSameAsEnglish: readonly string[] = [
+  'work-{year}.csv',
+  'work-costs-{year}.csv',
   ...importSketchEnglish,
   'App',
   'iCloud · {when}',

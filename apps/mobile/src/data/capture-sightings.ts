@@ -137,6 +137,26 @@ export async function storedSightings(
   );
 }
 
+/** One way a spend was seen: a line of the source trail on Details. */
+export interface Sighting {
+  readonly source: SpendRow['source'];
+  readonly seenAt: string;
+  readonly detail: string | null;
+}
+
+/** Every way a spend was seen, oldest first. Empty for a spend seen only once: no trail. */
+export async function readSightings(db: SqlDatabase, spendId: string): Promise<Sighting[]> {
+  const rows = await db.getAllAsync<{
+    source: SpendRow['source'];
+    seen_at: string;
+    detail: string | null;
+  }>('SELECT source, seen_at, detail FROM spend_sightings WHERE spend_id = ? ORDER BY seen_at', [
+    spendId,
+  ]);
+  if (rows.length < 2) return [];
+  return rows.map((r) => ({ source: r.source, seenAt: r.seen_at, detail: r.detail }));
+}
+
 /** The key naming one sighting, whichever row holds it. */
 export const keyOfStored = (s: Pick<StoredSighting, 'capture_id' | 'source' | 'seen_at'>) =>
   sightingKey({ captureId: s.capture_id, source: s.source, at: s.seen_at });

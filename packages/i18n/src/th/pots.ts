@@ -5,6 +5,7 @@ export const thPots: { readonly [Key in keyof typeof enPots]: Entry } = {
   'pots.futureYou': 'ตัวคุณในอนาคต',
   'pots.shelf.title': 'กระปุก',
   'pots.shelf.each': '{amount} ทุกเงินเดือนออก',
+  'pots.shelf.eachMonth': '{amount} ทุกเดือน',
   'pots.shelf.new': 'กระปุกใหม่',
   'pots.all.title': 'กระปุก',
   'pots.all.line': '{amount} ลงกระปุก\nทุกเงินเดือนออก',

@@ -26,6 +26,10 @@ export interface I18n {
   readonly weekdayDate: (date: Date) => string;
   /** "9 October", "9 tháng 10". */
   readonly dayMonth: (date: Date) => string;
+  /** "9 Oct", "9/10": a date in a line that names many. */
+  readonly dayMonthShort: (date: Date) => string;
+  /** "Fri 20 Nov", "thứ Sáu 20/11": a day ahead, inside a sentence. */
+  readonly weekdayDayShort: (date: Date) => string;
   /** Keeps a language for the app, or follows the phone again with null. */
   readonly setLanguage: (language: Language | null) => void;
 }
@@ -34,10 +38,20 @@ const KEY = 'language';
 
 const I18nContext = createContext<I18n | null>(null);
 
+/** "Thứ Sáu" inside a sentence: "thứ Sáu". */
+function lowerFirst(text: string): string {
+  return text.charAt(0).toLowerCase() + text.slice(1);
+}
+
 function make(language: Language, chosen: Language | null, setLanguage: I18n['setLanguage']): I18n {
   const locale = localeOf(language);
   const weekday = new Intl.DateTimeFormat(locale, { weekday: 'long' });
   const dayMonth = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long' });
+  // Vietnamese writes a short date as numbers ("30/11"); other languages abbreviate the month.
+  const dayMonthShort = new Intl.DateTimeFormat(locale, {
+    day: 'numeric',
+    month: language === 'vi' ? 'numeric' : 'short',
+  });
   const weekdayDate = new Intl.DateTimeFormat(locale, {
     weekday: 'short',
     day: 'numeric',
@@ -50,6 +64,11 @@ function make(language: Language, chosen: Language | null, setLanguage: I18n['se
     weekday: (date) => weekday.format(date),
     weekdayDate: (date) => weekdayDate.format(date),
     dayMonth: (date) => dayMonth.format(date),
+    dayMonthShort: (date) => dayMonthShort.format(date),
+    weekdayDayShort: (date) =>
+      language === 'vi'
+        ? `${lowerFirst(weekday.format(date))} ${dayMonthShort.format(date)}`
+        : weekdayDate.format(date).replace(',', ''),
     setLanguage,
   };
 }

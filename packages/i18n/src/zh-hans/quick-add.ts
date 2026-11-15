@@ -1,0 +1,30 @@
+import type { Entry } from '../catalogue-types';
+import type { enQuickAdd } from '../en-quick-add';
+
+export const zhHansQuickAdd: { readonly [Key in keyof typeof enQuickAdd]: Entry } = {
+  'quick.face.out': '支出',
+  'quick.face.in': '收入',
+  'quick.tool.photo': '照片',
+  'quick.tool.split': '分摊',
+  'quick.tool.jar': '从罐子里',
+  'quick.tool.noJar': '不从罐子里',
+  'quick.todayStays': '今天仍是{amount}',
+  'quick.in.ticket': '6pm · 进账',
+  'quick.in.whoFrom': '谁给的',
+  'quick.in.name': '名字',
+  'quick.in.who': '是谁给的？',
+  'quick.in.into': '存入',
+  'quick.in.days': '分到每天',
+  'quick.in.daysLast': '分到每天，和上次一样',
+  'quick.in.jarLast': '放进{jar}，和上次一样',
+  'quick.in.pay': '你的工资',
+  'quick.in.payLast': '你的工资，和上次一样',
+  'quick.in.landing': { other: '+{count} 天 · 够用到 {date}' },
+  'quick.in.work': '工作',
+  'voice.missed': '我没听清。',
+  'voice.heardFirst': '我听到的是{said}。先说金额：“45k，河粉”。',
+  'voice.sayFirst': '先说金额：“45k，河粉”。',
+  'voice.nothingHeard': '什么都没听到。麦克风允许了吗？',
+  'voice.tryAgain': '再说一次',
+  'voice.toKeypad': '回到键盘',
+};

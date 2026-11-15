@@ -4,6 +4,7 @@ import {
   currencyOf,
   cycleFutureYou,
   intoJarsEachPayday,
+  perPayOf,
   isFutureYouPot,
   jarFillOf,
   jarShelfState,
@@ -19,7 +20,7 @@ import {
 import { useMoney } from '../../data/money-provider';
 import { dailyInputOf, type MoneySnapshot } from '../../data/money-store';
 import { useI18n } from '../../i18n/i18n';
-import { moneyFormatFor } from '../../money/use-money-format';
+import { homeCurrencyOf, moneyFormatFor } from '../../money/use-money-format';
 import { useEntitlement } from '../purchases/purchases-provider';
 import { useTogether } from '../together/together-provider';
 import { initialOf, partnerOf } from '../together/together-state';
@@ -145,7 +146,12 @@ export function useJars(): Jars {
     return {
       all: [...own, ...shared],
       own,
-      eachPayday: intoJarsEachPayday(slice, snap.pots, snap.setAsideThisCycle),
+      // A plan paid by the week or the fortnight sets aside a slice of the month each payday.
+      eachPayday: perPayOf(
+        intoJarsEachPayday(slice, snap.pots, snap.setAsideThisCycle),
+        snap.plan?.incomes,
+        homeCurrencyOf(snap.plan),
+      ),
       locked: newJarLocked(snap.pots, max),
     };
   }, [snap, t, language, together, max]);

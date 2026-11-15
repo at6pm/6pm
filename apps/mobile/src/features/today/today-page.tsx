@@ -39,6 +39,11 @@ import { OwedRow } from '../owed/owed-row';
 import { NewYearOfferCard } from '../pots/new-year-offer-card';
 import { useNewYear } from '../pots/use-new-year';
 import { HoaMai } from './hoa-mai';
+import { AskReachCard, useAskReach } from './ask-reach-card';
+import { useIncomeToday } from './income-today';
+import { workTodayOf } from '../work/work-today';
+import { requestWorkDiary } from '../work/work-diary-request';
+import { GOT_PAID, MoneyCameInCard } from './money-came-in-card';
 
 /**
  * Today: the hero over the sky, then the sheet that holds the companion, tonight's card, the week
@@ -77,6 +82,10 @@ export function TodayPage({
   const overscroll = useOverscrollPull('today', pulling);
   const shown = useHomePageShown();
   const view = todayView(snap, closeHour, day.spent, useSpendLabels());
+  const income = useIncomeToday(snap, day);
+  // A seller's work today: its rows fold into one, which opens the Diary on Work.
+  const work = workTodayOf(snap);
+  const ask = useAskReach();
   const spreadYesterday = spreadYesterdayOf(snap);
   // While the tonight card holds the day's state (due at six, late, paused), the companion speaks
   // from its tile and the bubble steps aside: the bubble never restates the card.
@@ -130,7 +139,13 @@ export function TodayPage({
           style={overscroll.style}
         >
           <Animated.View style={parallax}>
-            <TodayHero day={day} onSettings={onSettings} onQuickAdd={onQuickAdd} />
+            <TodayHero
+              day={day}
+              onSettings={onSettings}
+              onQuickAdd={onQuickAdd}
+              empty={income.empty}
+              under={income.under}
+            />
           </Animated.View>
           <Animated.View
             style={[
@@ -162,9 +177,10 @@ export function TodayPage({
                       ? 'paused'
                       : view.moment === 'late'
                         ? 'late'
-                        : day.overspent && day.spent > 0
+                        : // Before anything has landed there is no number to be past.
+                          income.empty === null && day.overspent && day.spent > 0
                           ? 'pastPlan'
-                          : day.safe < 0
+                          : income.empty === null && day.safe < 0
                             ? 'replan'
                             : season.day?.kind === 'countdown'
                               ? 'seasonCountdown'
@@ -173,7 +189,17 @@ export function TodayPage({
                                 : 'idle'
                 }
                 festival={season.festival}
+                say={income.say ?? (ask.shown ? t('companion.income.askReach') : null)}
                 onPress={() => openAsk()}
+              />
+            ) : null}
+            {income.gotPaid ? (
+              <MoneyCameInCard
+                bg={palette.cell}
+                ink={palette.ink}
+                inkSoft={palette.inkSoft}
+                shadow={palette.cardShadow}
+                onGotPaid={() => router.push(GOT_PAID)}
               />
             ) : null}
             <FirstCatchCard />
@@ -195,10 +221,22 @@ export function TodayPage({
               onOpenReceipt={() => showDiary(snap.today)}
             />
             <YearOnToday />
+            {ask.shown ? <AskReachCard onPutAway={ask.putAway} /> : null}
             <JarShelf />
             <OwedRow />
             <TodayList
-              rows={view.rows}
+              rows={work === null ? view.rows : view.rows.filter((r) => !work.hidden.has(r.id))}
+              work={
+                work?.costs
+                  ? {
+                      ...work.costs,
+                      onOpen: () => {
+                        requestWorkDiary();
+                        onOpenDiary?.();
+                      },
+                    }
+                  : null
+              }
               waiting={view.queue.length}
               spentLabel={view.spentLabel}
               onOpenInbox={() => router.push('/inbox')}

@@ -19,6 +19,7 @@ import { esInsightsHabits } from './insights-habits';
 import { esIntents } from './intents';
 import { esLooks } from './looks';
 import { esMoneyIn } from './money-in';
+import { esQuickAdd } from './quick-add';
 import { esPotsClose } from './pots-close';
 import { esPotsPlan } from './pots-plan';
 import { esPots } from './pots';
@@ -42,6 +43,11 @@ import { esYearBook } from './year-book';
 import { esFirstCatch } from './first-catch';
 import { esCaptureLog } from './capture-log';
 import { esPhoto } from './photo';
+import { esMoneyReaches } from './money-reaches';
+import { esIncome } from './income';
+import { esWork } from './work';
+import { esRequests } from './requests';
+import { esWorkYear } from './work-year';
 import { esImport } from './import';
 import { esOwed } from './owed';
 import { esNotifications } from './notifications';
@@ -89,12 +95,18 @@ export const es: Catalogue = {
   ...esWidgetsGuide,
   ...esDuo,
   ...esMoneyIn,
+  ...esQuickAdd,
   ...esPotsClose,
   ...esPotsPlan,
   ...esPots,
   ...esFirstCatch,
   ...esCaptureLog,
   ...esPhoto,
+  ...esMoneyReaches,
+  ...esIncome,
+  ...esWork,
+  ...esRequests,
+  ...esWorkYear,
   ...esImport,
   ...esOwed,
   ...importSketchMomo,

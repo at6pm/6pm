@@ -43,9 +43,26 @@ export function isJoinedCycle(cycle: PayCycle, joinedOn: LocalDate | null): bool
  * How `cycle` counts the time before joining (M2a): the person's answer in place of the estimate
  * when there is one, the estimate's share when there is not, and every later cycle whole.
  */
-export function joinedCycle(cycle: PayCycle, answers: JoinedAnswers): JoinedCycle {
+export function joinedCycle(
+  cycle: PayCycle,
+  answers: JoinedAnswers,
+  /**
+   * The month starts whole on a monthly payday, so the time before joining is estimated (or
+   * answered). Paid by the week or as money lands, it is not: the month counts from the pay it
+   * came in, and what was not set aside before comes out of that pay (`incomePeriod`).
+   */
+  estimate = true,
+): JoinedCycle {
   if (!isJoinedCycle(cycle, answers.on)) {
     return { joined: false, share: 1, beforeJoining: null, futureYouSkipped: false };
+  }
+  if (!estimate) {
+    return {
+      joined: true,
+      share: 1,
+      beforeJoining: null,
+      futureYouSkipped: answers.futureYouAtPayday === true,
+    };
   }
   const answer = answers.spentSincePayday;
   const answered = answer != null && Number.isFinite(answer);

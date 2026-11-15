@@ -6,18 +6,24 @@ import { encodeQR, personKey } from '@6pm/domain';
 import { owedAvatar, owedInk } from '@6pm/theme';
 
 import { useI18n } from '../../i18n/i18n';
+import { WorkStamp } from '../work/work-stamp';
 import { body, display, mono } from '../../ui/type/fonts';
 import { VerticalTear } from './torn-bill';
 
-/** A person's round avatar: their initial on their colour; "?" for a share with no name. */
+/**
+ * A person's round avatar: their initial on their colour; "?" for a share with no name. A client
+ * that is a shop or a company has a square one.
+ */
 export function Avatar({
   name,
   size,
   dim = false,
+  square = false,
 }: {
   readonly name: string | null;
   readonly size: number;
   readonly dim?: boolean;
+  readonly square?: boolean;
 }) {
   const initial = name?.trim().charAt(0).toLocaleUpperCase() || '?';
   return (
@@ -25,7 +31,7 @@ export function Avatar({
       style={{
         width: size,
         height: size,
-        borderRadius: size / 2,
+        borderRadius: square ? size * 0.28 : size / 2,
         backgroundColor: owedAvatar(personKey(name)),
         alignItems: 'center',
         justifyContent: 'center',
@@ -63,6 +69,8 @@ export function Slip({
   width = 98,
   big = false,
   stamp,
+  work = false,
+  foot,
 }: {
   readonly what: string;
   readonly amount: string;
@@ -70,7 +78,21 @@ export function Slip({
   readonly big?: boolean;
   /** Drawn on the strip's right: the PAID stamp. */
   readonly stamp?: ReactNode;
+  /** A request for work wears the WORK stamp where nothing else is stamped. */
+  readonly work?: boolean;
+  /** Printed on the strip under the amount: a request's code and when it was asked (7d). */
+  readonly foot?: ReactNode;
 }) {
+  const { t } = useI18n();
+  const mark =
+    stamp ??
+    (work ? (
+      <WorkStamp
+        face="always"
+        small
+        labels={{ inked: t('work.stamp'), offered: t('work.stampOffered') }}
+      />
+    ) : undefined);
   return (
     <View style={{ width, boxShadow: `0 4px 8px ${owedInk.slipShadow}` }}>
       <View
@@ -99,8 +121,22 @@ export function Slip({
         >
           {amount}
         </Text>
-        {stamp ? (
-          <View style={{ position: 'absolute', right: 6, top: big ? 14 : 8 }}>{stamp}</View>
+        {foot ?? null}
+        {mark ? (
+          <View
+            style={{
+              position: 'absolute',
+              right: 6,
+              // The WORK stamp sits small by the amount, clear of a job's longer label (7a).
+              ...(stamp
+                ? { top: big ? 14 : 8 }
+                : big
+                  ? { bottom: 12 }
+                  : { bottom: 8, transform: [{ scale: 0.62 }], transformOrigin: 'right bottom' }),
+            }}
+          >
+            {mark}
+          </View>
         ) : null}
       </View>
     </View>

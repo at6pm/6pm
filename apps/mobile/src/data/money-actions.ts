@@ -17,6 +17,7 @@ import { NO_CAPTURE_LOG, type CaptureLog } from './capture-log';
 import { captureAnswers } from './capture-answers';
 import { noteReceiptEdit } from './first-catch';
 import { capturing } from './capture-match';
+import { readSightings } from './capture-sightings';
 import { ingestion, type Arrival } from './ingest';
 import { markHandTake } from './jar-asks';
 import { moneyInActions } from './money-in-actions';
@@ -74,12 +75,7 @@ export interface Capture {
   readonly sighting: { readonly source: SpendRow['source']; readonly seenAt: string };
 }
 
-/** One way a spend was seen: the source trail on Details. */
-export interface Sighting {
-  readonly source: SpendRow['source'];
-  readonly seenAt: string;
-  readonly detail: string | null;
-}
+export type { Sighting } from './capture-sightings';
 
 /** What an undo puts back besides the status: the amount and category an edit changed. */
 export type UndoRestore = Partial<Pick<SpendRow, 'amount' | 'categoryId'>>;
@@ -472,18 +468,7 @@ export function moneyActions(
         await tables.rules.put(learnedRule(existing, merchant, categoryId));
       }),
     /** Every way a spend was seen, oldest first. Empty for a spend seen only once: no trail. */
-    sightings: async (spendId: string): Promise<Sighting[]> => {
-      const rows = await store.db.getAllAsync<{
-        source: SpendRow['source'];
-        seen_at: string;
-        detail: string | null;
-      }>(
-        'SELECT source, seen_at, detail FROM spend_sightings WHERE spend_id = ? ORDER BY seen_at',
-        [spendId],
-      );
-      if (rows.length < 2) return [];
-      return rows.map((r) => ({ source: r.source, seenAt: r.seen_at, detail: r.detail }));
-    },
+    sightings: (spendId: string) => readSightings(store.db, spendId),
     /** Files the day's receipt: the Diary, the week strip and the streak read it. */
     closeDay: (row: ClosedDayRow) =>
       inTurn(async () => {

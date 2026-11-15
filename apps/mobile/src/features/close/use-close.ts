@@ -1,34 +1,44 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 
 import {
+  armedJars,
   billPaymentAsks,
+  type BillRow,
+  type BonusJar,
+  type CardVerdict,
   closeQueue,
   closeReducer,
+  type CloseState,
+  type Currency,
   designAmount,
-  armedJars,
-  jarQuestionsFor,
-  moneyDayOf,
-  newYearArmedJar,
-  type BonusJar,
-  type NewYearWindow,
   FUTURE_YOU,
+  type GivableSpend,
+  type Income,
+  jarQuestionsFor,
+  latePayOf,
+  leadIncome,
+  type LocalDate,
+  merchantKeyOf,
+  type MerchantRuleRow,
+  moneyDayOf,
   moneyInAsk,
+  type MoneyInAsk,
+  monthlyIncomeOf,
+  newYearArmedJar,
+  type NewYearWindow,
+  type OwedLine,
+  type PayCycle,
+  type Payday,
+  type PotRow,
   readyJarFor,
   receiptBankOf,
   remainingCards,
   remainingMoneyCards,
-  startClose,
-  type CardVerdict,
-  type BillRow,
-  type CloseState,
-  type Currency,
-  type GivableSpend,
-  type MoneyInAsk,
-  type OwedLine,
-  type PayCycle,
-  type PotRow,
+  rememberedPlaceOf,
   REPAYMENT,
+  requestByCode,
   type SpendRow,
+  startClose,
 } from '@6pm/domain';
 import { localeOf } from '@6pm/i18n';
 
@@ -37,7 +47,7 @@ import type { JarAsks } from '../../data/jar-asks';
 import type { MoneyInPlace } from '../../data/money-in-actions';
 
 import { useMoney, useMoneyActions } from '../../data/money-provider';
-import { findSpend } from '../../data/money-store';
+import { findSpend, periodOf, type MoneySnapshot } from '../../data/money-store';
 import { openOwedOf, owedLineOf } from '../../data/owed-actions';
 import { homeCurrencyOf } from '../../money/use-money-format';
 import { useI18n } from '../../i18n/i18n';
@@ -49,6 +59,8 @@ import type { CloseCardContent } from './close-card';
 import { clearClose, parkClose, parkedClose } from './close-session';
 import type { CashChip } from './close-steps';
 import { useCloseMoney } from './use-close-money';
+import { useCloseWork, workQueueOf } from './use-close-work';
+import { workOf } from '../../data/work-money';
 import { useNewYear } from '../pots/use-new-year';
 
 const UNDO_MS = 4500;
@@ -81,6 +93,18 @@ function startOf(
   cycle: PayCycle,
   money: {
     readonly income: number;
+    /** The plan's incomes once it holds them, and the month's anchor their dates count in. */
+    readonly incomes: readonly Income[] | undefined;
+    readonly anchor: Payday;
+    /** Each sender's rule that remembers where its money went (`readRememberedMoney`). */
+    readonly remembered: ReadonlyMap<string, MerchantRuleRow>;
+    /**
+     * The person works for themselves: a work spend is never a claim repaid, nothing is asked as
+     * maybe for work (the cards carry the stamp), and the close ends on today's takings.
+     */
+    readonly work: boolean;
+    /** What the cards and questions leave to the takings (`workQueueOf`). */
+    readonly workQueue: ReturnType<typeof workQueueOf>;
     readonly givable: readonly GivableSpend[];
     readonly jars: readonly PotRow[];
     readonly saved: Readonly<Record<string, number>>;
@@ -95,6 +119,8 @@ function startOf(
     /** The Lunar New Year season and its jar, for the bonus question; null for none. */
     readonly season: NewYearWindow | null;
     readonly seasonJar: BonusJar | null;
+    /** The pay the month waits for (`IncomePeriod.due`) and its income, while one is late. */
+    readonly late: { readonly due: LocalDate | null; readonly incomeId: string | null };
   },
 ): Start {
   const parked = parkedClose(day);
@@ -107,9 +133,14 @@ function startOf(
       moneyAsks: parked.moneyAsks,
     };
   }
-  const queue = closeQueue(spends, day);
+  // Takings already stamped skip the close, unless their words carry a request's code (7d).
+  const queue = closeQueue(spends, day).filter(
+    (s) =>
+      money.workQueue.card(s) ||
+      (s.direction === 'in' && requestByCode([s.memo, s.note], money.owed) !== null),
+  );
   const spending = queue.filter((s) => !comesIn(s));
-  const askWorkId = workCandidate(queue, designAmount(WORK_QUESTION_MIN, home));
+  const askWorkId = money.work ? null : workCandidate(queue, designAmount(WORK_QUESTION_MIN, home));
   const asks = new Map(
     billPaymentAsks(spending, bills, cycle).map((ask) => [ask.spendId, ask.billId ?? REPAYMENT]),
   );
@@ -118,6 +149,10 @@ function startOf(
   const taken = new Set<string>();
   const paid = new Set<string>();
   const moneyAsks: Record<string, MoneyInAsk> = {};
+  const live = {
+    jars: new Set(money.jars.filter((p) => p.archivedAt === null).map((p) => p.id)),
+    incomes: new Set((money.incomes ?? []).map((i) => i.id)),
+  };
   for (const s of queue.filter(comesIn)) {
     const givable = money.givable.filter((g) => !taken.has(g.id));
     const owed = money.owed.filter((line) => !paid.has(line.id));
@@ -144,9 +179,15 @@ function startOf(
           spends: givable,
           owed,
           season: { window: money.season, jar: money.seasonJar },
+          incomes: money.incomes,
+          anchor: money.anchor,
+          remembered: rememberedPlaceOf(money.remembered.get(merchantKeyOf(s.merchant)), live),
+          knownSender: money.remembered.has(merchantKeyOf(s.merchant)),
+          work: money.work,
         },
       );
-    if (ask === null) continue;
+    if (ask === null || !money.workQueue.ask(ask)) continue;
+    if (ask.kind === 'request') paid.add(ask.lineId);
     if (ask.kind === 'payback' && ask.owed) for (const id of ask.owed) paid.add(id);
     else if (ask.kind === 'refund' || ask.kind === 'payback') taken.add(ask.spendId);
     moneyAsks[s.id] = ask;
@@ -175,11 +216,30 @@ function startOf(
           ...(askPot === undefined ? {} : { askPot }),
         };
       }),
-      { readyPot: readyJarFor(money.jars, money.saved, day, money.readyShown)?.jar.id ?? null },
+      {
+        readyPot: readyJarFor(money.jars, money.saved, day, money.readyShown)?.jar.id ?? null,
+        latePay: latePayOf({ ...money.late, asks: Object.values(moneyAsks) }),
+        takings: money.work,
+      },
     ),
     cash: [],
     moneyAsks,
   };
+}
+
+/**
+ * The pay the month waits for, to open the close on: none once the payday card was answered in
+ * a close of this day that was left and opened again.
+ */
+function lateOf(
+  snap: MoneySnapshot,
+  day: LocalDate,
+): { readonly due: LocalDate | null; readonly incomeId: string | null } {
+  const none = { due: null, incomeId: null };
+  if (parkedClose(day)?.state.paydayAnswer !== undefined) return none;
+  const lead = snap.plan?.incomes ? leadIncome(snap.plan.incomes) : null;
+  const due = periodOf(snap)?.due ?? null;
+  return lead === null || due === null ? none : { due, incomeId: lead.id };
 }
 
 function workCandidate(queue: readonly SpendRow[], min: number): string | null {
@@ -198,6 +258,7 @@ export function useClose(
   givable: readonly GivableSpend[],
   readyShown: ReadonlySet<string>,
   jarAsks: JarAsks,
+  remembered: ReadonlyMap<string, MerchantRuleRow> = new Map(),
 ) {
   const snap = useMoney();
   const { on: travelling } = useTravel();
@@ -221,9 +282,16 @@ export function useClose(
       Object.entries(jarAsks.declined).map(([jar, at]) => [jar, moneyDayOf(new Date(at))]),
     ),
   });
+  const work = workOf(snap);
+  const closeWork = useCloseWork(remembered, day);
   const [start] = useState(() =>
     startOf([...snap.cycleSpends, ...snap.waitingBefore], day, home, snap.bills, snap.cycle, {
-      income: snap.plan?.income ?? 0,
+      income: snap.plan ? monthlyIncomeOf(snap.plan) : 0,
+      incomes: snap.plan?.incomes,
+      anchor: snap.plan?.payday ?? { kind: 'lastDay' },
+      remembered,
+      work: work !== null,
+      workQueue: workQueueOf(work, snap.plan?.incomes),
       givable,
       jars: snap.pots,
       saved: snap.potSaved,
@@ -248,12 +316,14 @@ export function useClose(
               held: snap.potSaved[season.jar.id] ?? 0,
             },
       owed: openOwedOf(snap).map(owedLineOf),
+      late: lateOf(snap, day),
     }),
   );
   const { queue, moneyAsks } = start;
+  const workOn = work !== null;
   const askWorkId = useMemo(
-    () => workCandidate(queue, designAmount(WORK_QUESTION_MIN, home)),
-    [queue, home],
+    () => (workOn ? null : workCandidate(queue, designAmount(WORK_QUESTION_MIN, home))),
+    [queue, home, workOn],
   );
   const [state, dispatch] = useReducer(closeReducer, start.state);
   const [cash, setCash] = useState<readonly CashChip[]>(start.cash);
@@ -315,6 +385,8 @@ export function useClose(
       (s) =>
         !comesIn(s) &&
         !paysBill(s) &&
+        // A work cost is the work's, not what the person kept.
+        !(workOn && (findSpend(snap, s.id) ?? s).forWork) &&
         (state.verdicts[s.id] === 'kept' || state.verdicts[s.id] === 'edited'),
     )
     .reduce((sum, s) => sum + (findSpend(snap, s.id)?.amount ?? s.amount), 0);
@@ -350,7 +422,9 @@ export function useClose(
     const time = labels.time(spend.at);
     const money = moneyIn.cardOf(spend);
     const row = money && found.name === '' ? { ...found, name: t('moneyIn.name') } : found;
+    const stamp = extra ? undefined : closeWork.cardWork(spend, money);
     return {
+      ...(stamp ? { work: stamp } : {}),
       row,
       no: extra
         ? t('close.card.no', {
@@ -395,6 +469,8 @@ export function useClose(
   const decide = useCallback(
     (id: string, verdict: CardVerdict, edit?: { amount: number; categoryId: string }) => {
       dispatch({ type: 'decide', id, verdict });
+      const decided = everything.find((s) => s.id === id);
+      if (decided && verdict !== 'notMine') closeWork.kept(decided);
       if (verdict === 'spread' || verdict === 'saved') {
         const place: MoneyInPlace =
           verdict === 'saved' ? { moneyIn: 'saved', savedTo: FUTURE_YOU } : { moneyIn: 'spread' };
@@ -404,7 +480,7 @@ export function useClose(
       }
       startUndo();
     },
-    [actions, run, startUndo],
+    [actions, run, startUndo, everything, closeWork],
   );
   // Cards answered "Same as your 50k?": the join under way, and the typed spend's name.
   const joins = useRef(new Map<string, { name: string; joined: Promise<Joined | null> }>());
@@ -501,6 +577,10 @@ export function useClose(
     undo,
     undoText,
     askWorkId,
+    /** The person turned work on: the cards carry the stamp and the close ends on the takings. */
+    workOn,
+    /** What a stamp inked on the top card remembered, for the hint. */
+    workHint: closeWork.hintFor((cards[0] ?? moneyCards[0])?.row.id),
     keptBefore,
     cash,
     setCash,

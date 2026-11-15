@@ -6,6 +6,9 @@ import { lineUsed, type DailyNumber } from '@6pm/domain';
 import { localeOf } from '@6pm/i18n';
 
 import { useMoneySelector } from '../../data/money-provider';
+import { daysLeftOf } from '../../data/money-store';
+import { incomePlanOf } from '../plan/income-plan-view';
+import { usePlanFormat } from '../plan/plan-format';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { AmountText } from '../quick-add/amount-text';
@@ -40,11 +43,24 @@ export const HomeTopNav = memo(function HomeTopNav({
   const { palette } = useTheme();
   const { t, language } = useI18n();
   const money = useMoneyFormat();
-  const { dayDate } = useClock();
+  const { dayDate, today } = useClock();
+  const format = usePlanFormat(today);
   // On the iPhone Duo, Add lives in the side rail.
   const { rail } = useDesignInsets();
-  const daysLeft = useMoneySelector((snapshot) => snapshot.cycle.daysLeft);
-  const used = day.safe < 0 ? 1 : lineUsed(day);
+  // The days the daily number divides by: to the next pay for a plan paid by the week.
+  const daysLeft = useMoneySelector(daysLeftOf);
+  // Money that only lands has no number until it does, as Today's hero says.
+  const nothingLanded = useMoneySelector((snapshot) => {
+    const plan = incomePlanOf(snapshot);
+    return plan?.kind === 'landed' && plan.view.state !== 'landed';
+  });
+  // Money that only lands has no payday: Plan's bar names the day it is made to last to.
+  const lastsTo = useMoneySelector((snapshot) => {
+    const plan = incomePlanOf(snapshot);
+    return plan?.kind === 'landed' ? plan.view.on : null;
+  });
+  // Nothing landed has no line to use up, and nothing is "over" (Today's hero draws it empty).
+  const used = nothingLanded ? 0 : day.safe < 0 ? 1 : lineUsed(day);
   const meter = useAnimatedStyle(() => ({ width: `${used * 100}%` }));
   const meterTrack = palette.dark ? 'rgba(255,255,255,.2)' : 'rgba(27,30,46,.12)';
   const warn = palette.dark ? '#ffbe8a' : '#b8622a';
@@ -57,21 +73,30 @@ export const HomeTopNav = memo(function HomeTopNav({
             <Text style={{ ...body(12, 600), color: palette.inkSoft }}>
               {t('today.safeToSpend')}
             </Text>
-            <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}>
-              <AmountText
-                parts={shortParts(Math.max(0, day.safe), money)}
-                style={{ ...leading(display(27, 500, -0.02), 27, true), color: palette.ink }}
-              />
+            {nothingLanded ? (
               <Text
                 numberOfLines={1}
-                style={{ ...body(12.5), ...tabular, color: palette.inkSoft, flexShrink: 1 }}
+                style={{ ...leading(display(22, 500, -0.02), 27, true), color: palette.ink }}
               >
-                {t('today.meterUsed', {
-                  spent: money.short(day.spent),
-                  line: money.short(day.line),
-                })}
+                {t('income.today.nothingLanded')}
               </Text>
-            </View>
+            ) : (
+              <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}>
+                <AmountText
+                  parts={shortParts(Math.max(0, day.safe), money)}
+                  style={{ ...leading(display(27, 500, -0.02), 27, true), color: palette.ink }}
+                />
+                <Text
+                  numberOfLines={1}
+                  style={{ ...body(12.5), ...tabular, color: palette.inkSoft, flexShrink: 1 }}
+                >
+                  {t('today.meterUsed', {
+                    spent: money.short(day.spent),
+                    line: money.short(day.line),
+                  })}
+                </Text>
+              </View>
+            )}
           </View>
           {rail > 0 ? null : (
             <PressScale
@@ -97,7 +122,11 @@ export const HomeTopNav = memo(function HomeTopNav({
         >
           <Animated.View
             style={[
-              { height: 3, borderRadius: 3, backgroundColor: day.safe < 0 ? warn : palette.ink },
+              {
+                height: 3,
+                borderRadius: 3,
+                backgroundColor: day.safe < 0 && !nothingLanded ? warn : palette.ink,
+              },
               meter,
             ]}
           />
@@ -117,7 +146,11 @@ export const HomeTopNav = memo(function HomeTopNav({
           {t(tab === 'plan' ? 'tabs.plan' : 'tabs.diary')}
         </Text>
         <Text style={{ ...body(12), color: palette.inkSoft }}>
-          {tab === 'plan' ? t('plan.daysToPayday', { count: daysLeft }) : month}
+          {tab !== 'plan'
+            ? month
+            : lastsTo !== null
+              ? t('income.day.to', { date: format.dayMonthShort(lastsTo) })
+              : t('plan.daysToPayday', { count: daysLeft })}
         </Text>
       </View>
     </TopNav>

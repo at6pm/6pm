@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
@@ -43,10 +43,16 @@ export function TodayHero({
   day,
   onSettings,
   onQuickAdd,
+  empty = null,
+  under = null,
 }: {
   readonly day: DailyNumber;
   readonly onSettings: () => void;
   readonly onQuickAdd: () => void;
+  /** Drawn in place of the number and its meter when no number is honest yet. */
+  readonly empty?: ReactNode;
+  /** The one line under the meter (the ruler, the pay), and the room it adds to the hero. */
+  readonly under?: { readonly node: ReactNode; readonly height: number } | null;
 }) {
   const { palette } = useTheme();
   const heroSize = parseFloat(palette.heroSize) || 92;
@@ -92,7 +98,7 @@ export function TodayHero({
     <View
       onLayout={measure.layout('block')}
       style={{
-        height: top(400),
+        height: top(400) + (empty === null ? (under?.height ?? 0) : 0),
         paddingTop: top(60),
         paddingHorizontal: 22,
         paddingBottom: 40,
@@ -151,49 +157,69 @@ export function TodayHero({
       </View>
 
       {/* The number opens the plan behind it, as in the prototype (`toPlan`). */}
-      <PressScale
-        scaleTo={0.98}
-        inScroll
-        onPress={() => goToTab('plan')}
-        accessibilityRole="button"
-        accessibilityHint={t('home.openPlan')}
-        style={{ gap: 6 }}
-      >
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-          <Text style={{ ...body(15, 500), color: palette.inkSoft }}>{t('today.safeToSpend')}</Text>
-          <Symbol name="info" size={18} color={palette.inkSoft} style={{ opacity: 0.6 }} />
-        </View>
-        {/* A long amount scales down to the width it has instead of running off the edge. */}
-        <View style={{ marginLeft: -3 }}>
-          <FitWidth height={Math.round(heroSize * 1.04)}>
-            <Odometer
-              value={Math.max(0, day.safe)}
-              size={heroSize}
-              glows={heroGlows}
-              opsz={pinnedOpticalSize(palette.heroVar)}
-              letterSpacingEm={-0.02}
-              color={palette.ink}
-            />
-          </FitWidth>
-        </View>
-        <View style={{ gap: 8, paddingTop: 10, maxWidth: 262 }}>
-          <View
-            style={{ height: 6, borderRadius: 6, backgroundColor: meterTrack, overflow: 'hidden' }}
-          >
-            <Animated.View
-              style={[{ height: 6, borderRadius: 6, backgroundColor: meterColor }, fill]}
-            />
+      {empty !== null ? (
+        <PressScale
+          scaleTo={0.98}
+          inScroll
+          onPress={() => goToTab('plan')}
+          accessibilityRole="button"
+          accessibilityHint={t('home.openPlan')}
+        >
+          {empty}
+        </PressScale>
+      ) : (
+        <PressScale
+          scaleTo={0.98}
+          inScroll
+          onPress={() => goToTab('plan')}
+          accessibilityRole="button"
+          accessibilityHint={t('home.openPlan')}
+          style={{ gap: 6 }}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+            <Text style={{ ...body(15, 500), color: palette.inkSoft }}>
+              {t('today.safeToSpend')}
+            </Text>
+            <Symbol name="info" size={18} color={palette.inkSoft} style={{ opacity: 0.6 }} />
           </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 12 }}>
-            <Text style={{ ...body(13.5, 500), ...tabular, color: palette.inkSoft }}>{left}</Text>
-            {right === null ? null : (
-              <Text style={{ ...body(13.5, 500), ...tabular, color: palette.inkSoft }}>
-                {right}
-              </Text>
-            )}
+          {/* A long amount scales down to the width it has instead of running off the edge. */}
+          <View style={{ marginLeft: -3 }}>
+            <FitWidth height={Math.round(heroSize * 1.04)}>
+              <Odometer
+                value={Math.max(0, day.safe)}
+                size={heroSize}
+                glows={heroGlows}
+                opsz={pinnedOpticalSize(palette.heroVar)}
+                letterSpacingEm={-0.02}
+                color={palette.ink}
+              />
+            </FitWidth>
           </View>
-        </View>
-      </PressScale>
+          <View style={{ gap: 8, paddingTop: 10, maxWidth: 262 }}>
+            <View
+              style={{
+                height: 6,
+                borderRadius: 6,
+                backgroundColor: meterTrack,
+                overflow: 'hidden',
+              }}
+            >
+              <Animated.View
+                style={[{ height: 6, borderRadius: 6, backgroundColor: meterColor }, fill]}
+              />
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 12 }}>
+              <Text style={{ ...body(13.5, 500), ...tabular, color: palette.inkSoft }}>{left}</Text>
+              {right === null ? null : (
+                <Text style={{ ...body(13.5, 500), ...tabular, color: palette.inkSoft }}>
+                  {right}
+                </Text>
+              )}
+            </View>
+            {under === null ? null : <View style={{ paddingTop: 6 }}>{under.node}</View>}
+          </View>
+        </PressScale>
+      )}
     </View>
   );
 }

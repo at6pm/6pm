@@ -1,19 +1,27 @@
 import {
+  addDays,
   billCountsIn,
+  BUFFER_POT_ID,
+  carriesOver,
   billsThisCycle,
   currencyOf,
   dailyNumber,
-  deletedJarsKeep,
   futureYouPotRow,
+  futureYouIn,
   futureYouStartsOn,
-  jarPartOf,
-  jarSpendMoves,
+  incomePeriod,
+  incomesOfMonth,
+  type IncomePeriod,
+  monthlyIncomeOf,
   joinedCycle,
+  leadPaysOf,
   occasionsOf,
   payCycleOn,
-  potTotals,
+  setAsideSoFar,
   shelfOrder,
   sumDayPart,
+  type PeriodInput,
+  type PlacedPay,
   type PotMove,
   type BillRow,
   type CategoryRow,
@@ -30,12 +38,15 @@ import {
   sumMoneyIn,
 } from '@6pm/domain';
 
+import { recordDueCarries } from './carry-moves';
+import { countedOf, jarTotalsOf, notDailyOf } from './snapshot-jars';
 import { createQueue } from './store-queue';
 import { openMoneyTables, type MoneyTables } from './money-tables';
 import { joinedAnswersOf, planCurrencyCode, readPlan, type PlanSettings } from './plan-settings';
 import { readPotMoves, recordDueSetAsides } from './pot-moves';
 import type { SqlDatabase } from './table';
 import { togetherTopUps } from './together-moves';
+import { moneyInRowsOf, wagesOf, workKeptOf } from './work-money';
 
 /** Everything the screens read, as one immutable snapshot of the phone's money database. */
 export interface MoneySnapshot {
@@ -83,6 +94,11 @@ export interface MoneySnapshot {
    * was skipped or deleted since).
    */
   readonly owed: readonly OwedRow[];
+  /**
+   * The last 28 closed days before today, latest first: the usual day that caps a line from money
+   * that only lands, and the line held while a pay is late. Left out of snapshots built by hand.
+   */
+  readonly recentClosedDays?: readonly ClosedDayRow[];
 }
 
 /**
@@ -99,69 +115,7 @@ export const NO_JAR_FIELDS = {
   deletedJarsKept: 0,
 } as const satisfies Partial<MoneySnapshot>;
 
-/** The fields a snapshot's jar totals are worked out from, on every publish. */
-type JarTotals = Pick<
-  MoneySnapshot,
-  'potSaved' | 'topUpsThisCycle' | 'setAsideThisCycle' | 'potSpentThisCycle' | 'deletedJarsKept'
->;
-
-function notDailyOf(snapshot: Pick<MoneySnapshot, 'categories'>): Set<string> {
-  return new Set(snapshot.categories.filter((c) => !c.countsDaily).map((c) => c.id));
-}
-
-const countedOf = (s: SpendRow) => ({
-  amount: s.amount,
-  category: s.categoryId,
-  status: s.status,
-  forWork: s.forWork,
-  paysBill: s.paysBill,
-  direction: s.direction,
-  fromPot: s.fromPot,
-  fromPotAmount: s.fromPotAmount,
-  day: s.day,
-});
-
-/**
- * What every jar holds, sets aside and gave this cycle, from the stored moves and the spends taken
- * from jars. Worked out again whenever a snapshot is published, so a spend marked "From a jar",
- * edited, skipped or undone moves its jar at once.
- */
-export function jarTotalsOf(
-  snapshot: Omit<MoneySnapshot, keyof JarTotals> & Partial<JarTotals>,
-): JarTotals {
-  const payday = snapshot.plan?.payday ?? { kind: 'lastDay' as const };
-  const notDaily = notDailyOf(snapshot);
-  const spends = [...snapshot.earlierJarSpends, ...snapshot.cycleSpends].map(countedOf);
-  const spent = jarSpendMoves(spends, payday, notDaily);
-  const totals = potTotals(
-    [...snapshot.potMoves, ...spent],
-    new Set(snapshot.pots.map((p) => p.id)),
-    snapshot.cycle.start,
-  );
-  const covered = (potId: string) =>
-    snapshot.cycleSpends
-      .filter((s) => s.fromPot === potId)
-      .reduce((sum, s) => sum + jarPartOf(countedOf(s), notDaily), 0);
-  const deleted = snapshot.deletedPots.map((pot) => {
-    const thisCycle = snapshot.potMoves.filter(
-      (m) => m.potId === pot.id && m.cycle === snapshot.cycle.start,
-    );
-    const of = (kind: PotMove['kind']) =>
-      thisCycle.filter((m) => m.kind === kind).reduce((sum, m) => sum + m.amount, 0);
-    return {
-      setAside: pot.kind === 'occasion' ? of('setAside') : 0,
-      topUps: of('topUp'),
-      covered: covered(pot.id),
-    };
-  });
-  return {
-    potSaved: totals.saved,
-    topUpsThisCycle: totals.topUps + snapshot.togetherThisCycle,
-    setAsideThisCycle: totals.setAside,
-    potSpentThisCycle: totals.spent,
-    deletedJarsKept: deletedJarsKeep(deleted),
-  };
-}
+export { countedOf, jarTotalsOf, notDailyOf };
 
 export interface MoneyStore {
   subscribe(listener: () => void): () => void;
@@ -193,7 +147,8 @@ export function dailyInputOf(snapshot: MoneySnapshot): DailyNumberInput | null {
   const occasions =
     occasionsOf(snapshot.pots, snapshot.setAsideThisCycle) + snapshot.deletedJarsKept;
   const joined = joinedCycle(snapshot.cycle, joinedAnswersOf(plan));
-  return {
+  const currency = currencyOf(planCurrencyCode(plan));
+  const input: DailyNumberInput = {
     plan: {
       income: plan.income,
       bills,
@@ -209,8 +164,181 @@ export function dailyInputOf(snapshot: MoneySnapshot): DailyNumberInput | null {
     share: joined.share,
     beforeJoining: joined.beforeJoining,
     futureYouSkipped: joined.futureYouSkipped,
-    currency: currencyOf(planCurrencyCode(plan)),
+    currency,
   };
+  // A plan never asked about its incomes is counted exactly as it always was.
+  if (plan.incomes === undefined) return input;
+  const period = periodOf(snapshot);
+  if (period === null) return input;
+  const landed = new Set(plan.incomes.filter((i) => i.amount <= 0).map((i) => i.id));
+  // Takings reach the number only as what the work kept (`workMoneyIn`, or in `credited`).
+  const rows = moneyInRowsOf(snapshot);
+  // A closed day keeps the line it closed with; what reached the days since is tomorrow's.
+  const closedToday = snapshot.closedDays.find((d) => d.day === today);
+  return {
+    ...input,
+    // The month's income as the views measure against it (the what-if's range, a slice's share).
+    plan: { ...input.plan, income: incomeOfPeriod(plan, period) },
+    // Money that only lands is the month's own money (`credited`) when nothing is counted on;
+    // beside a counted pay it is money in that adds to free money.
+    moneyIn:
+      (period.kind === 'landed' ? sumMoneyIn(rows) : sumMoneyIn(rows, landed)) + period.workMoneyIn,
+    daysLeft: period.daysLeft,
+    period: {
+      credited: period.credited,
+      reserved: period.reserved,
+      cap: period.cap,
+      minDays: period.minDays,
+      hold: period.hold,
+      bills: period.bills,
+      coming: period.coming,
+      ahead: period.ahead,
+      ...(closedToday ? { closedLine: closedToday.line } : {}),
+    },
+    // Paid by the week or the fortnight, joining is counted from the pay it came in, not estimated.
+    ...(period.monthly ? {} : { share: 1, beforeJoining: null }),
+  };
+}
+
+/** The month's income for a plan that holds its incomes: what is counted on, or the pool. */
+function incomeOfPeriod(plan: PlanSettings, period: IncomePeriod): number {
+  return period.kind === 'landed' ? period.credited : monthlyIncomeOf(plan);
+}
+
+/**
+ * The month's income the views measure against (the what-if slider's range, Future you's share
+ * of a pay, whether a jar fits): the plan's own until it holds its incomes; then what they bring
+ * in a usual month, or, with nothing counted on, what the month has.
+ */
+export function viewIncomeOf(snapshot: MoneySnapshot): number {
+  const { plan } = snapshot;
+  if (plan === null) return 0;
+  const period = periodOf(snapshot);
+  return period === null ? plan.income : incomeOfPeriod(plan, period);
+}
+
+/**
+ * How the month the person joined in is counted (`joinedCycle`): with the estimate of what went
+ * before joining for a monthly plan, from the pay it came in for one paid by the week or as money
+ * lands.
+ */
+export function joinedOf(snapshot: MoneySnapshot): ReturnType<typeof joinedCycle> {
+  const { plan } = snapshot;
+  const estimate = plan?.incomes === undefined || periodOf(snapshot)?.monthly !== false;
+  return joinedCycle(snapshot.cycle, joinedAnswersOf(plan), estimate);
+}
+
+/**
+ * Money in placed as one of the plan's incomes' pay this month, and the wages of someone who pays
+ * themselves from their work, on their days.
+ */
+function placedOf(snapshot: MoneySnapshot): PlacedPay[] {
+  return [
+    ...snapshot.cycleSpends.flatMap((s) =>
+      s.direction === 'in' && s.status === 'kept' && s.moneyIn === 'pay' && s.incomeId != null
+        ? [{ incomeId: s.incomeId, day: s.day, amount: s.amount }]
+        : [],
+    ),
+    ...wagesOf(snapshot),
+  ];
+}
+
+/**
+ * The month as a plan that holds its incomes counts it (`incomePeriod`); null for a plan never
+ * asked about them, or before the month is set up.
+ */
+export function periodOf(snapshot: MoneySnapshot): IncomePeriod | null {
+  const input = periodInputOf(snapshot);
+  return input === null ? null : incomePeriod(input);
+}
+
+/** What `periodOf` counts the month from: the plan's incomes, bills, jars and placed pays. */
+export function periodInputOf(snapshot: MoneySnapshot): PeriodInput | null {
+  const { plan, today } = snapshot;
+  if (plan === null || plan.incomes === undefined) return null;
+  const joined = joinedCycle(snapshot.cycle, joinedAnswersOf(plan));
+  const closed = snapshot.recentClosedDays ?? snapshot.closedDays;
+  const input: PeriodInput = {
+    day: today,
+    cycle: snapshot.cycle,
+    anchor: plan.payday,
+    // A wage someone starts paying themselves counts once its first day comes; until then the
+    // month is counted as it was. In the month it began, a month that only lands takes each wage
+    // as a landing, so the switch changes neither what is set aside nor what the jars hold.
+    incomes: incomesOfMonth(plan.incomes, today, snapshot.cycle.start),
+    lastUntil: plan.lastUntil ?? null,
+    bills: snapshot.bills,
+    jars:
+      futureYouIn(plan.futureYou, joined) + occasionsOf(snapshot.pots, snapshot.setAsideThisCycle),
+    held: snapshot.deletedJarsKept,
+    joinedOn: plan.startedOn ?? null,
+    currency: currencyOf(planCurrencyCode(plan)),
+    placed: placedOf(snapshot),
+    inHand: carriesOver(plan) ? (snapshot.potSaved[BUFFER_POT_ID] ?? 0) : 0,
+    closedDays: closed,
+    workKept: workKeptOf(snapshot),
+  };
+  return { ...input, heldLine: heldLineOf(snapshot, input, closed) };
+}
+
+/**
+ * Where the day stays while the month waits for a late pay: the line of the day before the pay
+ * was due, as that day closed, or as the snapshot counts it when it did not; else the last closed
+ * day's line. Null while no pay is late, or when no such day is known.
+ */
+function heldLineOf(
+  snapshot: MoneySnapshot,
+  input: PeriodInput,
+  closed: readonly ClosedDayRow[],
+): number | null {
+  const due = leadPaysOf(input)?.due ?? null;
+  if (due === null) return null;
+  const eve = addDays(due, -1);
+  const closedEve = closed.find((d) => d.day === eve);
+  if (closedEve) return closedEve.line;
+  // The day before was in this month: counted from what the snapshot holds, as it stood then.
+  // Nothing was late that day, so this asks for no held line of its own.
+  if (eve >= snapshot.cycle.start && eve < snapshot.today) {
+    const line = dayOf({
+      ...snapshot,
+      today: eve,
+      cycleSpends: snapshot.cycleSpends.filter((s) => s.day <= eve),
+      recentClosedDays: closed.filter((d) => d.day < eve),
+    })?.line;
+    if (line !== undefined) return line;
+  }
+  const last = closed
+    .filter((d) => d.day < snapshot.today)
+    .reduce<ClosedDayRow | null>((a, d) => (a === null || d.day > a.day ? d : a), null);
+  return last?.line ?? null;
+}
+
+/**
+ * What the jars hold, for a plan whose month sets them aside a pay or a landing at a time: this
+ * month's set-aside only as far as it has been made (`setAsideSoFar`), so a jar, Plan's Pots part
+ * and the pay's slip say the same. A monthly salary's jars hold the month's set-aside from payday.
+ */
+function setAsideHeld(snapshot: MoneySnapshot): MoneySnapshot {
+  const input = periodInputOf(snapshot);
+  if (input === null) return snapshot;
+  const period = incomePeriod(input);
+  if (period.kind === 'monthly') return snapshot;
+  const sofar = setAsideSoFar(snapshot.setAsideThisCycle, period.jars, input.jars);
+  const potSaved: Record<string, number> = { ...snapshot.potSaved };
+  for (const [id, whole] of Object.entries(snapshot.setAsideThisCycle)) {
+    const held = potSaved[id];
+    if (held === undefined) continue;
+    potSaved[id] = Math.max(0, held - whole + (sofar[id] ?? whole));
+  }
+  return { ...snapshot, potSaved };
+}
+
+/**
+ * The days after today through the day money next comes, as the daily number divides by them:
+ * what every other divisor of today's free money uses.
+ */
+export function daysLeftOf(snapshot: MoneySnapshot): number {
+  return dailyInputOf(snapshot)?.daysLeft ?? snapshot.cycle.daysLeft;
 }
 
 /** Everything waiting for a yes, newest first: this cycle's, and what is left from before it. */
@@ -225,6 +353,19 @@ export function findSpend(snapshot: MoneySnapshot, id: string): SpendRow | undef
   return (
     snapshot.cycleSpends.find((s) => s.id === id) ?? snapshot.waitingBefore.find((s) => s.id === id)
   );
+}
+
+/**
+ * A spend or money in by id, for its Details: this month's from the snapshot, an older one (a work
+ * money in on the year's lists, a closed day of an earlier week) from its table. Null when there is
+ * none, or it was deleted.
+ */
+export async function readSpend(
+  store: Pick<MoneyStore, 'getSnapshot' | 'tables'>,
+  id: string,
+): Promise<SpendRow | null> {
+  const row = findSpend(store.getSnapshot(), id) ?? (await store.tables.spends.get(id));
+  return row && row.status !== 'deleted' ? row : null;
 }
 
 /** The one number for the snapshot's today. */
@@ -269,11 +410,64 @@ export function createMoneyStore(db: SqlDatabase, today: LocalDate): MoneyStore 
   };
 
   const publish = (next: MoneySnapshot) => {
-    snapshot = { ...next, ...jarTotalsOf(next) };
+    snapshot = setAsideHeld({ ...next, ...jarTotalsOf(next) });
     for (const listener of listeners) listener();
   };
 
   const exclusive = createQueue();
+
+  /**
+   * How a month that has ended stood at the end of its last day, from its own spends, read here
+   * since the store holds only the month it is in. Bills are today's rows: a month's paid marks
+   * and paid amounts are kept only until the bill is paid again.
+   */
+  const endingOf = async (month: {
+    readonly plan: PlanSettings;
+    readonly month: PayCycle;
+    readonly moves: readonly PotMove[];
+    readonly pots: readonly PotRow[];
+    readonly categories: readonly CategoryRow[];
+    readonly bills: readonly BillRow[];
+  }) => {
+    const last = addDays(month.month.payday, -1);
+    const cycle = payCycleOn(last, month.plan.payday);
+    const [spends, earlier, together, closed] = await Promise.all([
+      tables.spends.select(
+        "WHERE day >= ? AND day <= ? AND status != 'deleted' AND source != 'import' ORDER BY at DESC",
+        [cycle.start, last],
+      ),
+      tables.spends.select(
+        "WHERE day < ? AND from_pot IS NOT NULL AND status NOT IN ('skipped', 'deleted')",
+        [cycle.start],
+      ),
+      togetherTopUps(db, cycle.start),
+      // What work kept lands on its closed days: the month's own, for someone with work on.
+      month.plan.work === undefined
+        ? Promise.resolve([])
+        : tables.closedDays.select('WHERE day >= ? AND day <= ? ORDER BY day', [cycle.start, last]),
+    ]);
+    const base = {
+      today: last,
+      plan: month.plan,
+      cycle,
+      categories: month.categories,
+      cycleSpends: spends,
+      waitingBefore: [],
+      bills: month.bills.filter((b) => billCountsIn(b, cycle)),
+      pots: shelfOrder(month.pots),
+      deletedPots: [],
+      potMoves: month.moves.filter((m) => m.cycle <= cycle.start),
+      earlierJarSpends: earlier,
+      togetherThisCycle: together,
+      closedDays: closed,
+      owed: [],
+    };
+    const ended: MoneySnapshot = { ...base, ...jarTotalsOf(base) };
+    const number = dayOf(ended);
+    const period = periodOf(ended);
+    if (number === null || period === null) return null;
+    return { free: number.free, kept: period.kept, held: ended.potSaved[BUFFER_POT_ID] ?? 0 };
+  };
 
   const loadNow = async (day: LocalDate) => {
     const plan = await readPlan(db);
@@ -293,6 +487,7 @@ export function createMoneyStore(db: SqlDatabase, today: LocalDate): MoneyStore 
       deletedPots,
       earlierJarSpends,
       owed,
+      recentClosedDays,
     ] = await Promise.all([
       tables.categories.select('WHERE archived_at IS NULL ORDER BY sort', []),
       // History brought in from another app is never counted: the joined cycle's part of it
@@ -322,10 +517,12 @@ export function createMoneyStore(db: SqlDatabase, today: LocalDate): MoneyStore 
         // Open, or settled by something since taken away (a deleted cash payback or cover).
         `WHERE (settled_at IS NULL OR settled_spend_id IN (SELECT id FROM spends
              WHERE status IN ('skipped', 'deleted')))
-           AND spend_id IN (SELECT id FROM spends WHERE status NOT IN ('skipped', 'deleted'))
+           AND (code IS NOT NULL
+             OR spend_id IN (SELECT id FROM spends WHERE status NOT IN ('skipped', 'deleted')))
            ORDER BY day DESC, sort`,
         [],
       ),
+      tables.closedDays.select('WHERE day < ? ORDER BY day DESC LIMIT 28', [day]),
     ]);
     // Each pay cycle puts the month's set-aside into every pot, once; a launch after missed
     // days or cycles catches up here before anything is counted.
@@ -340,6 +537,18 @@ export function createMoneyStore(db: SqlDatabase, today: LocalDate): MoneyStore 
           currency: currencyOf(planCurrencyCode(plan)),
         })
       : [];
+    // What each month that has ended left over goes into the buffer jar, once, before anything
+    // this month is counted (a plan whose months carry over; see `recordDueCarries`).
+    const carried = plan
+      ? await recordDueCarries(db, tables, {
+          plan,
+          cycle,
+          pots,
+          moves: [...recorded, ...caughtUp],
+          endingOf: (month, moves, monthPots) =>
+            endingOf({ plan, month, moves, pots: monthPots, categories, bills }),
+        })
+      : { moves: [], buffer: null };
     publish({
       ...snapshot,
       today: day,
@@ -349,13 +558,14 @@ export function createMoneyStore(db: SqlDatabase, today: LocalDate): MoneyStore 
       cycleSpends,
       waitingBefore,
       bills: bills.filter((b) => billCountsIn(b, cycle)),
-      pots: shelfOrder(pots),
+      pots: shelfOrder(carried.buffer ? [...pots, carried.buffer] : pots),
       deletedPots,
-      potMoves: [...recorded, ...caughtUp],
+      potMoves: [...recorded, ...caughtUp, ...carried.moves],
       earlierJarSpends,
       togetherThisCycle: together,
       closedDays,
       owed,
+      recentClosedDays,
     });
   };
 

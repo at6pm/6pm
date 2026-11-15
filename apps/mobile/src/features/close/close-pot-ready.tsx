@@ -19,6 +19,7 @@ import {
   isTripJar,
   jarEarly,
   jarStopsLine,
+  nextPayJarLine,
   readyKey,
   type CloseEvent,
   type CloseState,
@@ -173,22 +174,39 @@ function PotReady({
     : jar.goal > 0
       ? t('potsClose.ready.of', { saved: money.short(held), target: money.short(jar.goal) })
       : money.short(held);
-  const line = plan
-    ? jarStopsLine({
+  const occasions = snap.pots.reduce(
+    (sum, p) => (p.kind === 'occasion' ? sum + (snap.setAsideThisCycle[p.id] ?? 0) : sum),
+    0,
+  );
+  const took = snap.setAsideThisCycle[jar.id] ?? 0;
+  // Paid by the week or the fortnight, "from payday" is the next pay, with the line it brings.
+  const weekly =
+    plan?.incomes === undefined
+      ? null
+      : nextPayJarLine({
+          today: snap.today,
+          anchor: plan.payday,
+          incomes: plan.incomes,
+          bills: snap.bills,
+          jars: plan.futureYou + occasions,
+          // A 2.1 goal fills from Future you's slice: its stopping moves no line.
+          took: jar.kind === 'occasion' ? took : 0,
+          currency: homeCurrencyOf(plan),
+        });
+  const line = !plan
+    ? null
+    : (weekly ??
+      jarStopsLine({
         today: snap.today,
         payday: plan.payday,
         income: plan.income,
         bills: snap.bills,
         futureYou: plan.futureYou,
-        occasions: snap.pots.reduce(
-          (sum, p) => (p.kind === 'occasion' ? sum + (snap.setAsideThisCycle[p.id] ?? 0) : sum),
-          0,
-        ),
-        took: snap.setAsideThisCycle[jar.id] ?? 0,
+        occasions,
+        took,
         fromSlice: jar.kind !== 'occasion',
         currency: homeCurrencyOf(plan),
-      })
-    : null;
+      }));
   const persona = plan?.persona ?? 'soft';
   const companion = plan?.serious
     ? null

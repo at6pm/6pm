@@ -46,6 +46,12 @@ export interface InboxFiling {
   readonly categoryIds: ReadonlySet<string>;
   /** The home currency the app counts in now; đồng when not given. */
   readonly home?: string;
+  /**
+   * Money in keeps the bank it came into, as spending keeps the bank it was paid from: for someone
+   * who turned work on, whose banks say whether money through them is work. Off, money in keeps
+   * none, as before.
+   */
+  readonly walletIn?: boolean;
 }
 
 /**
@@ -129,8 +135,8 @@ function noteOf(item: InboxSpend): string | null {
  * names (its catalogue name, as Details lists the wallets). Money that came in was paid into it,
  * not from it, and a Wallet tap or a said spend names none.
  */
-function walletOf(item: InboxSpend): string | null {
-  if (item.direction === 'in') return null;
+function walletOf(item: InboxSpend, walletIn = false): string | null {
+  if (item.direction === 'in' && !walletIn) return null;
   if (item.source !== 'alert' && item.source !== 'shared') return null;
   return item.receipt?.bank ?? null;
 }
@@ -178,7 +184,7 @@ export function inboxItemToNewSpend(
     foreignAmount: kept,
     currencyGuessed: item.currencyGuessed === true,
     memo: item.receipt?.memo ?? null,
-    wallet: walletOf(item),
+    wallet: walletOf(item, filing.walletIn === true),
     direction: item.direction ?? null,
   };
 }

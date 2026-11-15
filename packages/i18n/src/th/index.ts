@@ -19,6 +19,7 @@ import { thInsightsHabits } from './insights-habits';
 import { thIntents } from './intents';
 import { thLooks } from './looks';
 import { thMoneyIn } from './money-in';
+import { thQuickAdd } from './quick-add';
 import { thPotsClose } from './pots-close';
 import { thPotsPlan } from './pots-plan';
 import { thPots } from './pots';
@@ -42,6 +43,11 @@ import { thYearBook } from './year-book';
 import { thFirstCatch } from './first-catch';
 import { thCaptureLog } from './capture-log';
 import { thPhoto } from './photo';
+import { thMoneyReaches } from './money-reaches';
+import { thIncome } from './income';
+import { thWork } from './work';
+import { thRequests } from './requests';
+import { thWorkYear } from './work-year';
 import { thImport } from './import';
 import { thOwed } from './owed';
 import { thNotifications } from './notifications';
@@ -89,12 +95,18 @@ export const th: Catalogue = {
   ...thWidgetsGuide,
   ...thDuo,
   ...thMoneyIn,
+  ...thQuickAdd,
   ...thPotsClose,
   ...thPotsPlan,
   ...thPots,
   ...thFirstCatch,
   ...thCaptureLog,
   ...thPhoto,
+  ...thMoneyReaches,
+  ...thIncome,
+  ...thWork,
+  ...thRequests,
+  ...thWorkYear,
   ...thImport,
   ...thOwed,
   ...importSketchMomo,
@@ -106,4 +118,8 @@ export const th: Catalogue = {
  * Texts Thai writes exactly as English does (names, codes, a word the language borrows),
  * beyond the list every language shares.
  */
-export const thSameAsEnglish: readonly string[] = [...importSketchEnglish];
+export const thSameAsEnglish: readonly string[] = [
+  ...importSketchEnglish,
+  'work-{year}.csv',
+  'work-costs-{year}.csv',
+];

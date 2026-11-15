@@ -34,10 +34,24 @@ const MOST = Math.round(WHAT_IF_SHARE * 100);
 /** The jar is drawn full at this share; the slider runs on past it. */
 const FULL_AT = 30;
 
+/** Money that only lands: Future you as an amount a month, in the slider's steps. */
+export interface LandedFutureYou {
+  readonly steps: number;
+  /** The most steps the slider reaches, and where the jar is drawn full. */
+  readonly most: number;
+  readonly fullAt: number;
+  /** A month's amount at `steps`, and one step of it, in the home currency. */
+  readonly amount: number;
+  readonly step: number;
+  readonly onSteps: (steps: number) => void;
+}
+
 /**
  * Pay future you first: Future you's jar on the left fills as the slice slides, "12% of each pay"
  * and what goes in each payday beside it, and the daily number answering underneath from the
- * same engine as the first number (`line`).
+ * same engine as the first number (`line`). For money that only lands (`landed`) there is no pay
+ * to take a share of: the slider sets an amount a month, set aside from what lands after the
+ * bills, down to nothing.
  */
 export function StepFutureYou({
   pal,
@@ -45,6 +59,7 @@ export function StepFutureYou({
   amount,
   line,
   onPercent,
+  landed,
 }: {
   readonly pal: OnboardingPalette;
   readonly percent: number;
@@ -55,20 +70,23 @@ export function StepFutureYou({
   /** Safe to spend each day with this slice: the first number's line. */
   readonly line?: number;
   readonly onPercent: (percent: number) => void;
+  readonly landed?: LandedFutureYou | undefined;
 }) {
   const { t } = useI18n();
   const money = useMoneyFormat();
   const c = jarColours(FUTURE_HUE);
   // The range never ends below the slice already set (M5).
   const [max] = useState(() => Math.max(MOST, percent));
+  const value = landed ? landed.steps : percent;
+  const full = landed ? landed.fullAt : FULL_AT;
 
-  const level = useSharedValue(Math.min(1, (percent / FULL_AT) * 0.92));
-  const lit = useSharedValue(percent > 0 ? 1 : 0);
+  const level = useSharedValue(Math.min(1, (value / full) * 0.92));
+  const lit = useSharedValue(value > 0 ? 1 : 0);
   useEffect(() => {
     const motion = { duration: FILL_MS, easing: fillEase, reduceMotion: ReduceMotion.System };
-    level.set(withTiming(Math.min(1, (percent / FULL_AT) * 0.92), motion));
-    lit.set(withTiming(percent > 0 ? 1 : 0, motion));
-  }, [percent, level, lit]);
+    level.set(withTiming(Math.min(1, (value / full) * 0.92), motion));
+    lit.set(withTiming(value > 0 ? 1 : 0, motion));
+  }, [value, full, level, lit]);
   const jarStyle = useAnimatedStyle(() => ({ opacity: 0.55 + 0.45 * lit.get() }));
 
   return (
@@ -102,30 +120,58 @@ export function StepFutureYou({
             slosh
           />
         </Animated.View>
-        <View style={{ gap: 2 }}>
-          <Text style={{ ...leading(display(52, 600, -0.03), 49), ...tabular, color: pal.ink }}>
-            {percent}%
-          </Text>
-          <Text style={{ ...body(15, 600), color: pal.inkSoft }}>
-            {t('potsClose.first.ofEachPay')}
-          </Text>
-          <Text style={{ ...display(22, 500), ...tabular, color: pal.ink, paddingTop: 10 }}>
-            {amount > 0 ? money.short(amount) : t('potsClose.first.nothing')}
-          </Text>
-          <Text style={{ ...body(13), color: pal.inkSoft, opacity: 0.8 }}>
-            {t('potsClose.first.eachPayday')}
-          </Text>
-        </View>
+        {landed ? (
+          <View style={{ gap: 2, flexShrink: 1 }}>
+            <Text style={{ ...leading(display(52, 600, -0.03), 49), ...tabular, color: pal.ink }}>
+              {landed.amount > 0 ? money.short(landed.amount) : t('potsClose.first.nothing')}
+            </Text>
+            <Text style={{ ...body(15, 600), color: pal.inkSoft }}>
+              {t('income.futureYou.aMonth')}
+            </Text>
+            <Text style={{ ...body(13), color: pal.inkSoft, opacity: 0.8, paddingTop: 10 }}>
+              {t('income.futureYou.fromLandings')}
+            </Text>
+          </View>
+        ) : (
+          <View style={{ gap: 2 }}>
+            <Text style={{ ...leading(display(52, 600, -0.03), 49), ...tabular, color: pal.ink }}>
+              {percent}%
+            </Text>
+            <Text style={{ ...body(15, 600), color: pal.inkSoft }}>
+              {t('potsClose.first.ofEachPay')}
+            </Text>
+            <Text style={{ ...display(22, 500), ...tabular, color: pal.ink, paddingTop: 10 }}>
+              {amount > 0 ? money.short(amount) : t('potsClose.first.nothing')}
+            </Text>
+            <Text style={{ ...body(13), color: pal.inkSoft, opacity: 0.8 }}>
+              {t('potsClose.first.eachPayday')}
+            </Text>
+          </View>
+        )}
       </View>
-      <SliceSlider
-        percent={percent}
-        max={max}
-        fill={c.fill}
-        track={pal.track}
-        thumb={pal.light}
-        label={t('potsClose.first.slider')}
-        onPercent={onPercent}
-      />
+      {landed ? (
+        <SliceSlider
+          value={landed.steps}
+          max={landed.most}
+          valueText={(steps) => money.short(steps * landed.step)}
+          fill={c.fill}
+          track={pal.track}
+          thumb={pal.light}
+          label={t('potsClose.first.slider')}
+          onValue={landed.onSteps}
+        />
+      ) : (
+        <SliceSlider
+          value={percent}
+          max={max}
+          valueText={(p) => `${p}%`}
+          fill={c.fill}
+          track={pal.track}
+          thumb={pal.light}
+          label={t('potsClose.first.slider')}
+          onValue={onPercent}
+        />
+      )}
       {line !== undefined ? (
         <Card
           pal={pal}
@@ -153,25 +199,28 @@ export function StepFutureYou({
 }
 
 /**
- * The slice's slider: the track fills to the thumb as it is dragged (on the UI thread), the
- * percent changes in whole steps with a light haptic every 5%.
+ * The slice's slider: the track fills to the thumb as it is dragged (on the UI thread), the value
+ * changes in whole steps (a percent, or an amount's steps) with a light haptic every five.
  */
 function SliceSlider({
-  percent,
+  value: percent,
   max,
+  valueText,
   fill,
   track,
   thumb,
   label,
-  onPercent,
+  onValue: onPercent,
 }: {
-  readonly percent: number;
+  readonly value: number;
   readonly max: number;
+  /** What a screen reader says for a value. */
+  readonly valueText: (value: number) => string;
   readonly fill: string;
   readonly track: string;
   readonly thumb: string;
   readonly label: string;
-  readonly onPercent: (percent: number) => void;
+  readonly onValue: (value: number) => void;
 }) {
   const width = useSharedValue(0);
   const x = useSharedValue(0);
@@ -221,7 +270,7 @@ function SliceSlider({
         accessible
         accessibilityRole="adjustable"
         accessibilityLabel={label}
-        accessibilityValue={{ min: 0, max, now: percent, text: `${percent}%` }}
+        accessibilityValue={{ min: 0, max, now: percent, text: valueText(percent) }}
         accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
         onAccessibilityAction={(e) =>
           report(

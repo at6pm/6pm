@@ -18,9 +18,9 @@ import { curves } from '@6pm/theme';
 import { easeOut } from '../../ui/motion/curves';
 import { useTheme } from '../../ui/theme/theme';
 
-/** The three panels under the hero, in the order their parts sit in the split. */
-export type PanelKind = 'bills' | 'pots' | 'free';
-const ORDER: Readonly<Record<PanelKind, number>> = { bills: 0, pots: 1, free: 2 };
+/** The panels under the hero, in the order their parts sit in the split. */
+export type PanelKind = 'bills' | 'pots' | 'free' | 'inHand';
+const ORDER: Readonly<Record<PanelKind, number>> = { bills: 0, pots: 1, free: 2, inHand: 3 };
 /** Nobody holds the card: the old panel has gone and the new one may come in. */
 const FREE = -1;
 

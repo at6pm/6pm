@@ -1,5 +1,5 @@
 import { useRouter, type Href } from 'expo-router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Text } from 'react-native';
 import Animated, { useAnimatedStyle, type AnimatedRef } from 'react-native-reanimated';
 
@@ -23,6 +23,10 @@ import { WeekRecapCard } from './week-recap-card';
 import { useDiaryBridge } from '../duo/diary-bridge';
 import { useOpenAsk } from '../duo/spread-pane';
 import { OwedRow } from '../owed/owed-row';
+import { useMoney } from '../../data/money-provider';
+import { hasWorkMoney } from '../../data/work-money';
+import { WorkDiary, WorkFilter } from '../work/work-diary';
+import { useWorkDiaryRequest } from '../work/work-diary-request';
 
 /**
  * Diary: the week recap, the month's calendar of receipts, the selected day's receipt, the way
@@ -45,6 +49,14 @@ export function DiaryPage({ scrollRef }: { readonly scrollRef: AnimatedRef<Anima
   const shown = useHomePageShown();
   const { y } = useHomeScroll();
   const diary = useDiary();
+  // Someone with work money can filter the Diary to work; it holds until the Diary is left.
+  const workOn = hasWorkMoney(useMoney());
+  const [onlyWork, setOnlyWork] = useState(false);
+  const asked = useWorkDiaryRequest();
+  useEffect(() => {
+    if (asked > 0) setOnlyWork(true);
+  }, [asked]);
+  const showWork = workOn && onlyWork;
   const openAsk = useOpenAsk();
   // On the opened iPhone Duo the chosen day is written on the right page, not under the calendar.
   const toPage = useDiaryBridge();
@@ -112,41 +124,49 @@ export function DiaryPage({ scrollRef }: { readonly scrollRef: AnimatedRef<Anima
         </Text>
       </Animated.View>
 
-      <WeekRecapCard recap={diary.recap} kicker={diary.recapKicker} letters={diary.letters} />
+      {workOn ? <WorkFilter work={showWork} onChange={setOnlyWork} /> : null}
 
-      <OwedRow />
+      {showWork ? <WorkDiary /> : null}
 
-      <ScrollReveal>
-        <MonthCalendar
-          title={diary.monthTitle}
-          summary={diary.summary}
-          letters={diary.letters}
-          cells={diary.cells}
-          today={diary.today}
-          closeAt={diary.closeAt}
-          selected={diary.selected}
-          onSelect={diary.select}
-          onToday={() => router.push('/close')}
-          onMissed={(day) => router.push(`/missed-day?day=${day}` as Href)}
-          canPrevious={diary.canPrevious}
-          canNext={diary.canNext}
-          onPage={diary.page}
-          stamp={diary.stamp}
-          broughtOnly={diary.broughtOnly}
-          footer={
-            diary.shareMonth ? (
-              <ShareChip
-                card="month"
-                of={diary.shareMonth}
-                size="small"
-                label={t('shareCards.chip')}
-              />
-            ) : null
-          }
-        />
-      </ScrollReveal>
+      {showWork ? null : (
+        <WeekRecapCard recap={diary.recap} kicker={diary.recapKicker} letters={diary.letters} />
+      )}
 
-      {diary.receipt && !toPage ? <DayReceipt receipt={diary.receipt} /> : null}
+      {showWork ? null : <OwedRow />}
+
+      {showWork ? null : (
+        <ScrollReveal>
+          <MonthCalendar
+            title={diary.monthTitle}
+            summary={diary.summary}
+            letters={diary.letters}
+            cells={diary.cells}
+            today={diary.today}
+            closeAt={diary.closeAt}
+            selected={diary.selected}
+            onSelect={diary.select}
+            onToday={() => router.push('/close')}
+            onMissed={(day) => router.push(`/missed-day?day=${day}` as Href)}
+            canPrevious={diary.canPrevious}
+            canNext={diary.canNext}
+            onPage={diary.page}
+            stamp={diary.stamp}
+            broughtOnly={diary.broughtOnly}
+            footer={
+              diary.shareMonth ? (
+                <ShareChip
+                  card="month"
+                  of={diary.shareMonth}
+                  size="small"
+                  label={t('shareCards.chip')}
+                />
+              ) : null
+            }
+          />
+        </ScrollReveal>
+      )}
+
+      {diary.receipt && !toPage && !showWork ? <DayReceipt receipt={diary.receipt} /> : null}
 
       <ScrollReveal>
         {/* Ask 6pm has no screen yet: the entry is drawn and does nothing until it lands. */}

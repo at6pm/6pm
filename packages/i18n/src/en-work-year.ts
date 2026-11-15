@@ -1,0 +1,65 @@
+/**
+ * The work year (the Money Reaches You canvas, board 8): work money in against the 1 billion
+ * đồng line, what clients held back and which certificates are still to come, and the list for
+ * whoever files. The line is a line: nothing here calls it law, a threshold or a rule.
+ */
+export const enWorkYear = {
+  'workYear.row': 'The year',
+  'workYear.title': 'Work · {year}',
+  'workYear.back': 'Back',
+  'workYear.figure': 'Work money in this year',
+  'workYear.under': '{amount} under the 1 billion line',
+  'workYear.past': '{amount} past the 1 billion line',
+  'workYear.percent': '{percent}%',
+  'workYear.near': 'You’re near the line. Ask whoever fills in your tax what changes.',
+  'workYear.held': 'Held back by clients',
+  'workYear.heldSub': {
+    one: '{count} certificate still to come',
+    other: '{count} certificates still to come',
+  },
+  'workYear.heldSubNone': 'Every certificate has come',
+  'workYear.costs': 'Work costs',
+  'workYear.kept': 'Kept',
+  'workYear.keptSub': 'In, less held back and costs',
+  'workYear.files': 'For whoever files',
+  'workYear.empty': 'No work money in this year yet.',
+
+  'heldYear.title': 'Held back · {year}',
+  'heldYear.close': 'Close',
+  'heldYear.kicker': 'TAX HELD BACK',
+  'heldYear.payments': { one: '{count} PAYMENT', other: '{count} PAYMENTS' },
+  'heldYear.total': 'HELD BACK',
+  'heldYear.toCome': 'STILL TO COME · {count}',
+  'heldYear.foot': 'Tap a dashed stamp when the certificate comes. Tap a client to ask for it.',
+  'heldYear.ask':
+    'Hi {name}, could you send me the tax certificate for the {amount} held back on {date}? Thank you!',
+  'heldYear.empty': 'No client held tax back this year.',
+
+  'yearFiles.title': 'For whoever files',
+  'yearFiles.cancel': 'Cancel',
+  'yearFiles.rows': { one: '{count} ROW', other: '{count} ROWS' },
+  'yearFiles.more': { one: '… {count} MORE ROW', other: '… {count} MORE ROWS' },
+  'yearFiles.sub':
+    'One row for each piece of work money in, with what was held back and when its certificate came. Costs are on a second sheet.',
+  'yearFiles.nothing': '6pm files nothing and issues no invoices.',
+  'yearFiles.share': 'Share the list',
+  'yearFiles.incomeFile': 'work-{year}.csv',
+  'yearFiles.costsFile': 'work-costs-{year}.csv',
+  'yearFiles.col.date': 'DATE',
+  'yearFiles.col.from': 'FROM',
+  'yearFiles.col.job': 'JOB',
+  'yearFiles.col.billed': 'BILLED',
+  'yearFiles.col.held': 'HELD',
+  'yearFiles.col.cert': 'CERT',
+  'yearFiles.csv.date': 'Date',
+  'yearFiles.csv.from': 'From',
+  'yearFiles.csv.job': 'Job',
+  'yearFiles.csv.billed': 'Billed',
+  'yearFiles.csv.heldBack': 'Held back',
+  'yearFiles.csv.landed': 'Landed',
+  'yearFiles.csv.certificate': 'Certificate came',
+  'yearFiles.csv.to': 'Paid to',
+  'yearFiles.csv.category': 'Category',
+  'yearFiles.csv.amount': 'Amount',
+  'yearFiles.csv.note': 'Note',
+} as const;

@@ -14,11 +14,33 @@ import { body, display, leading, mono, tabular } from '../../ui/type/fonts';
 import { AmountText } from '../quick-add/amount-text';
 import type { SpendRowView } from '../today/spend-row';
 import { useMoneyFormat } from '../../money/use-money-format';
+import { WorkStamp } from '../work/work-stamp';
 
 const PAPER = '#f4efe4';
 const INK = '#2a2230';
 const INK_SOFT = 'rgba(42,34,48,.6)';
 const RULE = 'rgba(42,34,48,.25)';
+/** A spend stamped as work: its amount is no longer the person's. */
+const INK_GREY = 'rgba(42,34,48,.38)';
+
+/** One of a work card's two lines; the one that is true now is set bold and full ink. */
+function WorkLine({
+  line,
+  bold,
+}: {
+  readonly line: { readonly label: string; readonly value: string };
+  readonly bold: boolean;
+}) {
+  const color = bold ? INK : 'rgba(42,34,48,.62)';
+  return (
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 10 }}>
+      <Text numberOfLines={1} style={{ ...mono(11.5, 400, 0.1), color, flexShrink: 1 }}>
+        {line.label}
+      </Text>
+      <Text style={{ ...mono(11.5, bold ? 600 : 400), ...tabular, color }}>{line.value}</Text>
+    </View>
+  );
+}
 
 export interface CloseCardContent {
   readonly row: SpendRowView;
@@ -54,6 +76,19 @@ export interface CloseCardContent {
     readonly stampFutureYou: string;
     /** Future you has goals to save in: the card can go up. */
     readonly canSave: boolean;
+  };
+  /**
+   * The work stamp, for someone with work on: offered dashed or inked, tapped to change. Its two
+   * lines say what the card is as the person's own and as work; the inked one is the bold one.
+   */
+  readonly work?: {
+    readonly inked: boolean;
+    /** A spend's amount greys once it is work: it is not the person's. */
+    readonly greys: boolean;
+    readonly yours: { readonly label: string; readonly value: string };
+    readonly asWork: { readonly label: string; readonly value: string };
+    readonly labels: { readonly inked: string; readonly offered: string };
+    readonly onToggle: () => void;
   };
 }
 
@@ -211,8 +246,22 @@ export function CloseCard({
               <Text style={{ ...body(13), color: INK_SOFT }}>{content.category}</Text>
             </View>
           </View>
+          {content.work ? (
+            <View pointerEvents="box-none" style={{ position: 'absolute', right: 16, top: 50 }}>
+              <WorkStamp
+                face={content.work.inked ? 'always' : 'sometimes'}
+                labels={content.work.labels}
+                {...(top ? { onPress: content.work.onToggle } : {})}
+              />
+            </View>
+          ) : null}
           {compact ? (
             <View style={{ flex: 1 }} />
+          ) : content.work ? (
+            <View style={{ flex: 1, justifyContent: 'center', gap: 6 }}>
+              <WorkLine line={content.work.yours} bold={!content.work.inked} />
+              <WorkLine line={content.work.asWork} bold={content.work.inked} />
+            </View>
           ) : (
             <View style={{ flex: 1, justifyContent: 'center', gap: 6 }}>
               {moneyIn ? (
@@ -263,7 +312,12 @@ export function CloseCard({
               style={{
                 ...leading(display(72 * numK, 500, -0.02), 72 * numK, true),
                 ...tabular,
-                color: moneyIn ? moneyInInk.paper : INK,
+                color:
+                  content.work?.inked && content.work.greys
+                    ? INK_GREY
+                    : moneyIn
+                      ? moneyInInk.paper
+                      : INK,
               }}
               symbol={{ ...display(30, 500), opacity: 0.55 }}
             />
@@ -288,7 +342,7 @@ export function CloseCard({
           {top ? (
             <>
               <Stamp
-                label={moneyIn ? moneyIn.stampSpread : labels.keep}
+                label={moneyIn && !content.work?.inked ? moneyIn.stampSpread : labels.keep}
                 color="#2f7d55"
                 rotate="-11deg"
                 style={{ top: 96, left: 18 }}
@@ -319,7 +373,7 @@ export function CloseCard({
                   return clamp(dy.value / 90);
                 }}
               />
-              {moneyIn?.canSave ? (
+              {moneyIn?.canSave && !content.work?.inked ? (
                 <Stamp
                   label={moneyIn.stampFutureYou}
                   color={moneyInInk.stamp}

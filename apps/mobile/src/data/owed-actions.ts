@@ -35,6 +35,8 @@ export function openOwedOf(
 ): OwedRow[] {
   const standing = new Map(snapshot.cycleSpends.map((s) => [s.id, s.status]));
   return snapshot.owed.filter((line) => {
+    // A request is a share of no spend: it stands by itself.
+    if (line.code != null) return true;
     const inCycle = line.day >= snapshot.cycle.start && line.day <= snapshot.today;
     if (!inCycle) return true;
     const status = standing.get(line.spendId);
@@ -44,7 +46,15 @@ export function openOwedOf(
 
 /** The domain's view of an owed row: what matching and grouping read. */
 export function owedLineOf(row: OwedRow): OwedLine {
-  return { id: row.id, spendId: row.spendId, name: row.name, amount: row.amount, day: row.day };
+  const line = {
+    id: row.id,
+    spendId: row.spendId,
+    name: row.name,
+    amount: row.amount,
+    day: row.day,
+  };
+  // A request carries its code and its work stamp; a share of a split reads as it always has.
+  return row.code == null ? line : { ...line, code: row.code, work: row.work === true };
 }
 
 const OPEN = `(settled_at IS NULL OR settled_spend_id IN

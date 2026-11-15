@@ -15,6 +15,8 @@ import { noteReceiptRead } from './first-catch';
 import { namedBefore } from './named-before';
 import type { moneyActions } from './money-actions';
 import type { MoneyStore } from './money-store';
+import { stampOnArrival } from './work-actions';
+import { workOf } from './work-money';
 import { seedStarterCategories } from './onboarding';
 
 /** The App Group inbox as the surfaces module exposes it. */
@@ -158,8 +160,9 @@ export async function saveInboxSpend(
       categoryId: filed ? before.categoryId : alert.categoryId,
     };
   };
-  const { capture } = await actions.ingest({
-    sighting: sightingOfInboxItem(incoming, channel),
+  const sighting = sightingOfInboxItem(incoming, channel);
+  const { step, capture } = await actions.ingest({
+    sighting,
     handed: incoming,
     message: incoming,
     inbox: {
@@ -188,10 +191,17 @@ export async function saveInboxSpend(
           'food',
         categoryIds,
         ...(deps.home ? { home: deps.home } : {}),
+        // Work's banks say whether money in is work, so it keeps the bank it came into.
+        ...(workOf(snap) === null ? {} : { walletIn: true }),
       });
     },
   });
   if (!capture) return null;
+  // A new payment or money in, for someone with work money, is inked as work when it is known to
+  // be; a refund, a reversal or an own transfer is what capture said it is, never takings.
+  if (step === 'newRow' && sighting.what !== 'refund' && capture.row.moneyIn !== 'refund') {
+    await stampOnArrival(store, actions, capture.row);
+  }
   if (!capture.merged && item.source === 'shared') {
     await noteReceiptRead(store.db, capture.row, item.receipt);
   }

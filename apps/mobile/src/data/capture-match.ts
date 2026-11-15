@@ -34,6 +34,7 @@ import {
 import { whatSteps, type WhatStep } from './capture-what';
 import type { Capture, NewSpend } from './money-actions';
 import { findSpend } from './money-store';
+import { arrivingHeldBack } from './request-actions';
 import type { MoneyStore } from './money-store';
 
 /** A capture is matched against every row from this many days back, not this pay cycle only. */
@@ -285,7 +286,12 @@ export function capturing(store: MoneyStore, replaceSpend: (row: SpendRow) => vo
     return live ?? (await tombstonesOf(found))[0] ?? null;
   };
 
-  /** Writes a new row and its own sighting together. */
+  /**
+   * Writes a new row and its own sighting together. Money in read as a refund is placed as one
+   * from the start, so it is never asked about as a pay, takings or a request; other money in from
+   * a sender remembered holding back arrives with that share held back (`arrivingHeldBack`),
+   * whichever way it was caught.
+   */
   const newRow = async (
     input: NewSpend,
     sighting: CaptureSighting,
@@ -295,7 +301,8 @@ export function capturing(store: MoneyStore, replaceSpend: (row: SpendRow) => vo
     const at = input.at ?? new Date();
     const now = new Date().toISOString();
     const jar = input.fromPot ?? null;
-    const row: SpendRow = {
+    const refund = input.direction === 'in' && sighting.what === 'refund';
+    const made: SpendRow = {
       id: input.id ?? randomUUID(),
       // Captured now, it belongs to the day the screens are showing; a recorded time files itself.
       day: input.day ?? (input.at ? moneyDayOf(input.at) : snap.today),
@@ -314,7 +321,7 @@ export function capturing(store: MoneyStore, replaceSpend: (row: SpendRow) => vo
       currencyGuessed: input.currencyGuessed ?? false,
       memo: input.memo ?? null,
       direction: input.direction === 'in' ? 'in' : null,
-      moneyIn: input.direction === 'in' ? (input.moneyIn ?? null) : null,
+      moneyIn: input.direction === 'in' ? (input.moneyIn ?? (refund ? 'refund' : null)) : null,
       givesBack: null,
       savedTo: null,
       fromPot: input.direction === 'in' ? null : jar,
@@ -327,6 +334,10 @@ export function capturing(store: MoneyStore, replaceSpend: (row: SpendRow) => vo
       updatedAt: now,
       ...patch,
     };
+    const row =
+      sighting.what === 'incoming' || sighting.what === 'payment'
+        ? await arrivingHeldBack(store, made)
+        : made;
     await db.withTransactionAsync(async () => {
       await tables.spends.put(row);
       await db.runAsync(INSERT_SIGHTING, [

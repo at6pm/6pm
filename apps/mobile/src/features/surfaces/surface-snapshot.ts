@@ -1,5 +1,8 @@
 import {
   addDays,
+  BUFFER_POT_ID,
+  carriesOver,
+  cycleCarry,
   DEFAULT_CLOSE_AT,
   lineUsed,
   payCycleOn,
@@ -17,7 +20,7 @@ import {
 } from '@6pm/domain';
 import { localeOf, type Language } from '@6pm/i18n';
 
-import { dayOf, waitingOf, type MoneySnapshot } from '../../data/money-store';
+import { dayOf, periodOf, waitingOf, type MoneySnapshot } from '../../data/money-store';
 import type { I18n } from '../../i18n/i18n';
 import { companionMood } from '../../ui/companion/companion-mood';
 import { isSymbolName } from '../../ui/icons/symbol';
@@ -42,19 +45,27 @@ export const LIST_ROWS = 3;
 /**
  * The money as it will stand when the next money day begins, if nothing else happens: today's
  * spends become "spent before", and a payday in between starts a fresh cycle. The domain's own
- * daily number then works out tomorrow's line from it.
+ * daily number then works out tomorrow's line from it, the month's period with it (a pay due
+ * tomorrow, a late one still waiting). For a plan whose months carry over, a new month starts
+ * with what this one leaves in the buffer jar.
  */
 export function nextMoneyDay(money: MoneySnapshot): MoneySnapshot {
   const today = addDays(money.today, 1);
   const cycle = payCycleOn(today, money.plan?.payday ?? { kind: 'lastDay' });
   const sameCycle = cycle.start === money.cycle.start;
-  return {
+  const next: MoneySnapshot = {
     ...money,
     today,
     cycle,
     cycleSpends: sameCycle ? money.cycleSpends : [],
     topUpsThisCycle: sameCycle ? money.topUpsThisCycle : 0,
   };
+  if (sameCycle || money.plan === null || !carriesOver(money.plan)) return next;
+  const ending = dayOf(money);
+  const period = periodOf(money);
+  if (ending === null || period === null) return next;
+  const carry = cycleCarry({ free: ending.free, kept: period.kept });
+  return { ...next, potSaved: { ...money.potSaved, [BUFFER_POT_ID]: carry } };
 }
 
 interface TodayList {

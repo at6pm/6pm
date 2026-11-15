@@ -5,7 +5,7 @@ import {
   countsTowardDay,
   diaryShelf,
   floorToStep,
-  payCycleOn,
+  moneyNextOf,
   monthEnd,
   monthOf,
   previousMonth,
@@ -267,7 +267,7 @@ export function useDiary() {
       case 'spread':
       case null:
       case undefined: {
-        const days = plan ? payCycleOn(s.day, plan.payday).daysLeft : 1;
+        const days = plan ? moneyNextOf(s.day, plan).daysLeft : 1;
         const daily = floorToStep(s.amount / Math.max(1, days), currency);
         return t('moneyIn.diary.spread', { amount: money.short(daily) });
       }

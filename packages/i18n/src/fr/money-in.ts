@@ -39,6 +39,12 @@ export const frMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'moneyIn.payback.subClaim': 'Ta note de frais est remboursée. Ton chiffre ne change pas.',
   'moneyIn.payback.yes': 'Oui, on me rembourse',
   'moneyIn.payback.line': 'REMBOURSÉ',
+  'moneyIn.remembered.saved': 'De nouveau dans {jar} ?',
+  'moneyIn.remembered.spread': 'Le répartir encore ?',
+  'moneyIn.remembered.sub': 'C’est là qu’est allé l’argent de {from} la dernière fois.',
+  'moneyIn.remembered.subNoName': 'C’est là qu’il est allé la dernière fois.',
+  'moneyIn.remembered.yes': 'Oui, comme la dernière fois',
+  'moneyIn.remembered.line': 'COMME LA DERNIÈRE FOIS',
   'moneyIn.goesTo.label': 'Où ça va',
   'moneyIn.goesTo.spread': 'Répartir',
   'moneyIn.goesTo.spreadSub': 'Demain passe à {amount}',
@@ -63,4 +69,7 @@ export const frMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'plan.month.countOn': 'Ce sur quoi tu peux compter',
   'plan.month.countOnHelp':
     'Le minimum qui tombe chaque mois, après impôts. Si ça varie, vise bas : le surplus arrivera par la clôture.',
+  'moneyIn.landing.sub':
+    'Si oui, les factures sont mises de côté d’abord, le reste fait tes journées.',
+  'moneyIn.row.pay': 'Ton salaire',
 };

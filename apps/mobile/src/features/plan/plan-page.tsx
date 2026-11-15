@@ -1,8 +1,7 @@
 import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import Animated, {
-  useAnimatedStyle,
   useScrollOffset,
   type AnimatedRef,
   type SharedValue,
@@ -12,35 +11,27 @@ import { cycleMonth, type PlanSplit, type SplitPartKind } from '@6pm/domain';
 
 import type { MoneySnapshot } from '../../data/money-store';
 import { useMoney, useMoneyStore } from '../../data/money-provider';
+import { hasWorkMoney } from '../../data/work-money';
+import { WorkCard } from '../work/work-card';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
-import { Symbol } from '../../ui/icons/symbol';
 import { useDesignInsets } from '../../ui/layout/design-insets';
-import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
-import { body } from '../../ui/type/fonts';
-import { useHeaderMeasure, type HeaderShape } from '../home/header-measure';
 import { useHomePageScroll } from '../home/home-scroll';
+import { IncomePlanContent } from './income-plan-content';
+import { incomePlanOf } from './income-plan-view';
 import { markPaydayShown, paydayShown } from './payday-shown';
 import { usePlanFormat, type PlanFormat } from './plan-format';
 import { ShareChip } from '../sharing/share-chip';
 import { PanelSwitch } from './panel-switch';
+import { PlanHeader } from './plan-header';
 import { planRoutes } from './plan-routes';
 import { beforeEditable, billViews, planJarsOf, planSplitOf, type BillView } from './plan-view';
 import { PotsPanel } from './pots-panel';
 import { splitColours } from './split-colours';
 import { SplitHero, type SplitWords } from './split-hero';
 import { BillsPanel, MathsPanel, SplitPanel } from './split-panels';
-
-/** Plan's header, for the sky to keep the look's art clear of it. */
-const HEADER: HeaderShape = {
-  parents: { eyebrow: 'block', row: 'block', title: 'row', button: 'row' },
-  texts: ['eyebrow', 'title'],
-  title: 'title',
-  button: 'button',
-  padRight: 6,
-};
 
 /** The jars fill and the Pots part pulses once the split has drawn in. */
 const PAYDAY_AFTER_MS = 900;
@@ -60,6 +51,7 @@ export function PlanPage({ scrollRef, active = true }: PlanPageProps) {
   // The page's own scroll offset, not the shared one the other tabs write.
   const y = useScrollOffset(scrollRef);
   const onScroll = useHomePageScroll('plan');
+  const income = useMemo(() => incomePlanOf(snap), [snap]);
   return (
     <Animated.ScrollView
       ref={scrollRef}
@@ -76,7 +68,14 @@ export function PlanPage({ scrollRef, active = true }: PlanPageProps) {
         gap: 14,
       }}
     >
-      {snap.plan ? <PlanContent snap={snap} y={y} active={active} /> : null}
+      {snap.plan === null ? null : income ? (
+        // Paid by the week or the fortnight, or as money lands: Plan is drawn by the pay.
+        <IncomePlanContent snap={snap} view={income} y={y} active={active} />
+      ) : (
+        <PlanContent snap={snap} y={y} active={active} />
+      )}
+      {/* Work money: one card with the month's in, out and kept, and who has not paid. */}
+      {hasWorkMoney(snap) ? <WorkCard /> : null}
     </Animated.ScrollView>
   );
 }
@@ -101,7 +100,6 @@ function PlanContent({
   const { db } = useMoneyStore();
   const format = usePlanFormat(snap.today);
   const colours = splitColours(palette);
-  const measure = useHeaderMeasure('plan', HEADER);
   const split = useMemo(() => planSplitOf(snap), [snap]);
   const bills = useMemo(() => billViews(snap), [snap]);
   const { jars, eachPayday } = useMemo(() => planJarsOf(snap), [snap]);
@@ -145,11 +143,6 @@ function PlanContent({
     };
   }, [active, justPaid, filled, db, cycleStart]);
 
-  // The header drifts down at a third of the scroll and is gone by 70 pt, as in the prototype.
-  const header = useAnimatedStyle(() => ({
-    opacity: Math.min(1, Math.max(0, 1 - y.value / 70)),
-    transform: [{ translateY: Math.min(y.value, 80) * 0.3 }],
-  }));
   if (!split) return null;
   const words = splitWords(split, bills, snap, format, t, (amount) => money.short(amount));
   const panel = selected === 'bills' || selected === 'pots' ? selected : 'free';
@@ -157,51 +150,7 @@ function PlanContent({
 
   return (
     <>
-      <Animated.View
-        onLayout={measure.layout('block')}
-        style={[{ paddingHorizontal: 6, gap: 2 }, header]}
-      >
-        <Text
-          onLayout={measure.layout('eyebrow')}
-          onTextLayout={measure.lines('eyebrow')}
-          style={{ ...body(13, 600, 0.06), textTransform: 'uppercase', color: palette.inkSoft }}
-        >
-          {kickerOf(split, snap, format, t)}
-        </Text>
-        <View
-          onLayout={measure.layout('row')}
-          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
-        >
-          <Text
-            accessibilityRole="header"
-            onLayout={measure.layout('title')}
-            onTextLayout={measure.lines('title')}
-            style={{ ...body(34, 700, -0.03), color: palette.ink }}
-          >
-            {t('potsPlan.title')}
-          </Text>
-          <PressScale
-            onLayout={measure.layout('button')}
-            accessibilityRole="button"
-            accessibilityLabel={t('potsPlan.tune')}
-            hitSlop={4}
-            onPress={() => {
-              haptics.tap();
-              router.push(planRoutes.month);
-            }}
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 20,
-              backgroundColor: palette.glass,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Symbol name="edit" size={20} color={palette.ink} />
-          </PressScale>
-        </View>
-      </Animated.View>
+      <PlanHeader kicker={kickerOf(split, snap, format, t)} y={y} />
 
       <SplitHero
         split={split}
@@ -318,6 +267,7 @@ function splitWords(
       before: t('potsPlan.part.before'),
       free: t('potsPlan.part.free'),
       over: t('potsPlan.part.over'),
+      inHand: t('income.part.inHand'),
     },
     amount: {
       bills: split.lastDay && allPaid ? t('potsPlan.part.billsPaid') : short(split.bills),
@@ -331,6 +281,7 @@ function splitWords(
         ? t('potsPlan.part.freeLeft', { amount: short(left) })
         : short(split.free),
       over: short(split.over),
+      inHand: '',
     },
     day: split.overspent
       ? t('potsPlan.day.usedUp')

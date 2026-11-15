@@ -25,6 +25,7 @@ export function openMoneyTables(db: SqlDatabase) {
       schema: spendRowSchema,
       key: 'id',
       booleans: ['forWork', 'currencyGuessed'],
+      flags: ['certificate'],
       json: ['foreignAmount'],
     }),
     rules: createTable(db, {
@@ -32,6 +33,7 @@ export function openMoneyTables(db: SqlDatabase) {
       schema: merchantRuleRowSchema,
       key: 'merchantKey',
       booleans: ['setByUser'],
+      flags: ['work'],
     }),
     bills: createTable(db, { name: 'bills', schema: billRowSchema, key: 'id' }),
     pots: createTable(db, { name: 'pots', schema: potRowSchema, key: 'id', booleans: ['paused'] }),
@@ -47,7 +49,12 @@ export function openMoneyTables(db: SqlDatabase) {
       key: 'id',
       booleans: ['answered'],
     }),
-    owed: createTable(db, { name: 'owed', schema: owedRowSchema, key: 'id' }),
+    owed: createTable(db, {
+      name: 'owed',
+      schema: owedRowSchema,
+      key: 'id',
+      flags: ['work', 'company'],
+    }),
   };
 }
 

@@ -1,8 +1,15 @@
+import type { LocalDate } from '../time/local-date';
+
 /**
  * The 6pm Close as a state machine, independent of any screen:
  *
- *   cards → sorted → cash (or sweep) → bill? → money? → moneyCards? → question? → receipt → reveal
+ *   payday? → cards → sorted → cash (or sweep) → bill? → money? → moneyCards? → question? → takings? →
+ *   receipt → reveal
  *
+ * - `payday`: the first card on a day a counted pay was due and has not landed, with no money in
+ *   like it in the close ("Your pay hasn't landed."): came short, not yet, or it landed. Any answer
+ *   moves on to the cards (or the cash step when nothing waits); a close with no late pay never
+ *   has it.
  * - `cards`: each waiting spend is kept, edited (then kept) or marked not mine; money that came in
  *   is spread over the days, saved, edited or marked not mine. The last swipe can be undone.
  * - `sorted`: a beat that tallies the swipes, then moves on by itself.
@@ -13,13 +20,16 @@
  *   your pay?"), in the queue's order. Such money skips the cards: the question places it.
  * - `moneyCards`: money in the questions turned into cards: the pay's extra, or money that was not
  *   what it looked like. Decided as on the cards step, with no tally beat after.
- * - `question`: asked only when a kept spend is flagged as maybe-for-work and not yet answered.
+ * - `question`: asked only when a kept spend is flagged as maybe-for-work and not yet answered
+ *   (never for someone who turned work on: their cards carry the work stamp instead).
+ * - `takings`: the last step of a seller's close: the day's caught takings and one line for cash.
  * - `receipt` and `reveal`: the printed day and tomorrow's number.
  *
  * Leaving at any step pauses the close; resuming returns to that step (`sorted` resumes at cash).
  */
 
 export type CloseStep =
+  | 'payday'
   | 'cards'
   | 'sorted'
   | 'cash'
@@ -28,6 +38,7 @@ export type CloseStep =
   | 'money'
   | 'moneyCards'
   | 'question'
+  | 'takings'
   | 'potReady'
   | 'receipt'
   | 'reveal'
@@ -37,7 +48,7 @@ export type CloseStep =
 export type CardVerdict = 'kept' | 'edited' | 'notMine' | 'spread' | 'saved';
 
 /** What the close asks about money in before placing it (see `moneyInAsk`). */
-export type MoneyAsk = 'pay' | 'bonus' | 'refund' | 'payback';
+export type MoneyAsk = 'pay' | 'bonus' | 'refund' | 'payback' | 'remembered' | 'request' | 'byHand';
 
 export interface CloseCard {
   readonly id: string;
@@ -59,8 +70,39 @@ export interface CloseCard {
   readonly askMoney?: MoneyAsk;
 }
 
+/** A counted pay whose date has come with nothing placed for it: what the payday card names. */
+export interface LatePay {
+  /** The income it is the pay of. */
+  readonly incomeId: string;
+  /** The day it was due. */
+  readonly due: LocalDate;
+}
+
+/** The payday card's answers: it came short (typed in), not yet, or it landed (Quick add). */
+export type PaydayAnswer = 'short' | 'notYet' | 'landed';
+
+/**
+ * The late pay the close opens on, if any: the pay the month is waiting for (`IncomePeriod.due`,
+ * of the lead income), unless money in the close is already asked about as that pay, whose
+ * question answers it.
+ */
+export function latePayOf(input: {
+  readonly due: LocalDate | null;
+  readonly incomeId: string | null;
+  readonly asks: readonly { readonly kind: string; readonly incomeId?: string | undefined }[];
+}): LatePay | null {
+  const { due, incomeId } = input;
+  if (due === null || incomeId === null) return null;
+  if (input.asks.some((ask) => ask.kind === 'pay' && ask.incomeId === incomeId)) return null;
+  return { incomeId, due };
+}
+
 export interface CloseState {
   readonly step: CloseStep;
+  /** The pay the payday card asks about; only on a close that opens with it. */
+  readonly latePay?: LatePay;
+  /** What the payday card was told, once it was. */
+  readonly paydayAnswer?: PaydayAnswer;
   /** The queue as it was when the close opened; its order never changes during the close. */
   readonly cards: readonly CloseCard[];
   readonly verdicts: Readonly<Record<string, CardVerdict>>;
@@ -81,6 +123,10 @@ export interface CloseState {
   readonly readyPot: string | null;
   readonly readyPotShown: boolean;
   readonly paused: boolean;
+  /** A seller's close ends on today's takings; absent on every other close. */
+  readonly takings?: boolean;
+  /** Today's takings were kept. */
+  readonly takingsDone?: boolean;
 }
 
 export type CloseEvent =
@@ -101,7 +147,9 @@ export type CloseEvent =
       readonly yes: boolean;
       readonly extra?: string | undefined;
     }
+  | { readonly type: 'answerPayday'; readonly answer: PaydayAnswer }
   | { readonly type: 'answerWork' }
+  | { readonly type: 'takingsDone' }
   | { readonly type: 'potReadyDone' }
   | { readonly type: 'receiptDone' }
   | { readonly type: 'finish' }
@@ -110,11 +158,18 @@ export type CloseEvent =
 
 export function startClose(
   cards: readonly CloseCard[],
-  options?: { readonly readyPot?: string | null },
+  options?: {
+    readonly readyPot?: string | null;
+    readonly latePay?: LatePay | null;
+    /** The person sells or runs something: the close ends on today's takings. */
+    readonly takings?: boolean;
+  },
 ): CloseState {
   const swiped = cards.filter((card) => card.askMoney === undefined);
+  const latePay = options?.latePay ?? null;
   return {
-    step: swiped.length > 0 ? 'cards' : 'cash',
+    step: latePay !== null ? 'payday' : swiped.length > 0 ? 'cards' : 'cash',
+    ...(latePay !== null ? { latePay } : {}),
     cards,
     verdicts: {},
     undoable: null,
@@ -127,6 +182,7 @@ export function startClose(
     readyPot: options?.readyPot ?? null,
     readyPotShown: false,
     paused: false,
+    ...(options?.takings === true ? { takings: true, takingsDone: false } : {}),
   };
 }
 
@@ -206,6 +262,10 @@ function needsWorkQuestion(state: CloseState): boolean {
   );
 }
 
+function needsTakings(state: CloseState): boolean {
+  return state.takings === true && state.takingsDone !== true;
+}
+
 function needsPotReady(state: CloseState): boolean {
   return state.readyPot !== null && !state.readyPotShown;
 }
@@ -222,9 +282,11 @@ function afterCash(state: CloseState): CloseState {
           ? 'moneyCards'
           : needsWorkQuestion(state)
             ? 'question'
-            : needsPotReady(state)
-              ? 'potReady'
-              : 'receipt';
+            : needsTakings(state)
+              ? 'takings'
+              : needsPotReady(state)
+                ? 'potReady'
+                : 'receipt';
   return { ...state, step };
 }
 
@@ -253,7 +315,7 @@ export function closeReducer(state: CloseState, event: CloseEvent): CloseState {
       if (state.undoable === null) return state;
       const money = isMoneyCard(state, state.undoable);
       const from: readonly CloseStep[] = money
-        ? ['moneyCards', 'question', 'potReady', 'receipt']
+        ? ['moneyCards', 'question', 'takings', 'potReady', 'receipt']
         : ['cards', 'sorted'];
       if (!from.includes(state.step)) return state;
       const { [state.undoable]: _undone, ...verdicts } = state.verdicts;
@@ -290,9 +352,20 @@ export function closeReducer(state: CloseState, event: CloseEvent): CloseState {
         moneyCards: [...state.moneyCards, ...carded],
       });
     }
+    case 'answerPayday':
+      if (state.step !== 'payday' || state.paused) return state;
+      return {
+        ...state,
+        paydayAnswer: event.answer,
+        step: remainingCards(state).length > 0 ? 'cards' : 'cash',
+      };
     case 'answerWork':
       return state.step === 'question'
         ? afterCash({ ...state, workAnswered: true, undoable: null })
+        : state;
+    case 'takingsDone':
+      return state.step === 'takings'
+        ? afterCash({ ...state, takingsDone: true, undoable: null })
         : state;
     case 'potReadyDone':
       return state.step === 'potReady' ? { ...state, readyPotShown: true, step: 'receipt' } : state;
@@ -318,7 +391,7 @@ export function closeReducer(state: CloseState, event: CloseEvent): CloseState {
 /** "CAUGHT · 1/5" … "TOMORROW · 5/5": the step label and its position in the five-step bar. */
 export function stepPosition(step: CloseStep): { index: number; of: 5 } {
   const index =
-    step === 'cards' || step === 'sorted'
+    step === 'payday' || step === 'cards' || step === 'sorted'
       ? 1
       : step === 'cash'
         ? 2
@@ -327,6 +400,7 @@ export function stepPosition(step: CloseStep): { index: number; of: 5 } {
             step === 'money' ||
             step === 'moneyCards' ||
             step === 'question' ||
+            step === 'takings' ||
             step === 'potReady'
           ? 3
           : step === 'receipt'

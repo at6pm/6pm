@@ -4,6 +4,36 @@ import { DEFAULT_CLOSE_AT, type JoinedAnswers } from '@6pm/domain';
 
 import type { SqlDatabase } from './table';
 
+const localDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
+const dayOfMonth = z.number().int().min(1).max(31);
+
+/** How often an income pays (the domain's `Rhythm`). */
+const rhythmSchema = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('monthly'), day: z.union([dayOfMonth, z.literal('last')]) }),
+  z.object({ kind: z.literal('weekly'), weekday: z.literal([0, 1, 2, 3, 4, 5, 6]) }),
+  z.object({ kind: z.literal('everyTwoWeeks'), anchor: localDate }),
+  z.object({
+    kind: z.literal('twiceMonthly'),
+    days: z.tuple([dayOfMonth, z.union([dayOfMonth, z.literal('last')])]).readonly(),
+  }),
+  z.object({ kind: z.literal('none') }),
+]);
+
+/** One income (the domain's `Income`): an amount of 0 is counted only once it has landed. */
+const incomeSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1).nullable(),
+  rhythm: rhythmSchema,
+  amount: z.number().int().nonnegative(),
+  fromWork: z.boolean().optional(),
+  /** The first day it pays from: a wage started at the close after "Pay myself" was chosen. */
+  from: localDate.optional(),
+});
+
+/** Whether money through a bank or wallet is work: always, sometimes (asked), or never. */
+export const walletWorkSchema = z.enum(['always', 'sometimes', 'never']);
+export type WalletWork = z.infer<typeof walletWorkSchema>;
+
 /** The user's month, as onboarding and the Plan tab set it. Kept as one JSON setting. */
 export const planSettingsSchema = z.object({
   income: z.number().int().nonnegative(),
@@ -37,6 +67,30 @@ export const planSettingsSchema = z.object({
   currency: z
     .string()
     .regex(/^[A-Z]{3}$/)
+    .optional(),
+  /**
+   * Every income, once the user has said how money reaches them. Absent on every plan saved before
+   * it was asked: the plan's own `income` on its payday is then the one income (`incomesOf`), and
+   * the payday stays the month's anchor either way.
+   */
+  incomes: z.array(incomeSchema).max(12).optional(),
+  /**
+   * The day the incomes were first set. Months that ended before it were counted as a monthly plan
+   * and carry nothing over; without it no month is carried.
+   */
+  incomesFrom: localDate.optional(),
+  /** "Make it last until": the day money with no counted-on pay has to last through. */
+  lastUntil: localDate.nullable().optional(),
+  /**
+   * Someone who earns from work of their own: taking pay as it comes, or paying themselves a wage
+   * (an income with `fromWork`). `banks` answers, per bank or wallet code as the `wallets` setting
+   * saves it ("MB", "CASH", "name:Chase"), whether money through it is work.
+   */
+  work: z
+    .object({
+      mode: z.enum(['asItComes', 'payMyself']),
+      banks: z.record(z.string().min(1), walletWorkSchema).optional(),
+    })
     .optional(),
 });
 export type PlanSettings = z.infer<typeof planSettingsSchema>;

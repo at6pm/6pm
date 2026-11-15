@@ -5,6 +5,7 @@ export const dePots: { readonly [Key in keyof typeof enPots]: Entry } = {
   'pots.futureYou': 'Zukunfts-Ich',
   'pots.shelf.title': 'Spargläser',
   'pots.shelf.each': '{amount} pro Zahltag',
+  'pots.shelf.eachMonth': '{amount} pro Monat',
   'pots.shelf.new': 'Neues Sparglas',
   'pots.all.title': 'Spargläser',
   'pots.all.line': '{amount} in die Gläser\npro Zahltag',

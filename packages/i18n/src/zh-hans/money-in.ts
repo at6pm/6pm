@@ -36,6 +36,12 @@ export const zhHansMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } 
   'moneyIn.payback.subClaim': '报销已经还回来了。每日额度不变。',
   'moneyIn.payback.yes': '对，是还我钱',
   'moneyIn.payback.line': '已还钱',
+  'moneyIn.remembered.saved': '再放进{jar}？',
+  'moneyIn.remembered.spread': '再分摊到每天？',
+  'moneyIn.remembered.sub': '上次{from}的钱就放在那里。',
+  'moneyIn.remembered.subNoName': '上次就放在那里。',
+  'moneyIn.remembered.yes': '对，和上次一样',
+  'moneyIn.remembered.line': '和上次一样',
   'moneyIn.goesTo.label': '放到哪里',
   'moneyIn.goesTo.spread': '分到每天',
   'moneyIn.goesTo.spreadSub': '明天变成 {amount}',
@@ -59,4 +65,6 @@ export const zhHansMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } 
   'plan.month.countOn': '稳定到手的钱',
   'plan.month.countOnHelp':
     '每月最少能到手的钱，税后。如果不固定，就往低了填：多出来的会在日结时进来。',
+  'moneyIn.landing.sub': '如果是，先留出账单的钱，剩下的分到每一天。',
+  'moneyIn.row.pay': '你的工资',
 };

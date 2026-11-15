@@ -9,10 +9,11 @@ import { useMoney, useMoneySelector } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { fromJarLabeller, jarLinesOf, type JarLineView } from '../diary/jar-lines';
-import { spendTag, toRowViews, type Labels } from './today-view';
+import { placedAsOf, spendTag, toRowViews, type Labels } from './today-view';
 
 /** Every jar a spend can name, deleted ones too: their spends keep their label. */
 const jarsOf = (snap: MoneySnapshot) => snap.pots;
+const incomesOf = (snap: MoneySnapshot) => snap.plan?.incomes;
 const deletedJarsOf = (snap: MoneySnapshot) => snap.deletedPots;
 
 /** "From {jar}" in the current language, for any jar a spend was taken from. */
@@ -28,6 +29,7 @@ export function useSpendLabels(): Labels {
   const { t, language } = useI18n();
   const money = useMoneyFormat();
   const fromJar = useFromJarLabel();
+  const incomes = useMoneySelector(incomesOf);
   return useMemo(() => {
     const time = new Intl.DateTimeFormat(localeOf(language), {
       hour: '2-digit',
@@ -49,8 +51,16 @@ export function useSpendLabels(): Labels {
         }),
       money,
       moneyIn: t('moneyIn.name'),
+      placedAs: (row: SpendRow) => {
+        const placed = placedAsOf(row, incomes);
+        if (placed === null) return null;
+        return {
+          label: placed.kind === 'landed' ? t('income.landed.label') : t('moneyIn.row.pay'),
+          name: placed.name,
+        };
+      },
     };
-  }, [t, language, money, fromJar]);
+  }, [t, language, money, fromJar, incomes]);
 }
 
 const todayInputs = ({ today, cycleSpends, categories }: MoneySnapshot) => ({

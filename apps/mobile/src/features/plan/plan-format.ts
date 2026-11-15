@@ -29,6 +29,8 @@ export function usePlanFormat(today: LocalDate) {
     const dayShortMonth = f({ day: 'numeric', month: 'short' });
     const dayLongMonth = f({ day: 'numeric', month: 'long' });
     const weekday = f({ weekday: 'short' });
+    const weekdayLong = f({ weekday: 'long' });
+    const vi = language === 'vi';
     const thisYear = today.slice(0, 4);
     const sameYear = (month: string) => month.slice(0, 4) === thisYear;
     return {
@@ -51,6 +53,27 @@ export function usePlanFormat(today: LocalDate) {
           : dayShortMonth.format(dateOf(day)),
       /** "Fri 9" */
       weekdayDay: (day: LocalDate) => `${weekday.format(dateOf(day))} ${parts(day).day}`,
+      /** "Fri 20", "thứ Sáu 20": a day ahead inside a sentence. */
+      dayAhead: (day: LocalDate) => {
+        if (!vi) return `${weekday.format(dateOf(day))} ${parts(day).day}`;
+        const name = weekdayLong.format(dateOf(day));
+        return `${name.charAt(0).toLowerCase()}${name.slice(1)} ${parts(day).day}`;
+      },
+      /** "Fri 20 Nov", "thứ Sáu 20/11". */
+      dayAheadMonth: (day: LocalDate) => {
+        const { day: d, month } = parts(day);
+        if (!vi) return `${weekday.format(dateOf(day))} ${dayShortMonth.format(dateOf(day))}`;
+        const name = weekdayLong.format(dateOf(day));
+        return `${name.charAt(0).toLowerCase()}${name.slice(1)} ${d}/${month}`;
+      },
+      /** "30 Nov", "30/11". */
+      dayMonthShort: (day: LocalDate) =>
+        vi ? `${parts(day).day}/${parts(day).month}` : dayShortMonth.format(dateOf(day)),
+      /** "Friday", "thứ Sáu". */
+      weekdayName: (day: LocalDate) => {
+        const name = weekdayLong.format(dateOf(day));
+        return vi ? `${name.charAt(0).toLowerCase()}${name.slice(1)}` : name;
+      },
       dayNumber: (day: LocalDate) => String(parts(day).day),
       /** "Oct", for a month wheel: `index` 0 is January */
       monthOfYear: (index: number) => shortMonth.format(new Date(Date.UTC(2000, index, 1))),

@@ -225,6 +225,30 @@ describe('refunds and paybacks', () => {
       spendId: 'earbuds',
     });
   });
+
+  it('asks about money that reaches someone whose money only lands as what landed', () => {
+    const anchor = { kind: 'sameDay', day: 1 } as const;
+    const cycle = payCycleOn('2026-11-15', anchor);
+    const jobs = { id: 'jobs', name: null, rhythm: { kind: 'none' }, amount: 0 } as const;
+    const context = { income: 0, cycle, spends, incomes: [jobs], anchor };
+    // A bank alert or a mail with 18.000.000 from a client: the same placement as typing it in.
+    const studio = { day: '2026-11-15', amount: 18_000_000, merchant: 'Studio May' };
+    expect(moneyInAsk(studio, context)).toEqual({ kind: 'pay', incomeId: 'jobs', landing: true });
+    // What gives back a spend is still asked as that, and a refund mail is never a landing.
+    const refund = { day: '2026-10-27', amount: 349_000, merchant: 'Shopee' };
+    expect(moneyInAsk(refund, context)).toEqual({ kind: 'refund', spendId: 'earbuds' });
+    const lan = { day: '2026-10-27', amount: 250_000, merchant: 'Lan' };
+    expect(moneyInAsk(lan, context)).toEqual({ kind: 'payback', spendId: 'pizza' });
+    expect(moneyInAsk({ ...studio, hint: 'refund' }, { ...context, spends: [] })).toBeNull();
+    // Beside a pay that is counted on, other money in stays ordinary money in.
+    const salary = {
+      id: 'salary',
+      name: null,
+      rhythm: { kind: 'monthly', day: 25 },
+      amount: 15_000_000,
+    } as const;
+    expect(moneyInAsk(studio, { ...context, incomes: [salary, jobs] })).toBeNull();
+  });
 });
 
 describe('spreadPreview', () => {

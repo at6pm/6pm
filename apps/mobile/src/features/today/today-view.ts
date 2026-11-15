@@ -3,10 +3,12 @@ import {
   closeMoment,
   floorToStep,
   foreignAmountText,
+  isTakings,
   needsReview,
   startOfWeek,
   type CategoryRow,
   type CloseMoment,
+  type Income,
   type LocalDate,
   type MoneyFormat,
   type SpendRow,
@@ -14,7 +16,8 @@ import {
 import { moneyInInk } from '@6pm/theme';
 
 import { isSymbolName } from '../../ui/icons/symbol';
-import { waitingOf, type MoneySnapshot } from '../../data/money-store';
+import { daysLeftOf, waitingOf, type MoneySnapshot } from '../../data/money-store';
+import { workOf } from '../../data/work-money';
 import { homeCurrencyOf } from '../../money/use-money-format';
 import { merchantIcon } from './merchant-icon';
 import type { SpendRowView } from './spend-row';
@@ -30,7 +33,10 @@ export interface WeekDay {
 
 export interface TodayView {
   readonly moment: CloseMoment;
-  /** Everything waiting for a yes: today's, and earlier days' that were never settled. */
+  /**
+   * Everything waiting for a yes: today's, and earlier days' that were never settled; for someone
+   * with work on, not the takings the close leaves to Today's takings.
+   */
   readonly queue: readonly SpendRow[];
   /** When today was closed, if it was: the stamp on tonight's card. */
   readonly closedAt: string | null;
@@ -49,7 +55,35 @@ export type Labels = {
   readonly money: Pick<MoneyFormat, 'full'>;
   /** What money that came in is called where its sender is not known. */
   readonly moneyIn?: string;
+  /**
+   * For money in kept as the pay of one of the plan's incomes: what it is ("Landed", "Your pay"),
+   * in place of "Money in", and the income's name when the sender has none.
+   */
+  readonly placedAs?: (
+    row: SpendRow,
+  ) => { readonly label: string; readonly name: string | null } | null;
 };
+
+/** Money in kept as one of the plan's incomes, as a row says it. */
+export interface PlacedAs {
+  readonly kind: 'pay' | 'landed';
+  /** The income's own name, if it has one. */
+  readonly name: string | null;
+}
+
+/**
+ * What money in is when it was kept as an income's pay: a landing for an income with nothing
+ * counted on, else the person's pay. Null for any other row, and for a plan that does not hold
+ * its incomes.
+ */
+export function placedAsOf(row: SpendRow, incomes: readonly Income[] | undefined): PlacedAs | null {
+  if (row.direction !== 'in' || row.status !== 'kept' || row.moneyIn !== 'pay') return null;
+  // A plan never asked about its incomes keeps its rows as they always read.
+  if (row.incomeId == null || incomes === undefined) return null;
+  const income = incomes.find((i) => i.id === row.incomeId);
+  if (income === undefined) return null;
+  return { kind: income.amount > 0 ? 'pay' : 'landed', name: income.name };
+}
 
 /** The words a row's tag can say. */
 export interface TagWords {
@@ -92,12 +126,15 @@ export function toRowViews(
     // Money that came in has no category: it reads "+2.000.000₫", money in, from whoever sent it.
     const comesIn = s.direction === 'in';
     const moneyIn = labels.moneyIn ?? '';
+    // Money kept as a pay names whose it is: a landing, or the person's pay.
+    const placed = comesIn ? (labels.placedAs?.(s) ?? null) : null;
+    const kind = placed === null ? moneyIn : placed.label;
     return {
       id: s.id,
-      name: comesIn ? s.merchant || moneyIn : s.merchant,
+      name: comesIn ? s.merchant || placed?.name || moneyIn : s.merchant,
       meta: [
         labels.time(s.at),
-        withCategory ? (comesIn ? moneyIn : (category?.name ?? '')) : null,
+        withCategory ? (comesIn ? kind : (category?.name ?? '')) : null,
         labels.source(s.source),
       ]
         .filter((part) => part !== null && part !== '')
@@ -141,7 +178,7 @@ export function spreadYesterdayOf(
       null,
     );
   if (biggest === null) return null;
-  const daily = floorToStep(biggest.amount / (snap.cycle.daysLeft + 1), homeCurrencyOf(snap.plan));
+  const daily = floorToStep(biggest.amount / (daysLeftOf(snap) + 1), homeCurrencyOf(snap.plan));
   return { name: biggest.merchant.trim(), amount: biggest.amount, daily };
 }
 
@@ -180,9 +217,12 @@ export function todayView(
   const monthPrefix = today.slice(0, 7);
   const elapsed = Number(today.slice(8, 10)) - (closed ? 0 : 1);
 
+  // Takings already stamped (an "always" bank, a sender remembered as work) never become a close
+  // card: they wait for Today's takings, not for a yes.
+  const work = workOf(snap) !== null;
   return {
     moment,
-    queue: waitingOf(snap),
+    queue: waitingOf(snap).filter((s) => !work || !isTakings(s)),
     closedAt: closedRow?.closedAt ?? null,
     rows,
     spentLabel: labels.money.full(spent),

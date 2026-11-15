@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import {
   Easing,
   FadeIn,
+  FadeOut,
   Keyframe,
   ReduceMotion,
   useReducedMotion,
@@ -43,6 +44,21 @@ export function stepEntering(direction: 1 | -1, reduceMotion: boolean) {
     100: { opacity: 1, transform: [{ translateX: 0 }], easing: ease.enter },
   })
     .duration(450)
+    .reduceMotion(ReduceMotion.Never);
+}
+
+/**
+ * A follow-up page of a step leaving as the next one slides in: 44 pt toward the side it goes
+ * and out, 200 ms, so the page reads as moving across rather than being swapped. Under Reduce
+ * Motion it fades.
+ */
+export function pageExiting(direction: 1 | -1, reduceMotion: boolean) {
+  if (reduceMotion) return FadeOut.duration(150).reduceMotion(ReduceMotion.Never);
+  return new Keyframe({
+    0: { opacity: 1, transform: [{ translateX: 0 }] },
+    100: { opacity: 0, transform: [{ translateX: -44 * direction }], easing: ease.cssIn },
+  })
+    .duration(200)
     .reduceMotion(ReduceMotion.Never);
 }
 

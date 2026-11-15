@@ -19,6 +19,7 @@ import { deInsightsHabits } from './insights-habits';
 import { deIntents } from './intents';
 import { deLooks } from './looks';
 import { deMoneyIn } from './money-in';
+import { deQuickAdd } from './quick-add';
 import { dePotsClose } from './pots-close';
 import { dePotsPlan } from './pots-plan';
 import { dePots } from './pots';
@@ -42,6 +43,11 @@ import { deYearBook } from './year-book';
 import { deFirstCatch } from './first-catch';
 import { deCaptureLog } from './capture-log';
 import { dePhoto } from './photo';
+import { deMoneyReaches } from './money-reaches';
+import { deIncome } from './income';
+import { deWork } from './work';
+import { deRequests } from './requests';
+import { deWorkYear } from './work-year';
 import { deImport } from './import';
 import { deOwed } from './owed';
 import { deNotifications } from './notifications';
@@ -89,12 +95,18 @@ export const de: Catalogue = {
   ...deWidgetsGuide,
   ...deDuo,
   ...deMoneyIn,
+  ...deQuickAdd,
   ...dePotsClose,
   ...dePotsPlan,
   ...dePots,
   ...deFirstCatch,
   ...deCaptureLog,
   ...dePhoto,
+  ...deMoneyReaches,
+  ...deIncome,
+  ...deWork,
+  ...deRequests,
+  ...deWorkYear,
   ...deImport,
   ...deOwed,
   ...importSketchMomo,
@@ -123,6 +135,7 @@ export const deSameAsEnglish: readonly string[] = [
   'Look',
   'Looks',
   'Minute',
+  'Name',
   'PayPay',
   'Plan',
   'Saigon',

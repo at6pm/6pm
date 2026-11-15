@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import {
   addDays,
-  payCycleOn,
+  moneyNextOf,
   replanWorded,
   type DailyNumber,
   type LocalDate,
@@ -88,7 +88,7 @@ export function CloseRevealStep({
       mood={event === 'replan' || event === 'pastPlan' ? 'nod' : 'happy'}
       sub={t('close.reveal.free', {
         free: money.short(number.free),
-        days: payCycleOn(day, plan.payday).daysLeft,
+        days: moneyNextOf(day, plan).daysLeft,
       })}
       month={monthName.toUpperCase()}
       monthDays={monthDays}

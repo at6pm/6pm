@@ -39,6 +39,12 @@ export const idMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'moneyIn.payback.subClaim': 'Klaim kantormu sudah dibayar balik. Angkamu tetap.',
   'moneyIn.payback.yes': 'Ya, ini bayar balik',
   'moneyIn.payback.line': 'DIBAYAR BALIK',
+  'moneyIn.remembered.saved': 'Masuk {jar} lagi?',
+  'moneyIn.remembered.spread': 'Dibagi rata lagi?',
+  'moneyIn.remembered.sub': 'Uang dari {from} terakhir kali masuk ke sana.',
+  'moneyIn.remembered.subNoName': 'Terakhir kali masuk ke sana.',
+  'moneyIn.remembered.yes': 'Ya, sama seperti terakhir',
+  'moneyIn.remembered.line': 'SEPERTI TERAKHIR',
   'moneyIn.goesTo.label': 'Ke mana uangnya',
   'moneyIn.goesTo.spread': 'Bagi rata',
   'moneyIn.goesTo.spreadSub': 'Besok jadi {amount}',
@@ -63,4 +69,6 @@ export const idMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'plan.month.countOn': 'Uang yang pasti masuk',
   'plan.month.countOnHelp':
     'Jumlah paling sedikit yang masuk tiap bulan, setelah pajak. Kalau berubah-ubah, ambil yang rendah: lebihnya masuk lewat tutup hari.',
+  'moneyIn.landing.sub': 'Kalau iya, tagihan disisihkan dulu, sisanya untuk hari-harimu.',
+  'moneyIn.row.pay': 'Gajimu',
 };

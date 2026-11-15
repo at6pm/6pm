@@ -38,6 +38,12 @@ export const thMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'moneyIn.payback.subClaim': 'เบิกคืนได้แล้ว ยอดของคุณเท่าเดิม',
   'moneyIn.payback.yes': 'ใช่ คืนเงินให้ฉัน',
   'moneyIn.payback.line': 'คืนแล้ว',
+  'moneyIn.remembered.saved': 'ใส่ {jar} อีกไหม?',
+  'moneyIn.remembered.spread': 'แบ่งกระจายอีกไหม?',
+  'moneyIn.remembered.sub': 'ครั้งก่อนเงินจาก {from} ไปที่นั่น',
+  'moneyIn.remembered.subNoName': 'ครั้งก่อนไปที่นั่น',
+  'moneyIn.remembered.yes': 'ใช่ เหมือนครั้งก่อน',
+  'moneyIn.remembered.line': 'เหมือนครั้งก่อน',
   'moneyIn.goesTo.label': 'เงินไปไหน',
   'moneyIn.goesTo.spread': 'กระจายไปทุกวัน',
   'moneyIn.goesTo.spreadSub': 'พรุ่งนี้เป็น {amount}',
@@ -62,4 +68,6 @@ export const thMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'plan.month.countOn': 'เงินที่นับได้แน่',
   'plan.month.countOnHelp':
     'ยอดต่ำสุดที่เข้ามาทุกเดือนหลังหักภาษี ถ้าไม่แน่นอนให้ใส่ต่ำไว้ก่อน ส่วนที่เกินจะเข้ามาตอนปิดวัน',
+  'moneyIn.landing.sub': 'ถ้าใช่ จะกันเงินค่าบิลไว้ก่อน ที่เหลือแบ่งเป็นรายวัน',
+  'moneyIn.row.pay': 'เงินเดือนของคุณ',
 };

@@ -44,6 +44,12 @@ export const viMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'moneyIn.payback.subClaim': 'Khoản công tác đã được trả lại. Con số giữ nguyên.',
   'moneyIn.payback.yes': 'Đúng, trả lại mình',
   'moneyIn.payback.line': 'TRẢ LẠI',
+  'moneyIn.remembered.saved': 'Lại bỏ vào {jar}?',
+  'moneyIn.remembered.spread': 'Lại chia đều cho các ngày?',
+  'moneyIn.remembered.sub': 'Lần trước tiền từ {from} đã đi đúng như vậy.',
+  'moneyIn.remembered.subNoName': 'Lần trước khoản này đã đi đúng như vậy.',
+  'moneyIn.remembered.yes': 'Ừ, như lần trước',
+  'moneyIn.remembered.line': 'NHƯ LẦN TRƯỚC',
 
   'moneyIn.goesTo.label': 'Để vào đâu',
   'moneyIn.goesTo.spread': 'Chia đều',
@@ -71,4 +77,6 @@ export const viMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'plan.month.countOn': 'Khoản chắc chắn có',
   'plan.month.countOnHelp':
     'Số ít nhất về mỗi tháng, sau thuế. Nếu thu nhập lên xuống, hãy để thấp: phần dư sẽ được hỏi lúc chốt ngày.',
+  'moneyIn.landing.sub': 'Nếu đúng, hoá đơn được để riêng trước, phần còn lại chia cho các ngày.',
+  'moneyIn.row.pay': 'Lương của bạn',
 };

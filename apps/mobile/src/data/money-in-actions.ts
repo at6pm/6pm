@@ -1,9 +1,18 @@
 import { randomUUID } from 'expo-crypto';
 
-import { FUTURE_YOU, futureYouSavedSplit, type MoneyIn, type SpendRow } from '@6pm/domain';
+import {
+  FUTURE_YOU,
+  futureYouSavedSplit,
+  merchantKeyOf,
+  placeToRemember,
+  rememberedRule,
+  type MoneyIn,
+  type SpendRow,
+} from '@6pm/domain';
 
 import type { MoneyStore } from './money-store';
 import { settleByMoneyIn } from './owed-actions';
+import { rememberedHeldBack } from './request-actions';
 
 /** Where the close puts money that came in. */
 export interface MoneyInPlace {
@@ -28,6 +37,12 @@ interface Helpers {
   readonly replaceSpend: (row: SpendRow) => void;
 }
 
+/** The pay "Yes, that's my pay" keeps: an amount per pay, and the income it is when there is one. */
+export interface PayKept {
+  readonly amount: number;
+  readonly incomeId?: string | null;
+}
+
 /** Pot moves made by saving money in carry its id first, so taking it back finds them. */
 const moveIdOf = (spendId: string, potId: string) => `${spendId}:${potId}`;
 
@@ -38,6 +53,18 @@ const moveIdOf = (spendId: string, potId: string) => `${spendId}:${potId}`;
  */
 export function moneyInActions(store: MoneyStore, helpers: Helpers) {
   const { inTurn, current, patchNow, replaceSpend } = helpers;
+
+  /**
+   * The sender remembers where its money went, when it is a place a sender repeats (spread,
+   * saved, an income's pay), so the next money from it is offered the same place.
+   */
+  const remember = async (row: SpendRow) => {
+    const place = placeToRemember(row);
+    if (place === null || row.merchant.trim() === '') return;
+    const existing = await store.tables.rules.get(merchantKeyOf(row.merchant));
+    const rule = rememberedRule(existing, row.merchant, row.categoryId, place);
+    if (rule !== null) await store.tables.rules.put(rule);
+  };
 
   const savedSplit = (amount: number, savedTo: string): Readonly<Record<string, number>> => {
     const live = store.getSnapshot().pots.filter((p) => p.archivedAt === null);
@@ -65,8 +92,14 @@ export function moneyInActions(store: MoneyStore, helpers: Helpers) {
         };
         if (first && jarPart > 0) split[first.potId] = (split[first.potId] ?? 0) + jarPart;
         const at = new Date().toISOString();
+        // A sender remembered holding back tax arrives with it held back again (4c); money given
+        // back (a refund, a payback) never had tax held from it.
+        const givenBack = place.moneyIn === 'payback' || place.moneyIn === 'refund';
+        const held = givenBack ? 0 : await rememberedHeldBack(store, row);
         const next: SpendRow = {
           ...row,
+          ...(held > 0 ? { heldBack: held } : {}),
+          ...(givenBack ? { heldBack: null, certificate: null, certificateOn: null } : {}),
           status: 'kept',
           previousStatus: row.status === 'kept' ? row.previousStatus : row.status,
           moneyIn: place.moneyIn,
@@ -87,6 +120,7 @@ export function moneyInActions(store: MoneyStore, helpers: Helpers) {
           }
           await store.tables.spends.put(next);
           await settleByMoneyIn(store, id, place.moneyIn === 'payback' ? (place.owed ?? []) : []);
+          await remember(next);
         });
         // Pot totals and this cycle's top-ups come from every move: read them again.
         await store.loadInTurn(snap.today);
@@ -105,6 +139,7 @@ export function moneyInActions(store: MoneyStore, helpers: Helpers) {
           previousStatus: null,
           moneyIn: null,
           savedTo: null,
+          incomeId: null,
           givesBack: null,
           updatedAt: new Date().toISOString(),
         };
@@ -120,19 +155,27 @@ export function moneyInActions(store: MoneyStore, helpers: Helpers) {
 
     /**
      * "Yes, that's my pay": the pay the plan counts is kept as pay, and anything beyond it becomes
-     * money in of its own, waiting to be placed. Returns the extra's id, or null with none.
+     * money in of its own, waiting to be placed. Returns the extra's id, or null with none. Given
+     * one of the plan's incomes, the pay is that income's (its month counts it from now) and its
+     * sender remembers it; an income with no counted-on amount keeps all of it as its pay.
      */
-    keepPay: (id: string, income: number): Promise<string | null> =>
+    keepPay: (id: string, kept: number | PayKept): Promise<string | null> =>
       inTurn(async () => {
         const row = await current(id);
         if (!row || row.direction !== 'in') return null;
+        const { amount: income, incomeId = null } =
+          typeof kept === 'number' ? { amount: kept } : kept;
         const extra = income > 0 ? Math.max(0, row.amount - income) : 0;
+        const held = await rememberedHeldBack(store, { ...row, amount: row.amount - extra });
         const pay = await patchNow(row, {
           status: 'kept',
           previousStatus: row.status,
           moneyIn: 'pay',
           amount: row.amount - extra,
+          ...(incomeId === null ? {} : { incomeId }),
+          ...(held > 0 ? { heldBack: held } : {}),
         });
+        await remember(pay);
         if (extra === 0) return null;
         const now = new Date().toISOString();
         const piece: SpendRow = {
@@ -144,6 +187,7 @@ export function moneyInActions(store: MoneyStore, helpers: Helpers) {
           moneyIn: null,
           givesBack: null,
           savedTo: null,
+          incomeId: null,
           createdAt: now,
           updatedAt: now,
         };

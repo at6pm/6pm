@@ -1,8 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
+import { currencyOf } from '../money/currency';
 import {
   emptyKeypad,
   foreignKeypad,
+  homeKeypad,
+  keypadHolding,
+  keypadHomeMinor,
   keypadVnd,
   pressKey,
   type KeypadKey,
@@ -60,5 +64,18 @@ describe('the keypad abroad', () => {
   it('takes the decimals the currency is written with', () => {
     expect(type(['1', '2', '.', '5', '0', '1'], baht).digits).toBe('12.50');
     expect(type(['1', '2', '.', '5'], yen).digits).toBe('125');
+  });
+});
+
+describe('a keypad opened on an amount', () => {
+  it('holds it as if typed, in the home currency', () => {
+    const vnd = currencyOf('VND');
+    const usd = currencyOf('USD');
+    expect(keypadHomeMinor(keypadHolding(vnd, 4_000_000))).toBe(4_000_000);
+    expect(keypadHolding(vnd, 4_000_000).digits).toBe('4000000');
+    expect(keypadHolding(usd, 123_450)).toMatchObject({ digits: '1234.5', currency: 'USD' });
+    expect(keypadHomeMinor(keypadHolding(usd, 123_450))).toBe(123_450);
+    expect(keypadHolding(usd, 100)).toMatchObject({ digits: '1' });
+    expect(keypadHolding(vnd, 0)).toEqual(homeKeypad(vnd));
   });
 });

@@ -5,6 +5,7 @@ export const zhHansPots: { readonly [Key in keyof typeof enPots]: Entry } = {
   'pots.futureYou': '未来的你',
   'pots.shelf.title': '存钱罐',
   'pots.shelf.each': '每个发薪日 {amount}',
+  'pots.shelf.eachMonth': '每月 {amount}',
   'pots.shelf.new': '新存钱罐',
   'pots.all.title': '存钱罐',
   'pots.all.line': '每个发薪日\n存入 {amount}',

@@ -11,6 +11,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
+import { hasPayday } from '@6pm/domain';
 import { curves, durations } from '@6pm/theme';
 
 import { useMoney } from '../../data/money-provider';
@@ -59,10 +60,10 @@ export function JarShelf() {
   const router = useRouter();
   const jars = useJars();
   const scroll = useRef<ScrollViewInstance>(null);
-  const hasPlan = useMoney().plan !== null;
+  const plan = useMoney().plan;
   const [nameLines, setNameLines] = useState(1);
 
-  if (!hasPlan) return null;
+  if (plan === null) return null;
 
   return (
     <View style={{ gap: 10 }}>
@@ -82,7 +83,9 @@ export function JarShelf() {
       >
         <Text style={{ ...body(20, 700, -0.02), color: palette.ink }}>{t('pots.shelf.title')}</Text>
         <Text style={{ ...body(14, 500), ...tabular, color: palette.inkSoft }}>
-          {t('pots.shelf.each', { amount: money.short(jars.eachPayday) })}
+          {t(hasPayday(plan) ? 'pots.shelf.each' : 'pots.shelf.eachMonth', {
+            amount: money.short(jars.eachPayday),
+          })}
         </Text>
       </PressScale>
       <ScrollView

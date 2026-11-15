@@ -1,4 +1,4 @@
-import { oklchSrgbHex, paperInk, planInk, zineInk, type Palette } from '@6pm/theme';
+import { incomeInk, oklchSrgbHex, paperInk, planInk, zineInk, type Palette } from '@6pm/theme';
 
 import { alpha } from '../pots/jar-colours';
 
@@ -49,6 +49,17 @@ export function splitColours(palette: Palette) {
       hatch: { a: planInk.warn.dark, b: '#c9875a', width: 5 },
       fg: zineInk.ink,
     },
+    /** Money beyond the stretch, in the tab bar's indigo, its days as cream dots. */
+    inHand: {
+      bg: incomeInk.inHand,
+      fg: incomeInk.inHandInk,
+      dot: incomeInk.inHandDot,
+      dotOld: incomeInk.inHandDotOld,
+    },
+    /** A part not filled yet: a dashed outline, its words in the page's ink. */
+    dashed: { line: palette.dark ? 'rgba(251,244,236,.4)' : 'rgba(27,30,46,.32)', fg: palette.ink },
+    /** What this pay covers of a bill that earlier pays left short, hatched warm on the paper. */
+    gap: { hatch: incomeInk.gap, fg: incomeInk.gapInk },
     /** The day line once Free is used up: warm, never red. */
     warn,
     /** The selected part's ring and the shadow it lifts on. */

@@ -19,6 +19,7 @@ import { koInsightsHabits } from './insights-habits';
 import { koIntents } from './intents';
 import { koLooks } from './looks';
 import { koMoneyIn } from './money-in';
+import { koQuickAdd } from './quick-add';
 import { koPotsClose } from './pots-close';
 import { koPotsPlan } from './pots-plan';
 import { koPots } from './pots';
@@ -42,6 +43,11 @@ import { koYearBook } from './year-book';
 import { koFirstCatch } from './first-catch';
 import { koCaptureLog } from './capture-log';
 import { koPhoto } from './photo';
+import { koMoneyReaches } from './money-reaches';
+import { koIncome } from './income';
+import { koWork } from './work';
+import { koRequests } from './requests';
+import { koWorkYear } from './work-year';
 import { koImport } from './import';
 import { koOwed } from './owed';
 import { koNotifications } from './notifications';
@@ -89,12 +95,18 @@ export const ko: Catalogue = {
   ...koWidgetsGuide,
   ...koDuo,
   ...koMoneyIn,
+  ...koQuickAdd,
   ...koPotsClose,
   ...koPotsPlan,
   ...koPots,
   ...koFirstCatch,
   ...koCaptureLog,
   ...koPhoto,
+  ...koMoneyReaches,
+  ...koIncome,
+  ...koWork,
+  ...koRequests,
+  ...koWorkYear,
   ...koImport,
   ...koOwed,
   ...importSketchMomo,
@@ -107,6 +119,8 @@ export const ko: Catalogue = {
  * beyond the list every language shares.
  */
 export const koSameAsEnglish: readonly string[] = [
+  'work-{year}.csv',
+  'work-costs-{year}.csv',
   ...importSketchEnglish,
   'iCloud · {when}',
   '{who} · {day}',

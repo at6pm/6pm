@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { spreadPreview, type SpendRow } from '@6pm/domain';
 
 import { useMoney } from '../../data/money-provider';
-import { dayOf } from '../../data/money-store';
+import { dayOf, daysLeftOf } from '../../data/money-store';
 import { useI18n } from '../../i18n/i18n';
 import { homeCurrencyOf, useMoneyFormat } from '../../money/use-money-format';
 import type { CloseCardContent } from './close-card';
@@ -25,7 +25,7 @@ export function useCloseMoney() {
   /** The money half of a card for money that came in, or undefined for spending. */
   const cardOf = (spend: SpendRow): CloseCardContent['money'] => {
     if (spend.direction !== 'in' || day === null) return undefined;
-    const preview = spreadPreview(day, spend.amount, snap.cycle.daysLeft, currency);
+    const preview = spreadPreview(day, spend.amount, daysLeftOf(snap), currency);
     return {
       asIs: preview.asIs,
       spread: preview.spread,
