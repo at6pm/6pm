@@ -223,7 +223,11 @@ export function useReceiptScan() {
       if (phase.kind !== 'card') return 'empty';
       const item = scannedReceiptItem(phase.card, edits, randomUUID(), phase.context);
       if (item === null) return 'empty';
-      const spendId = await saveInboxSpend({ store, actions, enrich, home: home.code }, item);
+      const spendId = await saveInboxSpend(
+        { store, actions, enrich, home: home.code },
+        item,
+        'receiptPhoto',
+      );
       if (spendId === null) return 'already';
       // Split on the card: the spend is the user's share, and each other share is owed, unnamed.
       const people = edits.people ?? 1;

@@ -1,11 +1,14 @@
 import {
   emailModelText,
+  emailMovesNothing,
   emailSpendOf,
+  emailWhatOf,
   mayHoldPayment,
-  parseReceiptEmail,
+  readReceiptEmail,
   VIETNAM_UTC_OFFSET_MINUTES,
   type EmailSpend,
   type ReceiptEmail,
+  type ReceiptEmailOptions,
 } from '@6pm/domain';
 
 import { readEmail } from '../ai/read-email';
@@ -50,7 +53,9 @@ async function readsPerDay(db: D1Database, deviceHash: string, now: Date): Promi
 }
 
 /**
- * The payment in one email, or null when it holds none. The model reads it when the Worker has a
+ * The payment in one email, or null when it holds none. What the email is (an order update, a
+ * failed charge, a reversal, an own transfer) is decided by rules before anything else is read,
+ * and checked again after the model answers (`emailSpendOf` with `whatFirst`). The model reads it when the Worker has a
  * key and the email prints an amount (`mayHoldPayment`; one that does not holds no payment and is
  * dropped unread), up to the phone's daily allowance (none for Max): it tells a payment from a transfer between
  * the person's own accounts, a promotion, a failed charge or an order update, and names who was really paid. When the model cannot answer, the
@@ -64,8 +69,14 @@ export async function readSpend(
   deviceHash: string,
   now: Date,
 ): Promise<EmailSpend | null> {
-  const options = { receivedAt: now.toISOString() };
+  const options = { receivedAt: now.toISOString(), whatFirst: true };
   if (!mayHoldPayment(email)) return null;
+  // What the email is comes first, by the rules: an order update moves nothing, and a charge that
+  // failed, a reversal or an own transfer is read by the rules alone, never sent to the model.
+  const what = emailWhatOf(email);
+  if (emailMovesNothing(what)) return null;
+  if (what === 'failed' || what === 'reversal' || what === 'ownTransfer')
+    return byRules(email, options);
   const allowed =
     env.ANTHROPIC_API_KEY !== undefined &&
     env.ANTHROPIC_API_KEY !== '' &&
@@ -89,6 +100,10 @@ export async function readSpend(
       });
     }
   }
-  const read = parseReceiptEmail(email, options);
+  return byRules(email, options);
+}
+
+function byRules(email: ReceiptEmail, options: ReceiptEmailOptions): EmailSpend | null {
+  const read = readReceiptEmail(email, options);
   return read === null ? null : { ...read, currency: 'VND', category: null };
 }

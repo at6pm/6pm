@@ -40,8 +40,46 @@ export function readReceiptTime(text: string): string | null {
 
 /**
  * "27/10/26 12:30" as "27/10/2026 12:30", so `readReceiptTime` reads the two-digit years bank
- * alerts and emails print ("GD: -45,000VND 27/10/26 12:30").
+ * alerts and emails print ("GD: -45,000VND 27/10/26 12:30"), and a named month's before a clock
+ * ("14 Sep 26 08:21 +0700").
  */
 export function withFullYears(text: string): string {
-  return text.replace(/(?<!\d)(\d{1,2})([/-])(\d{1,2})\2(\d{2})(?![\d/-])/g, '$1$2$3$220$4');
+  return text
+    .replace(/(?<!\d)(\d{1,2})([/-])(\d{1,2})\2(\d{2})(?![\d/-])/g, '$1$2$3$220$4')
+    .replace(
+      /(?<!\d)(\d{1,2}\s+([a-z]{3})[a-z]*\.?,?\s+)(\d{2})(?=,?\s+\d{1,2}:\d{2})/gi,
+      (whole, lead: string, month: string, year: string) =>
+        MONTHS.includes(month.toLowerCase()) ? `${lead}20${year}` : whole,
+    );
+}
+
+/** Zones a receipt names beside its clock, in minutes east of UTC. "CST" is two zones, so not here. */
+const NAMED_ZONES: Readonly<Record<string, number>> = {
+  utc: 0,
+  gmt: 0,
+  edt: -4 * 60,
+  est: -5 * 60,
+  cdt: -5 * 60,
+  mdt: -6 * 60,
+  mst: -7 * 60,
+  pdt: -7 * 60,
+  pst: -8 * 60,
+  ict: 7 * 60,
+};
+
+const CLOCK_AND_ZONE =
+  /\d{1,2}:\d{2}(?::\d{2})?(?:\s*[ap]m)?\s*(?:\(?(?:gmt|utc)?\s?([+-])(\d{1,2}):?(\d{2})?(?![\d:.,]|\s?(?:vn[dđ]|[đ₫]|usd))|\(?([a-z]{3})(?![a-z]))/i;
+
+/**
+ * The zone a receipt prints after its clock, in minutes east of UTC: "5:02:15 AM PDT" is −420,
+ * "07:56 +0700" and "16:40 (GMT+7)" are 420. Null when it names none, and the time is then in
+ * the zone the reader assumes.
+ */
+export function printedUtcOffset(text: string): number | null {
+  const found = CLOCK_AND_ZONE.exec(text);
+  if (!found) return null;
+  if (found[4] !== undefined) return NAMED_ZONES[found[4].toLowerCase()] ?? null;
+  const minutes = Number(found[2]) * 60 + Number(found[3] ?? 0);
+  if (Number(found[2]) > 14 || Number(found[3] ?? 0) > 59) return null;
+  return found[1] === '-' ? -minutes : minutes;
 }

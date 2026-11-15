@@ -120,23 +120,31 @@ function startOf(
   for (const s of queue.filter(comesIn)) {
     const givable = money.givable.filter((g) => !taken.has(g.id));
     const owed = money.owed.filter((line) => !paid.has(line.id));
-    const ask = moneyInAsk(
-      {
-        day: s.day,
-        amount: s.amount,
-        merchant: s.merchant,
-        note: s.note,
-        memo: s.memo,
-        hint: s.moneyIn === 'refund' ? 'refund' : null,
-      },
-      {
-        income: money.income,
-        cycle,
-        spends: givable,
-        owed,
-        season: { window: money.season, jar: money.seasonJar },
-      },
-    );
+    // A refund already linked to the payment it gives back (by its bank code, or the same amount
+    // into the same account) is asked about that payment, not guessed at.
+    const linked =
+      s.moneyIn === 'refund' && s.givesBack && givable.some((g) => g.id === s.givesBack)
+        ? ({ kind: 'refund', spendId: s.givesBack } as const)
+        : null;
+    const ask =
+      linked ??
+      moneyInAsk(
+        {
+          day: s.day,
+          amount: s.amount,
+          merchant: s.merchant,
+          note: s.note,
+          memo: s.memo,
+          hint: s.moneyIn === 'refund' ? 'refund' : null,
+        },
+        {
+          income: money.income,
+          cycle,
+          spends: givable,
+          owed,
+          season: { window: money.season, jar: money.seasonJar },
+        },
+      );
     if (ask === null) continue;
     if (ask.kind === 'payback' && ask.owed) for (const id of ask.owed) paid.add(id);
     else if (ask.kind === 'refund' || ask.kind === 'payback') taken.add(ask.spendId);

@@ -144,6 +144,7 @@ export async function receiveEmail(
     currency: read.currency,
     category: read.category,
     kind: read.kind,
+    atKind: read.atKind,
   });
   if (!capture.success) return 'not_a_receipt';
 

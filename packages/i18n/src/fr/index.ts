@@ -39,6 +39,7 @@ import { frVoice } from './voice';
 import { frWidgetsGuide } from './widgets-guide';
 import { frYearBook } from './year-book';
 import { frFirstCatch } from './first-catch';
+import { frCaptureLog } from './capture-log';
 import { frPhoto } from './photo';
 import { frImport } from './import';
 import { frOwed } from './owed';
@@ -90,6 +91,7 @@ export const fr: Catalogue = {
   ...frPotsPlan,
   ...frPots,
   ...frFirstCatch,
+  ...frCaptureLog,
   ...frPhoto,
   ...frImport,
   ...frOwed,

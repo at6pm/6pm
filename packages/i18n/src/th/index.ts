@@ -39,6 +39,7 @@ import { thVoice } from './voice';
 import { thWidgetsGuide } from './widgets-guide';
 import { thYearBook } from './year-book';
 import { thFirstCatch } from './first-catch';
+import { thCaptureLog } from './capture-log';
 import { thPhoto } from './photo';
 import { thImport } from './import';
 import { thOwed } from './owed';
@@ -90,6 +91,7 @@ export const th: Catalogue = {
   ...thPotsPlan,
   ...thPots,
   ...thFirstCatch,
+  ...thCaptureLog,
   ...thPhoto,
   ...thImport,
   ...thOwed,

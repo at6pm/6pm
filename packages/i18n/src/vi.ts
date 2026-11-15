@@ -39,6 +39,7 @@ import { viPotsClose } from './vi-pots-close';
 import { viPotsPlan } from './vi-pots-plan';
 import { viPots } from './vi-pots';
 import { viFirstCatch } from './vi-first-catch';
+import { viCaptureLog } from './vi-capture-log';
 import { viPhoto } from './vi-photo';
 import { viImport } from './vi-import';
 import { viOwed } from './vi-owed';
@@ -87,6 +88,7 @@ export const vi: Catalogue = {
   ...viPotsPlan,
   ...viPots,
   ...viFirstCatch,
+  ...viCaptureLog,
   ...viPhoto,
   ...viImport,
   ...viOwed,

@@ -382,6 +382,42 @@ describe('findDuplicate', () => {
     expect(findDuplicate({ ...receipt, source: 'shared' }, [card])).toBeNull();
   });
 
+  it('keeps two banks’ payments to two payees apart, alike in amount and minute', () => {
+    // A card charged at a shop, and four minutes on a transfer from another bank to someone else.
+    const card = {
+      ...base,
+      source: 'email' as const,
+      status: 'caught' as const,
+      amount: 30_000,
+      merchant: 'SAMPLE TELECOM',
+      detail: 'info@info.vietcombank.com.vn',
+    };
+    const transfer = {
+      amount: 30_000,
+      source: 'email' as const,
+      at: at(4 * 60_000),
+      merchant: 'FINTECHCO TOPUP LIVE_1000200030',
+      detail: 'mbebanking@mbbank.com.vn',
+    };
+    expect(findDuplicate(transfer, [card])).toBeNull();
+    // Two apps' alerts are told apart the same way, whichever came first.
+    const alert = { ...transfer, source: 'alert' as const, detail: 'MB Bank' };
+    expect(findDuplicate(alert, [{ ...card, source: 'alert', detail: 'VCB Digibank' }])).toBeNull();
+    const first = { ...card, ...transfer, id: 'b', at: base.at, status: 'caught' as const };
+    expect(findDuplicate({ ...card, at: at(2 * 60_000) }, [first])).toBeNull();
+    // One payee under two spellings, or a side that names nobody, is still one payment.
+    expect(findDuplicate({ ...transfer, merchant: 'Sample Telecom JSC' }, [card])?.id).toBe('a');
+    expect(findDuplicate({ ...transfer, merchant: '' }, [card])?.id).toBe('a');
+    expect(findDuplicate({ ...transfer, merchant: 'MBCT Chuyen tien' }, [card])?.id).toBe('a');
+    // A bank and the shop's own receipt, or a wallet and the bank it drew from, are not judged
+    // by their names: a bank's descriptor and a shop's name for itself can share nothing.
+    const shop = { ...transfer, merchant: 'Quán Cơm Bình Dân', detail: 'no-reply@grab.com' };
+    expect(findDuplicate(shop, [{ ...card, merchant: 'GRAB*A-0000TEST' }])?.id).toBe('a');
+    const wallet = { ...card, source: 'alert' as const, detail: 'MoMo', merchant: 'Sample Play' };
+    const drawn = { ...alert, merchant: 'CTY CP DICH VU DI DONG' };
+    expect(findDuplicate(drawn, [wallet])?.id).toBe('a');
+  });
+
   it('never merges cash, which no other source can have seen', () => {
     expect(findDuplicate({ amount: 45_000, source: 'cash', at: at(0) }, [base])).toBeNull();
     const cash = { ...base, source: 'cash' as const, status: 'kept' as const };

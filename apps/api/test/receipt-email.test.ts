@@ -151,6 +151,7 @@ describe('receiving a receipt email', () => {
         memo: 'CHUYEN TIEN TOI PHO HOA',
         currency: 'VND',
         category: null,
+        atKind: 'printed',
       },
     ]);
   });
@@ -204,6 +205,48 @@ describe('receiving a receipt email', () => {
       .bind(older.hash)
       .first<{ n: number }>();
     expect(left?.n).toBe(1);
+  });
+
+  it('says what a mail’s time is: printed in it, or the date it was sent', async () => {
+    const { token, address } = await phone();
+    const undated = rawEmail('sent-1').replace(' | 10/10/2026 12:30', '');
+    await receiveEmail(inbound(address, rawEmail('printed-1')).message, env, NOW);
+    await receiveEmail(inbound(address, undated).message, env, NOW);
+    expect((await fetchCaptures(token)).map((c) => c.atKind).sort()).toEqual(['printed', 'sent']);
+  });
+
+  it('hands a failed charge and an own transfer only to a phone that knows what a message is', async () => {
+    const failed = (id: string) =>
+      rawEmail(id).replace(
+        'Subject: Thong bao bien dong so du',
+        'Subject: Giao dich khong thanh cong',
+      );
+    const reversed = (id: string) =>
+      rawEmail(id)
+        .replace('Subject: Thong bao bien dong so du', 'Subject: Thong bao dao giao dich')
+        .replace('GD: -45,000VND', 'GD: +45,000VND');
+    const knowing = await phone();
+    await receiveEmail(inbound(knowing.address, failed('f-1')).message, env, NOW);
+    await receiveEmail(inbound(knowing.address, reversed('r-1')).message, env, NOW);
+    expect((await fetchCaptures(knowing.token, '?in=1&what=1')).map((c) => c.kind).sort()).toEqual([
+      'failed',
+      'reversal',
+    ]);
+
+    const older = await phone();
+    await receiveEmail(inbound(older.address, failed('f-2')).message, env, NOW);
+    await receiveEmail(inbound(older.address, reversed('r-2')).message, env, NOW);
+    expect((await fetchCaptures(older.token)).map((c) => c.kind)).toEqual(['incoming']);
+  });
+
+  it('keeps nothing of a booking changed after it was paid', async () => {
+    const { token, address } = await phone();
+    const update = rawEmail('upd-1').replace(
+      'Subject: Thong bao bien dong so du',
+      'Subject: Cap nhat dat cho cua ban',
+    );
+    expect(await receiveEmail(inbound(address, update).message, env, NOW)).toBe('not_a_receipt');
+    expect(await fetchCaptures(token, '?in=1&what=1')).toEqual([]);
   });
 
   it('drops mail that holds no payment, without a bounce', async () => {

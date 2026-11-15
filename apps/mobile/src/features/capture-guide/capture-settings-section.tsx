@@ -17,6 +17,7 @@ import { body, mono } from '../../ui/type/fonts';
 import { riseEntering } from '../onboarding/onboarding-motion';
 import { nativeReach } from '../surfaces/native-reach';
 import { captureColours } from './capture-colours';
+import { CaptureLogCard } from './capture-log-card';
 import { HEALTH_GUIDE, type HealthRow, type HealthWay } from './capture-health-rows';
 import type { CaptureSource } from './source-status';
 import { useCaptureHealth } from './use-capture-health';
@@ -34,7 +35,8 @@ const ICON: Readonly<Record<HealthWay, SymbolName>> = {
  * Settings' "How spending gets caught": a row per way with its last 14 days as a heartbeat (a bar
  * a day, as tall as that day's catches) and where it stands. A way that runs by itself and went
  * flat after a busy fortnight says so in the warm tone, opens itself once with why and a way to
- * check it, and outlines its quiet days. Each other row opens its guide. Counted on the phone.
+ * check it, and outlines its quiet days. Each other row opens its guide. Counted on the phone. The
+ * capture log's switch sits at the foot of the section.
  */
 export function CaptureSettingsSection({
   onOpen,
@@ -98,9 +100,15 @@ export function CaptureSettingsSection({
           />
         ))}
       </View>
+      {/* The log is its own card, a little apart from the ways it follows. */}
+      <View style={{ marginTop: 12 }}>
+        <CaptureLogCard />
+      </View>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 6 }}>
         <Symbol name="lock" size={15} color={palette.inkSoft} />
-        <Text style={{ ...body(12), color: palette.inkSoft }}>{t('catch.health.private')}</Text>
+        <Text style={{ ...body(12), color: palette.inkSoft, flex: 1 }}>
+          {t('captureLog.private')}
+        </Text>
       </View>
     </View>
   );

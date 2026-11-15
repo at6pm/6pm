@@ -39,6 +39,7 @@ import { esVoice } from './voice';
 import { esWidgetsGuide } from './widgets-guide';
 import { esYearBook } from './year-book';
 import { esFirstCatch } from './first-catch';
+import { esCaptureLog } from './capture-log';
 import { esPhoto } from './photo';
 import { esImport } from './import';
 import { esOwed } from './owed';
@@ -90,6 +91,7 @@ export const es: Catalogue = {
   ...esPotsPlan,
   ...esPots,
   ...esFirstCatch,
+  ...esCaptureLog,
   ...esPhoto,
   ...esImport,
   ...esOwed,

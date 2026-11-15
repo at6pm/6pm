@@ -39,6 +39,7 @@ import { idVoice } from './voice';
 import { idWidgetsGuide } from './widgets-guide';
 import { idYearBook } from './year-book';
 import { idFirstCatch } from './first-catch';
+import { idCaptureLog } from './capture-log';
 import { idPhoto } from './photo';
 import { idImport } from './import';
 import { idOwed } from './owed';
@@ -90,6 +91,7 @@ export const id: Catalogue = {
   ...idPotsPlan,
   ...idPots,
   ...idFirstCatch,
+  ...idCaptureLog,
   ...idPhoto,
   ...idImport,
   ...idOwed,

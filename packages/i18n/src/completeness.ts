@@ -12,6 +12,9 @@ export const sameInBothLanguages: readonly string[] = [
   'PHOTO',
   'Inbox',
   'VietQR',
+  // The capture log's tape names a channel the way the design writes it in Vietnamese too.
+  'QR',
+  'EMAIL',
   'VietQR · NAPAS 247',
   'VIETQR · {bank}',
   'MB Bank',

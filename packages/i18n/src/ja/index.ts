@@ -39,6 +39,7 @@ import { jaVoice } from './voice';
 import { jaWidgetsGuide } from './widgets-guide';
 import { jaYearBook } from './year-book';
 import { jaFirstCatch } from './first-catch';
+import { jaCaptureLog } from './capture-log';
 import { jaPhoto } from './photo';
 import { jaImport } from './import';
 import { jaOwed } from './owed';
@@ -90,6 +91,7 @@ export const ja: Catalogue = {
   ...jaPotsPlan,
   ...jaPots,
   ...jaFirstCatch,
+  ...jaCaptureLog,
   ...jaPhoto,
   ...jaImport,
   ...jaOwed,
