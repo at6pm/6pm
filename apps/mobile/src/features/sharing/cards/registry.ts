@@ -1,8 +1,13 @@
 import type { ShareCardDefinition } from './card-definition';
+import { coveredShareCard } from './covered-card';
+import { fifthShareCard } from './fifth-card';
 import { jarShareCard } from './jar-card';
 import { monthShareCard } from './month-card';
+import { shopShareCard } from './shop-card';
 import { splitShareCard } from './split-card';
 import { streakShareCard } from './streak-card';
+import { thanksShareCard } from './thanks-card';
+import { workYearShareCard } from './work-year-card';
 import { yearShareCard } from './year-card';
 
 /**
@@ -25,6 +30,11 @@ export const cardRegistry = {
   split: splitShareCard,
   year: yearShareCard,
   jar: jarShareCard,
+  covered: coveredShareCard,
+  fifth: fifthShareCard,
+  shop: shopShareCard,
+  thanks: thanksShareCard,
+  workYear: workYearShareCard,
 } as const satisfies Readonly<Record<string, ShareCardDefinition<unknown>>>;
 
 export type CardId = keyof typeof cardRegistry;

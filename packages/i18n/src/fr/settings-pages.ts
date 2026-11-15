@@ -1,0 +1,47 @@
+import type { Entry } from '../catalogue-types';
+import type { enSettingsPages } from '../en-settings-pages';
+
+export const frSettingsPages: { readonly [Key in keyof typeof enSettingsPages]: Entry } = {
+  'catch.health.total': '{count} attrapés · 14 jours',
+  'catch.health.axisToday': 'AUJOURD’HUI',
+  'catch.health.quietCheck': {
+    one: 'Silence depuis {count} jour · touche pour vérifier',
+    other: 'Silence depuis {count} jours · touche pour vérifier',
+  },
+  'catch.health.setUp': 'Configurer',
+  'catch.health.setUpWhy.alerts': 'Pas configuré · attrape les alertes de ta banque',
+  'catch.health.setUpWhy.wallet': 'Pas configuré · attrape un paiement sans contact',
+  'catch.health.setUpWhy.email': 'Pas configuré · attrape les reçus par e-mail',
+  'catch.reading.of': '{right} sur {total}',
+  'catch.reading.explain':
+    'Les reçus que tu partages ou scannes sont lus par cet iPhone. Un point marque celui que tu as dû corriger : son montant ou sa boutique.',
+  'catch.reading.ghost': 'Partage un reçu et il sera compté ici',
+  'settings.travel.off': 'Désactivé',
+  'settings.travel.auto': 'Automatique',
+  'settings.travel.on': 'Activé · {place}',
+  'settings.travel.needsLocation': 'Position requise',
+  'settings.privacy.mostly': 'Surtout sur ce téléphone',
+  'settings.privacy.all': 'Tout sur ce téléphone',
+  'privacyPage.headline': 'Ton argent reste sur cet iPhone, chiffré.',
+  'privacyPage.sub': 'Quelques éléments en sortent pour être traités. Chacun, et où il va :',
+  'privacyPage.subDevice': 'L’IA tourne ici aussi, donc rien n’en sort. Chacun, et où il reste :',
+  'privacyPage.what': 'CE QUI SORT',
+  'privacyPage.to': 'VA À',
+  'privacyPage.ask': 'TA QUESTION DANS ASK',
+  'privacyPage.lines': 'QUELQUES FAITS POUR UNE PHRASE DU COMPAGNON',
+  'privacyPage.receipts': 'UN REÇU QUE TON TÉLÉPHONE NE PEUT PAS LIRE',
+  'privacyPage.voice': 'TA VOIX, PENDANT QUE TU PARLES',
+  'privacyPage.spends': 'TA LISTE DE DÉPENSES',
+  'privacyPage.neverSent': 'JAMAIS ENVOYÉE',
+  'privacyPage.staysHere': 'RESTE ICI',
+  'privacyPage.nothingLeaves': 'RIEN NE SORT',
+  'privacyPage.foot': 'ANTHROPIC NE S’EN SERT PAS POUR S’ENTRAÎNER · SUPPRIMÉ SOUS 30 JOURS',
+  'privacyPage.backup': 'TA SAUVEGARDE NE SORT QUE SI TU L’ACTIVES, CHIFFRÉE DE BOUT EN BOUT',
+  'privacyPage.crashes':
+    'LES RAPPORTS DE PLANTAGE VONT À SENTRY SANS MONTANTS, NOMS NI NOTES · REVENUECAT GÈRE LES ACHATS',
+  'privacyPage.purchases': 'AUCUN RAPPORT DE PLANTAGE · REVENUECAT GÈRE LES ACHATS',
+  'privacyPage.keep': 'Tout garder sur cet iPhone',
+  'privacyPage.keepSub': 'Passer l’IA sur ce téléphone',
+  'privacyPage.policy': 'Politique de confidentialité',
+  'privacyPage.policyFailed': 'Impossible d’ouvrir la page. Réessaie.',
+};

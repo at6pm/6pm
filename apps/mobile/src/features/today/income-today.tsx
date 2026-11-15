@@ -1,6 +1,12 @@
 import { useMemo, type ReactNode } from 'react';
 
-import { diffDays, setAsideNamed, type DailyNumber, type LocalDate } from '@6pm/domain';
+import {
+  coveredMoments,
+  diffDays,
+  setAsideNamed,
+  type DailyNumber,
+  type LocalDate,
+} from '@6pm/domain';
 
 import type { MoneySnapshot } from '../../data/money-store';
 import { useI18n } from '../../i18n/i18n';
@@ -119,7 +125,25 @@ export function useIncomeToday(snap: MoneySnapshot, day: DailyNumber): IncomeTod
       empty: null,
       under:
         ruler !== null && (lands || takings === null)
-          ? { node: <CoverRulerLine today={snap.today} ruler={ruler} />, height: RULER_ROOM }
+          ? {
+              node: (
+                <CoverRulerLine
+                  today={snap.today}
+                  ruler={ruler}
+                  // Days covered needs a landing this month to tell.
+                  offer={
+                    landings.length === 0
+                      ? []
+                      : coveredMoments({
+                          today: snap.today,
+                          landings: landings.map((l) => ({ day: l.day, work: false })),
+                          covered: ruler.covered,
+                        })
+                  }
+                />
+              ),
+              height: RULER_ROOM,
+            }
           : takings,
       gotPaid: false,
       say,

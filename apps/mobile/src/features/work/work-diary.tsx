@@ -17,6 +17,7 @@ import {
 import { paperInk, workInk } from '@6pm/theme';
 
 import { useMoney, useMoneyStore } from '../../data/money-provider';
+import { workOf } from '../../data/work-money';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { DashedRule } from '../../ui/dashed-rule';
@@ -26,6 +27,7 @@ import { PaperEdge } from '../../ui/paper-edge';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, families, mono, tabular } from '../../ui/type/fonts';
+import { ShareChip } from '../sharing/share-chip';
 import { WorkStamp } from './work-stamp';
 
 /** Switching to Work reprints the receipts out of the slot: 320 ms. */
@@ -212,6 +214,12 @@ export function WorkDiary() {
           })}
         </Text>
       </View>
+      {/* A seller's month as a card, from the Work diary whenever they like. */}
+      {workOf(snap) !== null ? (
+        <View style={{ alignItems: 'center' }}>
+          <ShareChip card="shop" of={snap.cycle.start} size="small" label={t('shareCards.chip')} />
+        </View>
+      ) : null}
     </View>
   );
 }

@@ -74,8 +74,8 @@ function Screens() {
         <Stack.Screen name="capture-guide" options={sheet} />
         <Stack.Screen name="categories" options={sheet} />
         <Stack.Screen name="banks" options={sheet} />
-        <Stack.Screen name="ai" options={edgeSheet} />
-        <Stack.Screen name="language" options={drawnSheet} />
+        <Stack.Screen name="ai" options={sheet} />
+        <Stack.Screen name="language" options={sheet} />
         <Stack.Screen name="category/[id]" options={sheet} />
         <Stack.Screen name="quick-add" options={edgeSheet} />
         <Stack.Screen name="scan" options={hinged ? takeover : pageSheet} />
@@ -113,9 +113,17 @@ function Screens() {
         <Stack.Screen name="look/[id]" options={drawnSheet} />
         <Stack.Screen name="max" options={sheet} />
         <Stack.Screen name="max-welcome" options={takeover} />
-        <Stack.Screen name="backup" options={edgeSheet} />
-        <Stack.Screen name="read-on-phone" options={edgeSheet} />
-        <Stack.Screen name="notifications" options={edgeSheet} />
+        {/* A page inside Settings; offered from a fresh install's welcome, its own short sheet. */}
+        <Stack.Screen
+          name="backup"
+          options={({ route }) =>
+            (route.params as { restore?: string } | undefined)?.restore === '1' ? edgeSheet : sheet
+          }
+        />
+        <Stack.Screen name="read-on-phone" options={sheet} />
+        <Stack.Screen name="notifications" options={sheet} />
+        <Stack.Screen name="privacy" options={sheet} />
+        <Stack.Screen name="travel" options={sheet} />
         <Stack.Screen name="import" options={sheet} />
         <Stack.Screen name="together/index" options={edgeSheet} />
         <Stack.Screen name="together/[code]" options={edgeSheet} />

@@ -4,7 +4,18 @@
  * card registry (`apps/mobile/src/features/sharing/cards/registry.ts`); a card added there adds
  * its path here.
  */
-export const cardPaths = ['month', 'streak', 'split', 'year', 'jar'] as const;
+export const cardPaths = [
+  'month',
+  'streak',
+  'split',
+  'year',
+  'jar',
+  'covered',
+  'fifth',
+  'shop',
+  'thanks',
+  'work-year',
+] as const;
 
 export type CardPath = (typeof cardPaths)[number];
 

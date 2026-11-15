@@ -32,6 +32,7 @@ import { deScan } from './scan';
 import { deShareExt } from './share-ext';
 import { deSharing } from './sharing';
 import { deShareCards } from './share-cards';
+import { deShareCardsIncome } from './share-cards-income';
 import { deSurfaces } from './surfaces';
 import { deWidgets } from './widgets';
 import { deToday } from './today';
@@ -42,6 +43,7 @@ import { deWidgetsGuide } from './widgets-guide';
 import { deYearBook } from './year-book';
 import { deFirstCatch } from './first-catch';
 import { deCaptureLog } from './capture-log';
+import { deSettingsPages } from './settings-pages';
 import { dePhoto } from './photo';
 import { deMoneyReaches } from './money-reaches';
 import { deIncome } from './income';
@@ -81,6 +83,7 @@ export const de: Catalogue = {
   ...deNative,
   ...deSharing,
   ...deShareCards,
+  ...deShareCardsIncome,
   ...deShareExt,
   ...deIntents,
   ...deCaptureWalk,
@@ -101,6 +104,7 @@ export const de: Catalogue = {
   ...dePots,
   ...deFirstCatch,
   ...deCaptureLog,
+  ...deSettingsPages,
   ...dePhoto,
   ...deMoneyReaches,
   ...deIncome,

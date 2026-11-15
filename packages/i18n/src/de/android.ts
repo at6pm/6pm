@@ -106,4 +106,9 @@ export const deAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'widgetsGuide.home.step3':
     'Halte „Heute verfügbar“ oder „Heute“ gedrückt und zieh es an seinen Platz. Zieh „Heute verfügbar“ breiter für „QR scannen“ und „Schnell erfassen“.',
   'capture.settings.widgetsValue': 'Start & Kacheln',
+  // Settings pages: the receipts read and the money kept on this phone.
+  'catch.reading.explain':
+    'Belege, die du teilst oder scannst, liest dieses Handy. Ein Punkt markiert einen, den du korrigieren musstest: Betrag oder Geschäft.',
+  'privacyPage.headline': 'Dein Geld bleibt verschlüsselt auf diesem Handy.',
+  'privacyPage.keep': 'Alles auf diesem Handy behalten',
 };

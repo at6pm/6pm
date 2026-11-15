@@ -146,16 +146,23 @@ function stepLabel(event: CaptureLogEvent, { t, language }: I18n): string {
 
 /**
  * The tape's scalloped edge: paper with a half-round bite every 12 points along its outer side,
- * the way the design cuts it. `foot` turns it for the bottom of the tape. Before its width is
- * known it is a plain strip of paper.
+ * the way the design cuts it. `foot` turns it for the bottom of the tape; `depth` is how far it
+ * reaches (the receipts on "Read on this phone" are cut 6 deep). Before its width is known it is
+ * a plain strip of paper.
  */
-function TapeEdge({ foot = false }: { readonly foot?: boolean }) {
+export function TapeEdge({
+  foot = false,
+  depth = EDGE,
+}: {
+  readonly foot?: boolean;
+  readonly depth?: number;
+}) {
   const [width, setWidth] = useState(0);
   const path = useMemo(() => {
     if (width <= 0) return null;
     const p = Skia.Path.Make();
-    const outer = foot ? EDGE : 0;
-    const inner = foot ? 0 : EDGE;
+    const outer = foot ? depth : 0;
+    const inner = foot ? 0 : depth;
     p.moveTo(0, inner);
     p.lineTo(0, outer);
     for (let x = 0; x < width; x += BITE * 2) {
@@ -166,17 +173,17 @@ function TapeEdge({ foot = false }: { readonly foot?: boolean }) {
     p.lineTo(Math.ceil(width / (BITE * 2)) * BITE * 2, inner);
     p.close();
     return p;
-  }, [width, foot]);
+  }, [width, foot, depth]);
   return (
-    <View style={{ height: EDGE }} onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
+    <View style={{ height: depth }} onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
       {path ? (
-        <Canvas pointerEvents="none" style={{ width, height: EDGE }}>
+        <Canvas pointerEvents="none" style={{ width, height: depth }}>
           <Path path={path} color={paperInk.sheet} />
         </Canvas>
       ) : (
         <View
           style={{
-            height: EDGE - BITE,
+            height: Math.max(1, depth - BITE),
             marginTop: foot ? 0 : BITE,
             backgroundColor: paperInk.sheet,
           }}

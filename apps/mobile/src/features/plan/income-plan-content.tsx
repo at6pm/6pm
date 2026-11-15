@@ -12,6 +12,7 @@ import { haptics } from '../../ui/haptics';
 import { useTheme } from '../../ui/theme/theme';
 import { ordinalDay } from '../onboarding/step-parts';
 import { potsRoute } from '../pots/pot-routes';
+import { OfferedChip } from '../sharing/offered-chip';
 import {
   InHandPanel,
   landedLines,
@@ -423,6 +424,18 @@ export function IncomePlanContent({
                 : t('income.inHand.month', { count: pay.inHandDays })
             }
             onMove={() => router.push(potsRoute)}
+            footer={
+              // The day a pay beyond the count lands, the fifth Friday is offered (once).
+              stretch.extra && stretch.payOn === snap.today ? (
+                <OfferedChip
+                  moments={[`fifth:${stretch.payOn}`]}
+                  card="fifth"
+                  of={stretch.payOn}
+                  size="small"
+                  label={t('shareCards.chip')}
+                />
+              ) : null
+            }
           />
         </SplitPanel>
       );

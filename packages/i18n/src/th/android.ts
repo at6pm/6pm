@@ -93,4 +93,9 @@ export const thAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'widgetsGuide.home.step3':
     'แตะค้าง วันนี้ใช้ได้ หรือ วันนี้ แล้วลากไปวาง ขยาย วันนี้ใช้ได้ ให้กว้างขึ้นเพื่อให้มีสแกนคิวอาร์และเพิ่มด่วน',
   'capture.settings.widgetsValue': 'หน้าจอหลักและไทล์',
+  // Settings pages: the receipts read and the money kept on this phone.
+  'catch.reading.explain':
+    'ใบเสร็จที่คุณแชร์หรือสแกนจะถูกอ่านบนโทรศัพท์เครื่องนี้ จุดคือใบที่คุณต้องแก้: ยอดเงินหรือชื่อร้าน',
+  'privacyPage.headline': 'ข้อมูลเงินของคุณอยู่บนโทรศัพท์เครื่องนี้ และเข้ารหัสไว้',
+  'privacyPage.keep': 'เก็บทั้งหมดไว้บนโทรศัพท์เครื่องนี้',
 };

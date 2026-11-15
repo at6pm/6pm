@@ -103,4 +103,9 @@ export const jaAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'widgetsGuide.home.step3':
     '「今日使えるお金」か「今日」を長押しして好きな場所へドラッグ。「今日使えるお金」は横に広げると「QRをスキャン」と「クイック追加」が付きます。',
   'capture.settings.widgetsValue': 'ホームとタイル',
+  // Settings pages: the receipts read and the money kept on this phone.
+  'catch.reading.explain':
+    '共有・スキャンしたレシートはこのスマホで読み取ります。点は、金額か店名を直したレシートの印です。',
+  'privacyPage.headline': 'お金のデータはこのスマホに、暗号化して保存されます。',
+  'privacyPage.keep': 'すべてこのスマホに残す',
 };

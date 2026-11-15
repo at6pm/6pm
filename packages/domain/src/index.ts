@@ -110,6 +110,7 @@ export * from './close/jar-moments';
 export * from './plan/jar-shelf';
 export * from './plan/plan-split';
 export * from './capture/capture-health';
+export * from './capture/way-heartbeats';
 export * from './import';
 export * from './contracts/import-map';
 export * from './share';

@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
 import type {
@@ -324,17 +325,23 @@ export function StretchBillsPanel({
   );
 }
 
-/** In hand: a dot a day at today's number, what it is for, and a way to put it in a jar. */
+/**
+ * In hand: a dot a day at today's number, what it is for, a card to share when there is one, and
+ * a way to put it in a jar.
+ */
 export function InHandPanel({
   days,
   fresh,
   text,
   onMove,
+  footer = null,
 }: {
   readonly days: number;
   readonly fresh: number;
   readonly text: string;
   readonly onMove: (() => void) | null;
+  /** Under the words: the fifth Friday's chip, the day it lands. */
+  readonly footer?: ReactNode;
 }) {
   const { palette } = useTheme();
   const { t } = useI18n();
@@ -357,6 +364,7 @@ export function InHandPanel({
         ))}
       </View>
       <Text style={{ ...body(13, 500), lineHeight: 18, color: palette.inkSoft }}>{text}</Text>
+      {footer === null ? null : <View style={{ alignItems: 'flex-start' }}>{footer}</View>}
       {onMove === null ? null : (
         <PanelLink icon="arrow_forward" label={t('income.inHand.move')} onPress={onMove} />
       )}

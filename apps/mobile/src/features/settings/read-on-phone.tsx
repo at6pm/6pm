@@ -13,18 +13,23 @@ import Animated, {
 
 import { receiptBankOf, type CaptureFix, type SpendRow } from '@6pm/domain';
 import { localeOf } from '@6pm/i18n';
-import { catchInk } from '@6pm/theme';
+import { catchInk, paperInk } from '@6pm/theme';
 
 import { readMonthReading, type MonthReading } from '../../data/first-catch';
 import { useMoney, useMoneyStore } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
+import { DashedRule } from '../../ui/dashed-rule';
 import { haptics } from '../../ui/haptics';
 import { Symbol } from '../../ui/icons/symbol';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading, mono } from '../../ui/type/fonts';
+import { TapeEdge } from '../capture-guide/capture-log-tape';
 
+/** Slips at full size, in one row, with the shop and the amount printed. */
+const FULL_SLIPS = 5;
+/** Past that, slips shrink to this many a row and keep the day alone. */
 const COLUMNS = 10;
 /** Slips print in one after another, 12 ms apart. */
 const PRINT_STAGGER_MS = 12;
@@ -61,11 +66,13 @@ export function useMonthReading(): MonthReading | null {
 }
 
 /**
- * Settings › Your data › "Read on this phone": this month's receipts as slips (shared or scanned,
- * by the day they arrived), how many were read right the first time, a dot on each one fixed by
- * hand (its amount or its shop; a category alone is not a miss), and for the picked one what was
- * read and what it was fixed to. The foot says honestly where reading happened: on the phone,
- * but for any photo sent once for the closer look. Counted on the phone; resets each month.
+ * Settings › Your data › "Read on this phone": this month's receipts as paper slips (shared or
+ * scanned, by the day they arrived), how many were read right the first time, a dot on each one
+ * fixed by hand (its amount or its shop; a category alone is not a miss), and for the picked one
+ * what was read and what it was fixed to. Up to five slips print the day, the shop and the amount;
+ * from six they shrink to ten a row with the day alone. With none yet, one ghost slip says how the
+ * count starts. The foot says honestly where reading happened: on the phone, but for any photo
+ * sent once for the closer look. Counted on the phone; resets each month.
  */
 export function ReadOnPhone() {
   const { palette } = useTheme();
@@ -85,8 +92,8 @@ export function ReadOnPhone() {
   // Vietnamese capitalises "Tháng 11" on its own, not inside a sentence ("biên lai tháng 11").
   const month = language === 'vi' ? named.toLocaleLowerCase('vi') : named;
   return (
-    <View style={{ gap: 16, paddingHorizontal: 2 }}>
-      <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 10 }}>
+    <View style={{ gap: 20 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 12, paddingHorizontal: 4 }}>
         <Text style={{ ...leading(display(64, 500, -0.03), 64, true), color: palette.ink }}>
           {accuracy.right}
           <Text style={{ fontSize: 29, opacity: 0.6 }}>{`/${accuracy.total}`}</Text>
@@ -96,9 +103,7 @@ export function ReadOnPhone() {
         </Text>
       </View>
       {receipts.length === 0 ? (
-        <Text style={{ ...body(14), lineHeight: 19.6, color: palette.inkSoft }}>
-          {t('catch.reading.empty')}
-        </Text>
+        <GhostSlip />
       ) : (
         <Slips
           receipts={receipts}
@@ -111,14 +116,45 @@ export function ReadOnPhone() {
         />
       )}
       {fix && receipt ? <FixCard key={fix.id} fix={fix} receipt={receipt} /> : null}
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+      {receipts.length === 0 ? null : (
+        <Text
+          style={{ ...body(13.5), lineHeight: 20.3, color: palette.inkSoft, paddingHorizontal: 4 }}
+        >
+          {t('catch.reading.explain')}
+        </Text>
+      )}
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, paddingHorizontal: 6 }}>
         <Symbol name="lock" size={15} color={palette.inkSoft} />
-        <Text style={{ ...body(12), color: palette.inkSoft, flex: 1 }}>
+        <Text style={{ ...body(12.5), color: palette.inkSoft, flex: 1 }}>
           {accuracy.looked > 0
             ? t('catch.reading.privateLooked', { count: accuracy.looked })
             : t('catch.reading.private')}
         </Text>
       </View>
+    </View>
+  );
+}
+
+/** No receipt yet this month: one dashed slip where the first will print, and how it starts. */
+function GhostSlip() {
+  const { palette } = useTheme();
+  const { t } = useI18n();
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14, paddingHorizontal: 2 }}>
+      <View
+        style={{
+          width: '18%',
+          height: 66,
+          borderTopLeftRadius: 3,
+          borderTopRightRadius: 3,
+          borderWidth: 1.2,
+          borderStyle: 'dashed',
+          borderColor: palette.inkSoft,
+        }}
+      />
+      <Text style={{ ...body(13.5), lineHeight: 18.9, color: palette.inkSoft, flex: 1 }}>
+        {t('catch.reading.ghost')}
+      </Text>
     </View>
   );
 }
@@ -134,22 +170,27 @@ function Slips({
   readonly chosen: string | null;
   readonly onPick: (id: string) => void;
 }) {
+  // Five slips at full size have room for the shop and the amount; past that, ten small ones.
+  const full = receipts.length <= FULL_SLIPS;
+  const columns = full ? FULL_SLIPS : COLUMNS;
   const rows: SpendRow[][] = [];
   receipts.forEach((r, k) => {
-    if (k % COLUMNS === 0) rows.push([]);
+    if (k % columns === 0) rows.push([]);
     rows[rows.length - 1]?.push(r);
   });
   return (
-    <View style={{ gap: 6 }}>
+    <View style={{ gap: full ? 0 : 8, paddingTop: 6, paddingHorizontal: 2 }}>
       {rows.map((row, r) => (
-        <View key={r} style={{ flexDirection: 'row', gap: 5 }}>
-          {Array.from({ length: COLUMNS }, (_, c) => {
+        <View key={r} style={{ flexDirection: 'row', alignItems: 'flex-end', gap: full ? 7 : 5 }}>
+          {Array.from({ length: columns }, (_, c) => {
             const receipt = row[c];
             return (
               <View key={c} style={{ flex: 1, minWidth: 0 }}>
                 {receipt ? (
                   <Slip
-                    index={r * COLUMNS + c}
+                    index={r * columns + c}
+                    receipt={receipt}
+                    full={full}
                     fixed={fixed.has(receipt.id)}
                     on={receipt.id === chosen}
                     onPick={() => onPick(receipt.id)}
@@ -166,16 +207,22 @@ function Slips({
 
 function Slip({
   index,
+  receipt,
+  full,
   fixed,
   on,
   onPick,
 }: {
   readonly index: number;
+  readonly receipt: SpendRow;
+  readonly full: boolean;
   readonly fixed: boolean;
   readonly on: boolean;
   readonly onPick: () => void;
 }) {
   const { palette } = useTheme();
+  const { language } = useI18n();
+  const money = useMoneyFormat();
   const reduceMotion = useReducedMotion();
   const raised = useSharedValue(on ? 1 : 0);
   useEffect(() => {
@@ -184,45 +231,67 @@ function Slip({
     );
   }, [on, raised, reduceMotion]);
   const lift = useAnimatedStyle(() => ({
-    transform: [{ translateY: -4 * raised.get() }, { rotate: `${-3 * raised.get()}deg` }],
+    transform: [{ translateY: -5 * raised.get() }, { rotate: `${-3 * raised.get()}deg` }],
   }));
-  const lines = [
-    { width: '80%', color: catchInk.mark },
-    { width: '55%', color: catchInk.markSoft },
-    { width: '70%', color: catchInk.markSoft },
-  ] as const;
+  const locale = localeOf(language);
+  const date = new Date(`${receipt.day}T12:00:00`);
+  const weekday = new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(date);
+  const day = `${weekday} ${date.getDate()}`.toLocaleUpperCase(locale);
   return (
     <Animated.View entering={slipFill(index, reduceMotion)} style={{ transformOrigin: '50% 100%' }}>
       <PressScale
         disabled={!fixed}
         accessibilityRole={fixed ? 'button' : 'image'}
+        accessibilityLabel={full ? `${day} ${receipt.merchant}` : day}
         onPress={onPick}
         scaleTo={0.94}
       >
-        <Animated.View
-          style={[
-            {
-              height: 42,
-              paddingVertical: 5,
-              paddingHorizontal: 4,
+        <Animated.View style={lift}>
+          <View
+            style={{
+              paddingTop: 7,
+              paddingHorizontal: full ? 6 : 3,
+              paddingBottom: 5,
               borderTopLeftRadius: 3,
               borderTopRightRadius: 3,
-              backgroundColor: catchInk.paperBottom,
+              backgroundColor: paperInk.sheet,
               boxShadow: on ? `0 0 0 2px ${palette.accent}` : 'none',
               gap: 3,
-            },
-            lift,
-          ]}
-        >
-          {lines.map((line, k) => (
-            <View key={k} style={{ height: 2, width: line.width, backgroundColor: line.color }} />
-          ))}
+            }}
+          >
+            <Text numberOfLines={1} style={{ ...mono(8, 500, 0.1), color: catchInk.tapeSoft }}>
+              {day}
+            </Text>
+            {full ? (
+              <>
+                <Text
+                  numberOfLines={2}
+                  style={{ ...body(10.5, 700), lineHeight: 12.1, height: 24, color: paperInk.ink }}
+                >
+                  {receipt.merchant}
+                </Text>
+                <DashedRule color={catchInk.tapeRule} />
+                <Text
+                  numberOfLines={1}
+                  style={{
+                    ...mono(9.5, 600),
+                    color: paperInk.ink,
+                    textAlign: 'right',
+                    fontVariant: ['tabular-nums'],
+                  }}
+                >
+                  {money.number(receipt.amount)}
+                </Text>
+              </>
+            ) : null}
+          </View>
+          <TapeEdge foot depth={6} />
           {fixed ? (
             <View
               style={{
                 position: 'absolute',
-                right: -3,
-                top: -3,
+                right: -4,
+                top: -4,
                 width: 12,
                 height: 12,
                 borderRadius: 6,

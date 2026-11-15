@@ -32,6 +32,7 @@ import { koScan } from './scan';
 import { koShareExt } from './share-ext';
 import { koSharing } from './sharing';
 import { koShareCards } from './share-cards';
+import { koShareCardsIncome } from './share-cards-income';
 import { koSurfaces } from './surfaces';
 import { koWidgets } from './widgets';
 import { koToday } from './today';
@@ -42,6 +43,7 @@ import { koWidgetsGuide } from './widgets-guide';
 import { koYearBook } from './year-book';
 import { koFirstCatch } from './first-catch';
 import { koCaptureLog } from './capture-log';
+import { koSettingsPages } from './settings-pages';
 import { koPhoto } from './photo';
 import { koMoneyReaches } from './money-reaches';
 import { koIncome } from './income';
@@ -81,6 +83,7 @@ export const ko: Catalogue = {
   ...koNative,
   ...koSharing,
   ...koShareCards,
+  ...koShareCardsIncome,
   ...koShareExt,
   ...koIntents,
   ...koCaptureWalk,
@@ -101,6 +104,7 @@ export const ko: Catalogue = {
   ...koPots,
   ...koFirstCatch,
   ...koCaptureLog,
+  ...koSettingsPages,
   ...koPhoto,
   ...koMoneyReaches,
   ...koIncome,

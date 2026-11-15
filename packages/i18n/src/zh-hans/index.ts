@@ -32,6 +32,7 @@ import { zhHansScan } from './scan';
 import { zhHansShareExt } from './share-ext';
 import { zhHansSharing } from './sharing';
 import { zhHansShareCards } from './share-cards';
+import { zhHansShareCardsIncome } from './share-cards-income';
 import { zhHansSurfaces } from './surfaces';
 import { zhHansWidgets } from './widgets';
 import { zhHansToday } from './today';
@@ -42,6 +43,7 @@ import { zhHansWidgetsGuide } from './widgets-guide';
 import { zhHansYearBook } from './year-book';
 import { zhHansFirstCatch } from './first-catch';
 import { zhHansCaptureLog } from './capture-log';
+import { zhHansSettingsPages } from './settings-pages';
 import { zhHansPhoto } from './photo';
 import { zhHansMoneyReaches } from './money-reaches';
 import { zhHansIncome } from './income';
@@ -81,6 +83,7 @@ export const zhHans: Catalogue = {
   ...zhHansNative,
   ...zhHansSharing,
   ...zhHansShareCards,
+  ...zhHansShareCardsIncome,
   ...zhHansShareExt,
   ...zhHansIntents,
   ...zhHansCaptureWalk,
@@ -101,6 +104,7 @@ export const zhHans: Catalogue = {
   ...zhHansPots,
   ...zhHansFirstCatch,
   ...zhHansCaptureLog,
+  ...zhHansSettingsPages,
   ...zhHansPhoto,
   ...zhHansMoneyReaches,
   ...zhHansIncome,

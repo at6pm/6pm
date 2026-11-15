@@ -9,7 +9,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { WORK_YEAR_LINE, yearLine, type WorkYear } from '@6pm/domain';
+import { WORK_YEAR_LINE, workYearMoment, yearLine, type WorkYear } from '@6pm/domain';
 import { localeOf } from '@6pm/i18n';
 import { requestInk } from '@6pm/theme';
 
@@ -23,6 +23,7 @@ import { SheetScreen } from '../../ui/navigation/sheet-screen';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, mono, tabular } from '../../ui/type/fonts';
+import { OfferedChip } from '../sharing/offered-chip';
 import { useWorkYear } from './use-work-year';
 
 const BAR_HEIGHT = 70;
@@ -231,12 +232,25 @@ export function WorkYearPage() {
   const { year, work, read } = useWorkYear();
   const month = Number(snap.today.slice(5, 7)) - 1;
   const inDong = money.currency.code === 'VND';
+  // From 1 December the year is offered as a card, beside the list for whoever files (once).
+  const moment = read && work.billed > 0 ? workYearMoment(snap.today) : null;
   return (
     <SheetScreen
       title={t('workYear.title', { year })}
       gap={16}
       footer={
-        <View style={{ paddingHorizontal: 16, paddingTop: 10, paddingBottom: 8 }}>
+        <View style={{ paddingHorizontal: 16, paddingTop: 10, paddingBottom: 8, gap: 10 }}>
+          {moment ? (
+            <View style={{ alignItems: 'center' }}>
+              <OfferedChip
+                moments={[moment]}
+                card="workYear"
+                of={String(year)}
+                size="small"
+                label={t('shareCards.chip')}
+              />
+            </View>
+          ) : null}
           <PressScale
             scaleTo={0.97}
             accessibilityRole="button"

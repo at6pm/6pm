@@ -1,4 +1,5 @@
 import { byIndex, glow, PAPER, rule, type ShareInks } from './share-inks-types';
+import { workCardInks } from './share-inks-work';
 
 /** The classic looks and the living scenes, as "Postcards in Looks" draws each one. */
 
@@ -64,6 +65,7 @@ export const lacquer: ShareInks = {
   jarShape: { lid: '2px', body: '6px 6px 8px 8px', lidGlow: 'none' },
   shelf: null,
   receipt: { ...PAPER, best: 'rgba(226,184,99,.3)' },
+  work: workCardInks.lacquer,
 };
 
 export const glaze: ShareInks = {
@@ -119,6 +121,7 @@ export const glaze: ShareInks = {
   jarShape: { lid: '50%', body: '45% 45% 40% 40% / 30% 30% 40% 40%', lidGlow: 'none' },
   shelf: null,
   receipt: { ...PAPER, best: 'rgba(31,64,156,.16)' },
+  work: workCardInks.glaze,
 };
 
 export const riso: ShareInks = {
@@ -174,6 +177,7 @@ export const riso: ShareInks = {
   jarShape: { lid: '1px', body: '8px 8px 10px 10px', lidGlow: 'none' },
   shelf: null,
   receipt: { ...PAPER, best: 'rgba(255,79,168,.2)' },
+  work: workCardInks.riso,
 };
 
 const NEON_PINK =
@@ -229,6 +233,7 @@ export const neon: ShareInks = {
   jarShape: { lid: '99px', body: '14px 14px 16px 16px', lidGlow: '0 0 8px #46e3ea' },
   shelf: null,
   receipt: { ...PAPER, best: 'rgba(70,227,234,.22)' },
+  work: workCardInks.neon,
 };
 
 const MONSOON_FROM = ['#2c3c44', '#344a52', '#2a3a40', '#3b5058', '#26343b', '#30444b', '#1f2b31'];
@@ -284,6 +289,7 @@ export const monsoon: ShareInks = {
   jarShape: { lid: '3px', body: '12px 12px 14px 14px', lidGlow: 'none' },
   shelf: null,
   receipt: { ...PAPER, best: 'rgba(143,214,200,.3)' },
+  work: workCardInks.monsoon,
 };
 
 const BEAN = 'linear-gradient(104deg, transparent 45%, #2a170d 47% 53%, transparent 55%)';
@@ -339,6 +345,7 @@ export const cafe: ShareInks = {
   jarShape: { lid: '2px', body: '6px 6px 4px 4px', lidGlow: 'none' },
   shelf: null,
   receipt: { ...PAPER, best: 'rgba(138,84,38,.2)' },
+  work: workCardInks.cafe,
 };
 
 export const expo: ShareInks = {
@@ -391,6 +398,7 @@ export const expo: ShareInks = {
   jarShape: { lid: '1px', body: '6px 6px 8px 8px', lidGlow: '0 0 6px #ffb347' },
   shelf: null,
   receipt: { ...PAPER, best: 'rgba(255,179,71,.25)' },
+  work: workCardInks.expo,
 };
 
 const PAPER_HILL_SUN = [40, 58, 46, 62, 50, 42, 56];
@@ -462,6 +470,7 @@ export const paper: ShareInks = {
   jarShape: { lid: '4px', body: '14px 14px 16px 16px', lidGlow: '0 2px 0 0 #8a7a60' },
   shelf: null,
   receipt: { ...PAPER, best: 'rgba(127,178,90,.25)' },
+  work: workCardInks.paper,
 };
 
 const LANTERN_RIPPLE = [
@@ -524,4 +533,5 @@ export const lantern: ShareInks = {
   jarShape: { lid: '3px', body: '42% / 50%', lidGlow: '0 0 6px #ffc23a' },
   shelf: null,
   receipt: { ...PAPER, best: 'rgba(232,69,44,.2)' },
+  work: workCardInks.lantern,
 };

@@ -6,6 +6,8 @@
  * 360 pt card (the canvas's 1080 px image at a third).
  */
 
+import type { CardWorkInks } from './share-inks-work';
+
 /** A line across the card: the rule above the places and the mark, the horizon on the streak. */
 export interface CardRule {
   readonly width: number;
@@ -120,6 +122,8 @@ export interface ShareInks {
     readonly rule: string;
     readonly best: string;
   };
+  /** The cards for money that is not one salary: the ruler, pays, work's bars, the receipt. */
+  readonly work: CardWorkInks;
 }
 
 export const PAPER = {

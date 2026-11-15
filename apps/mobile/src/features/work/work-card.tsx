@@ -1,4 +1,4 @@
-import { useRouter, type Href } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useEffect, useMemo } from 'react';
 import { Text, View } from 'react-native';
 import Animated, {
@@ -9,7 +9,14 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { cycleMonth, diffDays, owedByPerson, workOwed, type OwedPerson } from '@6pm/domain';
+import {
+  cycleMonth,
+  diffDays,
+  owedByPerson,
+  shopMonthMoment,
+  workOwed,
+  type OwedPerson,
+} from '@6pm/domain';
 import { workInk } from '@6pm/theme';
 
 import { useMoney } from '../../data/money-provider';
@@ -28,6 +35,7 @@ import { useOwed } from '../owed/use-owed';
 import { ordinalDay } from '../onboarding/step-parts';
 import { Hatch } from '../plan/hatch';
 import { usePlanFormat } from '../plan/plan-format';
+import { OfferedChip } from '../sharing/offered-chip';
 import { requestWorkDiary } from './work-diary-request';
 
 /** The bar grows on each close: 500 ms. */
@@ -76,6 +84,18 @@ export function WorkCard() {
     );
   }, [shown, month?.in, month?.out]);
   const bar = useAnimatedStyle(() => ({ transform: [{ scaleX: shown.get() }] }));
+  // A seller's month whose last day is closed: My shop's month is offered, that evening (once).
+  const shopMonth = useMemo(
+    () =>
+      shop && snap.plan
+        ? shopMonthMoment({
+            today: snap.today,
+            anchor: snap.plan.payday,
+            closed: new Set(snap.closedDays.map((d) => d.day)),
+          })
+        : null,
+    [shop, snap.plan, snap.today, snap.closedDays],
+  );
   if (month === null) return null;
 
   const ink = palette.dark ? workInk.onDark : workInk.paper;
@@ -85,7 +105,7 @@ export function WorkCard() {
   const figure = { ...display(28, 500, -0.02), ...tabular, lineHeight: 30 } as const;
   const ask = (person: OwedPerson) => {
     haptics.tap();
-    router.push({ pathname: '/owed', params: { ask: person.key } } as unknown as Href);
+    router.push({ pathname: '/owed', params: { ask: person.key } });
   };
   const openDiary = () => {
     haptics.tick();
@@ -176,6 +196,17 @@ export function WorkCard() {
           <Text style={{ ...body(13, 600), color: palette.inkSoft }}>
             {t('work.card.owed', { amount: money.short(owedToYou) })}
           </Text>
+        ) : null}
+        {shopMonth ? (
+          <View style={{ alignItems: 'flex-start' }}>
+            <OfferedChip
+              moments={[`shop:${shopMonth.from}`]}
+              card="shop"
+              of={shopMonth.from}
+              size="small"
+              label={t('shareCards.chip')}
+            />
+          </View>
         ) : null}
       </View>
       <Text

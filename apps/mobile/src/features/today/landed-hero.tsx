@@ -8,6 +8,7 @@ import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { Symbol } from '../../ui/icons/symbol';
 import { useTheme } from '../../ui/theme/theme';
+import { OfferedChip } from '../sharing/offered-chip';
 import { body, display, leading, tabular } from '../../ui/type/fonts';
 import type { CoverRuler } from '../plan/income-plan-view';
 
@@ -86,13 +87,18 @@ const closeUp = LinearTransition.duration(300).reduceMotion(ReduceMotion.System)
 /**
  * The line under the meter for money that only lands: "Covered 47 days · to Thu 24 Dec" over a
  * ruler of a tick a day, in ink to the day the money lasts to and in the in-hand lavender after.
+ * The evening a landing is placed, and when the days first pass 30, Days covered is offered beside
+ * the line (once each), in the line's own room.
  */
 export function CoverRulerLine({
   today,
   ruler,
+  offer = [],
 }: {
   readonly today: LocalDate;
   readonly ruler: CoverRuler;
+  /** The moments Days covered is offered at (`coveredMoments`). */
+  readonly offer?: readonly string[];
 }) {
   const { palette } = useTheme();
   const { t, weekdayDayShort } = useI18n();
@@ -116,12 +122,24 @@ export function CoverRulerLine({
           />
         ))}
       </View>
-      <Text style={{ ...body(13, 500), color: palette.inkSoft }}>
-        <Text style={{ ...body(13, 700), color: palette.ink }}>
-          {t('income.today.covered', { count: ruler.covered })}
+      <View>
+        <Text style={{ ...body(13, 500), color: palette.inkSoft }}>
+          <Text style={{ ...body(13, 700), color: palette.ink }}>
+            {t('income.today.covered', { count: ruler.covered })}
+          </Text>
+          {t('income.today.coveredTo', { date: weekdayDayShort(dateOf(ruler.to)) })}
         </Text>
-        {t('income.today.coveredTo', { date: weekdayDayShort(dateOf(ruler.to)) })}
-      </Text>
+        {/* Centred on the line, over the hero's room: the hero keeps its height. */}
+        <View style={{ position: 'absolute', right: 0, top: -6 }}>
+          <OfferedChip
+            moments={offer}
+            card="covered"
+            of={today}
+            size="small"
+            label={t('shareCards.chip')}
+          />
+        </View>
+      </View>
     </View>
   );
 }

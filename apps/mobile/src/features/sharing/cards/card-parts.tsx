@@ -14,6 +14,7 @@ import { encodeQR } from '@6pm/domain';
 import type { CardGlow, CardRule, ShareInks } from '@6pm/theme';
 
 import { Companion } from '../../../ui/companion/companion';
+import type { CompanionMood } from '../../../ui/companion/companion-mood';
 import { body, display, leading, mono } from '../../../ui/type/fonts';
 import { CardArt } from './card-art';
 
@@ -247,10 +248,18 @@ export function CardMark({
  * The companion and its line in a bubble of the card's ink, as the month card's foot. Never in
  * serious mode.
  */
-export function CardCompanion({ line, inks }: { readonly line: string; readonly inks: ShareInks }) {
+export function CardCompanion({
+  line,
+  inks,
+  mood = 'happy',
+}: {
+  readonly line: string;
+  readonly inks: ShareInks;
+  readonly mood?: CompanionMood;
+}) {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 4 }}>
-      <Companion size={46} mood="happy" />
+      <Companion size={46} mood={mood} />
       <View
         style={{
           flexShrink: 1,

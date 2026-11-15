@@ -31,6 +31,11 @@ export const sameInBothLanguages: readonly string[] = [
   'Tết',
   'Lì xì',
   '= {amount}',
+  // A card's head and kicker put two of its own phrases side by side.
+  '{landed} {covered}',
+  '{month} · {shop}',
+  // Vietnamese freelancers say "job" (the work year's "38 job, 9 khách").
+  '{count} job',
   'Vietcombank',
   'MoMo',
   'Venmo',

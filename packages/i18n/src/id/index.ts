@@ -32,6 +32,7 @@ import { idScan } from './scan';
 import { idShareExt } from './share-ext';
 import { idSharing } from './sharing';
 import { idShareCards } from './share-cards';
+import { idShareCardsIncome } from './share-cards-income';
 import { idSurfaces } from './surfaces';
 import { idWidgets } from './widgets';
 import { idToday } from './today';
@@ -42,6 +43,7 @@ import { idWidgetsGuide } from './widgets-guide';
 import { idYearBook } from './year-book';
 import { idFirstCatch } from './first-catch';
 import { idCaptureLog } from './capture-log';
+import { idSettingsPages } from './settings-pages';
 import { idPhoto } from './photo';
 import { idMoneyReaches } from './money-reaches';
 import { idIncome } from './income';
@@ -81,6 +83,7 @@ export const id: Catalogue = {
   ...idNative,
   ...idSharing,
   ...idShareCards,
+  ...idShareCardsIncome,
   ...idShareExt,
   ...idIntents,
   ...idCaptureWalk,
@@ -101,6 +104,7 @@ export const id: Catalogue = {
   ...idPots,
   ...idFirstCatch,
   ...idCaptureLog,
+  ...idSettingsPages,
   ...idPhoto,
   ...idMoneyReaches,
   ...idIncome,

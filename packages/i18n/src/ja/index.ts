@@ -32,6 +32,7 @@ import { jaScan } from './scan';
 import { jaShareExt } from './share-ext';
 import { jaSharing } from './sharing';
 import { jaShareCards } from './share-cards';
+import { jaShareCardsIncome } from './share-cards-income';
 import { jaSurfaces } from './surfaces';
 import { jaWidgets } from './widgets';
 import { jaToday } from './today';
@@ -42,6 +43,7 @@ import { jaWidgetsGuide } from './widgets-guide';
 import { jaYearBook } from './year-book';
 import { jaFirstCatch } from './first-catch';
 import { jaCaptureLog } from './capture-log';
+import { jaSettingsPages } from './settings-pages';
 import { jaPhoto } from './photo';
 import { jaMoneyReaches } from './money-reaches';
 import { jaIncome } from './income';
@@ -81,6 +83,7 @@ export const ja: Catalogue = {
   ...jaNative,
   ...jaSharing,
   ...jaShareCards,
+  ...jaShareCardsIncome,
   ...jaShareExt,
   ...jaIntents,
   ...jaCaptureWalk,
@@ -101,6 +104,7 @@ export const ja: Catalogue = {
   ...jaPots,
   ...jaFirstCatch,
   ...jaCaptureLog,
+  ...jaSettingsPages,
   ...jaPhoto,
   ...jaMoneyReaches,
   ...jaIncome,

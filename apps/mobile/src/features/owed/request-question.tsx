@@ -27,6 +27,7 @@ import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading, mono } from '../../ui/type/fonts';
 import { WordFitText } from '../../ui/type/word-fit-text';
+import { ShareChip } from '../sharing/share-chip';
 import { Avatar, PaidStamp, Slip } from './owed-parts';
 import { stampIn } from './owed-motion';
 import { CodeChip } from './request-parts';
@@ -147,18 +148,22 @@ function Buttons({
  * 7d, the code finds its strip: no question to ask. The strip is stamped paid as the card rises
  * (the PAID stamp's curve, a success haptic), its code and when it was asked printed on it, and the
  * card says what the money becomes: into the days, with the days it adds when the day is at its
- * cap, or a seller's takings. "Keep it" settles it; "Not this one" lifts the stamp and the money
- * is an ordinary card.
+ * cap, or a seller's takings. "Keep it" settles it, and offers a thank-you to send back (the
+ * Paid, thank you card) before Done moves on; "Not this one" lifts the stamp and the money is an
+ * ordinary card.
  */
 function CodeMatch({
   spend,
   row,
   heldBack,
+  onKeep,
   onAnswer,
 }: {
   readonly spend: SpendRow;
   readonly row: OwedRow;
   readonly heldBack: number;
+  /** Settles the match; the card stays for the thank-you. */
+  readonly onKeep: () => void;
   readonly onAnswer: (yes: boolean) => void;
 }) {
   const { palette } = useTheme();
@@ -173,6 +178,7 @@ function CodeMatch({
   // A seller's work money is takings; anyone else's lands in their days, adding days at the cap.
   const takings = work && workLandingOf(snap) === null;
   const [adds] = useState(() => (takings ? null : landingDaysOf(snap, spend.amount)));
+  const [kept, setKept] = useState(false);
   return (
     <Animated.View entering={FadeInDown.duration(450)} style={{ flex: 1, gap: 18, paddingTop: 56 }}>
       <WordFitText style={{ ...leading(display(40, 500, -0.01), 42), color: palette.ink }}>
@@ -237,7 +243,43 @@ function CodeMatch({
         </Text>
       </View>
       <View style={{ flex: 1 }} />
-      <Buttons yes={t('request.close.keep')} no={t('request.close.notThis')} onAnswer={onAnswer} />
+      {kept ? (
+        <>
+          {/* The thank-you stands where "Keep it" was, in the room of the two buttons. */}
+          <View style={{ height: 56, alignItems: 'center', justifyContent: 'center' }}>
+            <ShareChip card="thanks" of={row.id} label={t('shareCards.chipThanks')} delay={0} />
+          </View>
+          <Animated.View entering={FadeIn.duration(250)}>
+            <PressScale
+              scaleTo={0.97}
+              accessibilityRole="button"
+              onPress={() => onAnswer(true)}
+              style={{
+                height: 56,
+                borderRadius: 99,
+                backgroundColor: palette.btnBg,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Text style={{ ...body(17, 650), color: palette.btnFg }}>{t('common.done')}</Text>
+            </PressScale>
+          </Animated.View>
+        </>
+      ) : (
+        <Buttons
+          yes={t('request.close.keep')}
+          no={t('request.close.notThis')}
+          onAnswer={(yes) => {
+            if (!yes) {
+              onAnswer(false);
+              return;
+            }
+            onKeep();
+            setKept(true);
+          }}
+        />
+      )}
     </Animated.View>
   );
 }
@@ -468,6 +510,8 @@ export function RequestQuestionStep({
   const store = useMoneyStore();
   const settle = useSettleCandidate();
   const answered = useRef(false);
+  // "Keep it" settles the match once; Done then answers the card.
+  const kept = useRef(false);
   const once = (task: () => void) => {
     if (answered.current) return;
     answered.current = true;
@@ -489,15 +533,16 @@ export function RequestQuestionStep({
         spend={spend}
         row={row}
         heldBack={ask.heldBack}
+        onKeep={() => {
+          if (kept.current) return;
+          kept.current = true;
+          haptics.tap();
+          void run(() => requestActions(store).match(spend.id, row.id, ask.heldBack));
+        }}
         onAnswer={(yes) =>
           once(() => {
             haptics.tap();
-            if (!yes) {
-              onAnswer(false);
-              return;
-            }
-            void run(() => requestActions(store).match(spend.id, row.id, ask.heldBack));
-            onAnswer(true);
+            onAnswer(yes);
           })
         }
       />

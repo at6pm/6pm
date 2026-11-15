@@ -3,6 +3,7 @@ import { enCaptureWalk } from './en-capture-walk';
 import { enNative } from './en-native';
 import { enSharing } from './en-sharing';
 import { enShareCards } from './en-share-cards';
+import { enShareCardsIncome } from './en-share-cards-income';
 import { enShareExt } from './en-share-ext';
 import { enIntents } from './en-intents';
 import { enVoice } from './en-voice';
@@ -41,6 +42,7 @@ import { enPotsPlan } from './en-pots-plan';
 import { enPots } from './en-pots';
 import { enFirstCatch } from './en-first-catch';
 import { enCaptureLog } from './en-capture-log';
+import { enSettingsPages } from './en-settings-pages';
 import { enPhoto } from './en-photo';
 import { enMoneyReaches } from './en-money-reaches';
 import { enIncome } from './en-income';
@@ -77,6 +79,7 @@ export const en = {
   ...enNative,
   ...enSharing,
   ...enShareCards,
+  ...enShareCardsIncome,
   ...enShareExt,
   ...enIntents,
   ...enCaptureWalk,
@@ -97,6 +100,7 @@ export const en = {
   ...enPots,
   ...enFirstCatch,
   ...enCaptureLog,
+  ...enSettingsPages,
   ...enPhoto,
   ...enMoneyReaches,
   ...enIncome,

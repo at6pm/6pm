@@ -110,4 +110,9 @@ export const esAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'widgetsGuide.home.step3':
     'Mantén pulsado Puedes gastar hoy o Hoy y arrástralo a su sitio. Ensancha Puedes gastar hoy para tener Escanear QR y Añadir rápido.',
   'capture.settings.widgetsValue': 'Inicio y recuadros',
+  // Settings pages: the receipts read and the money kept on this phone.
+  'catch.reading.explain':
+    'Este móvil lee los recibos que compartes o escaneas. Un punto marca el que tuviste que corregir: el importe o la tienda.',
+  'privacyPage.headline': 'Tu dinero se queda en este móvil, cifrado.',
+  'privacyPage.keep': 'Guardarlo todo en este móvil',
 };

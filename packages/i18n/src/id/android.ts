@@ -101,4 +101,9 @@ export const idAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'widgetsGuide.home.step3':
     'Tahan Aman hari ini atau Hari ini lalu seret ke tempatnya. Lebarkan Aman hari ini untuk mendapat Pindai QR dan Tambah cepat.',
   'capture.settings.widgetsValue': 'Layar & kartu',
+  // Settings pages: the receipts read and the money kept on this phone.
+  'catch.reading.explain':
+    'Struk yang kamu bagikan atau pindai dibaca oleh ponsel ini. Titik menandai struk yang harus kamu perbaiki: jumlah atau nama tokonya.',
+  'privacyPage.headline': 'Uangmu tetap di ponsel ini, terenkripsi.',
+  'privacyPage.keep': 'Simpan semuanya di ponsel ini',
 };

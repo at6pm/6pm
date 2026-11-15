@@ -16,6 +16,7 @@ import { reloadNotificationSettings } from '../features/reminders/notification-p
 import { useReminderPermission } from '../features/reminders/reminder-permission';
 import { BackupRow } from '../features/backup/backup-row';
 import { AiSettingsRow } from '../features/privacy/ai-settings-row';
+import { useAiMode } from '../features/privacy/use-ai-mode';
 import { CaptureSettingsSection } from '../features/capture-guide/capture-settings-section';
 import { useDeleteBackup } from '../features/backup/use-backup';
 import { ExportRow } from '../features/export/export-row';
@@ -33,7 +34,7 @@ import { SettingsBanksRow } from '../features/settings/settings-banks-row';
 import { ReceivingAccountRow } from '../features/owed/receiving-account-row';
 import { useCloseTimeDraft } from '../features/settings/use-close-time-draft';
 import { nativeReach } from '../features/surfaces/native-reach';
-import { TravelRow } from '../features/travel/travel-row';
+import { TravelSettingsRow } from '../features/travel/travel-row';
 import { useI18n } from '../i18n/i18n';
 import { haptics } from '../ui/haptics';
 import { SheetScreen } from '../ui/navigation/sheet-screen';
@@ -59,12 +60,12 @@ export default function Settings() {
   const deleteBackup = useDeleteBackup();
   const member = usePurchases().customer.max.active;
   const plan = snap.plan ?? DEFAULT_PLAN;
-  const [privacyOpen, setPrivacyOpen] = useState(false);
   const [armed, setArmed] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [pickingClose, setPickingClose] = useState(false);
   const reminders = useReminderPermission();
   const reading = useMonthReading();
+  const aiMode = useAiMode();
   // The wheels move the time at once; the plan (and the reminder that follows it) is saved when they rest.
   const close = useCloseTimeDraft(plan.closeAt, (closeAt) => void actions.updatePlan({ closeAt }));
   const disarm = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -196,7 +197,7 @@ export default function Settings() {
             }}
           />
         ) : null}
-        <TravelRow />
+        <TravelSettingsRow />
       </SettingsSection>
 
       <View style={{ gap: 8 }}>
@@ -209,7 +210,10 @@ export default function Settings() {
             label={t('catch.reading.title')}
             value={
               reading && reading.accuracy.total > 0
-                ? `${reading.accuracy.right}/${reading.accuracy.total}`
+                ? t('catch.reading.of', {
+                    right: reading.accuracy.right,
+                    total: reading.accuracy.total,
+                  })
                 : t('catch.reading.none')
             }
             onPress={() => {
@@ -220,27 +224,12 @@ export default function Settings() {
           <SettingRow
             icon="lock"
             label={t('settings.privacy')}
-            value={t('settings.privacyValue')}
+            value={aiMode === 'device' ? t('settings.privacy.all') : t('settings.privacy.mostly')}
             onPress={() => {
               haptics.tick();
-              setPrivacyOpen((open) => !open);
+              router.push('/privacy');
             }}
           />
-          {privacyOpen ? (
-            <Animated.Text
-              entering={FadeIn.duration(250)}
-              style={{
-                ...body(13.5),
-                lineHeight: 19.6,
-                color: palette.inkSoft,
-                paddingLeft: 58,
-                paddingRight: 16,
-                paddingBottom: 14,
-              }}
-            >
-              {t('settings.privacyBody')}
-            </Animated.Text>
-          ) : null}
           <ExportRow />
         </SettingsSection>
         <PressScale

@@ -15,6 +15,8 @@ export interface CardLayoutProps<D> {
   readonly serious: boolean;
   /** Drawn at rest, with no entrance: the copy fading out as the format changes. */
   readonly still?: boolean;
+  /** Turns Show amounts on or off from the card itself (a tap on the amount that is shown). */
+  readonly onAmounts?: (shown: boolean) => void;
 }
 
 /**
@@ -32,6 +34,11 @@ export interface ShareCardDefinition<D> {
   readonly useData: (of: string | undefined) => D | null;
   /** Whether the card prints an amount, so the sheet offers Show amounts. */
   readonly hasAmounts: (data: D) => boolean;
+  /**
+   * Show amounts starts on: a card both people already know the amount of (the thank-you to a
+   * client). Every other card starts with its amounts under ink.
+   */
+  readonly amountsShown?: boolean;
   /**
    * How long the card takes to draw itself in once it appears (the streak's bands), so the image
    * is never taken half drawn; none when it is there on its first frame.

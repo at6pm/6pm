@@ -94,4 +94,9 @@ export const viAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'widgetsGuide.home.step3':
     'Giữ Hôm nay tiêu được hoặc Hôm nay rồi kéo vào chỗ. Kéo rộng Hôm nay tiêu được là có thêm Quét QR và Thêm nhanh.',
   'capture.settings.widgetsValue': 'Màn hình & ô nhanh',
+  // Settings pages: the receipts read and the money kept on this phone.
+  'catch.reading.explain':
+    'Biên lai bạn chia sẻ hay quét được đọc ngay trên máy này. Dấu chấm đánh dấu tờ bạn phải sửa: số tiền hoặc tên quán.',
+  'privacyPage.headline': 'Tiền của bạn ở lại trên máy này, được mã hoá.',
+  'privacyPage.keep': 'Giữ tất cả trên máy này',
 };

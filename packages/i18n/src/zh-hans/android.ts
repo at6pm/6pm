@@ -88,4 +88,8 @@ export const zhHansAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } 
   'widgetsGuide.home.step3':
     '长按“今天可以花”或“今天”，拖到想放的位置。把“今天可以花”拉宽，就会多出扫码和快速记账。',
   'capture.settings.widgetsValue': '主屏幕和图块',
+  // Settings pages: the receipts read and the money kept on this phone.
+  'catch.reading.explain': '你分享或扫描的收据由这台手机读取。圆点标出你改过的那张：金额或商家。',
+  'privacyPage.headline': '你的钱留在这台手机上，已加密。',
+  'privacyPage.keep': '全部留在这台手机上',
 };

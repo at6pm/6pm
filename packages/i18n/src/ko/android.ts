@@ -93,4 +93,9 @@ export const koAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'widgetsGuide.home.step3':
     '오늘 쓸 수 있는 돈이나 오늘을 길게 눌러 원하는 곳에 놓으세요. 오늘 쓸 수 있는 돈을 넓히면 QR 스캔과 빠른 추가가 생겨요.',
   'capture.settings.widgetsValue': '홈 & 타일',
+  // Settings pages: the receipts read and the money kept on this phone.
+  'catch.reading.explain':
+    '공유하거나 스캔한 영수증은 이 휴대폰에서 읽어요. 점은 직접 고친 영수증 표시예요: 금액이나 가게 이름.',
+  'privacyPage.headline': '돈 기록은 이 휴대폰에 암호화되어 남아요.',
+  'privacyPage.keep': '전부 이 휴대폰에 두기',
 };

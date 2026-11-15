@@ -32,6 +32,7 @@ import { frScan } from './scan';
 import { frShareExt } from './share-ext';
 import { frSharing } from './sharing';
 import { frShareCards } from './share-cards';
+import { frShareCardsIncome } from './share-cards-income';
 import { frSurfaces } from './surfaces';
 import { frWidgets } from './widgets';
 import { frToday } from './today';
@@ -42,6 +43,7 @@ import { frWidgetsGuide } from './widgets-guide';
 import { frYearBook } from './year-book';
 import { frFirstCatch } from './first-catch';
 import { frCaptureLog } from './capture-log';
+import { frSettingsPages } from './settings-pages';
 import { frPhoto } from './photo';
 import { frMoneyReaches } from './money-reaches';
 import { frIncome } from './income';
@@ -81,6 +83,7 @@ export const fr: Catalogue = {
   ...frNative,
   ...frSharing,
   ...frShareCards,
+  ...frShareCardsIncome,
   ...frShareExt,
   ...frIntents,
   ...frCaptureWalk,
@@ -101,6 +104,7 @@ export const fr: Catalogue = {
   ...frPots,
   ...frFirstCatch,
   ...frCaptureLog,
+  ...frSettingsPages,
   ...frPhoto,
   ...frMoneyReaches,
   ...frIncome,

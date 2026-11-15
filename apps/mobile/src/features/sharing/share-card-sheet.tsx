@@ -43,8 +43,9 @@ const FORMATS: readonly CardFormat[] = ['story', 'feed'];
 
 /**
  * A card's preview before it is shared: the card in the person's look, Story or Post, and the
- * Show amounts switch, off every time the sheet opens. Share image draws the 1080 px image on the
- * phone and opens the system share sheet.
+ * Show amounts switch, off every time the sheet opens (on for a card both people know the amount
+ * of; a tap on that amount inks it). Share image draws the 1080 px image on the phone and opens
+ * the system share sheet.
  */
 export function ShareCardSheet() {
   const params = useLocalSearchParams<{
@@ -86,7 +87,7 @@ function CardSheet({
   const data = def.useData(of);
   const [format, setFormat] = useState<CardFormat>(dev?.format ?? 'story');
   const [leaving, setLeaving] = useState<CardFormat | null>(null);
-  const [amounts, setAmounts] = useState(dev?.amounts ?? false);
+  const [amounts, setAmounts] = useState(dev?.amounts ?? def.amountsShown === true);
   const settledAt = useRef(0);
   const card = useRef<ComponentRef<typeof View>>(null);
   const { share } = useShareImage();
@@ -171,6 +172,10 @@ function CardSheet({
             inks={inks}
             serious={serious}
             still={!capture}
+            onAmounts={(on) => {
+              haptics.tick();
+              toggleAmounts(on);
+            }}
           />
         </View>
       </View>

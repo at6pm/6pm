@@ -58,6 +58,7 @@ export function SettingRow({
   label,
   sub,
   value,
+  valueColor,
   first = false,
   subLines = 1,
   onPress,
@@ -67,6 +68,8 @@ export function SettingRow({
   readonly label: string;
   readonly sub?: string;
   readonly value?: string;
+  /** The value's ink when it warns (a setting that needs something); soft otherwise. */
+  readonly valueColor?: string;
   readonly first?: boolean;
   /** Lines the sub may take before it is cut short: one, unless a screen needs its words whole. */
   readonly subLines?: number;
@@ -113,7 +116,9 @@ export function SettingRow({
             </Text>
           ) : null}
         </View>
-        {value ? <Text style={{ ...body(15), color: palette.inkSoft }}>{value}</Text> : null}
+        {value ? (
+          <Text style={{ ...body(15), color: valueColor ?? palette.inkSoft }}>{value}</Text>
+        ) : null}
         {onPress ? (
           <Symbol name="chevron_right" size={20} color={palette.ink} style={{ opacity: 0.35 }} />
         ) : null}

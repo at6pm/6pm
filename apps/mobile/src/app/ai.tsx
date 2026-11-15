@@ -8,13 +8,13 @@ import type { AiInks } from '../features/privacy/ai-choice';
 import { AiModeChooser } from '../features/privacy/ai-mode-chooser';
 import { useAiMode } from '../features/privacy/use-ai-mode';
 import { useI18n } from '../i18n/i18n';
-import { SheetScreen } from '../ui/navigation/sheet-screen';
+import { SettingsPage } from '../features/settings/settings-page';
 import { useTheme } from '../ui/theme/theme';
 import { body } from '../ui/type/fonts';
 
 /**
- * Settings → AI: where 6pm's AI runs, the local models and their downloads, and what leaves the
- * phone in the chosen mode. Each choice is saved at once.
+ * Settings → AI, a page inside Settings: where 6pm's AI runs, the local models and their
+ * downloads, and what leaves the phone in the chosen mode. Each choice is saved at once.
  */
 export default function Ai() {
   const { palette } = useTheme();
@@ -37,12 +37,12 @@ export default function Ai() {
     [palette],
   );
   return (
-    <SheetScreen title={t('settings.ai')} gap={18} fit>
+    <SettingsPage title={t('settings.ai')} gap={18}>
       <Text style={{ ...body(15), lineHeight: 21, color: palette.inkSoft, paddingHorizontal: 6 }}>
         {t('privacy.ai.sub')}
       </Text>
       <AiModeChooser inks={inks} canDelete />
       <AiLeaves mode={mode} inks={inks} />
-    </SheetScreen>
+    </SettingsPage>
   );
 }

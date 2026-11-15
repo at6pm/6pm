@@ -12,7 +12,9 @@ import {
   riso,
 } from './share-inks-looks';
 import { byIndex, glow, PAPER, rule, seeded, type ShareInks } from './share-inks-types';
+import { workCardInks } from './share-inks-work';
 
+export type { CardWorkInks } from './share-inks-work';
 export type {
   CardBand,
   CardGlow,
@@ -91,6 +93,7 @@ const golden: ShareInks = {
   jarShape: { lid: '4px', body: '16px 16px 18px 18px', lidGlow: 'none' },
   shelf: { bg: 'linear-gradient(180deg, #8a5a3a, #5a3622)', sh: '0 8px 14px rgba(0,0,0,.35)' },
   receipt: { ...PAPER, best: 'rgba(255,133,82,.22)' },
+  work: workCardInks.golden,
 };
 
 const BASIC_BANDS = ['#0a84ff', '#5e5ce6', '#bf5af2', '#ff375f', '#ff9f0a', '#ffd60a', '#30d158'];
@@ -156,6 +159,7 @@ function basic(dark: boolean): ShareInks {
     jarShape: { lid: '3px', body: '12px 12px 14px 14px', lidGlow: 'none' },
     shelf: null,
     receipt: { ...PAPER, best: dark ? 'rgba(64,156,255,.2)' : 'rgba(0,64,221,.12)' },
+    work: dark ? workCardInks.basicDark : workCardInks.basicLight,
   };
 }
 
@@ -213,6 +217,7 @@ const serious: ShareInks = {
   jarShape: { lid: '4px', body: '16px 16px 18px 18px', lidGlow: 'none' },
   shelf: { bg: 'linear-gradient(180deg, #6a707c, #4a505c)', sh: '0 8px 14px rgba(0,0,0,.35)' },
   receipt: { ...PAPER, best: 'rgba(43,37,48,.1)' },
+  work: workCardInks.serious,
 };
 
 const BY_LOOK: Readonly<Record<Exclude<LookId, 'basic'>, ShareInks>> = {

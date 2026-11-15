@@ -32,6 +32,7 @@ import { esScan } from './scan';
 import { esShareExt } from './share-ext';
 import { esSharing } from './sharing';
 import { esShareCards } from './share-cards';
+import { esShareCardsIncome } from './share-cards-income';
 import { esSurfaces } from './surfaces';
 import { esWidgets } from './widgets';
 import { esToday } from './today';
@@ -42,6 +43,7 @@ import { esWidgetsGuide } from './widgets-guide';
 import { esYearBook } from './year-book';
 import { esFirstCatch } from './first-catch';
 import { esCaptureLog } from './capture-log';
+import { esSettingsPages } from './settings-pages';
 import { esPhoto } from './photo';
 import { esMoneyReaches } from './money-reaches';
 import { esIncome } from './income';
@@ -81,6 +83,7 @@ export const es: Catalogue = {
   ...esNative,
   ...esSharing,
   ...esShareCards,
+  ...esShareCardsIncome,
   ...esShareExt,
   ...esIntents,
   ...esCaptureWalk,
@@ -101,6 +104,7 @@ export const es: Catalogue = {
   ...esPots,
   ...esFirstCatch,
   ...esCaptureLog,
+  ...esSettingsPages,
   ...esPhoto,
   ...esMoneyReaches,
   ...esIncome,

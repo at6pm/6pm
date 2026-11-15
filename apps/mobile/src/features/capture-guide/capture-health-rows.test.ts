@@ -3,7 +3,7 @@ import { describe, expect, it } from '@jest/globals';
 import { addDays } from '@6pm/domain';
 
 import type { CatchSeen } from '../../data/first-catch';
-import { healthRows, HEALTH_WAYS } from './capture-health-rows';
+import { healthRows, healthSection, HEALTH_WAYS } from './capture-health-rows';
 
 const today = '2026-10-10';
 const seen = (
@@ -47,5 +47,43 @@ describe('each way’s heartbeat in Settings', () => {
     expect(row([], 'wallet')?.state.kind).toBe('notSetUp');
     expect(row([], 'share')?.state.kind).toBe('ready');
     expect(row([], 'email', { off: ['email'] })?.state.kind).toBe('off');
+  });
+});
+
+describe('the section Settings draws', () => {
+  const section = (catches: CatchSeen[], more = {}) =>
+    healthSection({ catches, today, ways: HEALTH_WAYS, lastAlert: null, off: [], ...more });
+
+  it('puts the way that caught last first and the ways to set up at the foot', () => {
+    const { rows } = section([seen('qr', 2), seen('email', 0), seen('voice', 5)]);
+    expect(rows.map((r) => r.way)).toEqual(['email', 'scan', 'voice', 'share', 'alerts', 'wallet']);
+  });
+
+  it('keeps a quiet way in its own place', () => {
+    const busyMb = [3, 4, 5, 6, 7, 8].map((d) => seen('alert', d, 'MB Bank'));
+    const { rows } = section([...busyMb, seen('qr', 1), seen('email', 0)]);
+    expect(rows.map((r) => r.way)).toEqual(['email', 'scan', 'alerts', 'share', 'voice', 'wallet']);
+  });
+
+  it('counts every catch on the strips', () => {
+    expect(
+      section([seen('qr', 0), seen('qr', 1), seen('shared', 13), seen('shared', 20)]).total,
+    ).toBe(3);
+  });
+
+  it('lights today for a catch made after midnight, before the money day turns', () => {
+    const tomorrow = addDays(today, 1);
+    const [y = 0, m = 1, d = 1] = tomorrow.split('-').map(Number);
+    const late = {
+      source: 'qr',
+      day: tomorrow,
+      at: new Date(y, m - 1, d, 0, 40).toISOString(),
+      detail: null,
+    } as const;
+    expect(
+      section([late])
+        .rows.find((r) => r.way === 'scan')
+        ?.beats.at(-1),
+    ).toBe(1);
   });
 });

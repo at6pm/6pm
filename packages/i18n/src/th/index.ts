@@ -32,6 +32,7 @@ import { thScan } from './scan';
 import { thShareExt } from './share-ext';
 import { thSharing } from './sharing';
 import { thShareCards } from './share-cards';
+import { thShareCardsIncome } from './share-cards-income';
 import { thSurfaces } from './surfaces';
 import { thWidgets } from './widgets';
 import { thToday } from './today';
@@ -42,6 +43,7 @@ import { thWidgetsGuide } from './widgets-guide';
 import { thYearBook } from './year-book';
 import { thFirstCatch } from './first-catch';
 import { thCaptureLog } from './capture-log';
+import { thSettingsPages } from './settings-pages';
 import { thPhoto } from './photo';
 import { thMoneyReaches } from './money-reaches';
 import { thIncome } from './income';
@@ -81,6 +83,7 @@ export const th: Catalogue = {
   ...thNative,
   ...thSharing,
   ...thShareCards,
+  ...thShareCardsIncome,
   ...thShareExt,
   ...thIntents,
   ...thCaptureWalk,
@@ -101,6 +104,7 @@ export const th: Catalogue = {
   ...thPots,
   ...thFirstCatch,
   ...thCaptureLog,
+  ...thSettingsPages,
   ...thPhoto,
   ...thMoneyReaches,
   ...thIncome,
