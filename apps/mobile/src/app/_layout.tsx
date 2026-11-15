@@ -87,6 +87,13 @@ function Screens() {
         <Stack.Screen name="split" options={edgeSheet} />
         <Stack.Screen name="owed" options={edgeSheet} />
         <Stack.Screen name="owed-ask" options={takeover} />
+        <Stack.Screen name="owed-request" options={edgeSheet} />
+        <Stack.Screen name="owed-remind" options={edgeSheet} />
+        <Stack.Screen name="match-request" options={edgeSheet} />
+        <Stack.Screen name="held-back" options={edgeSheet} />
+        <Stack.Screen name="work-year" options={sheet} />
+        <Stack.Screen name="held-year" options={edgeSheet} />
+        <Stack.Screen name="year-files" options={edgeSheet} />
         <Stack.Screen name="receiving-account" options={edgeSheet} />
         <Stack.Screen name="missed-day" options={drawnSheet} />
         <Stack.Screen name="money-diary" options={sheet} />
@@ -97,6 +104,10 @@ function Screens() {
         <Stack.Screen name="bill/[id]" options={edgeSheet} />
         <Stack.Screen name="month" options={edgeSheet} />
         <Stack.Screen name="since-payday" options={edgeSheet} />
+        <Stack.Screen name="last-until" options={edgeSheet} />
+        <Stack.Screen name="takings" options={edgeSheet} />
+        <Stack.Screen name="work-money" options={edgeSheet} />
+        <Stack.Screen name="reach" options={takeover} />
         <Stack.Screen name="looks" options={drawnSheet} />
         <Stack.Screen name="look/[id]" options={drawnSheet} />
         <Stack.Screen name="max" options={sheet} />

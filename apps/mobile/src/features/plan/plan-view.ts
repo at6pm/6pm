@@ -13,6 +13,7 @@ import {
   moneyRiver,
   newJarLocked,
   occasionsOf,
+  perPayOf,
   planSplit,
   sumMoneyIn,
   type BillRow,
@@ -26,8 +27,9 @@ import {
 } from '@6pm/domain';
 
 import type { CycleTopUps } from '../../data/pot-moves';
-import { dailyInputOf, type MoneySnapshot } from '../../data/money-store';
+import { dailyInputOf, joinedOf, periodOf, type MoneySnapshot } from '../../data/money-store';
 import { joinedAnswersOf } from '../../data/plan-settings';
+import { homeCurrencyOf } from '../../money/use-money-format';
 
 /** Σ what the occasion pots set aside this pay cycle, as the daily number counts them. */
 export function occasionsMonthly(snap: MoneySnapshot): Vnd {
@@ -42,8 +44,13 @@ export function newPotLocked(pots: readonly PotRow[], max: boolean): boolean {
   return newJarLocked(pots, max);
 }
 
-/** The month's money in: the plan's income and what came in on top this cycle and was kept. */
+/**
+ * The month's money in: the plan's income and what came in on top this cycle and was kept. A plan
+ * that holds its incomes has what came in by today and what is in hand, as its number counts it.
+ */
 export function monthIncomeOf(snap: MoneySnapshot): Vnd {
+  const period = dailyInputOf(snap)?.period;
+  if (period) return period.credited + (dailyInputOf(snap)?.moneyIn ?? 0);
   return (snap.plan?.income ?? 0) + sumMoneyIn(snap.cycleSpends);
 }
 
@@ -54,12 +61,18 @@ export function riverOf(
 ): Readonly<Record<RiverSegment, Vnd>> {
   // Until the split is read, every top-up shows under Occasions; the total is right either way.
   const goalTopUps = topUps?.goal ?? 0;
-  const joined = joinedCycle(snap.cycle, joinedAnswersOf(snap.plan));
+  const joined = joinedOf(snap);
+  const period = dailyInputOf(snap)?.period;
+  // A plan that holds its incomes: what it reserves splits into bills, then Future you's part,
+  // then the rest of the jars (and what extra pays keep).
+  const bills = period ? (period.bills ?? 0) : billsThisCycle(snap.bills, snap.cycle);
+  const jars = period ? period.reserved - bills : null;
+  const futureYou = futureYouIn(snap.plan?.futureYou ?? 0, joined);
   return moneyRiver({
     income: monthIncomeOf(snap),
-    bills: billsThisCycle(snap.bills, snap.cycle),
-    futureYou: futureYouIn(snap.plan?.futureYou ?? 0, joined),
-    occasions: occasionsMonthly(snap),
+    bills,
+    futureYou: jars === null ? futureYou : Math.min(futureYou, jars),
+    occasions: jars === null ? occasionsMonthly(snap) : Math.max(0, jars - futureYou),
     goalTopUps,
     occasionTopUps: snap.topUpsThisCycle - goalTopUps,
     free: day.free,
@@ -70,7 +83,10 @@ export function riverOf(
 
 /** Whether "Before 6pm" can be changed: only while the cycle the user joined lasts. */
 export function beforeEditable(snap: MoneySnapshot): boolean {
-  return joinedCycle(snap.cycle, joinedAnswersOf(snap.plan)).joined;
+  // Paid by the week or as money lands, nothing before joining is estimated, so none is edited.
+  return (
+    joinedCycle(snap.cycle, joinedAnswersOf(snap.plan)).joined && periodOf(snap)?.monthly !== false
+  );
 }
 
 export interface BillView {
@@ -160,5 +176,12 @@ export function planJarsOf(snap: MoneySnapshot): {
       }),
     };
   });
-  return { jars, eachPayday: intoJarsEachPayday(slice, snap.pots, snap.setAsideThisCycle) };
+  return {
+    jars,
+    eachPayday: perPayOf(
+      intoJarsEachPayday(slice, snap.pots, snap.setAsideThisCycle),
+      snap.plan?.incomes,
+      homeCurrencyOf(snap.plan),
+    ),
+  };
 }

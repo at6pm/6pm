@@ -71,6 +71,8 @@ export interface CloseCardsProps {
   };
   /** The hint when the top card is money that came in (it spreads and saves, not keeps). */
   readonly moneyHint?: string | undefined;
+  /** What a work stamp just inked on the top card remembered: it crossfades in for the hint. */
+  readonly workHint?: string | null | undefined;
   /** What the Future you pill says while money is lifted to it. */
   readonly pill?: { readonly label: string; readonly from: string; readonly to: string } | null;
   readonly onDecide: (id: string, verdict: StackVerdict) => void;
@@ -105,9 +107,11 @@ function CardStack({
   const top = cards[0];
   const dx = useSharedValue(0);
   const dy = useSharedValue(0);
-  const moneyIn = top?.money !== undefined;
+  // Money stamped as work is takings: kept, never spread or saved for Future you.
+  const takings = top?.money !== undefined && top.work?.inked === true;
+  const moneyIn = top?.money !== undefined && !takings;
   // Money that came in goes up to Future you, when Future you has a goal to keep it in.
-  const canUp = top?.money?.canSave === true;
+  const canUp = top?.money?.canSave === true && !takings;
   useAnimatedReaction(
     () => dy.get(),
     (y, was) => {
@@ -312,7 +316,7 @@ export function CloseCards(props: CloseCardsProps) {
   const { palette } = useTheme();
   const lift = useSharedValue(0);
   const top = props.cards[0];
-  const pill = top?.money?.canSave ? props.pill : null;
+  const pill = top?.money?.canSave && top.work?.inked !== true ? props.pill : null;
   // The header makes way for the Future you pill as money is lifted to it.
   const makeWay = useAnimatedStyle(() => ({ opacity: pill ? 1 - 0.86 * lifted(lift.get()) : 1 }));
   // The room under the header for the cards and their buttons. A phone always has the full
@@ -373,14 +377,18 @@ export function CloseCards(props: CloseCardsProps) {
         ) : (
           // One line the height of the undo pill it trades places with; a longer language shrinks.
           <Animated.Text
-            key={top?.money ? 'money' : 'spend'}
+            key={`${top?.money ? 'money' : 'spend'}${props.workHint ? `:${props.workHint}` : ''}`}
             entering={FadeIn.duration(200)}
             numberOfLines={1}
             adjustsFontSizeToFit
             minimumFontScale={0.7}
             style={{ ...body(15), lineHeight: 32, color: palette.inkSoft }}
           >
-            {top?.money && props.moneyHint ? props.moneyHint : props.hint}
+            {props.workHint
+              ? props.workHint
+              : top?.money && props.moneyHint
+                ? props.moneyHint
+                : props.hint}
           </Animated.Text>
         )}
       </Animated.View>

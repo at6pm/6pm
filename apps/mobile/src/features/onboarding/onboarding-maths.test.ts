@@ -11,6 +11,10 @@ import {
   CLOSE_MINUTES,
   firstDay,
   futureYouOf,
+  futureYouOfAnswers,
+  landedFutureStartSteps,
+  landedFutureYouOf,
+  LANDED_FUTURE_STEPS,
   incomeDigits,
   incomeFromTyped,
   incomeLeads,
@@ -275,5 +279,20 @@ describe('bill deck', () => {
       ['subs:spotify', 0, 5, 1],
     ]);
     expect(billTotal(bills)).toBe(5_000_000);
+  });
+});
+
+describe('Future you for money that only lands', () => {
+  it('is an amount a month: it starts at 500.000₫, goes to nothing, and stops at 3.000.000₫', () => {
+    const start = landedFutureStartSteps();
+    expect(landedFutureYouOf(start)).toBe(500_000);
+    expect(landedFutureYouOf(0)).toBe(0);
+    expect(landedFutureYouOf(LANDED_FUTURE_STEPS + 5)).toBe(3_000_000);
+    const landed = { landed: true, monthIncome: 0, percent: 12, landedSteps: start };
+    expect(futureYouOfAnswers(landed)).toBe(500_000);
+    // A pay counted on keeps its share.
+    expect(futureYouOfAnswers({ ...landed, landed: false, monthIncome: 15_500_000 })).toBe(
+      1_900_000,
+    );
   });
 });

@@ -16,6 +16,7 @@ import {
 
 import { useBillPayments } from '../../data/bill-payments';
 import { useMoney } from '../../data/money-provider';
+import { workOf } from '../../data/work-money';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
@@ -162,7 +163,8 @@ export function DetailsCard({
     },
     {
       key: 'pot',
-      label: t('details.claimBack'),
+      // Someone with work on marks a work cost here, not a claim an employer pays back.
+      label: workOf(snap) === null ? t('details.claimBack') : t('work.card.title'),
       value: spend.forWork ? t('potsClose.details.claimYes') : t('potsClose.details.claimNo'),
       menu: {
         choices: [
@@ -183,6 +185,28 @@ export function DetailsCard({
                 ? t('owed.details.ways', { count: owedHere + 1 })
                 : t('owed.details.none'),
             onPress: () => router.push({ pathname: '/split', params: { spend: spend.id } }),
+          },
+        ]
+      : []),
+    // Money in: what a client held back for tax (4c), and matching it to a request by hand (7e).
+    ...(spend.direction === 'in' && (spend.forWork || (spend.heldBack ?? 0) > 0)
+      ? [
+          {
+            key: 'heldBack',
+            label: t('request.diary.heldBack'),
+            value:
+              (spend.heldBack ?? 0) > 0 ? money.short(spend.heldBack ?? 0) : t('owed.details.none'),
+            onPress: () => router.push({ pathname: '/held-back', params: { id: spend.id } }),
+          },
+        ]
+      : []),
+    ...(spend.direction === 'in' && owedRows.some((r) => r.code != null)
+      ? [
+          {
+            key: 'match',
+            label: t('request.diary.match'),
+            value: '',
+            onPress: () => router.push({ pathname: '/match-request', params: { id: spend.id } }),
           },
         ]
       : []),

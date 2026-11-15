@@ -23,18 +23,23 @@ const cache: ShareFolder = {
 /**
  * Sends the strip as an image with a short message: the view drawn as a PNG (its own sky and the
  * "made with 6pm" mark), and the words beside it where the receiving app takes both (iOS). Android's
- * share sheet takes the image alone. Resolves when the sheet closes, shared or cancelled.
+ * share sheet takes the image alone. Resolves when the sheet closes: true when it was sent (on iOS,
+ * a cancel resolves false; Android's sheet does not say, so it counts as sent).
  */
 export async function shareStrip(
   view: RefObject<ComponentRef<typeof View> | null>,
   key: string,
   message: string,
-): Promise<void> {
+): Promise<boolean> {
   const image = await captureView(view);
   const name = shareFileName('payment-qr', key);
-  if (Platform.OS !== 'ios') return shareImage(image, name);
-  await withShareFile(cache, name, encodePng(image), async (url) => {
-    await Share.share({ url, message });
+  if (Platform.OS !== 'ios') {
+    await shareImage(image, name);
+    return true;
+  }
+  return withShareFile(cache, name, encodePng(image), async (url) => {
+    const result = await Share.share({ url, message });
+    return result.action === Share.sharedAction;
   });
 }
 

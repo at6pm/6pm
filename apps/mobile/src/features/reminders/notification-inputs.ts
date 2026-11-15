@@ -1,7 +1,13 @@
 import {
   currencyOf,
   FUTURE_YOU_POT_ID,
+  futureYouIn,
+  joinedCycle,
+  leadIncome,
+  nextPay,
+  occasionsOf,
   moneyInAsk,
+  monthlyIncomeOf,
   newYearJarOf,
   nextNewYearWindow,
   owedByPerson,
@@ -18,10 +24,10 @@ import {
 } from '@6pm/domain';
 
 import type { CatchSeen } from '../../data/first-catch';
-import { waitingOf, type MoneySnapshot } from '../../data/money-store';
+import { periodOf, waitingOf, type MoneySnapshot } from '../../data/money-store';
 import type { NotificationMemory, NotificationSettings } from '../../data/notification-settings';
 import { openOwedOf, owedLineOf } from '../../data/owed-actions';
-import { planCurrencyCode } from '../../data/plan-settings';
+import { joinedAnswersOf, planCurrencyCode } from '../../data/plan-settings';
 
 /** The ways that run by themselves and can be cancelled by the phone when they catch again. */
 const WATCHED_WAYS = ['alert', 'applePay'] as const;
@@ -49,7 +55,9 @@ export function waitingMoneyOf(
           hint: s.moneyIn === 'refund' ? 'refund' : null,
         },
         {
-          income: plan.income,
+          income: monthlyIncomeOf(plan),
+          incomes: plan.incomes,
+          anchor: plan.payday,
           cycle: snapshot.cycle,
           spends: [],
           owed,
@@ -101,20 +109,57 @@ export function quietWaysOf(input: {
   return out;
 }
 
-/** What payday's notification says, or null without a plan or with a payday that varies. */
-export function paydayOf(snapshot: MoneySnapshot): PaydayPreview | null {
+/**
+ * When payday's notification comes, and what it says: the plan's payday; for a plan paid by the
+ * week or the fortnight, its next counted pay, the line that pay brings; none for money that only
+ * lands.
+ */
+export function paydayNoticeOf(
+  snapshot: MoneySnapshot,
+): { readonly on: LocalDate; readonly preview: PaydayPreview } | null {
   const { plan } = snapshot;
-  if (plan === null || plan.payday.kind === 'varies') return null;
-  return paydayPreview({
-    payday: snapshot.cycle.payday,
-    rule: plan.payday,
-    income: plan.income,
-    futureYou: plan.futureYou,
-    bills: snapshot.bills,
-    pots: snapshot.pots,
-    saved: snapshot.potSaved,
-    currency: currencyOf(planCurrencyCode(plan)),
-  });
+  if (plan === null) return null;
+  if (plan.incomes !== undefined) {
+    const lead = leadIncome(plan.incomes);
+    if (lead === null) return null;
+    if (lead.rhythm.kind !== 'monthly') {
+      const joined = joinedCycle(snapshot.cycle, joinedAnswersOf(plan));
+      const pay = nextPay({
+        today: snapshot.today,
+        anchor: plan.payday,
+        incomes: plan.incomes,
+        bills: snapshot.bills,
+        jars:
+          futureYouIn(plan.futureYou, joined) +
+          occasionsOf(snapshot.pots, snapshot.setAsideThisCycle),
+        currency: currencyOf(planCurrencyCode(plan)),
+        // A pay whose date has come and that has not landed is still the one to speak of.
+        waitingFor: periodOf(snapshot)?.due ?? null,
+      });
+      return pay === null
+        ? null
+        : { on: pay.on, preview: { jars: pay.jars, daily: pay.daily, until: pay.until } };
+    }
+  }
+  if (plan.payday.kind === 'varies') return null;
+  return {
+    on: snapshot.cycle.payday,
+    preview: paydayPreview({
+      payday: snapshot.cycle.payday,
+      rule: plan.payday,
+      income: plan.income,
+      futureYou: plan.futureYou,
+      bills: snapshot.bills,
+      pots: snapshot.pots,
+      saved: snapshot.potSaved,
+      currency: currencyOf(planCurrencyCode(plan)),
+    }),
+  };
+}
+
+/** What payday's notification says; null without a plan, a payday to count on, or a fixed one. */
+export function paydayOf(snapshot: MoneySnapshot): PaydayPreview | null {
+  return paydayNoticeOf(snapshot)?.preview ?? null;
 }
 
 /**
@@ -161,7 +206,7 @@ export function plannedNotifications(input: {
     closeAt: plan?.closeAt ?? null,
     closedDays: new Set(snapshot.closedDays.map((d) => d.day)),
     news,
-    payday: plan === null || plan.payday.kind === 'varies' ? null : snapshot.cycle.payday,
+    payday: paydayNoticeOf(snapshot)?.on ?? null,
     owed,
     quietWays: input.quietWays,
   });

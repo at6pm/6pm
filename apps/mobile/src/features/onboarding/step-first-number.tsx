@@ -59,6 +59,7 @@ export function StepFirstNumber({
   leaving,
   onSpentSincePayday,
   onFutureYouAtPayday,
+  incomes = null,
 }: {
   readonly pal: OnboardingPalette;
   readonly income: number;
@@ -71,6 +72,18 @@ export function StepFirstNumber({
   readonly leaving: boolean;
   readonly onSpentSincePayday: (amount: number) => void;
   readonly onFutureYouAtPayday: (on: boolean) => void;
+  /**
+   * A pay that comes by the week or the fortnight: the pay that opens the first stretch, split
+   * into its slices of the bills and the jars and what it frees, as Plan and Today draw it.
+   */
+  readonly incomes?: {
+    readonly pay: {
+      readonly amount: number;
+      readonly bills: number;
+      readonly jars: number;
+      readonly free: number;
+    };
+  } | null;
 }) {
   const { t } = useI18n();
   const money = useMoneyFormat();
@@ -112,14 +125,16 @@ export function StepFirstNumber({
     ],
   }));
 
+  // One story with Plan and Today: a pay's split is its own slices, never the month's whole.
+  const pay = incomes?.pay ?? null;
   const split = [
-    { label: t('onboarding.reveal.bills'), value: bills, color: pal.bills },
+    { label: t('onboarding.reveal.bills'), value: pay ? pay.bills : bills, color: pal.bills },
     {
       label: t('onboarding.reveal.future'),
-      value: first.futureYouSkipped ? 0 : futureYou,
+      value: pay ? pay.jars : first.futureYouSkipped ? 0 : futureYou,
       color: pal.green,
     },
-    { label: t('onboarding.reveal.spend'), value: first.free, color: pal.accent },
+    { label: t('onboarding.reveal.spend'), value: pay ? pay.free : first.free, color: pal.accent },
   ];
 
   return (
@@ -250,10 +265,12 @@ export function StepFirstNumber({
             ))}
           </View>
           <Text style={{ ...body(12.5), lineHeight: 17.5, color: pal.inkSoft }}>
-            {t('onboarding.reveal.math', {
-              income: money.short(income),
-              count: first.days,
-            })}
+            {pay
+              ? t('onboarding.reveal.mathPay', {
+                  income: money.short(pay.amount),
+                  count: first.days,
+                })
+              : t('onboarding.reveal.math', { income: money.short(income), count: first.days })}
           </Text>
         </Animated.View>
       )}
@@ -267,10 +284,13 @@ export function LeavingOverlay({
   step,
   line,
   pal,
+  words = null,
 }: {
   readonly step: number;
   readonly line: number;
   readonly pal: OnboardingPalette;
+  /** Said in the number's place when there is no number yet (money that only lands). */
+  readonly words?: string | null;
 }) {
   const { t } = useI18n();
   const money = useMoneyFormat();
@@ -297,7 +317,7 @@ export function LeavingOverlay({
       </Text>
       <Animated.View entering={riseEntering(500, 100, reduceMotion)}>
         <FitText style={{ ...display(56, 500, -0.03), color: pal.light }}>
-          {money.short(line)}
+          {words ?? money.short(line)}
         </FitText>
       </Animated.View>
     </Animated.View>

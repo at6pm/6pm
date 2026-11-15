@@ -1,4 +1,4 @@
-import { addDays, payCycleOn, replanWorded, type DailyNumber, type LocalDate } from '@6pm/domain';
+import { addDays, moneyNextOf, replanWorded, type DailyNumber, type LocalDate } from '@6pm/domain';
 import { localeOf } from '@6pm/i18n';
 
 import { useMoney } from '../../data/money-provider';
@@ -61,7 +61,7 @@ export function CloseRevealStep({
       mood={event === 'replan' || event === 'pastPlan' ? 'nod' : 'happy'}
       sub={t('close.reveal.free', {
         free: money.short(number.free),
-        days: payCycleOn(day, plan.payday).daysLeft,
+        days: moneyNextOf(day, plan).daysLeft,
       })}
       month={monthName.toUpperCase()}
       monthDays={monthDays}

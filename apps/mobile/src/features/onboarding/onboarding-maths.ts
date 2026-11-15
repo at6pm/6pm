@@ -4,6 +4,7 @@ import {
   designAmount,
   joinedCycle,
   joinedShare,
+  landedFutureYouStart,
   payCycleOn,
   spentSincePaydayEstimate,
   spentSincePaydayPresets,
@@ -40,6 +41,12 @@ export function incomeMax(c: Currency = VND): Money {
 /** The design's starting money in, 15.500.000₫, worth about the same and set on the wheels. */
 export function startingIncome(c: Currency = VND): Money {
   const { lead, millions, hundreds } = incomeDigits(designAmount(15_500_000, c), c);
+  return incomeOf(lead, millions, hundreds, c);
+}
+
+/** The design's starting pay for every week or two, 4.000.000₫, set on the wheels. */
+export function startingPay(c: Currency = VND): Money {
+  const { lead, millions, hundreds } = incomeDigits(designAmount(4_000_000, c), c);
   return incomeOf(lead, millions, hundreds, c);
 }
 
@@ -172,6 +179,46 @@ export function paydayOfCell(cell: number): Payday {
   if (cell >= VARIES_CELL) return { kind: 'varies' };
   if (cell === LAST_DAY_CELL) return { kind: 'lastDay' };
   return { kind: 'sameDay', day: Math.max(0, cell) + 1 };
+}
+
+/**
+ * Future you for money that only lands is an amount a month, not a share (a share of a pay that
+ * is not counted on means nothing): its slider moves in steps of 50.000₫ (about as much in the home
+ * currency), from nothing to 60 steps, and starts at `landedFutureYouStart`.
+ */
+export const LANDED_FUTURE_STEPS = 60;
+
+/** One step of the landed Future you slider. */
+export function landedFutureStep(c: Currency = VND): Money {
+  return designAmount(50_000, c);
+}
+
+/** Where the landed Future you slider starts, in steps. */
+export function landedFutureStartSteps(c: Currency = VND): number {
+  return Math.min(LANDED_FUTURE_STEPS, Math.round(landedFutureYouStart(c) / landedFutureStep(c)));
+}
+
+/** Future you a month for money that only lands, at a number of the slider's steps. */
+export function landedFutureYouOf(stepsSet: number, c: Currency = VND): Money {
+  return Math.min(LANDED_FUTURE_STEPS, Math.max(0, Math.round(stepsSet))) * landedFutureStep(c);
+}
+
+/**
+ * Future you as onboarding saves it: a share of the month's income for anyone with a pay counted
+ * on, an amount a month for money that only lands.
+ */
+export function futureYouOfAnswers(
+  input: {
+    readonly landed: boolean;
+    readonly monthIncome: Money;
+    readonly percent: number;
+    readonly landedSteps: number;
+  },
+  c: Currency = VND,
+): Money {
+  return input.landed
+    ? landedFutureYouOf(input.landedSteps, c)
+    : futureYouOf(input.monthIncome, input.percent, c);
 }
 
 /** Future you each payday: the percentage of money in, to the nearest 100.000₫ ($100). */

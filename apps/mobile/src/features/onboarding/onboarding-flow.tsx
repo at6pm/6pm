@@ -24,20 +24,27 @@ import {
 } from './catch-ways';
 import { ownBankOf, tryWay } from './first-catch-try';
 import { CompanionLine, OnboardingCta, OnboardingHeader } from './onboarding-chrome';
-import { stepEntering } from './onboarding-motion';
+import { pageExiting, stepEntering } from './onboarding-motion';
+import { LANDED_FUTURE_STEPS, landedFutureStep } from './onboarding-maths';
 import { onboardingPalette } from './onboarding-palette';
 import { OnboardingSky } from './onboarding-sky';
 import { StepBills } from './step-bills';
 import { StepAi } from './step-ai';
 import { StepCatching } from './step-catching';
 import { StepCloseTime } from './step-close-time';
+import { StepFirstLanded } from './step-first-landed';
 import { LeavingOverlay, StepFirstNumber } from './step-first-number';
 import { StepFutureYou } from './step-future-you';
+import { StepAsItComes } from './step-as-it-comes';
+import { StepEachPay } from './step-each-pay';
 import { StepMoneyIn } from './step-money-in';
+import { StepMoneyWays } from './step-money-ways';
 import { ordinalDay } from './step-parts';
 import { StepPayWith } from './step-pay-with';
 import { StepPrivacy } from './step-privacy';
 import { StepWelcome } from './step-welcome';
+import { StepWorkBanks } from './step-work-banks';
+import { billName } from './bill-copy';
 import { useFirstCatch } from './use-first-catch';
 import {
   AI_STEP,
@@ -62,11 +69,7 @@ function stepLine(o: Onboarding, i18n: I18n, mode: AiMode): string | null {
   const { t } = i18n;
   switch (o.step) {
     case MONEY_IN_STEP:
-      return o.payday.kind === 'varies'
-        ? t('onboarding.line.paydayVaries')
-        : o.payday.kind === 'lastDay'
-          ? t('onboarding.line.paydayLast')
-          : t('onboarding.line.paydayDay', { day: ordinalDay(i18n, o.payday.day) });
+      return moneyLine(o, i18n);
     case BILLS_STEP:
       return o.nav.index >= o.deck.length
         ? t('onboarding.line.billsDone')
@@ -80,6 +83,7 @@ function stepLine(o: Onboarding, i18n: I18n, mode: AiMode): string | null {
           ? t('onboarding.line.futureBig')
           : t('onboarding.line.future');
     case PAY_WITH_STEP:
+      if (o.payPage === 'work') return t('work.banks.line');
       return o.wallets.length === 0
         ? t('onboarding.line.walletsNone')
         : t('onboarding.line.wallets', { count: o.wallets.length });
@@ -93,6 +97,27 @@ function stepLine(o: Onboarding, i18n: I18n, mode: AiMode): string | null {
       return t('onboarding.line.close', { time: o.closeAt });
     default:
       return null;
+  }
+}
+
+/** The money step's line, page by page: the picks counted, then each follow-up's answer. */
+function moneyLine(o: Onboarding, i18n: I18n): string {
+  const { t } = i18n;
+  switch (o.page) {
+    case 'ways':
+      return t(`onboarding.line.reach${Math.min(4, o.reach.ways.length) as 0 | 1 | 2 | 3 | 4}`);
+    case 'pay':
+      return o.reach.every === 'twiceMonthly'
+        ? t('onboarding.line.payTwice')
+        : t(`onboarding.line.payDay${o.reach.weekday}`);
+    case 'asItComes':
+      return t('onboarding.line.landed');
+    case 'salary':
+      return o.payday.kind === 'varies'
+        ? t('onboarding.line.paydayVaries')
+        : o.payday.kind === 'lastDay'
+          ? t('onboarding.line.paydayLast')
+          : t('onboarding.line.paydayDay', { day: ordinalDay(i18n, o.payday.day) });
   }
 }
 
@@ -190,18 +215,47 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
       case PRIVACY_STEP:
         return <StepPrivacy pal={pal} onNext={o.next} />;
       case MONEY_IN_STEP:
-        return (
-          <StepMoneyIn
-            pal={pal}
-            income={o.income}
-            payday={o.payday}
-            dailyHint={o.dailyHint}
-            guide={o.wheelGuide}
-            onIncome={o.setIncome}
-            onPayday={o.setPayday}
-            onGuideDone={o.endWheelGuide}
-          />
-        );
+        switch (o.page) {
+          case 'ways':
+            return <StepMoneyWays pal={pal} ways={o.reach.ways} onToggle={o.toggleWay} />;
+          case 'pay':
+            return (
+              <StepEachPay
+                pal={pal}
+                answers={o.reach}
+                today={o.today}
+                onAmount={o.setPayAmount}
+                onEvery={o.setEvery}
+                onWeekday={o.setWeekday}
+                onFortnightAfter={o.setFortnightAfter}
+                onTwiceDays={o.setTwiceDays}
+              />
+            );
+          case 'asItComes':
+            return (
+              <StepAsItComes
+                pal={pal}
+                lastFor={o.reach.lastFor}
+                today={o.today}
+                lastsTo={o.lastsTo}
+                onLastFor={o.setLastFor}
+              />
+            );
+          case 'salary':
+            return (
+              <StepMoneyIn
+                pal={pal}
+                income={o.income}
+                payday={o.payday}
+                dailyHint={o.dailyHint}
+                guide={o.wheelGuide}
+                onIncome={o.setIncome}
+                onPayday={o.setPayday}
+                onGuideDone={o.endWheelGuide}
+              />
+            );
+        }
+        return null;
       case BILLS_STEP:
         return (
           <StepBills
@@ -219,14 +273,31 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
           <StepFutureYou
             pal={pal}
             percent={o.percent}
-            amount={o.futureYou}
-            free={o.income - o.billSum - o.futureYou}
-            line={o.first.line}
+            amount={o.futureYouEachPay}
+            free={o.monthIncome - o.billSum - o.futureYou}
+            // Money that only lands has no daily number until it does.
+            {...(o.firstOfIncomes?.landed ? {} : { line: o.first.line })}
             onPercent={o.setPercent}
+            landed={
+              o.landed
+                ? {
+                    steps: o.landedSteps,
+                    most: LANDED_FUTURE_STEPS,
+                    fullAt: LANDED_FUTURE_STEPS / 2,
+                    amount: o.futureYou,
+                    step: landedFutureStep(o.currency),
+                    onSteps: o.setLandedSteps,
+                  }
+                : undefined
+            }
           />
         );
       case PAY_WITH_STEP:
-        return <StepPayWith pal={pal} wallets={o.wallets} onToggle={o.toggleWallet} />;
+        return o.payPage === 'work' ? (
+          <StepWorkBanks pal={pal} banks={o.workBanks} onAnswer={o.answerWorkBank} />
+        ) : (
+          <StepPayWith pal={pal} wallets={o.wallets} onToggle={o.toggleWallet} />
+        );
       case AI_STEP:
         return <StepAi pal={pal} />;
       case CATCH_STEP:
@@ -258,10 +329,28 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
       case CLOSE_STEP:
         return <StepCloseTime pal={pal} closeAt={o.closeAt} onCloseAt={o.setCloseAt} />;
       default:
+        // Money that only lands opens on Today as it will be: no number made from a guess.
+        if (o.firstOfIncomes?.landed) {
+          const due = o.firstOfIncomes.firstDue;
+          const bill = due === null ? undefined : o.bills[due.index];
+          return (
+            <StepFirstLanded
+              pal={pal}
+              billsStillNeed={o.firstOfIncomes.billsStillNeed}
+              firstDue={
+                due && bill ? { name: billName(i18n, bill.card, bill.option), due: due.due } : null
+              }
+              closeAt={o.closeAt}
+              reminded={o.reminders !== false}
+              onGotPaid={o.finishThenGotPaid}
+            />
+          );
+        }
         return (
           <StepFirstNumber
             pal={pal}
-            income={o.income}
+            income={o.monthIncome}
+            incomes={o.firstOfIncomes?.pay ? { pay: o.firstOfIncomes.pay } : null}
             bills={o.billSum}
             futureYou={o.futureYou}
             first={o.first}
@@ -275,6 +364,9 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
     }
   })();
 
+  // The money step and Pay with have pages of their own, which slide like steps.
+  const paged =
+    o.step === MONEY_IN_STEP || (o.step === PAY_WITH_STEP && o.reach.ways.includes('sell'));
   // The welcome rises and the reveal fades in on their own; every other step slides in.
   const ownEntrance = o.step === WELCOME_STEP || o.step === LAST_STEP;
   // The welcome and the privacy promise carry their own button, and so does the wait for a catch.
@@ -301,11 +393,31 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
           ahead={waiting && listen.caught ? 1 : 0}
         />
         {line !== null && !waiting ? (
-          <CompanionLine step={o.step} line={line} mood={stepMood(o)} pal={pal} top={top(112)} />
+          <CompanionLine
+            step={o.step}
+            line={line}
+            mood={stepMood(o)}
+            pal={pal}
+            top={top(112)}
+            {...(o.step === MONEY_IN_STEP
+              ? { page: o.page }
+              : o.step === PAY_WITH_STEP && o.payPage === 'work'
+                ? { page: o.payPage }
+                : {})}
+          />
         ) : null}
         <Animated.View
-          key={o.step}
+          // The money step's follow-ups slide in like steps, without a progress segment of their own.
+          key={
+            o.step === MONEY_IN_STEP
+              ? `${o.step}:${o.page}`
+              : o.step === PAY_WITH_STEP
+                ? `${o.step}:${o.payPage}`
+                : o.step
+          }
           {...(ownEntrance ? {} : { entering: stepEntering(o.direction, reduceMotion) })}
+          // The money step's pages leave sideways as the next one slides in.
+          {...(paged ? { exiting: pageExiting(o.direction, reduceMotion) } : {})}
           style={{ flex: 1, minHeight: 0 }}
         >
           {body}
@@ -316,6 +428,7 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
             icon={cta.icon}
             hot={o.step === LAST_STEP}
             pal={pal}
+            dim={o.step === MONEY_IN_STEP && o.page === 'ways' && o.reach.ways.length === 0}
             onPress={
               onCatchStep && (listenWays.length > 0 || setupWays.length > 0)
                 ? () => setListening(true)
@@ -324,7 +437,14 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
           />
         )}
       </View>
-      {o.leaving ? <LeavingOverlay step={o.step} line={o.first.line} pal={pal} /> : null}
+      {o.leaving ? (
+        <LeavingOverlay
+          step={o.step}
+          line={o.first.line}
+          pal={pal}
+          words={o.firstOfIncomes?.landed ? i18n.t('income.today.nothingLanded') : null}
+        />
+      ) : null}
     </View>
   );
 }

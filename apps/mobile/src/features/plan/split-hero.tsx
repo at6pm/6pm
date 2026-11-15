@@ -11,7 +11,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import type { PlanSplit, SplitPartKind } from '@6pm/domain';
+import type { PlanSplit, SplitPart as SplitPartModel, SplitPartKind } from '@6pm/domain';
 import { curves, springs } from '@6pm/theme';
 
 import { useTheme } from '../../ui/theme/theme';
@@ -19,7 +19,15 @@ import { body, display, mono, tabular } from '../../ui/type/fonts';
 import type { BillView, PlanJarView } from './plan-view';
 import { Hatch, Rules } from './hatch';
 import type { SplitColours } from './split-colours';
-import { ART_TOP, BillsArt, DaysArt, PotsArt, SPLIT_HEIGHT, type ArtRoom } from './split-part-art';
+import {
+  ART_TOP,
+  BillsArt,
+  DaysArt,
+  InHandArt,
+  PotsArt,
+  SPLIT_HEIGHT,
+  type ArtRoom,
+} from './split-part-art';
 
 const GROW_MS = 700;
 const PART_GAP = 3;
@@ -49,9 +57,19 @@ export interface SplitWords {
   readonly payAmount: string;
 }
 
+/** A part as the hero draws it: a dashed part is one money has not filled yet. */
+export type HeroPart = SplitPartModel & { readonly dashed?: boolean };
+
+/** What the hero draws: the parts, Free's days, and where the cycle or the pay stands. */
+export type HeroSplit = Pick<PlanSplit, 'lastDay' | 'daysSincePayday' | 'days' | 'overspent'> & {
+  readonly parts: readonly HeroPart[];
+  /** Free's days as a pay draws them: a row of small dots, one a day to the next pay. */
+  readonly dayRow?: boolean;
+};
+
 /**
- * Plan's hero: the pay, one tall split of it into Bills, Pots, (Before,) Free (and Over), each
- * sized by its money and tappable, and the one number under it.
+ * Plan's hero: the pay, one tall split of it into Bills, Pots, (Before,) Free (and Over, or In
+ * hand), each sized by its money and tappable, and the one number under it.
  */
 export function SplitHero({
   split,
@@ -63,8 +81,11 @@ export function SplitHero({
   onSelect,
   grow,
   pulse,
+  note = null,
+  gap = null,
+  inHand = null,
 }: {
-  readonly split: PlanSplit;
+  readonly split: HeroSplit;
   readonly bills: readonly BillView[];
   readonly jars: readonly PlanJarView[];
   readonly words: SplitWords;
@@ -75,6 +96,12 @@ export function SplitHero({
   readonly grow: number;
   /** Changes when the Pots part should pulse gold (the first open after payday). */
   readonly pulse: number;
+  /** A line under the pay: "Bills and jars: January already whole ✓". */
+  readonly note?: string | null;
+  /** The share of Bills this pay covers for earlier pays, hatched, and its label ("GAP 2,25TR"). */
+  readonly gap?: { readonly share: number; readonly label: string } | null;
+  /** In hand's dots: a day each, the newest `fresh` of them bright. */
+  readonly inHand?: { readonly days: number; readonly fresh: number } | null;
 }) {
   const { palette } = useTheme();
   const total = split.parts.reduce((sum, p) => sum + p.amount, 0) || 1;
@@ -123,12 +150,25 @@ export function SplitHero({
           {words.paid}
         </Text>
       </View>
+      {note === null ? null : (
+        <Text
+          style={{
+            ...mono(10.5, 400, 0.12),
+            color: palette.inkSoft,
+            paddingHorizontal: 2,
+            marginTop: -4,
+          }}
+        >
+          {note.toUpperCase()}
+        </Text>
+      )}
       <View
         onLayout={(e) => setRowWidth(e.nativeEvent.layout.width)}
         style={{ flexDirection: 'row', height: SPLIT_HEIGHT, gap: PART_GAP }}
       >
         {split.parts.map((part, i) => {
           const scheduled = part.kind === 'pots' && split.lastDay;
+          const dashed = part.dashed === true;
           return (
             <SplitPart
               key={part.kind}
@@ -136,10 +176,13 @@ export function SplitHero({
               share={part.amount / total}
               minWidth={minWidth}
               radius={radiusOf(i, last)}
-              bg={bgOf(part.kind, colours)}
-              hatch={hatchOf(part.kind, colours, scheduled)}
-              fg={fgOf(part.kind, colours)}
-              ruled={part.kind === 'bills' ? colours.bills.rule8 : undefined}
+              bg={dashed ? 'transparent' : bgOf(part.kind, colours)}
+              hatch={dashed ? undefined : hatchOf(part.kind, colours, scheduled)}
+              fg={dashed ? colours.dashed.fg : fgOf(part.kind, colours)}
+              ruled={part.kind === 'bills' && !dashed ? colours.bills.rule8 : undefined}
+              dashed={dashed ? colours.dashed.line : undefined}
+              gap={part.kind === 'bills' && !dashed ? gap : null}
+              gapColours={colours.gap}
               label={words.label[part.kind]}
               amount={words.amount[part.kind]}
               selected={selected === part.kind}
@@ -161,8 +204,20 @@ export function SplitHero({
                     colours={colours}
                     ring={colours.pots.bg}
                   />
-                ) : part.kind === 'free' ? (
-                  <DaysArt days={split.days} room={room} colours={colours} />
+                ) : part.kind === 'free' && !dashed ? (
+                  <DaysArt
+                    days={split.days}
+                    room={room}
+                    colours={colours}
+                    row={split.dayRow === true}
+                  />
+                ) : part.kind === 'inHand' && inHand !== null ? (
+                  <InHandArt
+                    days={inHand.days}
+                    fresh={inHand.fresh}
+                    room={room}
+                    colours={colours}
+                  />
                 ) : null
               }
             </SplitPart>
@@ -217,7 +272,9 @@ function bgOf(kind: SplitPartKind, c: SplitColours): string {
       ? c.pots.bg
       : kind === 'free'
         ? c.free.bg
-        : 'transparent';
+        : kind === 'inHand'
+          ? c.inHand.bg
+          : 'transparent';
 }
 
 type Stripes = { readonly a: string; readonly b: string; readonly width: number };
@@ -236,7 +293,9 @@ function fgOf(kind: SplitPartKind, c: SplitColours): string {
         ? c.before.fg
         : kind === 'free'
           ? c.free.fg
-          : c.over.fg;
+          : kind === 'inHand'
+            ? c.inHand.fg
+            : c.over.fg;
 }
 
 /**
@@ -262,6 +321,9 @@ function SplitPart({
   pulseColour,
   onPress,
   children,
+  dashed,
+  gap = null,
+  gapColours,
 }: {
   readonly index: number;
   readonly share: number;
@@ -281,6 +343,10 @@ function SplitPart({
   readonly pulseColour: string;
   readonly onPress: () => void;
   readonly children: (room: ArtRoom) => ReactNode;
+  /** The outline's colour for a part money has not filled yet. */
+  readonly dashed?: string | undefined;
+  readonly gap?: { readonly share: number; readonly label: string } | null;
+  readonly gapColours?: SplitColours['gap'];
 }) {
   const [width, setWidth] = useState(0);
   // The label and amount are measured, so the art fits above whatever the face and text size make
@@ -351,10 +417,39 @@ function SplitPart({
           ...radius,
           overflow: 'hidden',
           backgroundColor: bg,
+          ...(dashed ? { borderWidth: 1.5, borderStyle: 'dashed', borderColor: dashed } : {}),
         }}
       >
         {hatch ? <Hatch {...hatch} reach={Math.max(width, SPLIT_HEIGHT)} /> : null}
         {ruled ? <Rules color={ruled} every={8} reach={SPLIT_HEIGHT} /> : null}
+        {gap && gapColours && width > 0 ? (
+          // What this pay covers for the pays before it: hatched warm along the paper's right.
+          <View
+            pointerEvents="none"
+            style={{
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              right: 0,
+              width: Math.round(width * Math.min(1, gap.share)),
+              overflow: 'hidden',
+            }}
+          >
+            <Hatch {...gapColours.hatch} reach={Math.max(width, SPLIT_HEIGHT)} />
+            <Text
+              numberOfLines={1}
+              style={{
+                ...mono(9.5, 600, 0.1),
+                color: gapColours.fg,
+                position: 'absolute',
+                top: ART_TOP,
+                right: 8,
+              }}
+            >
+              {gap.label.toUpperCase()}
+            </Text>
+          </View>
+        ) : null}
         {width > 0 ? children(room) : null}
         <View
           onLayout={(e) => setFoot(e.nativeEvent.layout.height)}

@@ -62,7 +62,7 @@ export function askContextOf(snap: MoneySnapshot, t: I18n['t']): AskContext | nu
   return {
     today: snap.today,
     day,
-    daysLeft: snap.cycle.daysLeft,
+    daysLeft: input.daysLeft,
     payday: snap.cycle.payday,
     futureYou: snap.plan.futureYou,
     futureYouThisCycle: cycleFutureYou(input),

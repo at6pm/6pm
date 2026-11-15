@@ -3,7 +3,9 @@ import { Text, View } from 'react-native';
 import Animated, {
   Easing,
   FadeIn,
+  FadeOut,
   interpolateColor,
+  ReduceMotion,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -14,20 +16,28 @@ import type { Language } from '@6pm/i18n';
 import { curves, voiceInk } from '@6pm/theme';
 
 import { useI18n } from '../../i18n/i18n';
+import { Companion } from '../../ui/companion/companion';
 import { Symbol } from '../../ui/icons/symbol';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading, mono } from '../../ui/type/fonts';
 import { ListeningRing } from './listening-ring';
-import { OpenSettingsPill } from './open-settings-pill';
 import { VoiceShimmer } from './voice-shimmer';
 import { dictationName, type VoiceChip } from './voice-support';
-import { mainAction, type VoiceStage } from './voice-stage';
+import { missed, type VoiceStage } from './voice-stage';
 import { WaveBars } from './wave-bars';
 
 const enter = Easing.bezier(...curves.enter);
+const house = Easing.bezier(...curves.house);
 /** The prototype's `micIn` curve: a pop that overshoots a little. */
 const pop = Easing.bezier(0.2, 1.4, 0.4, 1);
+/** Back to the keys from a miss: a plain cross-fade. */
+const BACK_MS = 200;
+/** The companion rising into a miss, on the house pop. */
+const RISE = 14;
+const RISE_MS = 420;
+/** The waveform settling and fading as the miss comes in. */
+const SETTLE_MS = 160;
 
 /** `micIn`: scaled from .6 and faded in, after `delay` ms. */
 function popIn(duration: number, delay = 0) {
@@ -46,37 +56,54 @@ function popIn(duration: number, delay = 0) {
 /**
  * The keypad and the voice panel in one place: the keypad steps back (fading, shrinking a little,
  * dropping 6 pt) while the panel comes forward over it, and the other way when the panel closes.
+ * Leaving a miss for the keys (`back`) is a plain 200 ms cross-fade.
  */
-export function useVoiceSwap(open: boolean) {
+export function useVoiceSwap(open: boolean, back = false) {
   const shown = useSharedValue(open ? 1 : 0);
+  const quick = useSharedValue(back ? 1 : 0);
   useEffect(() => {
+    quick.value = !open && back ? 1 : 0;
     shown.value = open ? 1 : 0;
-  }, [open, shown]);
-  const keypad = useAnimatedStyle(() => ({
-    opacity: withTiming(1 - shown.value, { duration: 350 }),
-    transform: [
-      { translateY: withTiming(6 * shown.value, { duration: 450, easing: enter }) },
-      { scale: withTiming(1 - 0.04 * shown.value, { duration: 450, easing: enter }) },
-    ],
-  }));
-  const panel = useAnimatedStyle(() => ({
-    opacity: withTiming(shown.value, { duration: 350 }),
-    transform: [
-      { translateY: withTiming(10 * (1 - shown.value), { duration: 450, easing: enter }) },
-      { scale: withTiming(0.96 + 0.04 * shown.value, { duration: 450, easing: enter }) },
-    ],
-  }));
+  }, [open, back, shown, quick]);
+  const keypad = useAnimatedStyle(() => {
+    const fast = quick.value === 1;
+    return {
+      opacity: withTiming(1 - shown.value, { duration: fast ? BACK_MS : 350 }),
+      transform: [
+        { translateY: withTiming(6 * shown.value, { duration: fast ? 0 : 450, easing: enter }) },
+        { scale: withTiming(1 - 0.04 * shown.value, { duration: fast ? 0 : 450, easing: enter }) },
+      ],
+    };
+  });
+  const panel = useAnimatedStyle(() => {
+    const fast = quick.value === 1;
+    return {
+      opacity: withTiming(shown.value, { duration: fast ? BACK_MS : 350 }),
+      transform: [
+        {
+          translateY: withTiming(10 * (1 - shown.value), {
+            duration: fast ? 0 : 450,
+            easing: enter,
+          }),
+        },
+        {
+          scale: withTiming(0.96 + 0.04 * shown.value, {
+            duration: fast ? 0 : 450,
+            easing: enter,
+          }),
+        },
+      ],
+    };
+  });
   return { keypad, panel };
 }
 
-/** The panel's words for a stage it cannot carry on from: why, in a sentence. */
-function stuckLine(
+/** The panel's words for a stage it cannot carry on from with the microphone. */
+function settingsLine(
   stage: VoiceStage,
   t: ReturnType<typeof useI18n>['t'],
   language: Language,
 ): string | null {
-  if (stage === 'nothing') return t('voice.nothingTap');
-  if (stage === 'noAmount') return t('voice.noAmount');
   if (stage === 'denied') return t('voice.denied');
   if (stage === 'unavailable')
     return t('voice.unavailable', { language: dictationName(language, t) });
@@ -84,17 +111,79 @@ function stuckLine(
 }
 
 /**
- * What quick add hears, over the keypad: a status line, the words (streaming while listening,
- * quoted once read), and under them the bars, the reading sweep or the chips read from them.
+ * Voice missed: the companion rises with one line, what was heard in mono and how to say it; with
+ * nothing heard at all, it asks whether the microphone is allowed.
+ */
+function MissedLine({
+  nothing,
+  transcript,
+  serious,
+}: {
+  /** Nothing was heard at all. */
+  readonly nothing: boolean;
+  /** The words the speech service returned; empty when it returned none. */
+  readonly transcript: string;
+  readonly serious: boolean;
+}) {
+  const { palette } = useTheme();
+  const { t } = useI18n();
+  const rise = useSharedValue(0);
+  useEffect(() => {
+    rise.value = withTiming(1, {
+      duration: RISE_MS,
+      easing: house,
+      reduceMotion: ReduceMotion.System,
+    });
+  }, [rise]);
+  const risen = useAnimatedStyle(() => ({
+    opacity: Math.min(1, rise.value * 1.5),
+    transform: [{ translateY: RISE * (1 - rise.value) }],
+  }));
+  const heard = transcript.trim();
+  // The heard words sit inside the sentence in mono: the sentence is split where they go.
+  const [before = '', after = ''] = t('voice.heardFirst', { said: '\u0000' }).split('\u0000');
+  const how = { ...body(13.5), lineHeight: 19, color: palette.inkSoft };
+  return (
+    <Animated.View
+      style={[{ flexDirection: 'row', alignItems: 'center', gap: 14, alignSelf: 'stretch' }, risen]}
+    >
+      <Companion size={58} mood="calm" serious={serious} />
+      <View style={{ flex: 1, gap: 5 }}>
+        <Text style={{ ...leading(display(20, 500), 23), color: palette.ink }}>
+          {nothing ? t('voice.nothingHeard') : t('voice.missed')}
+        </Text>
+        {nothing ? null : heard === '' ? (
+          <Text numberOfLines={3} style={how}>
+            {t('voice.sayFirst')}
+          </Text>
+        ) : (
+          <Text numberOfLines={3} style={how}>
+            {before}
+            <Text style={{ ...mono(12), color: palette.ink }}>{`“${heard}”`}</Text>
+            {after}
+          </Text>
+        )}
+      </View>
+    </Animated.View>
+  );
+}
+
+/**
+ * What quick add hears, over the keypad's first three rows: a status line, the words (streaming
+ * while listening, quoted once read), and under them the bars, the reading sweep or the chips read
+ * from them. A miss is the companion with one line, the words heard and how to say it.
  */
 export function QuickVoicePanel({
   stage,
   transcript,
   chips,
+  serious = false,
 }: {
   readonly stage: VoiceStage;
   readonly transcript: string;
   readonly chips: readonly VoiceChip[];
+  /** Serious mode: the plain companion. */
+  readonly serious?: boolean;
 }) {
   const { palette } = useTheme();
   const { t, language } = useI18n();
@@ -102,7 +191,7 @@ export function QuickVoicePanel({
   const last = useRef<VoiceStage>('waiting');
   if (stage !== 'closed') last.current = stage;
   const shown = last.current;
-  const stuck = stuckLine(shown, t, language);
+  const stuck = settingsLine(shown, t, language);
   const hearing = shown === 'waiting' || shown === 'listening';
   const title = hearing
     ? t('voice.listening')
@@ -121,14 +210,29 @@ export function QuickVoicePanel({
         : `“${transcript}”`;
   const saidInk = transcript !== '' && shown !== 'reading' ? palette.ink : palette.inkSoft;
 
+  if (missed(shown)) {
+    return (
+      <View
+        style={{ flex: 1, justifyContent: 'center', paddingVertical: 14, paddingHorizontal: 16 }}
+      >
+        <MissedLine
+          key={`${shown}-${transcript}`}
+          nothing={shown === 'nothing'}
+          transcript={transcript}
+          serious={serious}
+        />
+      </View>
+    );
+  }
+
   return (
     <View
       style={{
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 14,
-        paddingVertical: 16,
+        gap: 10,
+        paddingVertical: 12,
         paddingHorizontal: 20,
       }}
     >
@@ -178,9 +282,12 @@ export function QuickVoicePanel({
           {stuck}
         </Animated.Text>
       ) : null}
-      {shown === 'denied' ? <OpenSettingsPill /> : null}
       {hearing ? (
-        <Animated.View entering={FadeIn.duration(300)} style={{ height: 28 }}>
+        <Animated.View
+          entering={FadeIn.duration(300)}
+          exiting={FadeOut.duration(SETTLE_MS)}
+          style={{ height: 28 }}
+        >
           <WaveBars count={7} width={4} height={28} gap={4} radius={3} />
         </Animated.View>
       ) : shown === 'reading' ? (
@@ -219,15 +326,18 @@ export function QuickVoicePanel({
 }
 
 /**
- * The square microphone beside the main button. Tapped, it listens; while listening it stops;
- * it takes the accent while the panel is open and pulses a ring while it hears.
+ * The microphone, the first cell of Quick add's last row. Tapped, it listens; while listening it
+ * stops; it takes the accent while the panel is open and pulses a ring while it hears.
  */
-export function QuickMic({
+export function QuickMicCell({
   stage,
   onPress,
+  disabled = false,
 }: {
   readonly stage: VoiceStage;
   readonly onPress: () => void;
+  /** Drawn, but voice does not fill this face of the ticket. */
+  readonly disabled?: boolean;
 }) {
   const { palette } = useTheme();
   const { t } = useI18n();
@@ -254,15 +364,15 @@ export function QuickMic({
   const shadow = useAnimatedStyle(() => ({ opacity: glow.value }));
 
   return (
-    <View style={{ width: 56, height: 56 }}>
-      <ListeningRing on={listening} radius={18} />
+    <View style={{ flex: 1, height: 48, opacity: disabled ? 0.35 : 1 }}>
+      <ListeningRing on={listening} radius={15} />
       <Animated.View
         pointerEvents="none"
         style={[
           {
             position: 'absolute',
             inset: 0,
-            borderRadius: 18,
+            borderRadius: 15,
             backgroundColor: palette.accent,
             boxShadow: voiceInk.listeningGlow,
           },
@@ -270,78 +380,25 @@ export function QuickMic({
         ]}
       />
       <PressScale
-        scaleTo={0.93}
+        scaleTo={0.92}
         accessibilityRole="button"
         accessibilityLabel={listening ? t('voice.stopHint') : t('voice.micHint')}
-        accessibilityState={{ busy: listening }}
+        accessibilityState={{ busy: listening, disabled }}
+        disabled={disabled}
         onPress={onPress}
-        style={{ width: 56, height: 56 }}
+        style={{ flex: 1 }}
       >
         <Animated.View
           style={[
-            {
-              flex: 1,
-              borderRadius: 18,
-              alignItems: 'center',
-              justifyContent: 'center',
-            },
+            { flex: 1, borderRadius: 15, alignItems: 'center', justifyContent: 'center' },
             face,
           ]}
         >
           <Animated.View key={icon} {...(open ? { entering: popIn(300) } : {})}>
-            <Symbol name={icon} size={26} fill={1} color={open ? palette.accentFg : palette.ink} />
+            <Symbol name={icon} size={22} fill={1} color={open ? palette.accentFg : palette.ink} />
           </Animated.View>
         </Animated.View>
       </PressScale>
     </View>
-  );
-}
-
-/**
- * The wide button beside the microphone: Keep it from the keypad, Done talking while listening,
- * Cancel while the words are read or something stops voice. It dims while there is nothing to keep
- * and while the words are being read.
- */
-export function QuickMainButton({
-  stage,
-  canKeep,
-  onPress,
-}: {
-  readonly stage: VoiceStage;
-  readonly canKeep: boolean;
-  readonly onPress: () => void;
-}) {
-  const { palette } = useTheme();
-  const { t } = useI18n();
-  const action = mainAction(stage);
-  const opacity =
-    stage === 'reading' || stage === 'heard' ? 0.5 : action === 'keep' && !canKeep ? 0.35 : 1;
-  const fade = useAnimatedStyle(() => ({ opacity: withTiming(opacity, { duration: 250 }) }));
-  const [icon, label] =
-    action === 'keep'
-      ? (['receipt_long', t('quick.keep')] as const)
-      : action === 'stop'
-        ? (['check', t('voice.doneTalking')] as const)
-        : (['close', t('voice.cancel')] as const);
-  return (
-    <Animated.View style={[{ flex: 1 }, fade]}>
-      <PressScale
-        scaleTo={0.97}
-        onPress={onPress}
-        disabled={action === 'keep' && !canKeep}
-        style={{
-          height: 56,
-          borderRadius: 18,
-          backgroundColor: palette.btnBg,
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 8,
-        }}
-      >
-        <Symbol name={icon} size={20} color={palette.btnFg} />
-        <Text style={{ ...body(17, 650), color: palette.btnFg }}>{label}</Text>
-      </PressScale>
-    </Animated.View>
   );
 }

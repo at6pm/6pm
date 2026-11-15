@@ -14,7 +14,7 @@ import {
 import type { MoneySnapshot } from '../../data/money-store';
 import { openMemoryStore } from '../backup/test/memory-db';
 import { countedSpendOf, jarLinesOf } from '../diary/jar-lines';
-import { spendTag, toRowViews, todayView, type Labels } from './today-view';
+import { placedAsOf, spendTag, toRowViews, todayView, type Labels } from './today-view';
 
 const labels: Labels = {
   source: (s) => s,
@@ -195,5 +195,48 @@ describe('jarLinesOf', () => {
     expect(lines).toEqual([{ potId: 'dalat', label: 'From dalat', amount: 1_230_000 }]);
     const counted = 1_200_000 + 50_000 + 30_000;
     expect(counted - 1_230_000).toBe(sumDayPart(spends.map(countedSpendOf), new Set()));
+  });
+});
+
+describe('a pay or a landing on its row', () => {
+  const landed = { id: 'landed', name: null, rhythm: { kind: 'none' as const }, amount: 0 };
+  const weekly = {
+    id: 'pay',
+    name: 'Xưởng Gió',
+    rhythm: { kind: 'weekly' as const, weekday: 4 as const },
+    amount: 4_000_000,
+  };
+  const moneyIn = (over: Partial<SpendRow>): SpendRow => ({
+    ...spend('May Xanh Studio', '2026-11-15', 'kept'),
+    source: 'manual',
+    direction: 'in',
+    moneyIn: 'pay',
+    incomeId: 'landed',
+    ...over,
+  });
+  const named: Labels = {
+    ...labels,
+    moneyIn: 'Money in',
+    placedAs: (row) => {
+      const placed = placedAsOf(row, [landed, weekly]);
+      return (
+        placed && { label: placed.kind === 'landed' ? 'Landed' : 'Your pay', name: placed.name }
+      );
+    },
+  };
+
+  it('says it is a landing or the person’s pay, from whom, in place of “Money in”', () => {
+    const [row] = toRowViews([moneyIn({})], [], named);
+    expect(row).toMatchObject({ name: 'May Xanh Studio', meta: '05:00 · Landed · manual' });
+    const [pay] = toRowViews([moneyIn({ merchant: '', incomeId: 'pay' })], [], named);
+    expect(pay).toMatchObject({ name: 'Xưởng Gió', meta: '05:00 · Your pay · manual' });
+  });
+
+  it('leaves other money in, and a plan that never held incomes, as they always read', () => {
+    expect(placedAsOf(moneyIn({ moneyIn: 'spread', incomeId: null }), [landed])).toBeNull();
+    expect(placedAsOf(moneyIn({ status: 'caught' }), [landed])).toBeNull();
+    expect(placedAsOf(moneyIn({ incomeId: 'plan' }), undefined)).toBeNull();
+    const [row] = toRowViews([moneyIn({ moneyIn: 'spread', incomeId: null })], [], named);
+    expect(row?.meta).toBe('05:00 · Money in · manual');
   });
 });

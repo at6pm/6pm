@@ -1,13 +1,11 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
-import { Platform, ScrollView, Text, useWindowDimensions, View } from 'react-native';
+import { useEffect, useRef, useState, type ComponentRef } from 'react';
+import { Platform, Text, type TextInput, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Animated from 'react-native-reanimated';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import {
-  ENVELOPE_START,
-  envelopeAmounts,
-  envelopeTotal,
+  keypadHolding,
   likelyCategoriesAt,
   pressKey,
   ruleCategoryFor,
@@ -15,34 +13,30 @@ import {
   toMinor,
   type MerchantRuleRow,
 } from '@6pm/domain';
-import { localeOf } from '@6pm/i18n';
-import { moneyInInk, oklchSrgbHex } from '@6pm/theme';
+import { moneyInInk } from '@6pm/theme';
 
 import { useMoney, useMoneyActions, useMoneyStore } from '../data/money-provider';
 import { useCompanionToast } from '../features/companion/use-companion-toast';
 import { useRunAction } from '../features/companion/use-run-action';
-import { QUICK_PHOTO_ROOM, QuickPhoto, useWaitingPhoto } from '../features/quick-add/quick-photo';
-import { QuickTicket } from '../features/quick-add/quick-ticket';
-import { useWalletOptions } from '../features/quick-add/use-wallet-options';
-import { CASH_WALLET } from '../features/quick-add/wallet-options';
-import { firstJarFor, FromJarSwitch, FromRow } from '../features/quick-add/wallet-row';
 import { jarChoiceOf } from '../features/close/jar-choice-of';
 import { jarsToSpendFrom } from '../features/details/from-jar-row';
-import { jarName } from '../features/pots/jar-name';
-import { SplitSwitch } from '../features/owed/split-switch';
-import { ENVELOPE_CATEGORY_ID, useNewYear } from '../features/pots/use-new-year';
-import {
-  LixiMode,
-  QuickModeSwitch,
-  type EnvelopeDestination,
-  type QuickMode,
-} from '../features/quick-add/lixi-mode';
-import {
-  QuickMainButton,
-  QuickMic,
-  QuickVoicePanel,
-  useVoiceSwap,
-} from '../features/voice/quick-voice';
+import { Avatar } from '../features/owed/owed-parts';
+import { CategoryRow, TicketWorkStamp, WorkStamp } from '../features/quick-add/category-row';
+import { FaceSwap } from '../features/quick-add/face-swap';
+import { FaceSwitch, type QuickFace } from '../features/quick-add/face-switch';
+import { LixiMode, QuickModeSwitch, type QuickMode } from '../features/quick-add/lixi-mode';
+import { QuickKeypad } from '../features/quick-add/quick-keypad';
+import { TicketWithPrint, useWaitingPhoto } from '../features/quick-add/quick-photo';
+import { QuickTicket } from '../features/quick-add/quick-ticket';
+import { QuickTools } from '../features/quick-add/quick-tools';
+import { TicketFlip } from '../features/quick-add/ticket-flip';
+import { ticketStamp } from '../features/quick-add/ticket-stamp';
+import { useLixiEntry } from '../features/quick-add/use-lixi-entry';
+import { useMoneyInFace } from '../features/quick-add/use-money-in-face';
+import { useWalletOptions } from '../features/quick-add/use-wallet-options';
+import { CASH_WALLET } from '../features/quick-add/wallet-options';
+import { WhoFrom } from '../features/quick-add/who-from';
+import { QuickVoicePanel } from '../features/voice/quick-voice';
 import { useVoiceEntry } from '../features/voice/use-voice-entry';
 import { useTravel } from '../features/travel/travel-provider';
 import { initialKeypad, useTravelEntry } from '../features/travel/use-travel-entry';
@@ -50,18 +44,21 @@ import { useI18n } from '../i18n/i18n';
 import { useMoneyFormat } from '../money/use-money-format';
 import { CategoryTile } from '../ui/category-tile';
 import { haptics } from '../ui/haptics';
-import { Keypad } from '../ui/keypad';
-import { isSymbolName, Symbol } from '../ui/icons/symbol';
+import { Symbol, isSymbolName } from '../ui/icons/symbol';
 import { PressScale } from '../ui/primitives/press-scale';
 import { useClock } from '../ui/theme/clock';
 import { EdgeSheet, EdgeSheetScroll, useEdgeSheet } from '../ui/navigation/edge-sheet';
 import { useTheme } from '../ui/theme/theme';
 import { body } from '../ui/type/fonts';
 
-/** Quick add: type it in a few taps, the category most likely at this hour already picked. */
 /** The header's words grow with the text size up to this much, and the middle then gives way. */
 const HEADER_TEXT_MOST = 1.6;
 
+/**
+ * Quick add: type it in a few taps, the category most likely at this hour already picked. The
+ * header's "Spent · Got paid" turns the ticket over to money that came in, from someone, placed at
+ * once (`face: 'in'` opens it that way).
+ */
 export default function QuickAdd() {
   const { palette } = useTheme();
   const { t, language } = useI18n();
@@ -72,19 +69,32 @@ export default function QuickAdd() {
   const run = useRunAction();
   const say = useCompanionToast();
   const router = useRouter();
+  const edge = useEdgeSheet();
+  const params = useLocalSearchParams<{
+    fromPot?: string;
+    face?: string;
+    /** Opened from the close's "It landed": the pay's amount, and the income it is the pay of. */
+    amount?: string;
+    pay?: string;
+  }>();
+  const [face, setFace] = useState<QuickFace>(params.face === 'in' ? 'in' : 'out');
   // "Split it next": Keep saves the spend, then the split sheet opens on it.
   const [splitting, setSplitting] = useState(false);
-  const [leftWidth, setLeftWidth] = useState(0);
-  const [rightWidth, setRightWidth] = useState(0);
-  const side = Math.max(leftWidth, rightWidth);
+  const [side, setSide] = useState(0);
   const { trip, dongQuote } = useTravel();
   const money = useMoneyFormat();
   // Abroad the keypad opens in the local currency, settled once as the sheet opens.
-  const [keys, setKeys] = useState(() => initialKeypad(trip, money.currency, dongQuote));
+  const [keys, setKeys] = useState(() => {
+    const held = Number(params.amount);
+    return params.face === 'in' && Number.isSafeInteger(held) && held > 0
+      ? keypadHolding(money.currency, held)
+      : initialKeypad(trip, money.currency, dongQuote);
+  });
   const [note, setNote] = useState('');
+  const [sender, setSender] = useState('');
+  const senderField = useRef<ComponentRef<typeof TextInput>>(null);
   const [wallet, setWallet] = useState(CASH_WALLET);
   // Opened from a jar's "Spend from it", that jar is already picked.
-  const params = useLocalSearchParams<{ fromPot?: string }>();
   const [fromPot, setFromPot] = useState<string | null>(() =>
     params.fromPot && snap.pots.some((p) => p.id === params.fromPot) ? params.fromPot : null,
   );
@@ -114,20 +124,12 @@ export default function QuickAdd() {
   const [likelyId] = useState(ordered[0]?.id ?? '');
   const [picked, setPicked] = useState<string | null>(null);
   // In the Lunar New Year season Quick add has a third mode: lì xì counted by the envelope.
-  const season = useNewYear();
-  const envelopesOn = season.day !== null && season.tradition !== null;
-  const amounts = envelopeAmounts(money.currency);
+  const lixi = useLixiEntry({ saving, wallet, onKept: edge.dismiss });
+  const envelopesOn = lixi.on;
   const [mode, setMode] = useState<QuickMode>('keypad');
-  const [lixi, setLixi] = useState(() => ({
-    given: true,
-    count: 5,
-    each: amounts[ENVELOPE_START] ?? 0,
-    said: false,
-  }));
   const voice = useVoiceEntry({
-    onEnvelopes: ({ count, each, incoming }) => {
-      if (!envelopesOn) return false;
-      setLixi({ given: !incoming, count, each, said: true });
+    onEnvelopes: (said) => {
+      if (!lixi.heard(said)) return false;
       setMode('envelopes');
       return true;
     },
@@ -141,7 +143,6 @@ export default function QuickAdd() {
   });
   const voiceOff = voice.dictation.state.phase === 'unavailable';
   const listeningOpen = voice.stage !== 'closed';
-  const swap = useVoiceSwap(listeningOpen);
   const learned = ruleCategoryFor(
     ruleIndex(rules),
     note,
@@ -151,8 +152,15 @@ export default function QuickAdd() {
   const category = snap.categories.find((c) => c.id === categoryId);
   const entry = useTravelEntry(keys);
   const { amount } = entry;
-  const locale = localeOf(language);
-  const stamp = `${new Intl.DateTimeFormat(locale, { weekday: 'short', day: 'numeric', month: 'short' }).format(now)} · ${new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit', hour12: false }).format(now)}`;
+  const stamp = ticketStamp(now, language);
+  const moneyIn = useMoneyInFace({ rules, sender, amount, wallet, pay: params.pay ?? null });
+  const walletLabel = wallets.find((w) => w.value === wallet)?.label ?? wallet;
+  const walletMenu = (label: string) => ({
+    label,
+    choices: wallets.map((w) => ({ key: w.value, label: w.label })),
+    selected: wallet,
+    onSelect: setWallet,
+  });
 
   const fromJar = fromPot ? snap.pots.find((p) => p.id === fromPot) : undefined;
   const fromChoice = fromJar
@@ -171,84 +179,30 @@ export default function QuickAdd() {
       )
     : null;
 
-  const lixiTotal = envelopeTotal(lixi.count, lixi.each);
-  const seasonJar = season.jar;
-  const jarHeld = seasonJar ? (snap.potSaved[seasonJar.id] ?? 0) : 0;
-  const destination: EnvelopeDestination = !lixi.given
-    ? {
-        kind: 'saved',
-        title: t('season.quick.saved'),
-        sub: t('season.quick.savedSub'),
-        hue: 150,
-        level: Math.min(1, 0.3 + lixiTotal / Math.max(1, toMinor(10_000_000, money.currency))),
-      }
-    : seasonJar && jarHeld > 0
-      ? {
-          kind: 'jar',
-          title: t('season.quick.fromJar', { festival: season.festival }),
-          sub: t('season.quick.jarLeft', {
-            from: money.short(jarHeld),
-            to: money.short(Math.max(0, jarHeld - lixiTotal)),
-          }),
-          hue: seasonJar.hue,
-          level: seasonJar.goal > 0 ? Math.max(0, jarHeld - lixiTotal) / seasonJar.goal : 0,
-        }
-      : {
-          kind: 'today',
-          title: t('season.quick.counts'),
-          sub: t('season.quick.countsSub', { festival: season.festival }),
-          hue: 85,
-          level: 0,
-        };
+  // A photo clipped on the ticket waits until Keep it gives it to the spend.
+  const waitingPhoto = useWaitingPhoto(saving);
 
-  /** Keep it, in the lì xì mode: one spend (or money in) of every envelope, in the Lì xì category. */
-  const saveEnvelopes = async () => {
-    if (lixiTotal <= 0 || saving.current) return;
+  /** Keep it on the money-in face: written and placed at once, never left for the close. */
+  const keepIn = async () => {
+    if (amount <= 0 || saving.current) return;
     saving.current = true;
-    const category = {
-      id: ENVELOPE_CATEGORY_ID,
-      name: season.envelope,
-      icon: 'featured_seasonal_and_gifts',
-      hue: 20,
-      countsDaily: true,
-      sort: snap.categories.reduce((most, c) => Math.max(most, c.sort + 1), 0),
-      archivedAt: null,
-    };
-    const common = {
-      amount: lixiTotal,
-      categoryId: ENVELOPE_CATEGORY_ID,
-      merchant: season.envelope,
-      source: lixi.said ? ('voice' as const) : ('manual' as const),
-      wallet,
-      envelopes: lixi.count,
-      makeCategory: category,
-    };
-    // Given comes out of the Tết jar while it holds something; received waits for the close.
     const saved = await run(() =>
-      actions.addSpend(
-        lixi.given
-          ? {
-              ...common,
-              status: 'kept',
-              fromPot: destination.kind === 'jar' && seasonJar ? seasonJar.id : null,
-            }
-          : { ...common, status: 'caught', direction: 'in' },
-      ),
+      moneyIn.keep({ categoryId: likelyId, wallet, foreignAmount: entry.foreignAmount }),
     );
     if (!saved) {
       saving.current = false;
       return;
     }
+    // No photo goes with money in: one clipped on the other face is let go.
+    waitingPhoto.drop();
     haptics.success();
-    say(lixi.given ? 'envelopes' : 'capture');
+    say('capture');
     edge.dismiss();
   };
 
-  // A photo clipped on the ticket waits until Keep it gives it to the spend.
-  const waitingPhoto = useWaitingPhoto(saving);
-
   const save = async () => {
-    if (mode === 'envelopes') return saveEnvelopes();
+    if (mode === 'envelopes') return lixi.save();
+    if (face === 'in') return keepIn();
     // A second tap before the sheet has closed must not write the spend again.
     if (amount <= 0 || !category || saving.current) return;
     saving.current = true;
@@ -294,7 +248,13 @@ export default function QuickAdd() {
     edge.dismiss();
   };
 
-  const edge = useEdgeSheet();
+  const turn = (next: QuickFace) => {
+    // Voice fills the spend's face only: it stops as the ticket turns over.
+    if (listeningOpen) voice.tapMain();
+    setMode('keypad');
+    setFace(next);
+  };
+
   const header = (
     <View
       onLayout={(e) => setHeaderHeight(e.nativeEvent.layout.height)}
@@ -311,11 +271,11 @@ export default function QuickAdd() {
         }}
       />
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-        {/* Both sides as wide as the wider one, so the middle stays centred in what is left. */}
+        {/* Both sides as wide as Cancel, so the middle stays centred in what is left. */}
         <View style={{ minWidth: side, flexShrink: 0, alignItems: 'flex-start' }}>
           <PressScale
             onPress={edge.dismiss}
-            onLayout={(e) => setLeftWidth(e.nativeEvent.layout.width)}
+            onLayout={(e) => setSide(e.nativeEvent.layout.width)}
             style={{ paddingVertical: 6 }}
           >
             <Text
@@ -328,10 +288,10 @@ export default function QuickAdd() {
           </PressScale>
         </View>
         <View style={{ flex: 1, minWidth: 0, alignItems: 'center' }}>
-          {envelopesOn ? (
+          {envelopesOn && face === 'out' ? (
             <QuickModeSwitch
               mode={mode}
-              envelope={season.envelope}
+              envelope={lixi.season.envelope}
               listening={listeningOpen}
               onMode={(next) => {
                 haptics.tick();
@@ -345,35 +305,86 @@ export default function QuickAdd() {
               }}
             />
           ) : (
-            <Text
-              numberOfLines={1}
-              maxFontSizeMultiplier={HEADER_TEXT_MOST}
-              style={{ ...body(16, 650), color: palette.ink }}
-            >
-              {t('quick.title')}
-            </Text>
+            <FaceSwitch face={face} onFace={turn} />
           )}
         </View>
-        <View style={{ minWidth: side, flexShrink: 0, alignItems: 'flex-end' }}>
-          <View
-            onLayout={(e) => setRightWidth(e.nativeEvent.layout.width)}
-            style={{ flexDirection: 'row', gap: 8 }}
-          >
-            {voice.incoming || mode === 'envelopes' ? null : (
-              <SplitSwitch on={splitting} onToggle={() => setSplitting((on) => !on)} />
-            )}
-            {voice.incoming || jars.length === 0 || mode === 'envelopes' ? null : (
-              <FromJarSwitch
-                on={fromPot !== null}
-                onToggle={() =>
-                  setFromPot(fromPot !== null ? null : firstJarFor(jars, snap.potSaved, amount))
-                }
-              />
-            )}
-          </View>
-        </View>
+        <View style={{ minWidth: side, flexShrink: 0 }} />
       </View>
     </View>
+  );
+
+  const heard = voice.heard !== null ? t('voice.heard', { said: voice.heard }) : null;
+  const todayStays =
+    fromJar && !voice.incoming && heard === null
+      ? t('quick.todayStays', { amount: money.number(Math.max(0, fromChoice?.todayStays ?? 0)) })
+      : null;
+  const spendHint =
+    todayStays ??
+    heard ??
+    (voiceOff
+      ? t('quick.hintKeys', { amount: money.full(toMinor(45_000, money.currency)) })
+      : t('quick.hint'));
+  const spendTicket = (
+    <QuickTicket
+      heading={t('quick.ticket', { no: String(snap.cycleSpends.length + 1).padStart(3, '0') })}
+      stamp={stamp}
+      amount={amount}
+      typed={voice.incoming ? { ...entry.typed, sign: '+' } : entry.typed}
+      incoming={voice.incoming}
+      hint={spendHint}
+      line={todayStays ?? heard ?? entry.underneath ?? ''}
+      note={note}
+      placeholder={t('quick.what')}
+      onNote={setNote}
+      tile={
+        <CategoryTile
+          icon={
+            voice.incoming
+              ? 'payments'
+              : category && isSymbolName(category.icon)
+                ? category.icon
+                : 'payments'
+          }
+          hue={voice.incoming ? moneyInInk.hue : (category?.hue ?? 80)}
+          size={42}
+          radius={14}
+          glyph={23}
+        />
+      }
+      lineMenu={walletMenu(t('potsClose.quick.paidWith'))}
+      categoryLine={`${voice.incoming ? t('moneyIn.name') : (category?.name ?? '')} · ${walletLabel}`}
+    />
+  );
+  const inTicket = (
+    <QuickTicket
+      heading={t('quick.in.ticket')}
+      stamp={stamp}
+      amount={amount}
+      typed={{ ...entry.typed, sign: '+' }}
+      incoming
+      hint={t('quick.hintKeys', { amount: money.full(toMinor(45_000, money.currency)) })}
+      line={moneyIn.landingLine ?? entry.underneath ?? ''}
+      note={sender}
+      placeholder={t('quick.in.who')}
+      onNote={setSender}
+      inputRef={senderField}
+      tile={
+        sender.trim() !== '' ? (
+          <Avatar name={sender} size={42} />
+        ) : (
+          <CategoryTile icon="payments" hue={moneyInInk.hue} size={42} radius={14} glyph={23} />
+        )
+      }
+      lineMenu={walletMenu(t('quick.in.into'))}
+      categoryLine={`${moneyIn.placeLine} · ${walletLabel}`}
+      badge={
+        moneyIn.stamped !== null ? (
+          <TicketWorkStamp inked={moneyIn.stamped} onToggle={moneyIn.toggleStamp} />
+        ) : moneyIn.known?.work ? (
+          <WorkStamp label={t('quick.in.work')} />
+        ) : null
+      }
+    />
   );
 
   return (
@@ -402,20 +413,20 @@ export default function QuickAdd() {
         {mode === 'envelopes' ? (
           <>
             <LixiMode
-              given={lixi.given}
-              count={lixi.count}
-              each={lixi.each}
-              amounts={amounts}
-              total={lixiTotal}
-              destination={destination}
-              onGiven={(given) => setLixi((l) => ({ ...l, given }))}
-              onCount={(count) => setLixi((l) => ({ ...l, count }))}
-              onEach={(each) => setLixi((l) => ({ ...l, each }))}
+              given={lixi.lixi.given}
+              count={lixi.lixi.count}
+              each={lixi.lixi.each}
+              amounts={lixi.amounts}
+              total={lixi.total}
+              destination={lixi.destination}
+              onGiven={(given) => lixi.setLixi((l) => ({ ...l, given }))}
+              onCount={(count) => lixi.setLixi((l) => ({ ...l, count }))}
+              onEach={(each) => lixi.setLixi((l) => ({ ...l, each }))}
             />
             <PressScale
               accessibilityRole="button"
               scaleTo={0.97}
-              onPress={() => void saveEnvelopes()}
+              onPress={() => void lixi.save()}
               style={{
                 height: 56,
                 borderRadius: 18,
@@ -434,149 +445,80 @@ export default function QuickAdd() {
           </>
         ) : (
           <>
-            <QuickTicket
-              clip={<QuickPhoto photo={waitingPhoto.photo} onPick={waitingPhoto.pick} />}
-              clipRoom={QUICK_PHOTO_ROOM}
-              heading={t('quick.ticket', {
-                no: String(snap.cycleSpends.length + 1).padStart(3, '0'),
-              })}
-              stamp={stamp}
-              amount={amount}
-              typed={voice.incoming ? { ...entry.typed, sign: '+' } : entry.typed}
-              incoming={voice.incoming}
-              mark={fromJar ? oklchSrgbHex(0.7, 0.12, fromJar.hue) : null}
-              hint={
-                fromJar && !voice.incoming && voice.heard === null
-                  ? t('potsClose.quick.ticket', {
-                      jar: jarName(fromJar, t).toUpperCase(),
-                      amount: money.number(Math.max(0, fromChoice?.todayStays ?? 0)),
-                    })
-                  : voice.heard !== null
-                    ? t('voice.heard', { said: voice.heard })
-                    : amount
-                      ? (entry.underneath ?? '')
-                      : voiceOff
-                        ? t('quick.hintKeys', {
-                            amount: money.full(toMinor(45_000, money.currency)),
-                          })
-                        : t('quick.hint')
-              }
-              note={note}
-              placeholder={t('quick.what')}
-              onNote={setNote}
-              icon={
-                voice.incoming
-                  ? 'payments'
-                  : category && isSymbolName(category.icon)
-                    ? category.icon
-                    : 'payments'
-              }
-              hue={voice.incoming ? moneyInInk.hue : (category?.hue ?? 80)}
-              lineMenu={{
-                label: t('potsClose.quick.paidWith'),
-                choices: wallets.map((w) => ({ key: w.value, label: w.label })),
-                selected: wallet,
-                onSelect: setWallet,
-              }}
-              categoryLine={`${voice.incoming ? t('moneyIn.name') : (category?.name ?? '')} · ${wallets.find((w) => w.value === wallet)?.label ?? wallet}`}
-            />
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              // The chosen tile lifts and rings itself: room above and below so neither is cut off.
-              style={{ marginHorizontal: -16, marginTop: -6, marginBottom: -4, flexGrow: 0 }}
-              contentContainerStyle={{
-                gap: 8,
-                paddingHorizontal: 16,
-                paddingTop: 12,
-                paddingBottom: 6,
-              }}
+            <TicketWithPrint
+              photo={face === 'out' ? waitingPhoto.photo : null}
+              onPick={waitingPhoto.pick}
+              onDrop={waitingPhoto.drop}
+              title={note.trim() || (category?.name ?? '')}
+              subtitle={stamp}
             >
-              {ordered.map((c) => {
-                const on = c.id === categoryId;
-                return (
-                  <PressScale
-                    key={c.id}
-                    onPress={() => {
-                      haptics.tick();
-                      setPicked(c.id);
-                    }}
-                    style={{ width: 62, alignItems: 'center', gap: 6 }}
-                  >
-                    <View
-                      style={{
-                        borderRadius: 19,
-                        padding: 2,
-                        borderWidth: 2,
-                        borderColor: on ? palette.ink : 'transparent',
-                        transform: [{ translateY: on ? -2 : 0 }],
-                      }}
-                    >
-                      <CategoryTile
-                        icon={isSymbolName(c.icon) ? c.icon : 'payments'}
-                        hue={c.hue}
-                        size={48}
-                        radius={15}
-                        glyph={25}
-                      />
-                    </View>
-                    <Text
-                      numberOfLines={1}
-                      style={{ ...body(11.5, on ? 650 : 500), color: palette.ink, maxWidth: 62 }}
-                    >
-                      {c.name}
-                    </Text>
-                  </PressScale>
-                );
-              })}
-            </ScrollView>
-            {voice.incoming ? null : (
-              <FromRow jars={jars} saved={snap.potSaved} value={fromPot} onChange={setFromPot} />
-            )}
-            <View>
               <Animated.View
-                pointerEvents={listeningOpen ? 'none' : 'auto'}
-                accessibilityElementsHidden={listeningOpen}
-                style={swap.keypad}
+                entering={FadeInDown.delay(50).duration(450)}
+                style={{ marginHorizontal: 4 }}
               >
-                <Keypad
-                  onPress={(key) => {
-                    voice.forgetHeard();
-                    setKeys((k) => pressKey(k, key));
-                  }}
-                  {...(entry.currencyKey ? { currency: entry.currencyKey } : {})}
-                  decimal={entry.decimal}
-                />
+                <TicketFlip face={face} out={spendTicket} into={inTicket} />
               </Animated.View>
-              <Animated.View
-                pointerEvents={listeningOpen ? 'auto' : 'none'}
-                accessibilityElementsHidden={!listeningOpen}
-                style={[
-                  {
-                    position: 'absolute',
-                    inset: 0,
-                    borderRadius: 22,
-                    backgroundColor: palette.chipBg,
-                    overflow: 'hidden',
-                  },
-                  swap.panel,
-                ]}
-              >
+            </TicketWithPrint>
+            <FaceSwap
+              face={face}
+              style={{ marginHorizontal: -16, marginTop: -6 }}
+              out={
+                <View style={{ paddingHorizontal: 16, gap: 14 }}>
+                  <CategoryRow
+                    categories={ordered}
+                    chosen={categoryId}
+                    onPick={(id) => setPicked(id)}
+                  />
+                  {voice.incoming ? null : (
+                    <QuickTools
+                      onPhoto={waitingPhoto.pick}
+                      splitting={splitting}
+                      onSplit={setSplitting}
+                      jars={jars}
+                      saved={snap.potSaved}
+                      fromPot={fromPot}
+                      onFromPot={setFromPot}
+                      amount={amount}
+                    />
+                  )}
+                </View>
+              }
+              into={
+                <View style={{ paddingHorizontal: 16, paddingTop: 6 }}>
+                  <WhoFrom
+                    senders={moneyIn.senders}
+                    picked={moneyIn.known?.merchantKey ?? ''}
+                    onPick={(s) => setSender(s.merchant)}
+                    onName={() => {
+                      setSender('');
+                      senderField.current?.focus();
+                    }}
+                  />
+                </View>
+              }
+            />
+            <QuickKeypad
+              onKey={(key) => {
+                voice.forgetHeard();
+                setKeys((k) => pressKey(k, key));
+              }}
+              currency={entry.currencyKey}
+              decimal={entry.decimal}
+              stage={voice.stage}
+              panel={
                 <QuickVoicePanel
                   stage={voice.stage}
                   transcript={voice.dictation.transcript}
                   chips={voice.chips}
+                  serious={snap.plan?.serious ?? false}
                 />
-              </Animated.View>
-            </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-              <QuickMic stage={voice.stage} onPress={voice.tapMic} />
-              <QuickMainButton
-                stage={voice.stage}
-                canKeep={amount > 0}
-                onPress={listeningOpen ? voice.tapMain : () => void save()}
-              />
-            </View>
+              }
+              canKeep={amount > 0}
+              onKeep={() => void save()}
+              onMic={voice.tapMic}
+              onVoiceMain={voice.tapMain}
+              micOff={face === 'in'}
+            />
           </>
         )}
       </EdgeSheetScroll>

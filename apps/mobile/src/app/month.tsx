@@ -13,6 +13,7 @@ import {
   type PickerInk,
 } from '../features/onboarding/money-in-controls';
 import { PotCard, SheetHeader } from '../features/plan/pot-rows';
+import { REACH_ROUTE } from '../features/today/ask-reach-card';
 import { useI18n } from '../i18n/i18n';
 import { haptics } from '../ui/haptics';
 import { EdgeSheetScroll, FittedSheet } from '../ui/navigation/edge-sheet';
@@ -49,6 +50,13 @@ export default function MonthSheet() {
 
   const save = async () => {
     if (busy.current) return;
+    // "It varies" newly picked is an answer to how money reaches them: the question takes it from
+    // here, the salary ticked and its day varying, rather than a payday saved as the last day.
+    if (payday.kind === 'varies' && plan?.payday.kind !== 'varies' && plan?.incomes === undefined) {
+      haptics.tap();
+      router.replace({ pathname: '/reach', params: { from: 'varies', income: String(income) } });
+      return;
+    }
     busy.current = true;
     setWorking(true);
     if (!(await run(() => actions.updateMonth({ income, payday })))) {
@@ -86,9 +94,36 @@ export default function MonthSheet() {
             <Text style={{ ...body(15, 650), color: palette.ink }}>
               {t('onboarding.payday.title')}
             </Text>
-            <PaydayPicker payday={payday} onPayday={setPayday} colours={colours} />
+            <PaydayPicker
+              payday={payday}
+              onPayday={setPayday}
+              colours={colours}
+              // Newly picked, "It varies" leads into the question, as onboarding's does.
+              {...(plan?.payday.kind !== 'varies' && plan?.incomes === undefined
+                ? { variesNote: t('onboarding.salary.variesNote') }
+                : {})}
+            />
           </View>
         </PotCard>
+        {plan?.payday.kind === 'varies' && plan.incomes === undefined ? (
+          // Someone counting on "It varies" can answer the question from here at any time.
+          <PotCard>
+            <PressScale
+              scaleTo={0.98}
+              accessibilityRole="button"
+              onPress={() => {
+                haptics.tap();
+                router.push(REACH_ROUTE);
+              }}
+              style={{ paddingVertical: 14, paddingHorizontal: 16, gap: 2 }}
+            >
+              <Text style={{ ...body(15, 650), color: palette.ink }}>
+                {t('onboarding.reach.title')}
+              </Text>
+              <Text style={{ ...body(13), color: palette.inkSoft }}>{t('income.ask.sub')}</Text>
+            </PressScale>
+          </PotCard>
+        ) : null}
         <PressScale
           scaleTo={0.95}
           accessibilityRole="button"

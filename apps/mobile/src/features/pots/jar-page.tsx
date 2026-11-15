@@ -18,6 +18,7 @@ import {
   cycleMonth,
   dailyNumber,
   futureYouResume,
+  landedFutureYouStart,
   jarsEachPayday,
   lineWithTopUp,
   nextSetAsideWith,
@@ -30,7 +31,7 @@ import { curves, durations } from '@6pm/theme';
 import { readJarAddFrom, writeJarAddFrom } from '../../data/jar-add-from';
 import { readJarHistory, type JarHistoryEntry } from '../../data/jar-history';
 import { useMoney, useMoneyActions, useMoneyStore } from '../../data/money-provider';
-import { dailyInputOf, dayOf } from '../../data/money-store';
+import { dailyInputOf, dayOf, periodOf, viewIncomeOf } from '../../data/money-store';
 import {
   usePlanActions,
   type RemovedAlreadySaved,
@@ -169,7 +170,8 @@ export function JarPage({
   const [opened] = useState(() => ({ slice: committed, line: dayOf(snap)?.line ?? 0 }));
   const [candidate, setCandidate] = useState(committed);
   useEffect(() => setCandidate(committed), [committed]);
-  const income = snap.plan?.income ?? 0;
+  // What the month brings, for a plan that holds its incomes: never 0 for a weekly pay.
+  const income = viewIncomeOf(snap);
   const range = whatIfRange(income, Math.max(opened.slice, committed), format.money.currency);
   const position = useSharedValue(range.max > 0 ? candidate / range.max : 0);
   const max = range.max;
@@ -240,7 +242,12 @@ export function JarPage({
   const resume = () => {
     haptics.tap();
     if (jar.futureYou) {
-      void run(() => actions.setFutureYou(futureYouResume(income, format.money.currency)));
+      // Money that only lands has no pay to take a share of: Future you resumes at its amount.
+      const amount =
+        periodOf(snap)?.kind === 'landed'
+          ? landedFutureYouStart(format.money.currency)
+          : futureYouResume(income, format.money.currency);
+      void run(() => actions.setFutureYou(amount));
     } else void run(() => actions.updatePot(jar.id, { paused: false }));
   };
   const edit = () => {

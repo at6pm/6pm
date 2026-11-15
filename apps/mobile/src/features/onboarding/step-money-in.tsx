@@ -14,7 +14,7 @@ import { GuideHints, useMoneyInGuide } from './wheel-guide';
 const REACH_Y = { top: 12, bottom: 6 } as const;
 
 /**
- * Money in: millions and hundred thousands on wheels (the home currency's steps), then payday on
+ * Your salary, the follow-up to "A salary, each month": millions and hundred thousands on wheels (the home currency's steps), then payday on
  * a strip of days. The first time through, a ghost finger shows how the wheels move until they
  * are first touched.
  */
@@ -45,7 +45,7 @@ export function StepMoneyIn({
   return (
     <View style={{ gap: 14 }}>
       <StepHeading
-        title={t('onboarding.income.title')}
+        title={t('onboarding.salary.title')}
         sub={t('onboarding.income.sub')}
         pal={pal}
       />
@@ -60,15 +60,27 @@ export function StepMoneyIn({
           keypadInks={keypadInksOf(pal)}
         />
         <GuideHints guide={shown} pal={pal} />
+        {/* A pay that varies is counted as it lands: no day is made from the wheels' amount. */}
         <Text
-          style={{ ...body(13.5, 550), paddingTop: 4, textAlign: 'center', color: pal.inkSoft }}
+          style={{
+            ...body(13.5, 550),
+            paddingTop: 4,
+            textAlign: 'center',
+            color: pal.inkSoft,
+            opacity: payday.kind === 'varies' ? 0 : 1,
+          }}
         >
           {t('onboarding.income.daily', { amount: money.short(dailyHint) })}
         </Text>
       </Card>
       <Card pal={pal} style={{ paddingVertical: 14, paddingHorizontal: 16, gap: 10 }}>
         <Text style={{ ...body(15, 650), color: pal.ink }}>{t('onboarding.payday.title')}</Text>
-        <PaydayPicker payday={payday} onPayday={onPayday} colours={pal} />
+        <PaydayPicker
+          payday={payday}
+          onPayday={onPayday}
+          colours={pal}
+          variesNote={t('onboarding.salary.variesNote')}
+        />
       </Card>
     </View>
   );

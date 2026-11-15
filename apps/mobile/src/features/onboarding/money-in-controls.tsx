@@ -285,11 +285,14 @@ export function PaydayPicker({
   onPayday,
   colours,
   bleed = 16,
+  variesNote,
 }: {
   readonly payday: Payday;
   readonly onPayday: (payday: Payday) => void;
   readonly colours: PickerInk;
   readonly bleed?: number;
+  /** What "it varies" leads to here, when it is not the month's estimate. */
+  readonly variesNote?: string;
 }) {
   const i18n = useI18n();
   const { t } = i18n;
@@ -301,7 +304,7 @@ export function PaydayPicker({
   const captions: readonly (readonly [Payday['kind'], string])[] = [
     ['sameDay', t('onboarding.payday.paidOnDay', { day: ordinalDay(i18n, day ?? DEFAULT_PAYDAY) })],
     ['lastDay', t('onboarding.payday.lastDayNote')],
-    ['varies', t('onboarding.payday.variesNote')],
+    ['varies', variesNote ?? t('onboarding.payday.variesNote')],
   ];
   return (
     <>

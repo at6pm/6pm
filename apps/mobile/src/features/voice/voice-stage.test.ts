@@ -1,6 +1,6 @@
 import { describe, expect, it } from '@jest/globals';
 
-import { mainAction, micAction, voiceStage } from './voice-stage';
+import { lastRowOf, mainAction, micAction, missed, voiceStage } from './voice-stage';
 
 describe('voiceStage', () => {
   it('is closed whatever the dictation did while the panel is shut', () => {
@@ -43,5 +43,28 @@ describe('the panel buttons', () => {
     expect(mainAction('reading')).toBe('cancel');
     expect(mainAction('heard')).toBe('cancel');
     expect(mainAction('denied')).toBe('cancel');
+  });
+});
+
+describe('Quick add’s last row', () => {
+  it('is the microphone and Keep it from the keypad, and while the words are read', () => {
+    expect(lastRowOf('closed')).toEqual({ lead: 'mic', action: 'keep' });
+    expect(lastRowOf('reading')).toEqual({ lead: 'mic', action: 'keep' });
+    expect(lastRowOf('heard')).toEqual({ lead: 'mic', action: 'keep' });
+  });
+
+  it('stops listening from the wide cells', () => {
+    expect(lastRowOf('waiting')).toEqual({ lead: 'mic', action: 'stop' });
+    expect(lastRowOf('listening')).toEqual({ lead: 'mic', action: 'stop' });
+  });
+
+  it('turns the microphone into the way back to the keypad once voice cannot go on', () => {
+    expect(missed('nothing')).toBe(true);
+    expect(missed('noAmount')).toBe(true);
+    expect(missed('denied')).toBe(false);
+    expect(lastRowOf('nothing')).toEqual({ lead: 'keypad', action: 'retry' });
+    expect(lastRowOf('noAmount')).toEqual({ lead: 'keypad', action: 'retry' });
+    expect(lastRowOf('denied')).toEqual({ lead: 'keypad', action: 'settings' });
+    expect(lastRowOf('unavailable')).toEqual({ lead: 'keypad', action: 'keep' });
   });
 });

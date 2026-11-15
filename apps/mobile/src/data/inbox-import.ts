@@ -21,6 +21,8 @@ import { billPayments } from './bill-payments';
 import { noteReceiptRead } from './first-catch';
 import type { moneyActions } from './money-actions';
 import type { MoneyStore } from './money-store';
+import { stampOnArrival } from './work-actions';
+import { workOf } from './work-money';
 import { seedStarterCategories } from './onboarding';
 
 /** The App Group inbox as the surfaces module exposes it. */
@@ -187,6 +189,8 @@ export async function saveInboxSpend(
       snap.categories.find((c) => likely.includes(c.id))?.id ?? snap.categories[0]?.id ?? 'food',
     categoryIds,
     ...(deps.home ? { home: deps.home } : {}),
+    // Work's banks say whether money in is work, so it keeps the bank it came into.
+    ...(workOf(snap) === null ? {} : { walletIn: true }),
   });
   const pair = ownTransferPair(
     {
@@ -200,6 +204,7 @@ export async function saveInboxSpend(
     recent,
   );
   const captured = await actions.captureSpend(draft);
+  if (!captured.merged) await stampOnArrival(store, actions, captured.row);
   if (!captured.merged && item.source === 'shared') {
     await noteReceiptRead(store.db, captured.row, item.receipt);
   }
