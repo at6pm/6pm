@@ -142,6 +142,8 @@ export function DevCommands() {
       const file = new File(Paths.document, 'dev-command.json');
       if (!file.exists) return;
       const parsed = commandSchema.safeParse(JSON.parse(await file.text()));
+      // Launch and coming to the front can both read it; only the first deletes it.
+      if (!file.exists) return;
       file.delete();
       if (!parsed.success) return;
       const {

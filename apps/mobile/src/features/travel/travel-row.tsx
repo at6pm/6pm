@@ -140,7 +140,7 @@ export function TravelRow({ first = false }: { readonly first?: boolean }) {
             <Text style={{ ...body(16), color: palette.ink }}>{t('travel.settings.label')}</Text>
             {locked && !on ? <MaxLock /> : null}
           </View>
-          <Text numberOfLines={1} style={{ ...body(12.5), color: palette.inkSoft }}>
+          <Text numberOfLines={2} style={{ ...body(12.5), color: palette.inkSoft }}>
             {sub}
           </Text>
         </View>

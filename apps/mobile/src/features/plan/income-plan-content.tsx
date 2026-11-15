@@ -219,9 +219,9 @@ function landedHero(
       ...base,
       days: view.days,
       parts: [
-        // The coming months' bills the days reach are kept with this month's.
-        { kind: 'bills', amount: v.bills + v.ahead },
-        { kind: 'pots', amount: v.jars },
+        // The coming months' bills and jars the days reach are kept with this month's.
+        { kind: 'bills', amount: v.bills + v.ahead - v.aheadJars },
+        { kind: 'pots', amount: v.jars + v.aheadJars },
         // What pays no whole day in hand stays with the free money.
         { kind: 'free', amount: v.atLine + v.leftOver },
         ...(v.beyond > 0 ? [{ kind: 'inHand' as const, amount: v.beyond }] : []),
@@ -234,8 +234,8 @@ function landedHero(
       label: LABELS(t),
       amount: {
         ...NO_AMOUNTS,
-        bills: short(v.bills + v.ahead),
-        pots: short(v.jars),
+        bills: short(v.bills + v.ahead - v.aheadJars),
+        pots: short(v.jars + v.aheadJars),
         free: short(v.atLine + v.leftOver),
         inHand: short(v.beyond),
       },

@@ -60,7 +60,8 @@ export function ShareCardSheet() {
   const dev: DevSetup | null = __DEV__
     ? {
         format: params.format === 'feed' ? 'feed' : 'story',
-        amounts: params.amounts === '1',
+        // Unset, the card's own default (the thank-you shows its amount).
+        amounts: params.amounts === undefined ? null : params.amounts === '1',
         dump: params.dump && /^[\w.-]+\.png$/.test(params.dump) ? params.dump : null,
       }
     : null;
@@ -69,7 +70,7 @@ export function ShareCardSheet() {
 
 interface DevSetup {
   readonly format: CardFormat;
-  readonly amounts: boolean;
+  readonly amounts: boolean | null;
   readonly dump: string | null;
 }
 

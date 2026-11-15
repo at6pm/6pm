@@ -53,6 +53,12 @@ describe('receiptSpends', () => {
     expect(lines.reduce((sum, s) => sum + s.amount, 0)).toBe(total);
   });
 
+  it('never prints money in stamped as work as Claim back', () => {
+    const paid = spend('client', { amount: 1_800_000, forWork: true, direction: 'in' });
+    expect(receiptSpends([paid], '2026-10-11', notDaily).claimBack).toBeNull();
+    expect(receiptSpends([paid, ...day], '2026-10-11', notDaily).claimBack?.id).toBe('ccc');
+  });
+
   it('is empty on a day with nothing kept', () => {
     expect(receiptSpends([], '2026-10-11', notDaily)).toEqual({
       lines: [],

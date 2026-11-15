@@ -156,12 +156,15 @@ function CodeMatch({
   spend,
   row,
   heldBack,
+  keptBefore,
   onKeep,
   onAnswer,
 }: {
   readonly spend: SpendRow;
   readonly row: OwedRow;
   readonly heldBack: number;
+  /** The match was kept before the close was left: the card opens on its thank-you. */
+  readonly keptBefore: boolean;
   /** Settles the match; the card stays for the thank-you. */
   readonly onKeep: () => void;
   readonly onAnswer: (yes: boolean) => void;
@@ -178,7 +181,7 @@ function CodeMatch({
   // A seller's work money is takings; anyone else's lands in their days, adding days at the cap.
   const takings = work && workLandingOf(snap) === null;
   const [adds] = useState(() => (takings ? null : landingDaysOf(snap, spend.amount)));
-  const [kept, setKept] = useState(false);
+  const [kept, setKept] = useState(keptBefore);
   return (
     <Animated.View entering={FadeInDown.duration(450)} style={{ flex: 1, gap: 18, paddingTop: 56 }}>
       <WordFitText style={{ ...leading(display(40, 500, -0.01), 42), color: palette.ink }}>
@@ -518,21 +521,42 @@ export function RequestQuestionStep({
     task();
   };
   // The strip as the card opened: a match settles it and takes it off the list behind the card.
-  const [row] = useState(() =>
+  const [open] = useState(() =>
     ask.kind === 'request' ? snap.owed.find((r) => r.id === ask.lineId) : undefined,
   );
-  const gone = ask.kind === 'request' && row === undefined;
+  // A strip no longer open may be the one this money settled, in a close that was left after
+  // "Keep it": the match stands and the card opens on its thank-you.
+  const [settled, setSettled] = useState<OwedRow | null>(null);
+  const lineId = ask.kind === 'request' && open === undefined ? ask.lineId : null;
   useEffect(() => {
-    // The strip was settled or taken back since the close opened: an ordinary card.
-    if (gone) once(() => onAnswer(false));
-  }, [gone]);
+    if (lineId === null) return;
+    let left = false;
+    void store.tables.owed
+      .get(lineId)
+      .catch(() => null)
+      .then((line) => {
+        if (left) return;
+        if (line && line.settledSpendId === spend.id) {
+          kept.current = true;
+          setSettled(line);
+        } else {
+          // Settled by other money or taken back since the close opened: an ordinary card.
+          once(() => onAnswer(false));
+        }
+      });
+    return () => {
+      left = true;
+    };
+  }, [lineId]);
   if (ask.kind === 'request') {
+    const row = open ?? settled;
     if (!row) return null;
     return (
       <CodeMatch
         spend={spend}
         row={row}
         heldBack={ask.heldBack}
+        keptBefore={settled !== null}
         onKeep={() => {
           if (kept.current) return;
           kept.current = true;

@@ -129,8 +129,9 @@ export function CoverRulerLine({
           </Text>
           {t('income.today.coveredTo', { date: weekdayDayShort(dateOf(ruler.to)) })}
         </Text>
-        {/* Centred on the line, over the hero's room: the hero keeps its height. */}
-        <View style={{ position: 'absolute', right: 0, top: -6 }}>
+        {/* Centred on the line, just past the ruler's end and clear of its words: the hero keeps
+            its height. */}
+        <View style={{ position: 'absolute', left: '100%', marginLeft: 6, top: -6 }}>
           <OfferedChip
             moments={offer}
             card="covered"
