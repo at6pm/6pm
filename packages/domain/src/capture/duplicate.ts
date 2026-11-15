@@ -268,7 +268,7 @@ function differentWitnesses(a: Witness, b: Witness): boolean {
 }
 
 /** A spend not yet seen by this witness: neither its first sighting nor any merged into it. */
-function newWitness(spend: SightedSpend, incoming: Witness): boolean {
+export function newWitness(spend: SightedSpend, incoming: Witness): boolean {
   return [spend, ...(spend.seenBy ?? [])].every((seen) => differentWitnesses(seen, incoming));
 }
 
@@ -358,6 +358,22 @@ function nearestClose(spend: SightedSpend, arriving: Sighting): number {
     nearest = Math.min(nearest, Math.abs(one.at - arriving.at));
   }
   return nearest;
+}
+
+/** Whether a capture source witnesses payments (never something the person typed). */
+export function isObserved(source: SpendSource): boolean {
+  return OBSERVED.has(source);
+}
+
+/**
+ * How far an arriving sighting is from the nearest of a spend's sightings it is close enough to
+ * be the same payment as, by the windows its kinds of time allow; Infinity when none is.
+ */
+export function gapToSpend(spend: SightedSpend, incoming: NewSighting): number {
+  const at = Date.parse(incoming.at);
+  if (Number.isNaN(at)) return Infinity;
+  const { source, status, atKind, bank, accountTail } = incoming;
+  return nearestClose(spend, { source, status, at, atKind, bank, accountTail });
 }
 
 /**

@@ -1,15 +1,18 @@
 import { randomUUID } from 'expo-crypto';
 
 import {
+  SENT_WINDOW_MS,
   addDays,
+  areApart,
   findDuplicate,
   jarCover,
+  matchWithoutAmount,
   mayBeSamePayment,
-  mergedNaming,
   mergedStatus,
   moneyDayOf,
   sameBooking,
   sameReference,
+  sightingKey,
   type CaptureSighting,
   type NewSighting,
   type SightedSpend,
@@ -19,6 +22,15 @@ import {
   type Witness,
 } from '@6pm/domain';
 
+import {
+  INSERT_SIGHTING,
+  ensureOwn,
+  isOwnSighting,
+  keyOfStored,
+  readApartIndex,
+  reproject,
+  sightingValues,
+} from './capture-sightings';
 import { whatSteps, type WhatStep } from './capture-what';
 import type { Capture, NewSpend } from './money-actions';
 import { findSpend } from './money-store';
@@ -34,54 +46,10 @@ export const CANDIDATE_DAYS = 45;
  */
 const ARRIVES_ALONE: ReadonlySet<SightingChannel> = new Set(['alert', 'email', 'shared', 'wallet']);
 
-const SIGHTING_COLUMNS = [
-  'spend_id',
-  'source',
-  'seen_at',
-  'detail',
-  'capture_id',
-  'channel',
-  'witness_kind',
-  'witness_name',
-  'what',
-  'amount',
-  'currency',
-  'direction',
-  'at_kind',
-  'reference',
-  'account_tail',
-  'bank',
-  'payee',
-  'memo',
-  'words',
-] as const;
-const INSERT_SIGHTING = `INSERT OR IGNORE INTO spend_sightings (${SIGHTING_COLUMNS.join(', ')})
-  VALUES (${SIGHTING_COLUMNS.map(() => '?').join(', ')})`;
-
-/** A sighting's own fields as its row keeps them, each null when it was not read. */
-function sightingValues(sighting: CaptureSighting | undefined): (string | number | null)[] {
-  if (!sighting) return Array.from({ length: SIGHTING_COLUMNS.length - 5 }, () => null);
-  return [
-    sighting.channel,
-    sighting.witness.kind,
-    sighting.witness.name ?? null,
-    sighting.what,
-    sighting.amount ?? null,
-    sighting.currency ?? null,
-    sighting.direction,
-    sighting.atKind ?? null,
-    sighting.reference ?? null,
-    sighting.accountTail ?? null,
-    sighting.bank ?? null,
-    sighting.payee ?? null,
-    sighting.memo ?? null,
-    sighting.words ?? null,
-  ];
-}
-
 /** A sighting row as matching reads it. */
 interface SightingRow {
   readonly spend_id: string;
+  readonly capture_id: string | null;
   readonly source: SpendRow['source'];
   readonly seen_at: string;
   readonly detail: string | null;
@@ -130,15 +98,7 @@ export function capturing(store: MoneyStore, replaceSpend: (row: SpendRow) => vo
     seenAt: string,
     sighting?: CaptureSighting,
   ) => {
-    // A row from before every capture kept its own sighting gets it now, with what it knows.
-    await db.runAsync(INSERT_SIGHTING, [
-      twin.id,
-      twin.source,
-      twin.at,
-      twin.detail,
-      twin.id,
-      ...sightingValues(undefined),
-    ]);
+    await ensureOwn(db, twin);
     await db.runAsync(INSERT_SIGHTING, [
       twin.id,
       input.source,
@@ -156,11 +116,11 @@ export function capturing(store: MoneyStore, replaceSpend: (row: SpendRow) => vo
     seenAt: string,
     sighting?: CaptureSighting,
   ): Promise<Capture> => {
+    const projected = await reproject(store, twin, input, seenAt, sighting);
     const next: SpendRow = {
       ...twin,
       status: mergedStatus(twin.status, input.status),
-      // The name that says most about who was paid, whichever sighting came first.
-      ...mergedNaming(twin, input),
+      ...projected,
       note: twin.note ?? input.note ?? null,
       wallet: twin.wallet ?? input.wallet ?? null,
       memo: twin.memo ?? input.memo ?? null,
@@ -190,7 +150,8 @@ export function capturing(store: MoneyStore, replaceSpend: (row: SpendRow) => vo
   const sightingsOf = async (ids: readonly string[]): Promise<SightingRow[]> => {
     if (ids.length === 0) return [];
     return db.getAllAsync<SightingRow>(
-      `SELECT spend_id, source, seen_at, detail, at_kind, bank, account_tail, reference, direction
+      `SELECT spend_id, capture_id, source, seen_at, detail, at_kind, bank, account_tail, reference,
+              direction
          FROM spend_sightings WHERE spend_id IN (${ids.map(() => '?').join(', ')})`,
       [...ids],
     );
@@ -198,16 +159,19 @@ export function capturing(store: MoneyStore, replaceSpend: (row: SpendRow) => vo
 
   /**
    * The spends this capture could be a second sighting of, each with what its own first sighting
-   * said and the ways it was seen since, so a payment one witness saw is never given a second
-   * sighting by it, and each sighting's time can be measured from.
+   * said (and when) and the ways it was seen since, so a payment one witness saw is never given a
+   * second sighting by it, and each sighting's time can be measured from; and each sighting's
+   * key, for the pairs the person said are two.
    */
-  const withTrails = async (spends: readonly SpendRow[]): Promise<SightedSpend[]> => {
+  const withTrails = async (
+    spends: readonly SpendRow[],
+  ): Promise<(SightedSpend & { readonly keys: readonly string[] })[]> => {
     const rows = await sightingsOf(spends.map((s) => s.id));
     const bySpend = new Map<string, SightingRow[]>();
     for (const row of rows) bySpend.set(row.spend_id, [...(bySpend.get(row.spend_id) ?? []), row]);
     return spends.map((s) => {
       const trail = bySpend.get(s.id) ?? [];
-      const own = trail.find((r) => r.source === s.source && r.seen_at === s.at);
+      const own = trail.find((r) => isOwnSighting(s, r));
       const seenBy: Witness[] = trail
         .filter((r) => r !== own)
         .map((r) => ({
@@ -220,10 +184,16 @@ export function capturing(store: MoneyStore, replaceSpend: (row: SpendRow) => vo
         }));
       return {
         ...s,
+        // Its first sighting's own time; the row's may follow a more exact one since.
+        at: own?.seen_at ?? s.at,
         seenBy,
         atKind: own?.at_kind ?? null,
         bank: own?.bank ?? null,
         accountTail: own?.account_tail ?? null,
+        keys:
+          trail.length > 0
+            ? trail.map(keyOfStored)
+            : [keyOfStored({ capture_id: s.id, source: s.source, seen_at: s.at })],
       };
     });
   };
@@ -259,7 +229,8 @@ export function capturing(store: MoneyStore, replaceSpend: (row: SpendRow) => vo
     const reference = sighting.reference?.trim().toUpperCase();
     if (!reference) return [];
     const rows = await db.getAllAsync<SightingRow>(
-      `SELECT spend_id, source, seen_at, detail, at_kind, bank, account_tail, reference, direction
+      `SELECT spend_id, capture_id, source, seen_at, detail, at_kind, bank, account_tail, reference,
+              direction
          FROM spend_sightings WHERE UPPER(reference) = ?`,
       [reference],
     );
@@ -294,8 +265,8 @@ export function capturing(store: MoneyStore, replaceSpend: (row: SpendRow) => vo
       return null;
     }
     const rows = await db.getAllAsync<SightingRow>(
-      `SELECT s.spend_id, s.source, s.seen_at, s.detail, s.at_kind, s.bank, s.account_tail,
-              s.reference, s.direction
+      `SELECT s.spend_id, s.capture_id, s.source, s.seen_at, s.detail, s.at_kind, s.bank,
+              s.account_tail, s.reference, s.direction
          FROM spend_sightings s JOIN spends p ON p.id = s.spend_id
         WHERE s.source = 'email' AND s.reference IS NOT NULL AND p.day >= ? AND p.source != 'import'`,
       [addDays(store.getSnapshot().today, -CANDIDATE_DAYS)],
@@ -408,7 +379,15 @@ export function capturing(store: MoneyStore, replaceSpend: (row: SpendRow) => vo
     if (buried && keepsAnswer) {
       return { step: 'tombstone', capture: await attachTo(buried, input, seenAt, sighting) };
     }
-    const live = referenced.find((r) => r.status !== 'skipped' && r.status !== 'deleted');
+    // A sighting the person said is another payment than a row's never joins that row again.
+    const apart = await readApartIndex(db);
+    const key = sightingKey({ captureId: input.id ?? null, source: input.source, at: seenAt });
+    const together = async (rows: readonly SpendRow[]) =>
+      (await withTrails(rows)).filter((s) => !areApart([key], s.keys, apart));
+    const joinable = new Set((await together(referenced)).map((s) => s.id));
+    const live = referenced.find(
+      (r) => r.status !== 'skipped' && r.status !== 'deleted' && joinable.has(r.id),
+    );
     if (live) {
       return { step: 'reference', capture: await mergeInto(live, input, seenAt, sighting) };
     }
@@ -432,12 +411,12 @@ export function capturing(store: MoneyStore, replaceSpend: (row: SpendRow) => vo
       bank: sighting.bank ?? null,
       accountTail: sighting.accountTail ?? null,
     };
+    const candidates = await tables.spends.select(
+      "WHERE day >= ? AND source != 'import' ORDER BY at DESC",
+      [addDays(store.getSnapshot().today, -CANDIDATE_DAYS)],
+    );
     // Only a spend of the same amount, a fee apart, or paid abroad can be the same payment.
-    const recent = (
-      await tables.spends.select("WHERE day >= ? AND source != 'import' ORDER BY at DESC", [
-        addDays(store.getSnapshot().today, -CANDIDATE_DAYS),
-      ])
-    ).filter((s) => mayBeSamePayment(s, amount, incoming));
+    const recent = candidates.filter((s) => mayBeSamePayment(s, amount, incoming));
 
     if (keepsAnswer) {
       const graves = await tombstonesOf(recent);
@@ -449,10 +428,25 @@ export function capturing(store: MoneyStore, replaceSpend: (row: SpendRow) => vo
     }
 
     const open = recent.filter((s) => s.status !== 'deleted');
-    const twin = findDuplicate(incoming, await withTrails(open));
+    const twin = findDuplicate(incoming, await together(open));
     const row = twin ? open.find((s) => s.id === twin.id) : undefined;
     if (row) {
       return { step: 'samePayment', capture: await mergeInto(row, input, seenAt, sighting) };
+    }
+    // One of the two gave no amount (a Wallet tap at 0đ): time, witness and name join them, and
+    // the row takes the amount the other gave.
+    const blank = !(amount > 0) && !input.foreignAmount;
+    const near = candidates.filter(
+      (s) =>
+        s.status !== 'deleted' &&
+        s.status !== 'skipped' &&
+        (blank ? s.amount > 0 : !(s.amount > 0) && s.foreignAmount == null) &&
+        Math.abs(Date.parse(s.at) - Date.parse(seenAt)) <= SENT_WINDOW_MS,
+    );
+    const unpriced = near.length > 0 ? matchWithoutAmount(incoming, await together(near)) : null;
+    const partner = unpriced ? near.find((s) => s.id === unpriced.id) : undefined;
+    if (partner) {
+      return { step: 'samePayment', capture: await mergeInto(partner, input, seenAt, sighting) };
     }
     return { step: 'newRow', capture: await newRow(input, sighting) };
   };
@@ -483,7 +477,7 @@ export function capturing(store: MoneyStore, replaceSpend: (row: SpendRow) => vo
   const accountsOf = async (rows: readonly SpendRow[]) => {
     const own = new Map(
       (await sightingsOf(rows.map((r) => r.id)))
-        .filter((r) => rows.some((row) => row.id === r.spend_id && row.at === r.seen_at))
+        .filter((r) => rows.some((row) => row.id === r.spend_id && isOwnSighting(row, r)))
         .map((r) => [r.spend_id, r] as const),
     );
     return new Map(

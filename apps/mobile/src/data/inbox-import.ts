@@ -12,6 +12,7 @@ import type { Language } from '@6pm/i18n';
 
 import { billPayments } from './bill-payments';
 import { noteReceiptRead } from './first-catch';
+import { namedBefore } from './named-before';
 import type { moneyActions } from './money-actions';
 import type { MoneyStore } from './money-store';
 import { seedStarterCategories } from './onboarding';
@@ -142,6 +143,21 @@ export async function saveInboxSpend(
 ): Promise<string | null> {
   const { store, actions } = deps;
   let item = incoming;
+  // A bank alert's payee the person named before is called what they called it, and filed where
+  // they filed it.
+  const named = async (alert: InboxSpend): Promise<InboxSpend> => {
+    if (alert.source !== 'alert') return alert;
+    const before = await namedBefore(store.db, alert.merchant, store.getSnapshot().today).catch(
+      () => null,
+    );
+    if (!before) return alert;
+    const filed = store.getSnapshot().categories.some((c) => c.id === before.categoryId);
+    return {
+      ...alert,
+      merchant: before.merchant,
+      categoryId: filed ? before.categoryId : alert.categoryId,
+    };
+  };
   const { capture } = await actions.ingest({
     sighting: sightingOfInboxItem(incoming, channel),
     handed: incoming,
@@ -161,7 +177,7 @@ export async function saveInboxSpend(
     },
     spend: async () => {
       const snap = store.getSnapshot();
-      item = incoming.source === 'shared' ? await deps.enrich(incoming) : incoming;
+      item = incoming.source === 'shared' ? await deps.enrich(incoming) : await named(incoming);
       const categoryIds = new Set(snap.categories.map((c) => c.id));
       const likely = likelyCategoriesAt(new Date(item.at).getHours()).map((n) => n.toLowerCase());
       return inboxItemToNewSpend(item, {

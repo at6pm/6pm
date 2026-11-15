@@ -1,8 +1,10 @@
 import { VND, type Currency } from '../money/currency';
 import type { SpendDirection } from '../spend/spend';
+import { payeeByShape } from './alert-payee-shapes';
 import { bankNamedIn, bankOfApp } from './bank-alert-senders';
 import { cleanMemo } from './bank-receipt';
 import { tidyPayee } from './bill-topic';
+import { namesNoPayee } from './payee-names';
 import { readsAsBalance } from './receipt-amount';
 import { readReceiptTime, withFullYears } from './receipt-time';
 import { foldWords } from './spoken-spend';
@@ -440,12 +442,17 @@ export function readBankAlert(input: BankAlertInput, home: Currency = VND): Bank
   const way = wayOf(told, amount);
   if (way === null) return skip('unread');
   const memo = cleanMemo(memoFound?.memo);
+  // After the amount first, then the bank's own shapes, then a payment memo; never the bank.
+  const named =
+    counterpartyOf(told, amount, way) ??
+    payeeByShape(bankInfo?.id ?? null, way, { memo, text: told }) ??
+    payeeInMemo(memo, way);
   return {
     kind: 'moved',
     direction: way,
     amount: amount.amount,
     currency: amount.currency,
-    counterparty: counterpartyOf(told, amount, way) ?? payeeInMemo(memo, way),
+    counterparty: named !== null && !namesNoPayee(named) ? named : null,
     memo,
     at: atOf(input.date, text),
     bank,

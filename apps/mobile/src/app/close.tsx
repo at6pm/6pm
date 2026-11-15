@@ -9,6 +9,7 @@ import {
   stepPosition,
   tally,
   type GivableSpend,
+  type SpendRow,
 } from '@6pm/domain';
 import { localeOf } from '@6pm/i18n';
 
@@ -33,6 +34,8 @@ import { useClose } from '../features/close/use-close';
 import { useCloseCash } from '../features/close/use-close-cash';
 import { useClosingNumber } from '../features/close/use-closing-number';
 import { useRuleOffer } from '../features/close/use-rule-offer';
+import { TwinOfferPill } from '../features/close/twin-offer-pill';
+import { useTwinOffer } from '../features/close/use-twin-offer';
 import { useCompanionToast } from '../features/companion/use-companion-toast';
 import { RulePrompt } from '../features/details/rule-prompt';
 import { useI18n } from '../i18n/i18n';
@@ -127,12 +130,19 @@ function CloseOpen({
   const [editing, setEditing] = useState<string | null>(null);
   const [typingCash, setTypingCash] = useState(false);
   const rules = useRuleOffer(actions, state.step);
+  const twinOffer = useTwinOffer(
+    actions,
+    state.step === 'cards' ? remainingCardId(close.cards) : undefined,
+  );
   const { chips, categoryFor, addCash } = useCloseCash(close);
   const [closedAt] = useState(() => clockOf(now.getHours() + now.getMinutes() / 60));
   // The iPhone Duo opened: the Close is an open book, the step left, the ledger right.
   const form = useFoldForm();
   const book = form.kind === 'spread' ? form : null;
   const pressCard = useRef<((choice: CardPress) => void) | null>(null);
+  // "Same as your 50k at 10:30?" on the top card; Same sends it away as the stack's own swipe.
+  const leaveCard = useRef<(() => void) | null>(null);
+  const joining = useRef<{ readonly id: string; readonly typed: SpendRow } | null>(null);
   const finish = useFinishClose(close, day);
   // Folded shut once nothing is left to confirm, the day is closed, as the reveal's Done does.
   useFoldShut(() => void finish(), state.step !== 'cards');
@@ -181,6 +191,13 @@ function CloseOpen({
   const pillFor = (amount: number | undefined) =>
     amount === undefined ? null : close.moneyIn.pillFor(amount);
   const topCard = close.cards[0];
+  const twin = twinOffer.offer;
+  const decideCard = (id: string, verdict: Parameters<typeof close.decide>[1]) => {
+    const join = joining.current;
+    joining.current = null;
+    if (join?.id === id && verdict === 'notMine') close.join(id, join.typed);
+    else close.decide(id, verdict);
+  };
   const topMoney = close.moneyCards[0];
   const extraOnTop = topMoney ? close.extraIds.has(topMoney.row.id) : false;
   // The pay's extra offers to make the plan's income the pay, when it is worth saying.
@@ -224,9 +241,29 @@ function CloseOpen({
           pill={pillFor(topCard?.money ? topCard.amount : undefined)}
           undoText={close.undoText}
           undoLabel={t('close.undo')}
+          accessory={
+            twin && topCard && !topCard.money ? (
+              <TwinOfferPill
+                text={t('twin.ask', {
+                  amount: money.short(twin.amount),
+                  time: timeOf(twin.at, locale),
+                })}
+                same={t('twin.same')}
+                no={t('twin.no')}
+                onSame={() => {
+                  joining.current = { id: topCard.row.id, typed: twin };
+                  twinOffer.taken();
+                  if (leaveCard.current) leaveCard.current();
+                  else decideCard(topCard.row.id, 'notMine');
+                }}
+                onNo={twinOffer.decline}
+              />
+            ) : null
+          }
           buttons={buttonLabels}
           pressRef={book ? pressCard : undefined}
-          onDecide={close.decide}
+          leaveRef={leaveCard}
+          onDecide={decideCard}
           onEdit={setEditing}
           onUndo={close.undo}
         />
@@ -483,4 +520,18 @@ function CloseOpen({
       ) : null}
     </View>
   );
+}
+
+/** The id of the card on top of the stack, when there is one. */
+function remainingCardId(cards: readonly { readonly row: { readonly id: string } }[]) {
+  return cards[0]?.row.id;
+}
+
+/** "10:30" in the app's language, as the cards print a time. */
+function timeOf(iso: string, locale: string): string {
+  return new Intl.DateTimeFormat(locale, {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).format(new Date(iso));
 }

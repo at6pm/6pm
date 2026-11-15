@@ -3,7 +3,13 @@ import { useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn, ReduceMotion } from 'react-native-reanimated';
 
-import { BANKS, currencyOf, type CaptureLogContents, type CaptureLogEvent } from '@6pm/domain';
+import {
+  BANKS,
+  currencyOf,
+  unreadAlertCounts,
+  type CaptureLogContents,
+  type CaptureLogEvent,
+} from '@6pm/domain';
 import { localeOf, type Language } from '@6pm/i18n';
 import { catchInk, paperInk } from '@6pm/theme';
 
@@ -229,6 +235,9 @@ export function CaptureLogTape({ contents }: { readonly contents: CaptureLogCont
   const { t, language } = i18n;
   const newest = contents.events.slice(-TAPE_LINES).reverse();
   const head = { ...mono(10, 400, 0.14), color: catchInk.tapeSoft } as const;
+  const foot = { ...mono(11.5, 600), color: paperInk.ink } as const;
+  // Alerts no template read, per bank: how a bank rewording its alerts is noticed.
+  const unread = useMemo(() => unreadAlertCounts(contents.events), [contents.events]);
   return (
     <View>
       <TapeEdge />
@@ -260,6 +269,23 @@ export function CaptureLogTape({ contents }: { readonly contents: CaptureLogCont
             <TapeLine key={`${event.loggedAt}:${event.row?.id ?? ''}`} event={event} index={k} />
           ))
         )}
+        {unread.length > 0 ? (
+          <>
+            <DashedRule color={catchInk.tapeRule} />
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 10 }}>
+              <Text numberOfLines={1} style={{ ...foot, flexShrink: 1 }}>
+                {t('captureLog.unread')}
+              </Text>
+              <Text numberOfLines={1} style={{ ...foot, fontVariant: ['tabular-nums'] }}>
+                {`${unread.reduce((sum, u) => sum + u.count, 0)} · ${unread
+                  .map(
+                    (u) => `${bankLabel(u.bank).toLocaleUpperCase(localeOf(language))} ${u.count}`,
+                  )
+                  .join(', ')}`}
+              </Text>
+            </View>
+          </>
+        ) : null}
       </View>
       <TapeEdge foot />
     </View>

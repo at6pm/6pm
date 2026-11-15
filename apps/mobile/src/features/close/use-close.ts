@@ -32,6 +32,7 @@ import {
 } from '@6pm/domain';
 import { localeOf } from '@6pm/i18n';
 
+import type { Joined } from '../../data/capture-answers';
 import type { JarAsks } from '../../data/jar-asks';
 import type { MoneyInPlace } from '../../data/money-in-actions';
 
@@ -393,6 +394,22 @@ export function useClose(
     },
     [actions, run, startUndo],
   );
+  // Cards answered "Same as your 50k?": the join under way, and the typed spend's name.
+  const joins = useRef(new Map<string, { name: string; joined: Promise<Joined | null> }>());
+  /**
+   * Yes, the same payment as one the person typed: the card leaves as not counted on its own,
+   * and its sightings join the typed spend.
+   */
+  const join = useCallback(
+    (id: string, typed: { readonly id: string; readonly merchant: string }) => {
+      const joined = actions.sameAsTyped(id, typed.id);
+      joins.current.set(id, { name: typed.merchant, joined: joined.catch(() => null) });
+      dispatch({ type: 'decide', id, verdict: 'notMine' });
+      void run(() => joined);
+      startUndo();
+    },
+    [actions, run, startUndo],
+  );
   /** Money placed from the edit sheet: a pot, a payback, or spread or saved after all. */
   const decideMoney = useCallback(
     (id: string, place: MoneyInPlace) => {
@@ -408,7 +425,14 @@ export function useClose(
     haptics.tap();
     const verdict = state.verdicts[id];
     const spend = everything.find((s) => s.id === id);
-    if (spend && comesIn(spend) && verdict !== 'notMine') {
+    const join = joins.current.get(id);
+    if (join) {
+      joins.current.delete(id);
+      void run(async () => {
+        const joined = await join.joined;
+        if (joined) await actions.undoSameAsTyped(joined);
+      });
+    } else if (spend && comesIn(spend) && verdict !== 'notMine') {
       void run(() => actions.unplaceMoneyIn(id));
     } else {
       // An edit changed the amount and category too; undoing puts the card back as it arrived.
@@ -430,20 +454,23 @@ export function useClose(
 
   const undone = state.undoable ? everything.find((s) => s.id === state.undoable) : undefined;
   const undoVerdict = undone ? state.verdicts[undone.id] : undefined;
-  const undoText = undone
-    ? t(
-        undoVerdict === 'notMine'
-          ? 'close.undoSkipped'
-          : undoVerdict === 'edited'
-            ? 'close.undoEdited'
-            : undoVerdict === 'spread'
-              ? 'moneyIn.undoSpread'
-              : undoVerdict === 'saved'
-                ? 'moneyIn.undoSaved'
-                : 'close.undoKept',
-        { name: undone.merchant || t('moneyIn.name') },
-      )
-    : null;
+  const joinedTo = undone ? joins.current.get(undone.id) : undefined;
+  const undoText = joinedTo
+    ? t('twin.undo', { name: joinedTo.name })
+    : undone
+      ? t(
+          undoVerdict === 'notMine'
+            ? 'close.undoSkipped'
+            : undoVerdict === 'edited'
+              ? 'close.undoEdited'
+              : undoVerdict === 'spread'
+                ? 'moneyIn.undoSpread'
+                : undoVerdict === 'saved'
+                  ? 'moneyIn.undoSaved'
+                  : 'close.undoKept',
+          { name: undone.merchant || t('moneyIn.name') },
+        )
+      : null;
 
   return {
     day,
@@ -458,6 +485,7 @@ export function useClose(
     moneyIn,
     decide,
     decideMoney,
+    join,
     undo,
     undoText,
     askWorkId,

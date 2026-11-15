@@ -14,6 +14,7 @@ import {
 import { homeCurrencyOf } from '../money/use-money-format';
 
 import { NO_CAPTURE_LOG, type CaptureLog } from './capture-log';
+import { captureAnswers } from './capture-answers';
 import { noteReceiptEdit } from './first-catch';
 import { capturing } from './capture-match';
 import { ingestion, type Arrival } from './ingest';
@@ -254,6 +255,7 @@ export function moneyActions(
     decideNow,
     log,
   });
+  const answers = captureAnswers({ store, inTurn, current, replaceSpend });
 
   return {
     addSpend: (input: NewSpend) =>
@@ -279,6 +281,20 @@ export function moneyActions(
     ingest: (arrival: Arrival) => ingest(arrival),
     /** An alert that moved no money, heard for the capture log while it is on. */
     hear,
+    /** The spend the person typed that a caught payment may be ("Same as your 50k at 10:30?"). */
+    typedTwin: answers.typedTwin,
+    /** Yes: the caught payment joins the typed spend; its undo puts both back. */
+    sameAsTyped: answers.join,
+    undoSameAsTyped: answers.unjoin,
+    /** No: the pair is remembered and never offered or merged again. */
+    notSameAsTyped: answers.notSame,
+    /** Every witness of a row, for Details. */
+    witnesses: answers.witnesses,
+    /** "These are two": the last sighting to join goes back to a row of its own; with its undo. */
+    splitApart: answers.split,
+    undoSplitApart: answers.unsplit,
+    /** What "This is wrong" sends about one row. */
+    captureReport: answers.report,
     /** Takes back a capture (a cancelled payment) without touching anything it did not make. */
     withdrawCapture: (capture: Capture) => inTurn(() => withdrawNow(capture)),
     /**

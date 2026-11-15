@@ -8,7 +8,12 @@ import {
 } from '@6pm/domain';
 
 import { hashDeviceToken } from '../src/device-auth';
-import { EMAIL_MAX_BYTES, receiveEmail, type InboundEmail } from '../src/receipt-email/receive';
+import {
+  EMAIL_MAX_BYTES,
+  EMAIL_ROUTING_MAX_BYTES,
+  receiveEmail,
+  type InboundEmail,
+} from '../src/receipt-email/receive';
 import { openCapture } from '../src/receipt-email/seal';
 
 import { call, registerDevice } from './support';
@@ -31,6 +36,41 @@ function rawEmail(messageId: string, amount = '45,000'): string {
     'ND: CHUYEN TIEN TOI PHO HOA',
     '',
   ].join('\r\n');
+}
+
+/**
+ * The same notification sent as a multipart mail with a picture attached, `size` bytes in all:
+ * its text first, as mail clients write it, or (`textFirst: false`) after the picture.
+ */
+function withAttachment(
+  notice: string,
+  size: number,
+  { textFirst = true }: { readonly textFirst?: boolean } = {},
+): string {
+  const [head = '', body = ''] = notice.split('\r\n\r\n');
+  const headers = head
+    .split('\r\n')
+    .filter((line) => !line.startsWith('Content-Type'))
+    .concat('Content-Type: multipart/mixed; boundary="b1"');
+  const text = ['--b1', 'Content-Type: text/plain; charset=utf-8', '', body].join('\r\n');
+  const picture = (fill: number) =>
+    [
+      '--b1',
+      'Content-Type: image/png; name="hoa-don.png"',
+      'Content-Transfer-Encoding: base64',
+      'Content-Disposition: attachment; filename="hoa-don.png"',
+      '',
+      'A'.repeat(fill),
+    ].join('\r\n');
+  const parts = (fill: number) =>
+    [
+      headers.join('\r\n'),
+      '',
+      ...(textFirst ? [text, picture(fill)] : [picture(fill), text]),
+      '--b1--',
+      '',
+    ].join('\r\n');
+  return parts(Math.max(0, size - parts(0).length));
 }
 
 function inbound(to: string, raw: string, rawSize = raw.length) {
@@ -112,9 +152,28 @@ describe('receiving a receipt email', () => {
     expect(await receiveEmail(message, env, NOW)).toBe('unknown_address');
   });
 
-  it('refuses mail larger than a receipt', async () => {
+  it('refuses mail larger than Email Routing could ever hand over, unread', async () => {
     const { address } = await phone();
-    const { message, rejected } = inbound(address, rawEmail('big1'), EMAIL_MAX_BYTES + 1);
+    const { message, rejected } = inbound(address, rawEmail('big0'), EMAIL_ROUTING_MAX_BYTES + 1);
+    expect(await receiveEmail(message, env, NOW)).toBe('too_large');
+    expect(rejected).toHaveLength(1);
+  });
+
+  it('reads a mail larger than a receipt from its start, its attachment dropped', async () => {
+    const { token, address } = await phone();
+    const raw = withAttachment(rawEmail('big1', '1,250,000'), EMAIL_MAX_BYTES + 200_000);
+    expect(raw.length).toBeGreaterThan(EMAIL_MAX_BYTES);
+    const { message, rejected } = inbound(address, raw);
+    expect(await receiveEmail(message, env, NOW)).toBe('stored');
+    expect(rejected).toEqual([]);
+    const [capture] = await fetchCaptures(token);
+    expect(capture).toMatchObject({ amount: 1_250_000 });
+  });
+
+  it('still refuses a large mail whose start holds no words', async () => {
+    const { address } = await phone();
+    const raw = withAttachment(rawEmail('big2'), EMAIL_MAX_BYTES + 200_000, { textFirst: false });
+    const { message, rejected } = inbound(address, raw);
     expect(await receiveEmail(message, env, NOW)).toBe('too_large');
     expect(rejected).toHaveLength(1);
   });

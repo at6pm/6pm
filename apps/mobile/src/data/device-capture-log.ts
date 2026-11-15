@@ -75,3 +75,22 @@ export async function sendCaptureLog(today: string): Promise<boolean> {
   }
   return true;
 }
+
+/**
+ * "This is wrong": the share sheet with one row's sightings and what the log saw of it (the words
+ * 6pm was handed, while the log was on), as a text file the person sends wherever they choose.
+ * Nothing leaves the phone unless they pick a place in the sheet.
+ */
+export async function sendRowReport(today: string, text: string): Promise<void> {
+  const copy = new File(Paths.cache, `6pm-capture-row-${today.replace(/[^0-9-]/g, '')}.txt`);
+  await copy.write(text);
+  try {
+    await Sharing.shareAsync(copy.uri, { mimeType: 'text/plain', UTI: 'public.plain-text' });
+  } finally {
+    try {
+      copy.delete();
+    } catch {
+      // Already gone, or iOS cleared the cache itself.
+    }
+  }
+}

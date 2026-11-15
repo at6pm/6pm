@@ -158,3 +158,38 @@ export function captureLogHasExpired(text: string, now: Date): boolean {
   if (!event) return false;
   return Date.parse(event.loggedAt) < now.getTime() - KEEP_MS;
 }
+
+/** The events the log holds about one row: any that touched it or a capture it now holds. */
+export function eventsOfRow(
+  events: readonly CaptureLogEvent[],
+  ids: readonly string[],
+): CaptureLogEvent[] {
+  const held = new Set(ids);
+  return events.filter((event) => event.row !== null && held.has(event.row.id));
+}
+
+/** What "This is wrong" hands to the share sheet for one row. */
+export interface CaptureRowReport {
+  /** The row as it stands. */
+  readonly row: Readonly<Record<string, unknown>>;
+  /** Every sighting the row holds, every field as kept. */
+  readonly sightings: readonly Readonly<Record<string, unknown>>[];
+  /** What the capture log saw of it, with the words 6pm was handed; empty while the log is off. */
+  readonly events: readonly CaptureLogEvent[];
+}
+
+/**
+ * The file "This is wrong" sends: one line saying what it is and when it was made, then the row,
+ * its sightings and the log's events about it, each on its own line (JSON Lines), so it reads
+ * like the capture log it comes from. It goes nowhere unless the person picks where in the share
+ * sheet.
+ */
+export function captureRowReportText(report: CaptureRowReport, now: Date): string {
+  const lines: unknown[] = [
+    { report: 'capture-row', v: 1, at: now.toISOString() },
+    { row: report.row },
+    ...report.sightings.map((sighting) => ({ sighting })),
+    ...report.events,
+  ];
+  return lines.map((line) => `${JSON.stringify(line)}\n`).join('');
+}

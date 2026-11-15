@@ -1,15 +1,27 @@
 import { Text, View } from 'react-native';
 
+import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body } from '../../ui/type/fonts';
 
-/** Where a spend came from, one dotted line per sighting. */
+/** Something to do about where a spend came from: "These are two", "This is wrong". */
+export interface TrailAction {
+  readonly label: string;
+  readonly onPress: () => void;
+}
+
+/**
+ * Where a spend came from, one dotted line per sighting, and under them, each on its own row
+ * across a hairline, what can be done about it.
+ */
 export function SourceTrail({
   title,
   lines,
+  actions = [],
 }: {
   readonly title: string;
   readonly lines: readonly string[];
+  readonly actions?: readonly TrailAction[];
 }) {
   const { palette } = useTheme();
   return (
@@ -49,6 +61,24 @@ export function SourceTrail({
               {line}
             </Text>
           </View>
+        ))}
+        {actions.map((action) => (
+          <PressScale
+            key={action.label}
+            scaleTo={0.97}
+            accessibilityRole="button"
+            onPress={action.onPress}
+            style={{
+              marginHorizontal: -16,
+              paddingHorizontal: 16,
+              paddingTop: 12,
+              marginBottom: -4,
+              borderTopWidth: 0.5,
+              borderTopColor: palette.hair,
+            }}
+          >
+            <Text style={{ ...body(15, 600), color: palette.accent }}>{action.label}</Text>
+          </PressScale>
         ))}
       </View>
     </View>
