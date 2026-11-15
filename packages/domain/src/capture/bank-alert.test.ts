@@ -49,6 +49,7 @@ const vietnamese: [string, BankAlertInput, BankAlert][] = [
       body: 'TK 0123xxx456|GD: +2,000,000VND 27/10/26 09:15|SD: 3,234,567VND|ND: NGUYEN VAN A chuyen tien',
     },
     moved('in', 2_000_000, {
+      counterparty: 'NGUYEN VAN A',
       memo: 'NGUYEN VAN A chuyen tien',
       at: local(27, 9, 15),
       bank: 'MB Bank',
@@ -93,7 +94,11 @@ const vietnamese: [string, BankAlertInput, BankAlert][] = [
       app: 'Techcombank',
       body: 'Tài khoản 1903****7890\nSố tiền giao dịch: +VND 2,000,000\nSố dư hiện tại: VND 5,000,000\nMô tả: NGUYEN VAN A chuyen tien',
     },
-    moved('in', 2_000_000, { memo: 'NGUYEN VAN A chuyen tien', bank: 'Techcombank' }),
+    moved('in', 2_000_000, {
+      counterparty: 'NGUYEN VAN A',
+      memo: 'NGUYEN VAN A chuyen tien',
+      bank: 'Techcombank',
+    }),
   ],
   [
     'ACB: "(VND)" against the account, the memo after "GD:"',
@@ -101,6 +106,7 @@ const vietnamese: [string, BankAlertInput, BankAlert][] = [
       body: 'ACB: TK 12345678(VND) + 1,500,000 luc 09:15 27/10/2026. So du 4,500,000. GD: NGUYEN VAN B CHUYEN KHOAN',
     },
     moved('in', 1_500_000, {
+      counterparty: 'NGUYEN VAN B',
       memo: 'NGUYEN VAN B CHUYEN KHOAN',
       at: local(27, 9, 15),
       bank: 'ACB',
@@ -123,7 +129,12 @@ const vietnamese: [string, BankAlertInput, BankAlert][] = [
     {
       body: 'TK 1234567890 tai BIDV +500,000VND vao 09:15 27/10/2026. So du: 2,500,000VND. ND: TRAN THI C tra no',
     },
-    moved('in', 500_000, { memo: 'TRAN THI C tra no', at: local(27, 9, 15), bank: 'BIDV' }),
+    moved('in', 500_000, {
+      counterparty: 'TRAN THI C',
+      memo: 'TRAN THI C tra no',
+      at: local(27, 9, 15),
+      bank: 'BIDV',
+    }),
   ],
   [
     'VietinBank: "Giao dịch" as the change',
@@ -131,7 +142,12 @@ const vietnamese: [string, BankAlertInput, BankAlert][] = [
       app: 'VietinBank iPay',
       body: 'Thời gian: 27/10/2026 12:30\nTài khoản: 1088xxxx1234\nGiao dịch: -75,000VND\nSố dư hiện tại: 925,000VND\nNội dung: thanh toan Grab',
     },
-    moved('out', 75_000, { memo: 'thanh toan Grab', at: local(27, 12, 30), bank: 'VietinBank' }),
+    moved('out', 75_000, {
+      counterparty: 'Grab',
+      memo: 'thanh toan Grab',
+      at: local(27, 12, 30),
+      bank: 'VietinBank',
+    }),
   ],
   [
     'VPBank: "luc" and "SD" with no colon',
@@ -170,7 +186,12 @@ const vietnamese: [string, BankAlertInput, BankAlert][] = [
     {
       body: 'Sacombank 27/10/2026 12:30 TK:0601xxxx1234 PS:-99,000VND So du kha dung:1,901,000VND ND:Thanh toan Shopee',
     },
-    moved('out', 99_000, { memo: 'Thanh toan Shopee', at: local(27, 12, 30), bank: 'Sacombank' }),
+    moved('out', 99_000, {
+      counterparty: 'Shopee',
+      memo: 'Thanh toan Shopee',
+      at: local(27, 12, 30),
+      bank: 'Sacombank',
+    }),
   ],
   [
     'HDBank: a refund comes in',
@@ -186,6 +207,7 @@ const vietnamese: [string, BankAlertInput, BankAlert][] = [
       body: 'VIB: TK 0123456789 ghi co 1,000,000 VND luc 27/10/2026 10:10. SD: 6,000,000 VND. ND: Tran Thi B tra tien an',
     },
     moved('in', 1_000_000, {
+      counterparty: 'Tran Thi B',
       memo: 'Tran Thi B tra tien an',
       at: local(27, 10, 10),
       bank: 'VIB',
@@ -204,7 +226,12 @@ const vietnamese: [string, BankAlertInput, BankAlert][] = [
       app: 'OCB OMNI',
       body: 'Tài khoản 0041xxxx1234 thay đổi -60,000 VND vào lúc 27/10/2026 07:45:00. Số dư: 940,000 VND. Nội dung: Grab thanh toan',
     },
-    moved('out', 60_000, { memo: 'Grab thanh toan', at: local(27, 7, 45), bank: 'OCB' }),
+    moved('out', 60_000, {
+      counterparty: 'Grab',
+      memo: 'Grab thanh toan',
+      at: local(27, 7, 45),
+      bank: 'OCB',
+    }),
   ],
   [
     'SHB: "giam" for money out',

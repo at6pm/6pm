@@ -81,6 +81,11 @@ export interface CloseCardsProps {
    * none under itself and hands its press to `pressRef`.
    */
   readonly pressRef?: RefObject<((choice: 'kept' | 'notMine' | 'edit') => void) | null> | undefined;
+  /**
+   * Sends the top card away down, as Not mine does, for an answer given outside the stack (the
+   * offer in the hint's place): the card leaves on the house curve, then `onDecide` hears it.
+   */
+  readonly leaveRef?: RefObject<(() => void) | null> | undefined;
 }
 
 /**
@@ -96,7 +101,8 @@ function CardStack({
   stack,
   pressRef,
   lift,
-}: Pick<CloseCardsProps, 'cards' | 'buttons' | 'onDecide' | 'onEdit' | 'pressRef'> & {
+  leaveRef,
+}: Pick<CloseCardsProps, 'cards' | 'buttons' | 'onDecide' | 'onEdit' | 'pressRef' | 'leaveRef'> & {
   /** The stack's height, which is how far above home the card can be pulled before it stops. */
   readonly stack: number;
   /** Mirrors the top card's drag up, for the header and the Future you pill above the stack. */
@@ -210,6 +216,7 @@ function CardStack({
   // The big choices on the iPhone Duo's right page press this card, whichever card is on top.
   useEffect(() => {
     if (pressRef) pressRef.current = top ? press : null;
+    if (leaveRef) leaveRef.current = top ? () => press('notMine') : null;
   });
 
   const topStyle = useAnimatedStyle(() => {
@@ -396,6 +403,7 @@ export function CloseCards(props: CloseCardsProps) {
           onEdit={props.onEdit}
           stack={stack}
           pressRef={props.pressRef}
+          leaveRef={props.leaveRef}
           lift={lift}
         />
       </View>

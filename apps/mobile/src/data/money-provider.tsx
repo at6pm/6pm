@@ -13,6 +13,7 @@ import {
 } from 'react';
 
 import { useClock } from '../ui/theme/clock';
+import { deviceCaptureLog } from './device-capture-log';
 import { devicePhotoFiles, deviceSpendPhotos } from './device-photo-files';
 import { moneyActions, type MoneyActions } from './money-actions';
 import { createMoneyStore, dayOf, type MoneySnapshot, type MoneyStore } from './money-store';
@@ -36,7 +37,7 @@ export function MoneyProvider({
   const { today } = useClock();
   const value = useMemo(() => {
     const store = createMoneyStore(db, today);
-    return { store, actions: moneyActions(store, deviceSpendPhotos) };
+    return { store, actions: moneyActions(store, deviceSpendPhotos, deviceCaptureLog) };
     // Made once per database; a new day reloads it below instead of making a new store.
   }, [db]);
 

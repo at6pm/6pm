@@ -309,24 +309,35 @@ export function useDiary() {
           day: row.day,
           title: dates.stamp(row.day),
           no: t('diary.receipt.no', { no: receiptData.no }),
-          rows: receiptData.spends.map((s) => {
-            const back = receiptData.givenBack[s.id];
-            return {
+          rows: [
+            ...receiptData.spends.map((s) => {
+              const back = receiptData.givenBack[s.id];
+              return {
+                time: dates.clock(s.at),
+                name: s.merchant.toLocaleUpperCase(),
+                merchant: s.merchant,
+                categoryId: s.categoryId,
+                amount: s.amount,
+                photo: s.photo != null,
+                ...(back
+                  ? {
+                      back: t('moneyIn.diary.back', {
+                        date: dates.dayMonth(back).toLocaleUpperCase(),
+                      }),
+                    }
+                  : {}),
+              };
+            }),
+            // A payment voided since stays, struck through and stamped with what voided it.
+            ...receiptData.voided.map(({ spend: s, why }) => ({
               time: dates.clock(s.at),
               name: s.merchant.toLocaleUpperCase(),
               merchant: s.merchant,
               categoryId: s.categoryId,
               amount: s.amount,
-              photo: s.photo != null,
-              ...(back
-                ? {
-                    back: t('moneyIn.diary.back', {
-                      date: dates.dayMonth(back).toLocaleUpperCase(),
-                    }),
-                  }
-                : {}),
-            };
-          }),
+              back: t(why === 'failed' ? 'diary.voided.failed' : 'diary.voided.reversal'),
+            })),
+          ],
           jars: receiptData.jars.map((j) => ({
             name: fromJar(j.potId).toLocaleUpperCase(),
             amount: j.amount,

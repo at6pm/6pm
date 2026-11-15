@@ -2,6 +2,7 @@ import {
   capturedInHome,
   categoryHintOf,
   likelyCategoriesAt,
+  sightingOfEmail,
   tidyPayee,
   type EmailCapture,
 } from '@6pm/domain';
@@ -9,7 +10,6 @@ import {
 import { homeCurrencyOf } from '../money/use-money-format';
 
 import { billPayments } from './bill-payments';
-import { alreadyImported } from './inbox-import';
 import type { moneyActions } from './money-actions';
 import type { MoneyStore } from './money-store';
 
@@ -58,6 +58,10 @@ async function categoryFor(deps: EmailImportDeps, capture: EmailCapture): Promis
   );
 }
 
+/** Money that came in: incoming, a refund, or a payment the bank took back. */
+const comesIn = (capture: EmailCapture) =>
+  capture.kind === 'incoming' || capture.kind === 'refund' || capture.kind === 'reversal';
+
 /**
  * Saves the receipts that arrived by email through the same capture as every other source
  * (rules, the duplicate merge with a scan or a shared receipt, the money day of when it was
@@ -74,11 +78,14 @@ export async function importEmailCaptures(deps: EmailImportDeps): Promise<EmailI
   let abroad = false;
   const done: string[] = [];
   for (const capture of captures) {
-    if (!(await alreadyImported(store, { id: capture.id, source: 'email', at: capture.at }))) {
-      // In its own currency (đồng when the server did not say): in another it waits to be priced.
-      const home = homeCurrencyOf(store.getSnapshot().plan).code;
-      const priced = capturedInHome(capture.amount, capture.currency ?? 'VND', home);
-      await actions.captureSpend({
+    // In its own currency (đồng when the server did not say): in another it waits to be priced.
+    const home = homeCurrencyOf(store.getSnapshot().plan).code;
+    const priced = capturedInHome(capture.amount, capture.currency ?? 'VND', home);
+    const { step } = await actions.ingest({
+      sighting: sightingOfEmail(capture),
+      handed: capture,
+      message: { id: capture.id, source: 'email', at: capture.at },
+      spend: async () => ({
         id: capture.id,
         amount: priced.amount,
         foreignAmount: priced.foreignAmount,
@@ -88,13 +95,15 @@ export async function importEmailCaptures(deps: EmailImportDeps): Promise<EmailI
         status: 'caught',
         detail: capture.from,
         // A bank's own alert email says which account paid; money in was paid into it.
-        wallet: capture.kind === undefined ? capture.bank : null,
+        wallet: comesIn(capture) ? null : capture.bank,
         memo: capture.memo ?? null,
         at: new Date(capture.at),
-        ...(capture.kind === undefined
-          ? {}
-          : { direction: 'in' as const, moneyIn: capture.kind === 'refund' ? 'refund' : null }),
-      });
+        ...(comesIn(capture)
+          ? { direction: 'in' as const, moneyIn: capture.kind === 'refund' ? 'refund' : null }
+          : {}),
+      }),
+    });
+    if (step !== 'sameMessage') {
       saved += 1;
       abroad ||= priced.foreignAmount !== null;
     }

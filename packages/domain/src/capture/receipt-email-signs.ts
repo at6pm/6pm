@@ -32,9 +32,19 @@ const NOT_PAYMENT_SUBJECT = [
   'will expire',
   'sap het han',
   'reminder',
+  // Word that an order arrived: it was paid for when it was placed, and read then.
+  'giao hang thanh cong',
+  'giao thanh cong',
+  'da giao hang',
+  'da duoc giao',
+  'da nhan hang',
+  'delivered',
 ];
 
-/** A subject that says what the email is, and it is not a payment: a statement, a survey, a warning. */
+/**
+ * A subject that says what the email is, and it is not a payment: a statement, a survey, a warning,
+ * a delivery.
+ */
 export function subjectIsNotPayment(subject: string): boolean {
   return hasAny(foldWords(subject), NOT_PAYMENT_SUBJECT);
 }
@@ -73,6 +83,51 @@ const TRANSACTION_SUBJECT = [
   'booking',
 ];
 
+/**
+ * Subjects of an order or booking changing after it was paid: rescheduled, changed, on its way.
+ * Such a mail can print "Đã thanh toán hôm nay" exactly as the payment's did; what it is, not that
+ * line, says it moved no money.
+ */
+const ORDER_UPDATE_SUBJECT = [
+  'cap nhat',
+  'thay doi',
+  'doi lich',
+  'dang giao',
+  'dang van chuyen',
+  'dang duoc giao',
+  'updated',
+  'update',
+  'changed',
+  'changes to',
+  'rescheduled',
+  'modified',
+  'shipped',
+  'on its way',
+  'out for delivery',
+];
+
+/** A subject that says an order or a booking changed, not that it was paid. */
+export function subjectIsOrderUpdate(subject: string): boolean {
+  return hasAny(foldWords(subject), ORDER_UPDATE_SUBJECT);
+}
+
+/** Words for a payment the bank took back: reversed, not refunded by the shop. */
+const REVERSAL = [
+  'dao giao dich',
+  'giao dich bi dao',
+  'hoan tra giao dich',
+  'reversal',
+  'reversed',
+  'transaction reversed',
+];
+
+/** The subject or the status line says the bank reversed the payment. */
+export function isReversal(subject: string, lines: readonly string[]): boolean {
+  if (hasAny(foldWords(subject), REVERSAL)) return true;
+  const status = valueOf(lines, STATUS_LABELS);
+  return status !== null && hasAny(foldWords(status), REVERSAL);
+}
+
 export function subjectNamesTransaction(subject: string): boolean {
   return hasAny(foldWords(subject), TRANSACTION_SUBJECT);
 }
@@ -93,7 +148,20 @@ const FAILED = [
   'not successful',
   'failed',
   'declined',
+  'not charged',
 ];
+
+/**
+ * Words that say an order or a charge was called off. Never a bare "hủy" in a subject, where it
+ * can be a person's name ("… đến NGUYEN VAN HUY") or a policy's ("Chính sách hủy").
+ */
+const CANCELLED = ['da huy', 'bi huy', 'da bi huy', 'cancelled', 'canceled'];
+
+/** What a status line says of a charge called off, the line holding nothing else: "Hủy". */
+const CANCELLED_STATUS = new Set(['huy', 'da huy', 'bi huy', 'da bi huy', 'cancelled', 'canceled']);
+
+/** A subject about money given back: a cancelled order's refund is money that did move. */
+const REFUND_SUBJECT = ['hoan tien', 'hoan tra', 'refund', 'refunded'];
 
 /** Labels of the line that says how a transaction ended: "Tình trạng giao dịch / Status". */
 const STATUS_LABELS = new Set([
@@ -132,9 +200,17 @@ const PAYER_LABELS = new Set([
   'from account',
   'nguoi chuyen',
   'ten nguoi chuyen',
+  'nguoi chuyen tien',
+  'ten nguoi chuyen tien',
+  'remitter',
+  'remitter name',
+  'remitter s name',
 ]);
 
-const EMAIL_LABELS = [STATUS_LABELS, MERCHANT_LABELS, PAYER_LABELS];
+/** Labels of the line that says what kind of transaction it was: "Loại giao dịch / Bán ngoại tệ". */
+const TYPE_LABELS = new Set(['loai giao dich', 'transaction type', 'type of transaction']);
+
+const EMAIL_LABELS = [STATUS_LABELS, MERCHANT_LABELS, PAYER_LABELS, TYPE_LABELS];
 
 /** A line that is a label the email rules know, with no value after it. */
 function isLabel(line: string): boolean {
@@ -168,16 +244,27 @@ function splitLabel(
  * that is not another label (a bilingual alert prints "Sử dụng tại", then "At", then the shop).
  */
 function valueOf(lines: readonly string[], labels: ReadonlySet<string>): string | null {
+  return valuesOf(lines, labels)[0] ?? null;
+}
+
+/** Every value printed for `labels`, in order: a transfer names the account it left and its holder. */
+function valuesOf(lines: readonly string[], labels: ReadonlySet<string>): string[] {
+  const values: string[] = [];
   for (let i = 0; i < lines.length; i++) {
     const found = splitLabel(lines[i] ?? '', labels);
     if (!found) continue;
-    if (found.value !== '') return found.value;
+    if (found.value !== '') {
+      values.push(found.value);
+      continue;
+    }
     for (let j = i + 1; j < Math.min(lines.length, i + 4); j++) {
       const below = lines[j] ?? '';
-      if (!isLabel(below)) return below;
+      if (isLabel(below)) continue;
+      values.push(below);
+      break;
     }
   }
-  return null;
+  return values;
 }
 
 /**
@@ -200,12 +287,45 @@ export function joinBrokenLabels(lines: readonly string[]): string[] {
   return out;
 }
 
-/** A charge that did not go through: the subject says so, or the status line does. */
+/**
+ * A charge that did not go through, or was called off: the subject says so, the status line does
+ * ("Tình trạng giao dịch: Hủy", "Status: Cancelled"), or a line says only "Not charged". Words
+ * about cancelling anywhere else (a ticket's policy, how to end a subscription) say nothing of
+ * this payment, and a refund's subject may name the cancelled order it gives back.
+ */
 export function isFailed(subject: string, lines: readonly string[]): boolean {
-  if (hasAny(foldWords(subject), FAILED)) return true;
+  const about = foldWords(subject);
+  if (hasAny(about, FAILED)) return true;
+  if (hasAny(about, CANCELLED) && !hasAny(about, REFUND_SUBJECT)) return true;
+  if (lines.some((line) => foldWords(line) === ' not charged ')) return true;
   const status = valueOf(lines, STATUS_LABELS);
-  return status !== null && hasAny(foldWords(status), FAILED);
+  if (status === null) return false;
+  const said = foldWords(status);
+  return hasAny(said, FAILED) || hasAny(said, CANCELLED) || CANCELLED_STATUS.has(said.trim());
 }
+
+/** Words for one currency sold or bought for another, as a bank names the transaction. */
+const EXCHANGE = [
+  'ban ngoai te',
+  'mua ngoai te',
+  'mua ban ngoai te',
+  'foreign currency sale',
+  'foreign currency purchase',
+  'currency exchange',
+];
+
+/**
+ * The person's own money changing form: foreign currency sold for đồng or bought with it, between
+ * their own accounts ("Giao dịch bán ngoại tệ thành công", "Loại giao dịch: Bán ngoại tệ online").
+ */
+export function isCurrencyExchange(subject: string, lines: readonly string[]): boolean {
+  if (hasAny(foldWords(subject), EXCHANGE)) return true;
+  return valuesOf(lines, TYPE_LABELS).some((type) => hasAny(foldWords(type), EXCHANGE));
+}
+
+/** A foreign amount as receipts print one: "$22.00", "US$ 22", "22.00 USD", "€9,99". */
+const FOREIGN_MONEY =
+  /(?:us\$|s\$|a\$|hk\$|\$|€|£|¥)\s?\d|(?<![\p{L}\d])(?:usd|eur|gbp|sgd|aud|cad|jpy|cny|thb|krw|hkd)\s?\d|\d\s?(?:usd|eur|gbp|sgd|aud|cad|jpy|cny|thb|krw|hkd|\$|€|£)(?!\p{L})/iu;
 
 /** Totals that are what was finally paid, after discounts and fees, in the order printed. */
 const PAID_LABELS = new Set([
@@ -237,7 +357,25 @@ function firstDong(value: string): Vnd | null {
  * đồng it was charged as, is not it.
  */
 export function paidTotal(lines: readonly string[]): Vnd | null {
-  let paid: Vnd | null = null;
+  return paidValues(lines).reduce<Vnd | null>((paid, value) => firstDong(value) ?? paid, null);
+}
+
+/**
+ * A receipt whose paid total is labelled in another currency and nowhere in đồng ("Amount paid
+ * $16.50"): what it cost is not for these rules to price, and the đồng it prints elsewhere is
+ * something else (a tax line's "VAT - Vietnam (10%) $1.50 (₫38,400)", a quantity).
+ */
+export function paidAbroad(lines: readonly string[]): boolean {
+  const values = paidValues(lines);
+  return (
+    values.some((value) => FOREIGN_MONEY.test(value)) &&
+    values.every((value) => firstDong(value) === null)
+  );
+}
+
+/** The value beside each paid-total label, in the order printed. */
+function paidValues(lines: readonly string[]): string[] {
+  const values: string[] = [];
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i] ?? '';
     const whole = foldWords(line).trim();
@@ -249,10 +387,9 @@ export function paidTotal(lines: readonly string[]): Vnd | null {
       );
       if (split?.[1] && PAID_LABELS.has(foldWords(split[1]).trim())) value = split[2];
     }
-    const amount = value === undefined ? null : firstDong(value);
-    if (amount !== null) paid = amount;
+    if (value !== undefined) values.push(value);
   }
-  return paid;
+  return values;
 }
 
 /** Corporate endings a shop's name does without: "Eleven Labs Inc." is Eleven Labs. */
@@ -313,8 +450,54 @@ export function receiptFrom(lines: readonly string[]): string {
  * the one it reached ("Tài khoản trích nợ BUI VAN AN - 1000…", "Người thụ hưởng BUI VAN AN - 1028…").
  */
 export function isOwnTransfer(lines: readonly string[], payee: string): boolean {
-  const payer = valueOf(lines, PAYER_LABELS);
-  if (payer === null) return false;
-  const from = foldWords(cleanPayeeName(payer));
-  return /[a-z]{2}/.test(from) && from === foldWords(payee);
+  const to = foldWords(payee);
+  // Vietcombank prints the account's number under one label and its holder under another
+  // ("Tài khoản nguồn 0071…", "Tên người chuyển tiền TRAN VAN AN"): any of them can name the payer.
+  return valuesOf(lines, PAYER_LABELS).some((payer) => {
+    const from = foldWords(cleanPayeeName(payer));
+    return /[a-z]{2}/.test(from) && from === to;
+  });
+}
+
+/** Labels a booking site prints its own code under ("Mã đặt chỗ: 1234567890", "Booking ID"). */
+const BOOKING_CODE_LABELS = [
+  'ma dat cho',
+  'ma so dat cho',
+  'ma dat phong',
+  'ma so dat phong',
+  'ma dat ve',
+  'booking id',
+  'booking code',
+  'booking reference',
+  'booking number',
+  'booking no',
+  'reservation code',
+  'reservation number',
+  'confirmation code',
+  'confirmation number',
+  'itinerary number',
+];
+
+/** One or more codes after a label: "1234567890, 1234567891", "A-0000TEST1". */
+const BOOKING_CODES = /^\s*((?:[A-Z0-9][A-Z0-9-]{3,})(?:\s*,\s*[A-Z0-9][A-Z0-9-]{3,})*)/iu;
+
+/**
+ * The code a booking site gives a booking, as the first line that labels it prints it (the
+ * subject first): every code it names, joined by commas. Null when none is labelled. Its later
+ * mails about the same booking print the same code.
+ */
+export function bookingCodeOf(lines: readonly string[]): string | null {
+  for (const line of lines) {
+    const mark = /[:#]/u.exec(line);
+    if (!mark) continue;
+    const label = foldWords(line.slice(0, mark.index));
+    if (!BOOKING_CODE_LABELS.some((name) => label.endsWith(` ${name} `))) continue;
+    const codes = BOOKING_CODES.exec(line.slice(mark.index + 1))?.[1];
+    const kept = (codes ?? '')
+      .split(',')
+      .map((code) => code.trim().toUpperCase())
+      .filter((code) => /\d/.test(code));
+    if (kept.length > 0) return kept.join(',').slice(0, 40);
+  }
+  return null;
 }

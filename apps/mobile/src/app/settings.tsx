@@ -6,6 +6,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { oklchSrgbHex } from '@6pm/theme';
 
+import { deviceCaptureLog } from '../data/device-capture-log';
 import { useMoney, useMoneyStore } from '../data/money-provider';
 import { DEFAULT_PLAN } from '../data/plan-settings';
 import { devicePhotoFiles } from '../data/device-photo-files';
@@ -88,6 +89,8 @@ export default function Settings() {
         // The data is gone: what follows must not turn a finished delete into an error.
         setLanguage(null);
         void cancelCloseReminder().catch(() => undefined);
+        // The capture log holds the words every catch was read from: it goes with the rest.
+        void deviceCaptureLog.turnOff().catch(() => undefined);
         return Promise.all([
           lookStore.reload(),
           companionStore.reload(),

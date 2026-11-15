@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { DECIMAL_PATTERN } from '../travel/fx';
+import { heardWordsSchema, inboxHeardSchema } from './heard';
 import { MEMO_MAX } from './local-rows';
 
 /**
@@ -24,6 +25,8 @@ const decimal = z.string().regex(DECIMAL_PATTERN);
  */
 export const SURFACES_VERSION = 1;
 
+export { heardWordsSchema, inboxHeardSchema, type HeardWords, type InboxHeard } from './heard';
+
 /** The receipt behind a shared capture: what the bank printed, with every number taken out. */
 export const inboxReceiptSchema = z.object({
   bank: z.string().min(1).optional(),
@@ -43,6 +46,8 @@ export const inboxReceiptSchema = z.object({
   read: z.object({ amount: money.nullable().optional(), payee: z.string().optional() }).optional(),
 });
 
+/** The longest bank reference kept; a longer one is no code. */
+const REFERENCE_MAX = 40;
 export const inboxSpendSchema = z.object({
   v: version,
   id: z.uuid(),
@@ -74,6 +79,26 @@ export const inboxSpendSchema = z.object({
   currencyGuessed: z.boolean().optional(),
   /** `in` for money that came in (a bank alert or receipt that says so); absent means spending. */
   direction: z.enum(['out', 'in']).optional(),
+  /**
+   * What `at` is: printed in the alert, the moment the phone was handed it, or the moment it was
+   * caught. Absent when the source cannot tell, and on older files.
+   */
+  atKind: z.enum(['printed', 'delivered', 'sent', 'now']).optional(),
+  /** The bank's own code for the payment ("Ref FT26…", "Mã GD …"), when the alert prints one. */
+  reference: z.string().min(1).max(REFERENCE_MAX).optional(),
+  /** The last digits of the person's account the alert names ("TK …6789"). */
+  accountTail: z.string().min(1).max(8).optional(),
+  /**
+   * What the alert says happened when it is no plain payment or money in: money a shop gave back,
+   * a payment the bank took back, or one that failed (for the payment it tells of to be voided;
+   * it never becomes a spend). Absent on older files.
+   */
+  what: z.enum(['refund', 'reversal', 'failed']).optional(),
+  /**
+   * The notification as it was handed in, word for word: kept only while the capture log is on
+   * (the context's `keepWords`), for the log alone, and never saved with the spend.
+   */
+  words: heardWordsSchema.optional(),
 });
 export type InboxSpend = z.infer<typeof inboxSpendSchema>;
 
@@ -104,6 +129,7 @@ export const inboxItemSchema = z.discriminatedUnion('kind', [
   inboxSpendSchema,
   inboxPaidSchema,
   inboxKeptSchema,
+  inboxHeardSchema,
 ]);
 export type InboxItem = z.infer<typeof inboxItemSchema>;
 
@@ -135,6 +161,11 @@ export const surfaceContextSchema = z.object({
   rates: z.array(z.object({ currency: currencyCode, rate: decimal })).optional(),
   /** The home currency; absent (đồng) in a context written before it was kept. */
   currency: currencyCode.optional(),
+  /**
+   * The capture log is on: an alert keeps its words on its inbox item, and one that moved no money
+   * leaves them too. Absent or false, the words are dropped as soon as they are read.
+   */
+  keepWords: z.boolean().optional(),
   /** How the phone writes numbers, so the extensions write money as the app does. */
   numberStyle: z
     .object({
@@ -554,9 +585,13 @@ export const lastAlertSchema = z.object({
 });
 export type LastAlert = z.infer<typeof lastAlertSchema>;
 
-/** What reading one alert returns: the inbox item (null when skipped) and the status line. */
+/**
+ * What reading one alert returns: the inbox item (null when skipped), the status line, and, while
+ * the capture log is on, a skipped alert's words for it (`heard`).
+ */
 export const bankAlertResultSchema = z.object({
   item: inboxSpendSchema.nullable(),
   last: lastAlertSchema,
+  heard: inboxHeardSchema.nullable().optional(),
 });
 export type BankAlertResult = z.infer<typeof bankAlertResultSchema>;

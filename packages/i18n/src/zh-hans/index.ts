@@ -40,6 +40,7 @@ import { zhHansVoice } from './voice';
 import { zhHansWidgetsGuide } from './widgets-guide';
 import { zhHansYearBook } from './year-book';
 import { zhHansFirstCatch } from './first-catch';
+import { zhHansCaptureLog } from './capture-log';
 import { zhHansPhoto } from './photo';
 import { zhHansImport } from './import';
 import { zhHansOwed } from './owed';
@@ -92,6 +93,7 @@ export const zhHans: Catalogue = {
   ...zhHansPotsPlan,
   ...zhHansPots,
   ...zhHansFirstCatch,
+  ...zhHansCaptureLog,
   ...zhHansPhoto,
   ...zhHansImport,
   ...zhHansOwed,

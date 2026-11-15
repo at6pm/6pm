@@ -15,6 +15,10 @@ export const catchInk = {
   markSoft: 'rgba(42,34,48,.25)',
   stamp: '#2f7d55',
   slipShadow: '0 22px 34px rgba(20,6,30,.32)',
+  /** The capture log's tape in Settings: its quiet lines, its dashed rules and its lift. */
+  tapeSoft: 'rgba(43,37,48,.55)',
+  tapeRule: 'rgba(43,37,48,.3)',
+  tapeShadow: '0 14px 22px rgba(20,10,30,.3)',
   warm: '#ffbe8a',
   /** The quiet row's wash in Settings. */
   warmWash: 'rgba(255,190,138,.06)',

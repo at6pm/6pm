@@ -31,6 +31,15 @@ export const EMAIL_PLAN_PARAM = 'plan';
  * never handed to it: they are dropped, as they were before such phones existed.
  */
 export const EMAIL_MONEY_IN_PARAM = 'in';
+/**
+ * The query parameter a phone that knows what a message is sends (`what=1`): it is handed a charge
+ * that failed, a payment the bank reversed and money moved between the person's own accounts, to
+ * void or set aside the payment they tell of. A phone without it is handed none of them (as
+ * before, when they were never kept), and a reversal reaches it as the money in it always was.
+ */
+export const EMAIL_WHAT_PARAM = 'what';
+/** The kinds only a phone that sends `what=1` is handed. */
+export const EMAIL_WHAT_KINDS = ['failed', 'ownTransfer'] as const;
 export const EMAIL_PLANS = ['free', 'max'] as const;
 export type EmailPlan = (typeof EMAIL_PLANS)[number];
 
@@ -79,8 +88,17 @@ export const emailCaptureSchema = z.object({
   currency: currencyCodeSchema.optional(),
   /** What it was for, when the email says; absent before it was read. */
   category: z.enum(EMAIL_CATEGORY_IDS).nullable().optional(),
-  /** Money that came in, or a refund; absent for a payment out and before money in was read. */
-  kind: z.enum(['incoming', 'refund']).optional(),
+  /**
+   * Money that came in, or a refund; absent for a payment out and before money in was read. Also,
+   * for a phone that says it knows them (`EMAIL_WHAT_PARAM`): a charge that failed or was called
+   * off, a payment the bank reversed, money moved between the person's own accounts.
+   */
+  kind: z.enum(['incoming', 'refund', 'reversal', 'failed', 'ownTransfer']).optional(),
+  /**
+   * What `at` is: printed in the mail, the date it was sent, or when it arrived. Absent from a
+   * server from before it said, and then read as it always was.
+   */
+  atKind: z.enum(['printed', 'sent', 'delivered']).optional(),
 });
 export type EmailCapture = z.infer<typeof emailCaptureSchema>;
 

@@ -342,6 +342,63 @@ describe('a receipt email read by a model', () => {
     expect(emailSpendOf(reading, card, options)?.amount).toBe(40_000);
   });
 
+  it('drops a payment whose status line says it did not go through, whatever the model called it', () => {
+    const status = (said: string): ReceiptEmail => ({
+      ...cardAlert,
+      text: [
+        'Sử dụng tại',
+        'At',
+        'SAMPLE*STORE Singapore SG',
+        'Số tiền',
+        'Transaction Amount',
+        '129,000 VND',
+        'Tình trạng giao dịch',
+        'Status of Transaction',
+        said,
+      ].join('\n'),
+    });
+    const reading = payment({ amount: '129,000 VND', currency: 'VND', merchant: 'Sample Store' });
+    for (const said of ['Hủy', 'Không thành công', 'Declined', 'Cancelled']) {
+      expect(emailSpendOf(reading, status(said), options)).toBeNull();
+    }
+    expect(emailSpendOf(reading, status('Thành công'), options)?.amount).toBe(129_000);
+    // A subject that says so is enough.
+    const failed = { ...status('Thành công'), subject: 'Your order #2610ABC was cancelled' };
+    expect(emailSpendOf(reading, failed, options)).toBeNull();
+    // The refund of a cancelled order is money that did come back.
+    const refund = { ...status('Thành công'), subject: 'Đơn hàng đã hủy: hoàn tiền thành công' };
+    expect(emailSpendOf({ ...reading, kind: 'refund' }, refund, options)?.kind).toBe('refund');
+  });
+
+  it('skips foreign currency sold for đồng, whatever the model called it', () => {
+    const sale: ReceiptEmail = {
+      from: { name: 'MB', address: 'mbebanking@mbbank.com.vn' },
+      subject: 'Giao dịch bán ngoại tệ thành công',
+      date: '2026-10-16T03:25:35.000Z',
+      text: null,
+      html: `<table>
+        <tr><td>Loại giao dịch</td><td>Bán ngoại tệ online</td></tr>
+        <tr><td>Số ngoại tệ bán</td><td>500 USD</td></tr>
+        <tr><td>Số tiền VND quy đổi</td><td>12.700.000 VND</td></tr>
+      </table>`,
+    };
+    const reading = payment({ amount: '12.700.000 VND', currency: 'VND' });
+    expect(emailSpendOf(reading, sale, options)).toBeNull();
+    expect(emailSpendOf({ ...reading, kind: 'incoming' }, sale, options)).toBeNull();
+  });
+
+  it('reads the printed time in the zone the email names beside it', () => {
+    const receipt: ReceiptEmail = {
+      from: { name: 'Sample AI', address: 'receipts+acct_0000@stripe.com' },
+      subject: 'Your Sample AI receipt [#1000-2000]',
+      date: '2026-10-16T04:03:35.000Z',
+      text: 'Amount paid\n₫312,000\nDate paid\nOctober 15, 2026 at 9:02:15 PM PDT',
+      html: null,
+    };
+    const reading = payment({ amount: '₫312,000', currency: 'VND', at: '2026-10-15T21:02:15' });
+    expect(emailSpendOf(reading, receipt, options)?.at).toBe('2026-10-16T04:02:15.000Z');
+  });
+
   it('gives the model the sender and the email’s lines, not its markup', () => {
     const text = emailModelText(shopReceipt);
     expect(text).toContain('From: Shopee <info@mail.shopee.vn>');

@@ -8,6 +8,7 @@ import {
   EMAIL_MONEY_IN_PARAM,
   EMAIL_PLAN_PARAM,
   emailCapturesResponseSchema,
+  EMAIL_WHAT_PARAM,
 } from '@6pm/domain';
 
 import { importEmailCaptures, type EmailCaptureSource } from '../../data/email-import';
@@ -49,7 +50,7 @@ export function useEmailImport() {
       fetch: async () =>
         (
           await api.request({
-            path: `/v1/email/captures?${EMAIL_PLAN_PARAM}=${max ? 'max' : 'free'}&${EMAIL_MONEY_IN_PARAM}=1`,
+            path: `/v1/email/captures?${EMAIL_PLAN_PARAM}=${max ? 'max' : 'free'}&${EMAIL_MONEY_IN_PARAM}=1&${EMAIL_WHAT_PARAM}=1`,
             schema: emailCapturesResponseSchema,
           })
         ).captures,
