@@ -33,32 +33,43 @@ async function offeredMilestones(db: SqlDatabase): Promise<number[]> {
 }
 
 /**
- * The milestone the evening just closed reaches, when it is one (7, 30 or 100 evenings in a row)
- * not offered before: the close reveal then shows the streak and the Share chip. It is marked
- * offered the moment it is found, so it shows on this reveal only.
+ * The milestone the evening being closed reaches, when it is one (7, 30 or 100 evenings in a
+ * row) not offered before. Read as the close opens, so the reveal has it on its first frame;
+ * nothing is marked until the reveal shows it (`useMarkStreakOffered`).
  */
-export function useStreakOffer(day: LocalDate): StreakMilestone | null {
+export function useStreakMilestone(day: LocalDate): StreakMilestone | null {
   const store = useMoneyStore();
   const [milestone, setMilestone] = useState<StreakMilestone | null>(null);
   useEffect(() => {
     let live = true;
     void (async () => {
       const rows = await readClosedBetween(store, addDays(day, -LOOK_BACK), day);
-      // The evening on the reveal is filed when Done is tapped: it counts as closed already.
+      // The evening being closed is filed when Done is tapped: it counts as closed already.
       const run = closeRunTo([...rows.map((r) => r.day), day], day);
       const reached = run ? streakMilestoneOf(run.days) : null;
       if (reached === null) return;
       const offered = await offeredMilestones(store.db);
-      if (offered.includes(reached)) return;
-      await store.db.runAsync('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)', [
-        OFFERED_KEY,
-        JSON.stringify([...offered, reached]),
-      ]);
-      if (live) setMilestone(reached);
+      if (!offered.includes(reached) && live) setMilestone(reached);
     })().catch(() => undefined);
     return () => {
       live = false;
     };
   }, [store, day]);
   return milestone;
+}
+
+/** Marks the milestone the reveal is showing as offered, so it shows on this reveal only. */
+export function useMarkStreakOffered(milestone: StreakMilestone | null): void {
+  const store = useMoneyStore();
+  useEffect(() => {
+    if (milestone === null) return;
+    void (async () => {
+      const offered = await offeredMilestones(store.db);
+      if (offered.includes(milestone)) return;
+      await store.db.runAsync('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)', [
+        OFFERED_KEY,
+        JSON.stringify([...offered, milestone]),
+      ]);
+    })().catch(() => undefined);
+  }, [store, milestone]);
 }

@@ -13,7 +13,14 @@ import {
 } from './share-inks-looks';
 import { byIndex, glow, PAPER, rule, seeded, type ShareInks } from './share-inks-types';
 
-export type { CardBand, CardGlow, CardJar, CardRule, ShareInks } from './share-inks-types';
+export type {
+  CardBand,
+  CardGlow,
+  CardJar,
+  CardRule,
+  ShareInks,
+  SunMotion,
+} from './share-inks-types';
 
 const SKIES = [
   ['#33427f', '#e0607a', '#ffad45'],
@@ -64,7 +71,13 @@ const golden: ShareInks = {
   },
   bandGlow: glow(0, 1, 2, 'rgba(40,10,30,.4)'),
   bands: { gap: 4, pad: 8, side: 8, r: 10 },
-  bigSun: { bg: goldenSun, sh: '0 0 0 10px #ffc83e22, 0 0 70px 24px #ff438266', border: 'none' },
+  bigSun: {
+    bg: goldenSun,
+    sh: '0 0 0 10px #ffc83e22, 0 0 70px 24px #ff438266',
+    border: 'none',
+    sink: 46,
+    motion: 'sink',
+  },
   horizon: rule(1, 'rgba(255,200,120,.55)'),
   jar: (_i, hue) => ({
     lid: oklchSrgbHex(0.55, 0.08, hue),
@@ -127,6 +140,8 @@ function basic(dark: boolean): ShareInks {
       bg: '#ffffff',
       sh: '0 4px 14px rgba(0,0,0,.15)',
       border: '0.5px solid rgba(60,60,67,.2)',
+      sink: 46,
+      motion: 'none',
     },
     horizon: rule(0.5, hair),
     jar: (i) => ({
@@ -178,7 +193,13 @@ const serious: ShareInks = {
   }),
   bandGlow: null,
   bands: { gap: 4, pad: 8, side: 8, r: 10 },
-  bigSun: { bg: slateSun, sh: '0 0 40px 8px rgba(251,244,236,.12)', border: 'none' },
+  bigSun: {
+    bg: slateSun,
+    sh: '0 0 40px 8px rgba(251,244,236,.12)',
+    border: 'none',
+    sink: 46,
+    motion: 'none',
+  },
   horizon: rule(1, 'rgba(251,244,236,.4)'),
   jar: (i) => ({
     lid: '#8a909a',

@@ -20,6 +20,8 @@ export const curves = {
   jarCheck: [0.3, 1.5, 0.5, 1],
   /** A photo clipped on: dropped under the clip, a row's clip snapping shut. */
   photoClip: [0.3, 1.4, 0.5, 1],
+  /** A share chip rising into place under the close reveal, with a small overshoot. */
+  chipIn: [0.3, 1.4, 0.5, 1],
   /** A removed photo falling off its clip. */
   photoFall: [0.5, 0, 0.75, 0],
 } as const satisfies Record<string, readonly [number, number, number, number]>;

@@ -11,10 +11,10 @@ import { useMoney } from '../../../data/money-provider';
 import { useI18n } from '../../../i18n/i18n';
 import { display, leading } from '../../../ui/type/fonts';
 import { useDiaryDates } from '../../diary/diary-dates';
-import { CardArt } from './card-art';
 import { defineCard, type CardLayoutProps } from './card-definition';
 import { CardMark, glowStyle, kicker, ON_CARD, title } from './card-parts';
 import { CARD_WIDTH, cardHeight, type ArtBox } from './card-size';
+import { bandsSettleMs, GrowingBands, GrowingRow, StreakSun, useBandClock } from './streak-motion';
 
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
 /** How far back a streak is read: past the longest milestone. */
@@ -96,7 +96,7 @@ function bandGeometry(inks: ShareInks, count: number) {
 
 const seedOf = (day: LocalDate) => Number(day.replaceAll('-', '')) % 100_003;
 
-function StreakLayout({ data, format, inks }: CardLayoutProps<StreakCardData>) {
+function StreakLayout({ data, format, inks, still = false }: CardLayoutProps<StreakCardData>) {
   const { t } = useI18n();
   const height = cardHeight(format);
   const region = height - PANEL;
@@ -104,31 +104,23 @@ function StreakLayout({ data, format, inks }: CardLayoutProps<StreakCardData>) {
   const g = bandGeometry(inks, n);
   const bandH = (region - g.pad - g.gap * (n - 1)) / n;
   const labelled = n <= 10;
-  const boxes = useMemo(() => {
-    const out: ArtBox[] = data.evenings.map((e, i) => {
-      const band = inks.band(i, seedOf(e.day));
-      return {
-        l: g.side,
-        t: g.pad + i * (bandH + g.gap),
-        w: CARD_WIDTH - g.side * 2,
-        h: bandH,
-        bg: band.bg,
-        sh: band.sh,
-        r: `${Math.min(g.r, bandH / 2)}px`,
-      };
-    });
-    out.push({
-      l: CARD_WIDTH * 0.46,
-      t: region - SUN / 2,
-      w: SUN,
-      h: SUN,
-      r: '50%',
-      bg: inks.bigSun.bg,
-      sh: inks.bigSun.sh,
-      ...(inks.bigSun.border === 'none' ? {} : { bd: inks.bigSun.border }),
-    });
-    return out;
-  }, [data.evenings, inks, g, bandH, region]);
+  const clock = useBandClock(n, still);
+  const boxes = useMemo(
+    (): ArtBox[] =>
+      data.evenings.map((e, i) => {
+        const band = inks.band(i, seedOf(e.day));
+        return {
+          l: g.side,
+          t: g.pad + i * (bandH + g.gap),
+          w: CARD_WIDTH - g.side * 2,
+          h: bandH,
+          bg: band.bg,
+          sh: band.sh,
+          r: `${Math.min(g.r, bandH / 2)}px`,
+        };
+      }),
+    [data.evenings, inks, g, bandH],
+  );
   const n0 = data.run.days;
   const numberSize = n0 < 10 ? 132 : n0 < 100 ? 120 : 108;
   const line =
@@ -142,13 +134,8 @@ function StreakLayout({ data, format, inks }: CardLayoutProps<StreakCardData>) {
   const accent = { ...kicker(inks, 10), color: inks.accent };
   return (
     <View style={{ width: CARD_WIDTH, height, backgroundColor: inks.base, overflow: 'hidden' }}>
-      <View style={{ height: region }}>
-        <CardArt
-          boxes={boxes}
-          width={CARD_WIDTH}
-          height={region}
-          style={{ position: 'absolute' }}
-        />
+      <View style={{ height: region, overflow: 'hidden' }}>
+        <GrowingBands boxes={boxes} width={CARD_WIDTH} height={region} clock={clock} />
         {labelled
           ? data.evenings.map((e, i) => {
               const band = inks.band(i, seedOf(e.day));
@@ -158,14 +145,18 @@ function StreakLayout({ data, format, inks }: CardLayoutProps<StreakCardData>) {
                 ...glowStyle(inks.bandGlow),
               };
               return (
-                <View
+                <GrowingRow
                   key={e.day}
+                  clock={clock}
+                  index={i}
+                  count={n}
                   style={{
                     position: 'absolute',
-                    left: g.side + 12,
-                    right: g.side + 12,
+                    left: g.side,
+                    right: g.side,
                     top: g.pad + i * (bandH + g.gap),
                     height: bandH,
+                    paddingHorizontal: 12,
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'space-between',
@@ -177,10 +168,16 @@ function StreakLayout({ data, format, inks }: CardLayoutProps<StreakCardData>) {
                   <Text {...ON_CARD} style={style}>
                     {e.at}
                   </Text>
-                </View>
+                </GrowingRow>
               );
             })
           : null}
+        <StreakSun
+          inks={inks}
+          size={SUN}
+          left={CARD_WIDTH * 0.46}
+          top={region + inks.bigSun.sink - SUN}
+        />
       </View>
       <View
         style={{
@@ -206,10 +203,10 @@ function StreakLayout({ data, format, inks }: CardLayoutProps<StreakCardData>) {
           </Text>
           <View style={{ gap: 2, paddingBottom: 6 }}>
             <Text {...ON_CARD} style={accent}>
-              {t('shareCards.streak.evenings').toLocaleUpperCase()}
+              {t('shareCards.streak.evenings', { count: n0 }).toLocaleUpperCase()}
             </Text>
             <Text {...ON_CARD} style={accent}>
-              {t('shareCards.streak.inARow').toLocaleUpperCase()}
+              {t('shareCards.streak.inARow', { count: n0 }).toLocaleUpperCase()}
             </Text>
           </View>
         </View>
@@ -229,6 +226,7 @@ export const streakShareCard = defineCard<StreakCardData>({
   path: 'streak',
   useData: useStreakCard,
   hasAmounts: () => false,
+  settleMs: (d) => bandsSettleMs(d.evenings.length),
   fileKey: (d) => `${d.run.days}-${d.run.to}`,
   Layout: StreakLayout,
 });

@@ -26,6 +26,7 @@ import { PotQuestionStep } from '../features/close/close-pot-question';
 import { PotReadyStep } from '../features/close/close-pot-ready';
 import { CloseReceiptStep } from '../features/close/close-receipt-step';
 import { CloseRevealStep } from '../features/close/close-reveal-step';
+import { useStreakMilestone } from '../features/sharing/streak-offer';
 import { CashStep, SortedStep } from '../features/close/close-steps';
 import { WorkQuestionStep } from '../features/close/close-work-question';
 import { CloseTopBar } from '../features/close/close-top-bar';
@@ -134,6 +135,8 @@ function CloseOpen({
   const book = form.kind === 'spread' ? form : null;
   const pressCard = useRef<((choice: CardPress) => void) | null>(null);
   const finish = useFinishClose(close, day);
+  // Read now so the reveal draws a streak milestone on its first frame.
+  const milestone = useStreakMilestone(close.day);
   // Folded shut once nothing is left to confirm, the day is closed, as the reveal's Done does.
   useFoldShut(() => void finish(), state.step !== 'cards');
 
@@ -367,7 +370,12 @@ function CloseOpen({
         />
       ) : null}
       {state.step === 'reveal' ? (
-        <CloseRevealStep day={close.day} number={day} onDone={() => void finish()} />
+        <CloseRevealStep
+          day={close.day}
+          number={day}
+          milestone={milestone}
+          onDone={() => void finish()}
+        />
       ) : null}
     </>
   );

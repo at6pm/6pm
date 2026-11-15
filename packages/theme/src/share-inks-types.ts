@@ -21,6 +21,12 @@ export interface CardGlow {
   readonly color: string;
 }
 
+/**
+ * The streak sun's loop, as the canvases animate it: `sink` drifts 6 pt up and 4 pt down over
+ * 4 s (ease-in-out, alternate), `flick` drops out now and then over 5 s, `sway` rocks ±3° over 6 s.
+ */
+export type SunMotion = 'sink' | 'flick' | 'sway' | 'none';
+
 /** One evening's band on the streak card. */
 export interface CardBand {
   readonly bg: string;
@@ -88,8 +94,19 @@ export interface ShareInks {
     readonly side: number;
     readonly r: number;
   };
-  /** The sun setting into the streak's panel: its background, glow and border. */
-  readonly bigSun: { readonly bg: string; readonly sh: string; readonly border: string };
+  /**
+   * The sun setting into the streak's panel: its background, glow and border; how far it sits
+   * below the horizon (half its 92 pt, or less where the look lifts it); and how it moves while
+   * the card is on screen: Golden Hour's sun sinks a little and rises again, Neon Alley's tube
+   * flickers, Lantern River's lantern sways.
+   */
+  readonly bigSun: {
+    readonly bg: string;
+    readonly sh: string;
+    readonly border: string;
+    readonly sink: number;
+    readonly motion: SunMotion;
+  };
   readonly horizon: CardRule;
   readonly jar: (index: number, hue: number) => CardJar;
   readonly jarShape: { readonly lid: string; readonly body: string; readonly lidGlow: string };

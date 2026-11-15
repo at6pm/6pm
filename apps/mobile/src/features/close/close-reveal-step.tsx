@@ -1,11 +1,21 @@
-import { addDays, payCycleOn, replanWorded, type DailyNumber, type LocalDate } from '@6pm/domain';
+import { useState } from 'react';
+
+import {
+  addDays,
+  payCycleOn,
+  replanWorded,
+  type DailyNumber,
+  type LocalDate,
+  type StreakMilestone,
+} from '@6pm/domain';
 import { localeOf } from '@6pm/i18n';
 
 import { useMoney } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { ShareChip } from '../sharing/share-chip';
-import { useStreakOffer } from '../sharing/streak-offer';
+import { StreakSunset } from '../sharing/streak-sunset';
+import { useMarkStreakOffered } from '../sharing/streak-offer';
 import { monthDots } from './month-dots';
 import { CloseReveal } from './close-reveal';
 
@@ -15,20 +25,28 @@ import { CloseReveal } from './close-reveal';
  */
 const CHIP_AFTER_MS = 2300;
 
-/** Tomorrow's number for the day just closed, with the month's dots and the companion's line. */
+/**
+ * Tomorrow's number for the day just closed, with the month's dots and the companion's line; on a
+ * streak milestone, the streak as sunsets and the chip that shares its card.
+ */
 export function CloseRevealStep({
   day,
   number,
+  milestone: found,
   onDone,
 }: {
   readonly day: LocalDate;
   readonly number: DailyNumber;
+  /** The streak milestone tonight reaches (`useStreakMilestone`, read as the close opened). */
+  readonly milestone: StreakMilestone | null;
   readonly onDone: () => void;
 }) {
+  // Kept as the reveal first drew it: a milestone read late never swaps the dots for the suns.
+  const [milestone] = useState(found);
+  useMarkStreakOffered(milestone);
   const { t, language } = useI18n();
   const money = useMoneyFormat();
   const snap = useMoney();
-  const milestone = useStreakOffer(day);
   const plan = snap.plan;
   if (!plan) return null;
   const locale = localeOf(language);
@@ -86,6 +104,7 @@ export function CloseRevealStep({
         milestone === null
           ? null
           : {
+              art: <StreakSunset />,
               line: t('shareCards.streak.reveal', { count: milestone }),
               chip: (
                 <ShareChip

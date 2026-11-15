@@ -106,6 +106,11 @@ function CardSheet({
 
   const dump = dev?.dump ?? null;
   const ready = data !== null;
+  // A card that draws itself in (the streak's bands) is shared once it has.
+  const settle = data ? (def.settleMs?.(data) ?? 0) : 0;
+  useEffect(() => {
+    if (ready) settledAt.current = Math.max(settledAt.current, Date.now() + settle);
+  }, [ready, settle]);
   useEffect(() => {
     if (!dump || !ready) return undefined;
     const timer = setTimeout(() => {
@@ -113,16 +118,16 @@ function CardSheet({
       void captureView(card).then((image) =>
         new File(Paths.document, dump).write(encodePng(atPixels(image, size.width, size.height))),
       );
-    }, 1500);
+    }, 1500 + settle);
     return () => clearTimeout(timer);
-  }, [dump, ready, format]);
+  }, [dump, ready, format, settle]);
 
   const pickFormat = (next: CardFormat) => {
     if (next === format) return;
     haptics.tick();
     setLeaving(format);
     setFormat(next);
-    settledAt.current = Date.now() + RESIZE.duration;
+    settledAt.current = Math.max(settledAt.current, Date.now() + RESIZE.duration);
     fade.set(0);
     fade.set(withTiming(1, RESIZE));
     height.set(withTiming(cardHeight(next) * SCALE, RESIZE));
@@ -131,7 +136,7 @@ function CardSheet({
   // The switch gives its own tick.
   const toggleAmounts = (on: boolean) => {
     setAmounts(on);
-    settledAt.current = Date.now() + AMOUNTS_SETTLE_MS;
+    settledAt.current = Math.max(settledAt.current, Date.now() + AMOUNTS_SETTLE_MS);
   };
 
   const shareCard = () => {
@@ -159,7 +164,14 @@ function CardSheet({
         }}
       >
         <View ref={capture ? card : undefined} collapsable={false}>
-          <def.Layout data={data} format={shown} amounts={amounts} inks={inks} serious={serious} />
+          <def.Layout
+            data={data}
+            format={shown}
+            amounts={amounts}
+            inks={inks}
+            serious={serious}
+            still={!capture}
+          />
         </View>
       </View>
     ) : null;
@@ -171,7 +183,7 @@ function CardSheet({
         contentContainerStyle={{
           paddingTop: 4,
           paddingHorizontal: 16,
-          paddingBottom: 34,
+          paddingBottom: 8,
           alignItems: 'center',
           gap: 14,
         }}
@@ -260,15 +272,15 @@ function CardSheet({
             />
           </View>
         ) : null}
-
+      </ScrollView>
+      {/* Share image stands at the sheet's foot, under whatever the preview needs. */}
+      <View style={{ paddingTop: 12, paddingHorizontal: 16, paddingBottom: 34 }}>
         <PressScale
           accessibilityRole="button"
           scaleTo={0.97}
           disabled={!data}
           onPress={shareCard}
           style={{
-            alignSelf: 'stretch',
-            marginTop: 4,
             height: 56,
             borderRadius: 99,
             backgroundColor: palette.btnBg,
@@ -283,7 +295,7 @@ function CardSheet({
             {t('shareCards.shareImage')}
           </Text>
         </PressScale>
-      </ScrollView>
+      </View>
     </SheetFrame>
   );
 }

@@ -44,7 +44,13 @@ export const lacquer: ShareInks = {
   }),
   bandGlow: null,
   bands: { gap: 0, pad: 0, side: 0, r: 0 },
-  bigSun: { bg: goldLeaf, sh: '0 0 40px 10px rgba(226,184,99,.35)', border: 'none' },
+  bigSun: {
+    bg: goldLeaf,
+    sh: '0 0 40px 10px rgba(226,184,99,.35)',
+    border: 'none',
+    sink: 46,
+    motion: 'none',
+  },
   horizon: rule(1, '#e2b863'),
   jar: (i) => ({
     lid: '#e2b863',
@@ -97,6 +103,8 @@ export const glaze: ShareInks = {
     bg: 'radial-gradient(circle at 45% 40%, #3c5cc0 0%, #1f409c 60%, rgba(31,64,156,.4) 85%, transparent 100%)',
     sh: 'none',
     border: 'none',
+    sink: 46,
+    motion: 'none',
   },
   horizon: rule(2, '#1f409c'),
   jar: (i) => ({
@@ -146,7 +154,13 @@ export const riso: ShareInks = {
   }),
   bandGlow: null,
   bands: { gap: 7, pad: 14, side: 14, r: 2 },
-  bigSun: { bg: '#ff4fa8', sh: '4px 3px 0 rgba(47,76,176,.75)', border: 'none' },
+  bigSun: {
+    bg: '#ff4fa8',
+    sh: '4px 3px 0 rgba(47,76,176,.75)',
+    border: 'none',
+    sink: 46,
+    motion: 'none',
+  },
   horizon: rule(3, '#2f4cb0'),
   jar: (i) => ({
     lid: '#2f4cb0',
@@ -199,6 +213,8 @@ export const neon: ShareInks = {
     bg: 'transparent',
     sh: '0 0 0 3px #ffb020, 0 0 18px #ffb020, inset 0 0 14px rgba(255,176,32,.6)',
     border: 'none',
+    sink: 46,
+    motion: 'flick',
   },
   horizon: rule(2, '#46e3ea'),
   jar: (i) => ({
@@ -252,6 +268,8 @@ export const monsoon: ShareInks = {
     bg: 'radial-gradient(circle at 35% 30%, #ffffff 0% 10%, #d6f0ea 22%, #9fd8cc 60%, #6aa89c 100%)',
     sh: '0 0 30px 6px rgba(143,214,200,.3)',
     border: 'none',
+    sink: 46,
+    motion: 'none',
   },
   horizon: rule(1, 'rgba(143,214,200,.6)'),
   jar: (i) => ({
@@ -305,6 +323,8 @@ export const cafe: ShareInks = {
     bg: `${BEAN}, radial-gradient(circle at 35% 28%, #c08850 0%, #6a3a1c 70%, #4a2614 100%)`,
     sh: '0 6px 14px rgba(42,23,13,.4)',
     border: 'none',
+    sink: 36,
+    motion: 'none',
   },
   horizon: rule(3, '#2a170d'),
   jar: (i) => ({
@@ -355,6 +375,8 @@ export const expo: ShareInks = {
     bg: 'radial-gradient(circle, #fff7e6 0%, #ffd8a0 35%, #ffb347 70%, rgba(255,179,71,0) 100%)',
     sh: '0 0 40px 14px rgba(255,179,71,.3)',
     border: 'none',
+    sink: 46,
+    motion: 'none',
   },
   horizon: rule(1, 'rgba(255,179,71,.7)'),
   jar: (i) => ({
@@ -424,6 +446,8 @@ export const paper: ShareInks = {
     bg: '#ffd36e',
     sh: '0 4px 0 -1px #d9a83a, 0 10px 14px rgba(60,40,20,.3)',
     border: 'none',
+    sink: 36,
+    motion: 'none',
   },
   horizon: rule(3, '#57903c'),
   jar: (i) => ({
@@ -484,6 +508,8 @@ export const lantern: ShareInks = {
     bg: 'radial-gradient(circle at 50% 40%, #ffd88a 0%, #f2a12e 45%, #e8452c 80%, #b8231c 100%)',
     sh: '0 0 40px 12px rgba(255,122,47,.45)',
     border: 'none',
+    sink: 36,
+    motion: 'sway',
   },
   horizon: rule(1, 'rgba(255,194,58,.6)'),
   jar: (i) => ({

@@ -13,6 +13,8 @@ export interface CardLayoutProps<D> {
   readonly inks: ShareInks;
   /** Serious mode: no companion line (the inks already carry no colour). */
   readonly serious: boolean;
+  /** Drawn at rest, with no entrance: the copy fading out as the format changes. */
+  readonly still?: boolean;
 }
 
 /**
@@ -30,6 +32,11 @@ export interface ShareCardDefinition<D> {
   readonly useData: (of: string | undefined) => D | null;
   /** Whether the card prints an amount, so the sheet offers Show amounts. */
   readonly hasAmounts: (data: D) => boolean;
+  /**
+   * How long the card takes to draw itself in once it appears (the streak's bands), so the image
+   * is never taken half drawn; none when it is there on its first frame.
+   */
+  readonly settleMs?: (data: D) => number;
   /** The shared file's key (`6pm-card-<path>-<key>.png`). */
   readonly fileKey: (data: D) => string;
   readonly Layout: ComponentType<CardLayoutProps<D>>;
