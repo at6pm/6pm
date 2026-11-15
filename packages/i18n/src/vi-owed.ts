@@ -26,6 +26,7 @@ export const viOwed: { readonly [Key in keyof typeof enOwed]: Entry } = {
 
   'owed.list.title': 'Người ta nợ bạn',
   'owed.list.strips': { other: 'trong {count} phần' },
+  'owed.list.youPaid': 'BẠN ĐÃ TRẢ {amount}',
   'owed.list.ask': 'Đòi',
   'owed.list.paid': 'ĐÃ TRẢ',
   'owed.list.empty': 'Hiện chưa ai nợ bạn.',

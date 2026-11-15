@@ -33,7 +33,7 @@ import {
 import { useDay, useMoneySelector } from '../../data/money-provider';
 import type { MoneySnapshot } from '../../data/money-store';
 import type { MoneyStore } from '../../data/money-store';
-import { useI18n } from '../../i18n/i18n';
+import { useI18n, type I18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
 import { jarName } from '../pots/jar-name';
@@ -75,6 +75,16 @@ const sameInputs = (a: ReturnType<typeof diaryInputs>, b: ReturnType<typeof diar
   a.categories === b.categories &&
   a.plan === b.plan &&
   a.pots === b.pots;
+
+/**
+ * The Diary's kicker: the month and the days closed in it, and the days closed in all only when
+ * that says something more.
+ */
+function kickerOf(t: I18n['t'], closed: number, month: string, all: number): string {
+  return all === closed
+    ? t('diary.kicker', { closed, month })
+    : t('diary.kickerAll', { closed, month, all });
+}
 
 /**
  * Everything the Diary tab shows, from the database through the domain maths. Closing a day (here
@@ -351,11 +361,12 @@ export function useDiary() {
       : floorToStep(monthClosed.reduce((sum, d) => sum + d.line, 0) / monthClosed.length, currency);
   return {
     ready: data !== null,
-    kicker: t('diary.kicker', {
-      closed: closedDays.filter((d) => monthOf(d.day) === current).length,
-      month: dates.month(current),
-      all: data?.allClosed ?? 0,
-    }),
+    kicker: kickerOf(
+      t,
+      closedDays.filter((d) => monthOf(d.day) === current).length,
+      dates.month(current),
+      data?.allClosed ?? 0,
+    ),
     recap,
     recapKicker: t('diary.recap.kicker', { range: dates.range(monday, today) }),
     letters: dates.letters(monday),
@@ -372,6 +383,8 @@ export function useDiary() {
               under,
               line: money.short(monthLine),
             }),
+    today,
+    closeAt: plan?.closeAt ?? '18:00',
     cells: calendarCells({
       month,
       today,

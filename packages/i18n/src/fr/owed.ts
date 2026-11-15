@@ -25,6 +25,7 @@ export const frOwed: { readonly [Key in keyof typeof enOwed]: Entry } = {
 
   'owed.list.title': 'On te doit',
   'owed.list.strips': { one: 'en {count} bande', other: 'en {count} bandes' },
+  'owed.list.youPaid': 'TU AS PAYÉ {amount}',
   'owed.list.ask': 'Demander',
   'owed.list.paid': 'PAYÉ',
   'owed.list.empty': 'Personne ne te doit rien pour l’instant.',

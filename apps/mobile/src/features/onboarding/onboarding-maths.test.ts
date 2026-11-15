@@ -6,6 +6,8 @@ import { billTotal, chosenBills, dealDeck, NO_BILL_ANSWERS, type BillAnswers } f
 import {
   billDigits,
   billFromTyped,
+  billLeading,
+  billMillionsItems,
   billOf,
   CLOSE_HOURS,
   CLOSE_MINUTES,
@@ -17,7 +19,7 @@ import {
   incomeMax,
   incomeMillionsItems,
   incomeOf,
-  billMillionsItems,
+  LEADING_DIGITS,
   markAfter,
   millionsPlace,
   PAYDAY_CELLS,
@@ -119,6 +121,18 @@ describe('onboarding maths', () => {
     expect(zerosBelow(3, ',')).toBe(',000');
     // Won: ₩100,000 a "million", so the mark falls inside the two-digit wheel.
     expect(billMillionsItems(KRW, ',').slice(9, 12)).toEqual(['9', '1,0', '1,1']);
+  });
+
+  it('leaves the bill wheels blank ahead of the first digit', () => {
+    expect(billMillionsItems().slice(0, 2)).toEqual(['', '1']);
+    // 380.000₫: the millions lead and are blank, the hundreds and tens are digits.
+    expect(billLeading(0, 3)).toEqual({ millions: true, hundreds: true, tens: false });
+    // 50.000₫: the tens wheel would be blank only at 0, so its 5 is drawn alone.
+    expect(billLeading(0, 0)).toEqual({ millions: true, hundreds: true, tens: true });
+    // 2.000.000₫: the zeros after the 2 are digits.
+    expect(billLeading(2, 0)).toEqual({ millions: false, hundreds: false, tens: false });
+    expect(LEADING_DIGITS[0]).toBe('');
+    expect(LEADING_DIGITS[3]).toBe('3');
   });
 
   it('starts money in at about 15.500.000₫ worth, on the wheels', () => {

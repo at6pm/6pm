@@ -23,6 +23,7 @@ export const enOwed = {
 
   'owed.list.title': 'Owed to you',
   'owed.list.strips': { one: 'in {count} strip', other: 'in {count} strips' },
+  'owed.list.youPaid': 'YOU PAID {amount}',
   'owed.list.ask': 'Ask',
   'owed.list.paid': 'PAID',
   'owed.list.empty': 'Nobody owes you anything right now.',

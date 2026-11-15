@@ -48,7 +48,7 @@ export const jaPotsPlan: { readonly [Key in keyof typeof enPotsPlan]: Entry } = 
   'potsPlan.maths.sinceJoined': '6pmを始めてから',
   'potsPlan.maths.spentSoFar': 'これまでの支出',
   'potsPlan.maths.left': '残り',
-  'potsPlan.maths.divide': { other: '÷ {count}日' },
+  'potsPlan.maths.divideTo': { other: '÷ {count}日（今日から{date}まで）' },
   'potsPlan.maths.over': '超過',
   'potsPlan.maths.untouched': '固定費と貯金びん',
   'potsPlan.maths.untouchedValue': '手つかず',

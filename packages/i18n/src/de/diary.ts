@@ -4,7 +4,8 @@ import type { enDiary } from '../en-diary';
 // "Your line" is the daily line, Linie; "Future you" is Zukunfts-Ich, and the zine's notes play on {month}-Du.
 export const deDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.title': 'Tagebuch',
-  'diary.kicker': '{closed} abgeschlossen im {month} · {all} insgesamt',
+  'diary.kicker': '{month} · {closed} abgeschlossen',
+  'diary.kickerAll': '{month} · {closed} abgeschlossen · {all} insgesamt',
   'diary.recap.kicker': 'WOCHE BISHER · {range}',
   'diary.recap.hint': 'Tippen oder wischen',
   'diary.recap.under.lead': {
@@ -30,8 +31,7 @@ export const deDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.cal.summaryNone': 'Schließ heute Abend ab, um deinen ersten Tag abzulegen',
   'diary.cal.under': 'Unter deiner Linie',
   'diary.cal.over': 'Darüber',
-  'diary.cal.today': '6pm',
-  'diary.cal.missed': 'verpasst',
+  'diary.cal.tap': '· tippe auf einen Tag',
   'diary.receipt.no': 'Nr. {no}',
   'diary.receipt.empty': 'NICHTS AUSGEGEBEN',
   'diary.receipt.late': 'SPÄT',

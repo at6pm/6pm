@@ -30,10 +30,13 @@ export interface CloseCardContent {
   readonly keptBefore: number;
   /** What keeping it adds to what was kept, when not its amount: nothing for a bill's payment. */
   readonly adds?: number;
+  /** Where it came from: the foot's first line, on every card. */
   readonly detail: string | null;
+  /** The foot's second line: that a photo is kept with it. */
+  readonly photoNote?: string;
   readonly labels: {
-    readonly keptSoFar: string;
-    readonly withThis: string;
+    /** "KEPT TODAY": what was kept before this card, and with it. */
+    readonly keptToday: string;
     readonly keep: string;
     readonly edit: string;
     readonly notMine: string;
@@ -102,18 +105,17 @@ function Stamp({
   );
 }
 
-/** What the clipped receipt covers of the card's right side: its header and name stop short. */
-const PRINT_ROOM = 96;
 /**
- * How far the print stands above the card. The design stands it 34 pt up, into the room over the
- * card; the app's hint line ("Right to keep · …") sits there, so it is clipped lower.
+ * The photo's print is tucked behind the card, turned 8°, standing above its top and past its
+ * right edge, so the card's header is never covered; the clip sits on the card's edge.
  */
-const PRINT_TOP = -6;
+const PRINT = { width: 74, height: 96, top: -10, right: -12, frame: 3, chin: 11 } as const;
+const CLIP = { size: 30, top: -12, right: 22 } as const;
 
 /** The shortest card that still has room for the running total under the name. */
 const FULL_HEIGHT = 300;
-/** The shortest card at all: header, name, amount and where it was read from. */
-export const MIN_HEIGHT = 254;
+/** The shortest card at all: header, name, amount and its two-line foot. */
+export const MIN_HEIGHT = 268;
 
 /**
  * One caught spend on thermal paper: number and source, the merchant tile, the running total,
@@ -138,9 +140,8 @@ export function CloseCard({
   const { numK } = useTheme().palette;
   // Too short for the running total (a short screen): the receipt keeps its name and amount.
   const compact = height < FULL_HEIGHT;
-  // The receipt is clipped to the card, so it rides the swipe; the header makes room for it.
+  // The print is part of the card, so it rides the swipe with it; it lies behind the paper.
   const photo = row.photo === null ? null : photoUri(row.photo);
-  const besidePhoto = photo === null ? null : { marginRight: PRINT_ROOM };
   return (
     <View>
       {photo !== null ? (
@@ -148,28 +149,21 @@ export function CloseCard({
           pointerEvents="none"
           style={{
             position: 'absolute',
-            right: 14,
-            top: PRINT_TOP,
-            width: 96,
-            height: 141,
-            zIndex: 1,
-            borderWidth: 4,
+            right: PRINT.right,
+            top: PRINT.top,
+            width: PRINT.width,
+            height: PRINT.height,
+            borderWidth: PRINT.frame,
+            borderBottomWidth: PRINT.chin,
             borderColor: photoInk.frame,
             backgroundColor: photoInk.frame,
-            boxShadow: '0 12px 22px rgba(20,6,30,.4)',
-            transform: [{ rotate: '6deg' }],
+            boxShadow: '0 8px 18px rgba(10,5,20,.4)',
+            transform: [{ rotate: '8deg' }],
             overflow: 'hidden',
           }}
         >
           <Image source={{ uri: photo }} resizeMode="cover" style={{ flex: 1 }} />
         </View>
-      ) : null}
-      {photo !== null ? (
-        <PhotoClip
-          size={40}
-          rotate={8}
-          style={{ position: 'absolute', right: 52, top: PRINT_TOP - 12, zIndex: 2 }}
-        />
       ) : null}
       {/* The paper casts the shadow, not its torn edge, which would show it between the teeth. */}
       <View
@@ -192,7 +186,7 @@ export function CloseCard({
             experimental_backgroundImage: `linear-gradient(180deg, #fdfaf3, ${PAPER})`,
           }}
         >
-          <View style={[{ flexDirection: 'row', justifyContent: 'space-between' }, besidePhoto]}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 10 }}>
             <Text
               numberOfLines={1}
               style={{ ...mono(11.5, 400, 0.1), color: INK_SOFT, flexShrink: 1 }}
@@ -201,10 +195,8 @@ export function CloseCard({
             </Text>
             <Text style={{ ...mono(11.5, 400, 0.1), color: INK_SOFT }}>{content.time}</Text>
           </View>
-          <View style={besidePhoto}>
-            <DashedRule color={RULE} />
-          </View>
-          <View style={[{ flexDirection: 'row', alignItems: 'center', gap: 12 }, besidePhoto]}>
+          <DashedRule color={RULE} />
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
             <CategoryTile
               icon={moneyIn ? 'payments' : row.icon}
               hue={moneyIn ? moneyInInk.hue : row.hue}
@@ -223,26 +215,36 @@ export function CloseCard({
             <View style={{ flex: 1 }} />
           ) : (
             <View style={{ flex: 1, justifyContent: 'center', gap: 6 }}>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Text style={{ ...mono(11.5, 400, 0.1), color: 'rgba(42,34,48,.62)' }}>
-                  {moneyIn ? moneyIn.asIsLabel : labels.keptSoFar}
-                </Text>
-                <Text style={{ ...mono(11.5), ...tabular, color: 'rgba(42,34,48,.62)' }}>
-                  {money.number(moneyIn ? moneyIn.asIs : content.keptBefore)}
-                </Text>
-              </View>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Text style={{ ...mono(11.5, 400, 0.1), color: INK }}>
-                  {moneyIn ? moneyIn.spreadLabel : labels.withThis}
-                </Text>
-                <Text style={{ ...mono(11.5, 600), ...tabular, color: INK }}>
-                  {money.number(
-                    moneyIn
-                      ? moneyIn.spread
-                      : content.keptBefore + (content.adds ?? content.amount),
-                  )}
-                </Text>
-              </View>
+              {moneyIn ? (
+                <>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={{ ...mono(11.5, 400, 0.1), color: 'rgba(42,34,48,.62)' }}>
+                      {moneyIn.asIsLabel}
+                    </Text>
+                    <Text style={{ ...mono(11.5), ...tabular, color: 'rgba(42,34,48,.62)' }}>
+                      {money.number(moneyIn.asIs)}
+                    </Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={{ ...mono(11.5, 400, 0.1), color: INK }}>
+                      {moneyIn.spreadLabel}
+                    </Text>
+                    <Text style={{ ...mono(11.5, 600), ...tabular, color: INK }}>
+                      {money.number(moneyIn.spread)}
+                    </Text>
+                  </View>
+                </>
+              ) : (
+                // Before and after this card, on one line.
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 10 }}>
+                  <Text style={{ ...mono(11.5, 400, 0.1), color: INK }}>{labels.keptToday}</Text>
+                  <Text numberOfLines={1} style={{ ...mono(11.5, 600), ...tabular, color: INK }}>
+                    {`${money.number(content.keptBefore)} → ${money.number(
+                      content.keptBefore + (content.adds ?? content.amount),
+                    )}`}
+                  </Text>
+                </View>
+              )}
             </View>
           )}
           {/* The prototype's inline `<span style="font-size:.42em; margin-left:4px">₫</span>`.
@@ -266,10 +268,21 @@ export function CloseCard({
               symbol={{ ...display(30, 500), opacity: 0.55 }}
             />
           </FitWidth>
-          {content.detail ? (
+          {content.detail || content.photoNote ? (
             <View style={{ gap: 10 }}>
               <DashedRule color={RULE} />
-              <Text style={{ ...mono(11.5), color: 'rgba(42,34,48,.62)' }}>{content.detail}</Text>
+              <View style={{ gap: 3 }}>
+                {content.detail ? (
+                  <Text numberOfLines={2} style={{ ...mono(11.5), color: 'rgba(42,34,48,.62)' }}>
+                    {content.detail}
+                  </Text>
+                ) : null}
+                {content.photoNote ? (
+                  <Text numberOfLines={1} style={{ ...mono(11.5), color: 'rgba(42,34,48,.62)' }}>
+                    {content.photoNote}
+                  </Text>
+                ) : null}
+              </View>
             </View>
           ) : null}
           {top ? (
@@ -325,6 +338,13 @@ export function CloseCard({
         </View>
       </View>
       <PaperEdge color={PAPER} shadow={top} />
+      {photo !== null ? (
+        <PhotoClip
+          size={CLIP.size}
+          rotate={180}
+          style={{ position: 'absolute', right: CLIP.right, top: CLIP.top }}
+        />
+      ) : null}
     </View>
   );
 }

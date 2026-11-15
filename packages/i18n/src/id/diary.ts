@@ -4,7 +4,8 @@ import type { enDiary } from '../en-diary';
 // The Diary is "Diari"; each month is a "diari uang". A day's line is its "batas".
 export const idDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.title': 'Diari',
-  'diary.kicker': '{closed} ditutup di {month} · {all} total',
+  'diary.kicker': '{month} · {closed} ditutup',
+  'diary.kickerAll': '{month} · {closed} ditutup · {all} total',
   'diary.recap.kicker': 'MINGGU INI · {range}',
   'diary.recap.hint': 'Ketuk atau geser',
   'diary.recap.under.lead': { other: '{count} hari di bawah batas sejauh ini, jadi' },
@@ -24,8 +25,7 @@ export const idDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.cal.summaryNone': 'Tutup hari malam ini untuk mengarsipkan hari pertamamu',
   'diary.cal.under': 'Di bawah batas',
   'diary.cal.over': 'Lewat batas',
-  'diary.cal.today': '6pm',
-  'diary.cal.missed': 'terlewat',
+  'diary.cal.tap': '· ketuk satu hari',
   'diary.receipt.no': 'No. {no}',
   'diary.receipt.empty': 'TIDAK ADA PENGELUARAN',
   'diary.receipt.late': 'TELAT',

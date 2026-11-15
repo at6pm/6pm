@@ -24,13 +24,13 @@ export function PageButton({
       hitSlop={6}
       onPress={onPress}
       style={{
-        width: 30,
-        height: 30,
-        borderRadius: 15,
+        width: 32,
+        height: 32,
+        borderRadius: 16,
         backgroundColor: palette.chipBg,
         alignItems: 'center',
         justifyContent: 'center',
-        opacity: enabled ? 1 : 0.3,
+        opacity: enabled ? 1 : 0.35,
       }}
     >
       <Symbol

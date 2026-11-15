@@ -25,6 +25,7 @@ export const zhHansOwed: { readonly [Key in keyof typeof enOwed]: Entry } = {
 
   'owed.list.title': '别人欠你',
   'owed.list.strips': { other: '共 {count} 份' },
+  'owed.list.youPaid': '你付了 {amount}',
   'owed.list.ask': '催款',
   'owed.list.paid': '已付',
   'owed.list.empty': '现在没人欠你钱。',

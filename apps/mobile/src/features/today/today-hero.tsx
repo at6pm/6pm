@@ -82,7 +82,11 @@ export function TodayHero({
             line: money.short(day.line),
           })
         : t('today.meterNothing');
-  const right = t('today.tomorrowAbout', { amount: money.short(day.tomorrow) });
+  // Past the plan, or with nothing left for tomorrow, "Tomorrow ≈ 0k" says nothing new.
+  const right =
+    cycleOver || day.tomorrow <= 0
+      ? null
+      : t('today.tomorrowAbout', { amount: money.short(day.tomorrow) });
 
   return (
     <View
@@ -182,7 +186,11 @@ export function TodayHero({
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 12 }}>
             <Text style={{ ...body(13.5, 500), ...tabular, color: palette.inkSoft }}>{left}</Text>
-            <Text style={{ ...body(13.5, 500), ...tabular, color: palette.inkSoft }}>{right}</Text>
+            {right === null ? null : (
+              <Text style={{ ...body(13.5, 500), ...tabular, color: palette.inkSoft }}>
+                {right}
+              </Text>
+            )}
           </View>
         </View>
       </PressScale>

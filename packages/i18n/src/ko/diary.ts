@@ -5,7 +5,8 @@ import type { enDiary } from '../en-diary';
 // read as one when joined.
 export const koDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.title': '다이어리',
-  'diary.kicker': '{month} {closed}일 마감 · 전체 {all}일',
+  'diary.kicker': '{month} · {closed}일 마감',
+  'diary.kickerAll': '{month} · {closed}일 마감 · 전체 {all}일',
   'diary.recap.kicker': '이번 주 · {range}',
   'diary.recap.hint': '탭하거나 밀어 보세요',
   'diary.recap.under.lead': { other: '지금까지 {count}일은 하루 금액 안에서 썼어요. 그래서' },
@@ -25,8 +26,7 @@ export const koDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.cal.summaryNone': '오늘 밤 마감하면 첫 페이지가 생겨요',
   'diary.cal.under': '하루 금액 이하',
   'diary.cal.over': '초과',
-  'diary.cal.today': '6pm',
-  'diary.cal.missed': '놓침',
+  'diary.cal.tap': '· 날짜를 누르세요',
   'diary.receipt.no': 'No. {no}',
   'diary.receipt.empty': '지출 없음',
   'diary.receipt.late': '늦은 마감',

@@ -255,10 +255,13 @@ function PlanContent({
               />
             </SplitPanel>
           ) : (
-            <SplitPanel title={t('potsPlan.maths.title')} note={words.daySub}>
+            // The hero already says how many days to payday; the maths names its own days.
+            <SplitPanel title={t('potsPlan.maths.title')}>
               <MathsPanel
                 split={split}
                 colours={colours}
+                today={snap.today}
+                format={format}
                 onChangeBefore={
                   beforeEditable(snap) ? () => router.push(planRoutes.sincePayday) : undefined
                 }

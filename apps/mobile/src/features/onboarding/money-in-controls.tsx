@@ -12,6 +12,7 @@ import type { Payday } from '@6pm/domain';
 import { curves, durations } from '@6pm/theme';
 
 import { useI18n } from '../../i18n/i18n';
+import { useMoneyFormat } from '../../money/use-money-format';
 import { body, display } from '../../ui/type/fonts';
 import { Strip } from '../../ui/wheel/strip';
 import { Wheel } from '../../ui/wheel/wheel';
@@ -109,9 +110,11 @@ export function IncomeWheels({
   readonly keypadInks?: KeypadSheetInks;
 }) {
   const { t } = useI18n();
+  const money = useMoneyFormat();
   const w = useWheelMoney();
   const c = w.currency;
   const { lead, millions, hundreds } = incomeDigits(income, c);
+  const spoken = money.full(income);
   const between = markAfter(w.place, w.mark);
   const innerMark = markAfter(w.place + 1, w.mark) !== '';
   const number = { ...display(SIZE, 600, -0.03), color: colours.ink, ...PASS_THROUGH };
@@ -133,6 +136,7 @@ export function IncomeWheels({
   const strip = (k: number) => ({
     reach: { ...sides(k), ...reachY },
     onType: () => setTyping(true),
+    drum: colours.chipBg,
   });
 
   const leadStyle = useAnimatedStyle(() => {
@@ -181,7 +185,12 @@ export function IncomeWheels({
             ink={colours.ink}
             width={LEAD_WIDTH}
             label={w.label('lead', 'onboarding.income.hundredMillions')}
-            touch={{ reach: { ...leadSides, ...reachY }, onType: () => setTyping(true) }}
+            spoken={spoken}
+            touch={{
+              reach: { ...leadSides, ...reachY },
+              onType: () => setTyping(true),
+              drum: colours.chipBg,
+            }}
           />
         </Animated.View>
         <Wheel
@@ -194,6 +203,7 @@ export function IncomeWheels({
           ink={colours.ink}
           width={millionsWidth}
           label={w.label('millions', 'onboarding.income.millions')}
+          spoken={spoken}
           touch={strip(0)}
           {...(guide ? { guide: guide.millions } : {})}
         />
@@ -214,6 +224,7 @@ export function IncomeWheels({
           ink={colours.ink}
           width={HUNDREDS_WIDTH}
           label={w.label('hundreds', 'onboarding.income.hundreds')}
+          spoken={spoken}
           touch={strip(1)}
           {...(guide ? { guide: guide.hundreds } : {})}
         />

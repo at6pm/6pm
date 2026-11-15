@@ -25,6 +25,7 @@ export const jaOwed: { readonly [Key in keyof typeof enOwed]: Entry } = {
 
   'owed.list.title': '貸しているお金',
   'owed.list.strips': { other: '{count}件' },
+  'owed.list.youPaid': '支払い {amount}',
   'owed.list.ask': '請求',
   'owed.list.paid': '支払済',
   'owed.list.empty': '今は誰にも貸していません。',

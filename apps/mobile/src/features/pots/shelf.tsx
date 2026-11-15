@@ -17,6 +17,7 @@ import { useMoney } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
+import { balanceTwoLines } from '../../ui/type/balanced-text';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, tabular } from '../../ui/type/fonts';
@@ -35,6 +36,14 @@ const JAR_H = 66;
 const landEase = Easing.bezier(...curves.jarIn);
 /** A jar's name under it, and what it holds. */
 const NAME = body(12, 650);
+/**
+ * A name takes up to two lines, 64 pt wide, balanced; still too long, it steps down to 11 pt,
+ * and only then ends in "…". Every jar on the shelf keeps the tallest name's room, so the amounts
+ * under them line up.
+ */
+const NAME_WIDTH = 64;
+const NAME_LINE = 15;
+const NAME_SMALLEST = 11 / 12;
 const HELD = { ...body(11), ...tabular };
 
 /**
@@ -51,6 +60,7 @@ export function JarShelf() {
   const jars = useJars();
   const scroll = useRef<ScrollViewInstance>(null);
   const hasPlan = useMoney().plan !== null;
+  const [nameLines, setNameLines] = useState(1);
 
   if (!hasPlan) return null;
 
@@ -95,6 +105,8 @@ export function JarShelf() {
           <ShelfCell
             key={`${jar.kind}:${jar.id}`}
             jar={jar}
+            nameLines={nameLines}
+            onNameLines={(lines) => setNameLines((most) => Math.max(most, lines))}
             onLanded={() => scroll.current?.scrollToEnd({ animated: true })}
           />
         ))}
@@ -112,7 +124,19 @@ export function JarShelf() {
   );
 }
 
-function ShelfCell({ jar, onLanded }: { readonly jar: ShelfJar; readonly onLanded: () => void }) {
+function ShelfCell({
+  jar,
+  nameLines,
+  onNameLines,
+  onLanded,
+}: {
+  readonly jar: ShelfJar;
+  /** The most lines any name on the shelf takes: each name keeps that much room. */
+  readonly nameLines: number;
+  readonly onNameLines: (lines: number) => void;
+  readonly onLanded: () => void;
+}) {
+  const [twoLines, setTwoLines] = useState(false);
   const { palette } = useTheme();
   const home = useMoneyFormat();
   const router = useRouter();
@@ -187,9 +211,21 @@ function ShelfCell({ jar, onLanded }: { readonly jar: ShelfJar; readonly onLande
           </Animated.View>
         </View>
         <View style={{ alignItems: 'center', width: '100%' }}>
-          <Text numberOfLines={1} style={{ ...NAME, color: palette.ink, maxWidth: '100%' }}>
-            {jar.name}
-          </Text>
+          <View style={{ width: NAME_WIDTH, minHeight: nameLines * NAME_LINE }}>
+            <Text
+              numberOfLines={2}
+              adjustsFontSizeToFit
+              minimumFontScale={NAME_SMALLEST}
+              onTextLayout={(e) => {
+                const lines = Math.min(2, e.nativeEvent.lines.length);
+                if (lines === 2 && !twoLines) setTwoLines(true);
+                onNameLines(lines);
+              }}
+              style={{ ...NAME, lineHeight: NAME_LINE, color: palette.ink, textAlign: 'center' }}
+            >
+              {twoLines ? balanceTwoLines(jar.name) : jar.name}
+            </Text>
+          </View>
           <Text style={{ ...HELD, color: alpha(palette.ink, 0.62) }}>{money.short(jar.saved)}</Text>
         </View>
       </PressScale>

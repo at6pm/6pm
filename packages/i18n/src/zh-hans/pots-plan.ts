@@ -48,7 +48,7 @@ export const zhHansPotsPlan: { readonly [Key in keyof typeof enPotsPlan]: Entry 
   'potsPlan.maths.sinceJoined': '用 6pm 以来',
   'potsPlan.maths.spentSoFar': '目前已花',
   'potsPlan.maths.left': '剩余',
-  'potsPlan.maths.divide': { other: '÷ {count} 天' },
+  'potsPlan.maths.divideTo': { other: '÷ {count} 天，今天到 {date}' },
   'potsPlan.maths.over': '超出',
   'potsPlan.maths.untouched': '账单和存钱罐',
   'potsPlan.maths.untouchedValue': '原封不动',

@@ -4,6 +4,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   cancelAnimation,
   Easing,
+  withDelay,
   useAnimatedReaction,
   useAnimatedStyle,
   useDerivedValue,
@@ -23,6 +24,7 @@ import { display, tabular } from '../type/fonts';
 import {
   clampPosition,
   columnOffset,
+  drumLook,
   edgeFade,
   holdDelay,
   momentumIndex,
@@ -39,6 +41,20 @@ const PERSPECTIVE = 320;
 const TEXT_ALIGN = { center: 'center', 'flex-start': 'left', 'flex-end': 'right' } as const;
 /** A press that travels further than this is a drag, not a hold. */
 const HOLD_SLOP = 10;
+/** A money wheel lights as a finger lands, and dims 600 ms after it last moved. */
+const LIGHT_UP = { duration: 150, easing: Easing.out(Easing.quad) };
+const DIM = { duration: 300, easing: Easing.out(Easing.quad) };
+const DIM_AFTER = 600;
+/** The drum is inset from the column; lit, it reaches half a row past it. */
+const DRUM_INSET_X = 2;
+const DRUM_INSET_Y = 4;
+const DRUM_RADIUS = 11;
+/** The drum at rest is this share of its colour (5% white of the band's 9%). */
+const DRUM_REST = 0.55;
+/** A notch is a short dash at 30% of the ink, half a digit wide. */
+const NOTCH_HEIGHT = 2.5;
+const NOTCH_INK = 0.3;
+const NOTCH_WIDTH = 0.3;
 
 /** How far a wheel's touch strip reaches past its drawn rows, in points. */
 export interface WheelReach {
@@ -56,6 +72,8 @@ export interface WheelTouch {
   readonly reach: WheelReach;
   /** A tap on the centre row: type the whole amount. */
   readonly onType?: () => void;
+  /** The faint drum the column turns on: the band's colour, drawn at about half its strength. */
+  readonly drum: string;
 }
 
 /** A guide rolling the wheel the way a finger would, without changing its value. */
@@ -82,6 +100,8 @@ export interface WheelProps {
   readonly width: number;
   /** What the wheel sets, for VoiceOver ("Payday"). */
   readonly label: string;
+  /** What VoiceOver reads as the value, when the row alone says too little ("380.000₫"). */
+  readonly spoken?: string;
   readonly touch?: WheelTouch;
   readonly guide?: WheelGuide;
 }
@@ -143,6 +163,113 @@ function Row({
 }
 
 /**
+ * A money wheel's row: its digit, and the notch that stands in for it while the wheel is at rest.
+ * Rows past the box are drawn too, so a lit column can show two digits each way.
+ */
+function DrumRow({
+  label,
+  index,
+  shown,
+  lit,
+  rowHeight,
+  size,
+  ink,
+  textStyle,
+  align,
+  padX,
+}: {
+  readonly label: string;
+  readonly index: number;
+  readonly shown: Readonly<SharedValue<number>>;
+  readonly lit: Readonly<SharedValue<number>>;
+  readonly rowHeight: number;
+  readonly size: number;
+  readonly ink: string;
+  readonly textStyle: TextStyle;
+  readonly align: WheelProps['align'];
+  readonly padX: number;
+}) {
+  const look = useAnimatedStyle(() => {
+    const distance = index - shown.value;
+    const { digit, scale, scaleY, pull } = drumLook(distance, lit.value);
+    return {
+      opacity: digit,
+      transform: [{ translateY: -Math.sign(distance) * pull * rowHeight }, { scale }, { scaleY }],
+    };
+  });
+  const notchLook = useAnimatedStyle(() => {
+    const { notch, scale } = drumLook(index - shown.value, lit.value);
+    return { opacity: notch * NOTCH_INK, transform: [{ scale }] };
+  });
+  const notch = size * NOTCH_WIDTH;
+  // Under a digit set to one side, the notch sits under that side's last digit.
+  const notchSide = (size * 0.6 - notch) / 2;
+  return (
+    <View style={{ height: rowHeight, justifyContent: 'center', paddingHorizontal: padX }}>
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          {
+            position: 'absolute',
+            inset: 0,
+            alignItems: align ?? 'center',
+            justifyContent: 'center',
+            paddingHorizontal: padX + (align === 'center' ? 0 : notchSide),
+          },
+          notchLook,
+        ]}
+      >
+        <View
+          style={{ width: notch, height: NOTCH_HEIGHT, borderRadius: 2, backgroundColor: ink }}
+        />
+      </Animated.View>
+      <Animated.Text
+        numberOfLines={1}
+        ellipsizeMode={Platform.OS === 'android' ? 'clip' : 'tail'}
+        allowFontScaling={false}
+        style={[textStyle, { textAlign: TEXT_ALIGN[align ?? 'center'] }, look]}
+      >
+        {label}
+      </Animated.Text>
+    </View>
+  );
+}
+
+/**
+ * The faint drum behind a money wheel's column: a capsule that fades out at both ends, which
+ * brightens and reaches half a row further while the column turns.
+ */
+function Drum({
+  colour,
+  lit,
+  rowHeight,
+}: {
+  readonly colour: string;
+  readonly lit: Readonly<SharedValue<number>>;
+  readonly rowHeight: number;
+}) {
+  const look = useAnimatedStyle(() => {
+    const reach = DRUM_INSET_Y - (DRUM_INSET_Y + rowHeight / 2) * lit.value;
+    return { opacity: DRUM_REST + (1 - DRUM_REST) * lit.value, top: reach, bottom: reach };
+  });
+  return (
+    <Animated.View
+      pointerEvents="none"
+      style={[
+        {
+          position: 'absolute',
+          left: DRUM_INSET_X,
+          right: DRUM_INSET_X,
+          borderRadius: DRUM_RADIUS,
+          experimental_backgroundImage: `linear-gradient(180deg, transparent 0%, ${colour} 35%, ${colour} 65%, transparent 100%)`,
+        },
+        look,
+      ]}
+    />
+  );
+}
+
+/**
  * The iOS-style picker wheel: the column follows the finger on the UI thread with a rubber band past
  * the ends, a fling carries on and snaps to a row, and rows tilt away in 3D, fading and shrinking.
  * Each row passing the centre ticks. Reduce Motion keeps the rows flat.
@@ -150,6 +277,8 @@ function Row({
  * A money wheel (`touch`) answers anywhere in its strip: above the centre row a tap steps back one
  * and below it steps on one, whatever is drawn there; held, it keeps stepping, faster the longer
  * the hold; a tap on the centre row types the amount. Without `touch` a tap picks the row tapped.
+ * A money wheel turns on a drum instead of tilting: at rest its neighbours are notches, not
+ * digits, so they never read as other numbers; under the finger it lights and shows them.
  */
 export function Wheel({
   items,
@@ -162,6 +291,7 @@ export function Wheel({
   padX = 4,
   width,
   label,
+  spoken,
   touch,
   guide,
 }: WheelProps) {
@@ -180,6 +310,8 @@ export function Wheel({
   const holding = useSharedValue(false);
   const holdSteps = useSharedValue(0);
   const holdNext = useSharedValue(0);
+  /** A money wheel under the finger: 0 at rest, 1 turning. */
+  const touchLit = useSharedValue(0);
 
   const latest = useRef(onChange);
   latest.current = onChange;
@@ -209,6 +341,20 @@ export function Wheel({
     const room = off > 0 ? Math.max(0, count - 1 - p) : Math.max(0, p);
     return p + Math.max(-room, Math.min(room, off));
   });
+  // The guide's roll lights the column as a finger's would, and dims it as it eases back.
+  const lit = useDerivedValue(() =>
+    Math.max(touchLit.value, guide ? Math.min(1, Math.abs(guide.offset.value)) : 0),
+  );
+  // Every touch begins the pan, whichever gesture then wins, so the pan lights and dims.
+  const lightUp = () => {
+    'worklet';
+    if (touch) touchLit.value = withTiming(1, LIGHT_UP);
+  };
+  const dim = () => {
+    'worklet';
+    // The release settles over a snap, and the last tick lands at its end.
+    if (touch) touchLit.value = withDelay(durations.snap + DIM_AFTER, withTiming(0, DIM));
+  };
 
   useAnimatedReaction(
     () => Math.round(clampPosition(position.value, count)),
@@ -275,6 +421,7 @@ export function Wheel({
     .onBegin(() => {
       touching.value = true;
       endGuide();
+      lightUp();
     })
     .onStart(() => {
       cancelAnimation(position);
@@ -291,6 +438,7 @@ export function Wheel({
     })
     .onFinalize(() => {
       touching.value = false;
+      dim();
     });
 
   const step = (way: number) => {
@@ -349,7 +497,7 @@ export function Wheel({
         accessible
         accessibilityRole="adjustable"
         accessibilityLabel={label}
-        accessibilityValue={{ text: items[index] ?? '' }}
+        accessibilityValue={{ text: spoken ?? items[index] ?? '' }}
         accessibilityActions={actions}
         onAccessibilityAction={(e) => {
           if (e.nativeEvent.actionName === 'activate') {
@@ -371,22 +519,41 @@ export function Wheel({
           paddingBottom: reach.bottom,
         }}
       >
-        <View style={{ width, height: rowHeight * rows, overflow: 'hidden' }}>
+        {/* A money wheel's column is not clipped: its rows fade by distance on the drum, and a lit
+            column shows a digit past each end of the box. */}
+        <View style={{ width, height: rowHeight * rows, overflow: touch ? 'visible' : 'hidden' }}>
+          {touch ? <Drum colour={touch.drum} lit={lit} rowHeight={rowHeight} /> : null}
           <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: 0 }, column]}>
-            {items.map((item, i) => (
-              <Row
-                key={i}
-                label={item}
-                index={i}
-                shown={shown}
-                rowHeight={rowHeight}
-                rows={rows}
-                tilt={!reduceMotion}
-                textStyle={textStyle}
-                align={align}
-                padX={padX}
-              />
-            ))}
+            {items.map((item, i) =>
+              touch ? (
+                <DrumRow
+                  key={i}
+                  label={item}
+                  index={i}
+                  shown={shown}
+                  lit={lit}
+                  rowHeight={rowHeight}
+                  size={size}
+                  ink={ink}
+                  textStyle={textStyle}
+                  align={align}
+                  padX={padX}
+                />
+              ) : (
+                <Row
+                  key={i}
+                  label={item}
+                  index={i}
+                  shown={shown}
+                  rowHeight={rowHeight}
+                  rows={rows}
+                  tilt={!reduceMotion}
+                  textStyle={textStyle}
+                  align={align}
+                  padX={padX}
+                />
+              ),
+            )}
           </Animated.View>
         </View>
       </View>

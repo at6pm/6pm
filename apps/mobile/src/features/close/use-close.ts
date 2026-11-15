@@ -309,14 +309,26 @@ export function useClose(
         (state.verdicts[s.id] === 'kept' || state.verdicts[s.id] === 'edited'),
     )
     .reduce((sum, s) => sum + (findSpend(snap, s.id)?.amount ?? s.amount), 0);
-  // A shared receipt names its bank as the prototype words it, an emailed one the address it
-  // came from; other sources show their detail.
-  const cardDetail = (spend: SpendRow) => {
+  // Every card ends on where it came from: a shared receipt names its bank, a shared photo
+  // when it came, an emailed one the address, a QR that it was never confirmed, an alert its
+  // bank; a spend typed or said says so. Anything else shows its own detail.
+  const cardDetail = (spend: SpendRow, time: string): string => {
     if (spend.source === 'email' && spend.detail) {
       return t('receiptEmail.from', { address: spend.detail });
     }
-    const bank = spend.source === 'shared' ? receiptBankOf(spend.detail) : null;
-    return bank ? t('close.card.readFrom', { bank }) : spend.detail;
+    if (spend.source === 'shared') {
+      const bank = receiptBankOf(spend.detail);
+      return bank ? t('close.card.readFrom', { bank }) : t('close.card.fromPhoto', { time });
+    }
+    if (spend.source === 'qr' && spend.status === 'pending') return t('close.card.fromQr');
+    if (spend.source === 'alert' && spend.wallet) {
+      return t('close.card.fromAlert', { bank: spend.wallet });
+    }
+    if (spend.source === 'voice' && spend.merchant) {
+      return t('close.card.said', { words: spend.merchant });
+    }
+    if (spend.source === 'manual') return t('close.card.typed', { time });
+    return spend.detail ?? t('close.card.caught', { source: labels.source(spend.source), time });
   };
   const extraIds = new Set(extras.map((s) => s.id));
   const contentOf = (id: string): CloseCardContent => {
@@ -351,11 +363,11 @@ export function useClose(
       amount: spend.amount,
       keptBefore,
       ...(paysBill(spend) ? { adds: 0 } : {}),
-      detail: extra ? moneyIn.countedAsPay : cardDetail(spend),
+      detail: extra ? moneyIn.countedAsPay : cardDetail(spend, time),
+      ...(row.photo === null ? {} : { photoNote: t('close.card.photoKept') }),
       ...(money ? { money } : {}),
       labels: {
-        keptSoFar: t('close.card.keptSoFar'),
-        withThis: t('close.card.withThis'),
+        keptToday: t('close.card.keptToday'),
         keep: t('close.stamp.keep'),
         edit: t('close.stamp.edit'),
         notMine: t('close.stamp.notMine'),

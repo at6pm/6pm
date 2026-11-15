@@ -10,14 +10,17 @@ import { body, display, leading, mono } from '../../ui/type/fonts';
 import { Wheel } from '../../ui/wheel/wheel';
 import { touchReach } from '../../ui/wheel/wheel-maths';
 import { useI18n } from '../../i18n/i18n';
+import { useMoneyFormat } from '../../money/use-money-format';
 import { AmountKeypadSheet, type KeypadSheetInks } from '../quick-add/amount-keypad-sheet';
 import { BILL_CARDS, type DeckItem } from './bill-deck';
 import {
   billDigits,
   billFromTyped,
+  billLeading,
   billMillionsItems,
   billOf,
   DIGITS,
+  LEADING_DIGITS,
   markAfter,
   zerosBelow,
 } from './onboarding-maths';
@@ -31,6 +34,28 @@ const INNER_MARK_WIDTH = 8;
 const DIGIT_WIDTH = 19;
 /** The strips reach a little above and below the wheels. */
 const REACH_Y = { top: 6, bottom: 6 } as const;
+/** A group mark after a blank wheel fades with it, as the wheel turns to its first digit. */
+const MARK_FADE = { duration: 200 } as const;
+
+/** A group mark between two wheels, hidden while the wheel before it is blank. */
+function GroupMark({
+  mark,
+  shown,
+  style,
+  onLayout,
+}: {
+  readonly mark: string;
+  readonly shown: boolean;
+  readonly style: object;
+  readonly onLayout: (e: LayoutChangeEvent) => void;
+}) {
+  const fade = useAnimatedStyle(() => ({ opacity: withTiming(shown ? 1 : 0, MARK_FADE) }));
+  return (
+    <Animated.Text style={[style, fade]} onLayout={onLayout}>
+      {mark}
+    </Animated.Text>
+  );
+}
 
 /** The pieces a bills card is made of: buttons, the icon row, the question, the amount wheels. */
 
@@ -158,9 +183,13 @@ export function AmountWheels({
   readonly keypadInks?: KeypadSheetInks;
 }) {
   const { t } = useI18n();
+  const money = useMoneyFormat();
   const w = useWheelMoney();
   const c = w.currency;
   const { millions, hundreds, tens } = billDigits(value, c);
+  // Wheels ahead of the first digit draw nothing at 0, and the marks after them hide.
+  const leading = billLeading(millions, hundreds);
+  const spoken = money.full(value);
   // Text between the wheels never takes a touch, so the strips over it reach the wheels.
   const number = { ...display(30, 600, -0.03), color: ink, pointerEvents: 'none' } as const;
   const innerMark = markAfter(w.place + 1, w.mark) !== '';
@@ -177,6 +206,7 @@ export function AmountWheels({
   const strip = (k: number) => ({
     reach: { ...(reaches[k] ?? { left: 0, right: 0 }), ...REACH_Y },
     onType: () => setTyping(true),
+    drum: band,
   });
   const measure = (key: 'first' | 'second') => (e: LayoutChangeEvent) => {
     const width = e.nativeEvent.layout.width;
@@ -197,15 +227,19 @@ export function AmountWheels({
           ink={ink}
           width={millionsWidth}
           label={w.label('millions', 'onboarding.bills.millions')}
+          spoken={spoken}
           touch={strip(0)}
         />
         {afterMillions === '' ? null : (
-          <Text style={number} onLayout={measure('first')}>
-            {afterMillions}
-          </Text>
+          <GroupMark
+            mark={afterMillions}
+            shown={!leading.millions}
+            style={number}
+            onLayout={measure('first')}
+          />
         )}
         <Wheel
-          items={DIGITS}
+          items={leading.hundreds ? LEADING_DIGITS : DIGITS}
           index={hundreds}
           onChange={(k) => onValue(billOf(millions, k, tens, c))}
           size={30}
@@ -213,15 +247,19 @@ export function AmountWheels({
           ink={ink}
           width={DIGIT_WIDTH}
           label={w.label('hundreds', 'onboarding.bills.hundreds')}
+          spoken={spoken}
           touch={strip(1)}
         />
         {afterHundreds === '' ? null : (
-          <Text style={number} onLayout={measure('second')}>
-            {afterHundreds}
-          </Text>
+          <GroupMark
+            mark={afterHundreds}
+            shown={!(leading.hundreds && hundreds === 0)}
+            style={number}
+            onLayout={measure('second')}
+          />
         )}
         <Wheel
-          items={DIGITS}
+          items={leading.tens ? LEADING_DIGITS : DIGITS}
           index={tens}
           onChange={(k) => onValue(billOf(millions, hundreds, k, c))}
           size={30}
@@ -229,6 +267,7 @@ export function AmountWheels({
           ink={ink}
           width={DIGIT_WIDTH}
           label={w.label('tens', 'onboarding.bills.tens')}
+          spoken={spoken}
           touch={strip(2)}
         />
         {w.place - 2 > 0 ? <Text style={number}>{zerosBelow(w.place - 2, w.mark)}</Text> : null}

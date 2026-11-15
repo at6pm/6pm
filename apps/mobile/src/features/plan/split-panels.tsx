@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import type { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
-import type { MathsRow, PlanSplit } from '@6pm/domain';
+import { addDays, type LocalDate, type MathsRow, type PlanSplit } from '@6pm/domain';
 
 import { usePlanActions } from '../../data/plan-actions';
 import { useI18n } from '../../i18n/i18n';
@@ -20,14 +20,17 @@ import { planRoutes } from './plan-routes';
 import type { BillView } from './plan-view';
 import type { SplitColours } from './split-colours';
 
-/** A part's panel inside the card under the hero: its title, a note, and the part's detail. */
+/**
+ * A part's panel inside the card under the hero: its title, a note when it adds something, and
+ * the part's detail.
+ */
 export function SplitPanel({
   title,
   note,
   children,
 }: {
   readonly title: string;
-  readonly note: string;
+  readonly note?: string;
   readonly children: ReactNode;
 }) {
   const { palette } = useTheme();
@@ -47,9 +50,14 @@ export function SplitPanel({
         <Text accessibilityRole="header" style={{ ...body(17, 700), color: palette.ink }}>
           {title}
         </Text>
-        <Text numberOfLines={1} style={{ ...body(13, 600), color: palette.inkSoft, flexShrink: 1 }}>
-          {note}
-        </Text>
+        {note ? (
+          <Text
+            numberOfLines={1}
+            style={{ ...body(13, 600), color: palette.inkSoft, flexShrink: 1 }}
+          >
+            {note}
+          </Text>
+        ) : null}
       </View>
       {children}
     </View>
@@ -139,10 +147,14 @@ export function BillsPanel({
 export function MathsPanel({
   split,
   colours,
+  today,
+  format,
   onChangeBefore,
 }: {
   readonly split: PlanSplit;
   readonly colours: SplitColours;
+  readonly today: LocalDate;
+  readonly format: PlanFormat;
   /** Opens "Before 6pm" while the joined cycle lasts; the Before row is plain otherwise. */
   readonly onChangeBefore: (() => void) | undefined;
 }) {
@@ -164,8 +176,17 @@ export function MathsPanel({
         return { k: t('potsPlan.maths.spentSoFar'), v };
       case 'left':
         return { k: t('potsPlan.maths.left'), v };
-      case 'divide':
-        return { k: t('potsPlan.maths.divide', { count: r.count ?? 1 }), v };
+      case 'divide': {
+        // The days it divides by count today, so it names them: "÷ 16 days, today to 30 Nov".
+        const count = r.count ?? 1;
+        return {
+          k: t('potsPlan.maths.divideTo', {
+            count,
+            date: format.dayMonth(addDays(today, count - 1)),
+          }),
+          v,
+        };
+      }
       case 'over':
         return { k: t('potsPlan.maths.over'), v };
       case 'untouched':
