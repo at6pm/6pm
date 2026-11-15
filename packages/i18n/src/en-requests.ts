@@ -1,0 +1,88 @@
+/**
+ * Asking to be paid (the Money Reaches You canvas, boards 4c and 7): a client's strip on Who owes
+ * me with the job and a code in the note, the reminder sent from the person's own phone, the
+ * payment that finds its strip by its code or is matched by hand, and tax a client held back.
+ */
+export const enRequests = {
+  'request.ask': 'Ask to be paid',
+  'request.new.title': 'Ask to be paid',
+  'request.new.cancel': 'Cancel',
+  'request.new.who': 'Who',
+  'request.new.whoPlaceholder': 'A client, a shop, a person',
+  'request.new.job': 'The job',
+  'request.new.jobPlaceholder': 'What it’s for',
+  'request.new.amount': 'Amount',
+  'request.new.company': 'A shop or a company',
+  'request.new.make': 'Make the strip',
+  'request.new.noAmount': 'How much is it?',
+  'request.line.asked': 'asked {date} · {code}',
+  'request.line.reminded': 'reminded {date} · {code}',
+  'request.line.split': 'from a split',
+  'request.strip.note': 'NOTE',
+  'request.strip.scan': 'The note is filled in when they scan it',
+  'request.strip.message':
+    'Here’s {job}: {amount}. Scan the code in your bank app; the note is filled in.',
+  'request.strip.messageNoJob':
+    'Here’s what’s owed: {amount}. Scan the code in your bank app; the note is filled in.',
+  'request.strip.remove': 'Take this strip back',
+  'request.strip.removed': 'Strip taken back',
+
+  'request.remind': 'Remind',
+  'request.remind.title': 'Remind {name}',
+  'request.remind.cancel': 'Cancel',
+  'request.remind.asked': 'ASKED {date} · NOT REMINDED YET',
+  'request.remind.askedReminded': 'ASKED {date} · REMINDED {reminded}',
+  'request.remind.first':
+    'Hi {name}, here’s {job} again: {amount}. The QR has the note filled in. Thank you!',
+  'request.remind.month':
+    'Hi {name}, a small reminder about {job} from {date}: {amount}. The QR has the note filled in. Thank you!',
+  'request.remind.twoMonths':
+    'Hi {name}, {job} from {date} is still open: {amount}. The QR has the note filled in, whenever you can. Thank you!',
+  'request.remind.theJob': 'the work',
+  'request.remind.edit': 'The message, to edit',
+  'request.remind.sendZalo': 'Send on Zalo',
+  'request.remind.send': 'Send',
+  'request.remind.footZalo': 'From your Zalo, as you. 6pm never messages anyone.',
+  'request.remind.foot': 'From your phone, as you. 6pm never messages anyone.',
+
+  'request.close.paid': '{name} paid for {job}.',
+  'request.close.paidNoJob': '{name} paid.',
+  'request.close.byCode': 'Matched by the code. Work, as the strip says.',
+  'request.close.byCodePlain': 'Matched by the code.',
+  'request.close.heldBack': '{amount} held back, the certificate still to come.',
+  'request.close.asked': 'ASKED {date}',
+  'request.close.intoDays': 'Into your days',
+  'request.close.asWork': 'Kept as work',
+  'request.close.keep': 'Keep it',
+  'request.close.notThis': 'Not this one',
+  'request.hand.line': 'No code on this one. Is it for a job?',
+  'request.hand.title': '{amount} from {name}. One of these?',
+  'request.hand.titleNoName': '{amount} came in. One of these?',
+  'request.hand.lessHeld': '{job} · {amount} less 10% held back',
+  'request.hand.match': 'Match to this payment',
+  'request.hand.else': 'It’s something else',
+  'request.hand.none': 'Nothing is open to match.',
+  'request.hand.title2': 'Match to a request',
+  'request.diary.match': 'Match to a request',
+  'request.diary.heldBack': 'Tax held back',
+  'request.matched': 'Matched to {name}',
+
+  'heldBack.title': 'Money in',
+  'heldBack.done': 'Done',
+  'heldBack.billed': 'BILLED',
+  'heldBack.held': 'HELD BACK',
+  'heldBack.heldTenth': 'HELD BACK · 10%',
+  'heldBack.landed': 'LANDED',
+  'heldBack.certificate': 'TAX CERTIFICATE',
+  'heldBack.arrived': 'ARRIVED?',
+  'heldBack.arrivedOn': '✓ {date}',
+  'heldBack.certificateInked': 'CERTIFICATE ✓',
+  'heldBack.switch': 'Held back',
+  'heldBack.nothing': 'Nothing',
+  'heldBack.tenth': '10%',
+  'heldBack.type': 'Type it',
+  'heldBack.typePlaceholder': 'Amount held back',
+  'heldBack.foot':
+    'Money a client keeps for tax never reaches your days. 6pm lists it in your year, with who still owes you the certificate.',
+  'heldBack.pill': 'Tax held back? Add 10%',
+} as const;

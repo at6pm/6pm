@@ -1,0 +1,30 @@
+import type { Entry } from '../catalogue-types';
+import type { enQuickAdd } from '../en-quick-add';
+
+export const thQuickAdd: { readonly [Key in keyof typeof enQuickAdd]: Entry } = {
+  'quick.face.out': 'จ่ายไป',
+  'quick.face.in': 'ได้เงิน',
+  'quick.tool.photo': 'รูป',
+  'quick.tool.split': 'หาร',
+  'quick.tool.jar': 'จากโหล',
+  'quick.tool.noJar': 'ไม่ใช้เงินในโหล',
+  'quick.todayStays': 'วันนี้ยังเหลือ {amount}',
+  'quick.in.ticket': '6pm · เงินเข้า',
+  'quick.in.whoFrom': 'จากใคร',
+  'quick.in.name': 'ชื่อ',
+  'quick.in.who': 'ใครโอนมา?',
+  'quick.in.into': 'เข้าที่',
+  'quick.in.days': 'เฉลี่ยเข้าแต่ละวัน',
+  'quick.in.daysLast': 'เฉลี่ยเข้าแต่ละวัน เหมือนครั้งก่อน',
+  'quick.in.jarLast': 'เข้า{jar} เหมือนครั้งก่อน',
+  'quick.in.pay': 'เงินเดือนของคุณ',
+  'quick.in.payLast': 'เงินเดือนของคุณ เหมือนครั้งก่อน',
+  'quick.in.landing': { other: '+{count} วัน · พอถึง {date}' },
+  'quick.in.work': 'งาน',
+  'voice.missed': 'ยังฟังไม่ทัน',
+  'voice.heardFirst': 'ได้ยินว่า {said} บอกยอดเงินก่อนนะ เช่น “45k ก๋วยเตี๋ยว”',
+  'voice.sayFirst': 'บอกยอดเงินก่อนนะ เช่น “45k ก๋วยเตี๋ยว”',
+  'voice.nothingHeard': 'ไม่ได้ยินอะไรเลย อนุญาตไมค์แล้วหรือยัง',
+  'voice.tryAgain': 'พูดอีกครั้ง',
+  'voice.toKeypad': 'กลับไปที่แป้นตัวเลข',
+};

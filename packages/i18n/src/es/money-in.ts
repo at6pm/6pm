@@ -37,6 +37,12 @@ export const esMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'moneyIn.payback.subClaim': 'Tu reembolso ya está pagado. Tu número no cambia.',
   'moneyIn.payback.yes': 'Sí, me lo devuelve',
   'moneyIn.payback.line': 'DEVUELTO',
+  'moneyIn.remembered.saved': '¿Otra vez a {jar}?',
+  'moneyIn.remembered.spread': '¿Repartirlo otra vez?',
+  'moneyIn.remembered.sub': 'Ahí fue el dinero de {from} la última vez.',
+  'moneyIn.remembered.subNoName': 'Ahí fue la última vez.',
+  'moneyIn.remembered.yes': 'Sí, como la última vez',
+  'moneyIn.remembered.line': 'COMO LA ÚLTIMA VEZ',
   'moneyIn.goesTo.label': 'Adónde va',
   'moneyIn.goesTo.spread': 'Repártelo',
   'moneyIn.goesTo.spreadSub': 'Mañana pasa a {amount}',
@@ -61,4 +67,6 @@ export const esMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'plan.month.countOn': 'Con lo que puedes contar',
   'plan.month.countOnHelp':
     'Lo mínimo que llega cada mes, después de impuestos. Si varía, quédate corto: lo que llegue de más entra por el cierre.',
+  'moneyIn.landing.sub': 'Si lo es, primero se apartan las facturas y el resto va a tus días.',
+  'moneyIn.row.pay': 'Tu sueldo',
 };

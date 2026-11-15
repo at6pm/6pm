@@ -1,0 +1,30 @@
+import type { Entry } from './catalogue-types';
+import type { enQuickAdd } from './en-quick-add';
+
+export const viQuickAdd: { readonly [Key in keyof typeof enQuickAdd]: Entry } = {
+  'quick.face.out': 'Đã chi',
+  'quick.face.in': 'Nhận tiền',
+  'quick.tool.photo': 'Kẹp ảnh',
+  'quick.tool.split': 'Chia',
+  'quick.tool.jar': 'Từ hũ',
+  'quick.tool.noJar': 'Không lấy từ hũ',
+  'quick.todayStays': 'HÔM NAY CÒN {amount}',
+  'quick.in.ticket': '6pm · Tiền vào',
+  'quick.in.whoFrom': 'Ai trả',
+  'quick.in.name': 'Tên',
+  'quick.in.who': 'Tiền của ai?',
+  'quick.in.into': 'Vào ví',
+  'quick.in.days': 'Vào các ngày',
+  'quick.in.daysLast': 'Vào các ngày, như lần trước',
+  'quick.in.jarLast': 'Vào {jar}, như lần trước',
+  'quick.in.pay': 'Tiền lương',
+  'quick.in.payLast': 'Tiền lương, như lần trước',
+  'quick.in.landing': { other: '+{count} NGÀY · ĐỦ ĐẾN {date}' },
+  'quick.in.work': 'VIỆC',
+  'voice.missed': 'Mình chưa nghe rõ.',
+  'voice.heardFirst': 'Mình nghe được {said}. Nói số tiền trước: “45k, phở”.',
+  'voice.sayFirst': 'Nói số tiền trước: “45k, phở”.',
+  'voice.nothingHeard': 'Mình không nghe thấy gì. Micrô đã được cho phép chưa?',
+  'voice.tryAgain': 'Nói lại',
+  'voice.toKeypad': 'Quay lại bàn phím số',
+};

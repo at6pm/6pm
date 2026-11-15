@@ -19,6 +19,7 @@ import { frInsightsHabits } from './insights-habits';
 import { frIntents } from './intents';
 import { frLooks } from './looks';
 import { frMoneyIn } from './money-in';
+import { frQuickAdd } from './quick-add';
 import { frPotsClose } from './pots-close';
 import { frPotsPlan } from './pots-plan';
 import { frPots } from './pots';
@@ -40,6 +41,11 @@ import { frWidgetsGuide } from './widgets-guide';
 import { frYearBook } from './year-book';
 import { frFirstCatch } from './first-catch';
 import { frPhoto } from './photo';
+import { frMoneyReaches } from './money-reaches';
+import { frIncome } from './income';
+import { frWork } from './work';
+import { frRequests } from './requests';
+import { frWorkYear } from './work-year';
 import { frImport } from './import';
 import { frOwed } from './owed';
 import { frNotifications } from './notifications';
@@ -86,11 +92,17 @@ export const fr: Catalogue = {
   ...frWidgetsGuide,
   ...frDuo,
   ...frMoneyIn,
+  ...frQuickAdd,
   ...frPotsClose,
   ...frPotsPlan,
   ...frPots,
   ...frFirstCatch,
   ...frPhoto,
+  ...frMoneyReaches,
+  ...frIncome,
+  ...frWork,
+  ...frRequests,
+  ...frWorkYear,
   ...frImport,
   ...frOwed,
   ...importSketchMomo,
@@ -103,6 +115,7 @@ export const fr: Catalogue = {
  * beyond the list every language shares.
  */
 export const frSameAsEnglish: readonly string[] = [
+  'DATE',
   ...importSketchEnglish,
   'App',
   'Apps',

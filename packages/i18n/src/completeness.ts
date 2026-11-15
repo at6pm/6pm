@@ -21,6 +21,8 @@ export const sameInBothLanguages: readonly string[] = [
   'AI',
   '{size} GB',
   '{percent}%',
+  '10%',
+  '✓ {date}',
   'Nước mía',
   'Xôi',
   'Tết',

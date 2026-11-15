@@ -34,11 +34,17 @@ import { enCompanions } from './en-companions';
 import { enWidgetsGuide } from './en-widgets-guide';
 import { enDuo } from './en-duo';
 import { enMoneyIn } from './en-money-in';
+import { enQuickAdd } from './en-quick-add';
 import { enPotsClose } from './en-pots-close';
 import { enPotsPlan } from './en-pots-plan';
 import { enPots } from './en-pots';
 import { enFirstCatch } from './en-first-catch';
 import { enPhoto } from './en-photo';
+import { enMoneyReaches } from './en-money-reaches';
+import { enIncome } from './en-income';
+import { enWork } from './en-work';
+import { enRequests } from './en-requests';
+import { enWorkYear } from './en-work-year';
 import { enImport, importSketchMomo } from './en-import';
 import { enOwed } from './en-owed';
 import { enNotifications } from './en-notifications';
@@ -82,11 +88,17 @@ export const en = {
   ...enWidgetsGuide,
   ...enDuo,
   ...enMoneyIn,
+  ...enQuickAdd,
   ...enPotsClose,
   ...enPotsPlan,
   ...enPots,
   ...enFirstCatch,
   ...enPhoto,
+  ...enMoneyReaches,
+  ...enIncome,
+  ...enWork,
+  ...enRequests,
+  ...enWorkYear,
   ...enImport,
   ...enOwed,
   ...importSketchMomo,

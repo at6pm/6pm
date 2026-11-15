@@ -39,6 +39,12 @@ export const koMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'moneyIn.payback.subClaim': '경비 청구한 돈이 들어왔어요. 하루 금액은 그대로예요.',
   'moneyIn.payback.yes': '네, 돌려받은 돈이에요',
   'moneyIn.payback.line': '돌려받음',
+  'moneyIn.remembered.saved': '이번에도 {jar}에 넣을까요?',
+  'moneyIn.remembered.spread': '이번에도 나눠 쓸까요?',
+  'moneyIn.remembered.sub': '지난번 {from}에게서 온 돈은 거기로 갔어요.',
+  'moneyIn.remembered.subNoName': '지난번엔 거기로 갔어요.',
+  'moneyIn.remembered.yes': '네, 지난번처럼',
+  'moneyIn.remembered.line': '지난번처럼',
   'moneyIn.goesTo.label': '어디로 보낼까요',
   'moneyIn.goesTo.spread': '나눠 쓰기',
   'moneyIn.goesTo.spreadSub': '내일은 {amount}',
@@ -63,4 +69,6 @@ export const koMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'plan.month.countOn': '믿고 쓸 수 있는 돈',
   'plan.month.countOnHelp':
     '세금을 뗀 뒤 매달 최소한 들어오는 돈이에요. 들쭉날쭉하면 낮게 잡으세요. 더 들어온 돈은 마감 때 물어볼게요.',
+  'moneyIn.landing.sub': '맞다면 청구서 몫을 먼저 떼고, 나머지를 하루하루에 나눠요.',
+  'moneyIn.row.pay': '내 월급',
 };

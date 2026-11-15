@@ -35,11 +35,17 @@ import { viCompanions } from './vi-companions';
 import { viWidgetsGuide } from './vi-widgets-guide';
 import { viDuo } from './vi-duo';
 import { viMoneyIn } from './vi-money-in';
+import { viQuickAdd } from './vi-quick-add';
 import { viPotsClose } from './vi-pots-close';
 import { viPotsPlan } from './vi-pots-plan';
 import { viPots } from './vi-pots';
 import { viFirstCatch } from './vi-first-catch';
 import { viPhoto } from './vi-photo';
+import { viMoneyReaches } from './vi-money-reaches';
+import { viIncome } from './vi-income';
+import { viWork } from './vi-work';
+import { viRequests } from './vi-requests';
+import { viWorkYear } from './vi-work-year';
 import { viImport } from './vi-import';
 import { viOwed } from './vi-owed';
 import { viNotifications } from './vi-notifications';
@@ -83,11 +89,17 @@ export const vi: Catalogue = {
   ...viWidgetsGuide,
   ...viDuo,
   ...viMoneyIn,
+  ...viQuickAdd,
   ...viPotsClose,
   ...viPotsPlan,
   ...viPots,
   ...viFirstCatch,
   ...viPhoto,
+  ...viMoneyReaches,
+  ...viIncome,
+  ...viWork,
+  ...viRequests,
+  ...viWorkYear,
   ...viImport,
   ...viOwed,
   ...importSketchMomo,
