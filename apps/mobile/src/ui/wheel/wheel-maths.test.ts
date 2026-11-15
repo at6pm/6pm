@@ -6,6 +6,7 @@ import {
   cellWidthAt,
   clampPosition,
   columnOffset,
+  drumLook,
   edgeFade,
   holdDelay,
   momentumCell,
@@ -26,6 +27,26 @@ describe('wheel maths', () => {
     expect(wheelRowHeight(28)).toBe(39);
     expect(wheelRowHeight(38)).toBe(53);
     expect(wheelRowHeight(52)).toBe(73);
+  });
+
+  it('shows a money wheel at rest as its digit with a notch either side, and nothing further', () => {
+    expect(drumLook(0, 0)).toMatchObject({ digit: 1, notch: 0, scale: 1 });
+    expect(drumLook(-1, 0)).toMatchObject({ digit: 0, notch: 1, scale: 0.82 });
+    expect(drumLook(1, 0)).toMatchObject({ digit: 0, notch: 1 });
+    expect(drumLook(2, 0)).toMatchObject({ digit: 0, notch: 0 });
+    // Halfway to the next row the digit is fading into its notch.
+    expect(drumLook(0.5, 0).digit).toBeCloseTo(0.5);
+    expect(drumLook(0.5, 0).notch).toBeCloseTo(0.5);
+  });
+
+  it('lights a turning money wheel to two digits each way, squashed round the drum', () => {
+    expect(drumLook(1, 1)).toMatchObject({ digit: 0.5, notch: 0, scale: 0.86, scaleY: 0.85 });
+    expect(drumLook(-2, 1)).toMatchObject({ digit: 0.22, scale: 0.62, scaleY: 0.7, pull: 0.38 });
+    expect(drumLook(3, 1).digit).toBe(0);
+    expect(drumLook(7, 1).digit).toBe(0);
+    // Halfway lit, a neighbour is half notch and a quarter digit.
+    expect(drumLook(1, 0.5).notch).toBeCloseTo(0.5);
+    expect(drumLook(1, 0.5).digit).toBeCloseTo(0.25);
   });
 
   it('follows the finger freely between the ends and at 0.3× past them', () => {

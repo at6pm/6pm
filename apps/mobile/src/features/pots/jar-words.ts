@@ -32,6 +32,7 @@ export function useJarFormat() {
     // Inside a line Vietnamese months are lower case: "từ tháng 3", "Đã qua tháng 11".
     const lower = (s: string) => (language === 'vi' ? s.toLocaleLowerCase('vi') : s);
     const day = f({ weekday: 'short', day: 'numeric', month: 'short' });
+    const date = f({ day: 'numeric', month: 'short' });
     return {
       money,
       /** "Feb", "Oct 2027": a jar's month, with its year once it is a year or more away. */
@@ -41,6 +42,8 @@ export function useJarFormat() {
       chip: (m: string) => chip.format(monthDate(m)),
       /** "Wed 30 Sep". */
       day: (d: LocalDate) => day.format(dayDate(d)),
+      /** "30 Sep", where a run of lines says from when to when. */
+      date: (d: LocalDate) => date.format(dayDate(d)),
     };
   }, [language, money]);
 }

@@ -93,9 +93,28 @@ export function incomeMillionsItems(lead: number, c: Currency = VND, mark = '.')
   return pairItems(millionsPlace(c), mark, lead > 0);
 }
 export const DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-/** A bill is set as millions (0–99), hundred thousands and ten thousands. */
+/** A digit wheel standing ahead of the amount's first digit: its 0 is not drawn. */
+export const LEADING_DIGITS = ['', ...DIGITS.slice(1)];
+/**
+ * A bill is set as millions (0–99), hundred thousands and ten thousands. The millions wheel
+ * leads, so its 0 is blank: 380.000₫ reads 380.000, not 0.380.000.
+ */
 export function billMillionsItems(c: Currency = VND, mark = '.'): string[] {
-  return pairItems(millionsPlace(c), mark, false);
+  return ['', ...pairItems(millionsPlace(c), mark, false).slice(1)];
+}
+/**
+ * Which of a bill's wheels stand ahead of its first digit, and so draw nothing at 0, with the
+ * group mark after them: the hundreds while the millions are 0, the tens while both are.
+ */
+export function billLeading(
+  millions: number,
+  hundreds: number,
+): { readonly millions: boolean; readonly hundreds: boolean; readonly tens: boolean } {
+  return {
+    millions: millions === 0,
+    hundreds: millions === 0,
+    tens: millions === 0 && hundreds === 0,
+  };
 }
 /** Future you: 0–40% of money in. */
 export const PERCENTS = Array.from({ length: 41 }, (_, i) => `${i}%`);

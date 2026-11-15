@@ -1,6 +1,7 @@
 export * from './money/format';
 export * from './money/parse-amount';
 export * from './money/spoken-number';
+export * from './money/runs';
 export * from './plan/daily-number';
 export * from './plan/goal-entry';
 export * from './plan/joined-cycle';

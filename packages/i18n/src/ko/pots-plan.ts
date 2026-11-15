@@ -48,7 +48,7 @@ export const koPotsPlan: { readonly [Key in keyof typeof enPotsPlan]: Entry } = 
   'potsPlan.maths.sinceJoined': '6pm 시작 후',
   'potsPlan.maths.spentSoFar': '지금까지 쓴 돈',
   'potsPlan.maths.left': '남은 돈',
-  'potsPlan.maths.divide': { other: '÷ {count}일' },
+  'potsPlan.maths.divideTo': { other: '÷ {count}일, 오늘부터 {date}까지' },
   'potsPlan.maths.over': '초과',
   'potsPlan.maths.untouched': '고정비와 저금통',
   'potsPlan.maths.untouchedValue': '그대로',

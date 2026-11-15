@@ -11,6 +11,7 @@ import {
   holderName,
   namesPerson,
   OWED_NAMED_DAYS,
+  owedByBill,
   owedByPerson,
   owedPaybackFor,
   owedTotal,
@@ -179,6 +180,31 @@ describe('who owes, by person', () => {
     expect(people.map((p) => [p.name, p.total, p.lines.length])).toEqual([
       ['LINH', 450_000, 2],
       ['Tú', 300_000, 1],
+      [null, 100_000, 1],
+    ]);
+  });
+});
+
+describe('who owes, by bill', () => {
+  it('says each bill once, a strip per person, the newest bill first', () => {
+    const bills = owedByBill([
+      { id: 'a', spendId: 'lau', name: 'Linh', amount: 300_000, day: DINNER },
+      { id: 'b', spendId: 'cake', name: 'Vy', amount: 150_000, day: '2026-10-08' },
+      { id: 'c', spendId: 'lau', name: 'Nam', amount: 300_000, day: DINNER },
+      { id: 'd', spendId: 'lau', name: null, amount: 100_000, day: DINNER },
+      { id: 'e', spendId: 'lau', name: null, amount: 100_000, day: DINNER },
+      { id: 'f', spendId: 'lau', name: 'linh ', amount: 50_000, day: DINNER },
+    ]);
+    expect(bills.map((b) => [b.spendId, b.total])).toEqual([
+      ['cake', 150_000],
+      ['lau', 850_000],
+    ]);
+    const lau = bills.find((b) => b.spendId === 'lau');
+    // Linh's two shares are one strip; each share with no name stands alone.
+    expect(lau?.strips.map((s) => [s.name, s.total, s.lines.length])).toEqual([
+      ['Linh', 350_000, 2],
+      ['Nam', 300_000, 1],
+      [null, 100_000, 1],
       [null, 100_000, 1],
     ]);
   });

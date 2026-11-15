@@ -6,7 +6,10 @@ import { localeOf } from '@6pm/i18n';
 
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
+import { Companion } from '../../ui/companion/companion';
+import { companionMood } from '../../ui/companion/companion-mood';
 import { Symbol } from '../../ui/icons/symbol';
+import { useClock } from '../../ui/theme/clock';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { FitText } from '../../ui/type/fit-text';
@@ -26,6 +29,8 @@ export type PausedClose = 'cards' | 'later';
 /**
  * Tonight's card: what the close looks like right now (ahead, due, late, closed), the button to
  * start it, and this week's closed days. At six the tile and the button turn to the accent.
+ * While the card holds the day's state (due, late, paused), the companion speaks from its tile
+ * instead of a bubble over the sheet, so the state is said once.
  */
 export function TonightCard({
   moment,
@@ -38,6 +43,7 @@ export function TonightCard({
   paused,
   closedStamp,
   monthName,
+  companion = false,
   onClose,
   onOpenDay,
   onOpenReceipt,
@@ -53,6 +59,8 @@ export function TonightCard({
   /** The time today was closed, for the stamp; null while it is open. */
   readonly closedStamp: string | null;
   readonly monthName: string;
+  /** The companion sits in the tile, in the state's mood, in place of the icon. */
+  readonly companion?: boolean;
   readonly onClose: () => void;
   readonly onOpenDay: (day: WeekDay) => void;
   readonly onOpenReceipt: () => void;
@@ -60,6 +68,7 @@ export function TonightCard({
   const { palette, serious } = useTheme();
   const { t, language } = useI18n();
   const money = useMoneyFormat();
+  const { hour } = useClock();
   const due = moment === 'due' || moment === 'open' || moment === 'late';
   const resuming = paused !== null && moment !== 'closed';
   const lit = (due || resuming) && !serious;
@@ -120,12 +129,20 @@ export function TonightCard({
             width: 46,
             height: 46,
             borderRadius: 16,
-            backgroundColor: lit ? palette.accent : palette.chipBg,
+            backgroundColor: lit && !companion ? palette.accent : palette.chipBg,
             alignItems: 'center',
             justifyContent: 'center',
+            overflow: 'visible',
           }}
         >
-          <Symbol name={icon} size={26} fill={1} color={lit ? palette.accentFg : palette.ink} />
+          {companion ? (
+            <Companion
+              size={54}
+              mood={companionMood({ hour, serious, safe: day.safe, toast: false })}
+            />
+          ) : (
+            <Symbol name={icon} size={26} fill={1} color={lit ? palette.accentFg : palette.ink} />
+          )}
         </View>
         <View style={{ flex: 1, minWidth: 0, gap: 4 }}>
           <Text style={{ ...leading(display(21, 500, -0.01), 24), color: palette.ink }}>

@@ -25,6 +25,7 @@ export const thOwed: { readonly [Key in keyof typeof enOwed]: Entry } = {
 
   'owed.list.title': 'คนที่ติดเงินคุณ',
   'owed.list.strips': { other: 'ใน {count} ส่วน' },
+  'owed.list.youPaid': 'คุณจ่าย {amount}',
   'owed.list.ask': 'ทวง',
   'owed.list.paid': 'จ่ายแล้ว',
   'owed.list.empty': 'ตอนนี้ยังไม่มีใครติดเงินคุณ',

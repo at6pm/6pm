@@ -59,7 +59,7 @@ export function TodayPage({
   /** Switches the home surface to the Diary tab; the day to show is already requested. */
   readonly onOpenDiary?: () => void;
 }) {
-  const { palette } = useTheme();
+  const { palette, serious } = useTheme();
   const router = useRouter();
   const openSpend = useOpenSpend();
   const openAsk = useOpenAsk();
@@ -77,6 +77,12 @@ export function TodayPage({
   const shown = useHomePageShown();
   const view = todayView(snap, closeHour, day.spent, useSpendLabels());
   const spreadYesterday = spreadYesterdayOf(snap);
+  // While the tonight card holds the day's state (due at six, late, paused), the companion speaks
+  // from its tile and the bubble steps aside: the bubble never restates the card.
+  const cardSpeaks =
+    !serious &&
+    view.moment !== 'closed' &&
+    (parked !== null || view.moment === 'due' || view.moment === 'open' || view.moment === 'late');
   const monthName = new Intl.DateTimeFormat(localeOf(language), {
     month: 'long',
   }).format(dayDate);
@@ -143,7 +149,7 @@ export function TodayPage({
             ]}
           >
             <HoaMai />
-            {snap.plan ? (
+            {snap.plan && !cardSpeaks ? (
               <CompanionGreeting
                 day={day}
                 plan={snap.plan}
@@ -182,6 +188,7 @@ export function TodayPage({
               paused={parked === null ? null : parked.state.step === 'cards' ? 'cards' : 'later'}
               closedStamp={view.closedAt === null ? null : clockOf(hourOf(new Date(view.closedAt)))}
               monthName={monthName}
+              companion={cardSpeaks}
               onClose={() => router.push('/close')}
               onOpenDay={openWeekDay}
               onOpenReceipt={() => showDiary(snap.today)}

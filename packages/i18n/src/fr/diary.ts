@@ -5,7 +5,8 @@ import type { enDiary } from '../en-diary';
 // vowel, so they follow « en » or « pour », never « de ».
 export const frDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.title': 'Journal',
-  'diary.kicker': 'Clôturés en {month} : {closed} · {all} au total',
+  'diary.kicker': '{month} · {closed} clôturés',
+  'diary.kickerAll': '{month} · {closed} clôturés · {all} au total',
   'diary.recap.kicker': 'SEMAINE EN COURS · {range}',
   'diary.recap.hint': 'Touche ou balaie',
   'diary.recap.under.lead': {
@@ -31,8 +32,7 @@ export const frDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.cal.summaryNone': 'Clôture ce soir pour classer ton premier jour',
   'diary.cal.under': 'Sous ton chiffre',
   'diary.cal.over': 'Au-dessus',
-  'diary.cal.today': '18 h',
-  'diary.cal.missed': 'manqué',
+  'diary.cal.tap': '· touche un jour',
   'diary.receipt.no': 'N° {no}',
   'diary.receipt.empty': 'RIEN DÉPENSÉ',
   'diary.receipt.late': 'EN RETARD',

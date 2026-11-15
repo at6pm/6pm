@@ -163,6 +163,45 @@ export function owedByPerson(lines: readonly OwedLine[]): OwedPerson[] {
     );
 }
 
+/** One bill on the owed list: the spend it was split from, and each open share of it. */
+export interface OwedBill {
+  readonly spendId: string;
+  readonly day: LocalDate;
+  /** One strip per person (a share with no name stands alone), in the order they were split. */
+  readonly strips: readonly OwedPerson[];
+  readonly total: Money;
+}
+
+/**
+ * The owed list by bill: open lines grouped by the spend they are shares of, so each bill says
+ * what it was once and each strip is a person and an amount. Newest bill first; a person with
+ * two shares of one bill holds one strip of both.
+ */
+export function owedByBill(lines: readonly OwedLine[]): OwedBill[] {
+  const bills = new Map<string, OwedLine[]>();
+  for (const line of lines) bills.set(line.spendId, [...(bills.get(line.spendId) ?? []), line]);
+  return [...bills.entries()]
+    .map(([spendId, group]) => {
+      const strips = new Map<string, OwedLine[]>();
+      for (const line of group) {
+        const key = personKey(line.name) ?? `line:${line.id}`;
+        strips.set(key, [...(strips.get(key) ?? []), line]);
+      }
+      return {
+        spendId,
+        day: (group[0] as OwedLine).day,
+        strips: [...strips.entries()].map(([key, held]) => ({
+          key,
+          name: held[0]?.name ?? null,
+          lines: held,
+          total: owedTotal(held),
+        })),
+        total: owedTotal(group),
+      };
+    })
+    .sort((a, b) => (a.day < b.day ? 1 : a.day > b.day ? -1 : 0));
+}
+
 /** Everything still owed, over the open lines given. */
 export function owedTotal(lines: readonly Pick<OwedLine, 'amount'>[]): Money {
   return lines.reduce((sum, line) => sum + line.amount, 0);

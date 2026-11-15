@@ -193,7 +193,6 @@ function CloseOpen({
       <CloseTopBar
         keys={STEP_KEYS}
         index={position.index}
-        of={position.of}
         label={t(STEP_KEYS[position.index - 1] ?? 'close.step.cards')}
         closeLabel={t('common.done')}
         onClose={() => (state.step === 'reveal' ? void finish() : router.back())}
@@ -202,22 +201,8 @@ function CloseOpen({
       {state.step === 'cards' ? (
         <CloseCards
           cards={close.cards}
-          kicker={
-            counts.kept + counts.edited > 0
-              ? t('close.kicker', {
-                  date: shortDate(closingDate),
-                  // The top card's place in the queue: money waiting for its question is not
-                  // in the stack, but keeps its number.
-                  n: close.queue.findIndex((s) => s.id === topCard?.row.id) + 1,
-                  total: close.queue.length,
-                  kept: money.short(close.keptBefore).toUpperCase(),
-                })
-              : t('close.kickerStart', {
-                  date: shortDate(closingDate),
-                  n: 1,
-                  total: close.queue.length,
-                })
-          }
+          // The date only: the receipt's own number is the one count on the screen.
+          kicker={shortDate(closingDate)}
           title={t('close.title', { count: close.queue.length })}
           hint={t('close.hint')}
           moneyHint={moneyHintFor(topCard?.money ? topCard.amount : undefined, topCard?.row.id)}

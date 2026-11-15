@@ -16,11 +16,13 @@ function Dot({ index, current }: { readonly index: number; readonly current: num
   return <Animated.View style={[{ flex: 1, height: 3, borderRadius: 3 }, style]} />;
 }
 
-/** The close's top bar: the way out, the five-step bar and the current step's name. */
+/**
+ * The close's top bar: the way out, the five-step bar and the current step's name. The bar's
+ * segments are the count, so the name stands alone.
+ */
 export function CloseTopBar({
   keys,
   index,
-  of,
   label,
   closeLabel,
   onClose,
@@ -28,7 +30,6 @@ export function CloseTopBar({
   readonly keys: readonly string[];
   /** 1-based position of the current step. */
   readonly index: number;
-  readonly of: number;
   readonly label: string;
   readonly closeLabel: string;
   readonly onClose: () => void;
@@ -45,7 +46,7 @@ export function CloseTopBar({
       <Text
         style={{ ...mono(11, 400, 0.14), color: palette.inkSoft, minWidth: 64, textAlign: 'right' }}
       >
-        {label} · {index}/{of}
+        {label}
       </Text>
     </View>
   );

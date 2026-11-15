@@ -48,7 +48,7 @@ export const idPotsPlan: { readonly [Key in keyof typeof enPotsPlan]: Entry } = 
   'potsPlan.maths.sinceJoined': 'Sejak pakai 6pm',
   'potsPlan.maths.spentSoFar': 'Terpakai sejauh ini',
   'potsPlan.maths.left': 'Sisa',
-  'potsPlan.maths.divide': { other: '÷ {count} hari' },
+  'potsPlan.maths.divideTo': { other: '÷ {count} hari, hari ini sampai {date}' },
   'potsPlan.maths.over': 'Lewat',
   'potsPlan.maths.untouched': 'Tagihan dan celengan',
   'potsPlan.maths.untouchedValue': 'utuh',

@@ -3,7 +3,8 @@ import type { enDiary } from './en-diary';
 
 export const viDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.title': 'Nhật ký',
-  'diary.kicker': 'Đã chốt {closed} ngày trong {month} · {all} ngày tất cả',
+  'diary.kicker': '{month} · đã chốt {closed} ngày',
+  'diary.kickerAll': '{month} · đã chốt {closed} ngày · tổng {all} ngày',
   'diary.recap.kicker': 'TUẦN NÀY · {range}',
   'diary.recap.hint': 'Chạm hoặc vuốt',
   'diary.recap.under.lead': { other: '{count} ngày dưới mức tiêu rồi, nên' },
@@ -21,10 +22,9 @@ export const viDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.places.visits': { other: '{count} lần' },
   'diary.cal.summary': 'Đã chốt {closed} · {under} ngày dưới mức {line}',
   'diary.cal.summaryNone': 'Chốt ngày tối nay để lưu trang đầu tiên',
-  'diary.cal.under': 'Dưới mức tiêu',
-  'diary.cal.over': 'Lố mức',
-  'diary.cal.today': '6pm',
-  'diary.cal.missed': 'lỡ',
+  'diary.cal.under': 'dưới mức',
+  'diary.cal.over': 'lố mức',
+  'diary.cal.tap': '· chạm một ngày',
   'diary.receipt.no': 'Số {no}',
   'diary.receipt.empty': 'KHÔNG TIÊU GÌ',
   'diary.receipt.late': 'MUỘN',

@@ -121,6 +121,8 @@ export function DiaryPage({ scrollRef }: { readonly scrollRef: AnimatedRef<Anima
           summary={diary.summary}
           letters={diary.letters}
           cells={diary.cells}
+          today={diary.today}
+          closeAt={diary.closeAt}
           selected={diary.selected}
           onSelect={diary.select}
           onToday={() => router.push('/close')}
