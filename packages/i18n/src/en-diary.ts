@@ -94,4 +94,9 @@ export const enDiary = {
   'diary.cal.previous': 'Earlier month',
   'diary.cal.next': 'Later month',
   'diary.fromJar': 'From {jar}',
+  'diary.day.title': 'Review the day',
+  'diary.day.empty': 'Nothing left on this day.',
+  'diary.day.hint': 'Tap a line to change it. Swipe left to delete.',
+  'diary.receipt.open': '{date} receipt, total {total}',
+  'diary.receipt.openHint': 'Opens the day to change or delete what’s on it',
 } as const;

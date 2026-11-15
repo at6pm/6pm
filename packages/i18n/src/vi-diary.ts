@@ -89,4 +89,9 @@ export const viDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.cal.previous': 'Tháng trước',
   'diary.cal.next': 'Tháng sau',
   'diary.fromJar': 'Từ hũ {jar}',
+  'diary.day.title': 'Xem lại ngày này',
+  'diary.day.empty': 'Ngày này không còn khoản nào.',
+  'diary.day.hint': 'Chạm một dòng để sửa. Vuốt sang trái để xoá.',
+  'diary.receipt.open': 'Hoá đơn {date}, tổng {total}',
+  'diary.receipt.openHint': 'Mở ngày này để sửa hoặc xoá các khoản',
 };

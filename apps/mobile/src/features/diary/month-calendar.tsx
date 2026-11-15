@@ -14,12 +14,25 @@ import { FitText } from '../../ui/type/fit-text';
 import { body, display, mono, tabular } from '../../ui/type/fonts';
 import { PageButton } from './calendar-page-button';
 import { dots, inkWash, paper } from './diary-colours';
+import { SlipRing, type SlipShape } from './slip-ring';
 
 const SELECT_MS = 200;
 /** A day is 43 × 46 pt; a closed day's slip is 42 of it, and its torn foot the rest. */
 const CELL_WIDTH = 43;
 const CELL_HEIGHT = 46;
 const SLIP_HEIGHT = 42;
+/** How far the selected day's ring stands out past its slip. */
+const RING = 2.5;
+const RING_SHADOW = 'rgba(20,8,30,.3)';
+/** A closed day's slip: its body, round on top, and the torn foot `PaperEdge` draws under it. */
+const SLIP: SlipShape = {
+  width: CELL_WIDTH,
+  body: SLIP_HEIGHT,
+  foot: CELL_HEIGHT - SLIP_HEIGHT,
+  corner: 7,
+  step: 6,
+  tip: 3,
+};
 /** A missed day, or one before the first close, is its date at 34%; a day ahead at 20%. */
 const PAST_OPACITY = 0.34;
 const AHEAD_OPACITY = 0.2;
@@ -81,20 +94,11 @@ function ClosedCell({
         onPress={onPress}
         style={{ height: CELL_HEIGHT }}
       >
-        <Animated.View
-          pointerEvents="none"
-          style={[
-            {
-              position: 'absolute',
-              inset: -2.5,
-              borderRadius: 9.5,
-              borderWidth: 2.5,
-              borderColor: palette.accent,
-              boxShadow: '0 8px 16px rgba(20,8,30,.3)',
-            },
-            ring,
-          ]}
-        />
+        {/* The ring is the slip's own shape grown evenly, lying under it: it follows the round
+            top and the torn foot's teeth. */}
+        <Animated.View pointerEvents="none" style={[{ position: 'absolute', inset: 0 }, ring]}>
+          <SlipRing shape={SLIP} ring={RING} color={palette.accent} shadow={RING_SHADOW} />
+        </Animated.View>
         <View
           style={{
             height: SLIP_HEIGHT,
@@ -126,7 +130,13 @@ function ClosedCell({
             </FitText>
           </View>
         </View>
-        <PaperEdge color={paper.sheet} height={CELL_HEIGHT - SLIP_HEIGHT} step={6} shadow={false} />
+        <PaperEdge
+          color={paper.sheet}
+          height={SLIP.foot}
+          step={SLIP.step}
+          radius={SLIP.tip}
+          shadow={false}
+        />
       </PressScale>
     </Animated.View>
   );

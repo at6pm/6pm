@@ -52,11 +52,15 @@ function latestFiled(closed: readonly ClosedDayRow[]): ClosedDayRow | null {
 
 const NO_DAYS: readonly ClosedDayRow[] = [];
 
-/** The parts of the snapshot the Diary reads: a write to anything else leaves it alone. */
+/**
+ * The parts of the snapshot the Diary reads: a write to anything else leaves it alone. A spend
+ * from before payday, edited or deleted from its day's page, is published in `waitingBefore`.
+ */
 const diaryInputs = ({
   today,
   closedDays,
   cycleSpends,
+  waitingBefore,
   categories,
   plan,
   pots,
@@ -64,6 +68,7 @@ const diaryInputs = ({
   today,
   closedDays,
   cycleSpends,
+  waitingBefore,
   categories,
   plan,
   pots,
@@ -72,6 +77,7 @@ const sameInputs = (a: ReturnType<typeof diaryInputs>, b: ReturnType<typeof diar
   a.today === b.today &&
   a.closedDays === b.closedDays &&
   a.cycleSpends === b.cycleSpends &&
+  a.waitingBefore === b.waitingBefore &&
   a.categories === b.categories &&
   a.plan === b.plan &&
   a.pots === b.pots;
@@ -96,10 +102,8 @@ function kickerOf(t: I18n['t'], closed: number, month: string, all: number): str
  */
 export function useDiary() {
   const day = useDay();
-  const { today, closedDays, cycleSpends, categories, plan, pots } = useMoneySelector(
-    diaryInputs,
-    sameInputs,
-  );
+  const { today, closedDays, cycleSpends, waitingBefore, categories, plan, pots } =
+    useMoneySelector(diaryInputs, sameInputs);
   const { t } = useI18n();
   const money = useMoneyFormat();
   const { currency } = money;
@@ -110,7 +114,10 @@ export function useDiary() {
   const [paged, setPaged] = useState<string | null>(null);
   // A month the clock has moved past (or one that is today's again) falls back to this month.
   const month = paged !== null && paged < current ? paged : current;
-  const watch = useMemo(() => ({ closedDays, cycleSpends }), [closedDays, cycleSpends]);
+  const watch = useMemo(
+    () => ({ closedDays, cycleSpends, waitingBefore }),
+    [closedDays, cycleSpends, waitingBefore],
+  );
 
   const readPage = useCallback(
     (store: MoneyStore): Promise<DiaryData> => readDiary(store, { from: monday, to: today }),

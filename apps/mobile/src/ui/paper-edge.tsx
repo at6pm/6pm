@@ -15,6 +15,58 @@ function depthOf(index: number): number {
   return 0.84 + 0.16 * (wobble * 0.5 + 0.5);
 }
 
+/** What the teeth are drawn with: a path, or a path builder. */
+interface Pen {
+  lineTo(x: number, y: number): unknown;
+  quadTo(x1: number, y1: number, x2: number, y2: number): unknown;
+}
+
+/** How far down the edge the valleys between the teeth sit, as a share of its height. */
+const VALLEY = 0.12;
+
+/**
+ * Draws a torn edge's teeth onto `path`: a line down to the valley at its left (`x`), then every
+ * tooth to the valley at its right. `y` is the edge's top. Shared with anything that has to
+ * follow a torn edge exactly (a calendar slip's selection ring).
+ */
+export function addTeeth(
+  path: Pen,
+  {
+    x,
+    y,
+    width,
+    height,
+    step,
+    radius,
+  }: {
+    readonly x: number;
+    readonly y: number;
+    readonly width: number;
+    readonly height: number;
+    readonly step: number;
+    readonly radius: number;
+  },
+): void {
+  const teeth = Math.max(1, Math.round(width / step));
+  const span = width / teeth;
+  const half = span / 2;
+  // How much of each flank the rounded tip takes: never past the tooth's middle.
+  const soften = Math.min(half * 0.9, Math.max(0.5, radius * 0.32));
+  const valley = y + height * VALLEY;
+  path.lineTo(x, valley);
+  for (let i = 0; i < teeth; i++) {
+    const x0 = x + i * span;
+    const tip = x0 + half;
+    const depth = y + height * depthOf(i);
+    // Where the straight flank hands over to the rounded tip, on the line from valley to tip.
+    const shoulder = valley + (depth - valley) * (1 - soften / half);
+    // Down the left flank, round over the tip, up the right flank to the next valley.
+    path.lineTo(tip - soften, shoulder);
+    path.quadTo(tip, depth, tip + soften, shoulder);
+    path.lineTo(x0 + span, valley);
+  }
+}
+
 /**
  * The torn edge of a receipt: one anti-aliased path of teeth with softened tips, a little uneven
  * like paper torn against a printer's blade, casting its own soft shadow. The teeth are spaced to
@@ -43,26 +95,9 @@ export function PaperEdge({
   const [width, setWidth] = useState(0);
   const path = useMemo(() => {
     if (width <= 0) return null;
-    const teeth = Math.max(1, Math.round(width / step));
-    const span = width / teeth;
-    const half = span / 2;
-    // How much of each flank the rounded tip takes: never past the tooth's middle.
-    const soften = Math.min(half * 0.9, Math.max(0.5, radius * 0.32));
     const p = Skia.Path.Make();
-    const valley = SEAM + height * 0.12;
     p.moveTo(0, 0);
-    p.lineTo(0, valley);
-    for (let i = 0; i < teeth; i++) {
-      const x0 = i * span;
-      const tip = x0 + half;
-      const y = SEAM + height * depthOf(i);
-      // Where the straight flank hands over to the rounded tip, on the line from valley to tip.
-      const shoulder = valley + (y - valley) * (1 - soften / half);
-      // Down the left flank, round over the tip, up the right flank to the next valley.
-      p.lineTo(tip - soften, shoulder);
-      p.quadTo(tip, y, tip + soften, shoulder);
-      p.lineTo(x0 + span, valley);
-    }
+    addTeeth(p, { x: 0, y: SEAM, width, height, step, radius });
     p.lineTo(width, 0);
     p.close();
     return p;

@@ -266,17 +266,57 @@ export async function readDayReceipt(
   });
   const lines = spends.filter((s) => s.status === 'kept' && countsTowardDay(counted(s), notDaily));
   const jars = jarReceiptLines(lines.map(counted), notDaily);
-  const ids = lines.map((s) => s.id);
+  const givenBack = await readGivenBack(
+    store,
+    lines.map((s) => s.id),
+  );
+  return { day, spends: lines, jars, moneyIn, givenBack, voided: await readVoided(store, day), no };
+}
+
+/** The day each of these spends was given back on (a refund kept against it), by the spend's id. */
+async function readGivenBack(
+  store: MoneyStore,
+  ids: readonly string[],
+): Promise<Readonly<Record<string, LocalDate>>> {
   const backs =
     ids.length === 0
       ? []
       : await store.tables.spends.select(
           `WHERE gives_back IN (${ids.map(() => '?').join(', ')}) AND status = 'kept' AND money_in = 'refund'`,
-          ids,
+          [...ids],
         );
   const givenBack: Record<string, LocalDate> = {};
   for (const back of backs) if (back.givesBack) givenBack[back.givesBack] = back.day;
-  return { day, spends: lines, jars, moneyIn, givenBack, voided: await readVoided(store, day), no };
+  return givenBack;
+}
+
+/**
+ * Everything filed on one day, for the page a Diary receipt opens: every spend and money in not
+ * deleted (counted or not, waiting or kept), oldest first; the payments voided since; what was
+ * given back of them; and whether the day was closed, with its receipt's number.
+ */
+export async function readDayRecords(
+  store: MoneyStore,
+  day: LocalDate,
+): Promise<{
+  readonly day: LocalDate;
+  readonly spends: readonly SpendRow[];
+  readonly givenBack: Readonly<Record<string, LocalDate>>;
+  readonly voided: readonly { readonly spend: SpendRow; readonly why: 'failed' | 'reversal' }[];
+  readonly closed: boolean;
+  readonly no: number;
+}> {
+  const [spends, closed, no, voided] = await Promise.all([
+    readSpendsBetween(store, day, day),
+    readClosedBetween(store, day, day),
+    readReceiptNumber(store, day),
+    readVoided(store, day),
+  ]);
+  const givenBack = await readGivenBack(
+    store,
+    spends.filter((s) => s.direction !== 'in').map((s) => s.id),
+  );
+  return { day, spends, givenBack, voided, closed: closed.length > 0, no };
 }
 
 /**

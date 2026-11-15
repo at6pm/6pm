@@ -89,4 +89,9 @@ export const jaDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.cal.previous': '前の月',
   'diary.cal.next': '次の月',
   'diary.fromJar': '{jar}の瓶から',
+  'diary.day.title': 'この日を見直す',
+  'diary.day.empty': 'この日に残っている記録はありません。',
+  'diary.day.hint': '行をタップして変更。左にスワイプで削除。',
+  'diary.receipt.open': '{date}のレシート、合計{total}',
+  'diary.receipt.openHint': 'この日を開いて、記録を変更・削除します',
 };

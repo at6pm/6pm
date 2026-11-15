@@ -90,4 +90,9 @@ export const koDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.cal.previous': '이전 달',
   'diary.cal.next': '다음 달',
   'diary.fromJar': '{jar} 저금통에서',
+  'diary.day.title': '이날 돌아보기',
+  'diary.day.empty': '이날 남은 기록이 없어요.',
+  'diary.day.hint': '줄을 탭해 고치고, 왼쪽으로 밀어 지워요.',
+  'diary.receipt.open': '{date} 영수증, 합계 {total}',
+  'diary.receipt.openHint': '이날을 열어 기록을 고치거나 지워요',
 };

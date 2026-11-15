@@ -90,4 +90,9 @@ export const thDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.cal.previous': 'เดือนก่อนหน้า',
   'diary.cal.next': 'เดือนถัดไป',
   'diary.fromJar': 'จากโหล {jar}',
+  'diary.day.title': 'ทบทวนวันนี้',
+  'diary.day.empty': 'วันนี้ไม่มีรายการเหลือแล้ว',
+  'diary.day.hint': 'แตะบรรทัดเพื่อแก้ไข ปัดซ้ายเพื่อลบ',
+  'diary.receipt.open': 'ใบเสร็จวันที่ {date} รวม {total}',
+  'diary.receipt.openHint': 'เปิดวันนี้เพื่อแก้ไขหรือลบรายการ',
 };

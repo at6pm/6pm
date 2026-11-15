@@ -99,4 +99,9 @@ export const frDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.cal.previous': 'Mois précédent',
   'diary.cal.next': 'Mois suivant',
   'diary.fromJar': 'Du bocal « {jar} »',
+  'diary.day.title': 'Revoir la journée',
+  'diary.day.empty': 'Plus rien ce jour-là.',
+  'diary.day.hint': 'Touchez une ligne pour la modifier. Balayez vers la gauche pour la supprimer.',
+  'diary.receipt.open': 'Reçu du {date}, total {total}',
+  'diary.receipt.openHint': 'Ouvre la journée pour modifier ou supprimer ce qu’elle contient',
 };

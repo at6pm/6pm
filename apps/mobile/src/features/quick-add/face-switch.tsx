@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Text, View } from 'react-native';
 import Animated, {
   ReduceMotion,
@@ -28,7 +28,7 @@ const slide = { ...springs.pager, reduceMotion: ReduceMotion.System };
 /**
  * "Spent · Got paid" in Quick add's header, in place of its title: the lifted thumb slides to the
  * face picked on the tab spring, with a light tap. Each side is as wide as its words need, and the
- * whole at least 190 pt.
+ * whole only as wide as its two sides: it never fills the header.
  */
 export function FaceSwitch({
   face,
@@ -41,14 +41,16 @@ export function FaceSwitch({
   const { t } = useI18n();
   const x = useSharedValue(0);
   const width = useSharedValue(0);
-  const spots = useSharedValue<readonly { x: number; width: number }[]>([]);
+  // Where each side lies, kept on this thread: both are measured in one pass, and neither may
+  // overwrite the other.
+  const spots = useRef<{ x: number; width: number }[]>([]);
   const index = FACES.indexOf(face);
   useEffect(() => {
-    const spot = spots.get()[index];
+    const spot = spots.current[index];
     if (!spot) return;
     x.set(withSpring(spot.x, slide));
     width.set(withSpring(spot.width, slide));
-  }, [index, spots, width, x]);
+  }, [index, width, x]);
   const thumb = useAnimatedStyle(() => ({
     width: width.get(),
     opacity: width.get() > 0 ? 1 : 0,
@@ -60,7 +62,7 @@ export function FaceSwitch({
       accessibilityRole="radiogroup"
       style={{
         flexDirection: 'row',
-        minWidth: 190,
+        alignSelf: 'center',
         padding: INSET,
         borderRadius: 13,
         backgroundColor: palette.chipBg,
@@ -90,9 +92,7 @@ export function FaceSwitch({
             accessibilityState={{ checked: on }}
             onLayout={(e) => {
               const { x: at, width: w } = e.nativeEvent.layout;
-              const next = [...spots.get()];
-              next[i] = { x: at, width: w };
-              spots.set(next);
+              spots.current[i] = { x: at, width: w };
               // The thumb is placed at once on the face showing, before any slide.
               if (on) {
                 x.set(at);
@@ -105,8 +105,7 @@ export function FaceSwitch({
               onFace(f);
             }}
             style={{
-              flexGrow: 1,
-              minWidth: 92,
+              minWidth: 84,
               height: 32,
               paddingHorizontal: 12,
               alignItems: 'center',

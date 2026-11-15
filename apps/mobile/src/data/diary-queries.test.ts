@@ -4,10 +4,13 @@ import { FUTURE_YOU_POT_ID, restateClosedDays } from '@6pm/domain';
 
 import { openMemoryDb } from '../features/backup/test/memory-db';
 import { countedSpendOf } from '../features/diary/jar-lines';
-import { futureYouOfMonth, readDayNumber, readDayReceipt } from './diary-queries';
+import { dayRecordsOf } from '../features/diary/day-records';
+import { futureYouOfMonth, readDayNumber, readDayReceipt, readDayRecords } from './diary-queries';
+import { moneyActions } from './money-actions';
 import { createMoneyStore, dayOf } from './money-store';
 import { DEFAULT_PLAN, writePlan } from './plan-settings';
 
+jest.mock('expo-crypto', () => ({ randomUUID: () => crypto.randomUUID() }));
 jest.mock('@sentry/react-native', () => ({ captureException: jest.fn() }));
 jest.mock('./money-provider', () => ({ useMoneySelector: jest.fn(), useMoneyStore: jest.fn() }));
 
@@ -174,5 +177,95 @@ describe('readDayReceipt', () => {
     );
     expect(lines - jars).toBe(140_000);
     expect(restated?.spent).toBe(lines - jars);
+  });
+});
+
+describe('readDayRecords', () => {
+  it('follows an edit, a delete and its undo on a day closed before payday', async () => {
+    const db = openMemoryDb();
+    const store = createMoneyStore(db, '2026-10-11');
+    await writePlan(db, {
+      ...DEFAULT_PLAN,
+      income: 20_000_000,
+      payday: { kind: 'sameDay', day: 10 },
+    });
+    await store.tables.categories.put({
+      id: 'food',
+      name: 'Food',
+      icon: 'restaurant',
+      hue: 40,
+      countsDaily: true,
+      sort: 0,
+      archivedAt: null,
+    });
+    await store.tables.closedDays.put({
+      day: '2026-10-05',
+      closedAt: '2026-10-05T11:00:00.000Z',
+      late: false,
+      spent: 100_000,
+      line: 400_000,
+      tomorrow: 400_000,
+      note: null,
+    });
+    const row = {
+      day: '2026-10-05',
+      categoryId: 'food',
+      note: null,
+      source: 'cash',
+      status: 'kept',
+      previousStatus: null,
+      wallet: 'Cash',
+      forWork: false,
+      detail: null,
+      foreignAmount: null,
+      createdAt: '2026-10-05T05:00:00.000Z',
+      updatedAt: '2026-10-05T05:00:00.000Z',
+    } as const;
+    await store.tables.spends.put({
+      ...row,
+      id: 'lunch',
+      at: '2026-10-05T05:00:00.000Z',
+      amount: 100_000,
+      merchant: 'Lunch',
+    });
+    // Waiting, and said not to be theirs: both still on the day's page, neither in its total.
+    await store.tables.spends.put({
+      ...row,
+      id: 'caught',
+      at: '2026-10-05T06:00:00.000Z',
+      amount: 30_000,
+      merchant: 'Grab',
+      status: 'caught',
+    });
+    await store.tables.spends.put({
+      ...row,
+      id: 'skipped',
+      at: '2026-10-05T07:00:00.000Z',
+      amount: 20_000,
+      merchant: 'Kiosk',
+      status: 'skipped',
+    });
+    await store.load('2026-10-11');
+    const actions = moneyActions(store);
+    const day = async () => dayRecordsOf(await readDayRecords(store, '2026-10-05'), new Set());
+
+    const first = await day();
+    expect(first.records.map((s) => s.id)).toEqual(['lunch', 'caught', 'skipped']);
+    expect(first.total).toBe(100_000);
+    expect((await readDayRecords(store, '2026-10-05')).closed).toBe(true);
+
+    // The Diary watches what an edit to a spend from before payday is published in.
+    const watched = store.getSnapshot().waitingBefore;
+    await actions.update('lunch', { amount: 80_000 });
+    expect(store.getSnapshot().waitingBefore).not.toBe(watched);
+    expect((await day()).total).toBe(80_000);
+
+    await actions.setStatus('lunch', 'deleted');
+    const deleted = await day();
+    expect(deleted.records.map((s) => s.id)).toEqual(['caught', 'skipped']);
+    expect(deleted.total).toBe(0);
+
+    await actions.undo('lunch');
+    expect((await day()).total).toBe(80_000);
   });
 });

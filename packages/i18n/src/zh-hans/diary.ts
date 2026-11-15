@@ -88,4 +88,9 @@ export const zhHansDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.cal.previous': '上个月',
   'diary.cal.next': '下个月',
   'diary.fromJar': '来自“{jar}”罐子',
+  'diary.day.title': '回顾这一天',
+  'diary.day.empty': '这一天没有剩下的记录了。',
+  'diary.day.hint': '轻点一行即可修改，向左滑动即可删除。',
+  'diary.receipt.open': '{date}的小票，合计{total}',
+  'diary.receipt.openHint': '打开这一天，修改或删除其中的记录',
 };

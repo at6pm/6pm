@@ -91,4 +91,9 @@ export const idDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.cal.previous': 'Bulan sebelumnya',
   'diary.cal.next': 'Bulan berikutnya',
   'diary.fromJar': 'Dari toples {jar}',
+  'diary.day.title': 'Tinjau hari ini',
+  'diary.day.empty': 'Tak ada lagi di hari ini.',
+  'diary.day.hint': 'Ketuk baris untuk mengubahnya. Geser ke kiri untuk menghapus.',
+  'diary.receipt.open': 'Struk {date}, total {total}',
+  'diary.receipt.openHint': 'Membuka hari ini untuk mengubah atau menghapus isinya',
 };

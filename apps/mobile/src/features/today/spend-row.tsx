@@ -45,6 +45,7 @@ export function SpendRow({
   onConfirm,
   onDelete,
   onOpen,
+  still = false,
 }: {
   readonly row: SpendRowView;
   readonly confirmLabel: string;
@@ -55,6 +56,8 @@ export function SpendRow({
   readonly onConfirm: (id: string) => void;
   readonly onDelete: (id: string) => void;
   readonly onOpen: (id: string) => void;
+  /** Only shown, never swiped, held or opened: a payment voided since, on a day's page. */
+  readonly still?: boolean;
 }) {
   const { palette } = useTheme();
   const warn = palette.dark ? '#ffbe8a' : '#b8622a';
@@ -65,11 +68,100 @@ export function SpendRow({
     onOpen,
   });
 
-  const accessibilityActions = [
-    { name: 'activate' },
-    ...(reviewable ? [{ name: 'confirm', label: confirmLabel }] : []),
-    { name: 'delete', label: deleteLabel },
-  ];
+  const accessibilityActions = still
+    ? []
+    : [
+        { name: 'activate' },
+        ...(reviewable ? [{ name: 'confirm', label: confirmLabel }] : []),
+        { name: 'delete', label: deleteLabel },
+      ];
+
+  const face = (
+    <Animated.View
+      accessible
+      accessibilityRole={still ? 'text' : 'button'}
+      accessibilityLabel={[row.name, row.amount, row.meta, row.tag, row.photo ? photoLabel : null]
+        .filter(Boolean)
+        .join(', ')}
+      accessibilityActions={accessibilityActions}
+      onAccessibilityAction={(event) => {
+        const name = event.nativeEvent.actionName;
+        if (name === 'activate') act('open', id);
+        else if (name === 'confirm') act('confirm', id);
+        else if (name === 'delete') act('delete', id);
+      }}
+      style={[
+        {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 12,
+          paddingHorizontal: 16,
+          backgroundColor: palette.cell,
+          opacity: row.skipped ? 0.45 : 1,
+        },
+        front,
+      ]}
+    >
+      <TileWithPhoto
+        icon={row.icon}
+        hue={row.hue}
+        photo={row.photo === null ? null : photoUri(row.photo)}
+      />
+      <View
+        style={{
+          flex: 1,
+          minWidth: 0,
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 10,
+          paddingVertical: 12,
+          borderTopWidth: 0.5,
+          borderTopColor: row.first ? 'transparent' : palette.hair,
+        }}
+      >
+        <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
+          <Text
+            numberOfLines={1}
+            style={{
+              ...body(16, 550),
+              color: palette.ink,
+              textDecorationLine: row.skipped ? 'line-through' : 'none',
+            }}
+          >
+            {row.name}
+          </Text>
+          <Text numberOfLines={1} style={{ ...body(13), color: palette.inkSoft }}>
+            {row.meta}
+          </Text>
+        </View>
+        <View style={{ alignItems: 'flex-end', gap: 3 }}>
+          <Text
+            style={{
+              ...body(16, 600),
+              ...tabular,
+              color: palette.ink,
+              textDecorationLine: row.skipped ? 'line-through' : 'none',
+            }}
+          >
+            {row.amount}
+          </Text>
+          {row.tag ? (
+            <Text
+              style={{
+                ...body(11, 600, 0.04),
+                textTransform: 'uppercase',
+                color: row.reviewable ? warn : palette.inkSoft,
+              }}
+            >
+              {row.tag}
+            </Text>
+          ) : null}
+        </View>
+      </View>
+    </Animated.View>
+  );
+
+  if (still) return <View style={{ overflow: 'hidden' }}>{face}</View>;
 
   return (
     <View style={{ overflow: 'hidden' }}>
@@ -89,96 +181,7 @@ export function SpendRow({
         onEdit={() => act('open', id)}
         onDelete={deleteAway}
       >
-        <GestureDetector gesture={gesture}>
-          <Animated.View
-            accessible
-            accessibilityRole="button"
-            accessibilityLabel={[
-              row.name,
-              row.amount,
-              row.meta,
-              row.tag,
-              row.photo ? photoLabel : null,
-            ]
-              .filter(Boolean)
-              .join(', ')}
-            accessibilityActions={accessibilityActions}
-            onAccessibilityAction={(event) => {
-              const name = event.nativeEvent.actionName;
-              if (name === 'activate') act('open', id);
-              else if (name === 'confirm') act('confirm', id);
-              else if (name === 'delete') act('delete', id);
-            }}
-            style={[
-              {
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 12,
-                paddingHorizontal: 16,
-                backgroundColor: palette.cell,
-                opacity: row.skipped ? 0.45 : 1,
-              },
-              front,
-            ]}
-          >
-            <TileWithPhoto
-              icon={row.icon}
-              hue={row.hue}
-              photo={row.photo === null ? null : photoUri(row.photo)}
-            />
-            <View
-              style={{
-                flex: 1,
-                minWidth: 0,
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 10,
-                paddingVertical: 12,
-                borderTopWidth: 0.5,
-                borderTopColor: row.first ? 'transparent' : palette.hair,
-              }}
-            >
-              <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
-                <Text
-                  numberOfLines={1}
-                  style={{
-                    ...body(16, 550),
-                    color: palette.ink,
-                    textDecorationLine: row.skipped ? 'line-through' : 'none',
-                  }}
-                >
-                  {row.name}
-                </Text>
-                <Text numberOfLines={1} style={{ ...body(13), color: palette.inkSoft }}>
-                  {row.meta}
-                </Text>
-              </View>
-              <View style={{ alignItems: 'flex-end', gap: 3 }}>
-                <Text
-                  style={{
-                    ...body(16, 600),
-                    ...tabular,
-                    color: palette.ink,
-                    textDecorationLine: row.skipped ? 'line-through' : 'none',
-                  }}
-                >
-                  {row.amount}
-                </Text>
-                {row.tag ? (
-                  <Text
-                    style={{
-                      ...body(11, 600, 0.04),
-                      textTransform: 'uppercase',
-                      color: row.reviewable ? warn : palette.inkSoft,
-                    }}
-                  >
-                    {row.tag}
-                  </Text>
-                ) : null}
-              </View>
-            </View>
-          </Animated.View>
-        </GestureDetector>
+        <GestureDetector gesture={gesture}>{face}</GestureDetector>
       </SpendRowMenu>
     </View>
   );

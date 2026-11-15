@@ -166,7 +166,12 @@ export function DiaryPage({ scrollRef }: { readonly scrollRef: AnimatedRef<Anima
         </ScrollReveal>
       )}
 
-      {diary.receipt && !toPage && !showWork ? <DayReceipt receipt={diary.receipt} /> : null}
+      {diary.receipt && !toPage && !showWork ? (
+        <DayReceipt
+          receipt={diary.receipt}
+          onOpen={() => router.push(`/day?day=${diary.receipt?.day ?? ''}` as Href)}
+        />
+      ) : null}
 
       <ScrollReveal>
         {/* Ask 6pm has no screen yet: the entry is drawn and does nothing until it lands. */}

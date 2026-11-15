@@ -98,4 +98,9 @@ export const deDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.cal.previous': 'Früherer Monat',
   'diary.cal.next': 'Späterer Monat',
   'diary.fromJar': 'Aus dem Glas „{jar}“',
+  'diary.day.title': 'Den Tag ansehen',
+  'diary.day.empty': 'An diesem Tag ist nichts mehr.',
+  'diary.day.hint': 'Tippe auf eine Zeile, um sie zu ändern. Nach links wischen zum Löschen.',
+  'diary.receipt.open': 'Beleg vom {date}, gesamt {total}',
+  'diary.receipt.openHint': 'Öffnet den Tag, um Einträge zu ändern oder zu löschen',
 };
