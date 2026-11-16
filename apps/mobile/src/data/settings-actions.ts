@@ -3,6 +3,7 @@ import { DEFAULT_PLAN, writePlan, type PlanSettings } from './plan-settings';
 import type { PhotoFiles } from './spend-photos';
 import { inTurn } from './store-queue';
 import { forgetVoice } from '../features/wording/voice-store';
+import { startingCurrency } from '../money/device-money';
 
 /** Children before parents, so the foreign keys never see an orphan mid-wipe. */
 const EVERY_TABLE = [
@@ -42,6 +43,8 @@ export function settingsActions(store: MoneyStore, photos?: Pick<PhotoFiles, 'na
       if (photos) for (const name of photos.names()) photos.remove(name);
       // The companion's memory went with the settings table; its in-memory copy goes too.
       forgetVoice();
+      // A currency picked in an earlier set-up is not this one's: the phone's own stands again.
+      startingCurrency.set(null);
       await reload();
     },
   });

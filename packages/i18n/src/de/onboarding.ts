@@ -31,6 +31,7 @@ export const deOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.income.sub':
     'Ungefähr das, was jeden Monat netto reinkommt. Dreh, um es einzustellen.',
   'onboarding.income.daily': 'Etwa {amount} pro Tag, vor Fixkosten',
+  'onboarding.income.currency': 'Gerechnet in {currency} · Ändern',
   'onboarding.income.hundredMillions': 'Hundert Millionen Đồng',
   'onboarding.income.millions': 'Millionen Đồng',
   'onboarding.income.hundreds': 'Hunderttausend',

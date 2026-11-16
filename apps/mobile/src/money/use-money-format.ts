@@ -1,12 +1,12 @@
-import { useMemo } from 'react';
+import { useMemo, useSyncExternalStore } from 'react';
 
 import { currencyOf, moneyFormat, moneyLocale, type Currency, type MoneyFormat } from '@6pm/domain';
 import type { Language } from '@6pm/i18n';
 
 import { useMoneySelector } from '../data/money-provider';
-import { homeCurrencyCode, type PlanSettings } from '../data/plan-settings';
+import { homeCurrencyCode, planCurrencyCode, type PlanSettings } from '../data/plan-settings';
 import { useI18n } from '../i18n/i18n';
-import { deviceCurrencyCode, phoneNumberStyle } from './device-money';
+import { deviceCurrencyCode, phoneNumberStyle, startingCurrency } from './device-money';
 
 /** The home currency of a snapshot's plan; the phone's before there is one. */
 export function homeCurrencyOf(plan: PlanSettings | null): Currency {
@@ -18,12 +18,16 @@ export function moneyFormatFor(currency: Currency, language: Language): MoneyFor
   return moneyFormat(moneyLocale(currency, language, phoneNumberStyle()));
 }
 
-const selectCode = (s: { plan: PlanSettings | null }) =>
-  homeCurrencyCode(s.plan, deviceCurrencyCode());
+/** The plan's own currency; null before there is a plan. */
+const selectPlanCode = (s: { plan: PlanSettings | null }) =>
+  s.plan === null ? null : planCurrencyCode(s.plan);
 
 /** The home currency, re-read only when it changes. */
 export function useHomeCurrency(): Currency {
-  const code = useMoneySelector(selectCode);
+  // Before there is a plan the currency is the one picked in onboarding: a pick re-reads it.
+  useSyncExternalStore(startingCurrency.subscribe, startingCurrency.get);
+  const planCode = useMoneySelector(selectPlanCode);
+  const code = planCode ?? deviceCurrencyCode();
   return useMemo(() => currencyOf(code), [code]);
 }
 

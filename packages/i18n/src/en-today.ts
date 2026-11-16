@@ -136,6 +136,11 @@ export const enToday = {
   'settings.language': 'Language',
   'settings.languageName': 'English',
   'settings.languagePhone': 'Same as your phone',
+  'settings.currency': 'Currency',
+  'settings.currencyNote': 'Changing it converts everything you’ve entered, at today’s rate.',
+  'settings.currencyConfirm': 'Tap again to change. {from} = {to}',
+  'settings.currencyNoRate': 'No rate right now. Check your connection and try again.',
+  'settings.currencyFailed': 'Couldn’t change it. Nothing was changed.',
   'settings.yourData': 'Your data',
   'settings.privacy': 'Privacy',
   'settings.privacyBody':

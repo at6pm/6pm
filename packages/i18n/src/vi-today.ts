@@ -132,6 +132,12 @@ export const viToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'settings.language': 'Ngôn ngữ',
   'settings.languageName': 'Tiếng Việt',
   'settings.languagePhone': 'Theo điện thoại',
+  'settings.currency': 'Đơn vị tiền',
+  'settings.currencyNote':
+    'Đổi đơn vị thì mọi số tiền bạn đã nhập được quy đổi theo tỷ giá hôm nay.',
+  'settings.currencyConfirm': 'Chạm lần nữa để đổi. {from} = {to}',
+  'settings.currencyNoRate': 'Chưa lấy được tỷ giá. Bạn kiểm tra mạng rồi thử lại nhé.',
+  'settings.currencyFailed': 'Chưa đổi được. Mọi thứ vẫn như cũ.',
   'settings.yourData': 'Dữ liệu của bạn',
   'settings.privacy': 'Quyền riêng tư',
   'settings.privacyBody':

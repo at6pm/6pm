@@ -141,6 +141,12 @@ export const deToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'settings.language': 'Sprache',
   'settings.languageName': 'Deutsch',
   'settings.languagePhone': 'Wie auf deinem Handy',
+  'settings.currency': 'Währung',
+  'settings.currencyNote':
+    'Beim Wechsel wird alles, was du eingetragen hast, zum heutigen Kurs umgerechnet.',
+  'settings.currencyConfirm': 'Zum Wechseln noch mal tippen. {from} = {to}',
+  'settings.currencyNoRate': 'Gerade kein Kurs. Prüf deine Verbindung und versuch es noch mal.',
+  'settings.currencyFailed': 'Das hat nicht geklappt. Nichts wurde geändert.',
   'settings.yourData': 'Deine Daten',
   'settings.privacy': 'Datenschutz',
   'settings.privacyBody':
