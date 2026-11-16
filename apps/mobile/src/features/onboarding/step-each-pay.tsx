@@ -16,6 +16,7 @@ import type { LocalDate } from '@6pm/domain';
 import { curves } from '@6pm/theme';
 
 import { useI18n, type I18n } from '../../i18n/i18n';
+import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { body } from '../../ui/type/fonts';
@@ -65,6 +66,8 @@ export function StepEachPay({
   const i18n = useI18n();
   const { t } = i18n;
   const { every } = answers;
+  // The wheels count in the plan's currency: one picked on the way gives them new steps.
+  const money = useMoneyFormat();
   return (
     <View style={{ gap: 12 }}>
       {/* Tall enough that the companion clears the wheels under a line that wraps in two. */}
@@ -73,6 +76,7 @@ export function StepEachPay({
       </View>
       <Card pal={pal} style={{ paddingVertical: 14, paddingHorizontal: 16 }}>
         <IncomeWheels
+          key={money.currency.code}
           income={answers.payAmount}
           onIncome={onAmount}
           colours={pal}

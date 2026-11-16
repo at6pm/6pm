@@ -1,5 +1,6 @@
 import type { ForeignAmount } from '../capture/foreign-price';
 import { roundToStep, toMajor, toMinor, type Currency, type Money } from '../money/currency';
+import { tenthHeldBack } from '../spend/held-back';
 import { isRate, rateNumber } from '../travel/fx';
 import { foreignToHome } from '../travel/home-fx';
 
@@ -83,11 +84,28 @@ export function spendInNewHome(spend: SpendMoney, change: HomeChange): Required<
   };
 }
 
+/**
+ * What a client held back from money in, in the new home. A tenth stays exactly a tenth of what
+ * landed (so it still reads as "10%" and the sender's share is still remembered); a typed amount
+ * is converted.
+ */
+export function heldBackInNewHome(
+  heldBack: Money,
+  landed: { readonly before: Money; readonly after: Money },
+  change: HomeChange,
+): Money {
+  if (heldBack <= 0) return 0;
+  if (heldBack === tenthHeldBack(landed.before)) return tenthHeldBack(landed.after);
+  return inNewHome(heldBack, change);
+}
+
 /** The parts of a plan that are money. */
 export interface PlanMoney {
   readonly income: Money;
   readonly futureYou: Money;
   readonly spentSincePayday?: Money | undefined;
+  /** Every income, when the plan keeps them: what each pay brings. */
+  readonly incomes?: readonly { readonly amount: Money }[] | undefined;
 }
 
 /** A plan's money in the new home: what was planned to the step, what was spent to the unit. */
@@ -101,6 +119,15 @@ export function planInNewHome<P extends PlanMoney>(plan: P, change: HomeChange):
     ...(plan.spentSincePayday === undefined
       ? {}
       : { spentSincePayday: inNewHome(plan.spentSincePayday, change) }),
+    // Each pay to the step, as its wheels count; one counted only as it lands stays at nothing.
+    ...(plan.incomes === undefined
+      ? {}
+      : {
+          incomes: plan.incomes.map((pay) => ({
+            ...pay,
+            amount: plannedInNewHome(pay.amount, change),
+          })),
+        }),
   };
 }
 

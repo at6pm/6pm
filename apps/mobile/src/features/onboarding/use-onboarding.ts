@@ -119,6 +119,8 @@ export function useOnboarding(startStep = 0) {
   if (countedIn !== currency.code) {
     setCountedIn(currency.code);
     setIncome(startingIncome(currency));
+    setPayAmount(startingPay(currency));
+    setLandedSteps(landedFutureStartSteps(currency));
     setAnswers(NO_BILL_ANSWERS);
     setNav(DECK_START);
     setSpentSincePayday(null);

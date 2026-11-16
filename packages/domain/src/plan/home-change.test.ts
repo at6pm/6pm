@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
 import { currencyOf, VND } from '../money/currency';
+import { heldBackChoiceOf } from '../spend/held-back';
 import {
+  heldBackInNewHome,
   homeChangeSample,
   inNewHome,
   isHomeChange,
@@ -161,5 +163,40 @@ describe('homeChangeSample', () => {
   it('says one unit of the dearer currency in the cheaper one, either way', () => {
     expect(homeChangeSample(toDong)).toEqual({ from: 100, to: 25_400 });
     expect(homeChangeSample(toDollars)).toEqual({ from: 25_400, to: 100 });
+  });
+});
+
+describe('what only some plans hold', () => {
+  it('counts every income again, to the step, and leaves one that only lands at nothing', () => {
+    const moved = planInNewHome(
+      {
+        income: 120_000,
+        futureYou: 0,
+        incomes: [
+          { id: 'wage', amount: 30_000 },
+          { id: 'gigs', amount: 0 },
+        ],
+      },
+      toDong,
+    );
+    expect(moved.incomes).toEqual([
+      { id: 'wage', amount: 7_620_000 },
+      { id: 'gigs', amount: 0 },
+    ]);
+  });
+
+  it('leaves a plan without incomes without them', () => {
+    const moved = planInNewHome({ income: 120_000, futureYou: 0 }, toDong);
+    expect('incomes' in moved).toBe(false);
+  });
+
+  it('keeps a tenth held back a tenth of what landed, and converts a typed amount', () => {
+    // $900 landed, $100 held back: a tenth of the $1,000 billed.
+    const after = inNewHome(90_000, toDong);
+    const held = heldBackInNewHome(10_000, { before: 90_000, after }, toDong);
+    expect(held).toBe(2_540_000);
+    expect(heldBackChoiceOf(after, held)).toEqual({ kind: 'tenth' });
+    expect(heldBackInNewHome(1_234, { before: 90_000, after }, toDong)).toBe(313_436);
+    expect(heldBackInNewHome(0, { before: 90_000, after }, toDong)).toBe(0);
   });
 });
