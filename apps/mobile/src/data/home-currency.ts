@@ -15,7 +15,7 @@ const MOVE_TABLES = ['pot_moves', 'together_moves'] as const;
 
 /**
  * Counts the plan in another currency: the plan, every spend and money in, the bills, the jars and
- * what moved through them, the closed days, what is owed and what a bring-in replaced, all in one
+ * what moved through them, the closed days and what a bring-in replaced, all in one
  * transaction, then reloads. Shared jars keep their own currency; only what this phone put into
  * them is counted again. Nothing is written when the plan is not in `change.from` any more (the
  * change was already made) or the change is not one.
@@ -60,9 +60,6 @@ export function changeHomeCurrency(store: MoneyStore, change: HomeChange): Promi
           line: inNewHome(day.line, change),
           tomorrow: inNewHome(day.tomorrow, change),
         });
-      }
-      for (const owed of await tables.owed.all()) {
-        await tables.owed.put({ ...owed, amount: inNewHome(owed.amount, change) });
       }
       for (const record of await tables.imports.all()) {
         if (record.answerBefore === null) continue;

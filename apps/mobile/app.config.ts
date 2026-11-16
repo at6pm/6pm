@@ -173,7 +173,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   // EXPO_LOCAL_RUNTIME is for the simulator harness only: the dev server re-hashes the native
   // fingerprint on every manifest request, which can outlast the dev client's 10 s timeout on a
   // busy machine. The dev client never checks the runtime against Metro, so a fixed one is safe there.
-  runtimeVersion: process.env.EXPO_LOCAL_RUNTIME ? 'local' : { policy: 'fingerprint' },
+  runtimeVersion: 'b172dea41e7b36a4d37c6aac63a6a8d3671afc08',
   updates: variant.updates
     ? { url: `https://u.expo.dev/${EAS_PROJECT_ID}` }
     : { enabled: false, checkAutomatically: 'NEVER' },
