@@ -19,6 +19,7 @@ import { koInsightsHabits } from './insights-habits';
 import { koIntents } from './intents';
 import { koLooks } from './looks';
 import { koMoneyIn } from './money-in';
+import { koQuickAdd } from './quick-add';
 import { koPotsClose } from './pots-close';
 import { koPotsPlan } from './pots-plan';
 import { koPots } from './pots';
@@ -30,6 +31,8 @@ import { koReceiptEmail } from './receipt-email';
 import { koScan } from './scan';
 import { koShareExt } from './share-ext';
 import { koSharing } from './sharing';
+import { koShareCards } from './share-cards';
+import { koShareCardsIncome } from './share-cards-income';
 import { koSurfaces } from './surfaces';
 import { koWidgets } from './widgets';
 import { koToday } from './today';
@@ -39,7 +42,14 @@ import { koVoice } from './voice';
 import { koWidgetsGuide } from './widgets-guide';
 import { koYearBook } from './year-book';
 import { koFirstCatch } from './first-catch';
+import { koCaptureLog } from './capture-log';
+import { koSettingsPages } from './settings-pages';
 import { koPhoto } from './photo';
+import { koMoneyReaches } from './money-reaches';
+import { koIncome } from './income';
+import { koWork } from './work';
+import { koRequests } from './requests';
+import { koWorkYear } from './work-year';
 import { koImport } from './import';
 import { koOwed } from './owed';
 import { koNotifications } from './notifications';
@@ -72,6 +82,8 @@ export const ko: Catalogue = {
   ...koPrivacyAi,
   ...koNative,
   ...koSharing,
+  ...koShareCards,
+  ...koShareCardsIncome,
   ...koShareExt,
   ...koIntents,
   ...koCaptureWalk,
@@ -86,11 +98,19 @@ export const ko: Catalogue = {
   ...koWidgetsGuide,
   ...koDuo,
   ...koMoneyIn,
+  ...koQuickAdd,
   ...koPotsClose,
   ...koPotsPlan,
   ...koPots,
   ...koFirstCatch,
+  ...koCaptureLog,
+  ...koSettingsPages,
   ...koPhoto,
+  ...koMoneyReaches,
+  ...koIncome,
+  ...koWork,
+  ...koRequests,
+  ...koWorkYear,
   ...koImport,
   ...koOwed,
   ...importSketchMomo,
@@ -103,6 +123,8 @@ export const ko: Catalogue = {
  * beyond the list every language shares.
  */
 export const koSameAsEnglish: readonly string[] = [
+  'work-{year}.csv',
+  'work-costs-{year}.csv',
   ...importSketchEnglish,
   'iCloud · {when}',
   '{who} · {day}',

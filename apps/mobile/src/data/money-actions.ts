@@ -1,27 +1,24 @@
-import { randomUUID } from 'expo-crypto';
-
 import {
   canKeep,
   findDuplicate,
   jarCover,
   learnedRule,
-  mayBeSamePayment,
-  mergedNaming,
-  mergedStatus,
   merchantKeyOf,
-  moneyDayOf,
   settleTypedAmount,
   type CategoryRow,
   type ClosedDayRow,
   type LocalDate,
-  type SightedSpend,
   type SpendRow,
-  type Witness,
 } from '@6pm/domain';
 
 import { homeCurrencyOf } from '../money/use-money-format';
 
+import { NO_CAPTURE_LOG, type CaptureLog } from './capture-log';
+import { captureAnswers } from './capture-answers';
 import { noteReceiptEdit } from './first-catch';
+import { capturing } from './capture-match';
+import { readSightings } from './capture-sightings';
+import { ingestion, type Arrival } from './ingest';
 import { markHandTake } from './jar-asks';
 import { moneyInActions } from './money-in-actions';
 import { findSpend, type MoneyStore } from './money-store';
@@ -78,12 +75,7 @@ export interface Capture {
   readonly sighting: { readonly source: SpendRow['source']; readonly seenAt: string };
 }
 
-/** One way a spend was seen: the source trail on Details. */
-export interface Sighting {
-  readonly source: SpendRow['source'];
-  readonly seenAt: string;
-  readonly detail: string | null;
-}
+export type { Sighting } from './capture-sightings';
 
 /** What an undo puts back besides the status: the amount and category an edit changed. */
 export type UndoRestore = Partial<Pick<SpendRow, 'amount' | 'categoryId'>>;
@@ -92,8 +84,13 @@ export type UndoRestore = Partial<Pick<SpendRow, 'amount' | 'categoryId'>>;
  * Every write the app makes to its money. Each one commits to the database first, then publishes
  * the new snapshot, so the screen never shows a state the phone has not saved. A spend's photo
  * goes with it: deleting the spend lets the file go (held for the undo), and undoing puts it back.
+ * Every capture goes through `ingest`, which the capture log (when it is on) follows.
  */
-export function moneyActions(store: MoneyStore, photos: SpendPhotos = NO_SPEND_PHOTOS) {
+export function moneyActions(
+  store: MoneyStore,
+  photos: SpendPhotos = NO_SPEND_PHOTOS,
+  log: CaptureLog = NO_CAPTURE_LOG,
+) {
   const { tables } = store;
 
   /**
@@ -187,123 +184,6 @@ export function moneyActions(store: MoneyStore, photos: SpendPhotos = NO_SPEND_P
       return patchNow(row, { ...next, ...cover });
     });
 
-  /** The same payment seen a second way: one item, its sightings recorded, never two rows. */
-  const mergeInto = async (twin: SpendRow, input: NewSpend, seenAt: string): Promise<Capture> => {
-    const next: SpendRow = {
-      ...twin,
-      status: mergedStatus(twin.status, input.status),
-      // The name that says most about who was paid, whichever sighting came first.
-      ...mergedNaming(twin, input),
-      note: twin.note ?? input.note ?? null,
-      wallet: twin.wallet ?? input.wallet ?? null,
-      memo: twin.memo ?? input.memo ?? null,
-      // Money in seen again by an email read as a refund: the close still asks about the refund.
-      moneyIn: twin.moneyIn ?? (twin.direction === 'in' ? (input.moneyIn ?? null) : null),
-      updatedAt: new Date().toISOString(),
-    };
-    await store.db.withTransactionAsync(async () => {
-      const insert =
-        'INSERT OR IGNORE INTO spend_sightings (spend_id, source, seen_at, detail, capture_id) VALUES (?, ?, ?, ?, ?)';
-      // The first sighting was never written on its own; it is part of the trail from now on.
-      await store.db.runAsync(insert, [twin.id, twin.source, twin.at, twin.detail, twin.id]);
-      await store.db.runAsync(insert, [
-        twin.id,
-        input.source,
-        seenAt,
-        input.detail ?? null,
-        input.id ?? null,
-      ]);
-      await tables.spends.put(next);
-    });
-    replaceSpend(next);
-    return { row: next, merged: true, before: twin, sighting: { source: input.source, seenAt } };
-  };
-
-  /**
-   * The spends this capture could be a second sighting of, each with the ways it was seen already,
-   * so a payment one witness saw is never given a second sighting by it.
-   */
-  const withTrails = async (spends: readonly SpendRow[]): Promise<SightedSpend[]> => {
-    if (spends.length === 0) return [];
-    const marks = spends.map(() => '?').join(', ');
-    const rows = await store.db.getAllAsync<{
-      spend_id: string;
-      source: SpendRow['source'];
-      detail: string | null;
-    }>(
-      `SELECT spend_id, source, detail FROM spend_sightings WHERE spend_id IN (${marks})`,
-      spends.map((s) => s.id),
-    );
-    const trails = new Map<string, Witness[]>();
-    for (const row of rows) {
-      const trail = trails.get(row.spend_id) ?? [];
-      trail.push({ source: row.source, detail: row.detail });
-      trails.set(row.spend_id, trail);
-    }
-    return spends.map((s) => ({ ...s, seenBy: trails.get(s.id) ?? [] }));
-  };
-
-  const captureNow = async (input: NewSpend): Promise<Capture> => {
-    const at = input.at ?? new Date();
-    const snap = store.getSnapshot();
-    const amount = Math.round(input.amount);
-    // Only a spend of the same amount, a fee apart, or paid abroad can be the same payment.
-    const candidates = snap.cycleSpends.filter((s) => mayBeSamePayment(s, amount));
-    const twin = findDuplicate(
-      {
-        amount,
-        source: input.source,
-        status: input.status,
-        at: at.toISOString(),
-        detail: input.detail ?? null,
-        foreignAmount: input.foreignAmount ?? null,
-        direction: input.direction ?? null,
-        merchant: input.merchant,
-      },
-      await withTrails(candidates),
-    );
-    if (twin) {
-      const row = snap.cycleSpends.find((s) => s.id === twin.id);
-      if (row) return mergeInto(row, input, at.toISOString());
-    }
-    const now = new Date().toISOString();
-    const jar = input.fromPot ?? null;
-    const row: SpendRow = {
-      id: input.id ?? randomUUID(),
-      // Captured now, it belongs to the day the screens are showing; a recorded time files itself.
-      day: input.day ?? (input.at ? moneyDayOf(input.at) : snap.today),
-      at: at.toISOString(),
-      amount: Math.round(input.amount),
-      categoryId: input.categoryId,
-      merchant: input.merchant,
-      note: input.note ?? null,
-      source: input.source,
-      status: input.status,
-      previousStatus: null,
-      wallet: input.wallet ?? null,
-      forWork: false,
-      detail: input.detail ?? null,
-      foreignAmount: input.foreignAmount ?? null,
-      currencyGuessed: input.currencyGuessed ?? false,
-      memo: input.memo ?? null,
-      direction: input.direction === 'in' ? 'in' : null,
-      moneyIn: input.direction === 'in' ? (input.moneyIn ?? null) : null,
-      givesBack: null,
-      savedTo: null,
-      fromPot: input.direction === 'in' ? null : jar,
-      fromPotAmount:
-        jar === null || input.direction === 'in'
-          ? null
-          : jarCover(Math.round(input.amount), snap.potSaved[jar] ?? 0),
-      envelopes: input.envelopes ?? null,
-      createdAt: now,
-      updatedAt: now,
-    };
-    await tables.spends.put(row);
-    replaceSpend(row);
-    return { row, merged: false, before: null, sighting: { source: row.source, seenAt: row.at } };
-  };
-
   /**
    * Takes back what a capture did and nothing else: a row it created is deleted; a payment it
    * only added a sighting to loses that sighting (and goes back to how it was, when nothing has
@@ -335,19 +215,43 @@ export function moneyActions(store: MoneyStore, photos: SpendPhotos = NO_SPEND_P
         'DELETE FROM spend_sightings WHERE spend_id = ? AND source = ? AND seen_at = ?',
         [row.id, capture.sighting.source, capture.sighting.seenAt],
       );
-      const left = await db.getAllAsync<{ n: number }>(
-        'SELECT COUNT(*) AS n FROM spend_sightings WHERE spend_id = ?',
-        [row.id],
-      );
-      // A payment seen once has no trail: the first sighting is only kept alongside a second.
-      if ((left[0]?.n ?? 0) <= 1) {
-        await db.runAsync('DELETE FROM spend_sightings WHERE spend_id = ?', [row.id]);
-      }
       if (restored !== row) await tables.spends.put(restored);
     });
     replaceSpend(restored);
     return restored;
   };
+
+  /**
+   * Keep, not mine, delete: remembers the old status so the undo pill can put it back. An edit
+   * made in the same breath (the close's "Save and keep") goes in the same write.
+   */
+  const setStatus = (
+    id: string,
+    status: SpendRow['status'],
+    edit: UndoRestore = {},
+  ): Promise<SpendRow | null> =>
+    inTurn(async () => {
+      const row = await current(id);
+      if (!row) return null;
+      // A spend at 0 (unread, or abroad and still unpriced) is never confirmed: it waits under
+      // Needs a look until an amount is typed or its rate arrives, so 0 is never counted.
+      if (status === 'kept' && !canKeep({ amount: edit.amount ?? row.amount })) {
+        return Object.keys(edit).length > 0 ? patchNow(row, edit) : row;
+      }
+      // Saying the same thing twice (a double tap) must not overwrite what undo would restore.
+      if (row.status === status) return Object.keys(edit).length > 0 ? patchNow(row, edit) : row;
+      const gone = status === 'deleted' ? await letPhotoGo(row) : {};
+      return patchNow(row, { ...edit, ...gone, status, previousStatus: row.status });
+    });
+
+  const { mergeInto, withTrails, decideNow } = capturing(store, replaceSpend);
+  const { ingest, ingestNow, hear } = ingestion({
+    store,
+    inTurn,
+    decideNow,
+    log,
+  });
+  const answers = captureAnswers({ store, inTurn, current, replaceSpend });
 
   return {
     addSpend: (input: NewSpend) =>
@@ -357,7 +261,7 @@ export function moneyActions(store: MoneyStore, photos: SpendPhotos = NO_SPEND_P
           await tables.categories.insertMissing(made);
           await store.loadInTurn(store.getSnapshot().today);
         }
-        const { row } = await captureNow(input);
+        const { row } = await ingestNow(input);
         // Quick add "From a jar" is taken by hand: it arms the jar for the close's question.
         if (row.fromPot != null && input.fromPot != null) {
           await markHandTake(store.db, row.id, row.fromPot);
@@ -365,7 +269,28 @@ export function moneyActions(store: MoneyStore, photos: SpendPhotos = NO_SPEND_P
         return row;
       }),
     /** `addSpend`, also saying whether the payment merged into one already there. */
-    captureSpend: (input: NewSpend) => inTurn(() => captureNow(input)),
+    captureSpend: (input: NewSpend) => inTurn(() => ingestNow(input)),
+    /**
+     * The one way in for a capture read from a message (an inbox file, a forwarded mail): the
+     * repeat checks, the matcher, the own transfer; says which step decided.
+     */
+    ingest: (arrival: Arrival) => ingest(arrival),
+    /** An alert that moved no money, heard for the capture log while it is on. */
+    hear,
+    /** The spend the person typed that a caught payment may be ("Same as your 50k at 10:30?"). */
+    typedTwin: answers.typedTwin,
+    /** Yes: the caught payment joins the typed spend; its undo puts both back. */
+    sameAsTyped: answers.join,
+    undoSameAsTyped: answers.unjoin,
+    /** No: the pair is remembered and never offered or merged again. */
+    notSameAsTyped: answers.notSame,
+    /** Every witness of a row, for Details. */
+    witnesses: answers.witnesses,
+    /** "These are two": the last sighting to join goes back to a row of its own; with its undo. */
+    splitApart: answers.split,
+    undoSplitApart: answers.unsplit,
+    /** What "This is wrong" sends about one row. */
+    captureReport: answers.report,
     /** Takes back a capture (a cancelled payment) without touching anything it did not make. */
     withdrawCapture: (capture: Capture) => inTurn(() => withdrawNow(capture)),
     /**
@@ -459,28 +384,7 @@ export function moneyActions(store: MoneyStore, photos: SpendPhotos = NO_SPEND_P
           fromPotAmount: taken.fromPotAmount ?? null,
         });
       }),
-    /**
-     * Keep, not mine, delete: remembers the old status so the undo pill can put it back. An edit
-     * made in the same breath (the close's "Save and keep") goes in the same write.
-     */
-    setStatus: (
-      id: string,
-      status: SpendRow['status'],
-      edit: UndoRestore = {},
-    ): Promise<SpendRow | null> =>
-      inTurn(async () => {
-        const row = await current(id);
-        if (!row) return null;
-        // A spend at 0 (unread, or abroad and still unpriced) is never confirmed: it waits under
-        // Needs a look until an amount is typed or its rate arrives, so 0 is never counted.
-        if (status === 'kept' && !canKeep({ amount: edit.amount ?? row.amount })) {
-          return Object.keys(edit).length > 0 ? patchNow(row, edit) : row;
-        }
-        // Saying the same thing twice (a double tap) must not overwrite what undo would restore.
-        if (row.status === status) return Object.keys(edit).length > 0 ? patchNow(row, edit) : row;
-        const gone = status === 'deleted' ? await letPhotoGo(row) : {};
-        return patchNow(row, { ...edit, ...gone, status, previousStatus: row.status });
-      }),
+    setStatus,
     /** Puts back the status before the last change, and the amount and category an edit changed. */
     undo: (id: string, restore: UndoRestore = {}): Promise<SpendRow | null> =>
       inTurn(async () => {
@@ -563,18 +467,8 @@ export function moneyActions(store: MoneyStore, photos: SpendPhotos = NO_SPEND_P
         const existing = await tables.rules.get(merchantKeyOf(merchant));
         await tables.rules.put(learnedRule(existing, merchant, categoryId));
       }),
-    /** Every way a spend was seen, oldest first. Empty for a spend seen only once. */
-    sightings: async (spendId: string): Promise<Sighting[]> => {
-      const rows = await store.db.getAllAsync<{
-        source: SpendRow['source'];
-        seen_at: string;
-        detail: string | null;
-      }>(
-        'SELECT source, seen_at, detail FROM spend_sightings WHERE spend_id = ? ORDER BY seen_at',
-        [spendId],
-      );
-      return rows.map((r) => ({ source: r.source, seenAt: r.seen_at, detail: r.detail }));
-    },
+    /** Every way a spend was seen, oldest first. Empty for a spend seen only once: no trail. */
+    sightings: (spendId: string) => readSightings(store.db, spendId),
     /** Files the day's receipt: the Diary, the week strip and the streak read it. */
     closeDay: (row: ClosedDayRow) =>
       inTurn(async () => {

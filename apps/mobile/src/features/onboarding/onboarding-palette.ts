@@ -63,6 +63,8 @@ export function skyRgbaAt(t: number): number[][] {
 }
 
 const GREEN = oklchSrgbHex(0.76, 0.13, 150);
+/** "How does money reach you?": a day money lands, drawn as a bar on a card's month. */
+const MONEY_BAR = oklchSrgbHex(0.58, 0.14, 150);
 
 /** `#rrggbb` at an alpha, for the prototype's `oklch(… / a)` tints. */
 function withAlpha(hex: string, alpha: number): string {
@@ -115,6 +117,13 @@ export function onboardingPalette(step: number) {
     /** The check badge on the end-of-bills card. */
     doneBadge: GREEN,
     doneBadgeInk: '#173322',
+    /** A day money lands on a "How does money reach you?" card, and a day it does not. */
+    moneyBar: dark ? GREEN : MONEY_BAR,
+    moneyDot: dark ? 'rgba(251,244,236,.2)' : 'rgba(27,30,46,.18)',
+    /** An answer card's check while it is not picked. */
+    ring: dark ? 'rgba(251,244,236,.3)' : 'rgba(27,30,46,.2)',
+    /** The empty slip of money that has not landed yet: its dashed box and its rules. */
+    slipDash: dark ? 'rgba(251,244,236,.3)' : 'rgba(27,30,46,.28)',
     /** Text on the leaving overlay and on monogram tiles. */
     light: '#fbf4ec',
     white: '#ffffff',

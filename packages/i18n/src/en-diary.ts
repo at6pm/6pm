@@ -1,7 +1,8 @@
 /** The Diary tab: the week recap, the calendar, day receipts, the missed-day sheet and the money diaries. */
 export const enDiary = {
   'diary.title': 'Diary',
-  'diary.kicker': '{closed} closed in {month} · {all} in all',
+  'diary.kicker': '{month} · {closed} closed',
+  'diary.kickerAll': '{month} · {closed} closed · {all} in all',
   'diary.recap.kicker': 'WEEK SO FAR · {range}',
   'diary.recap.hint': 'Tap or swipe',
   'diary.recap.under.lead': {
@@ -25,10 +26,9 @@ export const enDiary = {
   'diary.places.visits': { one: '{count} visit', other: '{count} visits' },
   'diary.cal.summary': '{closed} closed · {under} under your {line} line',
   'diary.cal.summaryNone': 'Close tonight to file your first day',
-  'diary.cal.under': 'Under your line',
-  'diary.cal.over': 'Over it',
-  'diary.cal.today': '6pm',
-  'diary.cal.missed': 'missed',
+  'diary.cal.under': 'under your line',
+  'diary.cal.over': 'over',
+  'diary.cal.tap': '· tap a day',
   'diary.receipt.no': 'Nº {no}',
   'diary.receipt.empty': 'NOTHING SPENT',
   'diary.receipt.late': 'LATE',
@@ -94,4 +94,9 @@ export const enDiary = {
   'diary.cal.previous': 'Earlier month',
   'diary.cal.next': 'Later month',
   'diary.fromJar': 'From {jar}',
+  'diary.day.title': 'Review the day',
+  'diary.day.empty': 'Nothing left on this day.',
+  'diary.day.hint': 'Tap a line to change it. Swipe left to delete.',
+  'diary.receipt.open': '{date} receipt, total {total}',
+  'diary.receipt.openHint': 'Opens the day to change or delete what’s on it',
 } as const;

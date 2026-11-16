@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Text, useWindowDimensions, View } from 'react-native';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 
@@ -7,9 +7,8 @@ import { localeOf } from '@6pm/i18n';
 import { oklchSrgbHex } from '@6pm/theme';
 
 import { useMoney, useMoneyActions } from '../../data/money-provider';
-import { findSpend } from '../../data/money-store';
-import type { Sighting } from '../../data/money-actions';
 import { merchantIcon } from '../today/merchant-icon';
+import { useSpendRow } from '../owed/use-spend-row';
 import { useSpendLabels } from '../today/use-spend-rows';
 import { useI18n } from '../../i18n/i18n';
 import { CategoryTile } from '../../ui/category-tile';
@@ -20,7 +19,7 @@ import { useTheme } from '../../ui/theme/theme';
 import { body } from '../../ui/type/fonts';
 import { CategoryChips } from './category-chips';
 import { RulePrompt } from './rule-prompt';
-import { SourceTrail } from './source-trail';
+import { CaptureTrail } from './capture-trail';
 import { useOfferUndo } from '../../ui/undo/undo-host';
 import { useCompanionToast } from '../companion/use-companion-toast';
 import { useRunAction } from '../companion/use-run-action';
@@ -65,27 +64,13 @@ export function SpendDetails({
   const run = useRunAction();
   const money = useMoneyFormat();
   const screen = useWindowDimensions();
-  const spend = findSpend(snap, id);
+  // This month's from the snapshot; an older one (a work money in from the year's list) read once.
+  const spend = useSpendRow(id) ?? undefined;
   const [askRule, setAskRule] = useState(false);
   // A catch with no amount opens on the keypad, once the sheet has risen.
   const [editingAmount, setEditingAmount] = useState(false);
   const amountField = useRef({ focus: () => setEditingAmount(true) });
   useFocusOnPresent(amountField, spend !== undefined && spend.amount <= 0);
-  // Every way the spend was seen. A merge changes the row, so it is read again then.
-  const [sightings, setSightings] = useState<readonly Sighting[]>([]);
-  const sightingsOf = spend?.id;
-  const stamp = spend?.updatedAt;
-  useEffect(() => {
-    if (!sightingsOf) return;
-    let live = true;
-    actions
-      .sightings(sightingsOf)
-      .then((rows) => live && setSightings(rows))
-      .catch(() => undefined);
-    return () => {
-      live = false;
-    };
-  }, [actions, sightingsOf, stamp]);
   if (!spend) return null;
 
   const category = snap.categories.find((c) => c.id === spend.categoryId);
@@ -111,26 +96,6 @@ export function SpendDetails({
       inline={!beside}
     />
   );
-
-  // One line per way it was seen, headed "Seen 2 ways" when more than one source reported it.
-  const trail =
-    sightings.length > 1
-      ? [
-          t('details.seenWays', {
-            count: sightings.length,
-            sources: [...new Set(sightings.map((s) => labels.source(s.source)))].join(' + '),
-          }),
-          ...sightings.map((s) =>
-            [labels.time(s.seenAt), labels.source(s.source), s.detail].filter(Boolean).join(' · '),
-          ),
-        ]
-      : [
-          spend.detail,
-          t('details.added', {
-            time: labels.time(spend.createdAt),
-            source: labels.source(spend.source),
-          }),
-        ].filter((line): line is string => Boolean(line));
 
   return (
     <>
@@ -199,7 +164,7 @@ export function SpendDetails({
           onUpdate={update}
         />
 
-        <SourceTrail title={t('details.sourceTrail')} lines={trail} />
+        <CaptureTrail spend={spend} offerUndo={offerUndo} onGone={onDeleted} />
 
         <View style={{ gap: 8, alignItems: 'center' }}>
           <PressScale

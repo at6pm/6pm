@@ -55,6 +55,7 @@ export function CompanionGreeting({
   spread,
   onPress,
   festival = '',
+  say = null,
 }: {
   readonly day: DailyNumber;
   readonly plan: PlanSettings;
@@ -71,6 +72,11 @@ export function CompanionGreeting({
   readonly onPress: () => void;
   /** The festival's name for the season's lines ("Tết"). */
   readonly festival?: string;
+  /**
+   * A line the day calls for on a calm day, from the companion catalogue: money that only lands
+   * (nothing yet, a landing, the days it covers), a question waiting to be answered.
+   */
+  readonly say?: string | null;
 }) {
   const { palette, serious } = useTheme();
   const { t } = useI18n();
@@ -86,8 +92,10 @@ export function CompanionGreeting({
   const roomStyle = useAnimatedStyle(() => ({ height: room.value }));
   // A calm day says something about the user's own days; the other events keep their lines.
   const told = said === 'idle' && spread ? spread : null;
+  const sayNow = said === 'idle' && told === null ? say : null;
   const own = useCompanionLine(said === 'closedIdle' ? 'close' : 'today', 'bubble', {
-    enabled: !serious && told === null && (said === 'idle' || said === 'closedIdle'),
+    enabled:
+      !serious && told === null && sayNow === null && (said === 'idle' || said === 'closedIdle'),
   });
   if (serious) return null;
   const mood = companionMood({
@@ -97,18 +105,20 @@ export function CompanionGreeting({
     toast: false,
     closed: said === 'closedIdle',
   });
-  const line = told
-    ? t(
-        `companion.moneyInSpread.${told.name === '' ? 'plain' : plan.persona}` as 'companion.moneyInSpread.soft',
-        { name: told.name, amount: money.short(told.amount), daily: money.short(told.daily) },
-      )
-    : said === 'seasonCountdown' || said === 'seasonHoliday'
-      ? t(`companion.${said}.${plan.persona}` as 'companion.seasonCountdown.soft', { festival })
-      : (own?.text ??
-        t(`companion.${said}.${plan.persona}` as 'companion.replan.cheeky', {
-          t: money.short(day.tomorrow),
-          b: money.short(day.line),
-        }));
+  const line = sayNow
+    ? sayNow
+    : told
+      ? t(
+          `companion.moneyInSpread.${told.name === '' ? 'plain' : plan.persona}` as 'companion.moneyInSpread.soft',
+          { name: told.name, amount: money.short(told.amount), daily: money.short(told.daily) },
+        )
+      : said === 'seasonCountdown' || said === 'seasonHoliday'
+        ? t(`companion.${said}.${plan.persona}` as 'companion.seasonCountdown.soft', { festival })
+        : (own?.text ??
+          t(`companion.${said}.${plan.persona}` as 'companion.replan.cheeky', {
+            t: money.short(day.tomorrow),
+            b: money.short(day.line),
+          }));
   return (
     <>
       <View
@@ -130,7 +140,7 @@ export function CompanionGreeting({
         <PressScale onPress={onPress} accessibilityRole="button">
           <Companion size={62} mood={mood} />
         </PressScale>
-        {own === undefined && told === null ? null : (
+        {own === undefined && told === null && sayNow === null ? null : (
           // Narrower than the design's phone, the bubble gives up width beside the companion.
           <Animated.View
             entering={FadeInDown.delay(150).duration(500).springify().damping(18)}

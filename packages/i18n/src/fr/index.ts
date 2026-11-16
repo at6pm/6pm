@@ -19,6 +19,7 @@ import { frInsightsHabits } from './insights-habits';
 import { frIntents } from './intents';
 import { frLooks } from './looks';
 import { frMoneyIn } from './money-in';
+import { frQuickAdd } from './quick-add';
 import { frPotsClose } from './pots-close';
 import { frPotsPlan } from './pots-plan';
 import { frPots } from './pots';
@@ -30,6 +31,8 @@ import { frReceiptEmail } from './receipt-email';
 import { frScan } from './scan';
 import { frShareExt } from './share-ext';
 import { frSharing } from './sharing';
+import { frShareCards } from './share-cards';
+import { frShareCardsIncome } from './share-cards-income';
 import { frSurfaces } from './surfaces';
 import { frWidgets } from './widgets';
 import { frToday } from './today';
@@ -39,7 +42,14 @@ import { frVoice } from './voice';
 import { frWidgetsGuide } from './widgets-guide';
 import { frYearBook } from './year-book';
 import { frFirstCatch } from './first-catch';
+import { frCaptureLog } from './capture-log';
+import { frSettingsPages } from './settings-pages';
 import { frPhoto } from './photo';
+import { frMoneyReaches } from './money-reaches';
+import { frIncome } from './income';
+import { frWork } from './work';
+import { frRequests } from './requests';
+import { frWorkYear } from './work-year';
 import { frImport } from './import';
 import { frOwed } from './owed';
 import { frNotifications } from './notifications';
@@ -72,6 +82,8 @@ export const fr: Catalogue = {
   ...frPrivacyAi,
   ...frNative,
   ...frSharing,
+  ...frShareCards,
+  ...frShareCardsIncome,
   ...frShareExt,
   ...frIntents,
   ...frCaptureWalk,
@@ -86,11 +98,19 @@ export const fr: Catalogue = {
   ...frWidgetsGuide,
   ...frDuo,
   ...frMoneyIn,
+  ...frQuickAdd,
   ...frPotsClose,
   ...frPotsPlan,
   ...frPots,
   ...frFirstCatch,
+  ...frCaptureLog,
+  ...frSettingsPages,
   ...frPhoto,
+  ...frMoneyReaches,
+  ...frIncome,
+  ...frWork,
+  ...frRequests,
+  ...frWorkYear,
   ...frImport,
   ...frOwed,
   ...importSketchMomo,
@@ -103,7 +123,10 @@ export const fr: Catalogue = {
  * beyond the list every language shares.
  */
 export const frSameAsEnglish: readonly string[] = [
+  'DATE',
   ...importSketchEnglish,
+  // Instagram's own word for its 9:16 posts.
+  'Story',
   'App',
   'Apps',
   'Auto',

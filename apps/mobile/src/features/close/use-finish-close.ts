@@ -5,6 +5,7 @@ import type { DailyNumber } from '@6pm/domain';
 
 import { readDayNumber } from '../../data/diary-queries';
 import { useMoneyActions, useMoneyStore } from '../../data/money-provider';
+import { withDayClosed } from '../../data/takings-preview';
 import { haptics } from '../../ui/haptics';
 import { maxOfferFor } from '../purchases/max-offer';
 import { usePurchases } from '../purchases/purchases-provider';
@@ -34,9 +35,15 @@ export function useFinishClose(close: ReturnType<typeof useClose>, day: DailyNum
     finishing.current = true;
     let filed: DailyNumber = day;
     const saved = await run(async () => {
-      // Worked out for the closed day itself, with the cash just added, so a close that crossed
-      // 04:00 still files that day's receipt.
-      const number = (await readDayNumber(store, store.getSnapshot(), closing)) ?? day;
+      // Worked out for the closed day itself, with the cash just added and the day counted as
+      // closed, so a close that crossed 04:00 still files that day's receipt and a seller's row
+      // says the tomorrow the receipt did. The day keeps the line the close found it at.
+      const number =
+        (await readDayNumber(
+          store,
+          withDayClosed(store.getSnapshot(), closing, day.line),
+          closing,
+        )) ?? day;
       filed = number;
       await actions.closeDay({
         day: closing,

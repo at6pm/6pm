@@ -19,6 +19,7 @@ import { idInsightsHabits } from './insights-habits';
 import { idIntents } from './intents';
 import { idLooks } from './looks';
 import { idMoneyIn } from './money-in';
+import { idQuickAdd } from './quick-add';
 import { idPotsClose } from './pots-close';
 import { idPotsPlan } from './pots-plan';
 import { idPots } from './pots';
@@ -30,6 +31,8 @@ import { idReceiptEmail } from './receipt-email';
 import { idScan } from './scan';
 import { idShareExt } from './share-ext';
 import { idSharing } from './sharing';
+import { idShareCards } from './share-cards';
+import { idShareCardsIncome } from './share-cards-income';
 import { idSurfaces } from './surfaces';
 import { idWidgets } from './widgets';
 import { idToday } from './today';
@@ -39,7 +42,14 @@ import { idVoice } from './voice';
 import { idWidgetsGuide } from './widgets-guide';
 import { idYearBook } from './year-book';
 import { idFirstCatch } from './first-catch';
+import { idCaptureLog } from './capture-log';
+import { idSettingsPages } from './settings-pages';
 import { idPhoto } from './photo';
+import { idMoneyReaches } from './money-reaches';
+import { idIncome } from './income';
+import { idWork } from './work';
+import { idRequests } from './requests';
+import { idWorkYear } from './work-year';
 import { idImport } from './import';
 import { idOwed } from './owed';
 import { idNotifications } from './notifications';
@@ -72,6 +82,8 @@ export const id: Catalogue = {
   ...idPrivacyAi,
   ...idNative,
   ...idSharing,
+  ...idShareCards,
+  ...idShareCardsIncome,
   ...idShareExt,
   ...idIntents,
   ...idCaptureWalk,
@@ -86,11 +98,19 @@ export const id: Catalogue = {
   ...idWidgetsGuide,
   ...idDuo,
   ...idMoneyIn,
+  ...idQuickAdd,
   ...idPotsClose,
   ...idPotsPlan,
   ...idPots,
   ...idFirstCatch,
+  ...idCaptureLog,
+  ...idSettingsPages,
   ...idPhoto,
+  ...idMoneyReaches,
+  ...idIncome,
+  ...idWork,
+  ...idRequests,
+  ...idWorkYear,
   ...idImport,
   ...idOwed,
   ...importSketchMomo,

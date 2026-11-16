@@ -5,7 +5,8 @@ import type { enDiary } from '../en-diary';
 // so they sit against the text without spaces; amounts and counts keep a space.
 export const zhHansDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.title': '消费日记',
-  'diary.kicker': '{month}已日结 {closed} 天 · 共 {all} 天',
+  'diary.kicker': '{month} · 已日结 {closed} 天',
+  'diary.kickerAll': '{month} · 已日结 {closed} 天 · 共 {all} 天',
   'diary.recap.kicker': '本周至今 · {range}',
   'diary.recap.hint': '轻点或滑动',
   'diary.recap.under.lead': { other: '目前有 {count} 天没超额度，所以' },
@@ -25,8 +26,7 @@ export const zhHansDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.cal.summaryNone': '今晚日结，存下你的第一天',
   'diary.cal.under': '没超额度',
   'diary.cal.over': '超出额度',
-  'diary.cal.today': '6pm',
-  'diary.cal.missed': '错过',
+  'diary.cal.tap': '· 点一天看看',
   'diary.receipt.no': '第 {no} 号',
   'diary.receipt.empty': '没有花钱',
   'diary.receipt.late': '补结',
@@ -88,4 +88,9 @@ export const zhHansDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.cal.previous': '上个月',
   'diary.cal.next': '下个月',
   'diary.fromJar': '来自“{jar}”罐子',
+  'diary.day.title': '回顾这一天',
+  'diary.day.empty': '这一天没有剩下的记录了。',
+  'diary.day.hint': '轻点一行即可修改，向左滑动即可删除。',
+  'diary.receipt.open': '{date}的小票，合计{total}',
+  'diary.receipt.openHint': '打开这一天，修改或删除其中的记录',
 };

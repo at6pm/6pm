@@ -35,8 +35,12 @@ export interface SpendsCsvLabels {
   readonly no: string;
 }
 
-const BOM = '﻿';
-const EOL = '\r\n';
+/** The byte order mark Excel needs to read the file as UTF-8. */
+export const CSV_BOM = '﻿';
+/** CSV line ends, as RFC 4180 has them. */
+export const CSV_EOL = '\r\n';
+const BOM = CSV_BOM;
+const EOL = CSV_EOL;
 
 /** Quotes a field when it must be, doubling any quote inside it. */
 export function csvField(value: string): string {
@@ -49,7 +53,7 @@ export function csvField(value: string): string {
  * merchant name from a shared receipt could do so too: such text gets a leading apostrophe, which
  * the spreadsheet shows as plain text.
  */
-function textCell(value: string | null): string {
+export function textCell(value: string | null): string {
   if (value === null) return '';
   return /^[=+\-@\t\r＝＋－＠]/.test(value) ? `'${value}` : value;
 }

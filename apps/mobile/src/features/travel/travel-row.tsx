@@ -8,6 +8,8 @@ import { PressScale } from '../../ui/primitives/press-scale';
 import { Switch } from '../../ui/primitives/switch';
 import { useTheme } from '../../ui/theme/theme';
 import { body } from '../../ui/type/fonts';
+import { captureColours } from '../capture-guide/capture-colours';
+import { SettingRow } from '../settings/setting-rows';
 import { useTravel } from './travel-provider';
 
 /** The prototype's MAX lock beside a locked feature's name: ink chip, filled lock, letter-spaced. */
@@ -33,11 +35,60 @@ function MaxLock() {
 }
 
 /**
- * The last row of "Your day" (`App:825-829`): Travel mode, "Turns on by itself abroad", and its
- * switch. Without Max the switch opens the Max sheet. Under the name it says when location is off
- * (tapping opens iOS Settings) and when the rates are old or not there yet.
+ * Travel mode in Settings' "Your day": a row that says where it stands (Off; Automatic, turning on
+ * by itself abroad; "On · Bangkok" while a trip runs; "Needs location" in the warm tone when
+ * location was refused) and opens its page, where the switch is.
  */
-export function TravelRow() {
+export function TravelSettingsRow() {
+  const { palette } = useTheme();
+  const { t } = useI18n();
+  const router = useRouter();
+  const { on, access, trip } = useTravel();
+  const needsLocation = on && access === 'denied';
+  const value = !on
+    ? t('settings.travel.off')
+    : needsLocation
+      ? t('settings.travel.needsLocation')
+      : trip !== null
+        ? t('settings.travel.on', { place: trip.place.name })
+        : t('settings.travel.auto');
+  return (
+    <SettingRow
+      icon="flight"
+      label={t('travel.settings.label')}
+      value={value}
+      {...(needsLocation ? { valueColor: captureColours(palette).warn } : {})}
+      onPress={() => {
+        haptics.tick();
+        router.push('/travel');
+      }}
+    />
+  );
+}
+
+/** Travel mode's page: the switch row on its own card, with what it needs said under its name. */
+export function TravelPage() {
+  const { palette } = useTheme();
+  return (
+    <View
+      style={{
+        borderRadius: 26,
+        backgroundColor: palette.cell,
+        boxShadow: palette.cardShadow,
+        overflow: 'hidden',
+      }}
+    >
+      <TravelRow first />
+    </View>
+  );
+}
+
+/**
+ * Travel mode, "Turns on by itself abroad", and its switch (`App:825-829`). Without Max the
+ * switch opens the Max sheet. Under the name it says when location is off (tapping opens iOS
+ * Settings) and when the rates are old or not there yet.
+ */
+export function TravelRow({ first = false }: { readonly first?: boolean }) {
   const { palette } = useTheme();
   const { t, dayMonth } = useI18n();
   const router = useRouter();
@@ -81,7 +132,7 @@ export function TravelRow() {
           gap: 10,
           paddingVertical: 11,
           borderTopWidth: 0.5,
-          borderTopColor: palette.hair,
+          borderTopColor: first ? 'transparent' : palette.hair,
         }}
       >
         <View style={{ flex: 1, gap: 2 }}>
@@ -89,7 +140,7 @@ export function TravelRow() {
             <Text style={{ ...body(16), color: palette.ink }}>{t('travel.settings.label')}</Text>
             {locked && !on ? <MaxLock /> : null}
           </View>
-          <Text numberOfLines={1} style={{ ...body(12.5), color: palette.inkSoft }}>
+          <Text numberOfLines={2} style={{ ...body(12.5), color: palette.inkSoft }}>
             {sub}
           </Text>
         </View>

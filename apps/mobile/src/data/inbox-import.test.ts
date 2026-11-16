@@ -499,7 +499,8 @@ describe('importInbox: bank alerts', () => {
 
   it('sets aside money moved between two of the person’s own banks, either order', async () => {
     await run([transfer('MB Bank', 'out', 0), transfer('Techcombank', 'in', 5)]);
-    expect(statuses()).toEqual(['skipped', 'skipped']);
+    // Both sides are one row that counts as nothing.
+    expect(statuses()).toEqual(['skipped']);
     const rows = store.getSnapshot().cycleSpends;
     expect(rows.every((s) => s.previousStatus === 'caught')).toBe(true);
   });
@@ -507,7 +508,7 @@ describe('importInbox: bank alerts', () => {
   it('pairs the second alert on a later open too, in money-in-first order', async () => {
     await run([transfer('Techcombank', 'in', 0)]);
     await run([transfer('MB Bank', 'out', 30)]);
-    expect(statuses()).toEqual(['skipped', 'skipped']);
+    expect(statuses()).toEqual(['skipped']);
   });
 
   it('keeps both when the alerts are a minute and a second apart', async () => {
@@ -515,9 +516,9 @@ describe('importInbox: bank alerts', () => {
     expect(statuses()).toEqual(['caught', 'caught']);
   });
 
-  it('keeps both when one bank says money went out and came in', async () => {
+  it('reads one bank’s money out and the same back within a minute as a reversal', async () => {
     await run([transfer('MB Bank', 'out', 0), transfer('MB Bank', 'in', 5)]);
-    expect(statuses()).toEqual(['caught', 'caught']);
+    expect(statuses()).toEqual([]);
   });
 
   it('never changes an alert the user already kept', async () => {

@@ -20,6 +20,8 @@ export interface TableSpec<Row> {
   readonly key: keyof Row & string;
   /** Fields stored as 0 or 1. */
   readonly booleans?: readonly (keyof Row & string)[];
+  /** Fields stored as 0 or 1 that stay null when the row leaves them out: an answer not yet given. */
+  readonly flags?: readonly (keyof Row & string)[];
   /** Fields stored as JSON text. */
   readonly json?: readonly (keyof Row & string)[];
 }
@@ -46,6 +48,7 @@ export function columnOf(field: string): string {
 export function createTable<Row extends object>(db: SqlDatabase, spec: TableSpec<Row>): Table<Row> {
   const fields = Object.keys(spec.schema.shape);
   const booleans = new Set<string>(spec.booleans);
+  const flags = new Set<string>(spec.flags);
   const json = new Set<string>(spec.json);
   const columns = fields.map(columnOf);
   const keyColumn = columnOf(spec.key);
@@ -54,6 +57,7 @@ export function createTable<Row extends object>(db: SqlDatabase, spec: TableSpec
     // A flag the row leaves out (one added after the row's contract) is stored as false.
     if (booleans.has(field)) return value === true ? 1 : 0;
     if (value === null || value === undefined) return null;
+    if (flags.has(field)) return value === true ? 1 : 0;
     if (json.has(field)) return JSON.stringify(value);
     return value as string | number;
   };
@@ -63,7 +67,7 @@ export function createTable<Row extends object>(db: SqlDatabase, spec: TableSpec
     for (const field of fields) {
       const value = stored[columnOf(field)] ?? null;
       if (value === null) row[field] = null;
-      else if (booleans.has(field)) row[field] = value === 1;
+      else if (booleans.has(field) || flags.has(field)) row[field] = value === 1;
       else if (json.has(field)) row[field] = JSON.parse(String(value));
       else row[field] = value;
     }

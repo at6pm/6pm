@@ -96,6 +96,55 @@ export function edgeFade(fraction: number): number {
   return Math.max(0, Math.min(1, fromEdge / MASK_SOLID_FROM));
 }
 
+/**
+ * A money wheel's column turns on a faint drum. At rest it shows only its digit, with a short
+ * notch above and below for the next ones; under the finger it lights and shows two digits each
+ * way, smaller and squashed as they go round the drum. `lit` runs from 0 (at rest) to 1.
+ */
+export interface DrumLook {
+  /** The digit's opacity. */
+  readonly digit: number;
+  /** The notch's opacity, of its own 30% ink. */
+  readonly notch: number;
+  readonly scale: number;
+  readonly scaleY: number;
+  /** How far the row is drawn toward the centre, in rows. */
+  readonly pull: number;
+}
+
+/** Each look at 0, 1, 2 and 3 rows away. */
+const LIT_DIGIT = [1, 0.5, 0.22, 0] as const;
+const LIT_SCALE = [1, 0.86, 0.62, 0.5] as const;
+const LIT_SCALE_Y = [1, 0.85, 0.7, 0.6] as const;
+/** The rows two away sit 0.38 of a row nearer the centre, so the drum curves. */
+const LIT_PULL = [0, 0, 0.38, 0.9] as const;
+const REST_DIGIT = [1, 0, 0, 0] as const;
+const REST_NOTCH = [0, 1, 0, 0] as const;
+const REST_SCALE = [1, 0.82, 0.82, 0.82] as const;
+
+function along(stops: readonly [number, number, number, number], away: number): number {
+  'worklet';
+  const at = Math.min(3, away);
+  const i = Math.min(2, Math.floor(at));
+  const from = stops[i] ?? 0;
+  const to = stops[i + 1] ?? from;
+  return from + (at - i) * (to - from);
+}
+
+/** How a money wheel's row looks `distance` rows from the centre, `lit` of the way to turning. */
+export function drumLook(distance: number, lit: number): DrumLook {
+  'worklet';
+  const away = Math.abs(distance);
+  const mix = (rest: number, turning: number) => rest + (turning - rest) * lit;
+  return {
+    digit: mix(along(REST_DIGIT, away), along(LIT_DIGIT, away)),
+    notch: along(REST_NOTCH, away) * (1 - lit),
+    scale: mix(along(REST_SCALE, away), along(LIT_SCALE, away)),
+    scaleY: mix(1, along(LIT_SCALE_Y, away)),
+    pull: along(LIT_PULL, away) * lit,
+  };
+}
+
 /** A money wheel's touch strip is at least this wide where the wheels beside it leave room. */
 export const TOUCH_MIN_WIDTH = 56;
 /** A press held this long starts rolling; the steps then come faster, down to the fastest. */

@@ -19,6 +19,7 @@ import { jaInsightsHabits } from './insights-habits';
 import { jaIntents } from './intents';
 import { jaLooks } from './looks';
 import { jaMoneyIn } from './money-in';
+import { jaQuickAdd } from './quick-add';
 import { jaPotsClose } from './pots-close';
 import { jaPotsPlan } from './pots-plan';
 import { jaPots } from './pots';
@@ -30,6 +31,8 @@ import { jaReceiptEmail } from './receipt-email';
 import { jaScan } from './scan';
 import { jaShareExt } from './share-ext';
 import { jaSharing } from './sharing';
+import { jaShareCards } from './share-cards';
+import { jaShareCardsIncome } from './share-cards-income';
 import { jaSurfaces } from './surfaces';
 import { jaWidgets } from './widgets';
 import { jaToday } from './today';
@@ -39,7 +42,14 @@ import { jaVoice } from './voice';
 import { jaWidgetsGuide } from './widgets-guide';
 import { jaYearBook } from './year-book';
 import { jaFirstCatch } from './first-catch';
+import { jaCaptureLog } from './capture-log';
+import { jaSettingsPages } from './settings-pages';
 import { jaPhoto } from './photo';
+import { jaMoneyReaches } from './money-reaches';
+import { jaIncome } from './income';
+import { jaWork } from './work';
+import { jaRequests } from './requests';
+import { jaWorkYear } from './work-year';
 import { jaImport } from './import';
 import { jaOwed } from './owed';
 import { jaNotifications } from './notifications';
@@ -72,6 +82,8 @@ export const ja: Catalogue = {
   ...jaPrivacyAi,
   ...jaNative,
   ...jaSharing,
+  ...jaShareCards,
+  ...jaShareCardsIncome,
   ...jaShareExt,
   ...jaIntents,
   ...jaCaptureWalk,
@@ -86,11 +98,19 @@ export const ja: Catalogue = {
   ...jaWidgetsGuide,
   ...jaDuo,
   ...jaMoneyIn,
+  ...jaQuickAdd,
   ...jaPotsClose,
   ...jaPotsPlan,
   ...jaPots,
   ...jaFirstCatch,
+  ...jaCaptureLog,
+  ...jaSettingsPages,
   ...jaPhoto,
+  ...jaMoneyReaches,
+  ...jaIncome,
+  ...jaWork,
+  ...jaRequests,
+  ...jaWorkYear,
   ...jaImport,
   ...jaOwed,
   ...importSketchMomo,
@@ -103,6 +123,8 @@ export const ja: Catalogue = {
  * beyond the list every language shares.
  */
 export const jaSameAsEnglish: readonly string[] = [
+  'work-{year}.csv',
+  'work-costs-{year}.csv',
   ...importSketchEnglish,
   'App',
   'From',

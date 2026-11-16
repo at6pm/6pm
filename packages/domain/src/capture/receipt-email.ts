@@ -5,19 +5,22 @@ import { cleanMemo, parseBankReceipt, readFields, readReceiptTime, toRows } from
 import { htmlToLines, readForwarded, textToLines, type EmailSender } from './email-body';
 import { dongIn } from './receipt-amount';
 import {
+  bookingCodeOf,
   cardMerchant,
   cleanPayeeName,
   isAdvert,
+  isCurrencyExchange,
   isFailed,
   isMailingList,
   isOwnTransfer,
   joinBrokenLabels,
+  paidAbroad,
   paidTotal,
   receiptFrom,
   subjectIsNotPayment,
   subjectNamesTransaction,
 } from './receipt-email-signs';
-import { withFullYears } from './receipt-time';
+import { printedUtcOffset, withFullYears } from './receipt-time';
 import { foldWords } from './spoken-spend';
 
 /** Vietnamese banks and shops print their local time, UTC+7. */
@@ -46,8 +49,14 @@ export interface EmailReceipt {
   readonly code: string | null;
   /** The transfer's own words ("Nội dung: Thanh toan the tin dung"); null when it printed none. */
   readonly memo: string | null;
-  /** Money that came in, or a refund of a spend; absent for a payment out. */
-  readonly kind?: 'incoming' | 'refund';
+  /**
+   * Money that came in, or a refund of a spend; absent for a payment out. Read with `whatFirst`,
+   * also a payment that did not go through, one the bank took back, or money moved between the
+   * person's own accounts.
+   */
+  readonly kind?: 'incoming' | 'refund' | 'reversal' | 'failed' | 'ownTransfer';
+  /** What `at` is; set only when read with `whatFirst`. */
+  readonly atKind?: EmailAtKind;
 }
 
 export interface ReceiptEmailOptions {
@@ -55,6 +64,12 @@ export interface ReceiptEmailOptions {
   readonly receivedAt: string;
   /** The zone the receipt's printed time is in. Vietnam unless said otherwise. */
   readonly utcOffsetMinutes?: number;
+  /**
+   * Keeps an email that is no payment made but tells of one (a charge that failed or was called
+   * off, money moved between the person's own accounts) and says what its time is, for
+   * `readReceiptEmail`. Left out, those are null, as they always were.
+   */
+  readonly whatFirst?: boolean;
 }
 
 /** Shops whose e-receipts 6pm reads, by a word of their sending domain. */
@@ -143,15 +158,23 @@ function withTotalsAsAmount(line: string): string {
 
 const SIGNED_AMOUNT = /(?:^|[\s:|(])([+-])\s?(?:vnd\s?)?\d{1,3}(?:[.,]\d{3})+/giu;
 
+/**
+ * "Bạn đã nhận 500.000đ", "Bạn đã nhận được số tiền …": money received, said to the person. Never
+ * goods received ("bạn đã nhận hàng"), nor a seller paid ("Người bán đã nhận được thanh toán",
+ * which reads the same once its accents are off).
+ */
+const YOU_RECEIVED_MONEY = /(?<! nguoi) ban da nhan (?:duoc )?(?:so tien |khoan tien |tien |\d)/;
+
 /** Money that came in: a balance change only ever signed `+`, or a credit with no debit. */
 function isIncoming(lines: readonly string[]): boolean {
   const text = lines.join('\n');
   const signs = new Set([...text.matchAll(SIGNED_AMOUNT)].map((m) => m[1]));
   if (signs.has('+') && !signs.has('-')) return true;
   const folded = foldWords(text);
-  const credit = [' ghi co ', ' bao co ', ' credited ', ' you received ', ' ban da nhan '];
+  const credit = [' ghi co ', ' bao co ', ' credited ', ' you received '];
   const debit = [' ghi no ', ' bao no ', ' debited '];
-  return credit.some((w) => folded.includes(w)) && !debit.some((w) => folded.includes(w));
+  const credited = credit.some((w) => folded.includes(w)) || YOU_RECEIVED_MONEY.test(folded);
+  return credited && !debit.some((w) => folded.includes(w));
 }
 
 const NOTE_LINE =
@@ -243,8 +266,23 @@ function isDateOnly(localIso: string): boolean {
 }
 
 /**
+ * The zone named beside the printed time `localIso` ("October 21, 2026 at 5:02:15 AM PDT",
+ * "14 Sep 2026 08:21 +0700"), in minutes east of UTC; null when the line it is on names none.
+ */
+export function printedZoneOf(lines: readonly string[], localIso: string | null): number | null {
+  if (localIso === null) return null;
+  const at = Date.parse(localIso);
+  for (const line of lines) {
+    const read = readReceiptTime(line);
+    if (read !== null && Date.parse(read) === at) return printedUtcOffset(line);
+  }
+  return null;
+}
+
+/**
  * When a receipt was paid: the time it prints (local, `YYYY-MM-DDTHH:MM:SS`, taken as Vietnam
- * time), else the forwarded email's own date, else the email's Date, else when it arrived. A time
+ * time unless it names its own zone, `printedOffsetMinutes`), else the forwarded email's own
+ * date, else the email's Date, else when it arrived. A time
  * later than its arrival is not believed. A receipt that prints only its day ("Date paid October
  * 22, 2026") was paid when its email was sent, when that is the same day in some zone: its midnight
  * would file it on the day before and miss every other sighting of the payment.
@@ -254,10 +292,28 @@ export function emailPaidAt(
   origin: Pick<EmailOrigin, 'forwardedDate'>,
   email: Pick<ReceiptEmail, 'date'>,
   options: ReceiptEmailOptions,
+  printedOffsetMinutes: number | null = null,
 ): string {
+  return emailPaidTime(printedLocal, origin, email, options, printedOffsetMinutes).at;
+}
+
+/**
+ * What an email's time is: printed in it, the date it (or the email it forwards) was sent, or
+ * when it reached 6pm.
+ */
+export type EmailAtKind = 'printed' | 'sent' | 'delivered';
+
+/** `emailPaidAt`, saying what the time it chose is. */
+export function emailPaidTime(
+  printedLocal: string | null,
+  origin: Pick<EmailOrigin, 'forwardedDate'>,
+  email: Pick<ReceiptEmail, 'date'>,
+  options: ReceiptEmailOptions,
+  printedOffsetMinutes: number | null = null,
+): { readonly at: string; readonly atKind: EmailAtKind } {
   const offset = options.utcOffsetMinutes ?? VIETNAM_UTC_OFFSET_MINUTES;
   const fromForward = forwardedTime(origin.forwardedDate);
-  const printed = printedLocal ? inZone(printedLocal, offset) : null;
+  const printed = printedLocal ? inZone(printedLocal, printedOffsetMinutes ?? offset) : null;
   const sent = fromForward ? inZone(fromForward, offset) : email.date;
   const sentThatDay =
     printedLocal !== null &&
@@ -265,17 +321,17 @@ export function emailPaidAt(
     sent !== null &&
     isDateOnly(printedLocal) &&
     Math.abs(Date.parse(sent) - Date.parse(printed)) <= DATE_ONLY_SLACK_MS;
-  const candidates = [
-    sentThatDay ? sent : null,
-    printed,
-    fromForward ? inZone(fromForward, offset) : null,
-    email.date,
+  const candidates: readonly (readonly [string | null, EmailAtKind])[] = [
+    [sentThatDay ? sent : null, 'sent'],
+    [printed, 'printed'],
+    [fromForward ? inZone(fromForward, offset) : null, 'sent'],
+    [email.date, 'sent'],
   ];
   const arrived = Date.parse(options.receivedAt);
-  return (
-    candidates.find((c) => c !== null && Date.parse(c) <= arrived + 10 * 60_000) ??
-    new Date(arrived).toISOString()
-  );
+  const found = candidates.find(([c]) => c !== null && Date.parse(c) <= arrived + 10 * 60_000);
+  return found?.[0]
+    ? { at: found[0], atKind: found[1] }
+    : { at: new Date(arrived).toISOString(), atKind: 'delivered' };
 }
 
 /** A subject that says money was given back ("Hoàn tiền thành công", "Your refund"), not asked for. */
@@ -306,11 +362,14 @@ function sentencePayee(payee: string): string {
  * and two-digit years ("27/10/26 12:30") read as this century's. The shop or bank comes from the
  * sender's domain; otherwise who was paid is the shop a card alert names, the labelled payee, who
  * a receipt is from, or the payee its note names. Money that came in is read the same way and
- * marked `incoming`, or `refund` when the subject says it was given back.
+ * marked `incoming`, or `refund` when the subject says it was given back; a refund is dated by a
+ * labelled time or its email, never by the day of the order it gives back.
  *
  * Null when it holds no payment: no amount; an advert ("[QC]"), a statement, a survey or a
- * warning by its subject; a charge that did not go through; a transfer between the person's own
- * accounts (unless it repays a card); or an amount only found in prose, in an email whose subject
+ * warning or a delivery by its subject; a charge that did not go through or was called off; a
+ * transfer between the person's own accounts (unless it repays a card) or one currency of theirs
+ * sold for another; a total paid in another currency, with no đồng beside it; or an amount only
+ * found in prose, in an email whose subject
  * names no transaction or that is sent to a mailing list. The server reads email with a model when
  * it can (`emailSpendOf`); this is what it falls back to.
  */
@@ -322,7 +381,9 @@ export function parseReceiptEmail(
   const subject = origin.subject;
   if (isAdvert(subject) || subjectIsNotPayment(subject)) return null;
   const printed = joinBrokenLabels(origin.lines.map(withFullYears));
-  if (isFailed(subject, printed)) return null;
+  const failed = isFailed(subject, printed);
+  const exchange = isCurrencyExchange(subject, printed);
+  if (!options.whatFirst && (failed || exchange)) return null;
   const lines = printed.map(withTotalsAsAmount);
   const refund = isRefund(email.subject);
   const incoming = refund || isIncoming(lines);
@@ -336,30 +397,48 @@ export function parseReceiptEmail(
   const labelledAmount = fields.get('amount');
   const labelled =
     paid !== null || (labelledAmount !== undefined && dongIn(labelledAmount.value) !== null);
+  if (!labelled && paidAbroad(printed)) return null;
   const debit = DEBIT.test(lines.join('\n'));
   const named = subjectNamesTransaction(subject) && !isMailingList(lines);
   if (!labelled && !debit && !named) return null;
 
   const labelledPayee = cleanPayeeName(fields.get('payee')?.value ?? '');
   const memo = receipt.memo ?? noteIn(lines);
-  if (labelledPayee !== '' && isOwnTransfer(lines, labelledPayee) && !namesRepayment(memo ?? '')) {
-    return null;
-  }
+  const own =
+    exchange ||
+    (labelledPayee !== '' && isOwnTransfer(lines, labelledPayee) && !namesRepayment(memo ?? ''));
+  if (own && !options.whatFirst) return null;
+  // The dates a refund's email prints are its order's ("ĐƠN HÀNG #… · 19/10/2026"), unless one
+  // is labelled as the transaction's own.
+  const paidAt = refund ? readReceiptTime(fields.get('time')?.value ?? '') : receipt.at;
   const payee =
     cardMerchant(lines) ||
     labelledPayee ||
     receiptFrom(lines) ||
     payeeInNote(lines) ||
     sentencePayee(receipt.payee);
+  const time = emailPaidTime(paidAt, origin, email, options, printedZoneOf(lines, paidAt));
+  const kind = failed
+    ? ('failed' as const)
+    : own
+      ? ('ownTransfer' as const)
+      : incoming
+        ? refund
+          ? ('refund' as const)
+          : ('incoming' as const)
+        : null;
   return {
-    ...(incoming ? { kind: refund ? ('refund' as const) : ('incoming' as const) } : {}),
+    ...(kind ? { kind } : {}),
+    ...(options.whatFirst ? { atKind: time.atKind } : {}),
     amount,
     // For money in, the payee a receipt names is the person themselves: only a shop is said.
     merchant: shopOf(origin.sender) ?? (incoming ? '' : payee),
-    at: emailPaidAt(receipt.at, origin, email, options),
+    at: time.at,
     from: origin.sender?.address ?? null,
     bank: origin.bank ?? receipt.bank,
-    code: receipt.code,
+    // A booking site's mail prints no bank code, but its own for the booking, which its later
+    // mails about that booking print again.
+    code: receipt.code ?? (origin.bank === null ? bookingCodeOf(printed) : null),
     memo,
   };
 }
@@ -372,7 +451,7 @@ export interface LabelledTransfer {
   readonly memo: string | null;
   /**
    * The person's own accounts on both sides (the account it left is in the payee's name), and
-   * not a card's repayment.
+   * not a card's repayment; or one currency of theirs sold for another.
    */
   readonly own: boolean;
 }
@@ -383,11 +462,14 @@ export interface LabelledTransfer {
  * checked against.
  */
 export function labelledTransfer(email: ReceiptEmail): LabelledTransfer {
-  const printed = joinBrokenLabels(emailOrigin(email).lines.map(withFullYears));
+  const origin = emailOrigin(email);
+  const printed = joinBrokenLabels(origin.lines.map(withFullYears));
   const lines = printed.map(withTotalsAsAmount);
   const receiptLines = lines.map((text) => ({ text }));
   const payee = cleanPayeeName(readFields(toRows(receiptLines)).fields.get('payee')?.value ?? '');
   const memo = parseBankReceipt(receiptLines)?.memo ?? noteIn(lines);
-  const own = payee !== '' && isOwnTransfer(lines, payee) && !namesRepayment(memo ?? '');
+  const own =
+    (payee !== '' && isOwnTransfer(lines, payee) && !namesRepayment(memo ?? '')) ||
+    isCurrencyExchange(origin.subject, printed);
   return { payee, memo, own };
 }

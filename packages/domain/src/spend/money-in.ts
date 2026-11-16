@@ -4,7 +4,11 @@ import { floorToStep, VND, type Currency, type Money } from '../money/currency';
 import type { PayCycle } from '../plan/pay-cycle';
 import { diffDays, makeDate, type LocalDate } from '../time/local-date';
 import type { NewYearWindow } from '../time/lunar';
-import { owedPaybackFor, PAYBACK_DAYS, type OwedLine } from './owed';
+import type { Income } from '../plan/incomes';
+import type { Payday } from '../plan/pay-cycle';
+import { incomeMatchOf, PAY_DAYS, PAY_SHARE, type RememberedPlace } from './income-pay';
+import { isRequest, namesPerson, owedPaybackFor, PAYBACK_DAYS, type OwedLine } from './owed';
+import { asksByHand, landsLessHeldBack, requestByCode } from './requests';
 import type { SpendDirection, SpendStatus } from './spend';
 
 /**
@@ -27,28 +31,34 @@ export interface MoneyInRow {
   readonly status: SpendStatus;
   readonly direction?: SpendDirection | null | undefined;
   readonly moneyIn?: MoneyIn | null | undefined;
+  /** The income it was, when it was placed as one of the plan's incomes. */
+  readonly incomeId?: string | null | undefined;
 }
+
+const NO_INCOMES: ReadonlySet<string> = new Set();
 
 /**
  * Whether a row is money in that adds to this cycle's free money: kept, and not the pay the plan
- * already counts nor a payback. Kept with nothing said (confirmed from the Inbox) is spread.
+ * already counts nor a payback. Kept with nothing said (confirmed from the Inbox) is spread. Pay
+ * of an income with no counted-on amount (`landed`: those incomes' ids) is not counted by the
+ * plan, so it adds to free money like money that is spread.
  */
-export function addsToFree(row: MoneyInRow): boolean {
+export function addsToFree(row: MoneyInRow, landed: ReadonlySet<string> = NO_INCOMES): boolean {
   if (row.direction !== 'in' || row.status !== 'kept') return false;
-  return row.moneyIn !== 'pay' && row.moneyIn !== 'payback';
+  if (row.moneyIn === 'pay') return row.incomeId != null && landed.has(row.incomeId);
+  return row.moneyIn !== 'payback';
 }
 
 /** What money in adds to free money, over the rows given (the pay cycle's). */
-export function sumMoneyIn(rows: readonly MoneyInRow[]): Money {
+export function sumMoneyIn(
+  rows: readonly MoneyInRow[],
+  landed: ReadonlySet<string> = NO_INCOMES,
+): Money {
   let total = 0;
-  for (const row of rows) if (addsToFree(row)) total += row.amount;
+  for (const row of rows) if (addsToFree(row, landed)) total += row.amount;
   return total;
 }
 
-/** Money in at least this share of the plan's income, near payday, is asked about as the pay. */
-export const PAY_SHARE = 0.7;
-/** How far from payday (either side) the pay may land and still be asked about. */
-export const PAY_DAYS = 3;
 /** Money in at least this share of the income is a big one: the companion says so. */
 export const BIG_SHARE = 0.2;
 /** Pay this much above the plan (as a share of it) offers to change the plan. */
@@ -166,13 +176,19 @@ export function refundFor(money: IncomingMoney, spends: readonly GivableSpend[])
 /**
  * The spend a payback answers, or null: the exact amount of a work claim from the last
  * `CLAIM_DAYS`, or of a spend with a note (a split saves one naming the total) from the last
- * `PAYBACK_DAYS`. The nearest day wins.
+ * `PAYBACK_DAYS`. The nearest day wins. Without `claims` (someone who works for themselves, whose
+ * work spends are costs of their own work) a work spend is never a claim repaid.
  */
-export function paybackFor(money: IncomingMoney, spends: readonly GivableSpend[]): string | null {
+export function paybackFor(
+  money: IncomingMoney,
+  spends: readonly GivableSpend[],
+  options: { readonly claims?: boolean } = {},
+): string | null {
+  const claims = options.claims ?? true;
   let best: GivableSpend | null = null;
   for (const spend of spends) {
     if (spend.amount !== money.amount) continue;
-    const claim = spend.forWork === true && givable(spend, money.day, CLAIM_DAYS);
+    const claim = claims && spend.forWork === true && givable(spend, money.day, CLAIM_DAYS);
     const split =
       spend.status === 'kept' &&
       (spend.note ?? '').trim() !== '' &&
@@ -269,7 +285,13 @@ export function looksLikeBonus(
  * owed lines carries them (`owed`) and the person they name, to ask "Linh paying back 300k?".
  */
 export type MoneyInAsk =
-  | { readonly kind: 'pay' }
+  /**
+   * The pay; of one of the plan's incomes (`incomeId`) once it holds them. `landing`: nothing is
+   * counted on and the money is asked about as what landed, from a sender never placed before.
+   */
+  | { readonly kind: 'pay'; readonly incomeId?: string; readonly landing?: true }
+  /** Money from a sender placed the same way as last time: spread, or saved in a jar. */
+  | { readonly kind: 'remembered'; readonly place: RememberedPlace }
   | { readonly kind: 'bonus'; readonly jarId: string; readonly toJar: Money }
   | { readonly kind: 'refund'; readonly spendId: string }
   | {
@@ -277,13 +299,27 @@ export type MoneyInAsk =
       readonly spendId: string;
       readonly owed?: readonly string[];
       readonly name?: string | null;
-    };
+    }
+  /**
+   * A request to be paid whose code the transfer's words carry (`requestByCode`): what a client
+   * held back, when the money is the strip less a tenth.
+   */
+  | { readonly kind: 'request'; readonly lineId: string; readonly heldBack: Money }
+  /** No code, a sender nobody knows, and work requests open: "One of these?" (`asksByHand`). */
+  | { readonly kind: 'byHand' };
 
 /**
  * The one question the close asks about money in: the pay first, then the Tết bonus, then a
  * refund, then a payback of owed lines (`owedPaybackFor`), then of a spend with a note or a
  * work claim. Money whose memo names a bonus is asked as the bonus even near payday. Money
  * that looks like none of them is an ordinary card, to spread or save.
+ *
+ * A plan that holds its incomes (`incomes`, with the month's `anchor`) asks about the pay of
+ * whichever income the money looks like, by that income's amount per pay and its own dates
+ * (`incomeMatchOf`); with nothing counted on, money that is not a bonus, a refund or a payback is
+ * asked about as the pay of the income that only lands, as Quick add places it when typed in. A
+ * sender whose money was placed before (`remembered`) is offered that place
+ * again, unless the money names a bonus or gives back a spend or owed lines: a refund still wins.
  */
 export function moneyInAsk(
   money: IncomingMoney,
@@ -295,8 +331,35 @@ export function moneyInAsk(
     readonly owed?: readonly OwedLine[];
     /** The season and its jar, for the bonus question; absent for those who keep no season. */
     readonly season?: { readonly window: NewYearWindow | null; readonly jar: BonusJar | null };
+    /** The plan's incomes, once it holds them, and the month's anchor their dates count in. */
+    readonly incomes?: readonly Income[] | undefined;
+    readonly anchor?: Payday;
+    /** Where money from this sender went last time (`rememberedPlaceOf`). */
+    readonly remembered?: RememberedPlace | null;
+    /**
+     * The person works for themselves (`plan.work`): a work spend is a cost of their work, so
+     * money in is never matched to it as a claim repaid.
+     */
+    readonly work?: boolean;
+    /**
+     * Something is remembered about the sender (where its money went, whether it is work, a
+     * request it paid): money from them is not asked about by hand.
+     */
+    readonly knownSender?: boolean;
   },
 ): MoneyInAsk | null {
+  // What capture said the money is comes first: a refund gives back a spend, so it is never a
+  // request paid, a sender's remembered place, a pay or what landed.
+  const refund = money.hint === 'refund';
+  // A request's code in the transfer's words is read before any other matching.
+  const coded = refund ? null : requestByCode([money.memo, money.note], context.owed ?? []);
+  if (coded !== null) {
+    return {
+      kind: 'request',
+      lineId: coded.id,
+      heldBack: landsLessHeldBack(money.amount, coded.amount) ? coded.amount - money.amount : 0,
+    };
+  }
   const season = context.season;
   const bonus =
     money.hint !== 'refund' &&
@@ -311,18 +374,62 @@ export function moneyInAsk(
       : null;
   const said = namesBonus(`${money.merchant} ${money.note ?? ''} ${money.memo ?? ''}`);
   if (bonus !== null && said) return bonus;
-  if (money.hint !== 'refund' && looksLikePay(money, context.income, context.cycle)) {
-    return { kind: 'pay' };
+  const remembered = refund ? null : (context.remembered ?? null);
+  if (remembered !== null) {
+    const answers = givesBackAsk(money, context);
+    if (answers !== null) return answers;
+    return remembered.moneyIn === 'pay' && remembered.incomeId !== null
+      ? { kind: 'pay', incomeId: remembered.incomeId }
+      : { kind: 'remembered', place: remembered };
+  }
+  const match = incomeMatchOf(money, context.incomes, context.anchor ?? CALENDAR_MONTH);
+  if (money.hint !== 'refund') {
+    if (match.kind === 'pay') return { kind: 'pay', incomeId: match.incomeId };
+    if (context.incomes === undefined && looksLikePay(money, context.income, context.cycle)) {
+      return { kind: 'pay' };
+    }
   }
   if (bonus !== null) return bonus;
+  const answers = givesBackAsk(money, context);
+  if (answers !== null) return answers;
+  // Someone who works for themselves is paid by clients: their money is takings, never a claim
+  // repaid by an employer.
+  const payback = paybackFor(money, context.spends, { claims: context.work !== true });
+  if (payback !== null) return { kind: 'payback', spendId: payback };
+  // No code and a sender nobody knows, with work requests open: the person matches it by hand.
+  if (money.hint !== 'refund' && byHandFor(money, context)) return { kind: 'byHand' };
+  // Nothing is counted on: money that answers nothing else is what landed (`incomeMatchOf`).
+  return match.kind === 'landing' && money.hint !== 'refund'
+    ? { kind: 'pay', incomeId: match.incomeId, landing: true }
+    : null;
+}
+
+const CALENDAR_MONTH: Payday = { kind: 'sameDay', day: 1 };
+
+/** Whether money with no code is asked about by hand: see `asksByHand`. */
+function byHandFor(
+  money: IncomingMoney,
+  context: { readonly owed?: readonly OwedLine[]; readonly knownSender?: boolean },
+): boolean {
+  const lines = context.owed ?? [];
+  if (!lines.some(isRequest)) return false;
+  const knownSender =
+    context.knownSender === true || lines.some((line) => namesPerson(money.merchant, line.name));
+  return asksByHand({ coded: false, knownSender, lines });
+}
+
+/** A refund of a spend, or a payback of owed lines: money that answers something already there. */
+function givesBackAsk(
+  money: IncomingMoney,
+  context: { readonly spends: readonly GivableSpend[]; readonly owed?: readonly OwedLine[] },
+): MoneyInAsk | null {
   const refund = refundFor(money, context.spends);
   if (refund !== null) return { kind: 'refund', spendId: refund };
   const owed = owedPaybackFor(money, context.owed ?? []);
   if (owed !== null) {
     return { kind: 'payback', spendId: owed.spendId, owed: owed.ids, name: owed.name };
   }
-  const payback = paybackFor(money, context.spends);
-  return payback === null ? null : { kind: 'payback', spendId: payback };
+  return null;
 }
 
 /**

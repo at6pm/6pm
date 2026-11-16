@@ -5,7 +5,7 @@ import {
   countsTowardDay,
   diaryShelf,
   floorToStep,
-  payCycleOn,
+  moneyNextOf,
   monthEnd,
   monthOf,
   previousMonth,
@@ -33,7 +33,7 @@ import {
 import { useDay, useMoneySelector } from '../../data/money-provider';
 import type { MoneySnapshot } from '../../data/money-store';
 import type { MoneyStore } from '../../data/money-store';
-import { useI18n } from '../../i18n/i18n';
+import { useI18n, type I18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
 import { jarName } from '../pots/jar-name';
@@ -52,11 +52,15 @@ function latestFiled(closed: readonly ClosedDayRow[]): ClosedDayRow | null {
 
 const NO_DAYS: readonly ClosedDayRow[] = [];
 
-/** The parts of the snapshot the Diary reads: a write to anything else leaves it alone. */
+/**
+ * The parts of the snapshot the Diary reads: a write to anything else leaves it alone. A spend
+ * from before payday, edited or deleted from its day's page, is published in `waitingBefore`.
+ */
 const diaryInputs = ({
   today,
   closedDays,
   cycleSpends,
+  waitingBefore,
   categories,
   plan,
   pots,
@@ -64,6 +68,7 @@ const diaryInputs = ({
   today,
   closedDays,
   cycleSpends,
+  waitingBefore,
   categories,
   plan,
   pots,
@@ -72,9 +77,20 @@ const sameInputs = (a: ReturnType<typeof diaryInputs>, b: ReturnType<typeof diar
   a.today === b.today &&
   a.closedDays === b.closedDays &&
   a.cycleSpends === b.cycleSpends &&
+  a.waitingBefore === b.waitingBefore &&
   a.categories === b.categories &&
   a.plan === b.plan &&
   a.pots === b.pots;
+
+/**
+ * The Diary's kicker: the month and the days closed in it, and the days closed in all only when
+ * that says something more.
+ */
+function kickerOf(t: I18n['t'], closed: number, month: string, all: number): string {
+  return all === closed
+    ? t('diary.kicker', { closed, month })
+    : t('diary.kickerAll', { closed, month, all });
+}
 
 /**
  * Everything the Diary tab shows, from the database through the domain maths. Closing a day (here
@@ -86,10 +102,8 @@ const sameInputs = (a: ReturnType<typeof diaryInputs>, b: ReturnType<typeof diar
  */
 export function useDiary() {
   const day = useDay();
-  const { today, closedDays, cycleSpends, categories, plan, pots } = useMoneySelector(
-    diaryInputs,
-    sameInputs,
-  );
+  const { today, closedDays, cycleSpends, waitingBefore, categories, plan, pots } =
+    useMoneySelector(diaryInputs, sameInputs);
   const { t } = useI18n();
   const money = useMoneyFormat();
   const { currency } = money;
@@ -100,7 +114,10 @@ export function useDiary() {
   const [paged, setPaged] = useState<string | null>(null);
   // A month the clock has moved past (or one that is today's again) falls back to this month.
   const month = paged !== null && paged < current ? paged : current;
-  const watch = useMemo(() => ({ closedDays, cycleSpends }), [closedDays, cycleSpends]);
+  const watch = useMemo(
+    () => ({ closedDays, cycleSpends, waitingBefore }),
+    [closedDays, cycleSpends, waitingBefore],
+  );
 
   const readPage = useCallback(
     (store: MoneyStore): Promise<DiaryData> => readDiary(store, { from: monday, to: today }),
@@ -257,7 +274,7 @@ export function useDiary() {
       case 'spread':
       case null:
       case undefined: {
-        const days = plan ? payCycleOn(s.day, plan.payday).daysLeft : 1;
+        const days = plan ? moneyNextOf(s.day, plan).daysLeft : 1;
         const daily = floorToStep(s.amount / Math.max(1, days), currency);
         return t('moneyIn.diary.spread', { amount: money.short(daily) });
       }
@@ -299,24 +316,35 @@ export function useDiary() {
           day: row.day,
           title: dates.stamp(row.day),
           no: t('diary.receipt.no', { no: receiptData.no }),
-          rows: receiptData.spends.map((s) => {
-            const back = receiptData.givenBack[s.id];
-            return {
+          rows: [
+            ...receiptData.spends.map((s) => {
+              const back = receiptData.givenBack[s.id];
+              return {
+                time: dates.clock(s.at),
+                name: s.merchant.toLocaleUpperCase(),
+                merchant: s.merchant,
+                categoryId: s.categoryId,
+                amount: s.amount,
+                photo: s.photo != null,
+                ...(back
+                  ? {
+                      back: t('moneyIn.diary.back', {
+                        date: dates.dayMonth(back).toLocaleUpperCase(),
+                      }),
+                    }
+                  : {}),
+              };
+            }),
+            // A payment voided since stays, struck through and stamped with what voided it.
+            ...receiptData.voided.map(({ spend: s, why }) => ({
               time: dates.clock(s.at),
               name: s.merchant.toLocaleUpperCase(),
               merchant: s.merchant,
               categoryId: s.categoryId,
               amount: s.amount,
-              photo: s.photo != null,
-              ...(back
-                ? {
-                    back: t('moneyIn.diary.back', {
-                      date: dates.dayMonth(back).toLocaleUpperCase(),
-                    }),
-                  }
-                : {}),
-            };
-          }),
+              back: t(why === 'failed' ? 'diary.voided.failed' : 'diary.voided.reversal'),
+            })),
+          ],
           jars: receiptData.jars.map((j) => ({
             name: fromJar(j.potId).toLocaleUpperCase(),
             amount: j.amount,
@@ -351,15 +379,18 @@ export function useDiary() {
       : floorToStep(monthClosed.reduce((sum, d) => sum + d.line, 0) / monthClosed.length, currency);
   return {
     ready: data !== null,
-    kicker: t('diary.kicker', {
-      closed: closedDays.filter((d) => monthOf(d.day) === current).length,
-      month: dates.month(current),
-      all: data?.allClosed ?? 0,
-    }),
+    kicker: kickerOf(
+      t,
+      closedDays.filter((d) => monthOf(d.day) === current).length,
+      dates.month(current),
+      data?.allClosed ?? 0,
+    ),
     recap,
     recapKicker: t('diary.recap.kicker', { range: dates.range(monday, today) }),
     letters: dates.letters(monday),
     monthTitle: dates.month(month),
+    /** The month shown, when it has a closed evening to put on a card. */
+    shareMonth: monthClosed.length > 0 ? month : null,
     summary:
       monthClosed.length === 0 && brought.days.size > 0
         ? t('import.diary.summary', { app: appName })
@@ -370,6 +401,8 @@ export function useDiary() {
               under,
               line: money.short(monthLine),
             }),
+    today,
+    closeAt: plan?.closeAt ?? '18:00',
     cells: calendarCells({
       month,
       today,

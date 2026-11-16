@@ -5,7 +5,8 @@ import type { enDiary } from '../en-diary';
 // vowel, so they follow « en » or « pour », never « de ».
 export const frDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.title': 'Journal',
-  'diary.kicker': 'Clôturés en {month} : {closed} · {all} au total',
+  'diary.kicker': '{month} · {closed} clôturés',
+  'diary.kickerAll': '{month} · {closed} clôturés · {all} au total',
   'diary.recap.kicker': 'SEMAINE EN COURS · {range}',
   'diary.recap.hint': 'Touche ou balaie',
   'diary.recap.under.lead': {
@@ -31,8 +32,7 @@ export const frDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.cal.summaryNone': 'Clôture ce soir pour classer ton premier jour',
   'diary.cal.under': 'Sous ton chiffre',
   'diary.cal.over': 'Au-dessus',
-  'diary.cal.today': '18 h',
-  'diary.cal.missed': 'manqué',
+  'diary.cal.tap': '· touche un jour',
   'diary.receipt.no': 'N° {no}',
   'diary.receipt.empty': 'RIEN DÉPENSÉ',
   'diary.receipt.late': 'EN RETARD',
@@ -99,4 +99,9 @@ export const frDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.cal.previous': 'Mois précédent',
   'diary.cal.next': 'Mois suivant',
   'diary.fromJar': 'Du bocal « {jar} »',
+  'diary.day.title': 'Revoir la journée',
+  'diary.day.empty': 'Plus rien ce jour-là.',
+  'diary.day.hint': 'Touchez une ligne pour la modifier. Balayez vers la gauche pour la supprimer.',
+  'diary.receipt.open': 'Reçu du {date}, total {total}',
+  'diary.receipt.openHint': 'Ouvre la journée pour modifier ou supprimer ce qu’elle contient',
 };

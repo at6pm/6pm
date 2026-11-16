@@ -11,6 +11,7 @@ import { useTheme } from '../../ui/theme/theme';
 import { body, tabular } from '../../ui/type/fonts';
 import { SpendRow, type SpendRowView } from './spend-row';
 import { useTodayJarLines } from './use-spend-rows';
+import { WorkFoldedRow } from '../work/work-today';
 
 const SHOWN = 4;
 const layout = LinearTransition.springify().damping(22).stiffness(240);
@@ -30,8 +31,15 @@ export function TodayList({
   onOpenSpend,
   onConfirm,
   onDelete,
+  work = null,
 }: {
   readonly rows: readonly SpendRowView[];
+  /** A seller's work spends today, folded into one row; null for none, and for anyone else. */
+  readonly work?: {
+    readonly count: number;
+    readonly amount: number;
+    readonly onOpen: () => void;
+  } | null;
   readonly waiting: number;
   readonly spentLabel: string;
   readonly onOpenInbox: () => void;
@@ -108,7 +116,7 @@ export function TodayList({
             <Symbol name="chevron_right" size={22} color={palette.ink} style={{ opacity: 0.45 }} />
           </PressScale>
         ) : null}
-        {rows.length === 0 ? (
+        {rows.length === 0 && work === null ? (
           <Text style={{ ...body(15), lineHeight: 21.75, color: palette.inkSoft, padding: 18 }}>
             {t('today.list.empty')}
           </Text>
@@ -127,6 +135,11 @@ export function TodayList({
             />
           </Animated.View>
         ))}
+        {work !== null && shown.length === rows.length ? (
+          <Animated.View layout={rowLayout} entering={lineEnter} exiting={rowExit}>
+            <WorkFoldedRow count={work.count} amount={work.amount} onOpen={work.onOpen} />
+          </Animated.View>
+        ) : null}
         {/* Under every spend, so only once they all show: the lines add up to what the day counted. */}
         {rows.length > 0 && shown.length === rows.length
           ? jarLines.map((line) => (

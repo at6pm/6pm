@@ -106,4 +106,9 @@ export const enAndroid = {
   'widgetsGuide.home.step3':
     'Hold Safe today or Today and drag it into place. Stretch Safe today wider for Scan QR and Quick add.',
   'capture.settings.widgetsValue': 'Home & tiles',
+  // Settings pages: the receipts read and the money kept on this phone.
+  'catch.reading.explain':
+    'Receipts you share or scan are read by this phone. A dot marks one you had to fix: its amount or its shop.',
+  'privacyPage.headline': 'Your money stays on this phone, encrypted.',
+  'privacyPage.keep': 'Keep all of it on this phone',
 } as const satisfies Variants;

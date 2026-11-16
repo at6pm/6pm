@@ -72,6 +72,75 @@ async function readTogetherMoves(db: SqlDatabase): Promise<TogetherMoveRow[]> {
   }));
 }
 
+/**
+ * What a sighting's witness said, by column, against the snapshot's field of the same name. Each
+ * is empty on a sighting kept before sightings kept it.
+ */
+const SAID = [
+  ['channel', 'channel'],
+  ['witness_kind', 'witnessKind'],
+  ['witness_name', 'witnessName'],
+  ['what', 'what'],
+  ['amount', 'amount'],
+  ['currency', 'currency'],
+  ['direction', 'direction'],
+  ['at_kind', 'atKind'],
+  ['reference', 'reference'],
+  ['account_tail', 'accountTail'],
+  ['bank', 'bank'],
+  ['payee', 'payee'],
+  ['memo', 'memo'],
+  ['words', 'words'],
+] as const satisfies readonly (readonly [string, keyof SpendSightingRow])[];
+
+/** Every column of `spend_sightings`, in the order its row is written. */
+const SIGHTING_COLUMNS = [
+  'spend_id',
+  'source',
+  'seen_at',
+  'detail',
+  'capture_id',
+  ...SAID.map(([column]) => column),
+];
+
+const INSERT_SIGHTING = `INSERT OR REPLACE INTO spend_sightings (${SIGHTING_COLUMNS.join(', ')})
+  VALUES (${SIGHTING_COLUMNS.map(() => '?').join(', ')})`;
+
+type Said = (typeof SAID)[number];
+type SightingColumns = {
+  readonly spend_id: string;
+  readonly source: SpendSightingRow['source'];
+  readonly seen_at: string;
+  readonly detail: string | null;
+  readonly capture_id: string | null;
+} & { readonly [P in Said as P[0]]: NonNullable<SpendSightingRow[P[1]]> | null };
+
+/** A sighting as the snapshot carries it: what its witness did not say is left out, not null. */
+function sightingOfColumns(row: SightingColumns): SpendSightingRow {
+  const said: Record<string, unknown> = {};
+  for (const [column, field] of SAID) if (row[column] !== null) said[field] = row[column];
+  return {
+    spendId: row.spend_id,
+    source: row.source,
+    seenAt: row.seen_at,
+    detail: row.detail,
+    captureId: row.capture_id,
+    ...(said as Partial<SpendSightingRow>),
+  };
+}
+
+/** A snapshot's sighting as its row's values, in `SIGHTING_COLUMNS` order. */
+function columnsOfSighting(row: SpendSightingRow): (string | number | null)[] {
+  return [
+    row.spendId,
+    row.source,
+    row.seenAt,
+    row.detail,
+    row.captureId ?? null,
+    ...SAID.map(([, field]) => row[field] ?? null),
+  ];
+}
+
 /** The UTF-8 length of a string, without encoding it. */
 function utf8Length(text: string): number {
   let bytes = 0;
@@ -129,14 +198,8 @@ export async function buildSnapshot(
 ): Promise<BackupSnapshot> {
   const tables = openMoneyTables(db);
   const spends = await tables.spends.all();
-  const sightings = await db.getAllAsync<{
-    spend_id: string;
-    source: SpendSightingRow['source'];
-    seen_at: string;
-    detail: string | null;
-    capture_id: string | null;
-  }>(
-    'SELECT spend_id, source, seen_at, detail, capture_id FROM spend_sightings ORDER BY spend_id, source, seen_at',
+  const sightings = await db.getAllAsync<SightingColumns>(
+    `SELECT ${SIGHTING_COLUMNS.join(', ')} FROM spend_sightings ORDER BY spend_id, source, seen_at`,
     [],
   );
   const merchantRules = await tables.rules.all();
@@ -167,15 +230,7 @@ export async function buildSnapshot(
     settings,
     categories,
     spends,
-    spendSightings: sightings
-      .filter((row) => spendIds.has(row.spend_id))
-      .map((row) => ({
-        spendId: row.spend_id,
-        source: row.source,
-        seenAt: row.seen_at,
-        detail: row.detail,
-        captureId: row.capture_id,
-      })),
+    spendSightings: sightings.filter((row) => spendIds.has(row.spend_id)).map(sightingOfColumns),
     merchantRules,
     bills,
     pots,
@@ -291,10 +346,7 @@ export async function restoreSnapshot(
     for (const row of snapshot.categories) await tables.categories.put(row);
     for (const row of snapshot.spends) await tables.spends.put({ ...row, photo: photoOf(row) });
     for (const row of snapshot.spendSightings) {
-      await db.runAsync(
-        'INSERT OR REPLACE INTO spend_sightings (spend_id, source, seen_at, detail, capture_id) VALUES (?, ?, ?, ?, ?)',
-        [row.spendId, row.source, row.seenAt, row.detail, row.captureId ?? null],
-      );
+      await db.runAsync(INSERT_SIGHTING, columnsOfSighting(row));
     }
     for (const row of snapshot.merchantRules) await tables.rules.put(row);
     for (const row of snapshot.bills) await tables.bills.put(row);

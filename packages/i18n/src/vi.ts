@@ -2,6 +2,8 @@ import { viCaptureAlerts } from './vi-capture-alerts';
 import { viCaptureWalk } from './vi-capture-walk';
 import { viNative } from './vi-native';
 import { viSharing } from './vi-sharing';
+import { viShareCards } from './vi-share-cards';
+import { viShareCardsIncome } from './vi-share-cards-income';
 import { viShareExt } from './vi-share-ext';
 import { viIntents } from './vi-intents';
 import { viVoice } from './vi-voice';
@@ -35,11 +37,19 @@ import { viCompanions } from './vi-companions';
 import { viWidgetsGuide } from './vi-widgets-guide';
 import { viDuo } from './vi-duo';
 import { viMoneyIn } from './vi-money-in';
+import { viQuickAdd } from './vi-quick-add';
 import { viPotsClose } from './vi-pots-close';
 import { viPotsPlan } from './vi-pots-plan';
 import { viPots } from './vi-pots';
 import { viFirstCatch } from './vi-first-catch';
+import { viCaptureLog } from './vi-capture-log';
+import { viSettingsPages } from './vi-settings-pages';
 import { viPhoto } from './vi-photo';
+import { viMoneyReaches } from './vi-money-reaches';
+import { viIncome } from './vi-income';
+import { viWork } from './vi-work';
+import { viRequests } from './vi-requests';
+import { viWorkYear } from './vi-work-year';
 import { viImport } from './vi-import';
 import { viOwed } from './vi-owed';
 import { viNotifications } from './vi-notifications';
@@ -69,6 +79,8 @@ export const vi: Catalogue = {
   ...viPrivacyAi,
   ...viNative,
   ...viSharing,
+  ...viShareCards,
+  ...viShareCardsIncome,
   ...viShareExt,
   ...viIntents,
   ...viCaptureWalk,
@@ -83,11 +95,19 @@ export const vi: Catalogue = {
   ...viWidgetsGuide,
   ...viDuo,
   ...viMoneyIn,
+  ...viQuickAdd,
   ...viPotsClose,
   ...viPotsPlan,
   ...viPots,
   ...viFirstCatch,
+  ...viCaptureLog,
+  ...viSettingsPages,
   ...viPhoto,
+  ...viMoneyReaches,
+  ...viIncome,
+  ...viWork,
+  ...viRequests,
+  ...viWorkYear,
   ...viImport,
   ...viOwed,
   ...importSketchMomo,

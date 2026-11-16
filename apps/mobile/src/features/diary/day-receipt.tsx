@@ -3,10 +3,13 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { moneyInInk, photoInk } from '@6pm/theme';
 
+import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { DashedRule } from '../../ui/dashed-rule';
+import { haptics } from '../../ui/haptics';
 import { PaperEdge } from '../../ui/paper-edge';
 import { PhotoClip } from '../../ui/photo/photo-clip';
+import { PressScale } from '../../ui/primitives/press-scale';
 import { families, mono, tabular } from '../../ui/type/fonts';
 import { paper } from './diary-colours';
 
@@ -52,194 +55,224 @@ export interface DayReceiptView {
 
 /**
  * A closed day's receipt under the calendar: torn top and bottom, tilted a degree, the day's kept
- * spends, its total, a handwritten note and the CLOSED stamp with the time (or LATE).
+ * spends, its total, a handwritten note and the CLOSED stamp with the time (or LATE). With
+ * `onOpen` it is a button that sinks under the finger and opens the day's records.
  */
-export function DayReceipt({ receipt }: { readonly receipt: DayReceiptView }) {
+export function DayReceipt({
+  receipt,
+  onOpen,
+}: {
+  readonly receipt: DayReceiptView;
+  readonly onOpen?: () => void;
+}) {
+  const { t } = useI18n();
   const money = useMoneyFormat();
   const line = { ...mono(12), color: paper.ink };
-  return (
-    <View style={{ alignItems: 'center', marginTop: -6 }}>
-      <Animated.View
-        key={receipt.day}
-        entering={FadeIn.duration(250)}
+  const slip = (
+    <Animated.View
+      key={receipt.day}
+      entering={FadeIn.duration(250)}
+      style={{
+        width: 306,
+        transform: [{ rotate: '-1deg' }],
+      }}
+    >
+      <View style={{ transform: [{ scaleY: -1 }] }}>
+        <PaperEdge color={paper.sheet} />
+      </View>
+      <View
         style={{
-          width: 306,
-          transform: [{ rotate: '-1deg' }],
+          // The paper casts the shadow, not its torn edges, which would show it between the teeth.
+          boxShadow: '0 16px 22px rgba(15,5,25,.3)',
+          backgroundColor: paper.sheet,
+          paddingTop: 12,
+          paddingHorizontal: 20,
+          paddingBottom: 14,
+          gap: 6,
         }}
       >
-        <View style={{ transform: [{ scaleY: -1 }] }}>
-          <PaperEdge color={paper.sheet} />
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Text style={{ ...mono(12, 600, 0.12), color: paper.ink }}>{receipt.title}</Text>
+          <Text style={{ ...mono(12, 600, 0.12), color: paper.ink, opacity: 0.55 }}>
+            {receipt.no}
+          </Text>
         </View>
-        <View
-          style={{
-            // The paper casts the shadow, not its torn edges, which would show it between the teeth.
-            boxShadow: '0 16px 22px rgba(15,5,25,.3)',
-            backgroundColor: paper.sheet,
-            paddingTop: 12,
-            paddingHorizontal: 20,
-            paddingBottom: 14,
-            gap: 6,
-          }}
-        >
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text style={{ ...mono(12, 600, 0.12), color: paper.ink }}>{receipt.title}</Text>
-            <Text style={{ ...mono(12, 600, 0.12), color: paper.ink, opacity: 0.55 }}>
-              {receipt.no}
+        <DashedRule color={paper.rule} />
+        {receipt.rows.length === 0 ? (
+          <Text style={{ ...line, color: paper.soft, textAlign: 'center' }}>{receipt.empty}</Text>
+        ) : null}
+        {receipt.rows.map((r, i) => (
+          <View key={i} style={{ flexDirection: 'row', gap: 10 }}>
+            <Text style={{ ...line, color: paper.soft }}>{r.time}</Text>
+            <Text
+              numberOfLines={1}
+              style={{ ...line, flex: 1, minWidth: 0, opacity: r.back ? 0.55 : 1 }}
+            >
+              {r.name}
+            </Text>
+            {r.photo ? (
+              <View style={{ justifyContent: 'center' }}>
+                <PhotoClip size={14} rotate={40} color={photoInk.paperClip} shadow={false} />
+              </View>
+            ) : null}
+            <Text style={{ ...line, ...tabular, opacity: r.back ? 0.55 : 1 }}>
+              {money.number(r.amount)}
+            </Text>
+            {r.back ? (
+              <>
+                <View
+                  pointerEvents="none"
+                  style={{
+                    position: 'absolute',
+                    left: -3,
+                    right: -3,
+                    top: '52%',
+                    height: 1.8,
+                    borderRadius: 2,
+                    backgroundColor: paper.stamp,
+                    transform: [{ rotate: '-0.8deg' }],
+                    mixBlendMode: 'multiply',
+                  }}
+                />
+                <View
+                  pointerEvents="none"
+                  style={{
+                    position: 'absolute',
+                    right: 18,
+                    top: -4,
+                    paddingVertical: 2,
+                    paddingHorizontal: 7,
+                    borderWidth: 2,
+                    borderColor: moneyInInk.stamp,
+                    borderRadius: 5,
+                    transform: [{ rotate: '-7deg' }],
+                    mixBlendMode: 'multiply',
+                  }}
+                >
+                  <Text style={{ ...mono(10.5, 600, 0.14), color: moneyInInk.stamp }}>
+                    {r.back}
+                  </Text>
+                </View>
+              </>
+            ) : null}
+          </View>
+        ))}
+        {receipt.jars.map((j, i) => (
+          <View key={`jar-${i}`} style={{ flexDirection: 'row', gap: 10 }}>
+            {/* A blank clock, so the jar's name sits under the spends' names. */}
+            <Text aria-hidden style={{ ...line, opacity: 0 }}>
+              00:00
+            </Text>
+            <Text numberOfLines={1} style={{ ...line, color: paper.soft, flex: 1, minWidth: 0 }}>
+              {j.name}
+            </Text>
+            <Text style={{ ...line, ...tabular, color: paper.soft }}>
+              −{money.number(j.amount)}
             </Text>
           </View>
-          <DashedRule color={paper.rule} />
-          {receipt.rows.length === 0 ? (
-            <Text style={{ ...line, color: paper.soft, textAlign: 'center' }}>{receipt.empty}</Text>
-          ) : null}
-          {receipt.rows.map((r, i) => (
-            <View key={i} style={{ flexDirection: 'row', gap: 10 }}>
-              <Text style={{ ...line, color: paper.soft }}>{r.time}</Text>
+        ))}
+        <DashedRule color={paper.rule} />
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={{ ...mono(14, 600, 0.12), color: paper.ink, flex: 1 }}>
+            {receipt.totalLabel}
+          </Text>
+          <Text style={{ ...mono(14, 600), ...tabular, color: paper.ink }}>
+            {money.full(receipt.total)}
+          </Text>
+        </View>
+        {receipt.moneyIn.length > 0 ? <DashedRule color={paper.rule} /> : null}
+        {receipt.moneyIn.map((m, i) => (
+          <View key={`in-${i}`} style={{ gap: 2 }}>
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              <Text style={{ ...line, color: moneyInInk.paper, opacity: 0.7 }}>{m.time}</Text>
               <Text
                 numberOfLines={1}
-                style={{ ...line, flex: 1, minWidth: 0, opacity: r.back ? 0.55 : 1 }}
+                style={{ ...line, color: moneyInInk.paper, flex: 1, minWidth: 0 }}
               >
-                {r.name}
+                + {m.name}
               </Text>
-              {r.photo ? (
-                <View style={{ justifyContent: 'center' }}>
-                  <PhotoClip size={14} rotate={40} color={photoInk.paperClip} shadow={false} />
-                </View>
-              ) : null}
-              <Text style={{ ...line, ...tabular, opacity: r.back ? 0.55 : 1 }}>
-                {money.number(r.amount)}
-              </Text>
-              {r.back ? (
-                <>
-                  <View
-                    pointerEvents="none"
-                    style={{
-                      position: 'absolute',
-                      left: -3,
-                      right: -3,
-                      top: '52%',
-                      height: 1.8,
-                      borderRadius: 2,
-                      backgroundColor: paper.stamp,
-                      transform: [{ rotate: '-0.8deg' }],
-                      mixBlendMode: 'multiply',
-                    }}
-                  />
-                  <View
-                    pointerEvents="none"
-                    style={{
-                      position: 'absolute',
-                      right: 18,
-                      top: -4,
-                      paddingVertical: 2,
-                      paddingHorizontal: 7,
-                      borderWidth: 2,
-                      borderColor: moneyInInk.stamp,
-                      borderRadius: 5,
-                      transform: [{ rotate: '-7deg' }],
-                      mixBlendMode: 'multiply',
-                    }}
-                  >
-                    <Text style={{ ...mono(10.5, 600, 0.14), color: moneyInInk.stamp }}>
-                      {r.back}
-                    </Text>
-                  </View>
-                </>
-              ) : null}
-            </View>
-          ))}
-          {receipt.jars.map((j, i) => (
-            <View key={`jar-${i}`} style={{ flexDirection: 'row', gap: 10 }}>
-              {/* A blank clock, so the jar's name sits under the spends' names. */}
-              <Text aria-hidden style={{ ...line, opacity: 0 }}>
-                00:00
-              </Text>
-              <Text numberOfLines={1} style={{ ...line, color: paper.soft, flex: 1, minWidth: 0 }}>
-                {j.name}
-              </Text>
-              <Text style={{ ...line, ...tabular, color: paper.soft }}>
-                −{money.number(j.amount)}
+              <Text style={{ ...mono(12, 600), ...tabular, color: moneyInInk.paper }}>
+                +{money.number(m.amount)}
               </Text>
             </View>
-          ))}
-          <DashedRule color={paper.rule} />
-          <View style={{ flexDirection: 'row' }}>
-            <Text style={{ ...mono(14, 600, 0.12), color: paper.ink, flex: 1 }}>
-              {receipt.totalLabel}
-            </Text>
-            <Text style={{ ...mono(14, 600), ...tabular, color: paper.ink }}>
-              {money.full(receipt.total)}
+            <Text style={{ ...mono(10.5, 400, 0.1), color: paper.soft, paddingLeft: 52 }}>
+              {m.note}
             </Text>
           </View>
-          {receipt.moneyIn.length > 0 ? <DashedRule color={paper.rule} /> : null}
-          {receipt.moneyIn.map((m, i) => (
-            <View key={`in-${i}`} style={{ gap: 2 }}>
-              <View style={{ flexDirection: 'row', gap: 10 }}>
-                <Text style={{ ...line, color: moneyInInk.paper, opacity: 0.7 }}>{m.time}</Text>
-                <Text
-                  numberOfLines={1}
-                  style={{ ...line, color: moneyInInk.paper, flex: 1, minWidth: 0 }}
-                >
-                  + {m.name}
-                </Text>
-                <Text style={{ ...mono(12, 600), ...tabular, color: moneyInInk.paper }}>
-                  +{money.number(m.amount)}
-                </Text>
-              </View>
-              <Text style={{ ...mono(10.5, 400, 0.1), color: paper.soft, paddingLeft: 52 }}>
-                {m.note}
-              </Text>
-            </View>
-          ))}
+        ))}
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 10,
+            paddingTop: 6,
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: families.hand,
+              fontSize: 20,
+              lineHeight: 21,
+              color: paper.hand,
+              maxWidth: 160,
+              transform: [{ rotate: '-2deg' }],
+            }}
+          >
+            {receipt.note}
+          </Text>
           <View
             style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: 10,
-              paddingTop: 6,
+              paddingTop: 5,
+              paddingHorizontal: 9,
+              paddingBottom: 4,
+              borderWidth: 2.5,
+              borderColor: paper.stamp,
+              borderRadius: 6,
+              transform: [{ rotate: '-7deg' }],
+              mixBlendMode: 'multiply',
             }}
           >
             <Text
               style={{
-                fontFamily: families.hand,
-                fontSize: 20,
-                lineHeight: 21,
-                color: paper.hand,
-                maxWidth: 160,
-                transform: [{ rotate: '-2deg' }],
+                ...mono(12, 600, 0.14),
+                lineHeight: 14.4,
+                color: paper.stamp,
+                textAlign: 'center',
               }}
             >
-              {receipt.note}
+              {receipt.stamp}
+              {'\n'}
+              {receipt.closedAt}
             </Text>
-            <View
-              style={{
-                paddingTop: 5,
-                paddingHorizontal: 9,
-                paddingBottom: 4,
-                borderWidth: 2.5,
-                borderColor: paper.stamp,
-                borderRadius: 6,
-                transform: [{ rotate: '-7deg' }],
-                mixBlendMode: 'multiply',
-              }}
-            >
-              <Text
-                style={{
-                  ...mono(12, 600, 0.14),
-                  lineHeight: 14.4,
-                  color: paper.stamp,
-                  textAlign: 'center',
-                }}
-              >
-                {receipt.stamp}
-                {'\n'}
-                {receipt.closedAt}
-              </Text>
-            </View>
           </View>
         </View>
-        <PaperEdge color={paper.sheet} />
-      </Animated.View>
+      </View>
+      <PaperEdge color={paper.sheet} />
+    </Animated.View>
+  );
+  return (
+    <View style={{ alignItems: 'center', marginTop: -6 }}>
+      {onOpen ? (
+        <PressScale
+          scaleTo={0.98}
+          inScroll
+          accessibilityRole="button"
+          accessibilityLabel={t('diary.receipt.open', {
+            date: receipt.title,
+            total: money.full(receipt.total),
+          })}
+          accessibilityHint={t('diary.receipt.openHint')}
+          onPress={() => {
+            haptics.tap();
+            onOpen();
+          }}
+        >
+          {slip}
+        </PressScale>
+      ) : (
+        slip
+      )}
     </View>
   );
 }

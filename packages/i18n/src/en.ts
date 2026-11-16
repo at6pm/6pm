@@ -2,6 +2,8 @@ import { enCaptureAlerts } from './en-capture-alerts';
 import { enCaptureWalk } from './en-capture-walk';
 import { enNative } from './en-native';
 import { enSharing } from './en-sharing';
+import { enShareCards } from './en-share-cards';
+import { enShareCardsIncome } from './en-share-cards-income';
 import { enShareExt } from './en-share-ext';
 import { enIntents } from './en-intents';
 import { enVoice } from './en-voice';
@@ -34,11 +36,19 @@ import { enCompanions } from './en-companions';
 import { enWidgetsGuide } from './en-widgets-guide';
 import { enDuo } from './en-duo';
 import { enMoneyIn } from './en-money-in';
+import { enQuickAdd } from './en-quick-add';
 import { enPotsClose } from './en-pots-close';
 import { enPotsPlan } from './en-pots-plan';
 import { enPots } from './en-pots';
 import { enFirstCatch } from './en-first-catch';
+import { enCaptureLog } from './en-capture-log';
+import { enSettingsPages } from './en-settings-pages';
 import { enPhoto } from './en-photo';
+import { enMoneyReaches } from './en-money-reaches';
+import { enIncome } from './en-income';
+import { enWork } from './en-work';
+import { enRequests } from './en-requests';
+import { enWorkYear } from './en-work-year';
 import { enImport, importSketchMomo } from './en-import';
 import { enOwed } from './en-owed';
 import { enNotifications } from './en-notifications';
@@ -68,6 +78,8 @@ export const en = {
   ...enPrivacyAi,
   ...enNative,
   ...enSharing,
+  ...enShareCards,
+  ...enShareCardsIncome,
   ...enShareExt,
   ...enIntents,
   ...enCaptureWalk,
@@ -82,11 +94,19 @@ export const en = {
   ...enWidgetsGuide,
   ...enDuo,
   ...enMoneyIn,
+  ...enQuickAdd,
   ...enPotsClose,
   ...enPotsPlan,
   ...enPots,
   ...enFirstCatch,
+  ...enCaptureLog,
+  ...enSettingsPages,
   ...enPhoto,
+  ...enMoneyReaches,
+  ...enIncome,
+  ...enWork,
+  ...enRequests,
+  ...enWorkYear,
   ...enImport,
   ...enOwed,
   ...importSketchMomo,

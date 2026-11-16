@@ -16,6 +16,8 @@ import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
 import { useCompanionToast } from '../companion/use-companion-toast';
+import { jarName } from '../pots/jar-name';
+import { RequestQuestionStep } from '../owed/request-question';
 import { BonusQuestionStep } from './close-bonus-question';
 import { WorkQuestionStep } from './close-work-question';
 import { useCloseMoney } from './use-close-money';
@@ -53,6 +55,18 @@ export function MoneyQuestionStep({
   const spend = card ? queue.find((s) => s.id === card.id) : undefined;
   const ask = card ? asks[card.id] : undefined;
   if (!card || !spend || !ask || !snap.plan) return null;
+  // A request to be paid: found by its code (7d), or matched by hand (7e).
+  if (ask.kind === 'request' || ask.kind === 'byHand') {
+    return (
+      <RequestQuestionStep
+        key={card.id}
+        spend={spend}
+        ask={ask}
+        run={run}
+        onAnswer={(yes) => dispatch({ type: 'answerMoney', id: card.id, yes })}
+      />
+    );
+  }
   const { plan } = snap;
   const locale = localeOf(language);
   const clock = (at: string) =>
@@ -66,6 +80,14 @@ export function MoneyQuestionStep({
   const line = (event: 'payQuestion' | 'refundQuestion' | 'paybackQuestion') =>
     plan.serious ? null : t(`companion.${event}.${plan.persona}` as 'companion.payQuestion.soft');
   const from = spend.merchant.trim();
+  // The pay of one of the plan's incomes is measured against that income's amount per pay.
+  const paidAs =
+    ask.kind === 'pay' && ask.incomeId !== undefined
+      ? plan.incomes?.find((i) => i.id === ask.incomeId)
+      : undefined;
+  const payKept = paidAs
+    ? { amount: paidAs.amount, incomeId: paidAs.id }
+    : { amount: plan.income, incomeId: null };
   const incoming = {
     time: clock(spend.at),
     name: from || t('moneyIn.name'),
@@ -83,13 +105,23 @@ export function MoneyQuestionStep({
     }
     if (ask.kind === 'pay') {
       void run(async () => {
-        const extra = await actions.keepPay(spend.id, plan.income);
+        const extra = await actions.keepPay(spend.id, payKept);
         dispatch({ type: 'answerMoney', id: card.id, yes: true, extra: extra ?? undefined });
       });
       return;
     }
     // The bonus places itself from its own step.
     if (ask.kind === 'bonus') return;
+    if (ask.kind === 'remembered') {
+      void run(() =>
+        actions.placeMoneyIn(spend.id, {
+          moneyIn: ask.place.moneyIn === 'saved' ? 'saved' : 'spread',
+          savedTo: ask.place.savedTo,
+        }),
+      );
+      dispatch({ type: 'answerMoney', id: card.id, yes: true });
+      return;
+    }
     void run(() =>
       actions.placeMoneyIn(spend.id, {
         moneyIn: ask.kind,
@@ -119,9 +151,30 @@ export function MoneyQuestionStep({
     );
   }
 
+  if (ask.kind === 'remembered') {
+    const jar = snap.pots.find((p) => p.id === ask.place.savedTo);
+    return (
+      <WorkQuestionStep
+        key={card.id}
+        line={null}
+        mood="happy"
+        receiptLine={incoming}
+        title={
+          ask.place.moneyIn === 'saved' && jar
+            ? t('moneyIn.remembered.saved', { jar: jarName(jar, t) })
+            : t('moneyIn.remembered.spread')
+        }
+        sub={from ? t('moneyIn.remembered.sub', { from }) : t('moneyIn.remembered.subNoName')}
+        yes={t('moneyIn.remembered.yes')}
+        no={t('moneyIn.no')}
+        onAnswer={answer}
+      />
+    );
+  }
+
   if (ask.kind === 'pay') {
-    const extra = payExtra(spend.amount, plan.income);
-    const income = money.short(plan.income);
+    const extra = payExtra(spend.amount, payKept.amount);
+    const income = money.short(payKept.amount);
     return (
       <WorkQuestionStep
         key={card.id}
@@ -130,9 +183,17 @@ export function MoneyQuestionStep({
         receiptLine={incoming}
         title={t('moneyIn.pay.title')}
         sub={
-          extra > 0
-            ? t('moneyIn.pay.subExtra', { income, extra: money.short(extra) })
-            : t('moneyIn.pay.sub', { income })
+          // Money that only lands has no amount to measure it against: what it does, the first
+          // time; where it went, after.
+          ask.landing === true
+            ? t('moneyIn.landing.sub')
+            : payKept.amount <= 0
+              ? from
+                ? t('moneyIn.remembered.sub', { from })
+                : t('moneyIn.remembered.subNoName')
+              : extra > 0
+                ? t('moneyIn.pay.subExtra', { income, extra: money.short(extra) })
+                : t('moneyIn.pay.sub', { income })
         }
         yes={t('moneyIn.pay.yes')}
         no={t('moneyIn.no')}

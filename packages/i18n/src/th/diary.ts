@@ -4,7 +4,8 @@ import type { enDiary } from '../en-diary';
 // "Your line" is เส้น (under it: ไม่เกินเส้น). {month} arrives as a bare month name, so it follows เดือน.
 export const thDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.title': 'ไดอารี่',
-  'diary.kicker': 'เดือน{month}ปิดวันแล้ว {closed} วัน · ทั้งหมด {all} วัน',
+  'diary.kicker': 'เดือน{month} · ปิดวันแล้ว {closed} วัน',
+  'diary.kickerAll': 'เดือน{month} · ปิดวันแล้ว {closed} วัน · ทั้งหมด {all} วัน',
   'diary.recap.kicker': 'สัปดาห์นี้ · {range}',
   'diary.recap.hint': 'แตะหรือปัด',
   'diary.recap.under.lead': { other: 'ผ่านมา {count} วันแบบไม่เกินเส้น เลยมี' },
@@ -24,8 +25,7 @@ export const thDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.cal.summaryNone': 'ปิดวันคืนนี้เพื่อเก็บวันแรกของคุณ',
   'diary.cal.under': 'ไม่เกินเส้น',
   'diary.cal.over': 'เกินเส้น',
-  'diary.cal.today': '6 โมง',
-  'diary.cal.missed': 'พลาด',
+  'diary.cal.tap': '· แตะที่วัน',
   'diary.receipt.no': 'ที่ {no}',
   'diary.receipt.empty': 'ไม่ได้ใช้เงิน',
   'diary.receipt.late': 'ปิดช้า',
@@ -90,4 +90,9 @@ export const thDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.cal.previous': 'เดือนก่อนหน้า',
   'diary.cal.next': 'เดือนถัดไป',
   'diary.fromJar': 'จากโหล {jar}',
+  'diary.day.title': 'ทบทวนวันนี้',
+  'diary.day.empty': 'วันนี้ไม่มีรายการเหลือแล้ว',
+  'diary.day.hint': 'แตะบรรทัดเพื่อแก้ไข ปัดซ้ายเพื่อลบ',
+  'diary.receipt.open': 'ใบเสร็จวันที่ {date} รวม {total}',
+  'diary.receipt.openHint': 'เปิดวันนี้เพื่อแก้ไขหรือลบรายการ',
 };

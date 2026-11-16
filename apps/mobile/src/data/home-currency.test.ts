@@ -13,11 +13,15 @@ import { sql as addImports } from '../db/migrations/0012-imports';
 import { sql as addNewYear } from '../db/migrations/0013-new-year';
 import { sql as addOwed } from '../db/migrations/0014-owed';
 import { sql as addSpendPhoto } from '../db/migrations/0015-spend-photo';
+import { sql as addIncomes } from '../db/migrations/0016-incomes';
+import { sql as addSightingRecord } from '../db/migrations/0017-sighting-record';
+import { sql as addRequests } from '../db/migrations/0018-requests';
 import { currencyOf, VND, type HomeChange, type SpendRow } from '@6pm/domain';
 
 import { dayOf, createMoneyStore } from './money-store';
 import { changeHomeCurrency } from './home-currency';
 import { completeOnboarding, type OnboardingAnswers } from './onboarding';
+import { readPlan, writePlan } from './plan-settings';
 import type { SqlDatabase, SqlValue } from './table';
 
 jest.mock('expo-crypto', () => ({ randomUUID: () => crypto.randomUUID() }));
@@ -44,6 +48,9 @@ function openStore(today: string) {
   sqlite.exec(addNewYear);
   sqlite.exec(addOwed);
   sqlite.exec(addSpendPhoto);
+  sqlite.exec(addIncomes);
+  sqlite.exec(addSightingRecord);
+  sqlite.exec(addRequests);
   const db: SqlDatabase = {
     getAllAsync: <T>(source: string, params: SqlValue[]) =>
       Promise.resolve(sqlite.prepare(source).all(...params) as T[]),
@@ -182,6 +189,53 @@ describe('changeHomeCurrency', () => {
     const line = dayOf(snap)?.line ?? 0;
     expect(line).toBeGreaterThan(100_000);
     expect(line % 1000).toBe(0);
+  });
+
+  it('counts the incomes, what a client held back and what a witness saw', async () => {
+    const store = await setUpInDollars();
+    const { db, tables } = store;
+    const plan = await readPlan(db);
+    if (plan === null) throw new Error('no plan');
+    await writePlan(db, {
+      ...plan,
+      incomes: [
+        { id: 'wage', name: null, rhythm: { kind: 'weekly', weekday: 5 }, amount: 30_000 },
+        { id: 'gigs', name: 'Gigs', rhythm: { kind: 'none' }, amount: 0 },
+      ],
+      incomesFrom: '2026-10-01',
+    });
+    // $900 landed from a client who held back a tenth of the $1,000 billed.
+    await tables.spends.put(
+      spend({ id: 'paid', amount: 90_000, direction: 'in', merchant: 'Studio', heldBack: 10_000 }),
+    );
+    const sighting = (source: string, currency: string | null) =>
+      db.runAsync(
+        `INSERT INTO spend_sightings (spend_id, source, seen_at, amount, currency)
+         VALUES ('paid', ?, ?, 90000, ?)`,
+        [source, at, currency],
+      );
+    await sighting('notification', null);
+    await sighting('shared', 'USD');
+
+    expect(await changeHomeCurrency(store, toDong)).toBe(true);
+
+    const incomes = (await readPlan(db))?.incomes ?? [];
+    expect(incomes.map((pay) => [pay.id, pay.amount])).toEqual([
+      ['wage', 7_620_000],
+      ['gigs', 0],
+    ]);
+    const paid = (await tables.spends.all()).find((s) => s.id === 'paid');
+    expect(paid).toMatchObject({ amount: 22_860_000, heldBack: 2_540_000 });
+    // A sighting keeps what was seen, and now says what it was seen in.
+    expect(
+      await db.getAllAsync<{ source: string; amount: number; currency: string }>(
+        'SELECT source, amount, currency FROM spend_sightings ORDER BY source',
+        [],
+      ),
+    ).toEqual([
+      { source: 'notification', amount: 90_000, currency: 'USD' },
+      { source: 'shared', amount: 90_000, currency: 'USD' },
+    ]);
   });
 
   it('does nothing the second time, or without a rate', async () => {

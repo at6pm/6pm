@@ -39,6 +39,12 @@ export const deMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'moneyIn.payback.subClaim': 'Deine Erstattung ist bezahlt. Deine Zahl bleibt, wie sie ist.',
   'moneyIn.payback.yes': 'Ja, zahlt mir zurück',
   'moneyIn.payback.line': 'ZURÜCKGEZAHLT',
+  'moneyIn.remembered.saved': 'Wieder ins {jar}?',
+  'moneyIn.remembered.spread': 'Wieder verteilen?',
+  'moneyIn.remembered.sub': 'Dorthin ging das Geld von {from} beim letzten Mal.',
+  'moneyIn.remembered.subNoName': 'Dorthin ging es beim letzten Mal.',
+  'moneyIn.remembered.yes': 'Ja, wie letztes Mal',
+  'moneyIn.remembered.line': 'WIE LETZTES MAL',
   'moneyIn.goesTo.label': 'Wohin damit',
   'moneyIn.goesTo.spread': 'Verteilen',
   'moneyIn.goesTo.spreadSub': 'Morgen werden es {amount}',
@@ -63,4 +69,7 @@ export const deMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'plan.month.countOn': 'Womit du rechnen kannst',
   'plan.month.countOnHelp':
     'Das Minimum, das jeden Monat netto ankommt. Schwankt es, rechne niedrig: Alles darüber kommt über den Tagesabschluss rein.',
+  'moneyIn.landing.sub':
+    'Wenn ja, werden zuerst die Rechnungen beiseitegelegt, der Rest wird zu deinen Tagen.',
+  'moneyIn.row.pay': 'Dein Gehalt',
 };

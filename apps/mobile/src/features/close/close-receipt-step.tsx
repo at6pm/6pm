@@ -6,6 +6,7 @@ import { localeOf } from '@6pm/i18n';
 
 import { notDailyOf } from '../../data/diary-queries';
 import { useMoney, useMoneyActions } from '../../data/money-provider';
+import { workOf } from '../../data/work-money';
 import { useI18n } from '../../i18n/i18n';
 import { captureView, trimBottom } from '../sharing/capture-view';
 import { shareFileName } from '../sharing/share-file';
@@ -96,7 +97,10 @@ export function CloseReceiptStep({
         };
       })}
       claimBack={
-        claimBack ? { name: claimBack.merchant.toUpperCase(), amount: claimBack.amount } : null
+        // A work cost is the work's own: nothing is claimed back for someone with work on.
+        claimBack && workOf(snap) === null
+          ? { name: claimBack.merchant.toUpperCase(), amount: claimBack.amount }
+          : null
       }
       total={spent}
       tomorrow={tomorrow}

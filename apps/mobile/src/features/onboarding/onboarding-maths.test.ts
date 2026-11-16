@@ -6,18 +6,24 @@ import { billTotal, chosenBills, dealDeck, NO_BILL_ANSWERS, type BillAnswers } f
 import {
   billDigits,
   billFromTyped,
+  billLeading,
+  billMillionsItems,
   billOf,
   CLOSE_HOURS,
   CLOSE_MINUTES,
   firstDay,
   futureYouOf,
+  futureYouOfAnswers,
+  landedFutureStartSteps,
+  landedFutureYouOf,
+  LANDED_FUTURE_STEPS,
   incomeDigits,
   incomeFromTyped,
   incomeLeads,
   incomeMax,
   incomeMillionsItems,
   incomeOf,
-  billMillionsItems,
+  LEADING_DIGITS,
   markAfter,
   millionsPlace,
   PAYDAY_CELLS,
@@ -119,6 +125,18 @@ describe('onboarding maths', () => {
     expect(zerosBelow(3, ',')).toBe(',000');
     // Won: ₩100,000 a "million", so the mark falls inside the two-digit wheel.
     expect(billMillionsItems(KRW, ',').slice(9, 12)).toEqual(['9', '1,0', '1,1']);
+  });
+
+  it('leaves the bill wheels blank ahead of the first digit', () => {
+    expect(billMillionsItems().slice(0, 2)).toEqual(['', '1']);
+    // 380.000₫: the millions lead and are blank, the hundreds and tens are digits.
+    expect(billLeading(0, 3)).toEqual({ millions: true, hundreds: true, tens: false });
+    // 50.000₫: the tens wheel would be blank only at 0, so its 5 is drawn alone.
+    expect(billLeading(0, 0)).toEqual({ millions: true, hundreds: true, tens: true });
+    // 2.000.000₫: the zeros after the 2 are digits.
+    expect(billLeading(2, 0)).toEqual({ millions: false, hundreds: false, tens: false });
+    expect(LEADING_DIGITS[0]).toBe('');
+    expect(LEADING_DIGITS[3]).toBe('3');
   });
 
   it('starts money in at about 15.500.000₫ worth, on the wheels', () => {
@@ -275,5 +293,20 @@ describe('bill deck', () => {
       ['subs:spotify', 0, 5, 1],
     ]);
     expect(billTotal(bills)).toBe(5_000_000);
+  });
+});
+
+describe('Future you for money that only lands', () => {
+  it('is an amount a month: it starts at 500.000₫, goes to nothing, and stops at 3.000.000₫', () => {
+    const start = landedFutureStartSteps();
+    expect(landedFutureYouOf(start)).toBe(500_000);
+    expect(landedFutureYouOf(0)).toBe(0);
+    expect(landedFutureYouOf(LANDED_FUTURE_STEPS + 5)).toBe(3_000_000);
+    const landed = { landed: true, monthIncome: 0, percent: 12, landedSteps: start };
+    expect(futureYouOfAnswers(landed)).toBe(500_000);
+    // A pay counted on keeps its share.
+    expect(futureYouOfAnswers({ ...landed, landed: false, monthIncome: 15_500_000 })).toBe(
+      1_900_000,
+    );
   });
 });

@@ -19,6 +19,7 @@ import { esInsightsHabits } from './insights-habits';
 import { esIntents } from './intents';
 import { esLooks } from './looks';
 import { esMoneyIn } from './money-in';
+import { esQuickAdd } from './quick-add';
 import { esPotsClose } from './pots-close';
 import { esPotsPlan } from './pots-plan';
 import { esPots } from './pots';
@@ -30,6 +31,8 @@ import { esReceiptEmail } from './receipt-email';
 import { esScan } from './scan';
 import { esShareExt } from './share-ext';
 import { esSharing } from './sharing';
+import { esShareCards } from './share-cards';
+import { esShareCardsIncome } from './share-cards-income';
 import { esSurfaces } from './surfaces';
 import { esWidgets } from './widgets';
 import { esToday } from './today';
@@ -39,7 +42,14 @@ import { esVoice } from './voice';
 import { esWidgetsGuide } from './widgets-guide';
 import { esYearBook } from './year-book';
 import { esFirstCatch } from './first-catch';
+import { esCaptureLog } from './capture-log';
+import { esSettingsPages } from './settings-pages';
 import { esPhoto } from './photo';
+import { esMoneyReaches } from './money-reaches';
+import { esIncome } from './income';
+import { esWork } from './work';
+import { esRequests } from './requests';
+import { esWorkYear } from './work-year';
 import { esImport } from './import';
 import { esOwed } from './owed';
 import { esNotifications } from './notifications';
@@ -72,6 +82,8 @@ export const es: Catalogue = {
   ...esPrivacyAi,
   ...esNative,
   ...esSharing,
+  ...esShareCards,
+  ...esShareCardsIncome,
   ...esShareExt,
   ...esIntents,
   ...esCaptureWalk,
@@ -86,11 +98,19 @@ export const es: Catalogue = {
   ...esWidgetsGuide,
   ...esDuo,
   ...esMoneyIn,
+  ...esQuickAdd,
   ...esPotsClose,
   ...esPotsPlan,
   ...esPots,
   ...esFirstCatch,
+  ...esCaptureLog,
+  ...esSettingsPages,
   ...esPhoto,
+  ...esMoneyReaches,
+  ...esIncome,
+  ...esWork,
+  ...esRequests,
+  ...esWorkYear,
   ...esImport,
   ...esOwed,
   ...importSketchMomo,

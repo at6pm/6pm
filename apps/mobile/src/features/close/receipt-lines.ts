@@ -39,6 +39,7 @@ export function receiptSpends(
   return {
     lines,
     jars: jarReceiptLines(lines.map(counted), notDaily),
-    claimBack: kept.find((s) => s.forWork) ?? null,
+    // Money in stamped as work (a client's payment) is the person's, not a cost to claim back.
+    claimBack: kept.find((s) => s.forWork && s.direction !== 'in') ?? null,
   };
 }

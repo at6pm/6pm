@@ -1,6 +1,8 @@
 import {
+  FilterMode,
   ImageFormat,
   makeImageFromView,
+  MipmapMode,
   Skia,
   type SkCanvas,
   type SkImage,
@@ -44,6 +46,27 @@ export function trimBottom(image: SkImage, points: number): SkImage {
   return drawImage(width, height, (canvas) => {
     canvas.drawImage(image, 0, 0);
   });
+}
+
+/**
+ * The image at exactly `width` × `height` pixels, whatever the screen's density: a card laid out
+ * at 360 pt is shared at 1080 px on a 2× phone too. An image already that size comes back as is.
+ */
+export function atPixels(image: SkImage, width: number, height: number): SkImage {
+  if (image.width() === width && image.height() === height) return image;
+  const surface = Skia.Surface.Make(width, height);
+  if (!surface) throw new Error('No room to draw the image');
+  surface
+    .getCanvas()
+    .drawImageRectOptions(
+      image,
+      Skia.XYWHRect(0, 0, image.width(), image.height()),
+      Skia.XYWHRect(0, 0, width, height),
+      FilterMode.Linear,
+      MipmapMode.Linear,
+    );
+  surface.flush();
+  return surface.makeImageSnapshot();
 }
 
 export function encodePng(image: SkImage): Uint8Array {

@@ -19,6 +19,7 @@ import { deInsightsHabits } from './insights-habits';
 import { deIntents } from './intents';
 import { deLooks } from './looks';
 import { deMoneyIn } from './money-in';
+import { deQuickAdd } from './quick-add';
 import { dePotsClose } from './pots-close';
 import { dePotsPlan } from './pots-plan';
 import { dePots } from './pots';
@@ -30,6 +31,8 @@ import { deReceiptEmail } from './receipt-email';
 import { deScan } from './scan';
 import { deShareExt } from './share-ext';
 import { deSharing } from './sharing';
+import { deShareCards } from './share-cards';
+import { deShareCardsIncome } from './share-cards-income';
 import { deSurfaces } from './surfaces';
 import { deWidgets } from './widgets';
 import { deToday } from './today';
@@ -39,7 +42,14 @@ import { deVoice } from './voice';
 import { deWidgetsGuide } from './widgets-guide';
 import { deYearBook } from './year-book';
 import { deFirstCatch } from './first-catch';
+import { deCaptureLog } from './capture-log';
+import { deSettingsPages } from './settings-pages';
 import { dePhoto } from './photo';
+import { deMoneyReaches } from './money-reaches';
+import { deIncome } from './income';
+import { deWork } from './work';
+import { deRequests } from './requests';
+import { deWorkYear } from './work-year';
 import { deImport } from './import';
 import { deOwed } from './owed';
 import { deNotifications } from './notifications';
@@ -72,6 +82,8 @@ export const de: Catalogue = {
   ...dePrivacyAi,
   ...deNative,
   ...deSharing,
+  ...deShareCards,
+  ...deShareCardsIncome,
   ...deShareExt,
   ...deIntents,
   ...deCaptureWalk,
@@ -86,11 +98,19 @@ export const de: Catalogue = {
   ...deWidgetsGuide,
   ...deDuo,
   ...deMoneyIn,
+  ...deQuickAdd,
   ...dePotsClose,
   ...dePotsPlan,
   ...dePots,
   ...deFirstCatch,
+  ...deCaptureLog,
+  ...deSettingsPages,
   ...dePhoto,
+  ...deMoneyReaches,
+  ...deIncome,
+  ...deWork,
+  ...deRequests,
+  ...deWorkYear,
   ...deImport,
   ...deOwed,
   ...importSketchMomo,
@@ -104,6 +124,8 @@ export const de: Catalogue = {
  */
 export const deSameAsEnglish: readonly string[] = [
   ...importSketchEnglish,
+  // Instagram's own word for its 9:16 posts.
+  'Story',
   'Alipay',
   'App',
   'Apps',
@@ -117,6 +139,7 @@ export const deSameAsEnglish: readonly string[] = [
   'Look',
   'Looks',
   'Minute',
+  'Name',
   'PayPay',
   'Plan',
   'Saigon',

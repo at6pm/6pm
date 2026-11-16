@@ -13,8 +13,13 @@ import { deviceOfHandle } from './handles';
 import { readSpend } from './read-spend';
 import { sealCapture, sealKeyOf } from './seal';
 
-/** A receipt is a few kilobytes; anything near this is mostly pictures and is turned away. */
+/**
+ * A receipt is a few kilobytes; a mail past this is mostly pictures and attachments, and only
+ * this much of its start is read: its text and HTML parts come before what is attached.
+ */
 export const EMAIL_MAX_BYTES = 1024 * 1024;
+/** Email Routing hands over nothing larger; anything claiming more is turned away unread. */
+export const EMAIL_ROUTING_MAX_BYTES = 25 * 1024 * 1024;
 /** A receipt no phone has fetched in this long is deleted unread. */
 export const EMAIL_CAPTURE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
@@ -60,14 +65,38 @@ async function captureIdOf(
   return toBase64Url(new Uint8Array(digest)).slice(0, 32);
 }
 
+/**
+ * The first `limit` bytes of a mail, the rest left unread: its headers and the text and HTML
+ * parts that come before its attachments. What is cut off is never parsed or kept.
+ */
+async function headOf(raw: ReadableStream<Uint8Array>, limit: number): Promise<Uint8Array> {
+  const reader = raw.getReader();
+  const head = new Uint8Array(limit);
+  let size = 0;
+  try {
+    while (size < limit) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const take = Math.min(value.byteLength, limit - size);
+      head.set(value.subarray(0, take), size);
+      size += take;
+    }
+  } finally {
+    await reader.cancel().catch(() => undefined);
+  }
+  return head.slice(0, size);
+}
+
 function instantOrNull(value: string | undefined): string | null {
   const ms = value ? Date.parse(value) : NaN;
   return Number.isNaN(ms) ? null : new Date(ms).toISOString();
 }
 
 /**
- * Takes one email sent to `<handle>@<host>`. Mail to an address no phone holds, or larger than a
- * receipt can be, is refused (the sender gets a bounce). Mail to a real handle is read in memory,
+ * Takes one email sent to `<handle>@<host>`. Mail to an address no phone holds is refused (the
+ * sender gets a bounce). Mail larger than a receipt can be is read from its first
+ * `EMAIL_MAX_BYTES` only, its attachments dropped unread, and refused only when that start holds
+ * no text to read. Mail to a real handle is read in memory,
  * by the model when it answers and by the rules when it does not (`readSpend`): when it holds a
  * payment, only what was read is kept, sealed, for the phone to fetch; the email itself is never
  * stored, and goes nowhere but to the model, and nothing from it is logged. Anything that is not a
@@ -86,10 +115,12 @@ export async function receiveEmail(
   };
   const handle = handleOfRecipient(message.to);
   if (handle === null) return unknown();
-  if (message.rawSize > EMAIL_MAX_BYTES) {
+  const tooLarge = (): ReceiveOutcome => {
     message.setReject('Message too large for a receipt');
     return 'too_large';
-  }
+  };
+  if (message.rawSize > EMAIL_ROUTING_MAX_BYTES) return tooLarge();
+  const trimmed = message.rawSize > EMAIL_MAX_BYTES;
   const deviceHash = await deviceOfHandle(env.DB, handle);
   if (deviceHash === null) return unknown();
   const { success } = await env.EMAIL_RATE_LIMIT.limit({ key: handle });
@@ -107,7 +138,8 @@ export async function receiveEmail(
   let email: ReceiptEmail;
   let messageId: string | undefined;
   try {
-    const parsed = await PostalMime.parse(message.raw, { maxNestingDepth: 20 });
+    const source = trimmed ? await headOf(message.raw, EMAIL_MAX_BYTES) : message.raw;
+    const parsed = await PostalMime.parse(source, { maxNestingDepth: 20 });
     const from = parsed.from?.address
       ? { name: parsed.from.name, address: parsed.from.address }
       : null;
@@ -121,8 +153,10 @@ export async function receiveEmail(
     messageId = parsed.messageId;
   } catch {
     console.error('receipt email: a message could not be decoded');
-    return 'unreadable';
+    return trimmed ? tooLarge() : 'unreadable';
   }
+  // A large mail whose start holds no words is pictures or attachments only: still refused.
+  if (trimmed && !email.text?.trim() && !email.html?.trim()) return tooLarge();
 
   const confirmation = parseForwardingConfirmation(email, { receivedAt: now.toISOString() });
   if (confirmation !== null) {
@@ -144,6 +178,7 @@ export async function receiveEmail(
     currency: read.currency,
     category: read.category,
     kind: read.kind,
+    atKind: read.atKind,
   });
   if (!capture.success) return 'not_a_receipt';
 

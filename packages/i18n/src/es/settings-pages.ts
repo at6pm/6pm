@@ -1,0 +1,47 @@
+import type { Entry } from '../catalogue-types';
+import type { enSettingsPages } from '../en-settings-pages';
+
+export const esSettingsPages: { readonly [Key in keyof typeof enSettingsPages]: Entry } = {
+  'catch.health.total': '{count} cazados · 14 días',
+  'catch.health.axisToday': 'HOY',
+  'catch.health.quietCheck': {
+    one: 'Sin nada {count} día · toca para revisar',
+    other: 'Sin nada {count} días · toca para revisar',
+  },
+  'catch.health.setUp': 'Configurar',
+  'catch.health.setUpWhy.alerts': 'Sin configurar · caza los avisos de tu banco',
+  'catch.health.setUpWhy.wallet': 'Sin configurar · caza un pago sin contacto',
+  'catch.health.setUpWhy.email': 'Sin configurar · caza recibos por email',
+  'catch.reading.of': '{right} de {total}',
+  'catch.reading.explain':
+    'Este iPhone lee los recibos que compartes o escaneas. Un punto marca el que tuviste que corregir: el importe o la tienda.',
+  'catch.reading.ghost': 'Comparte un recibo y se cuenta aquí',
+  'settings.travel.off': 'Desactivado',
+  'settings.travel.auto': 'Automático',
+  'settings.travel.on': 'Activado · {place}',
+  'settings.travel.needsLocation': 'Necesita ubicación',
+  'settings.privacy.mostly': 'Casi todo en este móvil',
+  'settings.privacy.all': 'Todo en este móvil',
+  'privacyPage.headline': 'Tu dinero se queda en este iPhone, cifrado.',
+  'privacyPage.sub': 'Algunas cosas salen para procesarse. Cada una, y adónde va:',
+  'privacyPage.subDevice': 'Con la IA también aquí, nada sale. Cada una, y dónde se queda:',
+  'privacyPage.what': 'LO QUE SALE',
+  'privacyPage.to': 'VA A',
+  'privacyPage.ask': 'TU PREGUNTA EN ASK',
+  'privacyPage.lines': 'UNOS DATOS PARA UNA FRASE DEL COMPAÑERO',
+  'privacyPage.receipts': 'UN RECIBO QUE TU MÓVIL NO PUEDE LEER',
+  'privacyPage.voice': 'TU VOZ, MIENTRAS HABLAS',
+  'privacyPage.spends': 'TU LISTA DE GASTOS',
+  'privacyPage.neverSent': 'NUNCA SE ENVÍA',
+  'privacyPage.staysHere': 'SE QUEDA AQUÍ',
+  'privacyPage.nothingLeaves': 'NADA SALE',
+  'privacyPage.foot': 'ANTHROPIC NO ENTRENA CON ELLO · LO BORRA EN 30 DÍAS',
+  'privacyPage.backup': 'TU COPIA SOLO SALE SI LA ACTIVAS, CIFRADA DE EXTREMO A EXTREMO',
+  'privacyPage.crashes':
+    'LOS INFORMES DE FALLOS VAN A SENTRY SIN IMPORTES, NOMBRES NI NOTAS · REVENUECAT GESTIONA LAS COMPRAS',
+  'privacyPage.purchases': 'SIN INFORMES DE FALLOS · REVENUECAT GESTIONA LAS COMPRAS',
+  'privacyPage.keep': 'Guardarlo todo en este iPhone',
+  'privacyPage.keepSub': 'Cambiar la IA a este móvil',
+  'privacyPage.policy': 'Política de privacidad',
+  'privacyPage.policyFailed': 'No se pudo abrir la página. Inténtalo de nuevo.',
+};

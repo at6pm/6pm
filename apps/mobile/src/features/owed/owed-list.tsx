@@ -4,12 +4,15 @@ import { Text, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
 import {
+  owedByBill,
   owedByPerson,
   remindAtFor,
+  type OwedBill,
   type OwedPerson,
   type OwedRow,
   type RemindChoice,
 } from '@6pm/domain';
+import { owedInk } from '@6pm/theme';
 
 import { useMoney } from '../../data/money-provider';
 import { owedLineOf } from '../../data/owed-actions';
@@ -17,13 +20,13 @@ import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
 import { Symbol } from '../../ui/icons/symbol';
-import { useMeasuredWidth } from '../../ui/layout/use-measured-width';
 import { easeOut } from '../../ui/motion/curves';
 import { edgeSheetRoot } from '../../ui/navigation/edge-sheet';
 import { SheetScreen } from '../../ui/navigation/sheet-screen';
+import { PaperEdge } from '../../ui/paper-edge';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
-import { body, display, tabular } from '../../ui/type/fonts';
+import { body, display, mono, tabular } from '../../ui/type/fonts';
 import { useToast } from '../../ui/toast/toast-host';
 import { useOfferUndo } from '../../ui/undo/undo-host';
 import { accountReady } from '../../data/receiving-account';
@@ -32,28 +35,19 @@ import { useNotificationSettings } from '../reminders/notification-prefs';
 import { refreshReminderPermission } from '../reminders/reminder-permission';
 import { shareMessage } from './ask-share';
 import { CoverSheet } from './cover-sheet';
-import { Avatar, PaidStamp, Slip } from './owed-parts';
+import { Avatar, PaidStamp } from './owed-parts';
 import { flyOff, STAMP_HOLD_MS, stampIn } from './owed-motion';
 import { noteSettled, slipWhat, wasPaid } from './owed-words';
 import { useOwed, useOwedActions, useReceivingAccount } from './use-owed';
+import { AskToBePaid, RequestLine } from './request-parts';
+import { isCompany, requestsOf, requestWhat } from './request-words';
+import { WorkStamp } from '../work/work-stamp';
 
-const SLIP = 98;
 const reflow = LinearTransition.duration(300).easing(easeOut);
-
-/** Where each of up to three strips lies on a card, oldest first: share of the room, top, tilt. */
-const LAYOUTS: readonly (readonly (readonly [number, number, number])[])[] = [
-  [],
-  [[0.06, 8, -1]],
-  [
-    [0, 20, -3],
-    [1, 6, 3],
-  ],
-  [
-    [0, 22, -3],
-    [0.5, 12, 1],
-    [1, 4, 3],
-  ],
-];
+/** Each strip lies a little askew, as torn paper does. */
+const TILTS = [-0.6, 0.4, -0.3, 0.5] as const;
+/** The room right of a strip: Ask, or what happened. */
+const RIGHT = 100;
 
 /**
  * Strips that just left the list stay a beat: stamped PAID when they were paid (in cash, or money
@@ -75,145 +69,220 @@ function useLeaving(rows: readonly OwedRow[]) {
   return leaving;
 }
 
-function PersonCard({
-  person,
+/**
+ * One person's strip of a bill: their avatar, their name and what they owe, torn top and foot. A
+ * client's request has a square avatar for a shop or a company and wears the WORK stamp when it is
+ * work; once a request is on the list, a line under each strip says where it came from.
+ */
+function StripRow({
+  strip,
+  tilt,
   leaving,
-  merchants,
+  rows,
+  withRequests,
   onOpen,
   onAsk,
 }: {
-  readonly person: OwedPerson;
+  readonly strip: OwedPerson;
+  readonly tilt: number;
   readonly leaving: ReadonlySet<string>;
-  readonly merchants: ReadonlyMap<string, string>;
+  /** Every strip's row, open or leaving: a request's job, code and marks. */
+  readonly rows: ReadonlyMap<string, OwedRow>;
+  /** Some strip on the list is a request: every strip names where it came from. */
+  readonly withRequests: boolean;
   readonly onOpen: () => void;
   readonly onAsk: () => void;
 }) {
-  const { palette } = useTheme();
-  const { t, language } = useI18n();
+  const { t } = useI18n();
   const money = useMoneyFormat();
-  const { width, ready, onLayout } = useMeasuredWidth(0);
-  const staying = person.lines.filter((l) => !leaving.has(l.id));
-  const total = staying.reduce((sum, l) => sum + l.amount, 0);
-  // Oldest first, so the newest lies on top; at most three are drawn.
-  const shown = [...person.lines].slice(0, 3).reverse();
-  const layout = LAYOUTS[shown.length] ?? [];
-  const name = person.name ?? t('owed.someone');
+  const name = strip.name ?? t('owed.someone');
+  const gone = strip.lines.every((l) => leaving.has(l.id));
+  const paid = gone && strip.lines.some((l) => wasPaid(l.id) !== false);
+  const work = strip.lines.some((l) => rows.get(l.id)?.work === true);
   return (
-    <Animated.View layout={reflow} entering={FadeIn.duration(250)} exiting={FadeOut.duration(250)}>
-      <PressScale
-        scaleTo={0.98}
-        accessibilityRole="button"
-        accessibilityLabel={`${name}, ${money.spoken(total)}`}
-        onPress={onOpen}
-        style={{
-          borderRadius: 26,
-          backgroundColor: palette.cell,
-          boxShadow: palette.cardShadow,
-          paddingTop: 14,
-          paddingHorizontal: 14,
-          paddingBottom: 16,
-          minHeight: 96,
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 14,
-        }}
-      >
-        <View style={{ width: 54, alignItems: 'center', gap: 6 }}>
-          <Avatar name={person.name} size={40} />
-          <Text numberOfLines={1} style={{ ...body(14, 650), color: palette.ink }}>
-            {name}
-          </Text>
-        </View>
-        <View onLayout={onLayout} style={{ flex: 1, height: 70 }}>
-          {ready
-            ? shown.map((line, i) => {
-                const [at = 0, top = 0, tilt = 0] = layout[i] ?? [];
-                const gone = leaving.has(line.id);
-                const paid = gone && wasPaid(line.id) !== false;
-                return gone ? (
-                  <Animated.View
-                    key={line.id}
-                    exiting={flyOff}
-                    style={{
-                      position: 'absolute',
-                      left: Math.max(0, width - SLIP) * at,
-                      top,
-                      transform: [{ rotate: `${tilt}deg` }],
-                    }}
-                  >
-                    <Slip
-                      what={slipWhat(line, merchants.get(line.spendId), language)}
-                      amount={money.short(line.amount)}
-                      stamp={
-                        paid ? (
-                          <Animated.View entering={stampIn}>
-                            <PaidStamp />
-                          </Animated.View>
-                        ) : undefined
-                      }
-                    />
-                  </Animated.View>
-                ) : (
-                  <Animated.View
-                    key={line.id}
-                    layout={reflow}
-                    exiting={flyOff}
-                    style={{
-                      position: 'absolute',
-                      left: Math.max(0, width - SLIP) * at,
-                      top,
-                      transform: [{ rotate: `${tilt}deg` }],
-                    }}
-                  >
-                    <Slip
-                      what={slipWhat(line, merchants.get(line.spendId), language)}
-                      amount={money.short(line.amount)}
-                    />
-                  </Animated.View>
-                );
-              })
-            : null}
-        </View>
-        <View style={{ alignItems: 'flex-end', gap: 8 }}>
-          <Text
-            style={{
-              ...display(24, 500),
-              ...tabular,
-              color: palette.ink,
-              minWidth: 62,
-              textAlign: 'right',
-            }}
-          >
-            {money.short(total)}
-          </Text>
+    <Animated.View
+      layout={reflow}
+      entering={FadeIn.duration(250)}
+      exiting={flyOff}
+      style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}
+    >
+      <View style={{ flex: 1, minWidth: 0, gap: 6 }}>
+        {/* The press scales the strip; the tilt stays on the paper around it. */}
+        <View
+          style={{
+            transform: [{ rotate: `${tilt}deg` }],
+            boxShadow: `0 8px 14px ${owedInk.slipShadow}`,
+          }}
+        >
           <PressScale
+            scaleTo={0.98}
             accessibilityRole="button"
-            onPress={onAsk}
-            hitSlop={6}
-            style={{
-              height: 32,
-              paddingLeft: 9,
-              paddingRight: 12,
-              borderRadius: 99,
-              backgroundColor: palette.btnBg,
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 4,
-            }}
+            accessibilityLabel={`${name}, ${money.spoken(strip.total)}`}
+            onPress={onOpen}
+            disabled={gone}
           >
-            <Symbol name="qr_code_2" size={17} color={palette.btnFg} />
-            <Text style={{ ...body(13, 650), color: palette.btnFg }}>{t('owed.list.ask')}</Text>
+            <View style={{ transform: [{ scaleY: -1 }] }}>
+              <PaperEdge color={owedInk.paper} height={6} step={12} shadow={false} />
+            </View>
+            <View
+              style={{
+                backgroundColor: owedInk.paper,
+                paddingTop: 5,
+                paddingBottom: 7,
+                paddingLeft: 10,
+                paddingRight: 14,
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 10,
+              }}
+            >
+              <Avatar name={strip.name} size={32} square={isCompany(strip, rows)} />
+              <Text
+                numberOfLines={1}
+                style={{ ...body(16, 650), color: owedInk.ink, flex: 1, minWidth: 0 }}
+              >
+                {name}
+              </Text>
+              {work && !paid ? (
+                <WorkStamp
+                  face="always"
+                  small
+                  labels={{ inked: t('work.stamp'), offered: t('work.stampOffered') }}
+                />
+              ) : null}
+              <Text style={{ ...display(24, 500, -0.02), ...tabular, color: owedInk.ink }}>
+                {money.short(strip.total)}
+              </Text>
+            </View>
+            <PaperEdge color={owedInk.paper} height={6} step={12} shadow={false} />
+            {paid ? (
+              <Animated.View
+                entering={stampIn}
+                pointerEvents="none"
+                style={{ position: 'absolute', right: 86, top: 7 }}
+              >
+                <PaidStamp size={11} />
+              </Animated.View>
+            ) : null}
           </PressScale>
         </View>
-      </PressScale>
+        {withRequests ? (
+          <View style={{ paddingHorizontal: 10 }}>
+            <RequestLine person={strip} rows={rows} />
+          </View>
+        ) : null}
+      </View>
+      <View style={{ width: RIGHT, alignItems: 'flex-end' }}>
+        {gone ? null : <AskButton onPress={onAsk} />}
+      </View>
+    </Animated.View>
+  );
+}
+
+/** Ask, beside a strip: the QR to pay it. */
+function AskButton({ onPress }: { readonly onPress: () => void }) {
+  const { palette } = useTheme();
+  const { t } = useI18n();
+  return (
+    <PressScale
+      accessibilityRole="button"
+      onPress={onPress}
+      hitSlop={6}
+      style={{
+        height: 36,
+        paddingLeft: 10,
+        paddingRight: 13,
+        borderRadius: 99,
+        backgroundColor: palette.btnBg,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 5,
+      }}
+    >
+      <Symbol name="qr_code_2" size={18} color={palette.btnFg} />
+      <Text style={{ ...body(14.5, 650), color: palette.btnFg }}>{t('owed.list.ask')}</Text>
+    </PressScale>
+  );
+}
+
+/**
+ * One bill on the list: what it was and when, said once, and what the user paid for it when that
+ * spend is still at hand; then a strip per person who owes a share of it.
+ */
+function BillGroup({
+  bill,
+  what,
+  paid,
+  leaving,
+  rows,
+  withRequests,
+  onOpen,
+  onAsk,
+}: {
+  readonly bill: OwedBill;
+  /** "LẨU · THU 12" */
+  readonly what: string;
+  /** What the user paid for the whole bill, or null when that spend is no longer at hand. */
+  readonly paid: number | null;
+  readonly leaving: ReadonlySet<string>;
+  readonly rows: ReadonlyMap<string, OwedRow>;
+  readonly withRequests: boolean;
+  readonly onOpen: (strip: OwedPerson) => void;
+  readonly onAsk: (strip: OwedPerson) => void;
+}) {
+  const { palette } = useTheme();
+  const { t } = useI18n();
+  const money = useMoneyFormat();
+  return (
+    <Animated.View
+      layout={reflow}
+      entering={FadeIn.duration(250)}
+      exiting={FadeOut.duration(250)}
+      style={{ gap: 10 }}
+    >
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          gap: 10,
+          marginHorizontal: 2,
+          paddingHorizontal: 4,
+        }}
+      >
+        <Text
+          numberOfLines={1}
+          style={{ ...mono(11, 400, 0.14), color: palette.inkSoft, flexShrink: 1 }}
+        >
+          {what}
+        </Text>
+        {paid === null ? null : (
+          <Text numberOfLines={1} style={{ ...mono(11, 400, 0.14), color: palette.inkSoft }}>
+            {t('owed.list.youPaid', { amount: money.number(paid) })}
+          </Text>
+        )}
+      </View>
+      {bill.strips.map((strip, i) => (
+        <StripRow
+          key={strip.key}
+          strip={strip}
+          tilt={TILTS[i % TILTS.length] ?? 0}
+          leaving={leaving}
+          rows={rows}
+          withRequests={withRequests}
+          onOpen={() => onOpen(strip)}
+          onAsk={() => onAsk(strip)}
+        />
+      ))}
     </Animated.View>
   );
 }
 
 /**
- * Owed to you: what everyone still owes, and in how many strips; one card per person holding
- * their strips, with what they come to and Ask. A tap on a card offers Cover it, Paid in cash and
- * Ask again. Paid strips are stamped and fly off; the total recounts.
+ * Owed to you: what everyone still owes, and in how many strips; then each bill, newest first,
+ * said once over its strips, each strip a person and what they owe, with Ask beside it. A request
+ * to be paid is a bill of its own, headed by its job, its client's strip opening on its Ask. A tap
+ * on a friend's strip offers Cover it, Paid in cash and Ask again. Paid strips are stamped and fly
+ * off; the total recounts. "Ask to be paid" sits under the list.
  */
 export function OwedList() {
   const router = useRouter();
@@ -235,15 +304,53 @@ export function OwedList() {
     () => owedByPerson([...rows, ...leaving].map(owedLineOf)),
     [rows, leaving],
   );
-  // The shop each strip was a share of, from this cycle's spends (older ones show the day only).
+  // The bills, each said once, newest first: a strip per person who owes a share of it.
+  const bills = useMemo(() => owedByBill([...rows, ...leaving].map(owedLineOf)), [rows, leaving]);
+  // The spend each bill was split from, from this cycle's spends (older ones show the day only).
+  const spends = useMemo(
+    () => new Map(snap.cycleSpends.map((s) => [s.id, s] as const)),
+    [snap.cycleSpends],
+  );
   const merchants = useMemo(
     () => new Map(snap.cycleSpends.map((s) => [s.id, s.merchant] as const)),
     [snap.cycleSpends],
   );
+  const rowsById = useMemo(
+    () => new Map([...rows, ...leaving].map((row) => [row.id, row] as const)),
+    [rows, leaving],
+  );
+  const withRequests = useMemo(() => rows.some((row) => row.code != null), [rows]);
+  // A request is a share of no spend: its own id is its bill, headed by its job.
+  const billWhat = (bill: OwedBill) => {
+    const request = rowsById.get(bill.spendId);
+    return request?.code != null
+      ? requestWhat(request, language)
+      : slipWhat(bill, spends.get(bill.spendId)?.merchant, language);
+  };
 
   // Outside Vietnam there is no VietQR: the Ask is a plain message with the amount. A first Ask
   // with no account opens the receiving account, and goes on to the Ask once it is typed.
   const ask = (person: OwedPerson) => {
+    // A client's request is asked on its own strip, with its job and its code in the note.
+    const request = requestsOf(person, rowsById)[0];
+    if (request) {
+      if (money.currency.code !== 'VND') {
+        void shareMessage(
+          t('owed.ask.messagePlain', {
+            spend: request.job ?? t('owed.list.title'),
+            amount: money.full(request.amount),
+          }),
+        ).catch(() => undefined);
+        return;
+      }
+      if (!accountReady(account ?? null)) {
+        toast(t('owed.ask.noAccount'));
+        router.push('/receiving-account');
+        return;
+      }
+      router.push({ pathname: '/owed-ask', params: { key: person.key, line: request.id } });
+      return;
+    }
     if (money.currency.code !== 'VND') {
       const spend = merchants.get(person.lines[0]?.spendId ?? '') ?? t('owed.list.title');
       void shareMessage(
@@ -321,7 +428,12 @@ export function OwedList() {
 
   return (
     <View collapsable={false} style={edgeSheetRoot}>
-      <SheetScreen title={t('owed.list.title')} gap={14} fit>
+      <SheetScreen
+        title={t('owed.list.title')}
+        gap={14}
+        fit
+        footer={<AskToBePaid onPress={() => router.push('/owed-request')} />}
+      >
         {people.length > 0 ? (
           <View
             style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8, paddingHorizontal: 2 }}
@@ -343,19 +455,26 @@ export function OwedList() {
             {t('owed.list.empty')}
           </Animated.Text>
         ) : (
-          people.map((person) => (
-            <PersonCard
-              key={person.key}
-              person={person}
+          bills.map((bill) => (
+            <BillGroup
+              key={bill.spendId}
+              bill={bill}
+              what={billWhat(bill)}
+              // The spend at hand holds only the user's kept share, and settled shares are not
+              // loaded here, so the whole bill is not known: say nothing rather than a wrong sum.
+              paid={null}
               leaving={leavingIds}
-              merchants={merchants}
-              onOpen={() => {
+              rows={rowsById}
+              withRequests={withRequests}
+              onOpen={(strip) => {
                 haptics.tick();
-                setCovering(person);
+                // A client's strips open on their strip: covering a client's job is not a thing.
+                if (strip.lines.every((l) => rowsById.get(l.id)?.code != null)) ask(strip);
+                else setCovering(strip);
               }}
-              onAsk={() => {
+              onAsk={(strip) => {
                 haptics.tap();
-                ask(person);
+                ask(strip);
               }}
             />
           ))

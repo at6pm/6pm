@@ -6,7 +6,6 @@ import {
   FEE_SLACK_RATIO,
   findDuplicate,
   mayBeSamePayment,
-  mergedNaming,
   mergedStatus,
   namesNoPayee,
   NOTICE_LATE_WINDOW_MS,
@@ -382,6 +381,42 @@ describe('findDuplicate', () => {
     expect(findDuplicate({ ...receipt, source: 'shared' }, [card])).toBeNull();
   });
 
+  it('keeps two banks’ payments to two payees apart, alike in amount and minute', () => {
+    // A card charged at a shop, and four minutes on a transfer from another bank to someone else.
+    const card = {
+      ...base,
+      source: 'email' as const,
+      status: 'caught' as const,
+      amount: 30_000,
+      merchant: 'SAMPLE TELECOM',
+      detail: 'info@info.vietcombank.com.vn',
+    };
+    const transfer = {
+      amount: 30_000,
+      source: 'email' as const,
+      at: at(4 * 60_000),
+      merchant: 'FINTECHCO TOPUP LIVE_1000200030',
+      detail: 'mbebanking@mbbank.com.vn',
+    };
+    expect(findDuplicate(transfer, [card])).toBeNull();
+    // Two apps' alerts are told apart the same way, whichever came first.
+    const alert = { ...transfer, source: 'alert' as const, detail: 'MB Bank' };
+    expect(findDuplicate(alert, [{ ...card, source: 'alert', detail: 'VCB Digibank' }])).toBeNull();
+    const first = { ...card, ...transfer, id: 'b', at: base.at, status: 'caught' as const };
+    expect(findDuplicate({ ...card, at: at(2 * 60_000) }, [first])).toBeNull();
+    // One payee under two spellings, or a side that names nobody, is still one payment.
+    expect(findDuplicate({ ...transfer, merchant: 'Sample Telecom JSC' }, [card])?.id).toBe('a');
+    expect(findDuplicate({ ...transfer, merchant: '' }, [card])?.id).toBe('a');
+    expect(findDuplicate({ ...transfer, merchant: 'MBCT Chuyen tien' }, [card])?.id).toBe('a');
+    // A bank and the shop's own receipt, or a wallet and the bank it drew from, are not judged
+    // by their names: a bank's descriptor and a shop's name for itself can share nothing.
+    const shop = { ...transfer, merchant: 'Quán Cơm Bình Dân', detail: 'no-reply@grab.com' };
+    expect(findDuplicate(shop, [{ ...card, merchant: 'GRAB*A-0000TEST' }])?.id).toBe('a');
+    const wallet = { ...card, source: 'alert' as const, detail: 'MoMo', merchant: 'Sample Play' };
+    const drawn = { ...alert, merchant: 'CTY CP DICH VU DI DONG' };
+    expect(findDuplicate(drawn, [wallet])?.id).toBe('a');
+  });
+
   it('never merges cash, which no other source can have seen', () => {
     expect(findDuplicate({ amount: 45_000, source: 'cash', at: at(0) }, [base])).toBeNull();
     const cash = { ...base, source: 'cash' as const, status: 'kept' as const };
@@ -429,91 +464,6 @@ describe('namesNoPayee', () => {
     ]) {
       expect(namesNoPayee(name)).toBe(false);
     }
-  });
-});
-
-describe('mergedNaming', () => {
-  const alert = {
-    merchant: '',
-    categoryId: 'food',
-    source: 'alert' as const,
-    status: 'caught' as const,
-  };
-  const email = { merchant: 'Cloudflare', categoryId: 'shopping', source: 'email' as const };
-
-  it('takes the email’s payee and category over an alert that named nobody, alert first', () => {
-    expect(mergedNaming(alert, email)).toEqual({ merchant: 'Cloudflare', categoryId: 'shopping' });
-    expect(mergedNaming({ ...alert, merchant: 'MBCT Techcombank' }, email)).toEqual({
-      merchant: 'Cloudflare',
-      categoryId: 'shopping',
-    });
-  });
-
-  it('takes a receipt’s name over the payee an alert read', () => {
-    const read = { ...alert, merchant: 'PHUC LONG', categoryId: 'food' };
-    expect(
-      mergedNaming(read, {
-        merchant: 'Phúc Long Coffee & Tea',
-        categoryId: 'drinks',
-        source: 'email',
-      }),
-    ).toEqual({ merchant: 'Phúc Long Coffee & Tea', categoryId: 'drinks' });
-  });
-
-  it('keeps the email’s payee and category when the alert comes second', () => {
-    const first = { ...email, status: 'caught' as const };
-    expect(mergedNaming(first, alert)).toEqual({ merchant: 'Cloudflare', categoryId: 'shopping' });
-    expect(mergedNaming(first, { ...alert, merchant: 'Techcombank QR' })).toEqual({
-      merchant: 'Cloudflare',
-      categoryId: 'shopping',
-    });
-    expect(mergedNaming(first, { ...alert, merchant: 'CLOUDFLARE' })).toEqual({
-      merchant: 'Cloudflare',
-      categoryId: 'shopping',
-    });
-  });
-
-  it('names a spend already kept, without moving it from the category the user kept it in', () => {
-    expect(mergedNaming({ ...alert, status: 'kept' }, email)).toEqual({
-      merchant: 'Cloudflare',
-      categoryId: 'food',
-    });
-  });
-
-  it('spells the payee as the shop does, keeping the category', () => {
-    const card = { ...email, merchant: 'CLOUDFLARE +18889935273 US', status: 'caught' as const };
-    expect(mergedNaming(card, { ...email, categoryId: 'fun' })).toEqual({
-      merchant: 'Cloudflare',
-      categoryId: 'shopping',
-    });
-    // A name in capitals for another payee is not respelt.
-    expect(mergedNaming(card, { ...email, merchant: 'Vercel' })).toEqual({
-      merchant: 'CLOUDFLARE +18889935273 US',
-      categoryId: 'shopping',
-    });
-  });
-
-  it('names money in by the shop that gave it back, whichever came first', () => {
-    const alert = {
-      merchant: 'MBVCB.16785000.012345.KHO TAI KHOAN',
-      categoryId: 'food',
-      source: 'alert' as const,
-    };
-    const refund = { merchant: 'Kho Tài Khoản', categoryId: 'shopping', source: 'email' as const };
-    expect(mergedNaming({ ...alert, status: 'caught' }, refund).merchant).toBe('Kho Tài Khoản');
-    expect(mergedNaming({ ...refund, status: 'caught' }, alert).merchant).toBe('Kho Tài Khoản');
-  });
-
-  it('keeps what it had between two blanks or two names that say as much', () => {
-    expect(mergedNaming(alert, { ...alert, categoryId: 'fun' })).toEqual({
-      merchant: '',
-      categoryId: 'food',
-    });
-    const named = { ...email, merchant: 'Highlands Coffee', status: 'caught' as const };
-    expect(mergedNaming(named, email)).toEqual({
-      merchant: 'Highlands Coffee',
-      categoryId: 'shopping',
-    });
   });
 });
 

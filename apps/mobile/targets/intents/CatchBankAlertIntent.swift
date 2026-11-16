@@ -38,7 +38,8 @@ struct CatchBankAlertIntent: AppIntent {
     else { return .result() }
     // Read at all, the automation still runs: no "Nothing from your bank in 3 days".
     if read.last != nil { CaptureNotices.wayRan("alert") }
-    if let item = read.item {
+    // A payment that failed only voids the one it tells of: nothing was caught to say so.
+    if let item = read.item, item["what"] as? String != "failed" {
       let bank = (read.last?["bank"] as? String).flatMap { $0.isEmpty ? nil : $0 }
       let name = bank ?? (item["merchant"] as? String ?? "")
       await CaptureNotices.firstCatch(
@@ -73,6 +74,11 @@ enum CaughtAlert {
     if let item = object["item"] as? [String: Any], let id = item["id"] as? String {
       try GroupFiles.writeInbox(id: id, json: JSONSerialization.data(withJSONObject: item))
       caught = item
+    }
+    // While the capture log is on, an alert that moved no money leaves its words for the log
+    // alone: the app imports nothing else from it.
+    if let heard = object["heard"] as? [String: Any], let id = heard["id"] as? String {
+      try GroupFiles.writeInbox(id: id, json: JSONSerialization.data(withJSONObject: heard))
     }
     let last = object["last"] as? [String: Any]
     if let last {

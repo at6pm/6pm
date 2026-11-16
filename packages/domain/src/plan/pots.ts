@@ -52,6 +52,38 @@ export function futureYouPotRow(createdAt: string): PotRow {
 }
 
 /**
+ * The buffer, "In hand": a system jar for money that has come in and is not yet in a month's line
+ * (a pay beyond the usual count, what a month left over). Only someone with an income that is not
+ * monthly has one (`keepsBuffer`); it is never one of the free jars.
+ */
+export const BUFFER_POT_ID = 'buffer';
+
+export function isBufferPot(pot: Pick<PotRow, 'id'> | string): boolean {
+  return (typeof pot === 'string' ? pot : pot.id) === BUFFER_POT_ID;
+}
+
+/**
+ * The buffer as a row. Its name is never shown as written: screens name it in the phone's
+ * language. It is filled by hand only, so no payday sets anything aside in it.
+ */
+export function bufferPotRow(createdAt: string): PotRow {
+  return {
+    id: BUFFER_POT_ID,
+    kind: 'occasion',
+    name: 'In hand',
+    icon: 'account_balance_wallet',
+    hue: 140,
+    goal: 0,
+    neededBy: null,
+    share: null,
+    monthly: null,
+    paused: false,
+    createdAt,
+    archivedAt: null,
+  };
+}
+
+/**
  * A goal from 2.1 that has not been told how to fill since: it keeps its share of the Future you
  * slice, so nobody's daily number moves on update. Renaming it, or changing its icon, colour or
  * target, keeps it so; only choosing "By a date" or "Each payday" makes it an ordinary jar.
@@ -393,8 +425,8 @@ function topUpStepsIn(currency: Currency): Vnd[] {
 
 /**
  * Jars of one's own without Max: dated, steady, by hand and 2.1 goals alike. Future you's jar, the
- * season's Tết jar and jars shared through Budget together never count. Jars already made are
- * always kept.
+ * buffer, the season's Tết jar and jars shared through Budget together never count. Jars already
+ * made are always kept.
  */
 export const FREE_OWN_JARS = 3;
 
@@ -407,7 +439,11 @@ export function newJarLocked(
   max: boolean,
 ): boolean {
   const own = pots.filter(
-    (p) => p.id !== FUTURE_YOU_POT_ID && p.archivedAt === null && p.season !== 'newYear',
+    (p) =>
+      p.id !== FUTURE_YOU_POT_ID &&
+      p.id !== BUFFER_POT_ID &&
+      p.archivedAt === null &&
+      p.season !== 'newYear',
   );
   return !max && own.length >= FREE_OWN_JARS;
 }

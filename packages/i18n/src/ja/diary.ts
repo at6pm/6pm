@@ -4,7 +4,8 @@ import type { enDiary } from '../en-diary';
 // Your line (the daily amount) is 目安; under it is 目安以下. A money diary is お金日記.
 export const jaDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.title': '日記',
-  'diary.kicker': '{month}は{closed}日締め · 全部で{all}日',
+  'diary.kicker': '{month} · {closed}日締め',
+  'diary.kickerAll': '{month} · {closed}日締め · 全部で{all}日',
   'diary.recap.kicker': '今週ここまで · {range}',
   'diary.recap.hint': 'タップかスワイプ',
   'diary.recap.under.lead': { other: 'ここまで{count}日が目安以下。だから' },
@@ -24,8 +25,7 @@ export const jaDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.cal.summaryNone': '今夜締めて、最初の1日を記録しましょう',
   'diary.cal.under': '目安以下',
   'diary.cal.over': 'オーバー',
-  'diary.cal.today': '6pm',
-  'diary.cal.missed': '未締め',
+  'diary.cal.tap': '· 日付をタップ',
   'diary.receipt.no': 'No.{no}',
   'diary.receipt.empty': '支出なし',
   'diary.receipt.late': '遅れて締め',
@@ -89,4 +89,9 @@ export const jaDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.cal.previous': '前の月',
   'diary.cal.next': '次の月',
   'diary.fromJar': '{jar}の瓶から',
+  'diary.day.title': 'この日を見直す',
+  'diary.day.empty': 'この日に残っている記録はありません。',
+  'diary.day.hint': '行をタップして変更。左にスワイプで削除。',
+  'diary.receipt.open': '{date}のレシート、合計{total}',
+  'diary.receipt.openHint': 'この日を開いて、記録を変更・削除します',
 };

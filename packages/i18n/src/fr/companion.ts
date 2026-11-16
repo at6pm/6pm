@@ -152,6 +152,18 @@ export const frCompanion: { readonly [Key in keyof typeof enCompanion]: Entry } 
   'companion.moneyInSpread.roast':
     '{amount} de {name}. {daily} de plus par jour. Essaie d’en garder un peu.',
   'companion.moneyInSpread.plain': '{amount} reçus. Chaque jour jusqu’à la paie gagne {daily}.',
+  'companion.monthCard.soft': '{place}, {count} fois. Chaque fois en valait la peine.',
+  'companion.monthCard.cheeky': '{place} ×{count}. Pas un regret.',
+  'companion.monthCard.roast': '{place}, {count} fois. Ils connaissent ton prénom.',
+  'companion.monthCard.plain': '{place} : {count} visites.',
+  'companion.monthCardQuiet.soft': '{closed} soirs clôturés. C’est ça, l’habitude.',
+  'companion.monthCardQuiet.cheeky': '{closed} soirs clôturés. Frimeur.',
+  'companion.monthCardQuiet.roast': '{closed} clôtures. Mais qui es-tu ?',
+  'companion.monthCardQuiet.plain': '{closed} soirs clôturés.',
+  'companion.jarCard.soft': '{jar}, rempli paie après paie.',
+  'companion.jarCard.cheeky': '{jar} : plein. Ton toi du futur hurle de joie.',
+  'companion.jarCard.roast': '{jar} est plein. Ne le vide pas dès le premier jour.',
+  'companion.jarCard.plain': '{jar} a atteint son objectif.',
   'companion.seasonCountdown.soft': 'Chaque jour, une lanterne s’éteint. Puis vient {festival}.',
   'companion.seasonCountdown.cheeky': 'Une lanterne par jour. La cagnotte tient bon.',
   'companion.seasonCountdown.roast':

@@ -1,0 +1,30 @@
+import type { Entry } from '../catalogue-types';
+import type { enQuickAdd } from '../en-quick-add';
+
+export const jaQuickAdd: { readonly [Key in keyof typeof enQuickAdd]: Entry } = {
+  'quick.face.out': '支出',
+  'quick.face.in': '入金',
+  'quick.tool.photo': '写真',
+  'quick.tool.split': '割り勘',
+  'quick.tool.jar': '瓶から',
+  'quick.tool.noJar': '瓶から出さない',
+  'quick.todayStays': '今日は{amount}のまま',
+  'quick.in.ticket': '6pm · 入金',
+  'quick.in.whoFrom': '誰から',
+  'quick.in.name': '名前',
+  'quick.in.who': '誰からのお金？',
+  'quick.in.into': '入金先',
+  'quick.in.days': '毎日に振り分け',
+  'quick.in.daysLast': '毎日に振り分け、前回と同じ',
+  'quick.in.jarLast': '{jar}へ、前回と同じ',
+  'quick.in.pay': 'あなたの給料',
+  'quick.in.payLast': 'あなたの給料、前回と同じ',
+  'quick.in.landing': { other: '+{count}日 · {date}まで足りる' },
+  'quick.in.work': '仕事',
+  'voice.missed': 'うまく聞き取れませんでした。',
+  'voice.heardFirst': '{said}と聞こえました。先に金額を言ってください：「45k、フォー」。',
+  'voice.sayFirst': '先に金額を言ってください：「45k、フォー」。',
+  'voice.nothingHeard': '何も聞こえませんでした。マイクは許可されていますか？',
+  'voice.tryAgain': 'もう一度',
+  'voice.toKeypad': 'キーパッドに戻る',
+};

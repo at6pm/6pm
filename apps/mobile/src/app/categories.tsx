@@ -18,7 +18,7 @@ import { SortableCategories } from '../features/categories/sortable-categories';
 import { useI18n } from '../i18n/i18n';
 import { useMoneyFormat } from '../money/use-money-format';
 import { haptics } from '../ui/haptics';
-import { SheetScreen } from '../ui/navigation/sheet-screen';
+import { SettingsPage } from '../features/settings/settings-page';
 import { useTheme } from '../ui/theme/theme';
 import { body } from '../ui/type/fonts';
 import { UndoHost, useOfferUndo } from '../ui/undo/undo-host';
@@ -120,7 +120,7 @@ function CategoriesSheet() {
     return category ? [{ rule, category }] : [];
   });
   return (
-    <SheetScreen title={t('categories.title')} gap={24} scrollEnabled={!dragging}>
+    <SettingsPage title={t('categories.title')} gap={24} scrollEnabled={!dragging}>
       <Text
         style={{
           ...body(15),
@@ -183,6 +183,6 @@ function CategoriesSheet() {
         ))}
         {shownRules.length === 0 ? <NoRules text={t('categories.noRules')} /> : null}
       </ListSection>
-    </SheetScreen>
+    </SettingsPage>
   );
 }

@@ -2,6 +2,8 @@ import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
+import { useMoney } from '../../data/money-provider';
+import { hasWorkMoney } from '../../data/work-money';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
@@ -9,12 +11,14 @@ import { Symbol } from '../../ui/icons/symbol';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, tabular } from '../../ui/type/fonts';
+import { owedEntryOf } from './owed-entry';
 import { Avatar } from './owed-parts';
 import { useOwed } from './use-owed';
 
 /**
- * "Owed to you · 1,15tr" on Today and in the Diary, only while someone owes something: the people's
- * avatars, the total, and the way into the owed list. It never changes the daily number.
+ * "Owed to you · 1,15tr" on Today and in the Diary, while someone owes something: the people's
+ * avatars, the total, and the way into the owed list. For someone with work money it stays while
+ * nobody owes anything, as the way to the first "Ask to be paid". It never changes the number.
  */
 export function OwedRow() {
   const router = useRouter();
@@ -22,14 +26,17 @@ export function OwedRow() {
   const { t } = useI18n();
   const money = useMoneyFormat();
   const { people, total } = useOwed();
-  if (people.length === 0) return null;
+  const entry = owedEntryOf(people.length, hasWorkMoney(useMoney()));
+  if (entry === null) return null;
   const faces = people.slice(0, 3);
   return (
     <Animated.View entering={FadeIn.duration(250)} exiting={FadeOut.duration(200)}>
       <PressScale
         scaleTo={0.98}
         accessibilityRole="button"
-        accessibilityLabel={`${t('owed.row')}, ${money.spoken(total)}`}
+        accessibilityLabel={
+          entry === 'ask' ? t('owed.row') : `${t('owed.row')}, ${money.spoken(total)}`
+        }
         onPress={() => {
           haptics.tick();
           router.push('/owed');
@@ -47,6 +54,20 @@ export function OwedRow() {
           gap: 12,
         }}
       >
+        {entry === 'ask' ? (
+          <View
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: 14,
+              backgroundColor: palette.chipBg,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Symbol name="qr_code_2" size={17} color={palette.ink} />
+          </View>
+        ) : null}
         <View style={{ flexDirection: 'row' }}>
           {faces.map((p, i) => (
             <View
@@ -65,9 +86,11 @@ export function OwedRow() {
         <Text numberOfLines={1} style={{ ...body(16, 600), color: palette.ink, flex: 1 }}>
           {t('owed.row')}
         </Text>
-        <Text style={{ ...body(16, 650), ...tabular, color: palette.ink }}>
-          {money.short(total)}
-        </Text>
+        {entry === 'people' ? (
+          <Text style={{ ...body(16, 650), ...tabular, color: palette.ink }}>
+            {money.short(total)}
+          </Text>
+        ) : null}
         <Symbol name="chevron_right" size={20} color={palette.inkSoft} />
       </PressScale>
     </Animated.View>

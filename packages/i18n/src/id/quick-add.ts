@@ -1,0 +1,30 @@
+import type { Entry } from '../catalogue-types';
+import type { enQuickAdd } from '../en-quick-add';
+
+export const idQuickAdd: { readonly [Key in keyof typeof enQuickAdd]: Entry } = {
+  'quick.face.out': 'Keluar',
+  'quick.face.in': 'Dibayar',
+  'quick.tool.photo': 'Foto',
+  'quick.tool.split': 'Bagi',
+  'quick.tool.jar': 'Dari toples',
+  'quick.tool.noJar': 'Bukan dari toples',
+  'quick.todayStays': 'HARI INI TETAP {amount}',
+  'quick.in.ticket': '6pm · Uang masuk',
+  'quick.in.whoFrom': 'Dari siapa',
+  'quick.in.name': 'Nama',
+  'quick.in.who': 'Dari siapa uangnya?',
+  'quick.in.into': 'Masuk ke',
+  'quick.in.days': 'Ke hari-harimu',
+  'quick.in.daysLast': 'Ke hari-harimu, seperti terakhir kali',
+  'quick.in.jarLast': 'Ke {jar}, seperti terakhir kali',
+  'quick.in.pay': 'Gajimu',
+  'quick.in.payLast': 'Gajimu, seperti terakhir kali',
+  'quick.in.landing': { other: '+{count} HARI · CUKUP SAMPAI {date}' },
+  'quick.in.work': 'KERJA',
+  'voice.missed': 'Aku belum menangkapnya.',
+  'voice.heardFirst': 'Aku dengar {said}. Sebut jumlahnya dulu: “45k, phở”.',
+  'voice.sayFirst': 'Sebut jumlahnya dulu: “45k, phở”.',
+  'voice.nothingHeard': 'Aku tidak dengar apa-apa. Mikrofon sudah diizinkan?',
+  'voice.tryAgain': 'Coba lagi',
+  'voice.toKeypad': 'Kembali ke papan angka',
+};

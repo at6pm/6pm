@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
 import { owedInk } from '@6pm/theme';
@@ -21,6 +22,9 @@ export function QrStrip({
   bank,
   holder,
   qrSize = 250,
+  square = false,
+  stamp,
+  note,
 }: {
   readonly kicker: string;
   readonly what: string;
@@ -30,6 +34,12 @@ export function QrStrip({
   readonly bank: string;
   readonly holder: string;
   readonly qrSize?: number;
+  /** A client that is a shop or a company: a square avatar. */
+  readonly square?: boolean;
+  /** Drawn where `what` is: a request's WORK stamp. */
+  readonly stamp?: ReactNode;
+  /** A request's transfer note, its code first, printed above the bank. */
+  readonly note?: ReactNode;
 }) {
   return (
     <View collapsable={false}>
@@ -60,12 +70,14 @@ export function QrStrip({
           >
             {kicker}
           </Text>
-          <Text
-            numberOfLines={1}
-            style={{ ...mono(10.5, 400, 0.14), color: owedInk.qrSoft, flexShrink: 1 }}
-          >
-            {what}
-          </Text>
+          {stamp ?? (
+            <Text
+              numberOfLines={1}
+              style={{ ...mono(10.5, 400, 0.14), color: owedInk.qrSoft, flexShrink: 1 }}
+            >
+              {what}
+            </Text>
+          )}
         </View>
         <View
           style={{
@@ -76,7 +88,7 @@ export function QrStrip({
             justifyContent: 'center',
           }}
         >
-          <Avatar name={name} size={34} />
+          <Avatar name={name} size={34} square={square} />
           <Text
             numberOfLines={1}
             adjustsFontSizeToFit
@@ -88,6 +100,7 @@ export function QrStrip({
         </View>
         <QrCode payload={payload} size={qrSize} />
         <View style={{ alignSelf: 'stretch', gap: 12 }}>
+          {note}
           <DashedRule color={owedInk.qrRule} width={1.5} />
           <View
             style={{

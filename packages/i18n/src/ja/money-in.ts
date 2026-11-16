@@ -38,6 +38,12 @@ export const jaMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'moneyIn.payback.subClaim': '経費精算が戻ってきました。数字は変わりません。',
   'moneyIn.payback.yes': 'はい、返してもらった',
   'moneyIn.payback.line': '返済済み',
+  'moneyIn.remembered.saved': 'また{jar}に入れる？',
+  'moneyIn.remembered.spread': 'また日割りにする？',
+  'moneyIn.remembered.sub': '前回、{from}からのお金はそこに入れました。',
+  'moneyIn.remembered.subNoName': '前回はそこに入れました。',
+  'moneyIn.remembered.yes': 'うん、前回と同じで',
+  'moneyIn.remembered.line': '前回と同じ',
   'moneyIn.goesTo.label': '行き先',
   'moneyIn.goesTo.spread': '毎日に分ける',
   'moneyIn.goesTo.spreadSub': '明日は{amount}に',
@@ -61,4 +67,6 @@ export const jaMoneyIn: { readonly [Key in keyof typeof enMoneyIn]: Entry } = {
   'plan.month.countOn': '当てにできるお金',
   'plan.month.countOnHelp':
     '毎月必ず入る最低額（手取り）。変動するなら少なめに。それ以上の分は締めで入ってきます。',
+  'moneyIn.landing.sub': 'そうなら、まず請求の分をよけて、残りを毎日に分けます。',
+  'moneyIn.row.pay': 'あなたの給料',
 };

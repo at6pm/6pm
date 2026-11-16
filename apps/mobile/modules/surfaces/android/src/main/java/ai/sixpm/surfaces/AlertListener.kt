@@ -98,8 +98,19 @@ class AlertListener : NotificationListenerService() {
         SurfaceFiles.writeInbox(context, id, item.toString())
         val bank = last?.optString("bank")?.takeIf { it.isNotEmpty() && it != "null" }
         val name = bank ?: item.optString("merchant").trim()
-        val said = CaptureNotices.firstCatch(context, last?.optString("amountText").orEmpty(), name)
-        if (!said) CaughtNotice.post(context, id, item, last)
+        // A payment that failed only voids the one it tells of: nothing was caught to say so.
+        if (item.optString("what") != "failed") {
+          val said =
+            CaptureNotices.firstCatch(context, last?.optString("amountText").orEmpty(), name)
+          if (!said) CaughtNotice.post(context, id, item, last)
+        }
+      }
+      // While the capture log is on, an alert that moved no money leaves its words for the log
+      // alone: no notice is posted and the app imports nothing else from it.
+      val heard = read.optJSONObject("heard")
+      val heardId = heard?.optString("id").orEmpty()
+      if (heard != null && heardId.isNotEmpty()) {
+        SurfaceFiles.writeInbox(context, heardId, heard.toString())
       }
       if (last != null) {
         SurfaceFiles.writeStatus(context, "last-alert", last.toString())

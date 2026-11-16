@@ -1,8 +1,10 @@
 import { VND, type Currency } from '../money/currency';
 import type { SpendDirection } from '../spend/spend';
+import { payeeByShape } from './alert-payee-shapes';
 import { bankNamedIn, bankOfApp } from './bank-alert-senders';
 import { cleanMemo } from './bank-receipt';
 import { tidyPayee } from './bill-topic';
+import { namesNoPayee } from './payee-names';
 import { readsAsBalance } from './receipt-amount';
 import { readReceiptTime, withFullYears } from './receipt-time';
 import { foldWords } from './spoken-spend';
@@ -48,6 +50,24 @@ export interface BankAlertMovement {
   /** The bank or wallet's short name from the catalogue ("MB Bank", "MoMo"). */
   readonly bank: string | null;
 }
+
+/** What else an alert that moved money says about it, for telling one payment from another. */
+export interface BankAlertKeys {
+  /** What the read `at` is: when the phone was handed the alert, or the time it prints. */
+  readonly atKind: 'delivered' | 'printed' | null;
+  /** The bank's own code for the payment, when the alert prints one ("Ref: FT26316XQ7"). */
+  readonly reference: string | null;
+  /** The last digits of the person's account the alert names before the amount ("TK …456"). */
+  readonly accountTail: string | null;
+  /** Money that came in that the words call given back by a shop, or taken back by the bank. */
+  readonly what: 'refund' | 'reversal' | null;
+}
+
+/** A payment the bank took back, as alerts word it. */
+const REVERSAL_WORDS =
+  / (?:hoan tra giao dich|dao giao dich|giao dich bi dao|tra lai giao dich|reversal|reversed) /;
+/** Money a shop gave back. */
+const REFUND_WORDS = / (?:hoan tien|refund|refunded) /;
 
 export interface BankAlertSkipped {
   readonly kind: 'skipped';
@@ -323,9 +343,46 @@ function payeeInMemo(memo: string | null, way: SpendDirection): string | null {
 }
 
 function atOf(date: string | null | undefined, text: string): string | null {
+  return atAndKindOf(date, text).at;
+}
+
+function atAndKindOf(
+  date: string | null | undefined,
+  text: string,
+): { readonly at: string | null; readonly atKind: BankAlertKeys['atKind'] } {
   const delivered = date ? new Date(date) : null;
-  if (delivered && !Number.isNaN(delivered.getTime())) return delivered.toISOString();
-  return readReceiptTime(withFullYears(text));
+  if (delivered && !Number.isNaN(delivered.getTime())) {
+    return { at: delivered.toISOString(), atKind: 'delivered' };
+  }
+  const printed = readReceiptTime(withFullYears(text));
+  return { at: printed, atKind: printed === null ? null : 'printed' };
+}
+
+/**
+ * A bank's own code for the payment, after its label ("Ref: FT26316XQ7", "Mã GD: 412345678",
+ * "Số GD 0412…", "Trace no. 559201", "Số tham chiếu …") or as Vietcombank and Techcombank print
+ * it bare ("FT26316XQ7"). A code holds a digit; a word after a label is no code.
+ */
+const REFERENCE_LABEL =
+  /(?:^|[\s|.;,(])(?:ref(?:erence)?(?:\s*no\.?)?|mã gd|ma gd|mã giao dịch|ma giao dich|số gd|so gd|số tham chiếu|so tham chieu|trace(?:\s*no\.?)?)\s*[:：#]?\s*([a-z0-9][a-z0-9\-/]{3,39})/iu;
+const BARE_REFERENCE = /(?<![\p{L}\p{N}])(FT\d{5}[A-Z0-9]{3,20})(?![\p{L}\p{N}])/u;
+
+function referenceOf(text: string): string | null {
+  const code = REFERENCE_LABEL.exec(text)?.[1] ?? BARE_REFERENCE.exec(text)?.[1] ?? null;
+  if (code === null || !/\d/.test(code)) return null;
+  return code.replace(/[-/]+$/, '').toUpperCase();
+}
+
+/** "TK 0123xxx456", "Tài khoản: 99xx01", "STK ...6789", "Acct *1234": the account an alert names. */
+const ACCOUNT =
+  /(?:^|[\s|(])(?:tk|tài khoản|tai khoan|stk|acct|account|a\/c)\s*[:：]?\s*(?:số\s*)?([0-9x*.…]*\d{2,})(?![\p{L}\p{N}])/iu;
+
+/** The last digits (four at most) of the account an alert names before its amount. */
+function accountTailOf(before: string): string | null {
+  const account = ACCOUNT.exec(before)?.[1];
+  if (!account) return null;
+  const tail = /(\d{2,4})$/.exec(account)?.[1];
+  return tail ?? null;
 }
 
 /** Sentences of an alert, without the ones that only warn about sharing a code. */
@@ -385,14 +442,59 @@ export function readBankAlert(input: BankAlertInput, home: Currency = VND): Bank
   const way = wayOf(told, amount);
   if (way === null) return skip('unread');
   const memo = cleanMemo(memoFound?.memo);
+  // After the amount first, then the bank's own shapes, then a payment memo; never the bank.
+  const named =
+    counterpartyOf(told, amount, way) ??
+    payeeByShape(bankInfo?.id ?? null, way, { memo, text: told }) ??
+    payeeInMemo(memo, way);
   return {
     kind: 'moved',
     direction: way,
     amount: amount.amount,
     currency: amount.currency,
-    counterparty: counterpartyOf(told, amount, way) ?? payeeInMemo(memo, way),
+    counterparty: named !== null && !namesNoPayee(named) ? named : null,
     memo,
     at: atOf(input.date, text),
     bank,
   };
+}
+
+/**
+ * The keys an alert that moved money carries besides its amount: what its time is, the bank's
+ * code for the payment, and the person's account, each null when the alert does not print it.
+ */
+export function readBankAlertKeys(input: BankAlertInput, home: Currency = VND): BankAlertKeys {
+  const text = [input.title, input.subtitle, input.body]
+    .map((part) => (part ?? '').normalize('NFC').trim())
+    .filter((part) => part !== '')
+    .join('\n');
+  const memoFound = memoIn(text);
+  const told = memoFound ? text.slice(0, memoFound.start) : text;
+  const amount = movedAmount(amountsIn(told, home));
+  const plain = foldWords(text);
+  return {
+    atKind: atAndKindOf(input.date, text).atKind,
+    reference: referenceOf(text),
+    accountTail: amount ? accountTailOf(told.slice(0, amount.start)) : null,
+    what: REVERSAL_WORDS.test(plain) ? 'reversal' : REFUND_WORDS.test(plain) ? 'refund' : null,
+  };
+}
+
+/**
+ * The amount a payment that failed or was declined was for, when its alert prints one: what it
+ * would have taken, for the payment it tells of to be voided. Null for any other alert.
+ */
+export function readFailedBankAlert(
+  input: BankAlertInput,
+  home: Currency = VND,
+): { readonly amount: number; readonly currency: string } | null {
+  const read = readBankAlert(input, home);
+  if (read.kind !== 'skipped' || read.reason !== 'failed') return null;
+  const text = [input.title, input.subtitle, input.body]
+    .map((part) => (part ?? '').normalize('NFC').trim())
+    .filter((part) => part !== '')
+    .join('\n');
+  const memoFound = memoIn(text);
+  const amount = movedAmount(amountsIn(memoFound ? text.slice(0, memoFound.start) : text, home));
+  return amount && amount.amount > 0 ? { amount: amount.amount, currency: amount.currency } : null;
 }

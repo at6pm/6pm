@@ -25,6 +25,7 @@ export const koOwed: { readonly [Key in keyof typeof enOwed]: Entry } = {
 
   'owed.list.title': '받을 돈',
   'owed.list.strips': { other: '{count}건' },
+  'owed.list.youPaid': '내가 낸 돈 {amount}',
   'owed.list.ask': '요청',
   'owed.list.paid': '받음',
   'owed.list.empty': '지금은 받을 돈이 없어요.',

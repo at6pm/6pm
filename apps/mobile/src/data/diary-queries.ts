@@ -245,6 +245,8 @@ export async function readDayReceipt(
   readonly jars: readonly JarReceiptLine[];
   readonly moneyIn: readonly SpendRow[];
   readonly givenBack: Readonly<Record<string, LocalDate>>;
+  /** Payments voided since: one that failed, or one the bank took back. */
+  readonly voided: readonly { readonly spend: SpendRow; readonly why: 'failed' | 'reversal' }[];
   readonly no: number;
 }> {
   const [spends, no] = await Promise.all([
@@ -264,17 +266,81 @@ export async function readDayReceipt(
   });
   const lines = spends.filter((s) => s.status === 'kept' && countsTowardDay(counted(s), notDaily));
   const jars = jarReceiptLines(lines.map(counted), notDaily);
-  const ids = lines.map((s) => s.id);
+  const givenBack = await readGivenBack(
+    store,
+    lines.map((s) => s.id),
+  );
+  return { day, spends: lines, jars, moneyIn, givenBack, voided: await readVoided(store, day), no };
+}
+
+/** The day each of these spends was given back on (a refund kept against it), by the spend's id. */
+async function readGivenBack(
+  store: MoneyStore,
+  ids: readonly string[],
+): Promise<Readonly<Record<string, LocalDate>>> {
   const backs =
     ids.length === 0
       ? []
       : await store.tables.spends.select(
           `WHERE gives_back IN (${ids.map(() => '?').join(', ')}) AND status = 'kept' AND money_in = 'refund'`,
-          ids,
+          [...ids],
         );
   const givenBack: Record<string, LocalDate> = {};
   for (const back of backs) if (back.givesBack) givenBack[back.givesBack] = back.day;
-  return { day, spends: lines, jars, moneyIn, givenBack, no };
+  return givenBack;
+}
+
+/**
+ * Everything filed on one day, for the page a Diary receipt opens: every spend and money in not
+ * deleted (counted or not, waiting or kept), oldest first; the payments voided since; what was
+ * given back of them; and whether the day was closed, with its receipt's number.
+ */
+export async function readDayRecords(
+  store: MoneyStore,
+  day: LocalDate,
+): Promise<{
+  readonly day: LocalDate;
+  readonly spends: readonly SpendRow[];
+  readonly givenBack: Readonly<Record<string, LocalDate>>;
+  readonly voided: readonly { readonly spend: SpendRow; readonly why: 'failed' | 'reversal' }[];
+  readonly closed: boolean;
+  readonly no: number;
+}> {
+  const [spends, closed, no, voided] = await Promise.all([
+    readSpendsBetween(store, day, day),
+    readClosedBetween(store, day, day),
+    readReceiptNumber(store, day),
+    readVoided(store, day),
+  ]);
+  const givenBack = await readGivenBack(
+    store,
+    spends.filter((s) => s.direction !== 'in').map((s) => s.id),
+  );
+  return { day, spends, givenBack, voided, closed: closed.length > 0, no };
+}
+
+/**
+ * The day's payments voided by what a later message said: deleted, with the sighting that voided
+ * them (a failed charge, the bank's reversal) kept beside them.
+ */
+async function readVoided(store: MoneyStore, day: LocalDate) {
+  const whys = await store.db.getAllAsync<{ spend_id: string; what: 'failed' | 'reversal' }>(
+    `SELECT s.spend_id, s.what FROM spend_sightings s JOIN spends p ON p.id = s.spend_id
+      WHERE p.day = ? AND p.status = 'deleted' AND s.what IN ('failed', 'reversal')
+      ORDER BY s.seen_at`,
+    [day],
+  );
+  if (whys.length === 0) return [];
+  const why = new Map(whys.map((w) => [w.spend_id, w.what] as const));
+  const ids = [...why.keys()];
+  const spends = await store.tables.spends.select(
+    `WHERE id IN (${ids.map(() => '?').join(', ')}) ORDER BY at`,
+    ids,
+  );
+  return spends.flatMap((spend) => {
+    const said = why.get(spend.id);
+    return said ? [{ spend, why: said }] : [];
+  });
 }
 
 /** A month's money diary: its closed days, spends and what went to Future you. */

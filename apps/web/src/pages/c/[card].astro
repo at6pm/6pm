@@ -1,0 +1,11 @@
+---
+import CardLink from '../../components/site/card-link.astro';
+import { cardPaths } from '../../data/cards';
+
+// One page per share card, at6pm.app/c/<card>, so each card's visits are counted by its path.
+export function getStaticPaths() {
+  return cardPaths.map((card) => ({ params: { card } }));
+}
+---
+
+<CardLink />

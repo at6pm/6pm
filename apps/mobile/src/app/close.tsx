@@ -5,14 +5,18 @@ import { Text, View } from 'react-native';
 import {
   clockOf,
   isBigMoneyIn,
+  monthlyIncomeOf,
   offersPlanUpdate,
   stepPosition,
   tally,
   type GivableSpend,
+  type SpendRow,
+  type MerchantRuleRow,
 } from '@6pm/domain';
 import { localeOf } from '@6pm/i18n';
 
 import { useGivableSpends } from '../data/givable-spends';
+import { readRememberedMoney } from '../data/remembered-money';
 import { readJarAsks, type JarAsks } from '../data/jar-asks';
 import { readReadyShown } from '../data/jar-ready';
 import { useMoney, useMoneyActions, useMoneyStore } from '../data/money-provider';
@@ -22,10 +26,12 @@ import { CloseCards } from '../features/close/close-cards';
 import { CloseEdit } from '../features/close/close-edit';
 import { CloseMoneyEdit } from '../features/close/close-money-edit';
 import { MoneyQuestionStep } from '../features/close/close-money-question';
+import { PaydayStep, useLatePayCard } from '../features/close/close-payday-step';
 import { PotQuestionStep } from '../features/close/close-pot-question';
 import { PotReadyStep } from '../features/close/close-pot-ready';
 import { CloseReceiptStep } from '../features/close/close-receipt-step';
 import { CloseRevealStep } from '../features/close/close-reveal-step';
+import { useStreakMilestone } from '../features/sharing/streak-offer';
 import { CashStep, SortedStep } from '../features/close/close-steps';
 import { WorkQuestionStep } from '../features/close/close-work-question';
 import { CloseTopBar } from '../features/close/close-top-bar';
@@ -33,6 +39,8 @@ import { useClose } from '../features/close/use-close';
 import { useCloseCash } from '../features/close/use-close-cash';
 import { useClosingNumber } from '../features/close/use-closing-number';
 import { useRuleOffer } from '../features/close/use-rule-offer';
+import { TwinOfferPill } from '../features/close/twin-offer-pill';
+import { useTwinOffer } from '../features/close/use-twin-offer';
 import { useCompanionToast } from '../features/companion/use-companion-toast';
 import { RulePrompt } from '../features/details/rule-prompt';
 import { useI18n } from '../i18n/i18n';
@@ -49,6 +57,7 @@ import { CloseLedger, type CardPress } from '../features/duo/close-ledger';
 import { useFoldShut } from '../features/duo/use-fold-shut';
 import { useFoldForm } from '../ui/layout/fold';
 import { useFinishClose } from '../features/close/use-finish-close';
+import { TakingsStep } from '../features/work/takings-step';
 import { ENVELOPE_CATEGORY_ID } from '../features/pots/use-new-year';
 
 /** The design phone's width less its 20 pt sides. */
@@ -74,26 +83,42 @@ export default function Close() {
   if (givable === null || memory === null) {
     return <View style={{ flex: 1, experimental_backgroundImage: palette.skyDeep }} />;
   }
-  return <CloseOpen givable={givable} readyShown={memory.readyShown} jarAsks={memory.jarAsks} />;
+  return (
+    <CloseOpen
+      givable={givable}
+      readyShown={memory.readyShown}
+      jarAsks={memory.jarAsks}
+      remembered={memory.remembered}
+    />
+  );
 }
 
 /**
- * What this phone remembers about jars, read once as the close opens: the ready moments already
- * shown, and what arms the "From your {jar}?" question.
+ * What this phone remembers, read once as the close opens: the ready moments already shown, what
+ * arms the "From your {jar}?" question, and where each sender's money went last time.
  */
-function useJarMemory(): { readyShown: ReadonlySet<string>; jarAsks: JarAsks } | null {
+function useJarMemory(): {
+  readyShown: ReadonlySet<string>;
+  jarAsks: JarAsks;
+  remembered: ReadonlyMap<string, MerchantRuleRow>;
+} | null {
   const store = useMoneyStore();
   const [memory, setMemory] = useState<{
     readyShown: ReadonlySet<string>;
     jarAsks: JarAsks;
+    remembered: ReadonlyMap<string, MerchantRuleRow>;
   } | null>(null);
   useEffect(() => {
     let live = true;
     Promise.all([
       readReadyShown(store.db).catch(() => new Set<string>()),
       readJarAsks(store.db).catch((): JarAsks => ({ taken: [], declined: {} })),
+      readRememberedMoney(store).catch(() => new Map<string, MerchantRuleRow>()),
     ])
-      .then(([readyShown, jarAsks]) => live && setMemory({ readyShown, jarAsks }))
+      .then(
+        ([readyShown, jarAsks, remembered]) =>
+          live && setMemory({ readyShown, jarAsks, remembered }),
+      )
       .catch(() => undefined);
     return () => {
       live = false;
@@ -106,10 +131,12 @@ function CloseOpen({
   givable,
   readyShown,
   jarAsks,
+  remembered,
 }: {
   readonly givable: readonly GivableSpend[];
   readonly readyShown: ReadonlySet<string>;
   readonly jarAsks: JarAsks;
+  readonly remembered: ReadonlyMap<string, MerchantRuleRow>;
 }) {
   const router = useRouter();
   const { palette } = useTheme();
@@ -120,20 +147,30 @@ function CloseOpen({
   const snap = useMoney();
   const actions = useMoneyActions();
   const say = useCompanionToast();
-  const close = useClose(givable, readyShown, jarAsks);
+  const close = useClose(givable, readyShown, jarAsks, remembered);
   // The number of the day being closed, even when the money day turns over mid-close.
   const day = useClosingNumber(close.day);
   const { state, dispatch, run } = close;
   const [editing, setEditing] = useState<string | null>(null);
   const [typingCash, setTypingCash] = useState(false);
   const rules = useRuleOffer(actions, state.step);
+  const twinOffer = useTwinOffer(
+    actions,
+    state.step === 'cards' ? remainingCardId(close.cards) : undefined,
+  );
   const { chips, categoryFor, addCash } = useCloseCash(close);
   const [closedAt] = useState(() => clockOf(now.getHours() + now.getMinutes() / 60));
   // The iPhone Duo opened: the Close is an open book, the step left, the ledger right.
   const form = useFoldForm();
   const book = form.kind === 'spread' ? form : null;
   const pressCard = useRef<((choice: CardPress) => void) | null>(null);
+  // "Same as your 50k at 10:30?" on the top card; Same sends it away as the stack's own swipe.
+  const leaveCard = useRef<(() => void) | null>(null);
+  const joining = useRef<{ readonly id: string; readonly typed: SpendRow } | null>(null);
   const finish = useFinishClose(close, day);
+  // Read now so the reveal draws a streak milestone on its first frame.
+  const milestone = useStreakMilestone(close.day);
+  const latePay = useLatePayCard(state.latePay, day, close.day);
   // Folded shut once nothing is left to confirm, the day is closed, as the reveal's Done does.
   useFoldShut(() => void finish(), state.step !== 'cards');
 
@@ -147,7 +184,6 @@ function CloseOpen({
       .format(d)
       .toUpperCase();
   const position = stepPosition(state.step);
-  const counts = tally(state);
   const editingSpend = editing ? close.everything.find((s) => s.id === editing) : undefined;
   const rule = rules.offer
     ? snap.categories.find((c) => c.id === rules.offer?.categoryId)
@@ -175,17 +211,28 @@ function CloseOpen({
     close.moneyIn.canSave &&
     snap.cycleSpends.some((s) => s.id === id && s.categoryId === ENVELOPE_CATEGORY_ID)
       ? t('season.card.saved')
-      : amount !== undefined && !plan.serious && isBigMoneyIn(amount, plan.income)
+      : amount !== undefined && !plan.serious && isBigMoneyIn(amount, monthlyIncomeOf(plan))
         ? t(`companion.moneyIn.big.${plan.persona}` as 'companion.moneyIn.big.soft')
         : t(close.moneyIn.canSave ? 'moneyIn.hint' : 'moneyIn.hintNoSave');
   const pillFor = (amount: number | undefined) =>
     amount === undefined ? null : close.moneyIn.pillFor(amount);
   const topCard = close.cards[0];
+  const twin = twinOffer.offer;
+  const decideCard = (id: string, verdict: Parameters<typeof close.decide>[1]) => {
+    const join = joining.current;
+    joining.current = null;
+    if (join?.id === id && verdict === 'notMine') close.join(id, join.typed);
+    else close.decide(id, verdict);
+  };
   const topMoney = close.moneyCards[0];
   const extraOnTop = topMoney ? close.extraIds.has(topMoney.row.id) : false;
   // The pay's extra offers to make the plan's income the pay, when it is worth saying.
   const raise =
-    extraOnTop && topMoney && offersPlanUpdate(topMoney.amount, plan.income)
+    // A plan that holds its incomes changes them where they are set, not from here.
+    extraOnTop &&
+    topMoney &&
+    plan.incomes === undefined &&
+    offersPlanUpdate(topMoney.amount, plan.income)
       ? plan.income + topMoney.amount
       : null;
   const pages = (
@@ -193,40 +240,84 @@ function CloseOpen({
       <CloseTopBar
         keys={STEP_KEYS}
         index={position.index}
-        of={position.of}
-        label={t(STEP_KEYS[position.index - 1] ?? 'close.step.cards')}
+        label={t(
+          state.step === 'payday'
+            ? 'close.step.payday'
+            : (STEP_KEYS[position.index - 1] ?? 'close.step.cards'),
+        )}
         closeLabel={t('common.done')}
         onClose={() => (state.step === 'reveal' ? void finish() : router.back())}
       />
 
+      {state.step === 'payday' && latePay !== null && state.latePay ? (
+        <PaydayStep
+          card={latePay}
+          onAnswer={(answer, amount) => {
+            const late = state.latePay;
+            if (late === undefined) return;
+            if (answer === 'short' && amount !== undefined) {
+              const pay = plan.incomes?.find((i) => i.id === late.incomeId);
+              void run(async () => {
+                const row = await actions.addSpend({
+                  amount,
+                  categoryId: snap.categories[0]?.id ?? '',
+                  merchant: '',
+                  source: 'manual',
+                  status: 'caught',
+                  direction: 'in',
+                });
+                await actions.keepPay(row.id, {
+                  amount: pay?.amount ?? 0,
+                  incomeId: late.incomeId,
+                });
+              });
+            }
+            dispatch({ type: 'answerPayday', answer });
+            if (answer === 'landed') {
+              const pay = plan.incomes?.find((i) => i.id === late.incomeId);
+              router.push({
+                pathname: '/quick-add',
+                params: { face: 'in', amount: String(pay?.amount ?? 0), pay: late.incomeId },
+              });
+            }
+          }}
+        />
+      ) : null}
       {state.step === 'cards' ? (
         <CloseCards
           cards={close.cards}
-          kicker={
-            counts.kept + counts.edited > 0
-              ? t('close.kicker', {
-                  date: shortDate(closingDate),
-                  // The top card's place in the queue: money waiting for its question is not
-                  // in the stack, but keeps its number.
-                  n: close.queue.findIndex((s) => s.id === topCard?.row.id) + 1,
-                  total: close.queue.length,
-                  kept: money.short(close.keptBefore).toUpperCase(),
-                })
-              : t('close.kickerStart', {
-                  date: shortDate(closingDate),
-                  n: 1,
-                  total: close.queue.length,
-                })
-          }
+          // The date only: the receipt's own number is the one count on the screen.
+          kicker={shortDate(closingDate)}
           title={t('close.title', { count: close.queue.length })}
-          hint={t('close.hint')}
+          hint={t(close.workOn ? 'work.close.hint' : 'close.hint')}
+          workHint={close.workHint}
           moneyHint={moneyHintFor(topCard?.money ? topCard.amount : undefined, topCard?.row.id)}
           pill={pillFor(topCard?.money ? topCard.amount : undefined)}
           undoText={close.undoText}
           undoLabel={t('close.undo')}
+          accessory={
+            twin && topCard && !topCard.money ? (
+              <TwinOfferPill
+                text={t('twin.ask', {
+                  amount: money.short(twin.amount),
+                  time: timeOf(twin.at, locale),
+                })}
+                same={t('twin.same')}
+                no={t('twin.no')}
+                onSame={() => {
+                  joining.current = { id: topCard.row.id, typed: twin };
+                  twinOffer.taken();
+                  if (leaveCard.current) leaveCard.current();
+                  else decideCard(topCard.row.id, 'notMine');
+                }}
+                onNo={twinOffer.decline}
+              />
+            ) : null
+          }
           buttons={buttonLabels}
           pressRef={book ? pressCard : undefined}
-          onDecide={close.decide}
+          leaveRef={leaveCard}
+          onDecide={decideCard}
           onEdit={setEditing}
           onUndo={close.undo}
         />
@@ -234,7 +325,7 @@ function CloseOpen({
       {state.step === 'sorted' ? (
         <SortedStep
           title={t('close.sorted.title', { count: close.queue.length })}
-          sub={t('close.sorted.sub', counts)}
+          sub={t('close.sorted.sub', tally(state))}
           undoLabel={t('close.undoLast')}
           canUndo={state.undoable !== null}
           onUndo={close.undo}
@@ -286,6 +377,7 @@ function CloseOpen({
           title={extraOnTop ? t('moneyIn.extra.title') : t('moneyIn.name')}
           hint={moneyHintFor(topMoney?.amount, topMoney?.row.id)}
           moneyHint={moneyHintFor(topMoney?.amount, topMoney?.row.id)}
+          workHint={close.workHint}
           pill={pillFor(topMoney?.amount)}
           undoText={close.undoText}
           undoLabel={t('close.undo')}
@@ -357,6 +449,9 @@ function CloseOpen({
           }}
         />
       ) : null}
+      {state.step === 'takings' ? (
+        <TakingsStep day={close.day} onDone={() => dispatch({ type: 'takingsDone' })} />
+      ) : null}
       {state.step === 'receipt' ? (
         <CloseReceiptStep
           day={close.day}
@@ -367,7 +462,12 @@ function CloseOpen({
         />
       ) : null}
       {state.step === 'reveal' ? (
-        <CloseRevealStep day={close.day} number={day} onDone={() => void finish()} />
+        <CloseRevealStep
+          day={close.day}
+          number={day}
+          milestone={milestone}
+          onDone={() => void finish()}
+        />
       ) : null}
     </>
   );
@@ -483,4 +583,18 @@ function CloseOpen({
       ) : null}
     </View>
   );
+}
+
+/** The id of the card on top of the stack, when there is one. */
+function remainingCardId(cards: readonly { readonly row: { readonly id: string } }[]) {
+  return cards[0]?.row.id;
+}
+
+/** "10:30" in the app's language, as the cards print a time. */
+function timeOf(iso: string, locale: string): string {
+  return new Intl.DateTimeFormat(locale, {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).format(new Date(iso));
 }

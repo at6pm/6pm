@@ -48,7 +48,7 @@ export const thPotsPlan: { readonly [Key in keyof typeof enPotsPlan]: Entry } = 
   'potsPlan.maths.sinceJoined': 'ตั้งแต่เริ่มใช้ 6pm',
   'potsPlan.maths.spentSoFar': 'ใช้ไปแล้ว',
   'potsPlan.maths.left': 'เหลือ',
-  'potsPlan.maths.divide': { other: '÷ {count} วัน' },
+  'potsPlan.maths.divideTo': { other: '÷ {count} วัน ตั้งแต่วันนี้ถึง {date}' },
   'potsPlan.maths.over': 'เกิน',
   'potsPlan.maths.untouched': 'บิลประจำและกระปุก',
   'potsPlan.maths.untouchedValue': 'ไม่ถูกแตะ',

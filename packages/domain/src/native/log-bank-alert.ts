@@ -1,8 +1,15 @@
 import { heardAlertId } from '../capture/alert-repeat';
-import { readBankAlert, type BankAlertInput } from '../capture/bank-alert';
+import {
+  readBankAlert,
+  readBankAlertKeys,
+  readFailedBankAlert,
+  type BankAlertInput,
+} from '../capture/bank-alert';
+import { HEARD_WORDS_MAX } from '../contracts/heard';
 import {
   SURFACES_VERSION,
   type BankAlertResult,
+  type HeardWords,
   type InboxSpend,
   type SurfaceContext,
 } from '../contracts/surfaces';
@@ -36,7 +43,25 @@ export function buildBankAlert(
   const { home, format } = money;
   const read = readBankAlert(input, home);
   const seenAt = now.toISOString();
+  // The words go no further than this unless the capture log is on.
+  const words = context?.keepWords === true ? heardWordsOf(input) : null;
   if (read.kind === 'skipped') {
+    const failed = read.reason === 'failed' ? readFailedBankAlert(input, home) : null;
+    const voids = failed && failed.currency === home.code ? failed : null;
+    // A failed payment's item carries the words itself: one file per notification.
+    if (voids) {
+      const item = failedItem(input, id, now, read.bank, voids);
+      return {
+        item: words ? { ...item, words } : item,
+        last: {
+          v: SURFACES_VERSION,
+          at: seenAt,
+          bank: read.bank,
+          amountText: '',
+          skipped: 'failed',
+        },
+      };
+    }
     return {
       item: null,
       last: {
@@ -46,8 +71,22 @@ export function buildBankAlert(
         amountText: '',
         skipped: read.reason,
       },
+      ...(words
+        ? {
+            heard: {
+              v: SURFACES_VERSION,
+              id: heardAlertId(input, id),
+              kind: 'heard' as const,
+              at: seenAt,
+              bank: read.bank,
+              skipped: read.reason,
+              words,
+            },
+          }
+        : {}),
     };
   }
+  const keys = readBankAlertKeys(input, home);
 
   const printedAt = read.at ? new Date(read.at) : null;
   const at = printedAt && printedAt.getTime() <= now.getTime() + FUTURE_SLACK_MS ? printedAt : now;
@@ -58,8 +97,8 @@ export function buildBankAlert(
   const amount = abroad ? (priced !== null && priced > 0 ? priced : null) : read.amount;
 
   const name = read.counterparty ?? read.memo ?? '';
-  const words = [read.counterparty, read.memo].filter((part) => part !== null).join(' ');
-  const category = read.direction === 'out' ? fileCategory(context, name, words, at) : null;
+  const naming = [read.counterparty, read.memo].filter((part) => part !== null).join(' ');
+  const category = read.direction === 'out' ? fileCategory(context, name, naming, at) : null;
   const foreign: InboxSpend['foreign'] =
     printed !== null
       ? {
@@ -97,6 +136,11 @@ export function buildBankAlert(
       ...(foreign ? { foreign } : {}),
       ...(receipt ? { receipt } : {}),
       direction: read.direction,
+      ...(read.direction === 'in' && keys.what !== null ? { what: keys.what } : {}),
+      atKind: at === printedAt && keys.atKind !== null ? keys.atKind : 'now',
+      ...(keys.reference !== null ? { reference: keys.reference } : {}),
+      ...(keys.accountTail !== null ? { accountTail: keys.accountTail } : {}),
+      ...(words ? { words } : {}),
     },
     last: {
       v: SURFACES_VERSION,
@@ -105,5 +149,47 @@ export function buildBankAlert(
       amountText: shown,
       direction: read.direction,
     },
+  };
+}
+
+/** The notification word for word, each part cut to what the inbox file keeps. */
+function heardWordsOf(input: BankAlertInput): HeardWords {
+  const part = (value: string | null | undefined) => (value ?? '').slice(0, HEARD_WORDS_MAX);
+  return {
+    app: part(input.app),
+    title: part(input.title),
+    subtitle: part(input.subtitle),
+    body: part(input.body),
+  };
+}
+
+/**
+ * A payment that failed, as an inbox item that only voids the payment it tells of: it never
+ * becomes a spend, and the extensions post no notice for it.
+ */
+function failedItem(
+  input: BankAlertInput,
+  id: string,
+  now: Date,
+  bank: string | null,
+  failed: { readonly amount: number },
+): InboxSpend {
+  const keys = readBankAlertKeys(input);
+  return {
+    v: SURFACES_VERSION,
+    id: heardAlertId(input, id),
+    kind: 'spend',
+    source: 'alert',
+    status: 'caught',
+    at: now.toISOString(),
+    amount: failed.amount,
+    merchant: '',
+    categoryId: null,
+    ...(bank !== null ? { receipt: { bank, namingLines: [] } } : {}),
+    direction: 'out',
+    what: 'failed',
+    atKind: 'now',
+    ...(keys.reference !== null ? { reference: keys.reference } : {}),
+    ...(keys.accountTail !== null ? { accountTail: keys.accountTail } : {}),
   };
 }

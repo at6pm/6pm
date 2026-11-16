@@ -74,8 +74,8 @@ function Screens() {
         <Stack.Screen name="capture-guide" options={sheet} />
         <Stack.Screen name="categories" options={sheet} />
         <Stack.Screen name="banks" options={sheet} />
-        <Stack.Screen name="ai" options={edgeSheet} />
-        <Stack.Screen name="language" options={drawnSheet} />
+        <Stack.Screen name="ai" options={sheet} />
+        <Stack.Screen name="language" options={sheet} />
         <Stack.Screen name="currency" options={drawnSheet} />
         <Stack.Screen name="category/[id]" options={sheet} />
         <Stack.Screen name="quick-add" options={edgeSheet} />
@@ -88,9 +88,18 @@ function Screens() {
         <Stack.Screen name="split" options={edgeSheet} />
         <Stack.Screen name="owed" options={edgeSheet} />
         <Stack.Screen name="owed-ask" options={takeover} />
+        <Stack.Screen name="owed-request" options={edgeSheet} />
+        <Stack.Screen name="owed-remind" options={edgeSheet} />
+        <Stack.Screen name="match-request" options={edgeSheet} />
+        <Stack.Screen name="held-back" options={edgeSheet} />
+        <Stack.Screen name="work-year" options={sheet} />
+        <Stack.Screen name="held-year" options={edgeSheet} />
+        <Stack.Screen name="year-files" options={edgeSheet} />
         <Stack.Screen name="receiving-account" options={edgeSheet} />
         <Stack.Screen name="missed-day" options={drawnSheet} />
         <Stack.Screen name="money-diary" options={sheet} />
+        <Stack.Screen name="day" options={edgeSheet} />
+        <Stack.Screen name="share-card" options={sheet} />
         <Stack.Screen name="new-pot" options={edgeSheet} />
         <Stack.Screen name="new-year-jar" options={edgeSheet} />
         <Stack.Screen name="pots" options={edgeSheet} />
@@ -98,13 +107,25 @@ function Screens() {
         <Stack.Screen name="bill/[id]" options={edgeSheet} />
         <Stack.Screen name="month" options={edgeSheet} />
         <Stack.Screen name="since-payday" options={edgeSheet} />
+        <Stack.Screen name="last-until" options={edgeSheet} />
+        <Stack.Screen name="takings" options={edgeSheet} />
+        <Stack.Screen name="work-money" options={edgeSheet} />
+        <Stack.Screen name="reach" options={takeover} />
         <Stack.Screen name="looks" options={drawnSheet} />
         <Stack.Screen name="look/[id]" options={drawnSheet} />
         <Stack.Screen name="max" options={sheet} />
         <Stack.Screen name="max-welcome" options={takeover} />
-        <Stack.Screen name="backup" options={edgeSheet} />
-        <Stack.Screen name="read-on-phone" options={edgeSheet} />
-        <Stack.Screen name="notifications" options={edgeSheet} />
+        {/* A page inside Settings; offered from a fresh install's welcome, its own short sheet. */}
+        <Stack.Screen
+          name="backup"
+          options={({ route }) =>
+            (route.params as { restore?: string } | undefined)?.restore === '1' ? edgeSheet : sheet
+          }
+        />
+        <Stack.Screen name="read-on-phone" options={sheet} />
+        <Stack.Screen name="notifications" options={sheet} />
+        <Stack.Screen name="privacy" options={sheet} />
+        <Stack.Screen name="travel" options={sheet} />
         <Stack.Screen name="import" options={sheet} />
         <Stack.Screen name="together/index" options={edgeSheet} />
         <Stack.Screen name="together/[code]" options={edgeSheet} />

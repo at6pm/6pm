@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useEffect, useRef, useState, type ComponentRef } from 'react';
 import { Text, View } from 'react-native';
 import Animated, {
@@ -18,6 +19,7 @@ import {
   isTripJar,
   jarEarly,
   jarStopsLine,
+  nextPayJarLine,
   readyKey,
   type CloseEvent,
   type CloseState,
@@ -40,6 +42,7 @@ import { jarColours } from '../pots/jar-colours';
 import { jarName } from '../pots/jar-name';
 import { captureView } from '../sharing/capture-view';
 import { shareFileName } from '../sharing/share-file';
+import { shareCardHref } from '../sharing/share-chip';
 import { useShareImage } from '../sharing/use-share-image';
 import { CLOSE_SHADE } from './jar-split';
 
@@ -109,6 +112,7 @@ function PotReady({
   const money = useMoneyFormat();
   const snap = useMoney();
   const { share } = useShareImage();
+  const router = useRouter();
   const card = useRef<ComponentRef<typeof View>>(null);
   const c = jarColours(jar.hue);
   const name = jarName(jar, t);
@@ -170,22 +174,39 @@ function PotReady({
     : jar.goal > 0
       ? t('potsClose.ready.of', { saved: money.short(held), target: money.short(jar.goal) })
       : money.short(held);
-  const line = plan
-    ? jarStopsLine({
+  const occasions = snap.pots.reduce(
+    (sum, p) => (p.kind === 'occasion' ? sum + (snap.setAsideThisCycle[p.id] ?? 0) : sum),
+    0,
+  );
+  const took = snap.setAsideThisCycle[jar.id] ?? 0;
+  // Paid by the week or the fortnight, "from payday" is the next pay, with the line it brings.
+  const weekly =
+    plan?.incomes === undefined
+      ? null
+      : nextPayJarLine({
+          today: snap.today,
+          anchor: plan.payday,
+          incomes: plan.incomes,
+          bills: snap.bills,
+          jars: plan.futureYou + occasions,
+          // A 2.1 goal fills from Future you's slice: its stopping moves no line.
+          took: jar.kind === 'occasion' ? took : 0,
+          currency: homeCurrencyOf(plan),
+        });
+  const line = !plan
+    ? null
+    : (weekly ??
+      jarStopsLine({
         today: snap.today,
         payday: plan.payday,
         income: plan.income,
         bills: snap.bills,
         futureYou: plan.futureYou,
-        occasions: snap.pots.reduce(
-          (sum, p) => (p.kind === 'occasion' ? sum + (snap.setAsideThisCycle[p.id] ?? 0) : sum),
-          0,
-        ),
-        took: snap.setAsideThisCycle[jar.id] ?? 0,
+        occasions,
+        took,
         fromSlice: jar.kind !== 'occasion',
         currency: homeCurrencyOf(plan),
-      })
-    : null;
+      }));
   const persona = plan?.persona ?? 'soft';
   const companion = plan?.serious
     ? null
@@ -340,7 +361,13 @@ function PotReady({
         </PressScale>
         <PressScale
           accessibilityLabel={t('potsClose.ready.share')}
-          onPress={() => void share(shareFileName('jar', jar.id), () => captureView(card))}
+          onPress={() => {
+            // A full jar opens its card to share; a jar whose month came shares this card as is.
+            if (full) {
+              haptics.tap();
+              router.push(shareCardHref('jar', jar.id));
+            } else void share(shareFileName('jar', jar.id), () => captureView(card));
+          }}
           style={{
             width: 56,
             height: 56,

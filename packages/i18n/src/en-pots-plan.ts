@@ -46,7 +46,10 @@ export const enPotsPlan = {
   'potsPlan.maths.sinceJoined': 'Since you joined',
   'potsPlan.maths.spentSoFar': 'Spent so far',
   'potsPlan.maths.left': 'Left',
-  'potsPlan.maths.divide': { one: '÷ {count} day', other: '÷ {count} days' },
+  'potsPlan.maths.divideTo': {
+    one: '÷ {count} day, today ({date})',
+    other: '÷ {count} days, today to {date}',
+  },
   'potsPlan.maths.over': 'Over',
   'potsPlan.maths.untouched': 'Bills and pots',
   'potsPlan.maths.untouchedValue': 'untouched',

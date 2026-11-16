@@ -1,4 +1,5 @@
 import {
+  heldBackInNewHome,
   inNewHome,
   isHomeChange,
   planInNewHome,
@@ -14,7 +15,8 @@ import { planCurrencyCode, readPlan, writePlan } from './plan-settings';
 const MOVE_TABLES = ['pot_moves', 'together_moves'] as const;
 
 /**
- * Counts the plan in another currency: the plan, every spend and money in, the bills, the jars and
+ * Counts the plan in another currency: the plan and its incomes, every spend and money in (with
+ * what a client held back from it), the bills, the jars and
  * what moved through them, the closed days, what is owed and what a bring-in replaced, all in one
  * transaction, then reloads. Shared jars keep their own currency; only what this phone put into
  * them is counted again. Nothing is written when the plan is not in `change.from` any more (the
@@ -37,6 +39,16 @@ export function changeHomeCurrency(store: MoneyStore, change: HomeChange): Promi
           amount: moved.amount,
           foreignAmount: moved.foreignAmount,
           ...(spend.fromPotAmount === undefined ? {} : { fromPotAmount: moved.fromPotAmount }),
+          // What a client held back from money in (it is on top of what landed).
+          ...(spend.heldBack == null
+            ? {}
+            : {
+                heldBack: heldBackInNewHome(
+                  spend.heldBack,
+                  { before: spend.amount, after: moved.amount },
+                  change,
+                ),
+              }),
         });
       }
       for (const bill of await tables.bills.all()) {
@@ -71,6 +83,12 @@ export function changeHomeCurrency(store: MoneyStore, change: HomeChange): Promi
           answerBefore: inNewHome(record.answerBefore, change),
         });
       }
+      // What a witness saw with no currency named was in the old home: it says so from now on,
+      // so it is never read as an amount of the new one.
+      await db.runAsync(
+        'UPDATE spend_sightings SET currency = ? WHERE currency IS NULL AND amount IS NOT NULL',
+        [change.from.code],
+      );
       for (const table of MOVE_TABLES) {
         const moves = await db.getAllAsync<{ id: string; amount: number }>(
           `SELECT id, amount FROM ${table}`,

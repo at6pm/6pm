@@ -27,6 +27,18 @@ export interface OwedLine {
   readonly amount: Money;
   /** The spend's day: how far back a payback may reach is counted from it. */
   readonly day: LocalDate;
+  /**
+   * A request to be paid (Ask to be paid) carries its four-character code; a share of a split has
+   * none. A request is matched by its code or by hand, never by its amount (`requests.ts`).
+   */
+  readonly code?: string | null | undefined;
+  /** A request for work: it carries the work stamp. */
+  readonly work?: boolean | undefined;
+}
+
+/** Whether a line is a request to be paid rather than a share of a split. */
+export function isRequest(line: Pick<OwedLine, 'code'>): boolean {
+  return line.code != null;
 }
 
 /** How far back a friend's payback may reach for a split share with no name on it. */
@@ -111,8 +123,10 @@ export function owedPaybackFor(
   money: Pick<IncomingMoney, 'day' | 'amount' | 'merchant'>,
   lines: readonly OwedLine[],
 ): OwedMatch | null {
-  const sender = lines.filter((line) => namesPerson(money.merchant, line.name));
-  const pool = (sender.length > 0 ? sender : lines)
+  // A request is never matched on its amount: its code finds it, or the person does.
+  const shares = lines.filter((line) => !isRequest(line));
+  const sender = shares.filter((line) => namesPerson(money.merchant, line.name));
+  const pool = (sender.length > 0 ? sender : shares)
     .filter((line) => inWindow(line, money.day))
     .sort(newestFirst);
   const one = pool.find((line) => line.amount === money.amount);
@@ -163,6 +177,45 @@ export function owedByPerson(lines: readonly OwedLine[]): OwedPerson[] {
     );
 }
 
+/** One bill on the owed list: the spend it was split from, and each open share of it. */
+export interface OwedBill {
+  readonly spendId: string;
+  readonly day: LocalDate;
+  /** One strip per person (a share with no name stands alone), in the order they were split. */
+  readonly strips: readonly OwedPerson[];
+  readonly total: Money;
+}
+
+/**
+ * The owed list by bill: open lines grouped by the spend they are shares of, so each bill says
+ * what it was once and each strip is a person and an amount. Newest bill first; a person with
+ * two shares of one bill holds one strip of both.
+ */
+export function owedByBill(lines: readonly OwedLine[]): OwedBill[] {
+  const bills = new Map<string, OwedLine[]>();
+  for (const line of lines) bills.set(line.spendId, [...(bills.get(line.spendId) ?? []), line]);
+  return [...bills.entries()]
+    .map(([spendId, group]) => {
+      const strips = new Map<string, OwedLine[]>();
+      for (const line of group) {
+        const key = personKey(line.name) ?? `line:${line.id}`;
+        strips.set(key, [...(strips.get(key) ?? []), line]);
+      }
+      return {
+        spendId,
+        day: (group[0] as OwedLine).day,
+        strips: [...strips.entries()].map(([key, held]) => ({
+          key,
+          name: held[0]?.name ?? null,
+          lines: held,
+          total: owedTotal(held),
+        })),
+        total: owedTotal(group),
+      };
+    })
+    .sort((a, b) => (a.day < b.day ? 1 : a.day > b.day ? -1 : 0));
+}
+
 /** Everything still owed, over the open lines given. */
 export function owedTotal(lines: readonly Pick<OwedLine, 'amount'>[]): Money {
   return lines.reduce((sum, line) => sum + line.amount, 0);
@@ -194,7 +247,7 @@ export function coveredSpend(
 export const REQUEST_NOTE_MAX = 25;
 
 /** Plain letters and digits, accents and đ taken off, case kept, single spaces. */
-const ascii = (text: string) =>
+export const plainWords = (text: string): string =>
   text
     .normalize('NFD')
     .replace(/\p{M}/gu, '')
@@ -209,9 +262,9 @@ const ascii = (text: string) =>
  * is kept whole when it fits at all.
  */
 export function requestNote(spend: string, name: string | null): string {
-  const who = ascii(name ?? '');
+  const who = plainWords(name ?? '');
   const room = REQUEST_NOTE_MAX - '6pm '.length - (who ? who.length + 1 : 0);
-  let what = ascii(spend);
+  let what = plainWords(spend);
   if (room <= 0) what = '';
   else if (what.length > room) {
     const cut = what.slice(0, room);
@@ -239,7 +292,7 @@ export function cleanAccount(typed: string): string {
 
 /** The holder's name as banks print it: upper case, no accents. */
 export function holderName(typed: string): string {
-  return ascii(typed).toUpperCase();
+  return plainWords(typed).toUpperCase();
 }
 
 /**

@@ -12,6 +12,9 @@ export const sameInBothLanguages: readonly string[] = [
   'PHOTO',
   'Inbox',
   'VietQR',
+  // The capture log's tape names a channel the way the design writes it in Vietnamese too.
+  'QR',
+  'EMAIL',
   'VietQR · NAPAS 247',
   'VIETQR · {bank}',
   'MB Bank',
@@ -21,11 +24,18 @@ export const sameInBothLanguages: readonly string[] = [
   'AI',
   '{size} GB',
   '{percent}%',
+  '10%',
+  '✓ {date}',
   'Nước mía',
   'Xôi',
   'Tết',
   'Lì xì',
   '= {amount}',
+  // A card's head and kicker put two of its own phrases side by side.
+  '{landed} {covered}',
+  '{month} · {shop}',
+  // Vietnamese freelancers say "job" (the work year's "38 job, 9 khách").
+  '{count} job',
   'Vietcombank',
   'MoMo',
   'Venmo',

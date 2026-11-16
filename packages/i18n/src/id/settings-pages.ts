@@ -1,0 +1,45 @@
+import type { Entry } from '../catalogue-types';
+import type { enSettingsPages } from '../en-settings-pages';
+
+export const idSettingsPages: { readonly [Key in keyof typeof enSettingsPages]: Entry } = {
+  'catch.health.total': '{count} tertangkap · 14 hari',
+  'catch.health.axisToday': 'HARI INI',
+  'catch.health.quietCheck': { other: 'Sepi {count} hari · ketuk untuk cek' },
+  'catch.health.setUp': 'Atur',
+  'catch.health.setUpWhy.alerts': 'Belum diatur · menangkap notifikasi bankmu',
+  'catch.health.setUpWhy.wallet': 'Belum diatur · menangkap bayar dengan tap',
+  'catch.health.setUpWhy.email': 'Belum diatur · menangkap struk dari email',
+  'catch.reading.of': '{right} dari {total}',
+  'catch.reading.explain':
+    'Struk yang kamu bagikan atau pindai dibaca oleh iPhone ini. Titik menandai struk yang harus kamu perbaiki: jumlah atau nama tokonya.',
+  'catch.reading.ghost': 'Bagikan struk, nanti dihitung di sini',
+  'settings.travel.off': 'Mati',
+  'settings.travel.auto': 'Otomatis',
+  'settings.travel.on': 'Aktif · {place}',
+  'settings.travel.needsLocation': 'Perlu lokasi',
+  'settings.privacy.mostly': 'Sebagian besar di ponsel ini',
+  'settings.privacy.all': 'Semua di ponsel ini',
+  'privacyPage.headline': 'Uangmu tetap di iPhone ini, terenkripsi.',
+  'privacyPage.sub': 'Beberapa hal keluar untuk diolah. Satu per satu, dan ke mana perginya:',
+  'privacyPage.subDevice':
+    'AI juga jalan di sini, jadi tidak ada yang keluar. Satu per satu, dan di mana tinggalnya:',
+  'privacyPage.what': 'YANG KELUAR',
+  'privacyPage.to': 'DIKIRIM KE',
+  'privacyPage.ask': 'PERTANYAAN ASK-MU',
+  'privacyPage.lines': 'BEBERAPA FAKTA UNTUK KALIMAT TEMANMU',
+  'privacyPage.receipts': 'STRUK YANG TAK TERBACA PONSEL',
+  'privacyPage.voice': 'SUARAMU, SAAT BICARA',
+  'privacyPage.spends': 'DAFTAR PENGELUARANMU',
+  'privacyPage.neverSent': 'TIDAK PERNAH DIKIRIM',
+  'privacyPage.staysHere': 'TETAP DI SINI',
+  'privacyPage.nothingLeaves': 'TIDAK ADA YANG KELUAR',
+  'privacyPage.foot': 'ANTHROPIC TIDAK MELATIH DENGANNYA · MENGHAPUSNYA DALAM 30 HARI',
+  'privacyPage.backup': 'CADANGANMU KELUAR HANYA JIKA KAMU MENYALAKANNYA, TERENKRIPSI END-TO-END',
+  'privacyPage.crashes':
+    'LAPORAN CRASH KE SENTRY TANPA JUMLAH, NAMA, ATAU CATATAN · REVENUECAT MENGURUS PEMBELIAN',
+  'privacyPage.purchases': 'TANPA LAPORAN CRASH · REVENUECAT MENGURUS PEMBELIAN',
+  'privacyPage.keep': 'Simpan semuanya di iPhone ini',
+  'privacyPage.keepSub': 'Ubah AI ke di ponsel ini',
+  'privacyPage.policy': 'Kebijakan privasi',
+  'privacyPage.policyFailed': 'Halaman tidak bisa dibuka. Coba lagi.',
+};

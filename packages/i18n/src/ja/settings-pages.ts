@@ -1,0 +1,45 @@
+import type { Entry } from '../catalogue-types';
+import type { enSettingsPages } from '../en-settings-pages';
+
+export const jaSettingsPages: { readonly [Key in keyof typeof enSettingsPages]: Entry } = {
+  'catch.health.total': '14日間で{count}件',
+  'catch.health.axisToday': '今日',
+  'catch.health.quietCheck': { other: '{count}日間なし · タップして確認' },
+  'catch.health.setUp': '設定',
+  'catch.health.setUpWhy.alerts': '未設定 · 銀行の通知をキャッチ',
+  'catch.health.setUpWhy.wallet': '未設定 · タッチ決済をキャッチ',
+  'catch.health.setUpWhy.email': '未設定 · メールのレシートをキャッチ',
+  'catch.reading.of': '{total}件中{right}件',
+  'catch.reading.explain':
+    '共有・スキャンしたレシートはこのiPhoneで読み取ります。点は、金額か店名を直したレシートの印です。',
+  'catch.reading.ghost': 'レシートを共有すると、ここで数えます',
+  'settings.travel.off': 'オフ',
+  'settings.travel.auto': '自動',
+  'settings.travel.on': 'オン · {place}',
+  'settings.travel.needsLocation': '位置情報が必要',
+  'settings.privacy.mostly': 'ほぼこの端末内',
+  'settings.privacy.all': 'すべてこの端末内',
+  'privacyPage.headline': 'お金のデータはこのiPhoneに、暗号化して保存されます。',
+  'privacyPage.sub': 'いくつかは処理のために端末の外へ出ます。ひとつずつ、行き先と一緒に：',
+  'privacyPage.subDevice':
+    'AIもこの端末で動くので、外へは何も出ません。ひとつずつ、置き場所と一緒に：',
+  'privacyPage.what': '外へ出るもの',
+  'privacyPage.to': '送り先',
+  'privacyPage.ask': 'Askでの質問',
+  'privacyPage.lines': '相棒のひと言に使う数件の情報',
+  'privacyPage.receipts': '端末で読めないレシート',
+  'privacyPage.voice': '話している間の声',
+  'privacyPage.spends': '支出の一覧',
+  'privacyPage.neverSent': '送信しない',
+  'privacyPage.staysHere': '端末内に残る',
+  'privacyPage.nothingLeaves': '何も出ない',
+  'privacyPage.foot': 'Anthropic は学習に使わない · 30日以内に削除',
+  'privacyPage.backup': 'バックアップはオンにした時だけ、エンドツーエンド暗号化で送信',
+  'privacyPage.crashes':
+    'クラッシュレポートはSENTRYへ（金額・名前・メモなし）· 購入はREVENUECATが処理',
+  'privacyPage.purchases': 'クラッシュレポートは送らない · 購入はREVENUECATが処理',
+  'privacyPage.keep': 'すべてこのiPhoneに残す',
+  'privacyPage.keepSub': 'AIを端末内に切り替える',
+  'privacyPage.policy': 'プライバシーポリシー',
+  'privacyPage.policyFailed': 'ページを開けませんでした。もう一度お試しください。',
+};

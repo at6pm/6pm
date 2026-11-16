@@ -79,7 +79,19 @@ export function moneyRiver(input: RiverInput): Readonly<Record<RiverSegment, Vnd
  */
 export function whatIfDaily(input: DailyNumberInput, candidate: Vnd): Vnd {
   if (input.daysLeft <= 0) return 0;
-  return dailyNumber({ ...input, plan: { ...input.plan, futureYou: candidate } }).tomorrow;
+  return dailyNumber(withFutureYou(input, candidate)).tomorrow;
+}
+
+/**
+ * The day's input with Future you at `candidate`. A plan that holds its incomes counts what it
+ * reserves, not the plan's parts, so the change moves what is reserved, whole: a month paid by the
+ * week sets it aside a slice a pay, and the what-if shows where the month lands, not this week.
+ */
+export function withFutureYou(input: DailyNumberInput, candidate: Vnd): DailyNumberInput {
+  const changed = { ...input, plan: { ...input.plan, futureYou: candidate } };
+  if (!input.period || input.futureYouSkipped === true) return changed;
+  const delta = candidate - input.plan.futureYou;
+  return { ...changed, period: { ...input.period, reserved: input.period.reserved + delta } };
 }
 
 /**
@@ -87,10 +99,7 @@ export function whatIfDaily(input: DailyNumberInput, candidate: Vnd): Vnd {
  * its free money, or 0 while it still has some. The daily card shows it in place of "0 a day".
  */
 export function whatIfOver(input: DailyNumberInput, candidate: Vnd): Vnd {
-  return Math.max(
-    0,
-    -dailyNumber({ ...input, plan: { ...input.plan, futureYou: candidate } }).free,
-  );
+  return Math.max(0, -dailyNumber(withFutureYou(input, candidate)).free);
 }
 
 /**

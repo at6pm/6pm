@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   closeReducer,
+  latePayOf,
   potQuestion,
   remainingCards,
   startClose,
@@ -169,5 +170,60 @@ describe('the 6pm close', () => {
         },
       ),
     );
+  });
+});
+
+describe('payday, and no pay', () => {
+  const late = { incomeId: 'pay', due: '2026-11-20' };
+
+  it('opens on the payday card, then the cards, whatever it is told', () => {
+    for (const answer of ['short', 'notYet', 'landed'] as const) {
+      let s = startClose(cards, { latePay: late });
+      expect(s).toMatchObject({ step: 'payday', latePay: late });
+      expect(stepPosition(s.step)).toEqual({ index: 1, of: 5 });
+      // Nothing else moves the card on: not a swipe, not the cash step.
+      s = run(s, { type: 'decide', id: 'coffee', verdict: 'kept' }, { type: 'cashDone' });
+      expect(s.step).toBe('payday');
+      expect(s.verdicts).toEqual({});
+      s = run(s, { type: 'answerPayday', answer });
+      expect(s).toMatchObject({ step: 'cards', paydayAnswer: answer });
+      expect(run(s, { type: 'answerPayday', answer: 'short' })).toBe(s);
+    }
+  });
+
+  it('goes on to the cash step when nothing waits to be swiped', () => {
+    const s = run(startClose([], { latePay: late }), { type: 'answerPayday', answer: 'notYet' });
+    expect(s).toMatchObject({ step: 'cash', sweep: true });
+  });
+
+  it('pauses on the card and resumes there', () => {
+    const s = run(startClose(cards, { latePay: late }), { type: 'pause' });
+    expect(s).toMatchObject({ step: 'payday', paused: true });
+    expect(run(s, { type: 'answerPayday', answer: 'notYet' }).step).toBe('payday');
+    expect(run(s, { type: 'resume' }, { type: 'answerPayday', answer: 'notYet' }).step).toBe(
+      'cards',
+    );
+  });
+
+  it('leaves a close with no late pay exactly as it was', () => {
+    expect(startClose(cards, { latePay: null })).toEqual(startClose(cards));
+    expect(startClose(cards)).not.toHaveProperty('latePay');
+    expect(run(startClose(cards), { type: 'answerPayday', answer: 'landed' })).toEqual(
+      startClose(cards),
+    );
+  });
+
+  it('is asked only while a pay is late and nothing in the close is asked as that pay', () => {
+    const due = '2026-11-20';
+    expect(latePayOf({ due, incomeId: 'pay', asks: [] })).toEqual({ incomeId: 'pay', due });
+    expect(latePayOf({ due: null, incomeId: 'pay', asks: [] })).toBeNull();
+    expect(latePayOf({ due, incomeId: null, asks: [] })).toBeNull();
+    expect(
+      latePayOf({ due, incomeId: 'pay', asks: [{ kind: 'pay', incomeId: 'pay' }] }),
+    ).toBeNull();
+    expect(latePayOf({ due, incomeId: 'pay', asks: [{ kind: 'refund' }] })).toEqual({
+      incomeId: 'pay',
+      due,
+    });
   });
 });

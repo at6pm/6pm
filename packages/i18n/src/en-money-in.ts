@@ -43,6 +43,12 @@ export const enMoneyIn = {
   'moneyIn.payback.subClaim': 'Your claim is paid back. Your number stays as it is.',
   'moneyIn.payback.yes': 'Yes, paying me back',
   'moneyIn.payback.line': 'PAID BACK',
+  'moneyIn.remembered.saved': 'Into {jar} again?',
+  'moneyIn.remembered.spread': 'Spread it again?',
+  'moneyIn.remembered.sub': 'That’s where money from {from} went last time.',
+  'moneyIn.remembered.subNoName': 'That’s where this went last time.',
+  'moneyIn.remembered.yes': 'Yes, same as last time',
+  'moneyIn.remembered.line': 'LIKE LAST TIME',
 
   'moneyIn.goesTo.label': 'Where it goes',
   'moneyIn.goesTo.spread': 'Spread it',
@@ -70,4 +76,6 @@ export const enMoneyIn = {
   'plan.month.countOn': 'What you can count on',
   'plan.month.countOnHelp':
     'The least that lands each month, after tax. If it varies, go low: anything more comes in through the close.',
+  'moneyIn.landing.sub': 'If it is, the bills are set aside first and the rest makes your days.',
+  'moneyIn.row.pay': 'Your pay',
 } as const;

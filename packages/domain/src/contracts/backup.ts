@@ -9,9 +9,16 @@ import {
   owedRowSchema,
   PHOTO_NAME,
   potRowSchema,
+  spendDirectionSchema,
   spendRowSchema,
   spendSourceSchema,
 } from './local-rows';
+import type {
+  SightingAtKind,
+  SightingChannel,
+  SightingWhat,
+  SightingWitness,
+} from '../capture/sighting';
 
 /**
  * End-to-end encrypted backup. The phone seals a snapshot of its database with a random AES-256
@@ -34,9 +41,15 @@ export const BACKUP_FORMAT_VERSION = 1;
  * Format 8 brought the Tết jar and lì xì envelopes: a phone from before would count the Tết jar
  * against the free jars and lose how many envelopes each lì xì held. Format 9 brought who owes
  * the user what: a phone from before would lose every open line. Format 10 brought spends'
- * photos: a phone from before would drop them.
+ * photos: a phone from before would drop them. Format 11 brought incomes for every kind of earner
+ * (the plan's incomes, money in named by its income, what was held back, and what each sender and
+ * shop is remembered as): a phone from before would drop the incomes and count the plan's monthly
+ * income in full. Requests to be paid (owed lines with a code and a job), the day a tax
+ * certificate came, the share a sender holds back, and what each sighting's witness said (its
+ * channel, witness, what happened, amount, time, bank code, account, payee, memo and words)
+ * arrived in the same format, as optional fields.
  */
-export const BACKUP_SNAPSHOT_VERSION = 10;
+export const BACKUP_SNAPSHOT_VERSION = 11;
 
 /** AES-GCM: a 12-byte nonce in front of the ciphertext, a 16-byte tag behind it. */
 export const BACKUP_IV_BYTES = 12;
@@ -109,6 +122,46 @@ export type BackupSettingKey = (typeof BACKUP_SETTING_KEYS)[number];
 
 const settingText = z.string().max(100_000).optional();
 
+/** Each set is whole for its type: a value added there must be added here, or this fails to build. */
+const SIGHTING_CHANNELS = {
+  alert: true,
+  email: true,
+  shared: true,
+  receiptPhoto: true,
+  qr: true,
+  wallet: true,
+  typed: true,
+  voice: true,
+  cash: true,
+  import: true,
+} as const satisfies Record<SightingChannel, true>;
+const SIGHTING_WITNESSES = {
+  bank: true,
+  wallet: true,
+  shop: true,
+  person: true,
+} as const satisfies Record<SightingWitness['kind'], true>;
+const SIGHTING_WHATS = {
+  payment: true,
+  incoming: true,
+  refund: true,
+  reversal: true,
+  failed: true,
+  ownTransfer: true,
+} as const satisfies Record<SightingWhat, true>;
+const SIGHTING_AT_KINDS = {
+  printed: true,
+  delivered: true,
+  sent: true,
+  now: true,
+} as const satisfies Record<SightingAtKind, true>;
+
+const keysOf = <K extends string>(set: Readonly<Record<K, true>>) =>
+  Object.keys(set) as [K, ...K[]];
+
+/** A text a sighting keeps from its witness, absent when the witness did not say it. */
+const sightingText = z.string().nullable().optional();
+
 export const spendSightingRowSchema = z.object({
   spendId: z.string().min(1),
   source: spendSourceSchema,
@@ -116,6 +169,25 @@ export const spendSightingRowSchema = z.object({
   detail: z.string().nullable(),
   /** The capture it came from; absent in backups taken before sightings kept it. */
   captureId: z.string().nullable().optional(),
+  /**
+   * What the witness said (`CaptureSighting`), each absent when it did not say it and in backups
+   * taken before sightings kept it; such a sighting comes back as one kept before.
+   */
+  channel: z.enum(keysOf(SIGHTING_CHANNELS)).nullable().optional(),
+  witnessKind: z.enum(keysOf(SIGHTING_WITNESSES)).nullable().optional(),
+  witnessName: sightingText,
+  what: z.enum(keysOf(SIGHTING_WHATS)).nullable().optional(),
+  /** In minor units of `currency`, as the witness gave it. */
+  amount: z.number().int().nullable().optional(),
+  currency: sightingText,
+  direction: spendDirectionSchema.nullable().optional(),
+  atKind: z.enum(keysOf(SIGHTING_AT_KINDS)).nullable().optional(),
+  reference: sightingText,
+  accountTail: sightingText,
+  bank: sightingText,
+  payee: sightingText,
+  memo: sightingText,
+  words: sightingText,
 });
 export type SpendSightingRow = z.infer<typeof spendSightingRowSchema>;
 

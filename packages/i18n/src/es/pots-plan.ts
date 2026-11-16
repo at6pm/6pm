@@ -51,7 +51,10 @@ export const esPotsPlan: { readonly [Key in keyof typeof enPotsPlan]: Entry } = 
   'potsPlan.maths.sinceJoined': 'Desde que usas 6pm',
   'potsPlan.maths.spentSoFar': 'Gastado hasta ahora',
   'potsPlan.maths.left': 'Queda',
-  'potsPlan.maths.divide': { one: '÷ {count} día', other: '÷ {count} días' },
+  'potsPlan.maths.divideTo': {
+    one: '÷ {count} día, hoy ({date})',
+    other: '÷ {count} días, de hoy al {date}',
+  },
   'potsPlan.maths.over': 'De más',
   'potsPlan.maths.untouched': 'Facturas y botes',
   'potsPlan.maths.untouchedValue': 'intactos',

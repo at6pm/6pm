@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { AppState } from 'react-native';
 
 import { surfaces } from '../../../modules/surfaces';
+import { deviceCaptureLog } from '../../data/device-capture-log';
 import { useMoney, useMoneyStore } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
 import { phoneNumberStyle } from '../../money/device-money';
@@ -113,6 +114,7 @@ export function useSurfaceWriters() {
           rates: now.rates?.rates.rates ?? [],
           currency: now.home,
           numberStyle: phoneNumberStyle(),
+          keepWords: await deviceCaptureLog.isOn(),
         });
         await native.writeSurface('context', JSON.stringify(context));
       })
@@ -123,6 +125,20 @@ export function useSurfaceWriters() {
     if (timer.current !== null) clearTimeout(timer.current);
     timer.current = setTimeout(writeNow, DEBOUNCE_MS);
   }, [key, language, t, tripCurrency, rates, home, firstCatch, writeNow]);
+
+  // The capture log turned on or off: the extensions keep an alert's words, or stop, at once.
+  const logOn = useRef<boolean | null>(null);
+  useEffect(
+    () =>
+      deviceCaptureLog.subscribe(() => {
+        void deviceCaptureLog.isOn().then((on) => {
+          if (on === logOn.current) return;
+          logOn.current = on;
+          writeNow();
+        });
+      }),
+    [writeNow],
+  );
 
   useEffect(() => {
     const sub = AppState.addEventListener('change', (state) => {

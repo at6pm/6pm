@@ -56,7 +56,8 @@ export function contextStrings(
  * What the share extension and the shortcuts file a spend with, without the database: the
  * categories and their tiles, the merchant rules the user taught, today's number, the home
  * currency and how the phone writes numbers, and the trip and rates a foreign receipt is read and
- * priced with. Đồng is left unsaid, so a phone counting đồng writes the context it always has.
+ * priced with, and whether the capture log is on (an alert then keeps its words for it). Đồng is
+ * left unsaid, so a phone counting đồng writes the context it always has.
  */
 export function surfaceContext(input: {
   readonly money: MoneySnapshot;
@@ -72,6 +73,8 @@ export function surfaceContext(input: {
   readonly currency?: string;
   /** How the phone writes numbers (`phoneNumberStyle()`). */
   readonly numberStyle?: PhoneNumberStyle;
+  /** The capture log is on: an alert's words are kept for it. */
+  readonly keepWords?: boolean;
 }): SurfaceContext {
   const home = input.currency && input.currency !== 'VND' ? input.currency : null;
   const { money } = input;
@@ -97,6 +100,8 @@ export function surfaceContext(input: {
     rates: (input.rates ?? []).map(({ currency, rate }) => ({ currency, rate })),
     ...(home ? { currency: home } : {}),
     ...(home && input.numberStyle ? { numberStyle: numberStyleOf(input.numberStyle) } : {}),
+    // Said only while the log is on, so a context from before it is the same as it always was.
+    ...(input.keepWords ? { keepWords: true } : {}),
   };
 }
 

@@ -1,5 +1,6 @@
 import { Text, View } from 'react-native';
 import Animated, {
+  FadeIn,
   Keyframe,
   ReduceMotion,
   useAnimatedStyle,
@@ -133,12 +134,15 @@ export function CompanionLine({
   mood,
   pal,
   top,
+  page,
 }: {
   readonly step: number;
   readonly line: string;
   readonly mood: CompanionMood;
   readonly pal: OnboardingPalette;
   readonly top: number;
+  /** A page within the step: the bubble pops in again on each one. */
+  readonly page?: string;
 }) {
   const reduceMotion = useReducedMotion();
   return (
@@ -147,7 +151,7 @@ export function CompanionLine({
       style={{ position: 'absolute', right: 18, top, alignItems: 'flex-end', gap: 4, zIndex: 2 }}
     >
       <Animated.View
-        key={step}
+        key={page === undefined ? step : `${step}:${page}`}
         entering={bubbleEntering(reduceMotion)}
         style={{
           paddingVertical: 7,
@@ -161,12 +165,15 @@ export function CompanionLine({
           transformOrigin: 'right bottom',
         }}
       >
-        <Text
+        {/* A new line on the same page crossfades in (the picks counted, 200 ms). */}
+        <Animated.Text
+          key={line}
+          entering={FadeIn.duration(200)}
           accessibilityLiveRegion="polite"
           style={{ ...body(13, 600), lineHeight: 16.25, color: pal.btnFg }}
         >
           {line}
-        </Text>
+        </Animated.Text>
       </Animated.View>
       <Companion size={52} mood={mood} />
     </View>
@@ -180,23 +187,28 @@ export function OnboardingCta({
   hot,
   pal,
   onPress,
+  dim = false,
 }: {
   readonly label: string;
   readonly icon: SymbolName;
   readonly hot: boolean;
   readonly pal: OnboardingPalette;
   readonly onPress: () => void;
+  /** Nothing to go on with yet: the button is dim and does nothing. */
+  readonly dim?: boolean;
 }) {
   const bg = hot ? pal.accent : pal.btnBg;
   const fg = hot ? pal.onAccent : pal.btnFg;
   const fill = useAnimatedStyle(() => ({
     backgroundColor: withTiming(bg, { duration: 400 }),
+    opacity: withTiming(dim ? 0.35 : 1, { duration: 200 }),
   }));
   return (
     <PressScale
-      scaleTo={0.97}
-      onPress={onPress}
+      scaleTo={dim ? 1 : 0.97}
+      onPress={dim ? () => undefined : onPress}
       accessibilityRole="button"
+      accessibilityState={{ disabled: dim }}
       style={{ marginTop: 16, flexShrink: 0 }}
     >
       <Animated.View

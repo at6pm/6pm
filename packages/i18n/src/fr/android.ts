@@ -108,4 +108,9 @@ export const frAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'widgetsGuide.home.step3':
     'Maintiens À dépenser aujourd’hui ou Aujourd’hui et fais-le glisser à sa place. Élargis À dépenser aujourd’hui pour avoir Scanner QR et Ajout rapide.',
   'capture.settings.widgetsValue': 'Accueil et blocs',
+  // Settings pages: the receipts read and the money kept on this phone.
+  'catch.reading.explain':
+    'Les reçus que tu partages ou scannes sont lus par ce téléphone. Un point marque celui que tu as dû corriger : son montant ou sa boutique.',
+  'privacyPage.headline': 'Ton argent reste sur ce téléphone, chiffré.',
+  'privacyPage.keep': 'Tout garder sur ce téléphone',
 };

@@ -1,6 +1,16 @@
 import { describe, expect, it } from '@jest/globals';
 
-import { ART_SIDE, DOT_GAP, dotGrid, MINI_H, MINI_ROW_GAP, MINI_W, miniGrid } from './split-grid';
+import {
+  ART_SIDE,
+  DOT_GAP,
+  dotGrid,
+  dotRow,
+  MINI_H,
+  MINI_ROW_GAP,
+  MINI_W,
+  miniGrid,
+  ROW_DOT_MOST,
+} from './split-grid';
 
 /** The grid's drawn size, which must stay inside the room. */
 function drawn(room: { width: number; height: number }, count: number) {
@@ -70,5 +80,29 @@ describe('the Jars part’s mini jars', () => {
     expect(rows).toBe(1);
     expect(MINI_H * scale).toBeLessThanOrEqual(20);
     expect(MINI_W * scale).toBeLessThan(MINI_W);
+  });
+});
+
+describe('a pay’s day dots', () => {
+  it('are one row of small dots across a wide Free, as 2a draws eight days', () => {
+    // 2a: Free is about 198 pt wide; eight days to the next pay sit in one row.
+    expect(dotRow({ width: 198, height: 130 }, 8)).toEqual({ cols: 8, size: 17.5 });
+    // A fortnight's fifteen days still fit one row, smaller.
+    expect(dotRow({ width: 198, height: 130 }, 15)).toEqual({ cols: 15, size: 7 });
+  });
+
+  it('wrap into as few rows as a narrow Free needs, as 2b draws four and four', () => {
+    expect(dotRow({ width: 68, height: 130 }, 8)).toEqual({ cols: 4, size: 8 });
+  });
+
+  it('stay small when there are few days, and differ from a month’s grid', () => {
+    expect(dotRow({ width: 198, height: 130 }, 2).size).toBe(ROW_DOT_MOST);
+    const grid = dotGrid({ width: 198, height: 130 }, 8);
+    expect(grid.size).toBeGreaterThan(ROW_DOT_MOST);
+  });
+
+  it('fall back to the grid where no row fits', () => {
+    expect(dotRow({ width: 30, height: 20 }, 15)).toEqual(dotGrid({ width: 30, height: 20 }, 15));
+    expect(dotRow({ width: 0, height: 100 }, 8).size).toBe(0);
   });
 });

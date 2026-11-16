@@ -25,6 +25,7 @@ export const idOwed: { readonly [Key in keyof typeof enOwed]: Entry } = {
 
   'owed.list.title': 'Utang ke kamu',
   'owed.list.strips': { other: 'dalam {count} bagian' },
+  'owed.list.youPaid': 'KAMU BAYAR {amount}',
   'owed.list.ask': 'Tagih',
   'owed.list.paid': 'LUNAS',
   'owed.list.empty': 'Saat ini tidak ada yang berutang padamu.',

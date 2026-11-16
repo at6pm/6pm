@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native';
+import { Text, View, type ViewStyle } from 'react-native';
 
 import type { KeypadKey } from '@6pm/domain';
 
@@ -68,53 +68,85 @@ export function Keypad({
   /** The decimal mark ("." or ","), when the amount being typed takes decimals. */
   readonly decimal?: string | undefined;
 }) {
-  const { palette } = useTheme();
-  const color = ink ?? palette.ink;
   return (
     <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
       {keysFor(currency, decimal !== undefined).map((key, i) =>
         key === null ? (
           <View key={i} style={{ width: '23.5%', height: 48 }} />
         ) : (
-          <PressScale
+          <KeypadKeyCell
             key={key}
-            scaleTo={0.92}
-            accessibilityRole="keyboardkey"
-            {...(key === 'currency' && currency
-              ? { accessibilityLabel: currency.accessibilityLabel }
-              : {})}
-            onPress={() => {
-              haptics.tick();
-              onPress(key);
-            }}
-            style={{
-              width: '23.5%',
-              height: 48,
-              borderRadius: 15,
-              backgroundColor: keyBg ?? palette.chipBg,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            {key === 'back' ? (
-              <Symbol name="backspace" size={22} color={color} />
-            ) : (
-              <Text
-                style={{
-                  ...(/\d/.test(key) && key.length === 1 ? display(24, 500) : body(17, 650)),
-                  color,
-                }}
-              >
-                {key === 'currency'
-                  ? (currency?.label ?? '')
-                  : key === '.'
-                    ? (decimal ?? ',')
-                    : key}
-              </Text>
-            )}
-          </PressScale>
+            keyName={key}
+            onPress={onPress}
+            {...(ink === undefined ? {} : { ink })}
+            {...(keyBg === undefined ? {} : { keyBg })}
+            {...(currency === undefined ? {} : { currency })}
+            decimal={decimal}
+            style={{ width: '23.5%' }}
+          />
         ),
       )}
     </View>
+  );
+}
+
+/**
+ * One key of the money keypad, 48 pt tall: a digit in the display face, "k", "000", the decimal
+ * mark or the currency key in the interface face, or delete. It ticks as it is pressed. Its width
+ * is the caller's (`style`).
+ */
+export function KeypadKeyCell({
+  keyName,
+  onPress,
+  ink,
+  keyBg,
+  currency,
+  decimal,
+  style,
+}: {
+  readonly keyName: KeypadKey;
+  readonly onPress: (key: KeypadKey) => void;
+  readonly ink?: string;
+  readonly keyBg?: string;
+  readonly currency?: KeypadCurrencyKey;
+  readonly decimal?: string | undefined;
+  readonly style?: ViewStyle;
+}) {
+  const { palette } = useTheme();
+  const color = ink ?? palette.ink;
+  const key = keyName;
+  return (
+    <PressScale
+      scaleTo={0.92}
+      accessibilityRole="keyboardkey"
+      {...(key === 'currency' && currency
+        ? { accessibilityLabel: currency.accessibilityLabel }
+        : {})}
+      onPress={() => {
+        haptics.tick();
+        onPress(key);
+      }}
+      style={{
+        height: 48,
+        borderRadius: 15,
+        backgroundColor: keyBg ?? palette.chipBg,
+        alignItems: 'center',
+        justifyContent: 'center',
+        ...style,
+      }}
+    >
+      {key === 'back' ? (
+        <Symbol name="backspace" size={22} color={color} />
+      ) : (
+        <Text
+          style={{
+            ...(/\d/.test(key) && key.length === 1 ? display(24, 500) : body(17, 650)),
+            color,
+          }}
+        >
+          {key === 'currency' ? (currency?.label ?? '') : key === '.' ? (decimal ?? ',') : key}
+        </Text>
+      )}
+    </PressScale>
   );
 }

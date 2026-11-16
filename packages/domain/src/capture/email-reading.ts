@@ -3,13 +3,22 @@ import { currencyCodeSchema, receiptMinorUnits } from '../contracts/receipt-read
 import { bankNamedIn } from './bank-alert-senders';
 import { cleanMemo } from './bank-receipt';
 import { namesNoPayee } from './duplicate';
-import { cleanPayeeName, isAdvert, subjectIsNotPayment } from './receipt-email-signs';
+import {
+  cleanPayeeName,
+  isAdvert,
+  isFailed,
+  joinBrokenLabels,
+  subjectIsNotPayment,
+} from './receipt-email-signs';
+import { withFullYears } from './receipt-time';
 import { foldWords } from './spoken-spend';
+import { emailMovesNothing, emailWhatOf } from './email-what';
 import {
   emailOrigin,
-  emailPaidAt,
+  emailPaidTime,
   labelledTransfer,
   parseReceiptEmail,
+  printedZoneOf,
   type LabelledTransfer,
   type EmailReceipt,
   type ReceiptEmail,
@@ -195,16 +204,28 @@ const isCategory = (id: string): id is EmailCategoryId =>
  * The spend (or money in) a model's reading describes, or null when it is neither a payment, a
  * refund nor money that came in, or its amount cannot be trusted: not printed in the email, no
  * currency, or not a positive amount. A transfer whose labels show the person's own accounts on
- * both sides is null too, and a payment's payee is the one the transfer labels when the model
- * named only the transfer's words (`payeeOverMemo`).
+ * both sides is null too, and so is a payment whose subject or status line says it did not go
+ * through or was called off, whatever the model made of it; a payment's payee is the one the
+ * transfer labels when the model named only the transfer's words (`payeeOverMemo`).
  */
 export function emailSpendOf(
   reading: EmailModelReading,
   email: ReceiptEmail,
   options: ReceiptEmailOptions,
 ): EmailSpend | null {
+  const whatFirst = options.whatFirst === true;
+  // With `whatFirst`, the rules say what the email is before the model's answer is read, and
+  // again after it: a failed charge, a reversal or an own transfer is kept as one, whatever the
+  // model made of it; an order update or an advert moves nothing.
+  const rules = whatFirst ? emailWhatOf(email) : null;
+  if (emailMovesNothing(rules)) return null;
+  const told =
+    reading.kind === 'failed' ? 'failed' : reading.kind === 'own_transfer' ? 'ownTransfer' : null;
   const moving =
-    reading.kind === 'payment' || reading.kind === 'incoming' || reading.kind === 'refund';
+    reading.kind === 'payment' ||
+    reading.kind === 'incoming' ||
+    reading.kind === 'refund' ||
+    (whatFirst && told !== null);
   if (!moving || reading.amount === null) return null;
   const currency = currencyCodeSchema.safeParse(reading.currency?.trim().toUpperCase());
   if (!currency.success) return null;
@@ -216,20 +237,29 @@ export function emailSpendOf(
   // The rules know a transfer between the person's own accounts by the names on both sides,
   // whatever the model made of it.
   const transfer = labelledTransfer(email);
-  if (transfer.own) return null;
+  if (transfer.own && !whatFirst) return null;
+  const lines = joinBrokenLabels(origin.lines.map(withFullYears));
+  const failed = reading.kind === 'payment' && isFailed(origin.subject, lines);
+  if (failed && !whatFirst) return null;
+  const said =
+    rules === 'failed' || rules === 'reversal' || rules === 'ownTransfer' || rules === 'refund'
+      ? rules
+      : failed
+        ? 'failed'
+        : transfer.own
+          ? 'ownTransfer'
+          : (told ??
+            (reading.kind === 'incoming' || reading.kind === 'refund' ? reading.kind : null));
 
   // A time that is the email's own UTC timestamp was copied from its header, not printed in it.
   const copied = email.date !== null && reading.at?.trim() === email.date.slice(0, 19);
   const at = copied ? '' : (reading.at?.trim() ?? '');
   const category = reading.category?.trim().toLowerCase() ?? '';
-  const paidAt = emailPaidAt(
-    printedLocalTime.test(at) && !Number.isNaN(Date.parse(at)) ? at : null,
-    origin,
-    email,
-    options,
-  );
+  const printedAt = printedLocalTime.test(at) && !Number.isNaN(Date.parse(at)) ? at : null;
+  const paid = emailPaidTime(printedAt, origin, email, options, printedZoneOf(lines, printedAt));
   return {
-    ...(reading.kind === 'payment' ? {} : { kind: reading.kind }),
+    ...(said === null ? {} : { kind: said }),
+    ...(whatFirst ? { atKind: paid.atKind } : {}),
     amount,
     currency: currency.data,
     category: isCategory(category) ? category : null,
@@ -238,7 +268,7 @@ export function emailSpendOf(
       reading,
       transfer,
     ).slice(0, 120),
-    at: paidAt,
+    at: paid.at,
     from: origin.sender?.address ?? null,
     bank: origin.bank,
     code: reading.reference?.trim().slice(0, 40) || null,

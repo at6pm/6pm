@@ -19,6 +19,7 @@ import { curves, seasonInk } from '@6pm/theme';
 
 import { useMoney } from '../../data/money-provider';
 import type { MoneyInPlace } from '../../data/money-in-actions';
+import { daysLeftOf } from '../../data/money-store';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
@@ -112,7 +113,7 @@ export function BonusQuestionStep({
   });
   const full = goal > 0 && held + part >= goal;
   const c = jarColours(jar?.hue ?? 85);
-  const days = Math.max(1, snap.cycle.daysLeft);
+  const days = Math.max(1, daysLeftOf(snap));
   const daily = floorToStep(rest / days, money.currency);
   const bars = useMemo(() => barHeights(Math.min(MOST_BARS, days + 1)), [days]);
   const locale = localeOf(language);

@@ -1,0 +1,30 @@
+import type { Entry } from '../catalogue-types';
+import type { enQuickAdd } from '../en-quick-add';
+
+export const koQuickAdd: { readonly [Key in keyof typeof enQuickAdd]: Entry } = {
+  'quick.face.out': '지출',
+  'quick.face.in': '받은 돈',
+  'quick.tool.photo': '사진',
+  'quick.tool.split': '나누기',
+  'quick.tool.jar': '병에서',
+  'quick.tool.noJar': '병에서 안 꺼내기',
+  'quick.todayStays': '오늘은 그대로 {amount}',
+  'quick.in.ticket': '6pm · 들어온 돈',
+  'quick.in.whoFrom': '보낸 사람',
+  'quick.in.name': '이름',
+  'quick.in.who': '누가 보냈나요?',
+  'quick.in.into': '받은 곳',
+  'quick.in.days': '하루하루에 나누기',
+  'quick.in.daysLast': '하루하루에 나누기, 지난번처럼',
+  'quick.in.jarLast': '{jar}에, 지난번처럼',
+  'quick.in.pay': '내 월급',
+  'quick.in.payLast': '내 월급, 지난번처럼',
+  'quick.in.landing': { other: '+{count}일 · {date}까지 충분' },
+  'quick.in.work': '일',
+  'voice.missed': '잘 못 들었어요.',
+  'voice.heardFirst': '{said}(이)라고 들었어요. 금액을 먼저 말해 주세요: “45k, 쌀국수”.',
+  'voice.sayFirst': '금액을 먼저 말해 주세요: “45k, 쌀국수”.',
+  'voice.nothingHeard': '아무것도 안 들렸어요. 마이크가 허용돼 있나요?',
+  'voice.tryAgain': '다시 말하기',
+  'voice.toKeypad': '키패드로 돌아가기',
+};

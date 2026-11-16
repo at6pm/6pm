@@ -4,7 +4,9 @@ import {
   billDueIn,
   lastMonthAfter,
   payCycleOn,
+  type BankWork,
   type BillKind,
+  type Income,
   type LocalDate,
   type Payday,
 } from '@6pm/domain';
@@ -34,6 +36,18 @@ export interface OnboardingAnswers {
   readonly spentSincePayday?: number | null;
   /** "Start Future you at payday" was chosen for the cycle they joined. */
   readonly futureYouAtPayday?: boolean;
+  /**
+   * How money reaches them, when it is more than a salary on a payday they know: the plan's
+   * incomes from today, the day money with no counted-on pay lasts until, and work of their own.
+   * Left out, the plan is a monthly salary, saved as it always was.
+   */
+  readonly incomes?: {
+    readonly incomes: readonly Income[];
+    readonly lastUntil: LocalDate | null;
+    readonly work: boolean;
+    /** Work of their own: each chosen bank's and cash's answer to "Which of these is for work?". */
+    readonly workBanks?: Readonly<Record<string, BankWork>>;
+  };
 }
 
 export interface OnboardingBill {
@@ -119,8 +133,13 @@ async function setUp(
     const {
       spentSincePayday: _answer,
       futureYouAtPayday: _skip,
+      incomes: _incomes,
+      incomesFrom: _from,
+      lastUntil: _until,
+      work: _work,
       ...kept
     } = existing ?? DEFAULT_PLAN;
+    const ways = answers.incomes;
     const answer = answers.spentSincePayday;
     await writePlan(db, {
       ...DEFAULT_PLAN,
@@ -134,6 +153,21 @@ async function setUp(
       startedOn: existing?.startedOn ?? today,
       // The phone's currency, once: a month set up again keeps the one it was first set up in.
       currency: existing ? planCurrencyCode(existing) : deviceCurrencyCode(),
+      ...(ways === undefined
+        ? {}
+        : {
+            incomes: [...ways.incomes],
+            incomesFrom: today,
+            lastUntil: ways.lastUntil,
+            ...(ways.work
+              ? {
+                  work: {
+                    mode: 'asItComes' as const,
+                    ...(ways.workBanks ? { banks: { ...ways.workBanks } } : {}),
+                  },
+                }
+              : {}),
+          }),
     });
 
     await seedStarterCategories(store, language);

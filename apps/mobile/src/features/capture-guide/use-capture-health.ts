@@ -9,24 +9,46 @@ import { useHomeCurrency } from '../../money/use-money-format';
 import { useAiMode } from '../privacy/use-ai-mode';
 import { nativeReach } from '../surfaces/native-reach';
 import { useAlertAccess } from './alert-access';
-import { healthRows, HEALTH_WAYS, type HealthRow, type HealthWay } from './capture-health-rows';
+import {
+  healthSection,
+  HEALTH_WAYS,
+  type HealthRow,
+  type HealthSection,
+  type HealthWay,
+} from './capture-health-rows';
 import { useLastAlert } from './last-alert';
+
+/**
+ * The catches last read, kept while the app runs: Settings opened again draws its rows where they
+ * were at once, instead of reordering them when the read lands.
+ */
+let lastRead: readonly CatchSeen[] = [];
 
 /** Catches are read this far back: the heartbeat's 14 days and the fortnight before a quiet way. */
 const LOOK_BACK_DAYS = 30;
 
-/**
- * Each way's 14-day heartbeat for Settings, counted on the phone from what it caught: read when
- * Settings opens, when a catch changes the day, and each time the app comes back.
- */
+/** Each way's heartbeat and where it stands, in the design's order of ways. */
 export function useCaptureHealth(): readonly HealthRow[] {
+  const section = useCaptureHealthSection();
+  return useMemo(
+    () => HEALTH_WAYS.flatMap((way) => section.rows.filter((row) => row.way === way)),
+    [section],
+  );
+}
+
+/**
+ * Each way's 14-day heartbeat for Settings, counted on the phone from what it caught, as the
+ * section draws it: read when Settings opens, when a catch changes the day, and each time the app
+ * comes back.
+ */
+export function useCaptureHealthSection(): HealthSection {
   const store = useMoneyStore();
   const { today, cycleSpends, waitingBefore } = useMoney();
   const home = useHomeCurrency();
   const aiMode = useAiMode();
   const alertAccess = useAlertAccess();
   const lastAlert = useLastAlert();
-  const [catches, setCatches] = useState<readonly CatchSeen[]>([]);
+  const [catches, setCatches] = useState<readonly CatchSeen[]>(() => lastRead);
   const [returned, setReturned] = useState(0);
 
   useEffect(() => {
@@ -41,6 +63,7 @@ export function useCaptureHealth(): readonly HealthRow[] {
     const [year = 0, month = 1, day = 1] = addDays(today, -LOOK_BACK_DAYS).split('-').map(Number);
     void catchesSince(store.db, new Date(year, month - 1, day).toISOString())
       .then((rows) => {
+        lastRead = rows;
         if (live) setCatches(rows);
       })
       .catch(() => undefined);
@@ -61,7 +84,7 @@ export function useCaptureHealth(): readonly HealthRow[] {
     const off: HealthWay[] = [];
     if (aiMode === 'device') off.push('email');
     if (alertAccess === false) off.push('alerts');
-    return healthRows({
+    return healthSection({
       catches,
       today,
       ways: HEALTH_WAYS.filter((way) => has[way]),

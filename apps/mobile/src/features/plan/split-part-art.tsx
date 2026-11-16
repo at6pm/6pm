@@ -11,6 +11,7 @@ import {
   ART_SIDE as SIDE,
   DOT_GAP,
   dotGrid,
+  dotRow,
   MINI_COL_GAP,
   MINI_H,
   MINI_ROW_GAP,
@@ -134,18 +135,21 @@ export function PotsArt({
 
 /**
  * Free as the cycle's days: past days by what they spent, today ringed, the days to come dim, the
- * days once the cycle went past its plan hatched warm, and none before the person joined.
+ * days once the cycle went past its plan hatched warm, and none before the person joined. A pay's
+ * days (`row`) are a row of small dots across the top, wrapping only where the part is narrow.
  */
 export function DaysArt({
   days,
   room,
   colours,
+  row = false,
 }: {
   readonly days: readonly CycleDay[];
   readonly room: ArtRoom;
   readonly colours: SplitColours;
+  readonly row?: boolean;
 }) {
-  const { cols, size } = dotGrid(room, days.length);
+  const { cols, size } = (row ? dotRow : dotGrid)(room, days.length);
   const c = colours.free;
   return (
     <View
@@ -182,6 +186,56 @@ export function DaysArt({
             >
               {d.kind === 'over' ? <Hatch {...c.dotOver} reach={size} /> : null}
             </View>
+          ))
+        : null}
+    </View>
+  );
+}
+
+/** In hand never draws more dots than this; the amount under them says the rest. */
+const IN_HAND_MOST = 60;
+
+/**
+ * In hand as days: a cream dot a day at today's number, those from before faded, the newest
+ * (`fresh`) bright.
+ */
+export function InHandArt({
+  days,
+  fresh,
+  room,
+  colours,
+}: {
+  readonly days: number;
+  readonly fresh: number;
+  readonly room: ArtRoom;
+  readonly colours: SplitColours;
+}) {
+  const count = Math.max(0, Math.min(IN_HAND_MOST, days));
+  const { cols, size } = dotGrid(room, Math.max(count, 3));
+  const old = Math.max(0, count - fresh);
+  return (
+    <View
+      style={{
+        position: 'absolute',
+        left: SIDE,
+        top: ART_TOP,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: DOT_GAP,
+        width: size > 0 ? cols * size + (cols - 1) * DOT_GAP : undefined,
+      }}
+    >
+      {size > 0
+        ? Array.from({ length: count }, (_, k) => (
+            <View
+              key={k}
+              style={{
+                width: size,
+                height: size,
+                borderRadius: size / 2,
+                backgroundColor: k < old ? colours.inHand.dotOld : colours.inHand.dot,
+              }}
+            />
           ))
         : null}
     </View>

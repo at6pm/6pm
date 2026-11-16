@@ -4,7 +4,8 @@ import type { enDiary } from '../en-diary';
 // Month names are lowercase in Spanish, so "{month} you" becomes "tu yo de {month}" mid-sentence.
 export const esDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.title': 'Diario',
-  'diary.kicker': '{closed} cerrados en {month} · {all} en total',
+  'diary.kicker': '{month} · {closed} cerrados',
+  'diary.kickerAll': '{month} · {closed} cerrados · {all} en total',
   'diary.recap.kicker': 'ESTA SEMANA · {range}',
   'diary.recap.hint': 'Toca o desliza',
   'diary.recap.under.lead': {
@@ -30,8 +31,7 @@ export const esDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.cal.summaryNone': 'Cierra esta noche para archivar tu primer día',
   'diary.cal.under': 'Por debajo',
   'diary.cal.over': 'Por encima',
-  'diary.cal.today': '6pm',
-  'diary.cal.missed': 'sin cerrar',
+  'diary.cal.tap': '· toca un día',
   'diary.receipt.no': 'N.º {no}',
   'diary.receipt.empty': 'NADA GASTADO',
   'diary.receipt.late': 'TARDE',
@@ -99,4 +99,9 @@ export const esDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.cal.previous': 'Mes anterior',
   'diary.cal.next': 'Mes siguiente',
   'diary.fromJar': 'Del frasco {jar}',
+  'diary.day.title': 'Revisar el día',
+  'diary.day.empty': 'Ya no queda nada en este día.',
+  'diary.day.hint': 'Toca una línea para cambiarla. Desliza a la izquierda para borrarla.',
+  'diary.receipt.open': 'Recibo del {date}, total {total}',
+  'diary.receipt.openHint': 'Abre el día para cambiar o borrar lo que tiene',
 };
