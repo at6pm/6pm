@@ -192,25 +192,23 @@ function PlanContent({
               <BillsPanel bills={bills} colours={colours} format={format} />
             </SplitPanel>
           ) : kind === 'pots' ? (
-            // Sharing the split belongs with the jars it shows: it comes and goes with this panel.
-            <View style={{ gap: 14 }}>
-              <SplitPanel
-                title={t('potsPlan.pots.title')}
-                note={t('potsPlan.pots.eachPayday', { amount: money.short(eachPayday) })}
-              >
-                <PotsPanel
-                  jars={jars}
-                  justPaid={justPaid}
-                  fill={filling ? payday : 0}
-                  colours={colours}
-                />
-              </SplitPanel>
+            // Sharing the split belongs with the jars it shows: it sits in their card, under them.
+            <SplitPanel
+              title={t('potsPlan.pots.title')}
+              note={t('potsPlan.pots.eachPayday', { amount: money.short(eachPayday) })}
+            >
+              <PotsPanel
+                jars={jars}
+                justPaid={justPaid}
+                fill={filling ? payday : 0}
+                colours={colours}
+              />
               {snap.plan && snap.plan.income > 0 ? (
-                <View style={{ alignItems: 'center' }}>
+                <View style={{ alignItems: 'center', paddingTop: 2, paddingBottom: 18 }}>
                   <ShareChip card="split" label={t('shareCards.chipSplit')} />
                 </View>
               ) : null}
-            </View>
+            </SplitPanel>
           ) : (
             // The hero already says how many days to payday; the maths names its own days.
             <SplitPanel title={t('potsPlan.maths.title')}>
