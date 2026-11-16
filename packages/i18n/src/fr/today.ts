@@ -138,6 +138,11 @@ export const frToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'settings.language': 'Langue',
   'settings.languageName': 'Français',
   'settings.languagePhone': 'Comme ton téléphone',
+  'settings.currency': 'Devise',
+  'settings.currencyNote': 'En la changeant, tout ce que tu as saisi est converti au taux du jour.',
+  'settings.currencyConfirm': 'Touche encore pour changer. {from} = {to}',
+  'settings.currencyNoRate': 'Pas de taux pour l’instant. Vérifie ta connexion et réessaie.',
+  'settings.currencyFailed': 'Ça n’a pas marché. Rien n’a changé.',
   'settings.yourData': 'Tes données',
   'settings.privacy': 'Confidentialité',
   'settings.privacyBody':

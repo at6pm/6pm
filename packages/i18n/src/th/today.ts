@@ -130,6 +130,11 @@ export const thToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'settings.language': 'ภาษา',
   'settings.languageName': 'ไทย',
   'settings.languagePhone': 'ตามโทรศัพท์',
+  'settings.currency': 'สกุลเงิน',
+  'settings.currencyNote': 'เมื่อเปลี่ยน ทุกยอดที่คุณบันทึกไว้จะถูกแปลงตามอัตราวันนี้',
+  'settings.currencyConfirm': 'แตะอีกครั้งเพื่อเปลี่ยน {from} = {to}',
+  'settings.currencyNoRate': 'ตอนนี้ยังไม่มีอัตราแลกเปลี่ยน ตรวจสอบการเชื่อมต่อแล้วลองใหม่',
+  'settings.currencyFailed': 'เปลี่ยนไม่สำเร็จ ทุกอย่างยังเหมือนเดิม',
   'settings.yourData': 'ข้อมูลของคุณ',
   'settings.privacy': 'ความเป็นส่วนตัว',
   'settings.privacyBody':

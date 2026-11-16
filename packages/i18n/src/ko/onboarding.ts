@@ -31,6 +31,7 @@ export const koOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.income.title': '들어온 돈',
   'onboarding.income.sub': '세후로 매달 대략 얼마 들어오나요? 돌려서 맞춰요.',
   'onboarding.income.daily': '고정비 빼기 전, 하루 약 {amount}',
+  'onboarding.income.currency': '{currency} 기준으로 계산 중 · 변경',
   'onboarding.income.hundredMillions': '억 동 단위',
   'onboarding.income.millions': '백만 동 단위',
   'onboarding.income.hundreds': '십만 동 단위',

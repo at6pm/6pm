@@ -29,6 +29,7 @@ export const zhHansOnboarding: { readonly [Key in keyof typeof enOnboarding]: En
   'onboarding.income.title': '进账',
   'onboarding.income.sub': '每月税后大约到手多少。转动来设置。',
   'onboarding.income.daily': '每天约 {amount}，未扣账单',
+  'onboarding.income.currency': '正在用 {currency} 计算 · 更改',
   'onboarding.income.hundredMillions': '亿越南盾',
   'onboarding.income.millions': '百万越南盾',
   'onboarding.income.hundreds': '十万',
