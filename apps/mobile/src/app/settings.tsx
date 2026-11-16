@@ -15,6 +15,7 @@ import { cancelCloseReminder } from '../features/onboarding/close-reminder';
 import { reloadNotificationSettings } from '../features/reminders/notification-prefs';
 import { useReminderPermission } from '../features/reminders/reminder-permission';
 import { BackupRow } from '../features/backup/backup-row';
+import { currencyName } from '../features/currency/currency-choices';
 import { AiSettingsRow } from '../features/privacy/ai-settings-row';
 import { useAiMode } from '../features/privacy/use-ai-mode';
 import { CaptureSettingsSection } from '../features/capture-guide/capture-settings-section';
@@ -36,6 +37,7 @@ import { useCloseTimeDraft } from '../features/settings/use-close-time-draft';
 import { nativeReach } from '../features/surfaces/native-reach';
 import { TravelSettingsRow } from '../features/travel/travel-row';
 import { useI18n } from '../i18n/i18n';
+import { homeCurrencyOf } from '../money/use-money-format';
 import { haptics } from '../ui/haptics';
 import { SheetScreen } from '../ui/navigation/sheet-screen';
 import { PressScale } from '../ui/primitives/press-scale';
@@ -173,6 +175,15 @@ export default function Settings() {
           onPress={() => {
             haptics.tick();
             router.push('/language');
+          }}
+        />
+        <SettingRow
+          icon="payments"
+          label={t('settings.currency')}
+          value={currencyName(homeCurrencyOf(snap.plan))}
+          onPress={() => {
+            haptics.tick();
+            router.push('/currency');
           }}
         />
         {nativeReach.homeWidgets ? (

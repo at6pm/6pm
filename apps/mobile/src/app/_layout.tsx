@@ -76,6 +76,7 @@ function Screens() {
         <Stack.Screen name="banks" options={sheet} />
         <Stack.Screen name="ai" options={sheet} />
         <Stack.Screen name="language" options={sheet} />
+        <Stack.Screen name="currency" options={drawnSheet} />
         <Stack.Screen name="category/[id]" options={sheet} />
         <Stack.Screen name="quick-add" options={edgeSheet} />
         <Stack.Screen name="scan" options={hinged ? takeover : pageSheet} />

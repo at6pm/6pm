@@ -129,6 +129,11 @@ export const zhHansToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'settings.language': '语言',
   'settings.languageName': '简体中文',
   'settings.languagePhone': '跟随手机',
+  'settings.currency': '货币',
+  'settings.currencyNote': '更改后，你已记录的所有金额都会按今天的汇率换算。',
+  'settings.currencyConfirm': '再点一次即可更改。{from} = {to}',
+  'settings.currencyNoRate': '暂时没有汇率。请检查网络后重试。',
+  'settings.currencyFailed': '没有改成。一切保持原样。',
   'settings.yourData': '你的数据',
   'settings.privacy': '隐私',
   'settings.privacyBody':

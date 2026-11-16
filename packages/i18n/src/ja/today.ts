@@ -130,6 +130,11 @@ export const jaToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'settings.language': '言語',
   'settings.languageName': '日本語',
   'settings.languagePhone': 'スマホの設定と同じ',
+  'settings.currency': '通貨',
+  'settings.currencyNote': '変更すると、入力済みの金額はすべて今日のレートで換算されます。',
+  'settings.currencyConfirm': 'もう一度タップで変更。{from} = {to}',
+  'settings.currencyNoRate': 'いまレートを取得できません。通信を確認して、もう一度お試しください。',
+  'settings.currencyFailed': '変更できませんでした。何も変わっていません。',
   'settings.yourData': 'あなたのデータ',
   'settings.privacy': 'プライバシー',
   'settings.privacyBody':

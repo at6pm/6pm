@@ -31,6 +31,7 @@ export const idOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.income.title': 'Uang masuk',
   'onboarding.income.sub': 'Kira-kira yang masuk tiap bulan, setelah pajak. Putar untuk mengatur.',
   'onboarding.income.daily': 'Sekitar {amount} sehari, sebelum tagihan',
+  'onboarding.income.currency': 'Dihitung dalam {currency} · Ganti',
   'onboarding.income.hundredMillions': 'Ratusan juta đồng',
   'onboarding.income.millions': 'Jutaan đồng',
   'onboarding.income.hundreds': 'Ratusan ribu',

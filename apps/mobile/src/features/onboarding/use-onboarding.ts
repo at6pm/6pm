@@ -113,6 +113,16 @@ export function useOnboarding(startStep = 0) {
   const [futureYouAtPayday, setFutureYouAtPayday] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const busy = useRef(false);
+  // A currency picked on the way: every amount answered so far was in the old one, so they start
+  // again where the design starts them.
+  const [countedIn, setCountedIn] = useState(currency.code);
+  if (countedIn !== currency.code) {
+    setCountedIn(currency.code);
+    setIncome(startingIncome(currency));
+    setAnswers(NO_BILL_ANSWERS);
+    setNav(DECK_START);
+    setSpentSincePayday(null);
+  }
 
   const deck = dealDeck(answers);
   const bills = chosenBills(deck, answers);

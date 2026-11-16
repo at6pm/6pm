@@ -1,10 +1,16 @@
+import { useRouter } from 'expo-router';
+import { useSyncExternalStore } from 'react';
 import { Text, View } from 'react-native';
 
 import type { Payday } from '@6pm/domain';
 
 import { useI18n } from '../../i18n/i18n';
+import { deviceCurrencyGuess, startingCurrency } from '../../money/device-money';
 import { useMoneyFormat } from '../../money/use-money-format';
+import { haptics } from '../../ui/haptics';
+import { PressScale } from '../../ui/primitives/press-scale';
 import { body } from '../../ui/type/fonts';
+import { currencyName } from '../currency/currency-choices';
 import { IncomeWheels, PaydayPicker } from './money-in-controls';
 import { keypadInksOf, type OnboardingPalette } from './onboarding-palette';
 import { Card, StepHeading } from './step-parts';
@@ -42,6 +48,11 @@ export function StepMoneyIn({
   const { t } = useI18n();
   const money = useMoneyFormat();
   const shown = useMoneyInGuide(guide, onGuideDone);
+  const router = useRouter();
+  // A phone of two minds about its currency (in Vietnam, region United States) says which one it
+  // is counting in, with the way to change it; so does one whose person already changed it.
+  const picked = useSyncExternalStore(startingCurrency.subscribe, startingCurrency.get);
+  const askCurrency = picked !== null || deviceCurrencyGuess().candidates.length > 1;
   return (
     <View style={{ gap: 14 }}>
       <StepHeading
@@ -51,6 +62,7 @@ export function StepMoneyIn({
       />
       <Card pal={pal} style={{ paddingTop: 12, paddingHorizontal: 16, paddingBottom: 14, gap: 6 }}>
         <IncomeWheels
+          key={money.currency.code}
           income={income}
           onIncome={onIncome}
           colours={pal}
@@ -72,6 +84,21 @@ export function StepMoneyIn({
         >
           {t('onboarding.income.daily', { amount: money.short(dailyHint) })}
         </Text>
+        {askCurrency ? (
+          <PressScale
+            accessibilityRole="button"
+            hitSlop={8}
+            onPress={() => {
+              haptics.tick();
+              router.push('/currency');
+            }}
+            style={{ alignSelf: 'center', paddingTop: 2 }}
+          >
+            <Text style={{ ...body(13.5, 650), textAlign: 'center', color: pal.ink }}>
+              {t('onboarding.income.currency', { currency: currencyName(money.currency) })}
+            </Text>
+          </PressScale>
+        ) : null}
       </Card>
       <Card pal={pal} style={{ paddingVertical: 14, paddingHorizontal: 16, gap: 10 }}>
         <Text style={{ ...body(15, 650), color: pal.ink }}>{t('onboarding.payday.title')}</Text>
