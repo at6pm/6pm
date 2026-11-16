@@ -30,6 +30,7 @@ export const jaOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.income.title': '入金',
   'onboarding.income.sub': '毎月の手取りはだいたいいくら？ 回して設定してください。',
   'onboarding.income.daily': '1日あたり約{amount}（固定費の前）',
+  'onboarding.income.currency': '{currency}で計算中 · 変更',
   'onboarding.income.hundredMillions': '億ドン',
   'onboarding.income.millions': '百万ドン',
   'onboarding.income.hundreds': '十万ドン',

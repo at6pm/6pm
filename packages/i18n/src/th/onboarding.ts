@@ -30,6 +30,7 @@ export const thOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.income.title': 'เงินเข้า',
   'onboarding.income.sub': 'แต่ละเดือนได้รับประมาณเท่าไหร่ หลังหักภาษี หมุนเพื่อตั้งค่า',
   'onboarding.income.daily': 'ราววันละ {amount} ก่อนหักบิล',
+  'onboarding.income.currency': 'กำลังคิดเป็น {currency} · เปลี่ยน',
   'onboarding.income.hundredMillions': 'หลักร้อยล้านดอง',
   'onboarding.income.millions': 'หลักล้านดอง',
   'onboarding.income.hundreds': 'หลักแสน',

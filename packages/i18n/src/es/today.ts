@@ -141,6 +141,13 @@ export const esToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'settings.language': 'Idioma',
   'settings.languageName': 'Español',
   'settings.languagePhone': 'El de tu teléfono',
+  'settings.currency': 'Moneda',
+  'settings.currencyNote':
+    'Al cambiarla, todo lo que has anotado se convierte al tipo de cambio de hoy.',
+  'settings.currencyConfirm': 'Toca otra vez para cambiar. {from} = {to}',
+  'settings.currencyNoRate':
+    'Ahora no hay tipo de cambio. Revisa tu conexión e inténtalo de nuevo.',
+  'settings.currencyFailed': 'No se pudo cambiar. Todo sigue igual.',
   'settings.yourData': 'Tus datos',
   'settings.privacy': 'Privacidad',
   'settings.privacyBody':

@@ -131,6 +131,12 @@ export const idToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'settings.language': 'Bahasa',
   'settings.languageName': 'Bahasa Indonesia',
   'settings.languagePhone': 'Sama seperti ponselmu',
+  'settings.currency': 'Mata uang',
+  'settings.currencyNote':
+    'Kalau diganti, semua yang sudah kamu catat dikonversi dengan kurs hari ini.',
+  'settings.currencyConfirm': 'Ketuk lagi untuk mengganti. {from} = {to}',
+  'settings.currencyNoRate': 'Kurs belum tersedia. Cek koneksimu lalu coba lagi.',
+  'settings.currencyFailed': 'Belum berhasil diganti. Tidak ada yang berubah.',
   'settings.yourData': 'Datamu',
   'settings.privacy': 'Privasi',
   'settings.privacyBody':

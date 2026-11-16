@@ -129,6 +129,11 @@ export const koToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'settings.language': '언어',
   'settings.languageName': '한국어',
   'settings.languagePhone': '휴대폰 설정과 같게',
+  'settings.currency': '통화',
+  'settings.currencyNote': '바꾸면 지금까지 입력한 금액이 모두 오늘 환율로 환산돼요.',
+  'settings.currencyConfirm': '한 번 더 누르면 바뀌어요. {from} = {to}',
+  'settings.currencyNoRate': '지금은 환율을 가져올 수 없어요. 연결을 확인하고 다시 시도해 주세요.',
+  'settings.currencyFailed': '바꾸지 못했어요. 아무것도 바뀌지 않았어요.',
   'settings.yourData': '내 데이터',
   'settings.privacy': '개인정보 보호',
   'settings.privacyBody':

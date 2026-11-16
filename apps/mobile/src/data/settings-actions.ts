@@ -2,6 +2,7 @@ import type { MoneyStore } from './money-store';
 import { DEFAULT_PLAN, writePlan, type PlanSettings } from './plan-settings';
 import { inTurn } from './store-queue';
 import { forgetVoice } from '../features/wording/voice-store';
+import { startingCurrency } from '../money/device-money';
 
 /** Children before parents, so the foreign keys never see an orphan mid-wipe. */
 const EVERY_TABLE = [
@@ -38,6 +39,8 @@ export function settingsActions(store: MoneyStore) {
       });
       // The companion's memory went with the settings table; its in-memory copy goes too.
       forgetVoice();
+      // A currency picked in an earlier set-up is not this one's: the phone's own stands again.
+      startingCurrency.set(null);
       await reload();
     },
   });

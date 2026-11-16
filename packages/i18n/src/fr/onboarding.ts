@@ -32,6 +32,7 @@ export const frOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.income.sub':
     'À peu près ce qui arrive chaque mois, après impôts. Fais tourner pour le régler.',
   'onboarding.income.daily': 'Environ {amount} par jour, avant factures',
+  'onboarding.income.currency': 'Compté en {currency} · Changer',
   'onboarding.income.hundredMillions': 'Centaines de millions de đồng',
   'onboarding.income.millions': 'Millions de đồng',
   'onboarding.income.hundreds': 'Centaines de milliers',

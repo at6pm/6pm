@@ -31,6 +31,7 @@ export const viOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.income.title': 'Tiền vào',
   'onboarding.income.sub': 'Mỗi tháng nhận về khoảng bao nhiêu, sau thuế. Xoay để chỉnh.',
   'onboarding.income.daily': 'Khoảng {amount} mỗi ngày, chưa trừ hoá đơn',
+  'onboarding.income.currency': 'Đang tính bằng {currency} · Đổi',
   'onboarding.income.hundredMillions': 'Trăm triệu đồng',
   'onboarding.income.millions': 'Triệu đồng',
   'onboarding.income.hundreds': 'Trăm nghìn',
