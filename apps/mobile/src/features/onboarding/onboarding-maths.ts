@@ -99,6 +99,14 @@ export function incomeLeads(c: Currency = VND, mark = '.'): string[] {
 export function incomeMillionsItems(lead: number, c: Currency = VND, mark = '.'): string[] {
   return pairItems(millionsPlace(c), mark, lead > 0);
 }
+/**
+ * The millions of an amount that may be under a million: with nothing above them their 0 is
+ * blank, so 300.000₫ reads 300.000, not 0.300.000.
+ */
+export function leadingMillionsItems(lead: number, c: Currency = VND, mark = '.'): string[] {
+  const items = incomeMillionsItems(lead, c, mark);
+  return lead > 0 ? items : ['', ...items.slice(1)];
+}
 export const DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 /** A digit wheel standing ahead of the amount's first digit: its 0 is not drawn. */
 export const LEADING_DIGITS = ['', ...DIGITS.slice(1)];
@@ -126,12 +134,19 @@ export function billLeading(
 /** Future you: 0–40% of money in. */
 export const PERCENTS = Array.from({ length: 41 }, (_, i) => `${i}%`);
 
+/**
+ * The digits the money wheels stand on. `least` is the smallest amount they hold: a million for
+ * money in, 0 for an amount that may be nothing (what was spent before 6pm). Under a million the
+ * amount goes to the nearest step of the last wheel, so 960.000₫ reads 1.000.000, not 0.
+ */
 export function incomeDigits(
   income: Money,
   c: Currency = VND,
+  least: Money = millionOf(c),
 ): { lead: number; millions: number; hundreds: number } {
   const million = millionOf(c);
-  const amount = Math.max(million, Math.min(incomeMax(c), income));
+  const held = Math.max(least, Math.min(incomeMax(c), income));
+  const amount = held < million ? Math.round(held / hundredOf(c)) * hundredOf(c) : held;
   return {
     lead: Math.floor(amount / leadOf(c)),
     millions: Math.floor((amount % leadOf(c)) / million),
@@ -139,24 +154,32 @@ export function incomeDigits(
   };
 }
 
-/** The amount the wheels read, kept between 1.000.000₫ and 1.000.000.000₫ ($1,000 to $1M). */
+/**
+ * The amount the wheels read, kept between 1.000.000₫ and 1.000.000.000₫ ($1,000 to $1M), or
+ * from `least` where the amount may be smaller.
+ */
 export function incomeOf(
   lead: number,
   millions: number,
   hundreds: number,
   c: Currency = VND,
+  least: Money = millionOf(c),
 ): Money {
   const amount = lead * leadOf(c) + millions * millionOf(c) + hundreds * hundredOf(c);
-  return Math.max(millionOf(c), Math.min(incomeMax(c), amount));
+  return Math.max(least, Math.min(incomeMax(c), amount));
 }
 
 /**
  * An amount typed for money in, as the wheels can hold it: to the nearest step of the last wheel
  * (100.000₫, $100), within what the wheels set.
  */
-export function incomeFromTyped(amount: Money, c: Currency = VND): Money {
+export function incomeFromTyped(
+  amount: Money,
+  c: Currency = VND,
+  least: Money = millionOf(c),
+): Money {
   const unit = hundredOf(c);
-  return Math.max(millionOf(c), Math.min(incomeMax(c), Math.round(amount / unit) * unit));
+  return Math.max(least, Math.min(incomeMax(c), Math.round(amount / unit) * unit));
 }
 
 export function billDigits(
