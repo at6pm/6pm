@@ -24,6 +24,7 @@ import {
   incomeLeads,
   incomeMillionsItems,
   incomeOf,
+  leadingMillionsItems,
   markAfter,
   PAYDAY_CELLS,
   paydayCell,
@@ -76,6 +77,9 @@ const CAPTION_FADE = { duration: 300, easing: Easing.bezier(...curves.enter) };
 /** The payday card easing to the next caption's height. */
 const RESIZE = { duration: durations.snap, easing: Easing.bezier(...curves.enter) };
 
+/** The group mark after a blank millions wheel fades with it, as the bill wheels' marks do. */
+const MARK_FADE = { duration: 200 } as const;
+
 /** Text between the wheels: it never takes a touch, so the strips over it reach the wheels. */
 const PASS_THROUGH = { pointerEvents: 'none' } as const;
 
@@ -88,11 +92,15 @@ const PASS_THROUGH = { pointerEvents: 'none' } as const;
  * Each wheel answers in a strip at least 56 pt wide, sharing the gaps between them: a tap above
  * or below the centre steps it, a hold rolls it, and a tap on the centre types the whole amount
  * on Quick add's keypad, which the wheels then glide to.
+ *
+ * `fromZero` is for an amount that may be nothing, as what was spent before 6pm: the wheels go
+ * down to 0, and under a million the millions and their mark are not drawn.
  */
 export function IncomeWheels({
   income,
   onIncome,
   colours,
+  fromZero = false,
   reachY = REACH_Y,
   guide,
   guidePal,
@@ -101,6 +109,8 @@ export function IncomeWheels({
   readonly income: number;
   readonly onIncome: (income: number) => void;
   readonly colours: Pick<PickerInk, 'ink' | 'chipBg'>;
+  /** The amount may be under a million, down to nothing. */
+  readonly fromZero?: boolean;
   readonly reachY?: WheelReachY;
   /** Onboarding's gesture guide, drawn over the wheels it rolls. */
   readonly guide?: MoneyInGuide;
@@ -111,7 +121,11 @@ export function IncomeWheels({
   const { t } = useI18n();
   const w = useWheelMoney();
   const c = w.currency;
-  const { lead, millions, hundreds } = incomeDigits(income, c);
+  const least = fromZero ? 0 : undefined;
+  const { lead, millions, hundreds } = incomeDigits(income, c, least);
+  const amountOf = (l: number, m: number, h: number) => incomeOf(l, m, h, c, least);
+  // Under a million the millions wheel stands ahead of the first digit: blank, its mark hidden.
+  const underMillion = fromZero && lead === 0 && millions === 0;
   const between = markAfter(w.place, w.mark);
   const innerMark = markAfter(w.place + 1, w.mark) !== '';
   const number = { ...display(SIZE, 600, -0.03), color: colours.ink, ...PASS_THROUGH };
@@ -147,6 +161,9 @@ export function IncomeWheels({
       opacity: withTiming(leadShown ? 1 : 0, LEAD_MOVE),
     };
   });
+  const markStyle = useAnimatedStyle(() => ({
+    opacity: withTiming(underMillion ? 0 : 1, MARK_FADE),
+  }));
   const hundredsX = zerosX === null ? null : zerosX - HUNDREDS_WIDTH / 2;
   const millionsX =
     zerosX === null ? null : zerosX - HUNDREDS_WIDTH - markWidth - millionsWidth / 2;
@@ -174,7 +191,7 @@ export function IncomeWheels({
           <Wheel
             items={incomeLeads(c, w.mark)}
             index={lead}
-            onChange={(k) => onIncome(incomeOf(k, millions, hundreds, c))}
+            onChange={(k) => onIncome(amountOf(k, millions, hundreds))}
             size={SIZE}
             padX={0}
             align="flex-end"
@@ -185,9 +202,11 @@ export function IncomeWheels({
           />
         </Animated.View>
         <Wheel
-          items={incomeMillionsItems(lead, c, w.mark)}
+          items={
+            fromZero ? leadingMillionsItems(lead, c, w.mark) : incomeMillionsItems(lead, c, w.mark)
+          }
           index={millions}
-          onChange={(k) => onIncome(incomeOf(lead, k, hundreds, c))}
+          onChange={(k) => onIncome(amountOf(lead, k, hundreds))}
           size={SIZE}
           padX={0}
           align={lead > 0 ? 'flex-start' : 'flex-end'}
@@ -198,17 +217,17 @@ export function IncomeWheels({
           {...(guide ? { guide: guide.millions } : {})}
         />
         {between === '' ? null : (
-          <Text
-            style={number}
+          <Animated.Text
+            style={[number, markStyle]}
             onLayout={(e: LayoutChangeEvent) => setMarkWidth(e.nativeEvent.layout.width)}
           >
             {between}
-          </Text>
+          </Animated.Text>
         )}
         <Wheel
           items={DIGITS}
           index={hundreds}
-          onChange={(k) => onIncome(incomeOf(lead, millions, k, c))}
+          onChange={(k) => onIncome(amountOf(lead, millions, k))}
           size={SIZE}
           padX={0}
           ink={colours.ink}
@@ -237,7 +256,7 @@ export function IncomeWheels({
         <AmountKeypadSheet
           title={t('onboarding.wheel.type')}
           inks={keypadInks}
-          onAmount={(amount) => onIncome(incomeFromTyped(amount, c))}
+          onAmount={(amount) => onIncome(incomeFromTyped(amount, c, least))}
           onClose={() => setTyping(false)}
         />
       ) : null}

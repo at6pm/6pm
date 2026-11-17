@@ -105,6 +105,7 @@ export function SincePaydayEditor({
         income={amount}
         onIncome={onAmount}
         colours={pal}
+        fromZero
         keypadInks={keypadInksOf(pal)}
       />
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>

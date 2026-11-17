@@ -63,7 +63,7 @@ export function SincePaydaySheet() {
             <Text style={{ ...body(15, 650), lineHeight: 21, color: palette.ink }}>
               {t('plan.sincePayday.question', { date: dayMonth(dateOf(snap.cycle.start)) })}
             </Text>
-            <IncomeWheels income={amount} onIncome={setAmount} colours={palette} />
+            <IncomeWheels income={amount} onIncome={setAmount} colours={palette} fromZero />
           </View>
         </PotCard>
         <PressScale

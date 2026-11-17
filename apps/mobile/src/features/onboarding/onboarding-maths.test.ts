@@ -18,6 +18,7 @@ import {
   incomeMillionsItems,
   incomeOf,
   billMillionsItems,
+  leadingMillionsItems,
   markAfter,
   millionsPlace,
   PAYDAY_CELLS,
@@ -27,6 +28,7 @@ import {
   zerosBelow,
 } from './onboarding-maths';
 
+const VND = currencyOf('VND');
 const USD = currencyOf('USD');
 const JPY = currencyOf('JPY');
 const KRW = currencyOf('KRW');
@@ -40,6 +42,30 @@ describe('onboarding maths', () => {
     expect(incomeOf(2, 50, 3)).toBe(250_300_000);
     expect(billDigits(3_520_000)).toEqual({ millions: 3, hundreds: 5, tens: 2 });
     expect(billOf(0, 2, 2)).toBe(220_000);
+  });
+
+  it('holds an amount that may be nothing, as what was spent before 6pm', () => {
+    expect(incomeDigits(300_000, VND, 0)).toEqual({ lead: 0, millions: 0, hundreds: 3 });
+    expect(incomeDigits(0, VND, 0)).toEqual({ lead: 0, millions: 0, hundreds: 0 });
+    expect(incomeDigits(-5, VND, 0)).toEqual({ lead: 0, millions: 0, hundreds: 0 });
+    expect(incomeOf(0, 0, 3, VND, 0)).toBe(300_000);
+    expect(incomeOf(0, 0, 0, VND, 0)).toBe(0);
+    expect(incomeOf(0, 2, 4, VND, 0)).toBe(2_400_000);
+    expect(incomeFromTyped(40_000, VND, 0)).toBe(0);
+    expect(incomeFromTyped(260_000, VND, 0)).toBe(300_000);
+    // An estimate off the wheels' step goes to the nearest one, never to a blank 0.
+    expect(incomeDigits(960_000, VND, 0)).toEqual({ lead: 0, millions: 1, hundreds: 0 });
+    expect(incomeDigits(430_000, VND, 0)).toEqual({ lead: 0, millions: 0, hundreds: 4 });
+    // Money in keeps its floor.
+    expect(incomeDigits(300_000)).toEqual({ lead: 0, millions: 1, hundreds: 0 });
+    expect(incomeFromTyped(40_000)).toBe(1_000_000);
+  });
+
+  it('leaves the millions blank under a million', () => {
+    expect(leadingMillionsItems(0)[0]).toBe('');
+    expect(leadingMillionsItems(0)[1]).toBe('1');
+    expect(leadingMillionsItems(0)).toHaveLength(100);
+    expect(leadingMillionsItems(2)[0]).toBe('00');
   });
 
   it('sets money in from 1.000.000₫ up to 1.000.000.000₫ a month', () => {
