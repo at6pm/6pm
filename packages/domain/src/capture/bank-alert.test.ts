@@ -29,6 +29,39 @@ const wallets: [string, BankAlertInput, BankAlert][] = [
     moved('out', 45_000, { counterparty: 'Phúc Long', bank: 'MoMo' }),
   ],
   [
+    'MoMo: the shop named before the amount',
+    {
+      app: 'MoMo',
+      title: 'Thanh toán HIGHLANDS COFFEE thành công',
+      body: 'Bạn đã thực hiện thanh toán thành công cho HIGHLANDS COFFEE với số tiền 119.000đ. Nhấn để kiểm tra giao dịch ngay bạn nhé.',
+    },
+    moved('out', 119_000, { counterparty: 'HIGHLANDS COFFEE', bank: 'MoMo' }),
+  ],
+  [
+    'MoMo: a shop with one letter for a word, named before the amount',
+    {
+      app: 'MoMo',
+      title: 'Thanh toán CIRCLE K thành công',
+      body: 'Bạn đã thực hiện thanh toán thành công cho CIRCLE K với số tiền 42.000đ. Nhấn để kiểm tra giao dịch ngay bạn nhé.',
+    },
+    moved('out', 42_000, { counterparty: 'CIRCLE K', bank: 'MoMo' }),
+  ],
+  [
+    'a sender named before the amount',
+    {
+      app: 'MoMo',
+      body: 'Bạn đã nhận tiền từ NGUYEN VAN A với số tiền 100.000đ.',
+    },
+    moved('in', 100_000, { counterparty: 'NGUYEN VAN A', bank: 'MoMo' }),
+  ],
+  [
+    'an account at its own bank before the amount names nobody',
+    {
+      body: 'TK 1234 tại BIDV số tiền: -120,000 VND lúc 10:02. SD: 880,000 VND',
+    },
+    moved('out', 120_000, { bank: 'BIDV' }),
+  ],
+  [
     'ZaloPay: money in',
     {
       app: 'ZaloPay',

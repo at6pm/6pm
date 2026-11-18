@@ -200,6 +200,18 @@ const TO_WHOM =
 const FROM_WHOM =
   /(?:^|\s)(?:từ|tu|from)\s+(.+?)(?=\s+(?:lúc|luc|at\s+\d|vào|vao|ngày|ngay|on|via|qua|với|voi|ref|số dư|so du|sd|nd|nội dung|noi dung|thành công|thanh cong|was|has|is|for|using|bằng|bang|to|đến|den|tới|toi)(?:\s|$|[:.,])|\s*(?:[,;|\n(]|\.(?:\s|$)|$))/iu;
 
+/**
+ * Before the amount, who it went to or came from, when the alert words the amount last: "cho
+ * HIGHLANDS COFFEE với số tiền 119.000đ", "từ NGUYEN VAN A số tiền: 100.000đ". The name ends at
+ * the amount's own label, in the sentence that holds the amount.
+ */
+const NAMED_UP_TO_AMOUNT = String.raw`\s+((?:[^\n;|.]|\.(?!\s))+?)\s+(?:với\s+|voi\s+)?(?:số\s+tiền|so\s+tien)(?:\s+(?:là|la))?\s*[:：]?\s*$`;
+const TO_WHOM_BEFORE = new RegExp(
+  String.raw`(?:^|\s)(?:đến|den|tới|toi|cho|tại|tai)` + NAMED_UP_TO_AMOUNT,
+  'iu',
+);
+const FROM_WHOM_BEFORE = new RegExp(String.raw`(?:^|\s)(?:từ|tu)` + NAMED_UP_TO_AMOUNT, 'iu');
+
 /** Words before a number that make a counterparty an account or a phone, not a name. */
 const ACCOUNT_WORDS =
   /^(?:số điện thoại|so dien thoai|sđt|sdt|số tài khoản|so tai khoan|tài khoản|tai khoan|stk|tk|account|acct|phone|ví|vi)\b\s*/iu;
@@ -325,11 +337,16 @@ function cleanName(raw: string | undefined): string | null {
 
 /**
  * Who was paid (money out) or who paid in, as printed after the amount. Before it an alert names
- * its own bank or account ("TK 1234 tại BIDV -120,000"), never the other side.
+ * its own bank or account ("TK 1234 tại BIDV -120,000"), never the other side, unless the name
+ * runs up to the amount's own label ("cho HIGHLANDS COFFEE với số tiền 119.000đ").
  */
 function counterpartyOf(text: string, amount: Found, way: SpendDirection): string | null {
   const pattern = way === 'in' ? FROM_WHOM : TO_WHOM;
-  return cleanName(pattern.exec(text.slice(amount.end))?.[1]);
+  const after = cleanName(pattern.exec(text.slice(amount.end))?.[1]);
+  if (after !== null) return after;
+  const before = way === 'in' ? FROM_WHOM_BEFORE : TO_WHOM_BEFORE;
+  const named = cleanName(before.exec(text.slice(0, amount.start))?.[1]);
+  return named !== null && !namesNoPayee(named) ? named : null;
 }
 
 /** A payment memo that names the shop: "Thanh toan QR-PHO HOA", "THANH TOAN TAI CIRCLE K". */
