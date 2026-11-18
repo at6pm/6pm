@@ -6,6 +6,7 @@ import { currencyOf, VND } from '../money/currency';
 import {
   ALERT_READ_AMOUNTS_MAX,
   alertReadAsk,
+  holdsLongNumber,
   maskLongNumbers,
   spendOfUnreadAlert,
   withAlertReading,
@@ -63,6 +64,11 @@ describe('printedAmounts', () => {
     expect(printedAmounts(text).map((f) => text.slice(f.start, f.end))).toEqual(['119.000']);
   });
 
+  it('never offers a bare run of digits: an account, a reference, a code', () => {
+    const text = 'ND: 12345678 ck FT26316 ma 559201 -45,000VND';
+    expect(printedAmounts(text).map((f) => text.slice(f.start, f.end))).toEqual(['-45,000VND']);
+  });
+
   it('reads the mark printed with an amount in another currency', () => {
     const text = 'Card ending 4410: USD 12.50 at AMAZON. Balance 1,204.10 USD';
     expect(printedAmounts(text).map((f) => [f.amount, f.currency])).toEqual([
@@ -83,6 +89,40 @@ describe('maskLongNumbers', () => {
     expect(maskLongNumbers('STK: 12345678 da nhan')).toBe('STK: •••••••• da nhan');
   });
 
+  it('dots out a number written in groups, whatever separates them', () => {
+    expect(maskLongNumbers('Goi 0912 345 678 hoac 0912.345.678')).toBe(
+      'Goi •••• ••• ••• hoac ••••.•••.•••',
+    );
+    expect(maskLongNumbers('Lien he +84 912 345 678')).toBe('Lien he +•• ••• ••• •••');
+    expect(maskLongNumbers('TK 1903 6789 0123 456 -50,000VND')).toBe(
+      'TK •••• •••• •••• ••• -50,000VND',
+    );
+    expect(maskLongNumbers('So the 1903-6789-0123')).toBe('So the ••••-••••-••••');
+  });
+
+  it('never takes a grouped amount, a date or a time for a long number', () => {
+    for (const text of [
+      'SD: 1.250.000.000 VND',
+      'GD: -50.000 18.11.2026 09:41',
+      'GD: -1,250,000,000VND luc 2026-11-18 09:41:07',
+      'So du 12.345.678 d, GD 1.234.567 d',
+    ]) {
+      expect(maskLongNumbers(text)).toBe(text);
+      expect(holdsLongNumber(text)).toBe(false);
+    }
+  });
+
+  it('leaves nothing the server would turn away', () => {
+    for (const text of [
+      'TK 0123456789012 nhan tu 0901234567',
+      'Goi 0912 345 678 hoac STK 1903 6789 0123 so tien 50,000d',
+      'Hotline 1900.5555.88 hoac +84 912 345 678',
+    ]) {
+      expect(holdsLongNumber(text)).toBe(true);
+      expect(holdsLongNumber(maskLongNumbers(text))).toBe(false);
+    }
+  });
+
   it('leaves amounts, dates and short codes as printed', () => {
     const text = 'GD: -1,500,000VND luc 18/11/2026 09:41. Ma GD FT26316XQ7';
     expect(maskLongNumbers(text)).toBe(text);
@@ -93,7 +133,7 @@ describe('maskLongNumbers', () => {
       fc.property(fc.string({ maxLength: 200 }), (text) => {
         const masked = maskLongNumbers(text);
         expect(masked.length).toBe(text.length);
-        expect(/\p{Nd}{9,}/u.test(masked)).toBe(false);
+        expect(holdsLongNumber(masked)).toBe(false);
       }),
     );
   });

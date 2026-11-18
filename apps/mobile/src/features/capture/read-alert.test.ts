@@ -196,6 +196,20 @@ describe('having the server read a bank alert a second time', () => {
     expect(request.mock.calls.length).toBeLessThanOrEqual(6);
   });
 
+  it('goes on asking when one alert’s own reading fails', async () => {
+    let calls = 0;
+    const { read, request } = setup(() => {
+      calls += 1;
+      return calls === 1
+        ? Promise.reject(new ApiRequestError('unavailable', 'Request failed', true))
+        : phoHoa();
+    });
+    const items = Array.from({ length: 9 }, () => caught());
+    const answers = await read(items);
+    expect(request).toHaveBeenCalledTimes(9);
+    expect(answers.size).toBe(8);
+  });
+
   it('asks nothing about an item that carries no words', async () => {
     const { read, request } = setup(phoHoa);
     const { alertWords: _none, ...bare } = caught();

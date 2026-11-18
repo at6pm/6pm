@@ -1,11 +1,14 @@
 import { z } from 'zod';
 
-import { ALERT_READ_AMOUNTS_MAX, ALERT_READ_APP_MAX, ALERT_READ_TEXT_MAX } from '@6pm/domain';
+import {
+  ALERT_READ_AMOUNTS_MAX,
+  ALERT_READ_APP_MAX,
+  ALERT_READ_NAME_MAX,
+  ALERT_READ_TEXT_MAX,
+  holdsLongNumber,
+} from '@6pm/domain';
 
 import { generate, type AnthropicConfig, type Generated } from './anthropic';
-
-/** Nine digits in a row are an account, a card or a phone number: the phone dots those out. */
-const longNumber = /\p{Nd}{9,}/u;
 
 /**
  * What the phone sends to have one bank or wallet alert read: the app it came from, the alert's
@@ -22,7 +25,7 @@ export const readAlertRequestSchema = z
     home: z.string().regex(/^[A-Z]{3}$/),
     categories: z.array(z.string().trim().min(1).max(40)).max(50),
   })
-  .refine((request) => !longNumber.test(request.text) && !longNumber.test(request.app), {
+  .refine((request) => !holdsLongNumber(request.text) && !holdsLongNumber(request.app), {
     message: 'long numbers are not accepted',
   })
   .refine(
@@ -36,15 +39,17 @@ export type ReadAlertRequest = z.infer<typeof readAlertRequestSchema>;
 
 /**
  * The model's answer. It never writes a number: `amount` is one of the marks the phone made
- * ("0" for none), and `category` one of the names the phone sent ("" for none).
+ * ("0" for none), and `category` one of the names the phone sent ("" for none). The model is told
+ * the choices but not held to them, so an answer outside them is read as none of them rather
+ * than failing the call; a name of any length is taken and cut.
  */
 export function readAlertOutputSchema(request: Pick<ReadAlertRequest, 'amounts' | 'categories'>) {
   const marks = Array.from({ length: request.amounts }, (_, i) => String(i + 1));
   return z.object({
     moved: z.enum(['out', 'in', 'none']),
-    amount: z.enum(['0', ...marks]),
-    merchant: z.string().trim().max(60),
-    category: z.enum(['', ...request.categories]),
+    amount: z.enum(['0', ...marks]).catch('0'),
+    merchant: z.string(),
+    category: z.enum(['', ...request.categories]).catch(''),
   });
 }
 export type ReadAlertOutput = z.infer<ReturnType<typeof readAlertOutputSchema>>;
@@ -98,7 +103,11 @@ export async function readAlert(
     timeoutMs: readAlertTimeoutMs,
     totalMs: readAlertTimeoutMs,
   });
-  const { moved, merchant } = generated.output;
+  const { moved } = generated.output;
+  const merchant = generated.output.merchant
+    .replace(/\s+/gu, ' ')
+    .trim()
+    .slice(0, ALERT_READ_NAME_MAX);
   // An answer that contradicts itself is read as the more careful one: no money, no mark.
   const amount = moved === 'none' ? 0 : Number(generated.output.amount);
   return {

@@ -59,6 +59,8 @@ describe('POST /v1/read-alert', () => {
     for (const body of [
       { ...alert, text: alert.text.replace('•••••••••••••', '0123456789012') },
       { ...alert, app: 'Bank 0901234567' },
+      { ...alert, text: `${alert.text} Goi 0912 345 678` },
+      { ...alert, text: `${alert.text} STK 1903.6789.0123` },
       { ...alert, amounts: 3 },
       { ...alert, amounts: 0 },
       { ...alert, home: 'đồng' },
@@ -133,6 +135,19 @@ describe('the alert reading contract', () => {
   it('reads “no money moved” as no mark, no name and no category, whatever else was said', async () => {
     const { read } = ask({ moved: 'none', amount: '2', merchant: 'MB Bank', category: 'Food' });
     expect((await read).output).toEqual({ moved: 'none', amount: 0, merchant: '', category: '' });
+  });
+
+  it('cuts a long name and reads a choice it was not given as none, without failing', async () => {
+    const { read } = ask({
+      moved: 'out',
+      amount: '9',
+      merchant: `  CÔNG TY TNHH ${'THƯƠNG MẠI DỊCH VỤ '.repeat(6)} `,
+      category: 'Eating out',
+    });
+    const { output } = await read;
+    expect(output).toMatchObject({ moved: 'out', amount: 0, category: '' });
+    expect(output.merchant).toHaveLength(60);
+    expect(output.merchant.startsWith('CÔNG TY TNHH THƯƠNG MẠI')).toBe(true);
   });
 
   it('files money in under no category', async () => {

@@ -43,19 +43,37 @@ export interface AlertReadAsk {
   readonly amounts: readonly PrintedAmount[];
 }
 
-/** An account, a card or a phone number: nine digits and more in a row, or a card's four fours. */
-const LONG_NUMBER = /\p{Nd}{9,}|(?<!\p{Nd})\p{Nd}{4}(?:[ -]\p{Nd}{4}){3}(?!\p{Nd})/gu;
+/** An account, a card or a phone number written in one piece: nine digits and more in a row. */
+const LONG_NUMBER = /\p{Nd}{9,}/gu;
+/**
+ * The same written in groups with one separator throughout ("0912 345 678", "0912.345.678",
+ * "1903-6789-0123-456", a card's four fours). A date and a time never fit: their groups are two
+ * digits long.
+ */
+const GROUPED_NUMBER =
+  /(?<![\p{Nd}.,])\p{Nd}{2,4}([ .-])\p{Nd}{3,4}(?:\1\p{Nd}{3,4}){1,3}(?![.,]?\p{Nd})/gu;
+/** An amount with its thousands grouped by dots ("1.250.000.000"): never a number to hide. */
+const GROUPED_AMOUNT = /^\p{Nd}{1,3}(?:\.\p{Nd}{3})+$/u;
 /** The number after an account's or a card's own word, however short ("TK 12345678"). */
 const NAMED_NUMBER =
   /((?:^|[\s|(])(?:tk|tài khoản|tai khoan|stk|acct|account|a\/c|thẻ|the|card|sđt|sdt|số điện thoại|so dien thoai)\s*[:：]?\s*(?:số\s*|so\s*)?)(\p{Nd}{5,})/giu;
 
+const digitsIn = (text: string) => text.replace(/\P{Nd}/gu, '').length;
 const dotted = (digits: string) => digits.replace(/\p{Nd}/gu, '•');
+/** Whether a grouped run is a long number and no amount: nine digits or more in all. */
+const hidden = (run: string) => digitsIn(run) >= 9 && !GROUPED_AMOUNT.test(run);
 
 /** The text with every long number dotted out, digit for digit, so nothing else moves. */
 export function maskLongNumbers(text: string): string {
   return text
     .replace(LONG_NUMBER, dotted)
+    .replace(GROUPED_NUMBER, (run: string) => (hidden(run) ? dotted(run) : run))
     .replace(NAMED_NUMBER, (_, lead: string, digits: string) => lead + dotted(digits));
+}
+
+/** Whether a text still holds a long number: what the server turns away. */
+export function holdsLongNumber(text: string): boolean {
+  return /\p{Nd}{9,}/u.test(text) || (text.match(GROUPED_NUMBER) ?? []).some(hidden);
 }
 
 /**

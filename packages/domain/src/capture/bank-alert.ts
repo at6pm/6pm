@@ -269,13 +269,13 @@ export interface PrintedAmount {
   readonly end: number;
 }
 
-/** A number written as money is: its thousands grouped, or five digits and more. */
-const WRITTEN_AS_MONEY = /\d[.,]\d{3}(?!\d)|\d{5}/;
+/** A number written as money is, with its thousands grouped ("119.000", "1,250,000"). */
+const WRITTEN_AS_MONEY = /\d[.,]\d{3}(?!\d)/;
 
 /**
  * Every amount an alert prints, the balance among them, for a second reader to choose from: a
- * signed number, one with a currency mark or after a label, or any number written as money is. A
- * date, a time and a short code are none of them.
+ * signed number, one with a currency mark or after a label, or one with its thousands grouped. A
+ * date, a time, a code and a bare run of digits (an account, a reference) are none of them.
  */
 export function printedAmounts(text: string, home: Currency = VND): PrintedAmount[] {
   const found: PrintedAmount[] = [];
@@ -288,8 +288,6 @@ export function printedAmounts(text: string, home: Currency = VND): PrintedAmoun
     const lead = text.slice(from, match.index);
     const labelled = CHANGE_LEAD.test(foldWords(lead + (markBefore ? '' : before)).trimEnd());
     if (sign === undefined && !mark && !labelled && !WRITTEN_AS_MONEY.test(number)) continue;
-    // Nine digits in a row with no mark are an account or a phone number, never an amount.
-    if (sign === undefined && !mark && /^\d{9,}$/.test(number)) continue;
     const read = parseWalletAmount(mark ? `${number} ${mark}` : number, home);
     if (read === null || read.amount <= 0) continue;
     from = match.index + whole.length;

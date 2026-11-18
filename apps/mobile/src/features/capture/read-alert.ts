@@ -13,6 +13,7 @@ import {
 
 import type { AlertSecondRead } from '../../data/inbox-import';
 import type { ApiClient } from '../api/api-client';
+import { ApiRequestError, type ApiFailure } from '../api/api-error';
 import { readAiMode, type AiModeSettings } from '../privacy/ai-mode';
 
 /** One attempt, kept short: the import waits for it, and a slow answer leaves the row as read. */
@@ -23,6 +24,15 @@ export const READ_ALERTS_WAIT_MS = 8_000;
 const AT_ONCE = 6;
 const MAX_CATEGORIES = 50;
 const MAX_CATEGORY = 40;
+
+/** Failures that would meet every alert of this import the same way. */
+const STOPS_ASKING: ReadonlySet<ApiFailure> = new Set([
+  'network',
+  'timeout',
+  'unauthorized',
+  'rate_limited',
+  'forbidden',
+]);
 
 const readSchema = z.object({
   moved: z.enum(['out', 'in', 'none']),
@@ -53,8 +63,9 @@ export interface ReadAlertsDeps {
  *
  * In on-device mode nothing is sent: a caught row stays as the phone read it, and an alert the
  * phone could not read is let go. Offline, slow or refused, a caught row stays as read and an
- * unread alert is left without an answer, for the import to keep and ask about again. The first
- * failure stops the asking for this import, so a dead connection is waited on once.
+ * unread alert is left without an answer, for the import to keep and ask about again. A failure
+ * every alert would meet (no connection, the day's reads used up) stops the asking for this
+ * import, so a dead connection is waited on once.
  *
  * The person's own rule for the name files a payment; else the server's category; else where the
  * phone filed it.
@@ -114,8 +125,10 @@ export function createReadAlerts(deps: ReadAlertsDeps) {
       let read: AlertReading & { category: string };
       try {
         read = await ask(asked, home);
-      } catch {
-        down = true;
+      } catch (error) {
+        // No connection, no time left or no more reads today stops the asking; a failure of this
+        // one alert's reading (the model's answer, a refused text) leaves the others their turn.
+        down ||= !(error instanceof ApiRequestError) || STOPS_ASKING.has(error.failure);
         return;
       }
       if (item.kind === 'unread') {
