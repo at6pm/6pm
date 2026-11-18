@@ -13,6 +13,7 @@ import { useI18n } from '../../i18n/i18n';
 import { useHomeCurrency } from '../../money/use-money-format';
 import { useApi } from '../api/native-api';
 import { createEnrichShared } from '../capture/enrich-shared';
+import { createReadAlerts } from '../capture/read-alert';
 import { priceWaitingNow } from '../travel/price-waiting';
 import { setInboxRunner } from './inbox-runner';
 
@@ -42,6 +43,13 @@ export function useInboxImport() {
       ruleCategory: (merchant) => actions.ruleCategory(merchant),
       categories: () => store.getSnapshot().categories,
     });
+    const readAlerts = createReadAlerts({
+      request: (request) => api.request(request),
+      settings: db,
+      ruleCategory: (merchant) => actions.ruleCategory(merchant),
+      categories: () => store.getSnapshot().categories,
+      home: () => home,
+    });
     const price = () => priceWaitingNow({ store, actions, api, home });
     let queued: Promise<void> | null = null;
     // Prices everything waiting after this run, not only what it brought in.
@@ -60,6 +68,7 @@ export function useInboxImport() {
             actions,
             inbox: native,
             enrich,
+            readAlerts,
             home: home.code,
             language,
             keepPhoto: keepPhotoAt,

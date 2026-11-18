@@ -25,7 +25,7 @@ export const frOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.privacy.source': 'Code source ouvert',
   'onboarding.privacy.sourceSub': 'Lis chaque ligne sur GitHub',
   'onboarding.privacy.foot':
-    'Les tickets transférés par e-mail et les questions à Demande à 6pm passent par notre serveur pour être lus, puis ils sont supprimés.',
+    'Les tickets transférés par e-mail, les alertes bancaires et les questions à Demande à 6pm passent par notre serveur pour être lus, puis ils sont supprimés.',
   'onboarding.privacy.cta': 'Compris',
 
   'onboarding.income.title': 'Rentrées',
@@ -148,7 +148,7 @@ export const frOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.catch.alerts.tab': 'Alertes',
   'onboarding.catch.alerts.title': 'Alertes bancaires',
   'onboarding.catch.alerts.body':
-    'Les alertes de ta banque et de ton portefeuille notent ce qui a bougé, lues sur ce téléphone et envoyées nulle part.',
+    'Les alertes de ta banque et de ton portefeuille notent ce qui a bougé. Lues sur ce téléphone, puis une seconde fois sur notre serveur, sauf si tu gardes l’IA sur ce téléphone.',
   'onboarding.catch.alerts.alert': 'Paiement −{amount} · {merchant}',
   'onboarding.catch.email.tab': 'E-mail',
   'onboarding.catch.email.title': 'Transférer les tickets par e-mail',

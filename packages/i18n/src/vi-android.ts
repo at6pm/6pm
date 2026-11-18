@@ -81,7 +81,7 @@ export const viAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'capture.alerts.tip':
     'Mã OTP, giao dịch không thành công và khuyến mãi được bỏ qua. Khoản đã bắt qua email sẽ không bị ghi hai lần.',
   'capture.alerts.privacy':
-    'Đọc ngay trên máy và không gửi đi đâu cả. 6pm chỉ đọc thông báo của ngân hàng và ví của bạn.',
+    'Đọc trên máy trước. 6pm chỉ đọc thông báo của ngân hàng và ví của bạn. Sau đó máy chủ của 6pm đọc lại lần nữa: chữ và số tiền trong thông báo, cả số dư nếu có in. Các dãy số dài như số tài khoản, số thẻ, số điện thoại được che trước khi gửi. Không bao giờ gửi khi AI chạy trên máy.',
   'capture.alerts.actionAdd': 'Cho phép truy cập thông báo',
   'capture.alerts.actionOpen': 'Cài đặt truy cập thông báo',
 

@@ -129,6 +129,59 @@ describe('logBankAlert', () => {
     expect(heardKeyOf(next?.id)).not.toBe(heardKeyOf(first?.id));
   });
 
+  it('carries a caught alert’s own words for the app’s second reader', () => {
+    const body = 'TK 0123xxx456|GD: -40,000VND 27/10/26 12:33|SD: 1,234,567VND';
+    const { item, unread } = caught(body, { app: 'MB Bank', title: 'Biến động số dư' });
+    expect(item?.alertWords).toEqual({
+      app: 'MB Bank',
+      title: 'Biến động số dư',
+      subtitle: '',
+      body,
+    });
+    expect(item).not.toHaveProperty('words');
+    expect(unread).toBeUndefined();
+  });
+
+  it('leaves an alert no template read that prints a number for the second reader', () => {
+    const delivered = new Date(2026, 9, 27, 12, 30, 41).toISOString();
+    const body = 'Quý khách vừa quẹt 85.000 ở The Coffee House';
+    const { item, unread, last } = caught(body, { app: 'MB Bank', date: delivered });
+    expect(item).toBeNull();
+    expect(last.skipped).toBe('unread');
+    expect(unread).toMatchObject({
+      v: 1,
+      kind: 'unread',
+      at: now,
+      date: delivered,
+      bank: 'MB Bank',
+      alertWords: { app: 'MB Bank', title: '', subtitle: '', body },
+    });
+    expect(unread?.id).toMatch(UUID_V8);
+  });
+
+  it('leaves an unread alert for the second reader, not the log, while the capture log is on', () => {
+    const logging = JSON.stringify({ ...context, keepWords: true });
+    const read = caught('Quý khách vừa quẹt 85.000 ở The Coffee House', { ctx: logging });
+    expect(read.unread?.kind).toBe('unread');
+    expect(read.heard).toBeUndefined();
+    const promo = caught('Ưu đãi: giảm 50.000đ khi thanh toán hôm nay', { ctx: logging });
+    expect(promo.heard?.skipped).toBe('promo');
+    expect(promo.unread).toBeUndefined();
+  });
+
+  it('leaves nothing of a code, a promotion, a security notice, or words with no number', () => {
+    for (const body of [
+      'Ma OTP cua ban la 482913. Khong chia se ma nay.',
+      'Ưu đãi: giảm 50.000đ khi thanh toán hôm nay',
+      'Đăng nhập trên thiết bị mới lúc 12:30',
+      'Cảm ơn quý khách đã sử dụng dịch vụ',
+    ]) {
+      const { item, unread } = caught(body, { app: 'MB Bank' });
+      expect(item).toBeNull();
+      expect(unread).toBeUndefined();
+    }
+  });
+
   it('answers well-formed for anything unreadable', () => {
     const answer = bankAlertResultSchema.parse(
       JSON.parse(logBankAlert('', '', '', '', '', 'not json', 'not a date')),

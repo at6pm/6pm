@@ -24,7 +24,7 @@ export const thOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.privacy.source': 'โอเพนซอร์ส',
   'onboarding.privacy.sourceSub': 'อ่านโค้ดทุกบรรทัดได้บน GitHub',
   'onboarding.privacy.foot':
-    'อีเมลใบเสร็จที่ส่งต่อมาและคำถามที่ถาม 6pm จะผ่านเซิร์ฟเวอร์ของเราเพื่ออ่าน แล้วก็ถูกลบทิ้ง',
+    'อีเมลใบเสร็จที่ส่งต่อมา แจ้งเตือนธนาคาร และคำถามที่ถาม 6pm จะผ่านเซิร์ฟเวอร์ของเราเพื่ออ่าน แล้วก็ถูกลบทิ้ง',
   'onboarding.privacy.cta': 'เข้าใจแล้ว',
 
   'onboarding.income.title': 'เงินเข้า',
@@ -135,7 +135,7 @@ export const thOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.catch.alerts.tab': 'แจ้งเตือน',
   'onboarding.catch.alerts.title': 'แจ้งเตือนธนาคาร',
   'onboarding.catch.alerts.body':
-    'แจ้งเตือนจากธนาคารและวอลเล็ตบันทึกเงินที่เคลื่อนไหวให้เอง อ่านบนเครื่องนี้และไม่ส่งไปที่ไหน',
+    'แจ้งเตือนจากธนาคารและวอลเล็ตบันทึกเงินที่เคลื่อนไหวให้เอง อ่านบนเครื่องนี้ก่อน แล้วเซิร์ฟเวอร์ของเราอ่านซ้ำอีกครั้ง เว้นแต่คุณให้ AI ทำงานบนเครื่อง',
   'onboarding.catch.alerts.alert': 'ชำระเงิน −{amount} · {merchant}',
   'onboarding.catch.email.tab': 'อีเมล',
   'onboarding.catch.email.title': 'ส่งต่ออีเมลใบเสร็จ',

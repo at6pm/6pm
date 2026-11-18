@@ -29,7 +29,8 @@ const FUTURE_SLACK_MS = 5 * 60_000;
  * words. Money in is filed under no category: the close asks what it was. An amount in another
  * currency than home is priced at the app's last rate, or waits for one, as a Wallet tap does.
  * A skipped alert (a code, a failed payment, a promotion, a balance or security notice) leaves
- * no item. Either way `last` says what was read, for Settings to show. The item's id carries the
+ * no item; one no template read that prints a number leaves its words (`unread`) for the app's
+ * second reader, and a caught one carries its words (`alertWords`) for the same reader. Either way `last` says what was read, for Settings to show. The item's id carries the
  * notification's fingerprint (`heardAlertId`, the rest from `id`), so the app knows the same
  * notification caught twice.
  */
@@ -62,6 +63,7 @@ export function buildBankAlert(
         },
       };
     }
+    const second = read.reason === 'unread' && printsNumber(input);
     return {
       item: null,
       last: {
@@ -71,19 +73,33 @@ export function buildBankAlert(
         amountText: '',
         skipped: read.reason,
       },
-      ...(words
+      // One no template read that prints a number is left for the app's second reader, which
+      // logs it itself once it knows what became of it; any other is left for the log alone.
+      ...(second
         ? {
-            heard: {
+            unread: {
               v: SURFACES_VERSION,
               id: heardAlertId(input, id),
-              kind: 'heard' as const,
+              kind: 'unread' as const,
               at: seenAt,
+              date: input.date ? input.date : null,
               bank: read.bank,
-              skipped: read.reason,
-              words,
+              alertWords: heardWordsOf(input),
             },
           }
-        : {}),
+        : words
+          ? {
+              heard: {
+                v: SURFACES_VERSION,
+                id: heardAlertId(input, id),
+                kind: 'heard' as const,
+                at: seenAt,
+                bank: read.bank,
+                skipped: read.reason,
+                words,
+              },
+            }
+          : {}),
     };
   }
   const keys = readBankAlertKeys(input, home);
@@ -141,6 +157,8 @@ export function buildBankAlert(
       ...(keys.reference !== null ? { reference: keys.reference } : {}),
       ...(keys.accountTail !== null ? { accountTail: keys.accountTail } : {}),
       ...(words ? { words } : {}),
+      // Its own words, for the app's second reader; the app drops them once it has read them.
+      alertWords: heardWordsOf(input),
     },
     last: {
       v: SURFACES_VERSION,
@@ -150,6 +168,11 @@ export function buildBankAlert(
       direction: read.direction,
     },
   };
+}
+
+/** Whether an alert holds any digit at all: one that holds none has no amount to find. */
+function printsNumber(input: BankAlertInput): boolean {
+  return /\p{Nd}/u.test(`${input.title ?? ''} ${input.subtitle ?? ''} ${input.body}`);
 }
 
 /** The notification word for word, each part cut to what the inbox file keeps. */

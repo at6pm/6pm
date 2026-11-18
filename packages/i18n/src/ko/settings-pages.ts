@@ -27,6 +27,7 @@ export const koSettingsPages: { readonly [Key in keyof typeof enSettingsPages]: 
   'privacyPage.ask': 'Ask에 한 질문',
   'privacyPage.lines': '동반자 한마디에 쓰는 몇 가지 정보',
   'privacyPage.receipts': '휴대폰이 못 읽는 영수증',
+  'privacyPage.alerts': '은행 알림 (긴 번호는 가림)',
   'privacyPage.voice': '말하는 동안의 목소리',
   'privacyPage.spends': '지출 목록',
   'privacyPage.neverSent': '절대 안 보냄',

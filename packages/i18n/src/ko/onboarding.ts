@@ -25,7 +25,7 @@ export const koOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.privacy.source': '오픈 소스',
   'onboarding.privacy.sourceSub': 'GitHub에서 코드 한 줄까지 읽어 보세요',
   'onboarding.privacy.foot':
-    '전달한 영수증 이메일과 6pm에게 묻기 질문은 읽기 위해 서버를 거친 뒤 삭제돼요.',
+    '전달한 영수증 이메일, 은행 알림, 6pm에게 묻기 질문은 읽기 위해 서버를 거친 뒤 삭제돼요.',
   'onboarding.privacy.cta': '알겠어요',
 
   'onboarding.income.title': '들어온 돈',
@@ -137,7 +137,7 @@ export const koOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.catch.alerts.tab': '알림',
   'onboarding.catch.alerts.title': '은행 알림',
   'onboarding.catch.alerts.body':
-    '은행과 지갑 알림이 오간 돈을 기록해요. 이 폰 안에서 읽고 어디로도 보내지 않아요.',
+    '은행과 지갑 알림이 오간 돈을 기록해요. 이 폰 안에서 읽고, 서버에서 한 번 더 읽어요. AI를 휴대폰에서 실행하면 보내지 않아요.',
   'onboarding.catch.alerts.alert': '결제 −{amount} · {merchant}',
   'onboarding.catch.email.tab': '이메일',
   'onboarding.catch.email.title': '영수증 메일 전달',

@@ -112,6 +112,13 @@ class AlertListener : NotificationListenerService() {
       if (heard != null && heardId.isNotEmpty()) {
         SurfaceFiles.writeInbox(context, heardId, heard.toString())
       }
+      // One no template read that prints a number waits for the app's second reader, which
+      // saves nothing from it unless it finds money that moved: no notice is posted for it.
+      val unread = read.optJSONObject("unread")
+      val unreadId = unread?.optString("id").orEmpty()
+      if (unread != null && unreadId.isNotEmpty()) {
+        SurfaceFiles.writeInbox(context, unreadId, unread.toString())
+      }
       if (last != null) {
         SurfaceFiles.writeStatus(context, "last-alert", last.toString())
         // An alert read, caught or not, says the listener still runs.

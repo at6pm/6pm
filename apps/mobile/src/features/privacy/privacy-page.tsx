@@ -33,6 +33,7 @@ const LEAVES = [
   { what: 'privacyPage.ask', to: ANTHROPIC },
   { what: 'privacyPage.lines', to: ANTHROPIC },
   { what: 'privacyPage.receipts', to: ANTHROPIC },
+  { what: 'privacyPage.alerts', to: ANTHROPIC },
   { what: 'privacyPage.voice', to: DEEPGRAM },
 ] as const;
 

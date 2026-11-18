@@ -97,7 +97,7 @@ export const esAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'capture.alerts.tip':
     'Los códigos, los pagos fallidos y las promos se saltan. Un pago que ya pilló un correo no se añade dos veces.',
   'capture.alerts.privacy':
-    'Se leen en este teléfono y no se envían a ningún sitio. 6pm solo lee las notificaciones de tus bancos y billeteras.',
+    'Se leen primero en este teléfono. 6pm solo lee las notificaciones de tus bancos y billeteras. Después nuestro servidor lee cada una otra vez: recibe sus palabras y sus importes, y el saldo si aparece. Los números largos, como cuentas, tarjetas y teléfonos, se ocultan antes. Nunca cuando la IA está en este móvil.',
   'capture.alerts.actionAdd': 'Permitir acceso a notificaciones',
   'capture.alerts.actionOpen': 'Ajustes de acceso a notificaciones',
 

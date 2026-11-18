@@ -25,7 +25,7 @@ export const idOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.privacy.source': 'Sumber terbuka',
   'onboarding.privacy.sourceSub': 'Baca setiap barisnya di GitHub',
   'onboarding.privacy.foot':
-    'Struk yang diteruskan lewat email dan pertanyaan Tanya 6pm lewat server kami untuk dibaca, lalu dihapus.',
+    'Struk yang diteruskan lewat email, notifikasi bank, dan pertanyaan Tanya 6pm lewat server kami untuk dibaca, lalu dihapus.',
   'onboarding.privacy.cta': 'Mengerti',
 
   'onboarding.income.title': 'Uang masuk',
@@ -140,7 +140,7 @@ export const idOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.catch.alerts.tab': 'Notifikasi',
   'onboarding.catch.alerts.title': 'Notifikasi bank',
   'onboarding.catch.alerts.body':
-    'Notifikasi bank dan dompetmu mencatat uang yang bergerak, dibaca di ponsel ini dan tidak dikirim ke mana pun.',
+    'Notifikasi bank dan dompetmu mencatat uang yang bergerak. Dibaca di ponsel ini, lalu sekali lagi di server kami, kecuali AI kamu jalankan di ponsel ini.',
   'onboarding.catch.alerts.alert': 'Pembayaran −{amount} · {merchant}',
   'onboarding.catch.email.tab': 'Email',
   'onboarding.catch.email.title': 'Teruskan email struk',

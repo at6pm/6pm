@@ -16,6 +16,7 @@ export * from './fx';
 export * from './health';
 export * from './import-map';
 export * from './name-merchant';
+export * from './read-alert';
 export * from './receipts-read';
 export * from './together-account-delete';
 export * from './together-apple-events';

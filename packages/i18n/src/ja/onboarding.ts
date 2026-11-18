@@ -24,7 +24,7 @@ export const jaOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.privacy.source': 'オープンソース',
   'onboarding.privacy.sourceSub': 'GitHubで全行を読めます',
   'onboarding.privacy.foot':
-    '転送したレシートメールと「6pmに聞く」の質問は、読むためにサーバーを通り、そのあと削除されます。',
+    '転送したレシートメール、銀行の通知、「6pmに聞く」の質問は、読むためにサーバーを通り、そのあと削除されます。',
   'onboarding.privacy.cta': 'わかった',
 
   'onboarding.income.title': '入金',
@@ -138,7 +138,7 @@ export const jaOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.catch.alerts.tab': '通知',
   'onboarding.catch.alerts.title': '銀行の通知',
   'onboarding.catch.alerts.body':
-    '銀行やウォレットの通知から、動いたお金を記録します。このスマホの中で読み取り、どこにも送りません。',
+    '銀行やウォレットの通知から、動いたお金を記録します。このスマホの中で読み取り、そのあとサーバーでもう一度読みます（AIを端末内にしているときは送りません）。',
   'onboarding.catch.alerts.alert': '支払い −{amount} · {merchant}',
   'onboarding.catch.email.tab': 'メール',
   'onboarding.catch.email.title': 'レシートメールを転送',

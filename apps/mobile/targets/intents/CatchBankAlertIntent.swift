@@ -80,6 +80,11 @@ enum CaughtAlert {
     if let heard = object["heard"] as? [String: Any], let id = heard["id"] as? String {
       try GroupFiles.writeInbox(id: id, json: JSONSerialization.data(withJSONObject: heard))
     }
+    // One no template read that prints a number waits for the app's second reader, which saves
+    // nothing from it unless it finds money that moved.
+    if let unread = object["unread"] as? [String: Any], let id = unread["id"] as? String {
+      try GroupFiles.writeInbox(id: id, json: JSONSerialization.data(withJSONObject: unread))
+    }
     let last = object["last"] as? [String: Any]
     if let last {
       try GroupFiles.writeStatus("last-alert", json: JSONSerialization.data(withJSONObject: last))

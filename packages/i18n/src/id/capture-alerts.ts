@@ -21,7 +21,8 @@ export const idCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.step3Chip': 'Tangkap notifikasi bank',
   'capture.alerts.tip':
     'Kode OTP, pembayaran gagal, dan promo dilewati. Pembayaran yang sudah tertangkap lewat Apple Pay atau email tidak dicatat dua kali.',
-  'capture.alerts.privacy': 'Notifikasi dibaca di iPhone-mu dan tidak pernah keluar darinya.',
+  'capture.alerts.privacy':
+    'Notifikasi dibaca dulu di iPhone-mu, lalu dibaca sekali lagi di server kami, yang menerima kata-kata dan nominal di notifikasi, juga saldo kalau tercantum. Nomor panjang seperti rekening, kartu, dan telepon disamarkan dulu. Tidak pernah saat AI berjalan di ponsel ini.',
   'capture.alerts.cameIn': '{amount} masuk',
   'capture.alerts.skip.code': 'kode OTP, dilewati',
   'capture.alerts.skip.failed': 'pembayaran gagal, dilewati',

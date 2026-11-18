@@ -23,7 +23,8 @@ export const viCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.step3Chip': 'Bắt thông báo ngân hàng',
   'capture.alerts.tip':
     'Mã OTP, giao dịch không thành công và khuyến mãi được bỏ qua. Khoản đã bắt qua Apple Pay hay email sẽ không bị ghi hai lần.',
-  'capture.alerts.privacy': 'Thông báo được đọc ngay trên iPhone và không bao giờ rời khỏi máy.',
+  'capture.alerts.privacy':
+    'Thông báo được đọc trên iPhone trước, rồi máy chủ của 6pm đọc lại lần nữa: chữ và số tiền trong thông báo, cả số dư nếu có in. Các dãy số dài như số tài khoản, số thẻ, số điện thoại được che trước khi gửi. Không bao giờ gửi khi AI chạy trên máy.',
   'capture.alerts.cameIn': '{amount} vào',
   'capture.alerts.skip.code': 'mã OTP, đã bỏ qua',
   'capture.alerts.skip.failed': 'giao dịch lỗi, đã bỏ qua',

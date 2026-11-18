@@ -90,7 +90,7 @@ export const jaAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'capture.alerts.tip':
     '認証コード、失敗した支払い、プロモーションはスキップします。メールでキャッチ済みの支払いは二重に追加されません。',
   'capture.alerts.privacy':
-    'このスマホの中で読み取り、どこにも送りません。6pmが読むのは銀行とウォレットの通知だけです。',
+    'まずこのスマホの中で読み取ります。6pmが読むのは銀行とウォレットの通知だけです。そのあとサーバーでもう一度読みます。送るのは通知の文面と金額で、残高が書かれていればそれも含みます。口座番号・カード番号・電話番号などの長い番号は先に伏せます。AIを端末内にしているときは送りません。',
   'capture.alerts.actionAdd': '通知へのアクセスを許可',
   'capture.alerts.actionOpen': '通知へのアクセスの設定',
 

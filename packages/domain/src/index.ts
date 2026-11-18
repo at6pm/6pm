@@ -54,6 +54,7 @@ export * from './capture/amountless';
 export * from './capture/typed-twin';
 export * from './capture/alert-payee-shapes';
 export * from './capture/alert-unread';
+export * from './capture/alert-second-read';
 export * from './capture/alert-repeat';
 export * from './capture/own-transfer';
 export * from './capture/sighting';

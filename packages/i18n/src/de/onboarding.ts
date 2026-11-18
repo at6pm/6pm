@@ -24,7 +24,7 @@ export const deOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.privacy.source': 'Quelloffen',
   'onboarding.privacy.sourceSub': 'Lies jede Zeile auf GitHub',
   'onboarding.privacy.foot':
-    'Weitergeleitete Beleg-E-Mails und Fragen an „Frag 6pm“ laufen über unseren Server, damit sie gelesen werden, und werden danach gelöscht.',
+    'Weitergeleitete Beleg-E-Mails, Bankmitteilungen und Fragen an „Frag 6pm“ laufen über unseren Server, damit sie gelesen werden, und werden danach gelöscht.',
   'onboarding.privacy.cta': 'Verstanden',
 
   'onboarding.income.title': 'Einnahmen',
@@ -145,7 +145,7 @@ export const deOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.catch.alerts.tab': 'Mitteilungen',
   'onboarding.catch.alerts.title': 'Bankmitteilungen',
   'onboarding.catch.alerts.body':
-    'Die Mitteilungen deiner Bank und Wallet halten fest, was sich bewegt hat, auf diesem Handy gelesen und nirgendwohin geschickt.',
+    'Die Mitteilungen deiner Bank und Wallet halten fest, was sich bewegt hat. Auf diesem Handy gelesen, dann noch einmal auf unserem Server, außer die KI bleibt auf diesem Handy.',
   'onboarding.catch.alerts.alert': 'Zahlung −{amount} · {merchant}',
   'onboarding.catch.email.tab': 'E-Mail',
   'onboarding.catch.email.title': 'Beleg-Mails weiterleiten',
