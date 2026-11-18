@@ -60,6 +60,19 @@ describe('logBankAlert', () => {
     });
   });
 
+  it('names the shop an alert prints before its amount', () => {
+    const { item } = caught(
+      'Bạn đã thực hiện thanh toán thành công cho HIGHLANDS COFFEE với số tiền 119.000đ. Nhấn để kiểm tra giao dịch ngay bạn nhé.',
+      { app: 'MoMo', title: 'Thanh toán HIGHLANDS COFFEE thành công' },
+    );
+    expect(item).toMatchObject({
+      amount: 119_000,
+      merchant: 'HIGHLANDS COFFEE',
+      receipt: { bank: 'MoMo', namingLines: [] },
+      direction: 'out',
+    });
+  });
+
   it('leaves money in with its memo and no category: the close asks what it was', () => {
     const { item } = caught(
       'TK 0123xxx456|GD: +2,000,000VND 27/10/26 09:15|SD: 3,234,567VND|ND: LUONG T10',
