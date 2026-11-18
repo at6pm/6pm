@@ -25,7 +25,7 @@ export const viOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.privacy.source': 'Mã nguồn mở',
   'onboarding.privacy.sourceSub': 'Xem từng dòng code trên GitHub',
   'onboarding.privacy.foot':
-    'Email hoá đơn chuyển tiếp và câu hỏi cho Ask chỉ đi qua máy chủ để đọc, rồi bị xoá.',
+    'Email hoá đơn chuyển tiếp, thông báo ngân hàng và câu hỏi cho Ask chỉ đi qua máy chủ để đọc, rồi bị xoá.',
   'onboarding.privacy.cta': 'Đã hiểu',
 
   'onboarding.income.title': 'Tiền vào',
@@ -138,7 +138,7 @@ export const viOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.catch.alerts.tab': 'Thông báo',
   'onboarding.catch.alerts.title': 'Thông báo ngân hàng',
   'onboarding.catch.alerts.body':
-    'Thông báo của ngân hàng và ví tự ghi lại khoản tiền đi, đọc ngay trên máy và không gửi đi đâu cả.',
+    'Thông báo của ngân hàng và ví tự ghi lại khoản tiền đi. Đọc trên máy trước, rồi máy chủ đọc lại lần nữa, trừ khi bạn để AI chạy trên máy.',
   'onboarding.catch.alerts.alert': 'Thanh toán −{amount} · {merchant}',
   'onboarding.catch.email.tab': 'Email',
   'onboarding.catch.email.title': 'Chuyển tiếp email biên lai',

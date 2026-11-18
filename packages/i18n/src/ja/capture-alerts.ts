@@ -22,7 +22,7 @@ export const jaCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.tip':
     '認証コード、失敗した支払い、プロモーションはスキップします。Apple Payやメールでキャッチ済みの支払いは、二重に追加されません。',
   'capture.alerts.privacy':
-    '通知はiPhoneの中で読み取ります。支払い先を6pmが読み取れないときだけ、数字をすべて除いた文面をサーバーに送り、お店の名前を調べます。AIを端末内にしているときは送りません。',
+    '通知はまずiPhoneの中で読み取り、そのあとサーバーでもう一度読みます。送るのは通知の文面と金額で、残高が書かれていればそれも含みます。口座番号・カード番号・電話番号などの長い番号は先に伏せます。AIを端末内にしているときは送りません。',
   'capture.alerts.cameIn': '{amount}の入金',
   'capture.alerts.skip.code': '認証コードのためスキップ',
   'capture.alerts.skip.failed': '支払い失敗のためスキップ',

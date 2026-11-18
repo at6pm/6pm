@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { DECIMAL_PATTERN } from '../travel/fx';
-import { heardWordsSchema, inboxHeardSchema } from './heard';
+import { heardWordsSchema, inboxHeardSchema, inboxUnreadSchema } from './heard';
 import { MEMO_MAX } from './local-rows';
 
 /**
@@ -25,7 +25,14 @@ const decimal = z.string().regex(DECIMAL_PATTERN);
  */
 export const SURFACES_VERSION = 1;
 
-export { heardWordsSchema, inboxHeardSchema, type HeardWords, type InboxHeard } from './heard';
+export {
+  heardWordsSchema,
+  inboxHeardSchema,
+  inboxUnreadSchema,
+  type HeardWords,
+  type InboxHeard,
+  type InboxUnread,
+} from './heard';
 
 /** The receipt behind a shared capture: what the bank printed, with every number taken out. */
 export const inboxReceiptSchema = z.object({
@@ -99,6 +106,11 @@ export const inboxSpendSchema = z.object({
    * (the context's `keepWords`), for the log alone, and never saved with the spend.
    */
   words: heardWordsSchema.optional(),
+  /**
+   * A bank alert's own words, for the app's second reader: read again when the item is imported,
+   * then dropped. Never saved with the spend, and never sent anywhere in on-device mode.
+   */
+  alertWords: heardWordsSchema.optional(),
 });
 export type InboxSpend = z.infer<typeof inboxSpendSchema>;
 
@@ -130,6 +142,7 @@ export const inboxItemSchema = z.discriminatedUnion('kind', [
   inboxPaidSchema,
   inboxKeptSchema,
   inboxHeardSchema,
+  inboxUnreadSchema,
 ]);
 export type InboxItem = z.infer<typeof inboxItemSchema>;
 
@@ -586,12 +599,14 @@ export const lastAlertSchema = z.object({
 export type LastAlert = z.infer<typeof lastAlertSchema>;
 
 /**
- * What reading one alert returns: the inbox item (null when skipped), the status line, and, while
- * the capture log is on, a skipped alert's words for it (`heard`).
+ * What reading one alert returns: the inbox item (null when skipped), the status line, while the
+ * capture log is on a skipped alert's words for it (`heard`), and an alert no template read that
+ * prints a number, for the app's second reader (`unread`).
  */
 export const bankAlertResultSchema = z.object({
   item: inboxSpendSchema.nullable(),
   last: lastAlertSchema,
   heard: inboxHeardSchema.nullable().optional(),
+  unread: inboxUnreadSchema.nullable().optional(),
 });
 export type BankAlertResult = z.infer<typeof bankAlertResultSchema>;

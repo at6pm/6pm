@@ -22,7 +22,7 @@ export const frCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.tip':
     'Les codes, les paiements échoués et les promos sont ignorés. Un paiement déjà repéré par Apple Pay ou par e-mail n’est pas ajouté deux fois.',
   'capture.alerts.privacy':
-    'Les alertes sont lues sur ton iPhone. Si 6pm n’arrive pas à lire qui a été payé, les mots de l’alerte partent vers notre serveur pour le nommer, une fois tous les chiffres retirés. Jamais quand l’IA est sur ce téléphone.',
+    'Les alertes sont lues d’abord sur ton iPhone, puis une seconde fois sur notre serveur, qui reçoit les mots et les montants de l’alerte, et le solde s’il y figure. Les longs numéros (comptes, cartes, téléphones) sont masqués avant. Jamais quand l’IA est sur ce téléphone.',
   'capture.alerts.cameIn': 'Reçu : {amount}',
   'capture.alerts.skip.code': 'un code, ignoré',
   'capture.alerts.skip.failed': 'paiement échoué, ignoré',

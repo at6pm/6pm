@@ -93,7 +93,7 @@ export const deAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'capture.alerts.tip':
     'Codes, fehlgeschlagene Zahlungen und Werbung werden übersprungen. Eine Zahlung, die schon per E-Mail erwischt wurde, kommt nicht doppelt.',
   'capture.alerts.privacy':
-    'Auf diesem Handy gelesen. 6pm liest nur die Mitteilungen deiner Banken und Wallets. Erkennt 6pm nicht, an wen gezahlt wurde, geht der Text der Mitteilung ohne jede Zahl an unseren Server, der den Namen findet. Nie, wenn die KI auf diesem Handy läuft.',
+    'Zuerst auf diesem Handy gelesen. 6pm liest nur die Mitteilungen deiner Banken und Wallets. Danach liest unser Server jede ein zweites Mal: Text und Beträge der Mitteilung, auch der Kontostand, wenn er dasteht. Lange Nummern wie Konto-, Karten- und Telefonnummern werden vorher verdeckt. Nie, wenn die KI auf diesem Handy läuft.',
   'capture.alerts.actionAdd': 'Benachrichtigungszugriff erlauben',
   'capture.alerts.actionOpen': 'Einstellungen für Benachrichtigungszugriff',
 

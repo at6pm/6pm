@@ -76,7 +76,7 @@ export const zhHansAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } 
   'capture.alerts.step3Chip': '收件箱',
   'capture.alerts.tip': '验证码、失败的付款和促销会被跳过。邮件已经记下的付款不会重复添加。',
   'capture.alerts.privacy':
-    '在这台手机上读取。6pm 只读取你的银行和钱包的通知。如果 6pm 读不出付给了谁，通知里的文字会先去掉所有数字，再发到我们的服务器来认出商家。AI 在手机上运行时绝不发送。',
+    '先在这台手机上读取。6pm 只读取你的银行和钱包的通知。之后我们的服务器会再读一遍：发送的是通知里的文字和金额，写了余额的话也包括余额。账号、卡号、手机号这类长号码会先隐藏。AI 在手机上运行时绝不发送。',
   'capture.alerts.actionAdd': '允许通知使用权',
   'capture.alerts.actionOpen': '通知使用权设置',
 

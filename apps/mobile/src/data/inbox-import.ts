@@ -3,9 +3,11 @@ import {
   inboxItemToNewSpend,
   likelyCategoriesAt,
   sightingOfInboxItem,
+  type InboxItem,
   type InboxKept,
   type InboxPaid,
   type InboxSpend,
+  type InboxUnread,
   type SightingChannel,
 } from '@6pm/domain';
 import type { Language } from '@6pm/i18n';
@@ -35,10 +37,13 @@ export interface InboxImportDeps {
   /** Adds what can be learned about a shared receipt before it is saved (the payee's name). */
   readonly enrich: (item: InboxSpend) => Promise<InboxSpend>;
   /**
-   * Names who a bank alert paid when the phone read no payee from it; without it such a row is
-   * saved as read.
+   * Reads the bank alerts of one import a second time (the server, where 6pm's AI runs there),
+   * answering by item id. Without it every caught alert is saved as the phone read it, and one the
+   * phone could not read is let go.
    */
-  readonly nameAlert?: (item: InboxSpend) => Promise<InboxSpend>;
+  readonly readAlerts?: (
+    items: readonly (InboxSpend | InboxUnread)[],
+  ) => Promise<ReadonlyMap<string, AlertSecondRead>>;
   /** Told when a file is dropped; never given the file's content. */
   readonly report: (message: string) => void;
   /**
@@ -58,6 +63,31 @@ export interface InboxImportDeps {
   readonly keepPhoto?: (from: string, to: string) => Promise<void>;
 }
 
+/**
+ * What the second reader made of one alert: the item to save in place of the phone's (or, for an
+ * alert the phone could not read, the payment found in it), or no money that moved. An alert with
+ * no answer was not read: a caught one is saved as the phone read it, an unread one waits.
+ */
+export type AlertSecondRead =
+  { readonly kind: 'spend'; readonly item: InboxSpend } | { readonly kind: 'none' };
+
+/** How long an alert the phone could not read waits for the second reader before it is let go. */
+export const UNREAD_ALERT_WAIT_MS = 48 * 60 * 60_000;
+
+/** Whether an item is a bank alert the second reader is asked about. */
+const asksSecondRead = (item: InboxItem): item is InboxSpend | InboxUnread =>
+  item.kind === 'unread' ||
+  (item.kind === 'spend' &&
+    item.source === 'alert' &&
+    item.alertWords !== undefined &&
+    item.what !== 'failed');
+
+/** An alert's own words go no further than its second reading. */
+function withoutAlertWords(item: InboxSpend): InboxSpend {
+  const { alertWords: _alertWords, ...rest } = item;
+  return rest;
+}
+
 /** What one import did, for the caller to refresh what the extensions show. */
 export interface InboxImportResult {
   readonly saved: number;
@@ -67,7 +97,9 @@ export interface InboxImportResult {
 /**
  * Saves what the share extension, the shortcuts, the Live Activity and Android's bank alert
  * listener left in the inbox, oldest first, through the same capture as every other source (rules, duplicate merge, the money day
- * of when it happened). A file is removed only after what it said is committed, and importing
+ * of when it happened). A bank alert is saved as its second reader read it, when there is one and
+ * it answered; an alert the phone could not read is saved only if that reader finds a payment in
+ * it, and waits two days at most for an answer. A file is removed only after what it said is committed, and importing
  * the same file twice changes nothing: its id is the spend's, or its sighting is already there.
  * Then every caught spend that looks like an unpaid bill's payment is marked as paying it.
  */
@@ -79,8 +111,21 @@ export async function importInbox(deps: InboxImportDeps): Promise<InboxImportRes
     await inbox.removeInbox([id]);
     removed += 1;
   };
-  for (const file of await inbox.readInbox()) {
-    const parsed = inboxItemSchema.safeParse(parseJson(file.json));
+  const files = (await inbox.readInbox()).map((file) => ({
+    file,
+    parsed: inboxItemSchema.safeParse(parseJson(file.json)),
+  }));
+  // Every bank alert of this import is read a second time together, before any is saved: what
+  // tells one payment from another (its amount, its way) is read from the item as saved.
+  const alerts = files.flatMap(({ parsed }) =>
+    parsed.success && asksSecondRead(parsed.data) ? [parsed.data] : [],
+  );
+  const readAlerts = deps.readAlerts;
+  const reread: ReadonlyMap<string, AlertSecondRead> =
+    readAlerts && alerts.length > 0
+      ? await readAlerts(alerts).catch(() => new Map<string, AlertSecondRead>())
+      : new Map<string, AlertSecondRead>();
+  for (const { file, parsed } of files) {
     if (!parsed.success) {
       report('inbox: dropped a file that is not a known inbox item');
       await remove(file.id);
@@ -93,8 +138,31 @@ export async function importInbox(deps: InboxImportDeps): Promise<InboxImportRes
       if (await markKept(deps, item)) saved += 1;
     } else if (item.kind === 'heard') {
       deps.actions.hear(item);
+    } else if (item.kind === 'unread') {
+      const read = reread.get(item.id);
+      if (read?.kind === 'spend') {
+        if ((await saveInboxSpend(deps, read.item)) !== null) saved += 1;
+      } else if (read === undefined && readAlerts && waitsForSecondRead(item)) {
+        // Not answered this time (offline, slow): its file stays for the next import.
+        continue;
+      } else {
+        // Let go: while the capture log is on it says so, as for any alert that moved no money.
+        deps.actions.hear({
+          v: 1,
+          id: item.id,
+          kind: 'heard',
+          at: item.at,
+          bank: item.bank,
+          skipped: 'unread',
+          words: item.alertWords,
+        });
+      }
     } else {
-      const spendId = await saveInboxSpend(deps, item);
+      const read = reread.get(item.id);
+      const spendId = await saveInboxSpend(
+        deps,
+        withoutAlertWords(read?.kind === 'spend' ? read.item : item),
+      );
       if (spendId !== null) {
         saved += 1;
         if (file.photo) await keepInboxPhoto(deps, spendId, file.photo);
@@ -129,6 +197,12 @@ async function keepInboxPhoto(deps: InboxImportDeps, spendId: string, from: stri
   }
 }
 
+/** An alert the phone could not read is asked about again until it is two days old. */
+function waitsForSecondRead(item: InboxUnread): boolean {
+  const at = Date.parse(item.at);
+  return !Number.isNaN(at) && Date.now() - at < UNREAD_ALERT_WAIT_MS;
+}
+
 function parseJson(json: string): unknown {
   try {
     return JSON.parse(json) as unknown;
@@ -144,26 +218,25 @@ function parseJson(json: string): unknown {
  * merged into, when it did). Scan saves the receipts it reads through here too, as `receiptPhoto`.
  */
 export async function saveInboxSpend(
-  deps: Pick<InboxImportDeps, 'store' | 'actions' | 'enrich' | 'nameAlert' | 'home' | 'language'>,
+  deps: Pick<InboxImportDeps, 'store' | 'actions' | 'enrich' | 'home' | 'language'>,
   incoming: InboxSpend,
   channel?: SightingChannel,
 ): Promise<string | null> {
   const { store, actions } = deps;
   let item = incoming;
   // A bank alert's payee the person named before is called what they called it, and filed where
-  // they filed it. One the phone read no payee from is named first, then called the same way.
+  // they filed it.
   const named = async (alert: InboxSpend): Promise<InboxSpend> => {
     if (alert.source !== 'alert') return alert;
-    const read = deps.nameAlert ? await deps.nameAlert(alert) : alert;
-    const before = await namedBefore(store.db, read.merchant, store.getSnapshot().today).catch(
+    const before = await namedBefore(store.db, alert.merchant, store.getSnapshot().today).catch(
       () => null,
     );
-    if (!before) return read;
+    if (!before) return alert;
     const filed = store.getSnapshot().categories.some((c) => c.id === before.categoryId);
     return {
-      ...read,
+      ...alert,
       merchant: before.merchant,
-      categoryId: filed ? before.categoryId : read.categoryId,
+      categoryId: filed ? before.categoryId : alert.categoryId,
     };
   };
   const sighting = sightingOfInboxItem(incoming, channel);

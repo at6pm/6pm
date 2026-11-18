@@ -22,7 +22,7 @@ export const koCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.tip':
     '인증번호, 실패한 결제, 광고는 건너뛰어요. Apple Pay나 이메일로 이미 잡힌 결제는 두 번 들어가지 않아요.',
   'capture.alerts.privacy':
-    '알림은 iPhone 안에서 읽어요. 누구에게 냈는지 6pm이 읽지 못하면, 숫자를 모두 뺀 알림 문구만 서버로 보내 가게 이름을 찾아요. AI를 휴대폰에서 실행할 때는 보내지 않아요.',
+    '알림은 먼저 iPhone 안에서 읽고, 서버에서 한 번 더 읽어요. 알림 문구와 금액이 전송되고, 잔액이 적혀 있으면 잔액도 포함돼요. 계좌·카드·전화번호 같은 긴 번호는 먼저 가려요. AI를 휴대폰에서 실행할 때는 보내지 않아요.',
   'capture.alerts.cameIn': '{amount} 입금',
   'capture.alerts.skip.code': '인증번호, 건너뜀',
   'capture.alerts.skip.failed': '실패한 결제, 건너뜀',

@@ -32,3 +32,21 @@ export const inboxHeardSchema = z.object({
   words: heardWordsSchema,
 });
 export type InboxHeard = z.infer<typeof inboxHeardSchema>;
+
+/**
+ * A bank alert the phone read no money from, though it prints a number: left for the app's second
+ * reader with its own words, so a wording no template knows still has a chance. The app saves
+ * nothing from it unless that reader finds money that moved, and never keeps its words.
+ */
+export const inboxUnreadSchema = z.object({
+  v: z.literal(1),
+  id: z.uuid(),
+  kind: z.literal('unread'),
+  /** When the phone read it. */
+  at: z.string().min(20),
+  /** When the phone was handed it (ISO 8601), when the automation passes it. */
+  date: z.string().nullable(),
+  bank: z.string().nullable(),
+  alertWords: heardWordsSchema,
+});
+export type InboxUnread = z.infer<typeof inboxUnreadSchema>;

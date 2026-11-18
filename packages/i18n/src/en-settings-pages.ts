@@ -33,7 +33,7 @@ export const enSettingsPages = {
   'privacyPage.ask': 'YOUR ASK QUESTION',
   'privacyPage.lines': 'A FEW FACTS FOR A COMPANION LINE',
   'privacyPage.receipts': 'A RECEIPT YOUR PHONE CAN’T READ',
-  'privacyPage.alerts': 'A BANK ALERT 6PM CAN’T NAME, NO NUMBERS',
+  'privacyPage.alerts': 'YOUR BANK ALERTS, LONG NUMBERS HIDDEN',
   'privacyPage.voice': 'YOUR VOICE, WHILE YOU SPEAK',
   'privacyPage.spends': 'YOUR LIST OF SPENDS',
   'privacyPage.neverSent': 'NEVER SENT',

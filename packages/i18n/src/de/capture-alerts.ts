@@ -22,7 +22,7 @@ export const deCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.tip':
     'Codes, fehlgeschlagene Zahlungen und Werbung werden übersprungen. Was Apple Pay oder eine E-Mail schon erwischt hat, kommt nicht doppelt rein.',
   'capture.alerts.privacy':
-    'Mitteilungen werden auf deinem iPhone gelesen. Erkennt 6pm nicht, an wen gezahlt wurde, geht der Text der Mitteilung ohne jede Zahl an unseren Server, der den Namen findet. Nie, wenn die KI auf diesem Handy läuft.',
+    'Mitteilungen werden zuerst auf deinem iPhone gelesen, dann ein zweites Mal auf unserem Server: Text und Beträge der Mitteilung, auch der Kontostand, wenn er dasteht. Lange Nummern wie Konto-, Karten- und Telefonnummern werden vorher verdeckt. Nie, wenn die KI auf diesem Handy läuft.',
   'capture.alerts.cameIn': '{amount} eingegangen',
   'capture.alerts.skip.code': 'ein Code, übersprungen',
   'capture.alerts.skip.failed': 'fehlgeschlagene Zahlung, übersprungen',

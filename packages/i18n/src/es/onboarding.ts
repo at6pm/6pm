@@ -25,7 +25,7 @@ export const esOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.privacy.source': 'Código abierto',
   'onboarding.privacy.sourceSub': 'Lee cada línea en GitHub',
   'onboarding.privacy.foot':
-    'Los tickets que reenvías por correo y las preguntas a Pregunta a 6pm pasan por nuestro servidor para leerlos, y después se borran.',
+    'Los tickets que reenvías por correo, los avisos del banco y las preguntas a Pregunta a 6pm pasan por nuestro servidor para leerlos, y después se borran.',
   'onboarding.privacy.cta': 'Entendido',
 
   'onboarding.income.title': 'Dinero que entra',
@@ -148,7 +148,7 @@ export const esOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.catch.alerts.tab': 'Avisos',
   'onboarding.catch.alerts.title': 'Avisos del banco',
   'onboarding.catch.alerts.body':
-    'Los avisos de tu banco y tu billetera anotan lo que se movió, leídos en este teléfono y sin enviarse a ningún sitio.',
+    'Los avisos de tu banco y tu billetera anotan lo que se movió. Se leen en este teléfono y luego otra vez en nuestro servidor, salvo que dejes la IA en este móvil.',
   'onboarding.catch.alerts.alert': 'Pago −{amount} · {merchant}',
   'onboarding.catch.email.tab': 'Email',
   'onboarding.catch.email.title': 'Reenvía emails de tickets',

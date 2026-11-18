@@ -30,7 +30,7 @@ export const esSettingsPages: { readonly [Key in keyof typeof enSettingsPages]: 
   'privacyPage.ask': 'TU PREGUNTA EN ASK',
   'privacyPage.lines': 'UNOS DATOS PARA UNA FRASE DEL COMPAÑERO',
   'privacyPage.receipts': 'UN RECIBO QUE TU MÓVIL NO PUEDE LEER',
-  'privacyPage.alerts': 'UN AVISO DEL BANCO SIN NOMBRE LEGIBLE, SIN NÚMEROS',
+  'privacyPage.alerts': 'TUS AVISOS DEL BANCO, NÚMEROS LARGOS OCULTOS',
   'privacyPage.voice': 'TU VOZ, MIENTRAS HABLAS',
   'privacyPage.spends': 'TU LISTA DE GASTOS',
   'privacyPage.neverSent': 'NUNCA SE ENVÍA',

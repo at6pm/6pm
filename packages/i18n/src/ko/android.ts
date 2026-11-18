@@ -81,7 +81,7 @@ export const koAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'capture.alerts.tip':
     '인증번호, 실패한 결제, 프로모션은 건너뛰어요. 이메일로 이미 잡힌 결제는 두 번 들어가지 않아요.',
   'capture.alerts.privacy':
-    '이 폰 안에서 읽어요. 6pm은 은행과 지갑의 알림만 읽어요. 누구에게 냈는지 6pm이 읽지 못하면, 숫자를 모두 뺀 알림 문구만 서버로 보내 가게 이름을 찾아요. AI를 휴대폰에서 실행할 때는 보내지 않아요.',
+    '먼저 이 폰 안에서 읽어요. 6pm은 은행과 지갑의 알림만 읽어요. 그다음 서버에서 한 번 더 읽어요. 알림 문구와 금액이 전송되고, 잔액이 적혀 있으면 잔액도 포함돼요. 계좌·카드·전화번호 같은 긴 번호는 먼저 가려요. AI를 휴대폰에서 실행할 때는 보내지 않아요.',
   'capture.alerts.actionAdd': '알림 접근 허용',
   'capture.alerts.actionOpen': '알림 접근 설정',
 

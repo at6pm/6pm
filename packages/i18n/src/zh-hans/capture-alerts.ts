@@ -22,7 +22,7 @@ export const zhHansCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlert
   'capture.alerts.tip':
     '验证码、失败的付款和促销会被跳过。已经通过 Apple Pay 或邮件记下的付款，不会重复添加。',
   'capture.alerts.privacy':
-    '通知在你的 iPhone 上读取。如果 6pm 读不出付给了谁，通知里的文字会先去掉所有数字，再发到我们的服务器来认出商家。AI 在手机上运行时绝不发送。',
+    '通知先在你的 iPhone 上读取，再由我们的服务器读第二遍：发送的是通知里的文字和金额，写了余额的话也包括余额。账号、卡号、手机号这类长号码会先隐藏。AI 在手机上运行时绝不发送。',
   'capture.alerts.cameIn': '进账 {amount}',
   'capture.alerts.skip.code': '验证码，已跳过',
   'capture.alerts.skip.failed': '付款失败，已跳过',

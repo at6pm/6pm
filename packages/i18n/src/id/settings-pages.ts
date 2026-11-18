@@ -28,7 +28,7 @@ export const idSettingsPages: { readonly [Key in keyof typeof enSettingsPages]: 
   'privacyPage.ask': 'PERTANYAAN ASK-MU',
   'privacyPage.lines': 'BEBERAPA FAKTA UNTUK KALIMAT TEMANMU',
   'privacyPage.receipts': 'STRUK YANG TAK TERBACA PONSEL',
-  'privacyPage.alerts': 'NOTIFIKASI BANK TANPA NAMA TOKO, TANPA ANGKA',
+  'privacyPage.alerts': 'NOTIFIKASI BANKMU, NOMOR PANJANG DISAMARKAN',
   'privacyPage.voice': 'SUARAMU, SAAT BICARA',
   'privacyPage.spends': 'DAFTAR PENGELUARANMU',
   'privacyPage.neverSent': 'TIDAK PERNAH DIKIRIM',

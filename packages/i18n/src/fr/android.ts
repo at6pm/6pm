@@ -95,7 +95,7 @@ export const frAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'capture.alerts.tip':
     'Les codes, les paiements échoués et les promos sont ignorés. Un paiement déjà repéré par e-mail n’est pas ajouté deux fois.',
   'capture.alerts.privacy':
-    'Lues sur ce téléphone. 6pm ne lit que les notifications de tes banques et portefeuilles. Si 6pm n’arrive pas à lire qui a été payé, les mots de l’alerte partent vers notre serveur pour le nommer, une fois tous les chiffres retirés. Jamais quand l’IA est sur ce téléphone.',
+    'Lues d’abord sur ce téléphone. 6pm ne lit que les notifications de tes banques et portefeuilles. Notre serveur lit ensuite chacune une seconde fois : il reçoit ses mots et ses montants, et le solde s’il y figure. Les longs numéros (comptes, cartes, téléphones) sont masqués avant. Jamais quand l’IA est sur ce téléphone.',
   'capture.alerts.actionAdd': 'Autoriser l’accès aux notifications',
   'capture.alerts.actionOpen': 'Réglages d’accès aux notifications',
 

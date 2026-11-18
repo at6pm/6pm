@@ -23,7 +23,7 @@ export const enOnboarding = {
   'onboarding.privacy.source': 'Open source',
   'onboarding.privacy.sourceSub': 'Read every line on GitHub',
   'onboarding.privacy.foot':
-    'Forwarded receipts and Ask questions pass through our server to be read, then they’re deleted.',
+    'Forwarded receipts, bank alerts and Ask questions pass through our server to be read, then they’re deleted.',
   'onboarding.privacy.cta': 'Got it',
 
   'onboarding.income.title': 'Money in',
@@ -139,7 +139,7 @@ export const enOnboarding = {
   'onboarding.catch.alerts.tab': 'Alerts',
   'onboarding.catch.alerts.title': 'Bank alerts',
   'onboarding.catch.alerts.body':
-    'Your bank and wallet notifications log what moved, read on this phone and never sent anywhere.',
+    'Your bank and wallet notifications log what moved. They’re read on this phone, then once more on our server unless you keep AI on this phone.',
   'onboarding.catch.alerts.alert': 'Payment −{amount} · {merchant}',
   'onboarding.catch.email.tab': 'Email',
   'onboarding.catch.email.title': 'Forward receipt emails',

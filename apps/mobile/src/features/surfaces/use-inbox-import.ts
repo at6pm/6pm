@@ -4,7 +4,6 @@ import { useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
 
 import { surfaces } from '../../../modules/surfaces';
-import { alertNames } from '../../data/alert-names';
 import { billPayments } from '../../data/bill-payments';
 import { keepPhotoAt } from '../../data/device-photo-files';
 import { startReadingCount } from '../../data/first-catch';
@@ -14,7 +13,7 @@ import { useI18n } from '../../i18n/i18n';
 import { useHomeCurrency } from '../../money/use-money-format';
 import { useApi } from '../api/native-api';
 import { createEnrichShared } from '../capture/enrich-shared';
-import { createNameAlert } from '../capture/name-alert';
+import { createReadAlerts } from '../capture/read-alert';
 import { priceWaitingNow } from '../travel/price-waiting';
 import { setInboxRunner } from './inbox-runner';
 
@@ -44,12 +43,12 @@ export function useInboxImport() {
       ruleCategory: (merchant) => actions.ruleCategory(merchant),
       categories: () => store.getSnapshot().categories,
     });
-    const nameAlert = createNameAlert({
+    const readAlerts = createReadAlerts({
       request: (request) => api.request(request),
       settings: db,
       ruleCategory: (merchant) => actions.ruleCategory(merchant),
       categories: () => store.getSnapshot().categories,
-      remembered: alertNames(store.db),
+      home: () => home,
     });
     const price = () => priceWaitingNow({ store, actions, api, home });
     let queued: Promise<void> | null = null;
@@ -69,7 +68,7 @@ export function useInboxImport() {
             actions,
             inbox: native,
             enrich,
-            nameAlert,
+            readAlerts,
             home: home.code,
             language,
             keepPhoto: keepPhotoAt,

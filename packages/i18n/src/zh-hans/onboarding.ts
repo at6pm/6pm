@@ -23,7 +23,8 @@ export const zhHansOnboarding: { readonly [Key in keyof typeof enOnboarding]: En
   'onboarding.privacy.backupSub': '用你 iCloud 钥匙串里的密钥锁住',
   'onboarding.privacy.source': '开源',
   'onboarding.privacy.sourceSub': '在 GitHub 上看每一行代码',
-  'onboarding.privacy.foot': '转发的小票邮件和“问问 6pm”的问题会经过我们的服务器读取，读完就删除。',
+  'onboarding.privacy.foot':
+    '转发的小票邮件、银行通知和“问问 6pm”的问题会经过我们的服务器读取，读完就删除。',
   'onboarding.privacy.cta': '知道了',
 
   'onboarding.income.title': '进账',
@@ -130,7 +131,7 @@ export const zhHansOnboarding: { readonly [Key in keyof typeof enOnboarding]: En
   'onboarding.catch.alerts.tab': '通知',
   'onboarding.catch.alerts.title': '银行通知',
   'onboarding.catch.alerts.body':
-    '银行和钱包的通知会自动记下每笔钱的进出，只在这台手机上读取，不会发送到任何地方。',
+    '银行和钱包的通知会自动记下每笔钱的进出。先在这台手机上读取，再由我们的服务器读一遍；AI 在手机上运行时不会发送。',
   'onboarding.catch.alerts.alert': '付款 −{amount} · {merchant}',
   'onboarding.catch.email.tab': '邮件',
   'onboarding.catch.email.title': '转发小票邮件',

@@ -22,7 +22,7 @@ export const esCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.tip':
     'Se omiten los códigos, los pagos fallidos y las promociones. Un pago ya pillado con Apple Pay o por correo no se añade dos veces.',
   'capture.alerts.privacy':
-    'Los avisos se leen en tu iPhone. Si 6pm no consigue leer a quién se pagó, las palabras del aviso van a nuestro servidor para ponerle nombre, después de quitar todos los números. Nunca cuando la IA está en este móvil.',
+    'Los avisos se leen primero en tu iPhone y después una segunda vez en nuestro servidor, que recibe las palabras y los importes del aviso, y el saldo si aparece. Los números largos, como cuentas, tarjetas y teléfonos, se ocultan antes. Nunca cuando la IA está en este móvil.',
   'capture.alerts.cameIn': 'Entran {amount}',
   'capture.alerts.skip.code': 'un código, omitido',
   'capture.alerts.skip.failed': 'pago fallido, omitido',

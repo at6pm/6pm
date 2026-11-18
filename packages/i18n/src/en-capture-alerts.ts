@@ -25,7 +25,7 @@ export const enCaptureAlerts = {
   'capture.alerts.tip':
     'Codes, failed payments and promos are skipped. A payment Apple Pay or an email already caught isn’t added twice.',
   'capture.alerts.privacy':
-    'Alerts are read on your iPhone. If one doesn’t say who was paid in a way 6pm can read, its words go to our server to be named, with every number taken out first. Never when AI is on this phone.',
+    'Alerts are read on your iPhone first, then a second time on our server, which gets the alert’s words and amounts, its balance too if it prints one. Long numbers such as accounts, cards and phones are hidden first. Never when AI is on this phone.',
   'capture.alerts.cameIn': '{amount} in',
   'capture.alerts.skip.code': 'a code, skipped',
   'capture.alerts.skip.failed': 'failed payment, skipped',
