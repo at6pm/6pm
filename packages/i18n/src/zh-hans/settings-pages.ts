@@ -27,6 +27,7 @@ export const zhHansSettingsPages: { readonly [Key in keyof typeof enSettingsPage
   'privacyPage.ask': '你在 Ask 里的问题',
   'privacyPage.lines': '陪伴台词用到的几条信息',
   'privacyPage.receipts': '手机读不懂的收据',
+  'privacyPage.alerts': '认不出商家的银行通知（去掉数字）',
   'privacyPage.voice': '你说话时的声音',
   'privacyPage.spends': '你的支出清单',
   'privacyPage.neverSent': '从不发送',

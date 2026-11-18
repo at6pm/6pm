@@ -15,6 +15,7 @@ export * from './email-handle-rotate';
 export * from './fx';
 export * from './health';
 export * from './import-map';
+export * from './name-alert';
 export * from './name-merchant';
 export * from './receipts-read';
 export * from './together-account-delete';

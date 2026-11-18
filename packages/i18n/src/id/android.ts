@@ -88,7 +88,7 @@ export const idAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'capture.alerts.tip':
     'Kode, pembayaran gagal, dan promo dilewati. Pembayaran yang sudah tertangkap lewat email tidak ditambahkan dua kali.',
   'capture.alerts.privacy':
-    'Dibaca di ponsel ini dan tidak dikirim ke mana pun. 6pm hanya membaca notifikasi bank dan dompetmu.',
+    'Dibaca di ponsel ini. 6pm hanya membaca notifikasi bank dan dompetmu. Kalau 6pm tidak bisa membaca siapa yang dibayar, kata-kata notifikasinya dikirim ke server kami untuk dinamai, setelah semua angka dibuang. Tidak pernah saat AI berjalan di ponsel ini.',
   'capture.alerts.actionAdd': 'Izinkan akses notifikasi',
   'capture.alerts.actionOpen': 'Setelan akses notifikasi',
 

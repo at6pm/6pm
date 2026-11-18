@@ -21,7 +21,8 @@ export const thCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.step3Chip': 'จับแจ้งเตือนธนาคาร',
   'capture.alerts.tip':
     'ข้ามรหัส OTP รายการที่จ่ายไม่สำเร็จ และโปรโมชัน รายการที่จับได้จาก Apple Pay หรืออีเมลแล้วจะไม่ถูกเพิ่มซ้ำ',
-  'capture.alerts.privacy': 'แจ้งเตือนถูกอ่านบน iPhone ของคุณ และไม่เคยออกไปจากเครื่อง',
+  'capture.alerts.privacy':
+    'แจ้งเตือนถูกอ่านบน iPhone ของคุณ ถ้า 6pm อ่านไม่ออกว่าจ่ายให้ใคร ข้อความในแจ้งเตือนจะถูกส่งไปที่เซิร์ฟเวอร์ของเราเพื่อหาชื่อร้าน โดยลบตัวเลขทั้งหมดออกก่อน ไม่ส่งเลยเมื่อ AI ทำงานบนเครื่อง',
   'capture.alerts.cameIn': 'เงินเข้า {amount}',
   'capture.alerts.skip.code': 'รหัส OTP ข้ามไปแล้ว',
   'capture.alerts.skip.failed': 'จ่ายไม่สำเร็จ ข้ามไปแล้ว',

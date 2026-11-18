@@ -93,7 +93,7 @@ export const enAndroid = {
   'capture.alerts.tip':
     'Codes, failed payments and promos are skipped. A payment an email already caught isn’t added twice.',
   'capture.alerts.privacy':
-    'Read on this phone and never sent anywhere. 6pm reads only your banks’ and wallets’ notifications.',
+    'Read on this phone. 6pm reads only your banks’ and wallets’ notifications. If one doesn’t say who was paid in a way 6pm can read, its words go to our server to be named, with every number taken out first. Never when AI is on this phone.',
   'capture.alerts.actionAdd': 'Allow notification access',
   'capture.alerts.actionOpen': 'Notification access settings',
 

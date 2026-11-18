@@ -27,6 +27,7 @@ export const viSettingsPages: { readonly [Key in keyof typeof enSettingsPages]: 
   'privacyPage.ask': 'CÂU BẠN HỎI',
   'privacyPage.lines': 'VÀI CHI TIẾT CHO LỜI BẠN ĐỒNG HÀNH',
   'privacyPage.receipts': 'BIÊN LAI MÁY KHÔNG ĐỌC ĐƯỢC',
+  'privacyPage.alerts': 'THÔNG BÁO NGÂN HÀNG CHƯA RÕ TÊN, ĐÃ BỎ SỐ',
   'privacyPage.voice': 'GIỌNG BẠN, LÚC BẠN NÓI',
   'privacyPage.spends': 'DANH SÁCH KHOẢN CHI',
   'privacyPage.neverSent': 'KHÔNG BAO GIỜ GỬI',

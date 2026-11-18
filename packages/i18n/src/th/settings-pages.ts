@@ -27,6 +27,7 @@ export const thSettingsPages: { readonly [Key in keyof typeof enSettingsPages]: 
   'privacyPage.ask': 'คำถามที่คุณถามใน Ask',
   'privacyPage.lines': 'ข้อมูลไม่กี่อย่างสำหรับคำพูดของเพื่อนคู่ใจ',
   'privacyPage.receipts': 'ใบเสร็จที่เครื่องอ่านไม่ได้',
+  'privacyPage.alerts': 'แจ้งเตือนธนาคารที่อ่านชื่อร้านไม่ออก (ลบตัวเลขแล้ว)',
   'privacyPage.voice': 'เสียงของคุณ ขณะพูด',
   'privacyPage.spends': 'รายการรายจ่ายของคุณ',
   'privacyPage.neverSent': 'ไม่ส่งเลย',

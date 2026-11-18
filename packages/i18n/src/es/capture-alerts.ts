@@ -21,7 +21,8 @@ export const esCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.step3Chip': 'Pillar un aviso del banco',
   'capture.alerts.tip':
     'Se omiten los códigos, los pagos fallidos y las promociones. Un pago ya pillado con Apple Pay o por correo no se añade dos veces.',
-  'capture.alerts.privacy': 'Los avisos se leen en tu iPhone y nunca salen de él.',
+  'capture.alerts.privacy':
+    'Los avisos se leen en tu iPhone. Si 6pm no consigue leer a quién se pagó, las palabras del aviso van a nuestro servidor para ponerle nombre, después de quitar todos los números. Nunca cuando la IA está en este móvil.',
   'capture.alerts.cameIn': 'Entran {amount}',
   'capture.alerts.skip.code': 'un código, omitido',
   'capture.alerts.skip.failed': 'pago fallido, omitido',

@@ -32,6 +32,7 @@ export const deSettingsPages: { readonly [Key in keyof typeof enSettingsPages]: 
   'privacyPage.ask': 'DEINE FRAGE IN ASK',
   'privacyPage.lines': 'EIN PAAR FAKTEN FÜR EINEN SPRUCH DEINES BEGLEITERS',
   'privacyPage.receipts': 'EIN BELEG, DEN DEIN HANDY NICHT LESEN KANN',
+  'privacyPage.alerts': 'EINE BANKMITTEILUNG OHNE ERKANNTEN NAMEN, OHNE ZAHLEN',
   'privacyPage.voice': 'DEINE STIMME, WÄHREND DU SPRICHST',
   'privacyPage.spends': 'DEINE LISTE DER AUSGABEN',
   'privacyPage.neverSent': 'NIE GESENDET',

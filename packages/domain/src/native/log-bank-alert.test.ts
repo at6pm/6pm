@@ -73,6 +73,33 @@ describe('logBankAlert', () => {
     });
   });
 
+  it('keeps a number-free copy of the words when it read no payee, marked not sure', () => {
+    const { item } = caught('Bạn vừa thanh toán 85.000đ. Cửa hàng: The Coffee House.', {
+      app: 'MoMo',
+      title: 'Giao dịch mới',
+    });
+    expect(item).toMatchObject({
+      amount: 85_000,
+      merchant: '',
+      direction: 'out',
+      receipt: {
+        bank: 'MoMo',
+        payeeSure: false,
+        namingLines: ['Giao dịch mới', 'Bạn vừa thanh toán', 'Cửa hàng: The Coffee House'],
+      },
+    });
+  });
+
+  it('keeps no words of an alert whose payee it read, nor of money in', () => {
+    const out = caught('Bạn đã thanh toán 45.000đ cho Phúc Long. Số dư ví: 155.000đ', {
+      app: 'MoMo',
+    });
+    expect(out.item?.receipt).toEqual({ bank: 'MoMo', namingLines: [] });
+    const into = caught('Tài khoản của bạn vừa được cộng 200.000đ.', { app: 'MoMo' });
+    expect(into.item).toMatchObject({ direction: 'in', receipt: { namingLines: [] } });
+    expect(into.item?.receipt?.payeeSure).toBeUndefined();
+  });
+
   it('leaves money in with its memo and no category: the close asks what it was', () => {
     const { item } = caught(
       'TK 0123xxx456|GD: +2,000,000VND 27/10/26 09:15|SD: 3,234,567VND|ND: LUONG T10',

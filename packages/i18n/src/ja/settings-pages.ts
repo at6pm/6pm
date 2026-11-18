@@ -28,6 +28,7 @@ export const jaSettingsPages: { readonly [Key in keyof typeof enSettingsPages]: 
   'privacyPage.ask': 'Askでの質問',
   'privacyPage.lines': '相棒のひと言に使う数件の情報',
   'privacyPage.receipts': '端末で読めないレシート',
+  'privacyPage.alerts': 'お店が読めない銀行通知（数字は除く）',
   'privacyPage.voice': '話している間の声',
   'privacyPage.spends': '支出の一覧',
   'privacyPage.neverSent': '送信しない',

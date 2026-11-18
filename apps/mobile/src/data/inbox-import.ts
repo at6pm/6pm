@@ -34,6 +34,11 @@ export interface InboxImportDeps {
   readonly inbox: InboxSource;
   /** Adds what can be learned about a shared receipt before it is saved (the payee's name). */
   readonly enrich: (item: InboxSpend) => Promise<InboxSpend>;
+  /**
+   * Names who a bank alert paid when the phone read no payee from it; without it such a row is
+   * saved as read.
+   */
+  readonly nameAlert?: (item: InboxSpend) => Promise<InboxSpend>;
   /** Told when a file is dropped; never given the file's content. */
   readonly report: (message: string) => void;
   /**
@@ -139,25 +144,26 @@ function parseJson(json: string): unknown {
  * merged into, when it did). Scan saves the receipts it reads through here too, as `receiptPhoto`.
  */
 export async function saveInboxSpend(
-  deps: Pick<InboxImportDeps, 'store' | 'actions' | 'enrich' | 'home' | 'language'>,
+  deps: Pick<InboxImportDeps, 'store' | 'actions' | 'enrich' | 'nameAlert' | 'home' | 'language'>,
   incoming: InboxSpend,
   channel?: SightingChannel,
 ): Promise<string | null> {
   const { store, actions } = deps;
   let item = incoming;
   // A bank alert's payee the person named before is called what they called it, and filed where
-  // they filed it.
+  // they filed it. One the phone read no payee from is named first, then called the same way.
   const named = async (alert: InboxSpend): Promise<InboxSpend> => {
     if (alert.source !== 'alert') return alert;
-    const before = await namedBefore(store.db, alert.merchant, store.getSnapshot().today).catch(
+    const read = deps.nameAlert ? await deps.nameAlert(alert) : alert;
+    const before = await namedBefore(store.db, read.merchant, store.getSnapshot().today).catch(
       () => null,
     );
-    if (!before) return alert;
+    if (!before) return read;
     const filed = store.getSnapshot().categories.some((c) => c.id === before.categoryId);
     return {
-      ...alert,
+      ...read,
       merchant: before.merchant,
-      categoryId: filed ? before.categoryId : alert.categoryId,
+      categoryId: filed ? before.categoryId : read.categoryId,
     };
   };
   const sighting = sightingOfInboxItem(incoming, channel);
