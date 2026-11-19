@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -53,6 +53,8 @@ const POP = { duration: 300, easing: Easing.bezier(0.3, 1.4, 0.5, 1) };
 const BARS_HEIGHT = 41;
 /** How many days' width each bar takes to rise as the sweep passes. */
 const SWEEP = 4;
+/** The step's side padding, which the cards' scroller reaches into so their shadows are not cut. */
+const CARD_SHADOW_ROOM = 20;
 
 /**
  * "How does money reach you?": four cards, as many picked as fit, each drawing its month of money
@@ -70,9 +72,20 @@ export function StepMoneyWays({
 }) {
   const { t } = useI18n();
   return (
-    <View style={{ gap: 14 }}>
+    <View style={{ flex: 1, minHeight: 0, gap: 14 }}>
       <StepHeading title={t('onboarding.reach.title')} sub={t('onboarding.reach.sub')} pal={pal} />
-      <View style={{ gap: 10, paddingTop: 4 }}>
+      {/* On a short screen the last card would sit under Continue, so the cards scroll. The
+          scroller reaches the step's edges and pads back in, which keeps the cards' shadows whole. */}
+      <ScrollView
+        style={{ flex: 1, marginHorizontal: -CARD_SHADOW_ROOM }}
+        contentContainerStyle={{
+          gap: 10,
+          paddingTop: 4,
+          paddingHorizontal: CARD_SHADOW_ROOM,
+          paddingBottom: 24,
+        }}
+        showsVerticalScrollIndicator={false}
+      >
         {MONEY_WAYS.map((way, i) => (
           <WayCard
             key={way}
@@ -86,7 +99,7 @@ export function StepMoneyWays({
             }}
           />
         ))}
-      </View>
+      </ScrollView>
     </View>
   );
 }

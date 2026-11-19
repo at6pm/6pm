@@ -13,13 +13,23 @@ const DESIGN_BOTTOM = 34;
 const SIDE_STATUS_TOP = 28;
 
 /**
- * Android's three-button bar is 48 dp of buttons, not a thin handle: a bottom inset this tall
- * means the design's controls, which dip a few points into the iPhone's home-indicator strip,
- * would sit under Back and Home. They keep `BUTTON_BAR_GAP` above the bar instead. Gesture
- * navigation's inset is a handle like the iPhone's and keeps the design's offsets.
+ * Android draws its navigation over the app's bottom edge: 48 dp of Back, Home and Recents, or a
+ * gesture handle whose strip some phones paint. The design's controls dip a few points into the
+ * iPhone's home-indicator strip, which on Android would put them under that bar, and where a
+ * phone reports a thin inset or none the shifted offset went below zero and pushed the tab bar
+ * off the screen. On Android they keep `SYSTEM_NAV_GAP` above whatever the system reports.
  */
-const BUTTON_BAR_MIN = 40;
-const BUTTON_BAR_GAP = 8;
+const SYSTEM_NAV_GAP = 10;
+
+/**
+ * The prototype's offset from the bottom edge on a screen whose bottom inset is `inset`: shifted
+ * by the difference in safe area, and on Android never closer than `SYSTEM_NAV_GAP` to the
+ * system navigation.
+ */
+export function designBottom(designPx: number, inset: number, android: boolean): number {
+  const shifted = designPx + inset - DESIGN_BOTTOM;
+  return android ? Math.max(shifted, inset + SYSTEM_NAV_GAP) : shifted;
+}
 
 /**
  * Converts the prototype's offsets from the screen edge into this phone's: exact on the design
@@ -32,12 +42,7 @@ export function useDesignInsets() {
   const topInset = rail > 0 ? SIDE_STATUS_TOP : insets.top;
   return {
     top: (designPx: number) => designPx + topInset - DESIGN_TOP,
-    bottom: (designPx: number) => {
-      const shifted = designPx + insets.bottom - DESIGN_BOTTOM;
-      return Platform.OS === 'android' && insets.bottom >= BUTTON_BAR_MIN
-        ? Math.max(shifted, insets.bottom + BUTTON_BAR_GAP)
-        : shifted;
-    },
+    bottom: (designPx: number) => designBottom(designPx, insets.bottom, Platform.OS === 'android'),
     rail,
     insets,
   };

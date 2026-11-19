@@ -1,7 +1,6 @@
 import * as Sentry from '@sentry/react-native';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
 import type { ReactNode } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
@@ -27,6 +26,7 @@ import { TogetherProvider } from '../features/together/together-provider';
 import { TravelProvider } from '../features/travel/travel-provider';
 import { I18nProvider } from '../i18n/i18n';
 import { FoldProvider, useFold } from '../ui/layout/fold';
+import { SystemBars } from '../ui/layout/system-bars';
 import { drawnSheet, edgeSheet, pageSheet, sheet, takeover } from '../ui/navigation/presentations';
 import { ClockProvider } from '../ui/theme/clock';
 import { ThemeProvider, useTheme } from '../ui/theme/theme';
@@ -54,7 +54,7 @@ function Screens() {
   const hinged = useFold().snapshot.hinge !== 'unknown';
   return (
     <>
-      <StatusBar style={palette.dark ? 'light' : 'dark'} animated />
+      <SystemBars dark={palette.dark} />
       <Stack
         screenOptions={{
           headerShown: false,

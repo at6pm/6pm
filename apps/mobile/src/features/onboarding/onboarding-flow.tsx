@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import Animated, { useReducedMotion } from 'react-native-reanimated';
@@ -10,6 +9,7 @@ import { useMoneyFormat } from '../../money/use-money-format';
 import type { CompanionMood } from '../../ui/companion/companion-mood';
 import { useDesignInsets } from '../../ui/layout/design-insets';
 import { usePhoneColumn } from '../../ui/layout/phone-column';
+import { SystemBars } from '../../ui/layout/system-bars';
 import type { AiMode } from '../privacy/ai-mode';
 import { useAiMode } from '../privacy/use-ai-mode';
 import { useAlertAccess } from '../capture-guide/alert-access';
@@ -377,7 +377,7 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
 
   return (
     <View style={{ flex: 1 }}>
-      <StatusBar style={pal.dark ? 'light' : 'dark'} animated />
+      <SystemBars dark={pal.dark} />
       <OnboardingSky step={o.step} safeTop={insets.top} />
       <View
         style={{
