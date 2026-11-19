@@ -25,7 +25,9 @@ const PACKAGE = 'ai.sixpm.surfaces.widgets';
 
 /**
  * Each widget: its receiver, provider file, cells, size (and the least it resizes to), words, and
- * the picture the widget picker shows (`modules/surfaces` draws them in English and Vietnamese at dusk).
+ * the picture the widget picker and the launcher's "Add to Home screen" sheet show: a capture of
+ * the widget itself with the Friday sample at dusk, in English and Vietnamese
+ * (`modules/surfaces/android/src/main/res/drawable-nodpi` and `drawable-vi-nodpi`).
  */
 const WIDGETS = [
   {
@@ -87,7 +89,7 @@ const WIDGETS = [
     resize: [110, 110],
     name: 'sixpm_widget_streak_name',
     description: 'sixpm_widget_streak_description',
-    preview: null,
+    preview: 'sixpm_widget_streak_preview',
   },
   {
     receiver: 'JarWidget',
@@ -97,7 +99,7 @@ const WIDGETS = [
     resize: [110, 110],
     name: 'sixpm_widget_jar_name',
     description: 'sixpm_widget_jar_description',
-    preview: null,
+    preview: 'sixpm_widget_jar_preview',
   },
 ];
 
@@ -124,9 +126,8 @@ function providerXml(widget) {
   android:resizeMode="horizontal|vertical"
   android:widgetCategory="home_screen"
   android:updatePeriodMillis="1800000"
-  android:initialLayout="@layout/sixpm_widget_loading"${
-    widget.preview ? `\n  android:previewImage="@drawable/${widget.preview}"` : ''
-  }
+  android:initialLayout="@layout/sixpm_widget_loading"
+  android:previewImage="@drawable/${widget.preview}"
   android:description="@string/${widget.description}" />
 `;
 }
