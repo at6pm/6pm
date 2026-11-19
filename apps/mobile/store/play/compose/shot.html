@@ -1,0 +1,158 @@
+<!doctype html>
+<!-- One Play listing shot: a caption over a real capture set in a plain device frame. Drawn by
+     compose.mjs, which passes the shot as JSON in the URL's hash. -->
+<meta charset="utf-8" />
+<style>
+  @font-face {
+    font-family: 'Bricolage Grotesque';
+    src: url('../../../assets/fonts/BricolageGrotesque-Variable.ttf');
+    font-weight: 200 800;
+    font-stretch: 75% 100%;
+  }
+  @font-face {
+    font-family: 'IBM Plex Mono';
+    src: url('../../../assets/fonts/IBMPlexMono-SemiBold.ttf');
+    font-weight: 600;
+  }
+  html,
+  body {
+    margin: 0;
+    background: #120f1c;
+  }
+  #page {
+    position: relative;
+    overflow: hidden;
+    background: #120f1c;
+    color: #f6efe6;
+    -webkit-font-smoothing: antialiased;
+  }
+  #glow,
+  #dots,
+  #shade {
+    position: absolute;
+    inset: 0;
+  }
+  #dots {
+    opacity: 0.5;
+    background-image: radial-gradient(circle, rgba(255, 250, 240, 0.9) 0.8px, transparent 1.5px);
+    -webkit-mask-image: linear-gradient(180deg, #000, transparent 55%);
+  }
+  #shade {
+    background: linear-gradient(180deg, rgba(18, 12, 34, 0.5) 0%, rgba(18, 12, 34, 0) 40%);
+  }
+  #caption {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+  }
+  #kick {
+    display: flex;
+    align-items: center;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    color: rgba(246, 239, 230, 0.75);
+  }
+  #dot {
+    border-radius: 50%;
+  }
+  #head {
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-weight: 600;
+    font-variation-settings:
+      'opsz' 96,
+      'wdth' 86;
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    color: #fbf5ec;
+    text-wrap: balance;
+    text-shadow: 0 2px 20px rgba(10, 6, 20, 0.35);
+  }
+  #device {
+    position: absolute;
+    overflow: hidden;
+    background: #000;
+  }
+  #device img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  #fold {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    background: linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0),
+      rgba(0, 0, 0, 0.22),
+      rgba(255, 255, 255, 0.05),
+      rgba(0, 0, 0, 0)
+    );
+  }
+</style>
+<div id="page">
+  <div id="glow"></div>
+  <div id="dots"></div>
+  <div id="shade"></div>
+  <div id="caption">
+    <div id="kick"><span id="dot"></span><span id="kickText"></span></div>
+    <div id="head"><span id="capA"></span><span id="capB"></span></div>
+  </div>
+  <div id="device">
+    <img id="capture" />
+    <div id="fold"></div>
+  </div>
+</div>
+<script>
+  const s = JSON.parse(decodeURIComponent(location.hash.slice(1)));
+  const $ = (id) => document.getElementById(id);
+  const u = s.width / 100; // one hundredth of the canvas width
+  const k = s.type ?? 1; // the caption's size against the width, larger on narrow canvases
+  const page = $('page');
+  page.style.width = s.width + 'px';
+  page.style.height = s.height + 'px';
+  $('glow').style.background =
+    `radial-gradient(60% 50% at 50% ${s.glowAt ?? 62}%, ${s.accent}66 0%, ${s.accent}1f 45%, transparent 75%),` +
+    'linear-gradient(180deg, #2a1f4a 0%, #3a2350 30%, #5a2c50 62%, #7a3a42 100%)';
+  $('dots').style.backgroundSize = `${u * 3.6}px ${u * 4.2}px`;
+  const cap = $('caption');
+  cap.style.left = u * 5.6 + 'px';
+  cap.style.right = u * 5.6 + 'px';
+  cap.style.top = (s.captionTop ?? u * 5.2) + 'px';
+  cap.style.gap = u * 1.5 * k + 'px';
+  $('kick').style.fontSize = u * 1.85 * k + 'px';
+  $('kick').style.gap = u * 1.2 * k + 'px';
+  $('dot').style.width = $('dot').style.height = u * 1.1 * k + 'px';
+  $('dot').style.background = s.accent;
+  $('dot').style.boxShadow = `0 0 ${u * 1.6}px ${s.accent}`;
+  $('kickText').textContent = s.kick;
+  $('capA').textContent = s.capA;
+  $('capB').textContent = s.capB;
+  $('capB').style.color = s.accent;
+  // The headline keeps to its lines (one over a wide device, two over an upright one): a longer
+  // language shrinks it instead of running under the device.
+  const lines = s.lines ?? 2;
+  const fit = () => {
+    let size = u * 6.9 * k;
+    for (let i = 0; i < 60; i++) {
+      $('head').style.fontSize = size + 'px';
+      if ($('head').getBoundingClientRect().height <= size * 0.98 * lines + 2) break;
+      size *= 0.98;
+    }
+  };
+  fit();
+  document.fonts.ready.then(fit);
+  const d = $('device');
+  d.style.left = s.device.x + 'px';
+  d.style.top = s.device.y + 'px';
+  d.style.width = s.device.width + 'px';
+  d.style.height = s.device.height + 'px';
+  d.style.borderRadius = s.device.radius + 'px';
+  const bezel = s.device.bezel;
+  d.style.boxShadow = `0 0 0 ${bezel}px #1e1a24, 0 0 0 ${bezel + 2}px rgba(255,255,255,.12), 0 ${u * 3}px ${u * 7}px rgba(0,0,0,.55)`;
+  $('capture').src = s.capture;
+  $('fold').style.width = s.fold ? u * 1.2 + 'px' : '0';
+  $('fold').style.marginLeft = -(u * 0.6) + 'px';
+</script>

@@ -9,11 +9,14 @@ with what it has instead (bank and wallet notifications).
 
 ## Graphics
 
-| File | Slot | Size |
-| --- | --- | --- |
-| `icon-512.png` | App icon | 512 × 512 |
-| `{en-US,vi}/feature-graphic.png` | Feature graphic | 1024 × 500, the App Store header creative cropped to its middle |
-| `{en-US,vi}/screenshots/*.png` | Phone screenshots | 1080 × 1920 (Play takes only 9:16) |
+| File                             | Slot                       | Size                                                                                                                               |
+| -------------------------------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `icon-512.png`                   | App icon                   | 512 × 512                                                                                                                          |
+| `{en-US,vi}/feature-graphic.png` | Feature graphic            | 1024 × 500, the App Store header creative cropped to its middle                                                                    |
+| `{en-US,vi}/screenshots/*.png`   | Phone screenshots          | 1080 × 1920 (Play takes only 9:16)                                                                                                 |
+| `{en-US,vi}/foldable/*.jpg`      | Foldable screenshots       | 01 opened 2880 × 2160 (4:3), 02 opened 2160 × 2160 (1:1), 03 cover screen 1350 × 2160 (10:16), then 04 and 06 at 4:3 and 05 at 3:4 |
+| `{en-US,vi}/tablet-7/*.jpg`      | 7-inch tablet screenshots  | 1620 × 2880 (Play takes only 9:16 or 16:9)                                                                                         |
+| `{en-US,vi}/tablet-10/*.jpg`     | 10-inch tablet screenshots | 1620 × 2880                                                                                                                        |
 
 ### Screenshots
 
@@ -24,6 +27,26 @@ en-US and đồng for vi; its categories take the app's language). The screen is
 18:07 (`com.android.systemui.demo`); each is then scaled to 1920 tall and its own side edges extended to
 1080 wide, since Play takes only 9:16. The app language follows Android's per-app language
 (`cmd locale set-app-locales app.at6pm.dev --locales vi-VN`).
+
+### Large screens
+
+The foldable and tablet shots are a caption over a real capture in a plain device frame, as the
+App Store's iPad set is. `compose/shots.mjs` lists them (canvas, caption, capture), `compose/shot.html`
+draws one, and `node compose/compose.mjs <captures dir> <out dir>` renders them all with headless
+Chrome; they are kept as JPEGs (quality 90). The captions are the App Store set's where a screen has
+one (`design/prototype/StoreShot.dc.html`), in English and Vietnamese.
+
+The captures are the developer build with the Friday fixture, the emulator's clock set to Friday
+16 October 2026 at 18:07, gesture navigation, the dev Tools button off, in dollars for en-US and
+đồng for vi (set the language with one `dev-command.json`, then seed with the next, so the seed's
+categories are written in it):
+
+- Foldable: the `sixpm-zfold8` emulator. Opened: Home (01), the Close as a book (02), the Diary
+  (04), Plan (06). The cover screen: Home (03). Turned upright and half open
+  (`adb emu sensor set hinge-angle0 100`): at the counter (05).
+- Tablets: the `sixpm-pixel` emulator at a tablet's size, `adb shell wm size 1600x2560` (10-inch)
+  and `1200x1920` (7-inch) with `wm density 320`: Today (01), the Close (02), Quick add (03),
+  Plan (04), the Diary (05). A tablet has no fold, so it shows the phone's one column.
 
 ## Text
 
@@ -125,34 +148,34 @@ captures and the feature graphic is rendered from HTML).
 
 ## App content (Policy → App content)
 
-| Form | Answer |
-| --- | --- |
-| Privacy policy | https://at6pm.app/privacy (covers Android once the Android section is deployed) |
-| App access | No account or login, but 6pm Max is paid and reviewers can't buy or use a trial, so the sign in details give three one-time promo codes from the promotion "App review: 6pm Max" (Max yearly free for 90 days, redeemed in the Play Store, until 30 Apr 2027) |
-| Ads | No ads |
-| Content rating | IARC questionnaire, category Utility/Productivity: no violence, sexuality, language, drugs, gambling or user-generated content shared with others; users do not interact; no location shared with others; digital purchases: yes |
-| Target audience | 18 and over (the policy says not made for children under 16) |
-| News app | No |
-| COVID-19 tracing | No |
-| Government app | No |
-| Financial features | Personal finance: budgeting and expense tracking. It does not move money, lend, hold deposits, trade or offer crypto |
-| Health | No |
-| Data safety | See below |
+| Form               | Answer                                                                                                                                                                                                                                                        |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Privacy policy     | https://at6pm.app/privacy (covers Android once the Android section is deployed)                                                                                                                                                                               |
+| App access         | No account or login, but 6pm Max is paid and reviewers can't buy or use a trial, so the sign in details give three one-time promo codes from the promotion "App review: 6pm Max" (Max yearly free for 90 days, redeemed in the Play Store, until 30 Apr 2027) |
+| Ads                | No ads                                                                                                                                                                                                                                                        |
+| Content rating     | IARC questionnaire, category Utility/Productivity: no violence, sexuality, language, drugs, gambling or user-generated content shared with others; users do not interact; no location shared with others; digital purchases: yes                              |
+| Target audience    | 18 and over (the policy says not made for children under 16)                                                                                                                                                                                                  |
+| News app           | No                                                                                                                                                                                                                                                            |
+| COVID-19 tracing   | No                                                                                                                                                                                                                                                            |
+| Government app     | No                                                                                                                                                                                                                                                            |
+| Financial features | Personal finance: budgeting and expense tracking. It does not move money, lend, hold deposits, trade or offer crypto                                                                                                                                          |
+| Health             | No                                                                                                                                                                                                                                                            |
+| Data safety        | See below                                                                                                                                                                                                                                                     |
 
 ### Data safety
 
 Data **collected** (leaves the phone):
 
-| Data type | Collected | Shared | Why | Optional |
-| --- | --- | --- | --- | --- |
-| App info and performance → Crash logs, Diagnostics | Yes | No | Analytics (crash reports, Sentry; Android has no on-device mode to turn them off) | No |
-| Device or other IDs | Yes | No | App functionality, fraud prevention (anonymous device token, stored hashed) | No |
-| Financial info → Purchase history | Yes | No | App functionality (RevenueCat purchase status) | No |
-| Financial info → Other financial info | Yes | No | App functionality: what a forwarded bank email holds, kept until the phone collects it; receipt photos the phone cannot read | Yes |
-| Messages → Emails | Yes | No | App functionality: forwarded bank emails, read and not stored | Yes |
-| Photos | Yes | No | App functionality: a receipt photo the phone cannot read, sent once to be read, not stored | Yes |
-| Audio → Voice or sound recordings | Yes | No | App functionality: streamed to speech-to-text while you speak, not stored | Yes |
-| Messages → Other in-app messages | Yes | No | App functionality: questions asked to Ask 6pm, not stored | Yes |
+| Data type                                          | Collected | Shared | Why                                                                                                                          | Optional |
+| -------------------------------------------------- | --------- | ------ | ---------------------------------------------------------------------------------------------------------------------------- | -------- |
+| App info and performance → Crash logs, Diagnostics | Yes       | No     | Analytics (crash reports, Sentry; Android has no on-device mode to turn them off)                                            | No       |
+| Device or other IDs                                | Yes       | No     | App functionality, fraud prevention (anonymous device token, stored hashed)                                                  | No       |
+| Financial info → Purchase history                  | Yes       | No     | App functionality (RevenueCat purchase status)                                                                               | No       |
+| Financial info → Other financial info              | Yes       | No     | App functionality: what a forwarded bank email holds, kept until the phone collects it; receipt photos the phone cannot read | Yes      |
+| Messages → Emails                                  | Yes       | No     | App functionality: forwarded bank emails, read and not stored                                                                | Yes      |
+| Photos                                             | Yes       | No     | App functionality: a receipt photo the phone cannot read, sent once to be read, not stored                                   | Yes      |
+| Audio → Voice or sound recordings                  | Yes       | No     | App functionality: streamed to speech-to-text while you speak, not stored                                                    | Yes      |
+| Messages → Other in-app messages                   | Yes       | No     | App functionality: questions asked to Ask 6pm, not stored                                                                    | Yes      |
 
 None is marked as processed ephemerally: Anthropic keeps requests for up to 30 days. No account
 creation (Budget together, the only sign-in, is not in the Android app). Data deletion link:
@@ -167,12 +190,12 @@ encrypted, so Play counts it as not collected.
 
 ### Permissions Play may ask about
 
-| Permission | Why |
-| --- | --- |
-| Notification listener (Notification access) | Bank and wallet alerts, read on the phone, only from known bank and wallet apps. The guide shows what is read before the switch is turned on. No declaration form exists for it |
-| `SCHEDULE_EXACT_ALARM` | The daily close reminder at the time the person chose. Not `USE_EXACT_ALARM`, so no declaration |
-| `CAMERA`, `RECORD_AUDIO`, coarse and fine location | Scan, voice, Travel mode (foreground only) |
-| No `READ_MEDIA_*` | Scan uses the system Photo Picker; saving pictures needs no read access |
+| Permission                                         | Why                                                                                                                                                                             |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Notification listener (Notification access)        | Bank and wallet alerts, read on the phone, only from known bank and wallet apps. The guide shows what is read before the switch is turned on. No declaration form exists for it |
+| `SCHEDULE_EXACT_ALARM`                             | The daily close reminder at the time the person chose. Not `USE_EXACT_ALARM`, so no declaration                                                                                 |
+| `CAMERA`, `RECORD_AUDIO`, coarse and fine location | Scan, voice, Travel mode (foreground only)                                                                                                                                      |
+| No `READ_MEDIA_*`                                  | Scan uses the system Photo Picker; saving pictures needs no read access                                                                                                         |
 
 ## Billing
 
