@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ScrollView, Text, useWindowDimensions, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import Animated, {
   ReduceMotion,
   useAnimatedStyle,
@@ -15,6 +15,7 @@ import { easeOut } from '../../ui/motion/curves';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body } from '../../ui/type/fonts';
+import { usePhoneColumn } from '../../ui/layout/phone-column';
 import { LIFTED_SHADOW, liftedFill } from './persona-segment';
 
 const TILE = 84;
@@ -39,7 +40,8 @@ export function CompanionStrip({
   readonly locked: (form: CompanionForm) => boolean;
   readonly onPick: (form: CompanionForm) => void;
 }) {
-  const { width } = useWindowDimensions();
+  // The Settings sheet's width: a phone's on a wide Android window.
+  const width = usePhoneColumn();
   const view = width - SIDE * 2;
   const content = INSET * 2 + COMPANION_FORMS.length * (TILE + GAP) - GAP;
   // Opens centred on the one worn, as far as the strip reaches; a pick after that never scrolls it.

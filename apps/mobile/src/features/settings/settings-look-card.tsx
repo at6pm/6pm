@@ -1,4 +1,4 @@
-import { Text, useWindowDimensions, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { configFor, lookById, swatchesFor } from '@6pm/theme';
 
@@ -8,6 +8,7 @@ import { PressScale } from '../../ui/primitives/press-scale';
 import { useClock } from '../../ui/theme/clock';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading } from '../../ui/type/fonts';
+import { usePhoneColumn } from '../../ui/layout/phone-column';
 import { useLookCardLines } from '../looks/look-card-lines';
 import { LookSkyPreview } from '../looks/look-sky-preview';
 import { useLookSettings } from '../looks/look-settings-provider';
@@ -29,7 +30,8 @@ export function SettingsLookCard({ onPress }: { readonly onPress: () => void }) 
   const { palette } = useTheme();
   const { t } = useI18n();
   const { hour } = useClock();
-  const { width } = useWindowDimensions();
+  // The Settings sheet's width: a phone's on a wide Android window.
+  const width = usePhoneColumn();
   const { customer } = useEntitlement();
   const { look, config } = useLookSettings();
   const { name, line } = useLookCardLines();

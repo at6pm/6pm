@@ -19,6 +19,11 @@ export interface FoldSnapshot {
   readonly divisions: readonly FoldRect[];
   /** What covers the screen: the island on the outer display. */
   readonly occlusions: readonly FoldRect[];
+  /**
+   * Android: the first reading since the app came back from the background. The phone may have
+   * been shut or opened while it was away, so this is where the hinge is, not a move of it.
+   */
+  readonly returning?: boolean;
 }
 
 interface FoldNative {

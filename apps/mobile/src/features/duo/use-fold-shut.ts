@@ -3,8 +3,9 @@ import { useEffect, useRef } from 'react';
 import { useFold } from '../../ui/layout/fold';
 
 /**
- * Calls `onShut` when the iPhone Duo is folded shut from open or part way open, while `enabled`.
- * Read through a ref, so the latest `onShut` runs.
+ * Calls `onShut` when a folding phone is folded shut from open or part way open, while `enabled`.
+ * Read through a ref, so the latest `onShut` runs. A phone found shut on the way back from the
+ * background was shut while 6pm was away, with nobody looking at it: that is not this.
  */
 export function useFoldShut(onShut: () => void, enabled: boolean) {
   const { snapshot } = useFold();
@@ -16,8 +17,7 @@ export function useFoldShut(onShut: () => void, enabled: boolean) {
   useEffect(() => {
     const before = was.current;
     was.current = snapshot.hinge;
-    if (enabled && snapshot.hinge === 'closed' && (before === 'partial' || before === 'open')) {
-      latest.current();
-    }
-  }, [snapshot.hinge, enabled]);
+    const shutNow = snapshot.hinge === 'closed' && snapshot.returning !== true;
+    if (enabled && shutNow && (before === 'partial' || before === 'open')) latest.current();
+  }, [snapshot.hinge, snapshot.returning, enabled]);
 }

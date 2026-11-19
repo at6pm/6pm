@@ -1,5 +1,51 @@
+diff --git a/android/src/fabric/java/com/swmansion/rnscreens/FabricEnabledViewGroup.kt b/android/src/fabric/java/com/swmansion/rnscreens/FabricEnabledViewGroup.kt
+index 59b5e46d989550904edeea7d7e32c57138b69717..795cb655d2c62a9372969f8514e19d96e97558ce 100644
+--- a/android/src/fabric/java/com/swmansion/rnscreens/FabricEnabledViewGroup.kt
++++ b/android/src/fabric/java/com/swmansion/rnscreens/FabricEnabledViewGroup.kt
+@@ -17,6 +17,7 @@ abstract class FabricEnabledViewGroup(
+     private var lastWidth = 0f
+     private var lastHeight = 0f
+     private var lastHeaderHeight = 0f
++    private var lastLeft = 0f
+ 
+     fun setStateWrapper(wrapper: StateWrapper?) {
+         mStateWrapper = wrapper
+@@ -34,13 +35,18 @@ abstract class FabricEnabledViewGroup(
+         val realWidth: Float = pxToDp(width.toFloat())
+         val realHeight: Float = pxToDp(height.toFloat())
+         val realHeaderHeight: Float = pxToDp(headerHeight.toFloat())
++        // A form sheet narrower than its window sits in the middle of it (see SheetDelegate):
++        // without its left edge here, everything measured inside it would read that far to the
++        // left of where it is drawn, and a press would be judged against the wrong place.
++        val realLeft: Float = pxToDp(left.toFloat())
+ 
+         // Check incoming state values. If they're already the correct value, return early to prevent
+         // infinite UpdateState/SetState loop.
+         val delta = 0.9f
+         if (abs(lastWidth - realWidth) < delta &&
+             abs(lastHeight - realHeight) < delta &&
+-            abs(lastHeaderHeight - realHeaderHeight) < delta
++            abs(lastHeaderHeight - realHeaderHeight) < delta &&
++            abs(lastLeft - realLeft) < delta
+         ) {
+             return
+         }
+@@ -48,11 +54,12 @@ abstract class FabricEnabledViewGroup(
+         lastWidth = realWidth
+         lastHeight = realHeight
+         lastHeaderHeight = realHeaderHeight
++        lastLeft = realLeft
+         val map: WritableMap =
+             WritableNativeMap().apply {
+                 putDouble("frameWidth", realWidth.toDouble())
+                 putDouble("frameHeight", realHeight.toDouble())
+-                putDouble("contentOffsetX", 0.0)
++                putDouble("contentOffsetX", realLeft.toDouble())
+                 putDouble("contentOffsetY", realHeaderHeight.toDouble())
+             }
+         mStateWrapper?.updateState(map)
 diff --git a/android/src/main/java/com/swmansion/rnscreens/bottomsheet/SheetDelegate.kt b/android/src/main/java/com/swmansion/rnscreens/bottomsheet/SheetDelegate.kt
-index 800407998ed12d559a6fde732dde1a6ae8b3f172..ec33eed4f037bb141ffff7a48aed76f906cdc5f4 100644
+index 800407998ed12d559a6fde732dde1a6ae8b3f172..2cec3b3f4b606be5822aa5caaa4de473390a21a3 100644
 --- a/android/src/main/java/com/swmansion/rnscreens/bottomsheet/SheetDelegate.kt
 +++ b/android/src/main/java/com/swmansion/rnscreens/bottomsheet/SheetDelegate.kt
 @@ -3,11 +3,13 @@ package com.swmansion.rnscreens.bottomsheet
@@ -16,17 +62,19 @@ index 800407998ed12d559a6fde732dde1a6ae8b3f172..ec33eed4f037bb141ffff7a48aed76f9
  import androidx.core.view.WindowInsetsCompat
  import androidx.lifecycle.Lifecycle
  import androidx.lifecycle.LifecycleEventObserver
-@@ -176,6 +178,21 @@ class SheetDelegate(
+@@ -176,6 +178,23 @@ class SheetDelegate(
          behavior.updateMetrics(maxAllowedHeight, expandedOffsetFromTop)
      }
  
 +    /**
 +     * On a window wider than a phone (an opened folding phone, a tablet) the sheet keeps a
 +     * phone's width and sits in the middle, as a form sheet does on an iPad, instead of
-+     * stretching edge to edge. On a phone the window is narrower than this and nothing changes.
++     * stretching edge to edge. On a phone, however wide, it fills the width as before.
 +     */
 +    private fun keepPhoneWidth(behavior: BottomSheetBehavior<Screen>) {
-+        val maxWidth = (SHEET_MAX_WIDTH_DP * screen.resources.displayMetrics.density).toInt()
++        val wide = screen.resources.configuration.screenWidthDp >= WIDE_WINDOW_FROM_DP
++        val maxWidth =
++            if (wide) (SHEET_MAX_WIDTH_DP * screen.resources.displayMetrics.density).toInt() else NO_MAX_WIDTH
 +        if (behavior.maxWidth != maxWidth) behavior.maxWidth = maxWidth
 +        val params = screen.layoutParams as? CoordinatorLayout.LayoutParams ?: return
 +        if (params.gravity != Gravity.CENTER_HORIZONTAL) {
@@ -38,7 +86,7 @@ index 800407998ed12d559a6fde732dde1a6ae8b3f172..ec33eed4f037bb141ffff7a48aed76f9
      internal fun configureBottomSheetBehaviour(
          behavior: BottomSheetBehavior<Screen>,
          keyboardState: KeyboardState = KeyboardNotVisible,
-@@ -191,6 +208,8 @@ class SheetDelegate(
+@@ -191,6 +210,8 @@ class SheetDelegate(
              isDraggable = true
          }
  
@@ -47,7 +95,7 @@ index 800407998ed12d559a6fde732dde1a6ae8b3f172..ec33eed4f037bb141ffff7a48aed76f9
          // There is a guard internally that does not allow the callback to be duplicated.
          behavior.addBottomSheetCallback(sheetStateObserver)
  
-@@ -393,7 +412,24 @@ class SheetDelegate(
+@@ -393,7 +414,24 @@ class SheetDelegate(
       * This method tries to resolve the maximum height available for the sheet content,
       * accounting for the system top inset.
       */
@@ -73,12 +121,18 @@ index 800407998ed12d559a6fde732dde1a6ae8b3f172..ec33eed4f037bb141ffff7a48aed76f9
  
      /**
       * This method might return slightly different values depending on code path,
-@@ -500,5 +536,8 @@ class SheetDelegate(
+@@ -500,5 +538,14 @@ class SheetDelegate(
  
      companion object {
          const val TAG = "SheetDelegate"
 +
-+        /** The widest a form sheet is drawn: a large phone's width. */
++        /** A window this wide or more is not a phone's. */
++        private const val WIDE_WINDOW_FROM_DP = 600
++
++        /** The widest a form sheet is drawn on such a window: a large phone's width. */
 +        private const val SHEET_MAX_WIDTH_DP = 480f
++
++        /** BottomSheetBehavior's own "no limit". */
++        private const val NO_MAX_WIDTH = -1
      }
  }

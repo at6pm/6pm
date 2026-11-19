@@ -9,6 +9,12 @@ export const FLAT_GUTTER = 40;
 /** Narrowest page the two-page layouts are drawn for: Today's hero and October's grid. */
 const MIN_PAGE = 360;
 
+/**
+ * Narrowest screen that stands as a counter. A flip phone folds across too, and is often held a
+ * little bent: it stays a phone.
+ */
+const MIN_STAND_WIDTH = 600;
+
 export interface Page {
   readonly x: number;
   readonly width: number;
@@ -28,7 +34,7 @@ export interface Half {
  * - `spread`: opened with the fold upright, or flat and wider than tall: two pages either side of
  *   the fold, the Duo's rail on the right. `book` when it is part way open, held like a book.
  * - `stand`: part way open with the fold across, standing on a table: the top half to read, the
- *   bottom half to touch.
+ *   bottom half to touch. Not a flip phone, which is too narrow to be a counter.
  */
 export type FoldForm =
   | { readonly kind: 'phone' }
@@ -90,7 +96,7 @@ export function foldForm(
   const across = division !== undefined && division.width > division.height;
   const upright = division !== undefined && !across;
 
-  if (hinge === 'partial' && division && across) {
+  if (hinge === 'partial' && division && across && width >= MIN_STAND_WIDTH) {
     const gutter = gutterAt(division.y, division.height);
     return {
       kind: 'stand',

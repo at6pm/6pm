@@ -146,6 +146,42 @@ describe('foldForm', () => {
       });
     });
 
+    it('is one column as it shuts, the fold still in the window', () => {
+      expect(foldForm(snap({ hinge: 'closed', divisions: [line] }), inner)).toEqual({
+        kind: 'phone',
+      });
+    });
+
+    it('keeps two pages part way open in a window the fold does not cross', () => {
+      expect(foldForm(snap({ hinge: 'partial' }), inner)).toMatchObject({
+        kind: 'spread',
+        book: true,
+      });
+    });
+
+    it('takes a fold within two points of the window and no further', () => {
+      // Off the middle, so the fold's own place and the middle of the window tell apart.
+      const near = { x: 500, y: 0, width: 0, height: 702 };
+      const far = { x: 500, y: 0, width: 0, height: 701 };
+      const wide = { width: 932.5, height: 704 };
+      expect(foldForm(snap({ hinge: 'open', divisions: [near] }), wide)).toMatchObject({
+        left: { x: 0, width: 480 },
+      });
+      // Passed over, the pages split at the middle of the window instead.
+      expect(foldForm(snap({ hinge: 'open', divisions: [far] }), wide)).toMatchObject({
+        left: { x: 0, width: 446.25 },
+      });
+    });
+
+    it('stays a phone on a flip phone held a little bent', () => {
+      // Galaxy Z Flip: about 412 × 1006 dp, folding across its middle.
+      const flip = { width: 412, height: 1006 };
+      const bend = { x: 0, y: 503, width: 412, height: 0 };
+      expect(foldForm(snap({ hinge: 'partial', divisions: [bend] }), flip)).toEqual({
+        kind: 'phone',
+      });
+    });
+
     it('is one column in a split-screen window too narrow for two pages', () => {
       expect(foldForm(snap({ hinge: 'open' }), { width: 446, height: 704 })).toEqual({
         kind: 'phone',

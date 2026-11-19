@@ -30,6 +30,8 @@ import expo.modules.kotlin.modules.ModuleDefinition
  * phone shut as it closes, before Android moves the app to the cover screen or puts it away. A
  * phone without a hinge reports it unknown. Nothing covers the window that the safe area does not
  * already say, so there are no occlusions, and the angle is left out: nothing draws from it.
+ * The first report after the app comes back from the background is marked `returning`: the phone
+ * may have been shut or opened while the app was away, and that is not the hinge moving now.
  *
  * It also lets a large screen turn. The app is held upright on a phone, a cover screen included;
  * a screen 600 dp or more across at its narrowest (an opened fold, a tablet) follows the way it
@@ -61,10 +63,12 @@ class FoldModule : Module() {
   }
 
   private fun attach() {
-    val activity = appContext.currentActivity ?: return
+    // Posted to the main thread, this can run after the module has been let go, when asking
+    // for the app's context throws.
+    val activity = runCatching { appContext.currentActivity }.getOrNull() ?: return
     if (tracker?.activity !== activity) {
       tracker?.detach()
-      tracker = FoldTracker(activity) { snapshot -> sendEvent("onFold", snapshot) }
+      tracker = FoldTracker(activity) { snapshot -> runCatching { sendEvent("onFold", snapshot) } }
     }
     tracker?.resume()
   }
@@ -92,6 +96,8 @@ internal class FoldTracker(
   private var degrees: Float? = null
   private var listening = false
   private var last: Map<String, Any?>? = null
+  // The next report is the first since the app came back: where the hinge is, not a move of it.
+  private var returning = false
 
   private val onLayout =
       Consumer<WindowLayoutInfo> { info ->
@@ -125,6 +131,7 @@ internal class FoldTracker(
   fun resume() {
     if (listening) return
     listening = true
+    returning = true
     letLargeScreensTurn()
     activity.registerComponentCallbacks(onConfiguration)
     adapter.addWindowLayoutInfoListener(activity, ContextCompat.getMainExecutor(activity), onLayout)
@@ -188,6 +195,7 @@ internal class FoldTracker(
         "angle" to null,
         "divisions" to divisions,
         "occlusions" to emptyList<Map<String, Double>>(),
+        "returning" to returning,
     )
   }
 
@@ -197,6 +205,7 @@ internal class FoldTracker(
     if (next == last) return
     last = next
     latest = next
+    returning = false
     onChange(next)
   }
 
@@ -215,6 +224,7 @@ internal class FoldTracker(
             "angle" to null,
             "divisions" to emptyList<Map<String, Double>>(),
             "occlusions" to emptyList<Map<String, Double>>(),
+            "returning" to false,
         )
   }
 }
