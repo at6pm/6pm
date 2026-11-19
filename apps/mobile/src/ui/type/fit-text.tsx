@@ -1,4 +1,4 @@
-import { Text, type TextProps } from 'react-native';
+import { Platform, Text, useWindowDimensions, type TextProps } from 'react-native';
 
 /** The smallest a fitted line is drawn, as a share of its designed size. */
 export const FIT_MIN_SCALE = 0.5;
@@ -21,8 +21,13 @@ export function FitText({
   minScale = FIT_MIN_SCALE,
   ...props
 }: TextProps & { readonly minScale?: number }) {
+  // Android fits the line once, to the width it is first measured in, and keeps that size: a
+  // line measured while the window was changing (a folding phone opening, a turn) stayed as
+  // small as that moment made it. A window of a new width draws the line afresh.
+  const { width } = useWindowDimensions();
   return (
     <Text
+      key={Platform.OS === 'android' ? width : undefined}
       numberOfLines={1}
       adjustsFontSizeToFit
       minimumFontScale={minScale}

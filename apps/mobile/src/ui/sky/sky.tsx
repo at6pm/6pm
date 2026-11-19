@@ -1,6 +1,6 @@
 import { Canvas, Group, type CanvasRef } from '@shopify/react-native-skia';
 import { memo, useEffect, useMemo, useState, type RefObject } from 'react';
-import { StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native';
 import {
   Easing,
   runOnJS,
@@ -241,6 +241,9 @@ function SkyView({
     >
       {senses ? <SceneMotionDriver motion={sensed} time={time} /> : null}
       <Canvas
+        // Android keeps a canvas's first surface when the window changes size under it (a folding
+        // phone opening): the sky stayed as wide as the cover screen. A new window, a new canvas.
+        key={Platform.OS === 'android' && !preview ? `${width}x${height}` : undefined}
         {...(canvasRef ? { ref: canvasRef } : {})}
         style={preview ? { width: preview.width, height: preview.height } : StyleSheet.absoluteFill}
       >
