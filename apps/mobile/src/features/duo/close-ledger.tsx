@@ -11,6 +11,7 @@ import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { FitText } from '../../ui/type/fit-text';
 import { body, display, leading, mono, tabular } from '../../ui/type/fonts';
+import { FOLD_SHUT_FOLLOWED } from './use-fold-shut';
 
 export type CardPress = 'kept' | 'edit' | 'notMine';
 
@@ -98,21 +99,24 @@ export const CloseLedger = memo(function CloseLedger({
           </View>
         </View>
       ) : null}
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 10,
-          paddingTop: 16,
-          borderTopWidth: 0.5,
-          borderTopColor: palette.hair,
-        }}
-      >
-        <Symbol name="menu_book" size={20} color={palette.inkSoft} />
-        <Text style={{ ...body(13.5), color: palette.inkSoft, flex: 1 }}>
-          {t(onPress ? 'duo.close.foldLater' : 'duo.close.foldNow')}
-        </Text>
-      </View>
+      {/* Where folding shut closes the day, the page says so. */}
+      {FOLD_SHUT_FOLLOWED ? (
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 10,
+            paddingTop: 16,
+            borderTopWidth: 0.5,
+            borderTopColor: palette.hair,
+          }}
+        >
+          <Symbol name="menu_book" size={20} color={palette.inkSoft} />
+          <Text style={{ ...body(13.5), color: palette.inkSoft, flex: 1 }}>
+            {t(onPress ? 'duo.close.foldLater' : 'duo.close.foldNow')}
+          </Text>
+        </View>
+      ) : null}
     </View>
   );
 });

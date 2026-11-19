@@ -27,7 +27,8 @@ interface FoldNative {
 }
 
 /**
- * The iPhone Duo's hinge and regions (`modules/fold/ios`), or null where it is not built in:
- * tests, and other platforms.
+ * The hinge and regions of a folding phone: the iPhone Duo (`modules/fold/ios`) and folding
+ * Android phones (`modules/fold/android`, which reports no occlusions and no angle). Null where
+ * it is not built in: tests, and the web.
  */
 export const fold = requireOptionalNativeModule<FoldNative>('Fold');

@@ -14,6 +14,7 @@ import { useHomeCurrency, useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
 import { Symbol } from '../../ui/icons/symbol';
 import { useDesignInsets } from '../../ui/layout/design-insets';
+import { usePhoneColumn } from '../../ui/layout/phone-column';
 import { useTheme } from '../../ui/theme/theme';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { body, display } from '../../ui/type/fonts';
@@ -76,6 +77,8 @@ export function ReachFlow({
   const run = useRunAction();
   const reduceMotion = useReducedMotion();
   const { top, bottom, insets } = useDesignInsets();
+  // A phone's width, centred, on an opened folding phone or a tablet.
+  const column = usePhoneColumn();
   const { palette } = useTheme();
   const inLook = from === 'plan';
   const pal = inLook ? reachPaletteOf(palette) : onboardingPalette(MONEY_IN_STEP);
@@ -236,7 +239,14 @@ export function ReachFlow({
     <View style={{ flex: 1, ...(inLook ? { experimental_backgroundImage: palette.skyDeep } : {}) }}>
       {inLook ? null : <OnboardingSky step={MONEY_IN_STEP} safeTop={insets.top} />}
       <View
-        style={{ flex: 1, paddingTop: top(60), paddingHorizontal: 20, paddingBottom: bottom(30) }}
+        style={{
+          flex: 1,
+          width: column,
+          alignSelf: 'center',
+          paddingTop: top(60),
+          paddingHorizontal: 20,
+          paddingBottom: bottom(30),
+        }}
       >
         <PressScale
           scaleTo={0.92}

@@ -45,7 +45,7 @@ CLOSE YOUR DAY IN ONE SWIPE
 At six, 6pm shows what it caught. Keep it, edit it, or mark it not yours, then swipe once. The day is closed.
 
 YOUR BANK'S NOTIFICATIONS LOG THEMSELVES
-Turn on notification access once, and every payment alert from your bank or wallet lands in your inbox, read on your phone. Codes, failed payments and promotions are skipped. 6pm reads nothing from any other app.
+Turn on notification access once, and every payment alert from your bank or wallet lands in your inbox by itself. Codes, failed payments and promotions are skipped. 6pm reads nothing from any other app.
 
 SIX WAYS TO LOG, ONE INBOX
 Bank notifications, VietQR scans, receipt photos, forwarded bank emails, your voice and a quick keypad. Everything lands in one inbox for the close.
@@ -91,7 +91,7 @@ CHỐT NGÀY BẰNG MỘT CÚ VUỐT
 Sáu giờ tối, 6pm cho bạn xem những gì đã ghi. Giữ, sửa hoặc đánh dấu không phải của bạn, rồi vuốt một lần. Ngày đã chốt.
 
 THÔNG BÁO NGÂN HÀNG TỰ GHI
-Bật quyền truy cập thông báo một lần, mọi thông báo biến động số dư của ngân hàng và ví về thẳng hộp thư, đọc ngay trên máy. Mã OTP, giao dịch lỗi và khuyến mãi được bỏ qua. 6pm không đọc gì từ ứng dụng khác.
+Bật quyền truy cập thông báo một lần, mọi thông báo biến động số dư của ngân hàng và ví tự về thẳng hộp thư. Mã OTP, giao dịch lỗi và khuyến mãi được bỏ qua. 6pm không đọc gì từ ứng dụng khác.
 
 SÁU CÁCH GHI, MỘT HỘP THƯ
 Thông báo ngân hàng, quét VietQR, chụp biên lai, chuyển tiếp email ngân hàng, giọng nói và bàn phím nhanh. Mọi khoản về một hộp thư để chốt ngày.

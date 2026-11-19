@@ -1,6 +1,11 @@
 import type { ReactNode } from 'react';
 import { Text, View } from 'react-native';
-import Animated, { useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, {
+  useAnimatedStyle,
+  useDerivedValue,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { type CalendarCell, type LocalDate } from '@6pm/domain';
 import { springs } from '@6pm/theme';
@@ -77,11 +82,11 @@ function ClosedCell({
 }) {
   const { palette } = useTheme();
   const money = useMoneyFormat();
+  // One spring for both: an animation cannot be written into the rotation's text, where it
+  // reads as "[object Object]deg" and stops the app when a screen is changing as it is applied.
+  const raised = useDerivedValue(() => withSpring(selected ? 1 : 0, springs.pop));
   const lift = useAnimatedStyle(() => ({
-    transform: [
-      { translateY: withSpring(selected ? -3 : 0, springs.pop) },
-      { rotate: `${withSpring(selected ? -2 : 0, springs.pop)}deg` },
-    ],
+    transform: [{ translateY: -3 * raised.get() }, { rotate: `${-2 * raised.get()}deg` }],
   }));
   const ring = useAnimatedStyle(() => ({
     opacity: withTiming(selected ? 1 : 0, { duration: SELECT_MS }),

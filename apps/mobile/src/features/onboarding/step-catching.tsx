@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { ScrollView, useWindowDimensions } from 'react-native';
+import { ScrollView } from 'react-native';
 import Animated, {
   scrollTo,
   useAnimatedRef,
@@ -29,6 +29,7 @@ import {
   type SelfCatchingWay,
   type WalkedWay,
 } from './catch-ways';
+import { usePhoneColumn } from '../../ui/layout/phone-column';
 import { FirstCatchListen } from './first-catch-listen';
 import type { OnboardingPalette } from './onboarding-palette';
 import { StepHeading } from './step-parts';
@@ -94,7 +95,7 @@ export function StepCatching({
     way === 'add'
       ? t('onboarding.catch.add.body', { amount: sample.saidWords })
       : t(`onboarding.catch.${way}.body`);
-  const { width: screen } = useWindowDimensions();
+  const screen = usePhoneColumn();
   const cards = useAnimatedRef<Animated.ScrollView>();
   const x = useSharedValue(0);
   const shown = useSharedValue(0);

@@ -201,7 +201,8 @@ export function MarketMode({
           backgroundColor: palette.sheetSolid,
           paddingTop: 34,
           paddingHorizontal: 28,
-          paddingBottom: 26,
+          // Clear of Android's navigation bar, which the iPhone Duo has none of here.
+          paddingBottom: Math.max(26, insets.bottom + 12),
           gap: 16,
         }}
       >

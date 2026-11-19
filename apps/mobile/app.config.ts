@@ -354,6 +354,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ['./plugins/with-android-shortcuts', { background: LAUNCH_BACKGROUND }],
     // Home screen widgets and Quick Settings tiles, drawn by modules/surfaces.
     './plugins/with-android-widgets',
+    // Folding phones, tablets and desktops: installable without an upright-only screen.
+    './plugins/with-android-large-screens',
   ],
   experiments: {
     typedRoutes: true,
