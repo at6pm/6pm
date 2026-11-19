@@ -6,6 +6,7 @@ import { useDay } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
+import { useFoldForm } from '../../ui/layout/fold';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useClock } from '../../ui/theme/clock';
 import { useToast } from '../../ui/toast/toast-host';
@@ -22,6 +23,7 @@ import { MaxMakers } from './max-makers';
 import { MaxTiles } from './max-tiles';
 import { trialDaysFor, yearlySavingPercent } from './max-pricing';
 import { MaxSheetFrame } from './max-sheet-frame';
+import { MaxPage, MaxSpread } from './max-spread';
 import { LEGAL_LINKS, MAX_PLANS, PAID_LOOKS, PRESELECTED_MAX_PLAN, type MaxPlan } from './products';
 import { usePurchases } from './purchases-provider';
 import { useMaxStatusLine } from './use-max-status-line';
@@ -32,7 +34,9 @@ import { MAX_CREAM, MAX_FONT, MAX_SOFT } from './max-colours';
  * reason (`from`), which picks the hero's picture and the headline and leads the tiles. Opened by
  * itself after a close (`closed`), the headline is the days closed so far. Prices, the yearly
  * saving, the trial and whether Max can be bought once all come from the store; what the store
- * has not told us is left out, and the button waits.
+ * has not told us is left out, and the button waits. On a folding phone opened flat it is not a
+ * sheet but two pages (`MaxSpread`): what Max adds to read on the left, the headline, the plans
+ * and the button on the right.
  */
 export function MaxSheet() {
   const router = useRouter();
@@ -65,6 +69,10 @@ export function MaxSheet() {
   const safe = money.short(Math.max(0, day?.safe ?? 0));
   const statusLine = useMaxStatusLine(customer);
 
+  const form = useFoldForm();
+  // Opened across two pages, Max took the whole screen, and keeps it however the phone is held
+  // after (the route keeps the presentation it opened with).
+  const [tookOver] = useState(form.kind === 'spread');
   const [chosen, setChosen] = useState<MaxPlan | null>(null);
   const [footerHeight, setFooterHeight] = useState(0);
   useEffect(() => loadOfferings(), [loadOfferings]);
@@ -157,107 +165,153 @@ export function MaxSheet() {
         ? t('max.terms.storeOff')
         : '';
 
-  return (
-    <MaxSheetFrame>
-      <View style={{ flex: 1 }}>
-        {/* The footer is pinned over the scroll, and the scroll ends a footer's height lower, so
-            its last row can always be scrolled clear of the plan and the button. */}
-        <ScrollView
-          style={{ flex: 1 }}
-          contentContainerStyle={{ paddingBottom: footerHeight }}
-          bounces={false}
-          showsVerticalScrollIndicator={false}
-        >
-          <MaxHero from={from} hour={hour} configs={config} safe={safe} onClose={close} />
-          <View style={{ paddingTop: 8, paddingHorizontal: 18, paddingBottom: 24, gap: 18 }}>
-            <View style={{ alignItems: 'center', gap: 6 }}>
-              <BalancedText
-                accessibilityRole="header"
-                style={{
-                  ...leading(display(28, 500, -0.01, MAX_FONT), 30.2),
-                  textAlign: 'center',
-                  color: MAX_CREAM,
-                }}
-              >
-                {head}
-              </BalancedText>
-              <Text
-                style={{
-                  ...body(14),
-                  lineHeight: 20.3,
-                  textAlign: 'center',
-                  color: MAX_SOFT,
-                  maxWidth: 300,
-                }}
-              >
-                {sub}
-              </Text>
-            </View>
-            <MaxTiles from={from} on={on} hour={hour} configs={config} safe={safe} />
-            <MaxMakers onSource={() => open(LEGAL_LINKS.source)} />
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: 4,
-                paddingTop: 2,
-              }}
-            >
-              {[
-                { label: t('looks.restore'), onPress: () => void doRestore() },
-                { label: t('max.terms'), onPress: () => open(LEGAL_LINKS.terms) },
-                { label: t('max.privacy'), onPress: () => open(LEGAL_LINKS.privacy) },
-              ].map(({ label, onPress }, i) => [
-                i > 0 ? (
-                  <View
-                    key={`dot-${label}`}
-                    style={{
-                      width: 3,
-                      height: 3,
-                      borderRadius: 1.5,
-                      backgroundColor: 'rgba(246,239,230,.3)',
-                    }}
-                  />
-                ) : null,
-                <PressScale
-                  key={label}
-                  accessibilityRole="link"
-                  disabled={busy}
-                  onPress={onPress}
-                  style={{ height: 34, paddingHorizontal: 10, justifyContent: 'center' }}
-                >
-                  <Text style={{ ...body(12.5, 600), color: 'rgba(246,239,230,.5)' }}>{label}</Text>
-                </PressScale>,
-              ])}
-            </View>
-          </View>
-        </ScrollView>
-
-        <View
-          onLayout={(e) => setFooterHeight(e.nativeEvent.layout.height)}
-          style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}
-        >
-          <MaxFooter
-            on={on}
-            manageable={customer.max.plan !== 'lifetime'}
-            plan={plan}
-            offerings={offerings}
-            loading={loading}
-            saving={saving}
-            cta={cta}
-            ctaOff={ctaOff}
-            busy={busy}
-            terms={terms}
-            onPlan={setChosen}
-            onStart={() => void start()}
-            onManage={() => {
-              haptics.tap();
-              manageSubscription().catch(() => toast(t('looks.restore.failed')));
+  const heading = (
+    <View style={{ alignItems: 'center', gap: 6 }}>
+      <BalancedText
+        accessibilityRole="header"
+        style={{
+          ...leading(display(28, 500, -0.01, MAX_FONT), 30.2),
+          textAlign: 'center',
+          color: MAX_CREAM,
+        }}
+      >
+        {head}
+      </BalancedText>
+      <Text
+        style={{
+          ...body(14),
+          lineHeight: 20.3,
+          textAlign: 'center',
+          color: MAX_SOFT,
+          maxWidth: 300,
+        }}
+      >
+        {sub}
+      </Text>
+    </View>
+  );
+  const links = (
+    <View
+      style={{
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 4,
+        paddingTop: 2,
+      }}
+    >
+      {[
+        { label: t('looks.restore'), onPress: () => void doRestore() },
+        { label: t('max.terms'), onPress: () => open(LEGAL_LINKS.terms) },
+        { label: t('max.privacy'), onPress: () => open(LEGAL_LINKS.privacy) },
+      ].map(({ label, onPress }, i) => [
+        i > 0 ? (
+          <View
+            key={`dot-${label}`}
+            style={{
+              width: 3,
+              height: 3,
+              borderRadius: 1.5,
+              backgroundColor: 'rgba(246,239,230,.3)',
             }}
           />
-        </View>
-      </View>
-    </MaxSheetFrame>
+        ) : null,
+        <PressScale
+          key={label}
+          accessibilityRole="link"
+          disabled={busy}
+          onPress={onPress}
+          style={{ height: 34, paddingHorizontal: 10, justifyContent: 'center' }}
+        >
+          <Text style={{ ...body(12.5, 600), color: 'rgba(246,239,230,.5)' }}>{label}</Text>
+        </PressScale>,
+      ])}
+    </View>
   );
+  const footer = (page: boolean) => (
+    <MaxFooter
+      page={page}
+      on={on}
+      manageable={customer.max.plan !== 'lifetime'}
+      plan={plan}
+      offerings={offerings}
+      loading={loading}
+      saving={saving}
+      cta={cta}
+      ctaOff={ctaOff}
+      busy={busy}
+      terms={terms}
+      onPlan={setChosen}
+      onStart={() => void start()}
+      onManage={() => {
+        haptics.tap();
+        manageSubscription().catch(() => toast(t('looks.restore.failed')));
+      }}
+    />
+  );
+
+  if (form.kind === 'spread') {
+    return (
+      <MaxSpread
+        left={form.left}
+        right={form.right}
+        rail={form.rail}
+        onClose={close}
+        pitch={
+          <>
+            <MaxHero from={from} hour={hour} configs={config} safe={safe} onClose={close} bare />
+            <View style={{ paddingTop: 8, paddingHorizontal: 18, gap: 18 }}>
+              <MaxTiles from={from} on={on} hour={hour} configs={config} safe={safe} />
+              <MaxMakers onSource={() => open(LEGAL_LINKS.source)} />
+            </View>
+          </>
+        }
+        offer={
+          <>
+            {heading}
+            {footer(true)}
+            {links}
+          </>
+        }
+      />
+    );
+  }
+
+  const column = (topInset: number) => (
+    <View style={{ flex: 1 }}>
+      {/* The footer is pinned over the scroll, and the scroll ends a footer's height lower, so
+          its last row can always be scrolled clear of the plan and the button. */}
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingTop: topInset, paddingBottom: footerHeight }}
+        bounces={false}
+        showsVerticalScrollIndicator={false}
+      >
+        <MaxHero
+          from={from}
+          hour={hour}
+          configs={config}
+          safe={safe}
+          onClose={close}
+          bare={tookOver}
+        />
+        <View style={{ paddingTop: 8, paddingHorizontal: 18, paddingBottom: 24, gap: 18 }}>
+          {heading}
+          <MaxTiles from={from} on={on} hour={hour} configs={config} safe={safe} />
+          <MaxMakers onSource={() => open(LEGAL_LINKS.source)} />
+          {links}
+        </View>
+      </ScrollView>
+
+      <View
+        onLayout={(e) => setFooterHeight(e.nativeEvent.layout.height)}
+        style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}
+      >
+        {footer(false)}
+      </View>
+    </View>
+  );
+  // Opened across two pages and then folded shut: still the whole screen, in one column.
+  if (tookOver) return <MaxPage onClose={close}>{column}</MaxPage>;
+  return <MaxSheetFrame>{column(0)}</MaxSheetFrame>;
 }

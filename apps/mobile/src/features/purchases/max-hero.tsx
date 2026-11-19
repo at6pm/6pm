@@ -36,12 +36,15 @@ export function MaxHero({
   configs,
   safe,
   onClose,
+  bare = false,
 }: {
   readonly from: MaxFrom;
   readonly hour: number;
   readonly configs: Readonly<Partial<Record<LookId, Partial<LookConfig>>>>;
   readonly safe: string;
   readonly onClose: () => void;
+  /** On a page of its own rather than a sheet: no grabber, and the page draws the close button. */
+  readonly bare?: boolean;
 }) {
   const { t } = useI18n();
   return (
@@ -77,39 +80,43 @@ export function MaxHero({
           backgroundImage: `linear-gradient(180deg, rgba(15,12,20,0) 45%, ${MAX_PAGE} 100%)`,
         }}
       />
-      <View
-        pointerEvents="none"
-        style={{
-          position: 'absolute',
-          top: 8,
-          alignSelf: 'center',
-          width: 36,
-          height: 5,
-          borderRadius: 9,
-          backgroundColor: 'rgba(255,255,255,.4)',
-        }}
-      />
-      <PressScale
-        accessibilityRole="button"
-        accessibilityLabel={t('max.close')}
-        scaleTo={0.92}
-        onPress={onClose}
-        hitSlop={8}
-        style={{
-          position: 'absolute',
-          zIndex: 3,
-          top: 16,
-          right: 16,
-          width: 34,
-          height: 34,
-          borderRadius: 17,
-          backgroundColor: 'rgba(10,8,16,.45)',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Symbol name="close" size={19} color="#ffffff" />
-      </PressScale>
+      {bare ? null : (
+        <>
+          <View
+            pointerEvents="none"
+            style={{
+              position: 'absolute',
+              top: 8,
+              alignSelf: 'center',
+              width: 36,
+              height: 5,
+              borderRadius: 9,
+              backgroundColor: 'rgba(255,255,255,.4)',
+            }}
+          />
+          <PressScale
+            accessibilityRole="button"
+            accessibilityLabel={t('max.close')}
+            scaleTo={0.92}
+            onPress={onClose}
+            hitSlop={8}
+            style={{
+              position: 'absolute',
+              zIndex: 3,
+              top: 16,
+              right: 16,
+              width: 34,
+              height: 34,
+              borderRadius: 17,
+              backgroundColor: 'rgba(10,8,16,.45)',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Symbol name="close" size={19} color="#ffffff" />
+          </PressScale>
+        </>
+      )}
 
       {from === 'looks' ? (
         <>

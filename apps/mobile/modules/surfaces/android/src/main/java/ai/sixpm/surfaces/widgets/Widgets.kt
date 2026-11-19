@@ -10,8 +10,10 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.SizeF
 import android.view.View
 import android.widget.RemoteViews
+import kotlin.math.roundToInt
 
 /** Safe today: the number on its sky (small), or with the jars (medium). Opens Today. */
 class SafeTodayWidget : AppWidgetProvider() {
@@ -87,6 +89,9 @@ object Widgets {
   /** From this width a Safe today widget has room for the medium postcard and its jars. */
   private const val MEDIUM_FROM_DP = 250
 
+  /** A launcher names a box for each way it shows the widget; more than these is never drawn. */
+  private const val MAX_BOXES = 4
+
   private val JAR_TAPS = intArrayOf(R.id.sixpm_widget_jar0, R.id.sixpm_widget_jar1, R.id.sixpm_widget_jar2, R.id.sixpm_widget_jar3)
 
   /** Draws every widget again: the app has just written a new snapshot. */
@@ -112,17 +117,23 @@ object Widgets {
     fallback: Pair<Int, Int>,
     draw: (WidgetCanvas, WidgetMoment, WidgetDrawings) -> RemoteViews?,
   ) {
-    val (width, height) = size(manager, id, fallback.first, fallback.second)
     val moment = WidgetMoment.at(context)
-    val canvas = canvas(context, width, height)
     val drawings = WidgetDrawings(WidgetFaces(context))
-    val views = if (moment.day?.card == null) null else draw(canvas, moment, drawings)
-    if (views != null) {
-      manager.updateAppWidget(id, views)
-      return
+    fun at(box: Pair<Int, Int>): RemoteViews {
+      val canvas = canvas(context, box.first, box.second)
+      val views = if (moment.day?.card == null) null else draw(canvas, moment, drawings)
+      if (views != null) return views
+      drawings.setUp(canvas, moment, string(context, "sixpm_widget_set_up"))
+      return picture(context, canvas, id, moment.text("setUp"), null)
     }
-    drawings.setUp(canvas, moment, string(context, "sixpm_widget_set_up"))
-    manager.updateAppWidget(id, picture(context, canvas, id, moment.text("setUp"), null))
+    val boxes = boxes(manager, id, fallback)
+    val views =
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && boxes.size > 1) {
+        RemoteViews(boxes.associate { SizeF(it.first.toFloat(), it.second.toFloat()) to at(it) })
+      } else {
+        at(boxes.first())
+      }
+    manager.updateAppWidget(id, views)
   }
 
   fun drawSafe(context: Context, manager: AppWidgetManager, id: Int) =
@@ -217,12 +228,27 @@ object Widgets {
       setOnClickPendingIntent(android.R.id.background, open(context, id, 0, link))
     }
 
-  /** The widget's size in dp as the launcher lays it out on a phone held upright. */
-  private fun size(manager: AppWidgetManager, id: Int, fallbackWidth: Int, fallbackHeight: Int): Pair<Int, Int> {
+  /**
+   * The boxes the launcher lays the widget out in, in dp, one drawing for each: Android picks the
+   * one that fits as the phone is turned or a folding phone opens. From Android 12 the launcher
+   * names them; before, the box is the one for a phone held upright, min width by max height.
+   */
+  private fun boxes(manager: AppWidgetManager, id: Int, fallback: Pair<Int, Int>): List<Pair<Int, Int>> {
     val options = manager.getAppWidgetOptions(id)
-    val width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH).takeIf { it > 0 } ?: fallbackWidth
-    val height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT).takeIf { it > 0 } ?: fallbackHeight
-    return width to height
+    fun dp(key: String) = options.getInt(key).takeIf { it > 0 }
+    val upright =
+      (dp(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH) ?: fallback.first) to
+        (dp(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT) ?: fallback.second)
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return listOf(upright)
+    @Suppress("DEPRECATION")
+    val named = options.getParcelableArrayList<SizeF>(AppWidgetManager.OPTION_APPWIDGET_SIZES).orEmpty()
+    val turned =
+      (dp(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH) ?: upright.first) to
+        (dp(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT) ?: upright.second)
+    val boxes =
+      if (named.isEmpty()) listOf(upright, turned)
+      else named.map { it.width.roundToInt() to it.height.roundToInt() }
+    return boxes.filter { it.first > 0 && it.second > 0 }.distinct().take(MAX_BOXES).ifEmpty { listOf(upright) }
   }
 
   private fun canvas(context: Context, width: Int, height: Int): WidgetCanvas {

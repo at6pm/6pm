@@ -1,7 +1,6 @@
 import { useCameraPermissions } from 'expo-camera';
 import * as Clipboard from 'expo-clipboard';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Linking, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
@@ -51,6 +50,7 @@ import { useHomeCurrency } from '../money/use-money-format';
 import { haptics } from '../ui/haptics';
 import { useDesignInsets } from '../ui/layout/design-insets';
 import { useFold, useFoldForm } from '../ui/layout/fold';
+import { SystemBars } from '../ui/layout/system-bars';
 import { useToast } from '../ui/toast/toast-host';
 
 /** How long the seller's green receipt stays up after the payment is marked paid. */
@@ -408,7 +408,7 @@ export default function Scan() {
     return (
       <View style={{ flex: 1, backgroundColor: scanColours.page }}>
         {options}
-        <StatusBar style="light" animated />
+        <SystemBars dark />
         <ProppedTop
           half={stand.top}
           camera={cameraView}
@@ -445,7 +445,7 @@ export default function Scan() {
         }}
       >
         {options}
-        <StatusBar style="light" animated />
+        <SystemBars dark />
         {cameraView}
         <Animated.View
           pointerEvents="none"

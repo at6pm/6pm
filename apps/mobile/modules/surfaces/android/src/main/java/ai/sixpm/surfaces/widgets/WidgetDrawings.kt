@@ -174,21 +174,24 @@ class WidgetDrawings(private val faces: WidgetFaces) {
     val ink = ink(moment)
     val pad = 14f
     val index = moment.postcards?.jars?.indexOfFirst { it.id == jar.id }?.coerceAtLeast(0) ?: 0
-    val jarRect = RectF(pad, pad, pad + 64, canvas.height - pad)
+    // The jar gives way on a narrow box, and the words shrink before they are cut.
+    val jarRect = RectF(pad, pad, pad + minOf(64f, canvas.width * 0.4f), canvas.height - pad)
     jar(canvas, moment, jar, index, jarRect, 2f, ink, targetLine = true)
     val x = jarRect.right + 10
     val room = canvas.width - pad - x
     val name = canvas.ink(faces.body(700), 14f, ink)
     var y = pad + 2 + top(name)
-    canvas.text(jar.name, x, y, name, room)
-    val soft = canvas.ink(faces.body(600), 11f, WidgetInk.faded(ink, 0.75))
-    if (jar.dayText.isNotEmpty()) canvas.text(jar.dayText, x, y + name.fontMetrics.descent + 1 + top(soft), soft, room)
+    canvas.text(jar.name, x, y, name, room, minScale = 0.75f)
+    val soft = WidgetInk.faded(ink, 0.75)
+    val day = canvas.ink(faces.body(600), 11f, soft)
+    if (jar.dayText.isNotEmpty()) canvas.text(jar.dayText, x, y + name.fontMetrics.descent + 1 + top(day), day, room, minScale = 0.8f)
     val foot = canvas.ink(faces.body(700), 11f, ink)
-    canvas.text(amount(moment, jar.ofText), x, canvas.height - pad - 2 - foot.fontMetrics.descent, foot, room)
+    canvas.text(amount(moment, jar.ofText), x, canvas.height - pad - 2 - foot.fontMetrics.descent, foot, room, minScale = 0.75f)
     val figure = number(canvas, moment, 40f, ink)
     y = canvas.height / 2 + 6
     canvas.text(jar.countText, x, y, figure, room, minScale = 0.5f)
-    canvas.text(jar.countUnit, x, y + figure.fontMetrics.descent + top(soft), soft, room)
+    val unit = canvas.ink(faces.body(600), 11f, soft)
+    canvas.text(jar.countUnit, x, y + figure.fontMetrics.descent + top(unit), unit, room, minScale = 0.8f)
   }
 
   /** The streak: the evenings closed in a row as strata, the count and the sun setting into it. */

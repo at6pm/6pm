@@ -1,5 +1,4 @@
 import { useRouter } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
 import { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 
@@ -12,6 +11,7 @@ import { haptics } from '../../ui/haptics';
 import { Symbol } from '../../ui/icons/symbol';
 import { useDesignInsets } from '../../ui/layout/design-insets';
 import { usePhoneColumn } from '../../ui/layout/phone-column';
+import { SystemBars } from '../../ui/layout/system-bars';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { openAlertAccess, useAlertAccess } from '../capture-guide/alert-access';
 import { useCaptureHealth } from '../capture-guide/use-capture-health';
@@ -77,7 +77,7 @@ export function FirstCatchScreen() {
   };
   return (
     <View style={{ flex: 1, backgroundColor: pal.sky[0] }}>
-      <StatusBar style="light" animated />
+      <SystemBars dark />
       <OnboardingSky step={CATCH_STEP} safeTop={insets.top} />
       <View
         style={{
