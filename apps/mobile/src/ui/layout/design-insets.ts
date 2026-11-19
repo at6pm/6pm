@@ -13,22 +13,26 @@ const DESIGN_BOTTOM = 34;
 const SIDE_STATUS_TOP = 28;
 
 /**
- * Android draws its navigation over the app's bottom edge: 48 dp of Back, Home and Recents, or a
- * gesture handle whose strip some phones paint. The design's controls dip a few points into the
- * iPhone's home-indicator strip, which on Android would put them under that bar, and where a
- * phone reports a thin inset or none the shifted offset went below zero and pushed the tab bar
- * off the screen. On Android they keep `SYSTEM_NAV_GAP` above whatever the system reports.
+ * Android draws its navigation over the app's bottom edge: 48 dp of Back, Home and Recents on a
+ * veil, or a gesture handle whose strip some phones paint. The design's controls dip a few points
+ * into the iPhone's home-indicator strip, which on Android would put them under that bar, and
+ * where a phone reports a thin inset or none the shifted offset is below zero, off the screen. On
+ * Android they keep a gap above whatever the system reports: `HANDLE_GAP` over a handle or a bare
+ * edge, `BUTTON_BAR_GAP` over the taller bar of buttons, whose veil reads as an edge of its own.
  */
-const SYSTEM_NAV_GAP = 10;
+const BUTTON_BAR_MIN = 40;
+const BUTTON_BAR_GAP = 16;
+const HANDLE_GAP = 10;
 
 /**
  * The prototype's offset from the bottom edge on a screen whose bottom inset is `inset`: shifted
- * by the difference in safe area, and on Android never closer than `SYSTEM_NAV_GAP` to the
- * system navigation.
+ * by the difference in safe area, and on Android never closer to the system navigation than its
+ * gap.
  */
 export function designBottom(designPx: number, inset: number, android: boolean): number {
   const shifted = designPx + inset - DESIGN_BOTTOM;
-  return android ? Math.max(shifted, inset + SYSTEM_NAV_GAP) : shifted;
+  if (!android) return shifted;
+  return Math.max(shifted, inset + (inset >= BUTTON_BAR_MIN ? BUTTON_BAR_GAP : HANDLE_GAP));
 }
 
 /**

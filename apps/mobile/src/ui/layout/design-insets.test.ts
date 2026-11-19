@@ -13,8 +13,8 @@ describe('designBottom', () => {
   });
 
   it("keeps a gap above Android's three-button bar", () => {
-    expect(designBottom(30, 48, true)).toBe(58);
-    expect(designBottom(26, 48, true)).toBe(58);
+    expect(designBottom(30, 48, true)).toBe(64);
+    expect(designBottom(26, 48, true)).toBe(64);
   });
 
   it('keeps a gap above a thin gesture strip', () => {
