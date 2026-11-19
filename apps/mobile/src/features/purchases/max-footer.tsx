@@ -1,6 +1,6 @@
 import { BlurView } from 'expo-blur';
 import { useEffect } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Platform, StyleSheet, Text, View } from 'react-native';
 import Animated, {
   Easing,
   FadeIn,
@@ -21,6 +21,14 @@ import { body } from '../../ui/type/fonts';
 import type { MaxPlan } from './products';
 import type { Offerings } from './purchases-port';
 import { MAX_CREAM, MAX_GOLD, MAX_INK } from './max-colours';
+
+/**
+ * The footer's glass over the sheet's scroll. Android does not blur what is behind a view, so
+ * there the tiles' words would read through it: it is solid instead.
+ */
+const OVER_SCROLL = Platform.OS === 'android' ? 'rgb(30,25,38)' : 'rgba(30,25,38,.72)';
+/** The same card with nothing scrolling under it. */
+const PAGE_CARD = 'rgba(255,255,255,.05)';
 
 /** A bar that breathes while the store is asked (the prototype's `pulse`). */
 function Shimmer({
@@ -277,7 +285,10 @@ export function MaxFooter({
   onPlan,
   onStart,
   onManage,
+  page = false,
 }: {
+  /** Set in a page of its own (an opened folding phone) rather than floating over the sheet. */
+  readonly page?: boolean;
   readonly on: boolean;
   /** Max is a subscription Apple's sheet can manage; Max bought once has nothing to manage. */
   readonly manageable: boolean;
@@ -302,22 +313,22 @@ export function MaxFooter({
   return (
     <View
       style={{
-        marginHorizontal: 10,
-        marginBottom: Math.max(10, bottom(10)),
+        ...(page ? {} : { marginHorizontal: 10, marginBottom: Math.max(10, bottom(10)) }),
         borderRadius: 30,
         overflow: 'hidden',
-        boxShadow:
-          '0 -18px 50px rgba(0,0,0,.45), 0 24px 60px rgba(0,0,0,.5), inset 0 0 0 0.5px rgba(255,255,255,.1)',
+        boxShadow: page
+          ? 'inset 0 0 0 0.5px rgba(255,255,255,.1)'
+          : '0 -18px 50px rgba(0,0,0,.45), 0 24px 60px rgba(0,0,0,.5), inset 0 0 0 0.5px rgba(255,255,255,.1)',
       }}
     >
-      <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+      {page ? null : <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
       <View
         style={{
           paddingTop: 14,
           paddingHorizontal: 12,
           paddingBottom: 16,
           gap: 12,
-          backgroundColor: 'rgba(30,25,38,.72)',
+          backgroundColor: page ? PAGE_CARD : OVER_SCROLL,
         }}
       >
         {!on ? (

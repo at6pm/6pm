@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/react-native';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import type { ReactNode } from 'react';
+import { useRef, type ReactNode } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 
@@ -25,7 +25,7 @@ import { PurchasesProvider } from '../features/purchases/purchases-provider';
 import { TogetherProvider } from '../features/together/together-provider';
 import { TravelProvider } from '../features/travel/travel-provider';
 import { I18nProvider } from '../i18n/i18n';
-import { FoldProvider, useFold } from '../ui/layout/fold';
+import { FoldProvider, useFold, useFoldForm } from '../ui/layout/fold';
 import { SystemBars } from '../ui/layout/system-bars';
 import { drawnSheet, edgeSheet, pageSheet, sheet, takeover } from '../ui/navigation/presentations';
 import { ClockProvider } from '../ui/theme/clock';
@@ -52,6 +52,16 @@ function Screens() {
   // Scan is a sheet, pulled down to close; on a phone with a hinge, whose wide screens would float
   // a sheet as a card, it fills the screen and is swiped right to close.
   const hinged = useFold().snapshot.hinge !== 'unknown';
+  // Max is a sheet too; opened across two pages it takes the screen (`MaxSpread`). A screen keeps
+  // the presentation it opened with: react-native-screens cannot turn a full-screen modal into a
+  // sheet under the person's hands, and folding the phone shut would ask it to.
+  const spread = useFoldForm().kind === 'spread';
+  const openedAs = useRef(new Map<string, typeof sheet>()).current;
+  const keep = (key: string, now: typeof sheet) => {
+    const first = openedAs.get(key) ?? now;
+    openedAs.set(key, first);
+    return first;
+  };
   return (
     <>
       <SystemBars dark={palette.dark} />
@@ -113,7 +123,10 @@ function Screens() {
         <Stack.Screen name="reach" options={takeover} />
         <Stack.Screen name="looks" options={drawnSheet} />
         <Stack.Screen name="look/[id]" options={drawnSheet} />
-        <Stack.Screen name="max" options={sheet} />
+        <Stack.Screen
+          name="max"
+          options={({ route }) => keep(route.key ?? route.name, spread ? takeover : sheet)}
+        />
         <Stack.Screen name="max-welcome" options={takeover} />
         {/* A page inside Settings; offered from a fresh install's welcome, its own short sheet. */}
         <Stack.Screen
