@@ -1,0 +1,21 @@
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+
+group = 'ai.sixpm'
+version = '1.0.0'
+
+android {
+  namespace "ai.sixpm.fold"
+  defaultConfig {
+    versionCode 1
+    versionName '1.0.0'
+  }
+}
+
+dependencies {
+  // Jetpack WindowManager: where the fold crosses the window and how far the hinge is open.
+  implementation 'androidx.window:window:1.4.0'
+  implementation 'androidx.window:window-java:1.4.0'
+}

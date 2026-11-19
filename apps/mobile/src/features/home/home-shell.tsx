@@ -49,6 +49,9 @@ const Today = memo(TodayPage);
 const Plan = memo(PlanPage);
 const Diary = memo(DiaryPage);
 
+/** What the right page of two keeps from the screen's edges. */
+const PANE_EDGE = 14;
+
 type Mounted = readonly [boolean, boolean, boolean];
 
 function Shell({ day, initialTab }: { readonly day: DailyNumber; readonly initialTab: HomeTab }) {
@@ -56,13 +59,18 @@ function Shell({ day, initialTab }: { readonly day: DailyNumber; readonly initia
   const { palette, look, serious } = useTheme();
   const { hour } = useClock();
   const { t } = useI18n();
-  const { bottom, rail } = useDesignInsets();
-  // On the iPhone Duo the pages stop at the side rail; the sky still runs under it. Opened
-  // sideways, they take the left page and the month fills the right one.
+  const { bottom, rail, insets } = useDesignInsets();
+  // On the iPhone Duo the pages stop at the side rail; the sky still runs under it. A folding
+  // phone opened into two pages gives them the left one and the month fills the right one.
   const form = useFoldForm();
   const spread = form.kind === 'spread' ? form : null;
   const windowWidth = useWindowDimensions().width;
   const width = spread ? spread.left.width : windowWidth - rail;
+  // The right page keeps 14 pt from the screen's edges, as the Duo's is drawn, whose status bar
+  // runs down the rail; a folding Android phone has its bars above and below, so it starts
+  // inside them.
+  const paneTop = rail > 0 ? PANE_EDGE : insets.top + PANE_EDGE;
+  const paneBottom = rail > 0 ? PANE_EDGE : insets.bottom + PANE_EDGE;
   const page = useSpreadPage(spread !== null);
   const { pane, diaryDay, affording } = page;
   const { y } = useHomeScroll();
@@ -205,9 +213,9 @@ function Shell({ day, initialTab }: { readonly day: DailyNumber; readonly initia
                     style={{
                       position: 'absolute',
                       left: spread.right.x,
-                      right: rail,
-                      top: 14,
-                      bottom: 14,
+                      right: rail > 0 ? rail : PANE_EDGE,
+                      top: paneTop,
+                      bottom: paneBottom,
                     }}
                   >
                     {tab === 'diary' && diaryDay && pane.kind !== 'ask' ? (
@@ -252,9 +260,11 @@ function Shell({ day, initialTab }: { readonly day: DailyNumber; readonly initia
                     onScan={openScan}
                   />
                 ) : (
+                  // Without a rail the tabs and Scan stay under the pages they turn: the whole
+                  // screen, or the left page of two.
                   <View
                     pointerEvents="box-none"
-                    style={{ position: 'absolute', left: 0, right: 0, bottom: bottom(26) }}
+                    style={{ position: 'absolute', left: 0, width, bottom: bottom(26) }}
                   >
                     <TabBarRow>
                       <TabBar active={tab} onSelect={goToTab} onReselect={scrollTop} />

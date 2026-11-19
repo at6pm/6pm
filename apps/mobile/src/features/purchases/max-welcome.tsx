@@ -19,6 +19,7 @@ import { useCompanionForm } from '../../ui/companion/companion-form';
 import { Symbol } from '../../ui/icons/symbol';
 import { haptics } from '../../ui/haptics';
 import { useDesignInsets } from '../../ui/layout/design-insets';
+import { usePhoneColumn } from '../../ui/layout/phone-column';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useClock } from '../../ui/theme/clock';
 import { body, display, leading } from '../../ui/type/fonts';
@@ -144,6 +145,8 @@ export function MaxWelcome() {
   const copy = useMemo(() => lookCopy(t), [t]);
   const { hour } = useClock();
   const { top } = useDesignInsets();
+  // A phone's width, centred, on an opened folding phone or a tablet.
+  const column = usePhoneColumn();
   const { height } = useWindowDimensions();
   const reduce = useReducedMotion();
   const { config } = useLookSettings();
@@ -206,6 +209,8 @@ export function MaxWelcome() {
       <View
         style={{
           flex: 1,
+          width: column,
+          alignSelf: 'center',
           alignItems: 'center',
           justifyContent: 'center',
           gap: 14,

@@ -9,6 +9,7 @@ import { useI18n, type I18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import type { CompanionMood } from '../../ui/companion/companion-mood';
 import { useDesignInsets } from '../../ui/layout/design-insets';
+import { usePhoneColumn } from '../../ui/layout/phone-column';
 import type { AiMode } from '../privacy/ai-mode';
 import { useAiMode } from '../privacy/use-ai-mode';
 import { useAlertAccess } from '../capture-guide/alert-access';
@@ -154,6 +155,8 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
   const money = useMoneyFormat();
   const reduceMotion = useReducedMotion();
   const { top, bottom, insets } = useDesignInsets();
+  // A phone's width, centred, on an opened folding phone or a tablet; the sky still fills it.
+  const column = usePhoneColumn();
   const pal = onboardingPalette(o.step);
   const aiMode = useAiMode();
   const line = stepLine(o, i18n, aiMode);
@@ -379,6 +382,8 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
       <View
         style={{
           flex: 1,
+          width: column,
+          alignSelf: 'center',
           paddingTop: top(60),
           paddingHorizontal: 20,
           paddingBottom: bottom(30),

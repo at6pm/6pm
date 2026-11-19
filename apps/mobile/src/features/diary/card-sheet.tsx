@@ -10,6 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { useDesignInsets } from '../../ui/layout/design-insets';
+import { usePhoneColumn } from '../../ui/layout/phone-column';
 import { useScrollDismiss, useSheetDrag, type ScrollDismiss } from '../../ui/motion/use-sheet-drag';
 import { useTheme } from '../../ui/theme/theme';
 
@@ -28,7 +29,9 @@ export function CardSheet({ children }: { readonly children: (dismiss: () => voi
   const router = useRouter();
   const { palette } = useTheme();
   const { bottom } = useDesignInsets();
-  const { height } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
+  // 8 pt from a phone's edges; a phone's width, centred, on an opened folding phone or a tablet.
+  const side = (width - usePhoneColumn()) / 2 + 8;
   const sheet = useSheetDrag({ area: height, onDismissed: () => router.back() });
   const scroll = useScrollDismiss(sheet);
   const { enter } = sheet;
@@ -59,8 +62,8 @@ export function CardSheet({ children }: { readonly children: (dismiss: () => voi
           style={[
             {
               position: 'absolute',
-              left: 8,
-              right: 8,
+              left: side,
+              right: side,
               bottom: bottom(8),
               paddingTop: 8,
               paddingHorizontal: 20,

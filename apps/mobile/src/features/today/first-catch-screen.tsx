@@ -11,6 +11,7 @@ import { useHomeCurrency } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
 import { Symbol } from '../../ui/icons/symbol';
 import { useDesignInsets } from '../../ui/layout/design-insets';
+import { usePhoneColumn } from '../../ui/layout/phone-column';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { openAlertAccess, useAlertAccess } from '../capture-guide/alert-access';
 import { useCaptureHealth } from '../capture-guide/use-capture-health';
@@ -42,6 +43,8 @@ export function FirstCatchScreen() {
   const aiMode = useAiMode();
   const alertAccess = useAlertAccess();
   const { top, bottom, insets } = useDesignInsets();
+  // A phone's width, centred, on an opened folding phone or a tablet.
+  const column = usePhoneColumn();
   const pal = onboardingPalette(CATCH_STEP);
   const since = useRef(new Date().toISOString());
   const [setUp, setSetUp] = useState<readonly CatchWay[]>([]);
@@ -77,7 +80,14 @@ export function FirstCatchScreen() {
       <StatusBar style="light" animated />
       <OnboardingSky step={CATCH_STEP} safeTop={insets.top} />
       <View
-        style={{ flex: 1, paddingTop: top(60), paddingHorizontal: 20, paddingBottom: bottom(30) }}
+        style={{
+          flex: 1,
+          width: column,
+          alignSelf: 'center',
+          paddingTop: top(60),
+          paddingHorizontal: 20,
+          paddingBottom: bottom(30),
+        }}
       >
         <View style={{ minHeight: 44, flexDirection: 'row', alignItems: 'center' }}>
           <PressScale

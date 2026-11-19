@@ -15,7 +15,7 @@ interface FoldState {
 
 const FoldContext = createContext<FoldState | null>(null);
 
-/** Follows the iPhone Duo's hinge and regions for the whole app; a plain phone reports no fold. */
+/** Follows a folding phone's hinge and regions for the whole app; a plain phone reports no fold. */
 export function FoldProvider({ children }: { readonly children: ReactNode }) {
   const [snapshot, setSnapshot] = useState<FoldSnapshot>(() => fold?.current() ?? NO_FOLD);
   const angle = useSharedValue(snapshot.angle ?? -1);
@@ -26,6 +26,11 @@ export function FoldProvider({ children }: { readonly children: ReactNode }) {
       angle.set(next.angle ?? -1);
       setSnapshot(next);
     });
+    // Android follows the fold from launch, so a pose may have been reported between the first
+    // render and this listener: read it once more.
+    const now = fold.current();
+    angle.set(now.angle ?? -1);
+    setSnapshot((was) => (JSON.stringify(was) === JSON.stringify(now) ? was : now));
     return () => subscription.remove();
   }, [angle]);
 

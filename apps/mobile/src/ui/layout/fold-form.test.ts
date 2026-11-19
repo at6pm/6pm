@@ -77,6 +77,82 @@ describe('foldForm', () => {
     expect(foldForm(flat, upright)).toEqual({ kind: 'phone' });
   });
 
+  describe('a folding Android phone, whose fold is a line with no width', () => {
+    // Galaxy Z Fold8: a 2448 × 1848 inner screen and a 1248 × 1972 cover screen at 420 dpi.
+    const inner = { width: 932.5, height: 704 };
+    const turned = { width: 704, height: 932.5 };
+    const cover = { width: 475.5, height: 751 };
+    const line = { x: 466.25, y: 0, width: 0, height: 704 };
+    const lineAcross = { x: 0, y: 466.25, width: 704, height: 0 };
+
+    it('lays out as a phone on the cover screen', () => {
+      expect(foldForm(snap({ hinge: 'closed' }), cover)).toEqual({ kind: 'phone' });
+    });
+
+    it('keeps the gutter clear either side of the fold when opened flat', () => {
+      expect(foldForm(snap({ hinge: 'open', divisions: [line] }), inner)).toEqual({
+        kind: 'spread',
+        left: { x: 0, width: 446.25 },
+        right: { x: 486.25, width: 446.25 },
+        rail: 0,
+        book: false,
+      });
+    });
+
+    it('is a book when part way open with the fold upright', () => {
+      const form = foldForm(snap({ hinge: 'partial', divisions: [line] }), inner);
+      expect(form).toMatchObject({ kind: 'spread', book: true });
+    });
+
+    it('stands on a table with the gutter clear of the fold', () => {
+      expect(foldForm(snap({ hinge: 'partial', divisions: [lineAcross] }), turned)).toEqual({
+        kind: 'stand',
+        top: { y: 0, height: 446.25 },
+        bottom: { y: 486.25, height: 446.25 },
+      });
+    });
+
+    it('lays out as a phone when turned upright and flat', () => {
+      expect(foldForm(snap({ hinge: 'open', divisions: [lineAcross] }), turned)).toEqual({
+        kind: 'phone',
+      });
+    });
+
+    it('keeps two pages on a taller inner screen, whose fold is upright', () => {
+      // Galaxy Z Fold8 Ultra: 2256 × 2504 at 420 dpi.
+      const tall = { width: 859.5, height: 954 };
+      const fold = { x: 429.75, y: 0, width: 0, height: 954 };
+      expect(foldForm(snap({ hinge: 'open', divisions: [fold] }), tall)).toEqual({
+        kind: 'spread',
+        left: { x: 0, width: 409.75 },
+        right: { x: 449.75, width: 409.75 },
+        rail: 0,
+        book: false,
+      });
+    });
+
+    it('passes over a fold left from the last orientation while the phone turns', () => {
+      // Turned back to sideways: the window is wide again, the fold still reads as across.
+      expect(foldForm(snap({ hinge: 'partial', divisions: [lineAcross] }), inner)).toEqual({
+        kind: 'spread',
+        left: { x: 0, width: 446.25 },
+        right: { x: 486.25, width: 446.25 },
+        rail: 0,
+        book: true,
+      });
+      // Turned upright: the fold still reads as upright, and is no reason for two pages.
+      expect(foldForm(snap({ hinge: 'open', divisions: [line] }), turned)).toEqual({
+        kind: 'phone',
+      });
+    });
+
+    it('is one column in a split-screen window too narrow for two pages', () => {
+      expect(foldForm(snap({ hinge: 'open' }), { width: 446, height: 704 })).toEqual({
+        kind: 'phone',
+      });
+    });
+  });
+
   it('falls back to one column when Split View leaves too little room for two pages', () => {
     const narrow = snap({ hinge: 'open', angle: Math.PI });
     expect(foldForm(narrow, { width: 600, height: 669 })).toEqual({ kind: 'phone' });
