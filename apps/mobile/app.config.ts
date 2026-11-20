@@ -241,6 +241,20 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     // The close reminder rings at the close time on the dot where Android lets an app ask; from
     // Android 14 that is the person's choice, and without it the reminder comes within minutes.
     permissions: ['android.permission.SCHEDULE_EXACT_ALARM'],
+    // The links iOS opens as universal links, `https://<host>/app` and everything under it, open
+    // the app on Android too. Android checks them against the site's `/.well-known/assetlinks.json`
+    // (the Play app signing key's fingerprint); until that answers, they open the browser.
+    intentFilters: [
+      {
+        action: 'VIEW',
+        autoVerify: true,
+        data: [
+          { scheme: 'https', host: variant.host, path: '/app' },
+          { scheme: 'https', host: variant.host, pathPrefix: '/app/' },
+        ],
+        category: ['BROWSABLE', 'DEFAULT'],
+      },
+    ],
     // 6pm only adds pictures to the gallery and never reads it: Scan chooses one through the system
     // Photo Picker. No overlay is ever drawn over other apps.
     blockedPermissions: [

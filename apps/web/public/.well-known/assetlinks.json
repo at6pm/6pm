@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.at6pm",
+      "sha256_cert_fingerprints": [
+        "BB:26:3B:9A:A9:E9:CB:BC:60:C4:E2:DD:D0:B6:3A:64:3D:85:53:62:13:3B:DC:15:4B:C8:E1:96:23:BD:EE:9E"
+      ]
+    }
+  }
+]

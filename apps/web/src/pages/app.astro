@@ -1,16 +1,31 @@
 ---
 import { appLinkCopy } from '../data/app-link';
-import { appStoreUrl, ctaMode, testFlightUrl } from '../data/site/config';
-import { homePath } from '../data/site/copy';
+import { cardLinkCopy } from '../data/cards';
+import {
+  androidBetaGroupUrl,
+  androidMode,
+  appStoreUrl,
+  ctaMode,
+  playStoreUrl,
+  playTestUrl,
+  testFlightUrl,
+} from '../data/site/config';
+import { homePath, siteCopy } from '../data/site/copy';
 import PageLayout from '../layouts/page-layout.astro';
 import '../styles/reading.css';
 
-// With 6pm installed, iOS opens the app for `/app` (apple-app-site-association) and this page never
-// loads. Without it, the page sends the visitor straight on, in both languages: to the public beta
-// until launch (the App Store still has the old app), to the App Store once the site is in store mode.
+// With 6pm installed, the phone opens the app for `/app` (apple-app-site-association on iOS,
+// assetlinks.json on Android) and this page never loads. Without it, the page sends the visitor
+// straight on, in both languages: an iPhone, and anything that is not Android, to the public beta
+// until launch and to the App Store once the site is in store mode; an Android phone to Google
+// Play once 6pm is public there. While Android is in its closed test the page stays, and shows
+// the test's two steps.
 const store = ctaMode === 'store';
 const target = store ? appStoreUrl : testFlightUrl;
 const { en, vi } = appLinkCopy[store ? 'store' : 'beta'];
+const onPlay = androidMode === 'store';
+const androidTarget = onPlay ? playStoreUrl : null;
+const android = { en: siteCopy.en.cta.android, vi: siteCopy.vi.cta.android };
 ---
 
 <PageLayout
@@ -22,7 +37,14 @@ const { en, vi } = appLinkCopy[store ? 'store' : 'beta'];
     { color: '#0b0716', media: '(prefers-color-scheme: dark)' },
   ]}
 >
-  <meta slot="head" http-equiv="refresh" content={`0; url=${target}`} />
+  <script is:inline slot="head" define:vars={{ target, androidTarget }}>
+    (function () {
+      var android = /Android/i.test(navigator.userAgent || '');
+      var to = android ? androidTarget : target;
+      if (to) location.replace(to);
+    })();
+  </script>
+  <noscript slot="head"><meta http-equiv="refresh" content={`0; url=${target}`} /></noscript>
   <div class="legal">
     <div class="glow" aria-hidden="true"></div>
     <header class="bar">
@@ -33,11 +55,45 @@ const { en, vi } = appLinkCopy[store ? 'store' : 'beta'];
         <h1>{en.heading}</h1>
         <p class="lede">{en.body}</p>
         <a class="store" href={target}>{en.cta}</a>
+        {
+          onPlay ? (
+            <a class="store ghost" href={playStoreUrl}>
+              {cardLinkCopy.en.android}
+            </a>
+          ) : (
+            <>
+              <p class="lede android">{android.en.how}</p>
+              <a class="store ghost" href={androidBetaGroupUrl}>
+                1. {android.en.group}
+              </a>
+              <a class="store ghost" href={playTestUrl}>
+                2. {android.en.test}
+              </a>
+            </>
+          )
+        }
       </section>
       <section lang="vi">
         <h2>{vi.heading}</h2>
         <p class="lede">{vi.body}</p>
         <a class="store" href={target}>{vi.cta}</a>
+        {
+          onPlay ? (
+            <a class="store ghost" href={playStoreUrl}>
+              {cardLinkCopy.vi.android}
+            </a>
+          ) : (
+            <>
+              <p class="lede android">{android.vi.how}</p>
+              <a class="store ghost" href={androidBetaGroupUrl}>
+                1. {android.vi.group}
+              </a>
+              <a class="store ghost" href={playTestUrl}>
+                2. {android.vi.test}
+              </a>
+            </>
+          )
+        }
       </section>
       <p class="home">
         <a href={homePath.en}>{en.home}</a> · <a href={homePath.vi} lang="vi">{vi.home}</a>
@@ -140,6 +196,27 @@ const { en, vi } = appLinkCopy[store ? 'store' : 'beta'];
   }
   .store:hover {
     background: var(--lg-soft);
+  }
+  .store.ghost {
+    margin-top: 16px;
+    margin-right: 10px;
+    background: transparent;
+    color: var(--lg-ink);
+    box-shadow: inset 0 0 0 1.5px var(--lg-hair);
+  }
+  .store.ghost:hover {
+    background: var(--lg-hair);
+  }
+  .store + .store.ghost {
+    margin-left: 10px;
+    margin-right: 0;
+  }
+  .lede.android {
+    margin-top: 28px;
+  }
+  .lede.android + .store.ghost {
+    margin-left: 0;
+    margin-right: 10px;
   }
   .home {
     margin: 48px 0 0;

@@ -24,6 +24,13 @@ export const playTestUrl = 'https://play.google.com/apps/testing/app.at6pm';
 /** 6pm's Google Play listing (package `app.at6pm`), where the share cards send Android phones. */
 export const playStoreUrl = 'https://play.google.com/store/apps/details?id=app.at6pm';
 
+/**
+ * Where the site sends an Android phone that follows a link to the app: the closed test's two
+ * steps until 6pm is public on Google Play, then its listing. Flip to `store` when the production
+ * release is live, and redeploy.
+ */
+export const androidMode: 'beta' | 'store' = 'beta';
+
 /** The public TestFlight beta, open to anyone with the link until and after the launch. */
 export const testFlightUrl = 'https://testflight.apple.com/join/a8UrvT5P';
 
