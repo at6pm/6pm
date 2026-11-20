@@ -10,6 +10,7 @@ import {
   type InboxHeard,
   type InboxSpend,
   type IngestStep,
+  type SecondReadOutcome,
   type SpendRow,
   type SpendSource,
 } from '@6pm/domain';
@@ -49,6 +50,8 @@ export interface Arrival {
    * transfer it may be half of.
    */
   readonly inbox?: { readonly item: InboxSpend; readonly ready?: () => Promise<void> };
+  /** What became of a bank alert's second reading, for the capture log alone. */
+  readonly secondRead?: SecondReadOutcome;
 }
 
 /** What `ingest` decided: the step, and what the capture did (null when it was a repeat). */
@@ -127,7 +130,7 @@ export interface IngestDeps {
 /** `ingest`, and `ingestNow` for a capture already inside the store's turn. */
 export function ingestion({ store, inTurn, decideNow, log }: IngestDeps) {
   const record = (
-    arrival: Pick<Arrival, 'sighting' | 'handed'>,
+    arrival: Pick<Arrival, 'sighting' | 'handed' | 'secondRead'>,
     step: IngestStep,
     capture: Capture | null,
   ) => {
@@ -141,6 +144,7 @@ export function ingestion({ store, inTurn, decideNow, log }: IngestDeps) {
       row: capture
         ? { id: capture.row.id, at: capture.row.at, merchant: capture.row.merchant }
         : null,
+      ...(arrival.secondRead !== undefined ? { secondRead: arrival.secondRead } : {}),
     });
     return { step, capture };
   };
@@ -195,10 +199,10 @@ export function ingestion({ store, inTurn, decideNow, log }: IngestDeps) {
   };
 
   /**
-   * A bank alert that moved no money, handed in only while the log is on: it is logged with why,
-   * and nothing else is done with it.
+   * A bank alert that moved no money, handed in only while the log is on: it is logged with why
+   * (and what its second reading came to, when it had one), and nothing else is done with it.
    */
-  const hear = (heard: InboxHeard): void => {
+  const hear = (heard: InboxHeard, secondRead?: SecondReadOutcome): void => {
     void log.record({
       loggedAt: new Date().toISOString(),
       channel: 'alert',
@@ -207,6 +211,7 @@ export function ingestion({ store, inTurn, decideNow, log }: IngestDeps) {
       step: 'notAPayment',
       row: null,
       skipped: heard.skipped,
+      ...(secondRead !== undefined ? { secondRead } : {}),
     });
   };
 

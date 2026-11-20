@@ -6,7 +6,7 @@ import type { ApiRequest } from '../api/api-client';
 import { ApiRequestError } from '../api/api-error';
 import type { AiMode } from '../privacy/ai-mode';
 import { aiModeSettings } from '../privacy/ai-mode-stand-in';
-import { createReadAlerts, READ_ALERT_TIMEOUT_MS } from './read-alert';
+import { createReadAlerts, READ_ALERT_TIMEOUT_MS, READ_ALERTS_WAIT_MS } from './read-alert';
 
 // Every name, account and amount here is made up.
 
@@ -63,14 +63,17 @@ function setup(
   { ruled = null, mode = 'server' }: { ruled?: string | null; mode?: AiMode } = {},
 ) {
   const request = jest.fn((call: ApiRequest<unknown>) => answer(call));
-  const read = createReadAlerts({
+  const reader = createReadAlerts({
     request: request as never,
     settings: aiModeSettings(mode),
     ruleCategory: () => Promise.resolve(ruled),
     categories: () => categories,
     home: () => currencyOf('VND'),
   });
-  return { read, request };
+  type Items = Parameters<typeof reader>[0];
+  const read = async (items: Items) => (await reader(items)).answers;
+  const outcomes = async (items: Items) => (await reader(items)).outcomes;
+  return { read, outcomes, request };
 }
 
 const phoHoa = () =>
@@ -215,5 +218,90 @@ describe('having the server read a bank alert a second time', () => {
     const { alertWords: _none, ...bare } = caught();
     expect((await read([bare])).size).toBe(0);
     expect(request).not.toHaveBeenCalled();
+  });
+});
+
+describe('saying what became of each second reading, for the capture log', () => {
+  it('says the server’s reading took the phone’s place, or read the same', async () => {
+    const { outcomes } = setup(() =>
+      Promise.resolve({ moved: 'out', amount: 1, merchant: 'PHO HOA', category: 'Transport' }),
+    );
+    const agreed = caught();
+    const renamed = caught({ merchant: '' });
+    const said = await outcomes([agreed, renamed]);
+    expect(said.get(agreed.id)).toBe('same');
+    expect(said.get(renamed.id)).toBe('changed');
+  });
+
+  it('says the server found no money, in a caught row and in an unread alert', async () => {
+    const { outcomes } = setup(() =>
+      Promise.resolve({ moved: 'none', amount: 0, merchant: '', category: '' }),
+    );
+    const item = caught();
+    const missed = unread();
+    const said = await outcomes([item, missed]);
+    expect(said.get(item.id)).toBe('none');
+    expect(said.get(missed.id)).toBe('none');
+  });
+
+  it('says an unread alert became a payment', async () => {
+    const { outcomes } = setup(() =>
+      Promise.resolve({
+        moved: 'out',
+        amount: 1,
+        merchant: 'The Coffee House',
+        category: 'Drinks',
+      }),
+    );
+    const missed = unread();
+    expect((await outcomes([missed])).get(missed.id)).toBe('changed');
+  });
+
+  it('says nothing was asked in on-device mode, or of an alert that prints no amount', async () => {
+    const device = setup(phoHoa, { mode: 'device' });
+    const item = caught();
+    expect((await device.outcomes([item])).get(item.id)).toBe('device');
+
+    const server = setup(phoHoa);
+    const birthday = unread('Chúc mừng sinh nhật bạn');
+    expect((await server.outcomes([birthday])).get(birthday.id)).toBe('no-amount');
+    expect(server.request).not.toHaveBeenCalled();
+  });
+
+  it('says how a call failed, and which alerts were not asked because of it', async () => {
+    const { outcomes } = setup(() =>
+      Promise.reject(new ApiRequestError('timeout', 'Request failed', true)),
+    );
+    const items = Array.from({ length: 9 }, () => caught());
+    const said = [...(await outcomes(items)).values()];
+    expect(said).toHaveLength(9);
+    expect(said.filter((o) => o === 'failed:timeout').length).toBeGreaterThanOrEqual(1);
+    expect(said.every((o) => o === 'failed:timeout' || o === 'stopped')).toBe(true);
+    expect(said).toContain('stopped');
+  });
+
+  it('names a failure that is not the API’s own, and never the alert’s words', async () => {
+    const { outcomes } = setup(() => Promise.reject(new Error(MB)));
+    const item = caught();
+    expect((await outcomes([item])).get(item.id)).toBe('failed:error');
+  });
+
+  it('says an alert still out when the wait ran out was late', async () => {
+    jest.useFakeTimers();
+    try {
+      const { outcomes } = setup(() => new Promise(() => undefined));
+      const item = caught();
+      const waiting = outcomes([item]);
+      await jest.advanceTimersByTimeAsync(READ_ALERTS_WAIT_MS + 1);
+      expect((await waiting).get(item.id)).toBe('late');
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it('says nothing of an item that carries no words', async () => {
+    const { outcomes } = setup(phoHoa);
+    const { alertWords: _none, ...bare } = caught();
+    expect((await outcomes([bare])).size).toBe(0);
   });
 });

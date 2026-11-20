@@ -8,6 +8,7 @@ import {
   type InboxPaid,
   type InboxSpend,
   type InboxUnread,
+  type SecondReadOutcome,
   type SightingChannel,
 } from '@6pm/domain';
 import type { Language } from '@6pm/i18n';
@@ -38,12 +39,10 @@ export interface InboxImportDeps {
   readonly enrich: (item: InboxSpend) => Promise<InboxSpend>;
   /**
    * Reads the bank alerts of one import a second time (the server, where 6pm's AI runs there),
-   * answering by item id. Without it every caught alert is saved as the phone read it, and one the
-   * phone could not read is let go.
+   * answering by item id, and saying what became of each asking. Without it every caught alert is
+   * saved as the phone read it, and one the phone could not read is let go.
    */
-  readonly readAlerts?: (
-    items: readonly (InboxSpend | InboxUnread)[],
-  ) => Promise<ReadonlyMap<string, AlertSecondRead>>;
+  readonly readAlerts?: (items: readonly (InboxSpend | InboxUnread)[]) => Promise<AlertSecondReads>;
   /** Told when a file is dropped; never given the file's content. */
   readonly report: (message: string) => void;
   /**
@@ -70,6 +69,17 @@ export interface InboxImportDeps {
  */
 export type AlertSecondRead =
   { readonly kind: 'spend'; readonly item: InboxSpend } | { readonly kind: 'none' };
+
+/**
+ * One import's second readings: the answers by item id, and what became of each alert the reader
+ * was given (`outcomes`), which goes to the capture log and decides nothing.
+ */
+export interface AlertSecondReads {
+  readonly answers: ReadonlyMap<string, AlertSecondRead>;
+  readonly outcomes: ReadonlyMap<string, SecondReadOutcome>;
+}
+
+const NO_SECOND_READS: AlertSecondReads = { answers: new Map(), outcomes: new Map() };
 
 /** How long an alert the phone could not read waits for the second reader before it is let go. */
 export const UNREAD_ALERT_WAIT_MS = 48 * 60 * 60_000;
@@ -121,10 +131,10 @@ export async function importInbox(deps: InboxImportDeps): Promise<InboxImportRes
     parsed.success && asksSecondRead(parsed.data) ? [parsed.data] : [],
   );
   const readAlerts = deps.readAlerts;
-  const reread: ReadonlyMap<string, AlertSecondRead> =
+  const { answers: reread, outcomes } =
     readAlerts && alerts.length > 0
-      ? await readAlerts(alerts).catch(() => new Map<string, AlertSecondRead>())
-      : new Map<string, AlertSecondRead>();
+      ? await readAlerts(alerts).catch(() => NO_SECOND_READS)
+      : NO_SECOND_READS;
   for (const { file, parsed } of files) {
     if (!parsed.success) {
       report('inbox: dropped a file that is not a known inbox item');
@@ -141,27 +151,34 @@ export async function importInbox(deps: InboxImportDeps): Promise<InboxImportRes
     } else if (item.kind === 'unread') {
       const read = reread.get(item.id);
       if (read?.kind === 'spend') {
-        if ((await saveInboxSpend(deps, read.item)) !== null) saved += 1;
+        if ((await saveInboxSpend(deps, read.item, undefined, outcomes.get(item.id))) !== null) {
+          saved += 1;
+        }
       } else if (read === undefined && readAlerts && waitsForSecondRead(item)) {
         // Not answered this time (offline, slow): its file stays for the next import.
         continue;
       } else {
         // Let go: while the capture log is on it says so, as for any alert that moved no money.
-        deps.actions.hear({
-          v: 1,
-          id: item.id,
-          kind: 'heard',
-          at: item.at,
-          bank: item.bank,
-          skipped: 'unread',
-          words: item.alertWords,
-        });
+        deps.actions.hear(
+          {
+            v: 1,
+            id: item.id,
+            kind: 'heard',
+            at: item.at,
+            bank: item.bank,
+            skipped: 'unread',
+            words: item.alertWords,
+          },
+          outcomes.get(item.id),
+        );
       }
     } else {
       const read = reread.get(item.id);
       const spendId = await saveInboxSpend(
         deps,
         withoutAlertWords(read?.kind === 'spend' ? read.item : item),
+        undefined,
+        outcomes.get(item.id),
       );
       if (spendId !== null) {
         saved += 1;
@@ -216,11 +233,13 @@ function parseJson(json: string): unknown {
  * tap or the same receipt again is skipped, and null returned), named first when it is a receipt,
  * then filed and captured with the duplicate merge. Returns the spend it was saved as (the one it
  * merged into, when it did). Scan saves the receipts it reads through here too, as `receiptPhoto`.
+ * A bank alert's `secondRead` is what became of its second reading, kept by the capture log.
  */
 export async function saveInboxSpend(
   deps: Pick<InboxImportDeps, 'store' | 'actions' | 'enrich' | 'home' | 'language'>,
   incoming: InboxSpend,
   channel?: SightingChannel,
+  secondRead?: SecondReadOutcome,
 ): Promise<string | null> {
   const { store, actions } = deps;
   let item = incoming;
@@ -244,6 +263,7 @@ export async function saveInboxSpend(
     sighting,
     handed: incoming,
     message: incoming,
+    ...(secondRead !== undefined ? { secondRead } : {}),
     inbox: {
       item: incoming,
       // The first catch can land while onboarding is still open, before it has made the categories.

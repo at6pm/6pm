@@ -45,6 +45,18 @@ describe('the capture log file', () => {
     });
   });
 
+  it('keeps what became of an alert’s second reading, and reads a line written without it', () => {
+    const events = [
+      event(ago(3 * 60_000)),
+      event(ago(2 * 60_000), { secondRead: 'changed' }),
+      event(ago(60_000), { secondRead: 'failed:timeout' }),
+    ];
+    const read = readCaptureLog(fileOf(NOW, events), NOW);
+    expect(read?.events.map((e) => e.secondRead)).toEqual([undefined, 'changed', 'failed:timeout']);
+    expect(read?.events[0]).not.toHaveProperty('secondRead');
+    expect(read && captureLogText(read)).toBe(fileOf(NOW, events));
+  });
+
   it(`drops events older than ${CAPTURE_LOG_DAYS} days, keeping the one on the edge`, () => {
     const since = new Date(NOW.getTime() - 30 * DAY);
     const edge = event(ago(CAPTURE_LOG_DAYS * DAY));

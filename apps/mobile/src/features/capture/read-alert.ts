@@ -9,9 +9,10 @@ import {
   type Currency,
   type InboxSpend,
   type InboxUnread,
+  type SecondReadOutcome,
 } from '@6pm/domain';
 
-import type { AlertSecondRead } from '../../data/inbox-import';
+import type { AlertSecondRead, AlertSecondReads } from '../../data/inbox-import';
 import type { ApiClient } from '../api/api-client';
 import { ApiRequestError, type ApiFailure } from '../api/api-error';
 import { readAiMode, type AiModeSettings } from '../privacy/ai-mode';
@@ -41,6 +42,15 @@ const readSchema = z.object({
   category: z.string(),
 });
 
+/** Whether the second reading left a caught alert as the phone had read it. */
+const readsTheSame = (phone: InboxSpend, second: InboxSpend) =>
+  phone.direction === second.direction &&
+  phone.amount === second.amount &&
+  phone.foreign?.amount === second.foreign?.amount &&
+  phone.foreign?.currency === second.foreign?.currency &&
+  phone.merchant === second.merchant &&
+  phone.categoryId === second.categoryId;
+
 export interface ReadAlertsDeps {
   readonly request: ApiClient['request'];
   /** Where 6pm's AI runs: in on-device mode nothing is asked, and every row stays as the phone read it. */
@@ -69,6 +79,9 @@ export interface ReadAlertsDeps {
  *
  * The person's own rule for the name files a payment; else the server's category; else where the
  * phone filed it.
+ *
+ * Beside the answers it says what became of each alert it was given (`outcomes`): answered and
+ * how, not asked and why, or failed and how. The capture log keeps that; nothing is decided by it.
  */
 export function createReadAlerts(deps: ReadAlertsDeps) {
   const now = deps.now ?? Date.now;
@@ -100,14 +113,16 @@ export function createReadAlerts(deps: ReadAlertsDeps) {
       timeoutMs: READ_ALERT_TIMEOUT_MS,
     });
 
-  return async (
-    items: readonly (InboxSpend | InboxUnread)[],
-  ): Promise<Map<string, AlertSecondRead>> => {
+  return async (items: readonly (InboxSpend | InboxUnread)[]): Promise<AlertSecondReads> => {
     const answers = new Map<string, AlertSecondRead>();
+    const outcomes = new Map<string, SecondReadOutcome>();
     const home = deps.home();
     if (readAiMode(deps.settings) === 'device') {
-      for (const item of items) if (item.kind === 'unread') answers.set(item.id, { kind: 'none' });
-      return answers;
+      for (const item of items) {
+        if (item.kind === 'unread') answers.set(item.id, { kind: 'none' });
+        if (item.alertWords) outcomes.set(item.id, 'device');
+      }
+      return { answers, outcomes };
     }
     const until = now() + READ_ALERTS_WAIT_MS;
     let down = false;
@@ -119,9 +134,13 @@ export function createReadAlerts(deps: ReadAlertsDeps) {
       if (asked === null) {
         // It prints no amount to point at: nothing could be saved from it.
         if (item.kind === 'unread') answers.set(item.id, { kind: 'none' });
+        outcomes.set(item.id, 'no-amount');
         return;
       }
-      if (down || now() >= until) return;
+      if (down || now() >= until) {
+        outcomes.set(item.id, down ? 'stopped' : 'late');
+        return;
+      }
       let read: AlertReading & { category: string };
       try {
         read = await ask(asked, home);
@@ -129,6 +148,10 @@ export function createReadAlerts(deps: ReadAlertsDeps) {
         // No connection, no time left or no more reads today stops the asking; a failure of this
         // one alert's reading (the model's answer, a refused text) leaves the others their turn.
         down ||= !(error instanceof ApiRequestError) || STOPS_ASKING.has(error.failure);
+        outcomes.set(
+          item.id,
+          `failed:${error instanceof ApiRequestError ? error.failure : 'error'}`,
+        );
         return;
       }
       if (item.kind === 'unread') {
@@ -139,14 +162,18 @@ export function createReadAlerts(deps: ReadAlertsDeps) {
             ? { kind: 'none' }
             : { kind: 'spend', item: await filed(spend, read.category, null) },
         );
+        outcomes.set(item.id, spend === null ? 'none' : 'changed');
         return;
       }
       const reread = withAlertReading(item, read, asked, words, home);
-      if (reread === item) return;
-      answers.set(item.id, {
-        kind: 'spend',
-        item: await filed(reread, read.category, item.categoryId),
-      });
+      if (reread === item) {
+        // It read no money that moved: the row the phone caught stays the person's to remove.
+        outcomes.set(item.id, 'none');
+        return;
+      }
+      const saved = await filed(reread, read.category, item.categoryId);
+      answers.set(item.id, { kind: 'spend', item: saved });
+      outcomes.set(item.id, readsTheSame(item, saved) ? 'same' : 'changed');
     };
 
     const waiting = [...items];
@@ -164,7 +191,9 @@ export function createReadAlerts(deps: ReadAlertsDeps) {
       }),
     ]);
     clearTimeout(timer);
-    // Whatever is still out is left unanswered: a copy, so a late answer changes nothing.
-    return new Map(answers);
+    // Whatever is still out is left unanswered: copies, so a late answer changes nothing.
+    const said = new Map(outcomes);
+    for (const item of items) if (item.alertWords && !said.has(item.id)) said.set(item.id, 'late');
+    return { answers: new Map(answers), outcomes: said };
   };
 }

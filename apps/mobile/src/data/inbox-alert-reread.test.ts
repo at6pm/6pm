@@ -6,9 +6,11 @@ import {
   type InboxItem,
   type InboxSpend,
   type InboxUnread,
+  type SecondReadOutcome,
 } from '@6pm/domain';
 
 import { openMemoryDb } from '../features/backup/test/memory-db';
+import { createCaptureLog, memoryCaptureLogFile, type CaptureLog } from './capture-log';
 import {
   importInbox,
   UNREAD_ALERT_WAIT_MS,
@@ -77,6 +79,7 @@ const unread = (body: string, over: Partial<InboxUnread> = {}): InboxUnread => (
 describe('bank alerts read a second time at import', () => {
   let store: MoneyStore;
   let actions: ReturnType<typeof moneyActions>;
+  let log: CaptureLog;
 
   beforeEach(async () => {
     jest.useFakeTimers({ now: NOW, doNotFake: ['setTimeout', 'setImmediate', 'nextTick'] });
@@ -95,7 +98,8 @@ describe('bank alerts read a second time at import', () => {
       });
     }
     await store.load(TODAY);
-    actions = moneyActions(store);
+    log = createCaptureLog(memoryCaptureLogFile());
+    actions = moneyActions(store, undefined, log);
   });
 
   afterEach(() => {
@@ -113,9 +117,12 @@ describe('bank alerts read a second time at import', () => {
     });
 
   const answering =
-    (answers: (items: readonly (InboxSpend | InboxUnread)[]) => [string, AlertSecondRead][]) =>
+    (
+      answers: (items: readonly (InboxSpend | InboxUnread)[]) => [string, AlertSecondRead][],
+      outcomes: readonly [string, SecondReadOutcome][] = [],
+    ) =>
     (items: readonly (InboxSpend | InboxUnread)[]) =>
-      Promise.resolve(new Map(answers(items)));
+      Promise.resolve({ answers: new Map(answers(items)), outcomes: new Map(outcomes) });
 
   const spends = () => store.tables.spends.all();
 
@@ -238,5 +245,39 @@ describe('bank alerts read a second time at import', () => {
   it('lets go of an unread alert when nothing reads alerts a second time', async () => {
     const inbox = memoryInbox([unread('Quý khách vừa quẹt 85.000đ ở The Coffee House')]);
     expect(await run(inbox)).toEqual({ saved: 0, removed: 1 });
+  });
+
+  it('tells the capture log what became of each second reading, and nothing when none was asked', async () => {
+    await log.turnOn();
+    const named = caught('GD: -50,000VND|ND: Thanh toan QR-PHO HOA', { amount: 50_000 });
+    const offline = caught('GD: -64,000VND tai CIRCLE K', { amount: 64_000, at: at(10) });
+    const promo = unread('Hạn mức mới của quý khách là 85.000.000đ');
+    const { alertWords: _none, ...bare } = caught('GD: -71,000VND tai GS25', {
+      amount: 71_000,
+      at: at(20),
+    });
+    await run(
+      memoryInbox([named, offline, promo, bare]),
+      answering(
+        () => [
+          [named.id, { kind: 'spend', item: { ...named, merchant: 'Phở Hòa' } }],
+          [promo.id, { kind: 'none' }],
+        ],
+        [
+          [named.id, 'changed'],
+          [offline.id, 'failed:network'],
+          [promo.id, 'none'],
+        ],
+      ),
+    );
+    const events = (await log.read())?.events ?? [];
+    const said = (amount: number) =>
+      events.find((e) => (e.handed as { amount?: number }).amount === amount)?.secondRead;
+    expect(said(50_000)).toBe('changed');
+    expect(said(64_000)).toBe('failed:network');
+    expect(events.find((e) => e.step === 'notAPayment')?.secondRead).toBe('none');
+    const untouched = events.find((e) => (e.handed as { amount?: number }).amount === 71_000);
+    expect(untouched).toBeDefined();
+    expect(untouched).not.toHaveProperty('secondRead');
   });
 });

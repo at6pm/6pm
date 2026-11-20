@@ -60,6 +60,21 @@ export interface LoggedRow {
   readonly merchant: string;
 }
 
+/**
+ * What became of a bank alert's second reading (the server's, after the phone's), as the log
+ * says it. A code and never a word of the alert:
+ * - `changed`: it answered, and its reading took the place of the phone's.
+ * - `same`: it answered, and read what the phone read.
+ * - `none`: it answered that no money moved.
+ * - `device`: 6pm's AI runs on this phone, so nothing was asked.
+ * - `no-amount`: the alert prints no amount to point at, so nothing was asked.
+ * - `late`: the import's wait ran out before an answer came.
+ * - `stopped`: a failure every alert would meet had stopped the asking before its turn.
+ * - `failed:…`: the call failed, with how (`failed:network`, `failed:timeout`, `failed:invalid`).
+ */
+export type SecondReadOutcome =
+  'changed' | 'same' | 'none' | 'device' | 'no-amount' | 'late' | 'stopped' | `failed:${string}`;
+
 /** One capture as the log keeps it. */
 export interface CaptureLogEvent {
   /** When the capture was decided, ISO 8601. */
@@ -75,6 +90,8 @@ export interface CaptureLogEvent {
   readonly step: IngestStep;
   /** The row it made or joined; null when it was dropped as a repeat. */
   readonly row: LoggedRow | null;
+  /** A bank alert's second reading, when one was asked for; absent for every other capture. */
+  readonly secondRead?: SecondReadOutcome;
 }
 
 /** The file's first line: what it is and since when it has been kept. */
