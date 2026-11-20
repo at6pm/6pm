@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 
 import {
   heardAlertId,
+  type AlertReadWaiting,
   type HeardWords,
   type InboxItem,
   type InboxSpend,
@@ -279,5 +280,66 @@ describe('bank alerts read a second time at import', () => {
     const untouched = events.find((e) => (e.handed as { amount?: number }).amount === 71_000);
     expect(untouched).toBeDefined();
     expect(untouched).not.toHaveProperty('secondRead');
+  });
+  it('keeps a caught alert for a late reading only when its second reading got no answer', async () => {
+    const amounts = [41_000, 42_000, 43_000, 44_000, 45_000, 46_000, 47_000, 48_000];
+    const [late, stopped, failed, same, changed, none, device, bare] = amounts.map((amount, i) =>
+      caught(`GD: -${amount}VND tai CUA HANG ${i}`, {
+        amount,
+        at: at(i),
+        merchant: `CUA HANG ${i}`,
+      }),
+    ) as [
+      InboxSpend,
+      InboxSpend,
+      InboxSpend,
+      InboxSpend,
+      InboxSpend,
+      InboxSpend,
+      InboxSpend,
+      InboxSpend,
+    ];
+    const kept: AlertReadWaiting[] = [];
+    await importInbox({
+      store,
+      actions,
+      inbox: memoryInbox([late, stopped, failed, same, changed, none, device, bare]),
+      report: () => undefined,
+      enrich: (item) => Promise.resolve(item),
+      readAlerts: answering(
+        () => [
+          [same.id, { kind: 'spend', item: same }],
+          [changed.id, { kind: 'spend', item: { ...changed, merchant: 'Cửa Hàng' } }],
+        ],
+        [
+          [late.id, 'late'],
+          [stopped.id, 'stopped'],
+          [failed.id, 'failed:timeout'],
+          [same.id, 'same'],
+          [changed.id, 'changed'],
+          [none.id, 'none'],
+          [device.id, 'device'],
+        ],
+      ),
+      keepForLateRead: (entry) => {
+        kept.push(entry);
+        return Promise.resolve();
+      },
+    });
+    expect((await spends()).length).toBe(8);
+    expect(kept.map((entry) => entry.captureId).sort()).toEqual(
+      [late.id, stopped.id, failed.id].sort(),
+    );
+    const one = kept.find((entry) => entry.captureId === late.id);
+    expect(one).toEqual({
+      spendId: late.id,
+      captureId: late.id,
+      at: late.at,
+      words: late.alertWords,
+      read: { direction: 'out', amount: 41_000, merchant: 'CUA HANG 0' },
+      saved: { merchant: 'CUA HANG 0', categoryId: 'food' },
+    });
+    // The words are kept there and nowhere on the row.
+    expect(JSON.stringify(await spends())).not.toContain('GD: -41000VND');
   });
 });

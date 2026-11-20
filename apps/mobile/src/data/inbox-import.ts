@@ -8,6 +8,8 @@ import {
   type InboxPaid,
   type InboxSpend,
   type InboxUnread,
+  waitsForLateRead,
+  type AlertReadWaiting,
   type SecondReadOutcome,
   type SightingChannel,
 } from '@6pm/domain';
@@ -43,6 +45,11 @@ export interface InboxImportDeps {
    * saved as the phone read it, and one the phone could not read is let go.
    */
   readonly readAlerts?: (items: readonly (InboxSpend | InboxUnread)[]) => Promise<AlertSecondReads>;
+  /**
+   * Keeps a caught alert whose second reading got no answer, with its words, to be asked about
+   * again (`createLateAlertReads`). Without it such an alert's row stays as the phone read it.
+   */
+  readonly keepForLateRead?: (entry: AlertReadWaiting) => Promise<void>;
   /** Told when a file is dropped; never given the file's content. */
   readonly report: (message: string) => void;
   /**
@@ -108,7 +115,8 @@ export interface InboxImportResult {
  * Saves what the share extension, the shortcuts, the Live Activity and Android's bank alert
  * listener left in the inbox, oldest first, through the same capture as every other source (rules, duplicate merge, the money day
  * of when it happened). A bank alert is saved as its second reader read it, when there is one and
- * it answered; an alert the phone could not read is saved only if that reader finds a payment in
+ * it answered (one that got no answer is saved as the phone read it and kept to be asked about
+ * again); an alert the phone could not read is saved only if that reader finds a payment in
  * it, and waits two days at most for an answer. A file is removed only after what it said is committed, and importing
  * the same file twice changes nothing: its id is the spend's, or its sighting is already there.
  * Then every caught spend that looks like an unpaid bill's payment is marked as paying it.
@@ -183,6 +191,7 @@ export async function importInbox(deps: InboxImportDeps): Promise<InboxImportRes
       if (spendId !== null) {
         saved += 1;
         if (file.photo) await keepInboxPhoto(deps, spendId, file.photo);
+        if (waitsForLateRead(outcomes.get(item.id))) await keepAlertWaiting(deps, item, spendId);
       }
     }
     await remove(file.id);
@@ -211,6 +220,35 @@ async function keepInboxPhoto(deps: InboxImportDeps, spendId: string, from: stri
     );
   } catch {
     deps.report('inbox: a capture photo could not be kept');
+  }
+}
+
+/**
+ * A caught alert whose second reading got no answer is kept, with its words and the name and
+ * category its row was saved with, to be asked about again. Keeping it never stops the import.
+ */
+async function keepAlertWaiting(deps: InboxImportDeps, item: InboxSpend, spendId: string) {
+  const keep = deps.keepForLateRead;
+  const words = item.alertWords;
+  if (!keep || !words || item.source !== 'alert') return;
+  try {
+    const row = await deps.store.tables.spends.get(spendId);
+    if (!row) return;
+    await keep({
+      spendId,
+      captureId: item.id,
+      at: item.at,
+      words,
+      read: {
+        direction: item.direction === 'in' ? 'in' : 'out',
+        amount: item.amount,
+        ...(item.foreign ? { foreign: item.foreign } : {}),
+        merchant: item.merchant,
+      },
+      saved: { merchant: row.merchant, categoryId: row.categoryId },
+    });
+  } catch {
+    deps.report('inbox: an alert could not be kept for its second reading');
   }
 }
 

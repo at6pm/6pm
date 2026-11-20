@@ -27,7 +27,7 @@ const MAX_CATEGORIES = 50;
 const MAX_CATEGORY = 40;
 
 /** Failures that would meet every alert of this import the same way. */
-const STOPS_ASKING: ReadonlySet<ApiFailure> = new Set([
+export const STOPS_ASKING: ReadonlySet<ApiFailure> = new Set([
   'network',
   'timeout',
   'unauthorized',
@@ -41,6 +41,38 @@ const readSchema = z.object({
   merchant: z.string(),
   category: z.string(),
 });
+
+/** What the server says of one alert: its reading, and the category's name ("" for none). */
+export type AlertReadAnswer = AlertReading & { readonly category: string };
+
+/**
+ * Asks the server to read one alert, as `alertReadAsk` prepared it: the first reading an import
+ * waits for, and the late one for an alert that reading got no answer for.
+ */
+export function askAlertRead(
+  deps: Pick<ReadAlertsDeps, 'request' | 'categories'>,
+  asked: AlertReadAsk,
+  home: Currency,
+  timeoutMs: number,
+): Promise<AlertReadAnswer> {
+  return deps.request({
+    method: 'POST',
+    path: '/v1/read-alert',
+    body: {
+      app: asked.app,
+      text: asked.text,
+      amounts: asked.amounts.length,
+      home: home.code,
+      categories: deps
+        .categories()
+        .map((c) => c.name.trim())
+        .filter((name) => name !== '' && name.length <= MAX_CATEGORY)
+        .slice(0, MAX_CATEGORIES),
+    },
+    schema: readSchema,
+    timeoutMs,
+  });
+}
 
 /** Whether the second reading left a caught alert as the phone had read it. */
 const readsTheSame = (phone: InboxSpend, second: InboxSpend) =>
@@ -94,24 +126,8 @@ export function createReadAlerts(deps: ReadAlertsDeps) {
     return { ...item, categoryId: ruled ?? chosen?.id ?? was };
   };
 
-  const ask = (asked: AlertReadAsk, home: Currency): Promise<AlertReading & { category: string }> =>
-    deps.request({
-      method: 'POST',
-      path: '/v1/read-alert',
-      body: {
-        app: asked.app,
-        text: asked.text,
-        amounts: asked.amounts.length,
-        home: home.code,
-        categories: deps
-          .categories()
-          .map((c) => c.name.trim())
-          .filter((name) => name !== '' && name.length <= MAX_CATEGORY)
-          .slice(0, MAX_CATEGORIES),
-      },
-      schema: readSchema,
-      timeoutMs: READ_ALERT_TIMEOUT_MS,
-    });
+  const ask = (asked: AlertReadAsk, home: Currency) =>
+    askAlertRead(deps, asked, home, READ_ALERT_TIMEOUT_MS);
 
   return async (items: readonly (InboxSpend | InboxUnread)[]): Promise<AlertSecondReads> => {
     const answers = new Map<string, AlertSecondRead>();
@@ -141,7 +157,7 @@ export function createReadAlerts(deps: ReadAlertsDeps) {
         outcomes.set(item.id, down ? 'stopped' : 'late');
         return;
       }
-      let read: AlertReading & { category: string };
+      let read: AlertReadAnswer;
       try {
         read = await ask(asked, home);
       } catch (error) {
