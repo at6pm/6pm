@@ -5,6 +5,7 @@ import {
   isSubscriptionProduct,
   lookOfProduct,
   maxPlanOfProduct,
+  playSubscriptionsUrl,
   storeProductOf,
 } from './products';
 
@@ -44,5 +45,17 @@ describe('free trial periods', () => {
     expect(daysOfPeriod('')).toBeNull();
     expect(daysOfPeriod('P1W3D')).toBeNull();
     expect(daysOfPeriod('7 days')).toBeNull();
+  });
+});
+
+describe('playSubscriptionsUrl', () => {
+  it("opens this app among the customer's subscriptions on Google Play", () => {
+    expect(playSubscriptionsUrl('app.at6pm')).toBe(
+      'https://play.google.com/store/account/subscriptions?package=app.at6pm',
+    );
+  });
+
+  it('opens the subscriptions page when the package is not known', () => {
+    expect(playSubscriptionsUrl(null)).toBe('https://play.google.com/store/account/subscriptions');
   });
 });
