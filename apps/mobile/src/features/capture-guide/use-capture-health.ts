@@ -92,6 +92,7 @@ export function useCaptureHealthSection(): HealthSection {
         ? { day: localDateOf(new Date(lastAlert.at)), at: lastAlert.at, bank: lastAlert.bank }
         : null,
       off,
+      on: alertAccess === true ? ['alerts'] : [],
     });
   }, [catches, today, home, aiMode, alertAccess, lastAlert]);
 }

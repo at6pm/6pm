@@ -28,7 +28,12 @@ class SurfacesModule : Module() {
     Name("Surfaces")
 
     // The first catch is said only while 6pm is away; on screen, 6pm shows it itself.
-    OnActivityEntersForeground { CaptureNotices.appVisible = true }
+    OnActivityEntersForeground {
+      CaptureNotices.appVisible = true
+      // The listener can be left unbound with its switch on (after an update, say), and an alert
+      // can come before its reader is up: opening 6pm binds it and reads what is still in the shade.
+      runCatching { AlertListener.catchUp(context) }
+    }
     OnActivityEntersBackground { CaptureNotices.appVisible = false }
     OnActivityDestroys { CaptureNotices.appVisible = false }
 
