@@ -93,7 +93,10 @@ export const deAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'capture.alerts.tip':
     'Codes, fehlgeschlagene Zahlungen und Werbung werden übersprungen. Eine Zahlung, die schon per E-Mail erwischt wurde, kommt nicht doppelt.',
   'capture.alerts.privacy':
-    'Zuerst auf diesem Handy gelesen. 6pm liest nur die Mitteilungen deiner Banken und Wallets. Danach liest unser Server jede ein zweites Mal: Text und Beträge der Mitteilung, auch der Kontostand, wenn er dasteht. Lange Nummern wie Konto-, Karten- und Telefonnummern werden vorher verdeckt. Nie, wenn die KI auf diesem Handy läuft.',
+    'Zuerst auf diesem Handy gelesen. 6pm liest nur die Mitteilungen deiner Banken und Wallets. Danach liest unser Server jede ein zweites Mal: Text und Beträge der Mitteilung, auch der Kontostand, wenn er dasteht. Lange Nummern wie Konto-, Karten- und Telefonnummern werden vorher verdeckt.',
+  // Android has no model to keep on the phone, so the step's card does not offer that.
+  'onboarding.catch.alerts.body':
+    'Die Mitteilungen deiner Bank und Wallet halten fest, was sich bewegt hat. Auf diesem Handy gelesen, dann noch einmal auf unserem Server.',
   'capture.alerts.actionAdd': 'Benachrichtigungszugriff erlauben',
   'capture.alerts.actionOpen': 'Einstellungen für Benachrichtigungszugriff',
 

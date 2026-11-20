@@ -98,3 +98,9 @@ export const LEGAL_LINKS = {
   /** 6pm's source, open under the Apache License 2.0. */
   source: 'https://github.com/at6pm/6pm',
 } as const;
+
+/** Google Play's own page for the subscriptions of one app, where one is changed or cancelled. */
+export function playSubscriptionsUrl(packageName: string | null): string {
+  const base = 'https://play.google.com/store/account/subscriptions';
+  return packageName ? `${base}?package=${encodeURIComponent(packageName)}` : base;
+}

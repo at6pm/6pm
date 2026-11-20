@@ -76,7 +76,10 @@ export const zhHansAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } 
   'capture.alerts.step3Chip': '收件箱',
   'capture.alerts.tip': '验证码、失败的付款和促销会被跳过。邮件已经记下的付款不会重复添加。',
   'capture.alerts.privacy':
-    '先在这台手机上读取。6pm 只读取你的银行和钱包的通知。之后我们的服务器会再读一遍：发送的是通知里的文字和金额，写了余额的话也包括余额。账号、卡号、手机号这类长号码会先隐藏。AI 在手机上运行时绝不发送。',
+    '先在这台手机上读取。6pm 只读取你的银行和钱包的通知。之后我们的服务器会再读一遍：发送的是通知里的文字和金额，写了余额的话也包括余额。账号、卡号、手机号这类长号码会先隐藏。',
+  // Android has no model to keep on the phone, so the step's card does not offer that.
+  'onboarding.catch.alerts.body':
+    '银行和钱包的通知会自动记下每笔钱的进出。先在这台手机上读取，再由我们的服务器读一遍。',
   'capture.alerts.actionAdd': '允许通知使用权',
   'capture.alerts.actionOpen': '通知使用权设置',
 

@@ -88,7 +88,10 @@ export const idAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'capture.alerts.tip':
     'Kode, pembayaran gagal, dan promo dilewati. Pembayaran yang sudah tertangkap lewat email tidak ditambahkan dua kali.',
   'capture.alerts.privacy':
-    'Dibaca dulu di ponsel ini. 6pm hanya membaca notifikasi bank dan dompetmu. Setelah itu server kami membaca tiap notifikasi sekali lagi: kata-kata dan nominalnya, juga saldo kalau tercantum. Nomor panjang seperti rekening, kartu, dan telepon disamarkan dulu. Tidak pernah saat AI berjalan di ponsel ini.',
+    'Dibaca dulu di ponsel ini. 6pm hanya membaca notifikasi bank dan dompetmu. Setelah itu server kami membaca tiap notifikasi sekali lagi: kata-kata dan nominalnya, juga saldo kalau tercantum. Nomor panjang seperti rekening, kartu, dan telepon disamarkan dulu.',
+  // Android has no model to keep on the phone, so the step's card does not offer that.
+  'onboarding.catch.alerts.body':
+    'Notifikasi bank dan dompetmu mencatat uang yang bergerak. Dibaca di ponsel ini, lalu sekali lagi di server kami.',
   'capture.alerts.actionAdd': 'Izinkan akses notifikasi',
   'capture.alerts.actionOpen': 'Setelan akses notifikasi',
 

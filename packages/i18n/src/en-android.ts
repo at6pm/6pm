@@ -93,7 +93,10 @@ export const enAndroid = {
   'capture.alerts.tip':
     'Codes, failed payments and promos are skipped. A payment an email already caught isn’t added twice.',
   'capture.alerts.privacy':
-    'Read on this phone first. 6pm reads only your banks’ and wallets’ notifications. Each is then read a second time on our server, which gets its words and amounts, the balance too if it prints one. Long numbers such as accounts, cards and phones are hidden first. Never when AI is on this phone.',
+    'Read on this phone first. 6pm reads only your banks’ and wallets’ notifications. Each is then read a second time on our server, which gets its words and amounts, the balance too if it prints one. Long numbers such as accounts, cards and phones are hidden first.',
+  // Android has no model to keep on the phone, so the step's card does not offer that.
+  'onboarding.catch.alerts.body':
+    'Your bank and wallet notifications log what moved. They’re read on this phone, then once more on our server.',
   'capture.alerts.actionAdd': 'Allow notification access',
   'capture.alerts.actionOpen': 'Notification access settings',
 

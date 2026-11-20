@@ -1,4 +1,5 @@
-import { Platform } from 'react-native';
+import * as Application from 'expo-application';
+import { Linking, Platform } from 'react-native';
 import Purchases, {
   PRODUCT_CATEGORY,
   type CustomerInfo,
@@ -15,6 +16,7 @@ import {
   maxPlanOfProduct,
   type MaxPlan,
   type PaidLookId,
+  playSubscriptionsUrl,
 } from './products';
 import {
   unavailablePurchases,
@@ -170,7 +172,14 @@ export function revenueCatPurchases(apiKey: string | undefined): PurchasesPort {
     },
     restore: async () => customerFromStore(await Purchases.restorePurchases()),
     customer: async () => customerFromStore(await Purchases.getCustomerInfo()),
-    manageSubscriptions: () => Purchases.showManageSubscriptions(),
+    manageSubscriptions: async () => {
+      // RevenueCat's sheet is Apple's own, and its call throws on Android. There a subscription
+      // is managed and cancelled on Google Play: the store's link for this customer, or this
+      // app's page among their subscriptions.
+      if (Platform.OS !== 'android') return Purchases.showManageSubscriptions();
+      const { managementURL } = await Purchases.getCustomerInfo();
+      await Linking.openURL(managementURL ?? playSubscriptionsUrl(Application.applicationId));
+    },
     onCustomerChange: (listener) => {
       const heard = (info: CustomerInfo) => listener(customerFromStore(info));
       Purchases.addCustomerInfoUpdateListener(heard);
