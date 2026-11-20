@@ -97,7 +97,10 @@ export const esAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'capture.alerts.tip':
     'Los códigos, los pagos fallidos y las promos se saltan. Un pago que ya pilló un correo no se añade dos veces.',
   'capture.alerts.privacy':
-    'Se leen primero en este teléfono. 6pm solo lee las notificaciones de tus bancos y billeteras. Después nuestro servidor lee cada una otra vez: recibe sus palabras y sus importes, y el saldo si aparece. Los números largos, como cuentas, tarjetas y teléfonos, se ocultan antes. Nunca cuando la IA está en este móvil.',
+    'Se leen primero en este teléfono. 6pm solo lee las notificaciones de tus bancos y billeteras. Después nuestro servidor lee cada una otra vez: recibe sus palabras y sus importes, y el saldo si aparece. Los números largos, como cuentas, tarjetas y teléfonos, se ocultan antes.',
+  // Android has no model to keep on the phone, so the step's card does not offer that.
+  'onboarding.catch.alerts.body':
+    'Los avisos de tu banco y tu billetera anotan lo que se movió. Se leen en este teléfono y luego otra vez en nuestro servidor.',
   'capture.alerts.actionAdd': 'Permitir acceso a notificaciones',
   'capture.alerts.actionOpen': 'Ajustes de acceso a notificaciones',
 
