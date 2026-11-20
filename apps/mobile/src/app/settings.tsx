@@ -6,6 +6,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { oklchSrgbHex } from '@6pm/theme';
 
+import { deviceAlertReadsWaiting } from '../data/device-alert-read-waiting';
 import { deviceCaptureLog } from '../data/device-capture-log';
 import { useMoney, useMoneyStore } from '../data/money-provider';
 import { DEFAULT_PLAN } from '../data/plan-settings';
@@ -94,6 +95,8 @@ export default function Settings() {
         void cancelCloseReminder().catch(() => undefined);
         // The capture log holds the words every catch was read from: it goes with the rest.
         void deviceCaptureLog.turnOff().catch(() => undefined);
+        // So do the alerts still waiting for their second reading, with their words.
+        void deviceAlertReadsWaiting.clear().catch(() => undefined);
         return Promise.all([
           lookStore.reload(),
           companionStore.reload(),

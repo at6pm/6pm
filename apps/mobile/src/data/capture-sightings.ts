@@ -101,6 +101,24 @@ export async function ensureOwn(db: SqlDatabase, row: SpendRow): Promise<void> {
   ]);
 }
 
+/**
+ * The payee one capture's sighting names, said again: a bank alert's, once the server has read
+ * who it names. The name stays the bank's word and not the person's, for the projection and for
+ * the names a person gave before.
+ */
+export async function renameSightingPayee(
+  db: SqlDatabase,
+  spendId: string,
+  captureId: string,
+  payee: string,
+): Promise<void> {
+  await db.runAsync('UPDATE spend_sightings SET payee = ? WHERE spend_id = ? AND capture_id = ?', [
+    payee,
+    spendId,
+    captureId,
+  ]);
+}
+
 /** Every column of a sighting as the database holds it. */
 export interface StoredSighting {
   readonly spend_id: string;
