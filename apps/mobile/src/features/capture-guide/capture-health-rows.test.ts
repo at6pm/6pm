@@ -43,6 +43,12 @@ describe('each way’s heartbeat in Settings', () => {
     expect(row(shares, 'share')?.state.kind).toBe('caught');
   });
 
+  it('says bank alerts are ready once the phone can see they are switched on', () => {
+    expect(row([], 'alerts')?.state.kind).toBe('notSetUp');
+    expect(row([], 'alerts', { on: ['alerts'] })?.state.kind).toBe('ready');
+    expect(row([], 'alerts', { on: ['alerts'], off: ['alerts'] })?.state.kind).toBe('off');
+  });
+
   it('says a self-running way that never caught is not set up, the rest ready', () => {
     expect(row([], 'wallet')?.state.kind).toBe('notSetUp');
     expect(row([], 'share')?.state.kind).toBe('ready');

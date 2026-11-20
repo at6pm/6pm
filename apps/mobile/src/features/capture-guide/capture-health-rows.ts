@@ -66,13 +66,19 @@ export interface HealthInput {
   } | null;
   /** Ways switched off where the phone can see it: receipt email in on-device mode, Android's access. */
   readonly off: readonly HealthWay[];
+  /**
+   * Ways that run by themselves and that the phone can see are switched on though they have read
+   * nothing yet: bank alerts on Android once Notification access is given.
+   */
+  readonly on?: readonly HealthWay[];
 }
 
 /**
  * Each way's heartbeat and where it stands: its last catch; quiet when it runs by itself (bank
  * alerts, Wallet, email) and went quiet after a busy fortnight (an alert the shortcut read and
- * skipped says it still runs); not set up when such a way never caught anything; off when the
- * phone can see it is; ready for the ways that ship with the app.
+ * skipped says it still runs); not set up when such a way never caught anything, unless the phone
+ * can see it is switched on; off when the phone can see it is; ready for the ways that ship with
+ * the app, and for one switched on that has had nothing to read yet.
  */
 export function healthRows(
   input: HealthInput,
@@ -100,7 +106,7 @@ export function healthRows(
         ? { kind: 'quiet', quiet }
         : seenAt
           ? { kind: 'caught', at: seenAt }
-          : selfRunning
+          : selfRunning && !input.on?.includes(way)
             ? { kind: 'notSetUp' }
             : { kind: 'ready' };
     return { way, beats: strips.beats.get(source) ?? [], state, bank };
