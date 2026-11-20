@@ -142,9 +142,10 @@ Không bao giờ hỏi mật khẩu ngân hàng. Dữ liệu được mã hoá t
 Chính sách quyền riêng tư: https://at6pm.app/vi/privacy
 ```
 
-**Category**: Finance. **Tags**: Budgeting, Personal finance. **Contact**: k7m2qx@at6pm.app (the
-privacy policy's contact); website https://at6pm.app. **AI asset label**: none (the screenshots are
-captures and the feature graphic is rendered from HTML).
+**Category**: Finance. **Tags**: Finance, Personal finance (Play has no budgeting tag). **Contact**:
+hello@oddeggs.studio, the studio's address, as on its other listings; website https://at6pm.app.
+Contact details publish at once when saved, with no review. **AI asset label**: none (the screenshots
+are captures and the feature graphic is rendered from HTML).
 
 ## App content (Policy → App content)
 
