@@ -30,7 +30,7 @@ Bài này do đội 6pm viết. Thông tin về Money Lover và MISA lấy từ 
 | | Money Lover | Sổ Thu Chi MISA | 6pm |
 |---|---|---|---|
 | Nhà phát triển | Finsify | MISA | 6pm (Việt Nam) |
-| Nền tảng | iPhone, iPad, Mac, Apple Watch, Android | iPhone, iPad, Mac, Android | iPhone; Android đang thử (beta) |
+| Nền tảng | iPhone, iPad, Mac, Apple Watch, Android | iPhone, iPad, Mac, Android | iPhone, Android |
 | Ngôn ngữ | Tiếng Việt, tiếng Anh và nhiều thứ tiếng | Tiếng Việt và nhiều thứ tiếng | Tiếng Việt, tiếng Anh |
 | Giá trả phí (App Store VN) | Premium trọn đời 599.000₫; Ví liên kết 39.000–49.000₫/tháng | Premium năm 215.000₫, trọn đời 799.000₫; Biến động số dư 49.000₫ | Max 99.000₫/tháng hoặc 799.000₫/năm, thử 7 ngày |
 | Liên kết ngân hàng | Có, gói Ví liên kết trả phí | Có, gói trả phí | Không, có chủ đích |
@@ -67,7 +67,7 @@ Không app nào ghi được 100% mà không cần bạn. Khác biệt là bạn
 
 ## Khi nào nên chọn Money Lover
 
-- Bạn cần bản Android đã phát hành chính thức, hoặc muốn ghi từ Apple Watch, Mac.
+- Bạn muốn ghi từ Apple Watch, Mac.
 - Bạn muốn ngân sách riêng cho từng danh mục: ăn uống 3 triệu, mua sắm 1 triệu.
 - Bạn cần theo dõi nợ, nhiều ví, nhiều loại tiền và xuất sang Google Sheets.
 - Bạn thích trả một lần: Premium trọn đời 599.000₫.
@@ -77,7 +77,7 @@ Không app nào ghi được 100% mà không cần bạn. Khác biệt là bạn
 - Cả nhà cùng ghi một cuốn sổ.
 - Bạn thích hạn mức theo danh mục có cảnh báo, và báo cáo, xuất Excel/PDF.
 - Bạn muốn liên kết nhận biến động số dư với gói trả phí.
-- Bạn cần bản Android chính thức, hoặc thích Premium trọn đời.
+- Bạn thích Premium trọn đời.
 
 ## Khi nào nên chọn 6pm
 
@@ -91,7 +91,7 @@ Không app nào ghi được 100% mà không cần bạn. Khác biệt là bạn
 
 ## Điểm yếu của 6pm, nói trước
 
-- Bản Android còn đang thử kín trên Google Play. Ai cũng tham gia được: bấm **Thử bản Android** ở [at6pm.app/vi](https://at6pm.app/vi), hai bước với cùng một tài khoản Google. Chưa có bản web hay máy tính.
+- Chưa có bản web hay máy tính.
 - Không liên kết ngân hàng: khoản quẹt thẻ mà bạn không chụp, không chuyển email, không qua Apple Pay thì phải tự ghi.
 - Ít báo cáo theo danh mục hơn hai app kia; trọng tâm là con số mỗi ngày.
 - App còn mới trên App Store, chưa có nhiều năm đánh giá như Money Lover hay MISA.

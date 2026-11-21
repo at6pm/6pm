@@ -23,7 +23,7 @@ export const siteCopyVi: SiteCopy = {
   },
   hero: {
     kickWait: 'Cho iPhone · Ra mắt 18:00, 6/11',
-    kickCard: 'Miễn phí trên App Store',
+    kickCard: 'iPhone & Android · Miễn phí',
     a: 'Chốt ngày',
     b: 'lúc sáu giờ.',
     sub: 'Cứ tiêu như mọi ngày. Sáu giờ, vuốt một lần là xong ngày, và sáng mai bắt đầu bằng một con số bạn tin được.',
@@ -39,17 +39,6 @@ export const siteCopyVi: SiteCopy = {
     android: {
       store: 'Tải trên Google Play',
       storeTop: 'Tải nội dung trên',
-      button: 'Thử bản Android',
-      title: 'Tham gia bản thử Android',
-      close: 'Đóng',
-      how: 'Bản Android đang thử kín trên Google Play. Ai cũng tham gia được, chỉ hai bước.',
-      group: 'Vào nhóm người thử',
-      groupNote: 'Bấm “Tham gia nhóm”, rồi quay lại trang này để làm bước 2.',
-      test: 'Trở thành người thử',
-      testNote: 'Rồi bấm “Trở thành người thử nghiệm” trên Google Play:',
-      install: 'Cài 6pm: Safe to Spend từ Google Play.',
-      sameAccount:
-        'Dùng cùng một tài khoản Google cho cả hai bước, là tài khoản trên Play Store của bạn.',
     },
   },
   phone: {

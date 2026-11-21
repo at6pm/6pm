@@ -23,7 +23,7 @@ export const siteCopyEn: SiteCopy = {
   },
   hero: {
     kickWait: 'For iPhone · Arrives 6 Nov, 18:00',
-    kickCard: 'Free on the App Store',
+    kickCard: 'iPhone & Android · Free',
     a: 'Close your day',
     b: 'at six.',
     sub: 'Spend like you normally do. At six, one swipe settles the day, and tomorrow starts with one number you can trust.',
@@ -39,16 +39,6 @@ export const siteCopyEn: SiteCopy = {
     android: {
       store: 'Get it on Google Play',
       storeTop: 'Get it on',
-      button: 'Join the Android beta',
-      title: 'Join the Android beta',
-      close: 'Close',
-      how: 'The Android app is in a closed test on Google Play. Anyone can join, in two steps.',
-      group: 'Join the tester group',
-      groupNote: 'Tap “Join group”, then come back here for step 2.',
-      test: 'Become a tester',
-      testNote: 'Then tap “Become a tester” on Google Play:',
-      install: 'Install 6pm: Safe to Spend from Google Play.',
-      sameAccount: 'Use the same Google account for both steps, the one on your Play Store.',
     },
   },
   phone: {

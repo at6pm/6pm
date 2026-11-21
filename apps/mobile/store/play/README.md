@@ -233,9 +233,10 @@ The encrypted backup (Max) is end-to-end encrypted, so Play counts it as not col
   days in a row.
 - **Production**: the first production release, versionCode 15 (2.2.1), every country, full rollout,
   was sent for review on 21 Nov 2026 with managed publishing off, so it goes live when Google
-  approves it. The site's `androidMode` (`apps/web/src/data/site/config.ts`) moves from `beta` to
-  `store` once it is live. versionCode 17 (2.2.1: bank alerts posted before the listener was bound, a
-  late second reading, its outcome in the capture log) went to closed testing in the same review,
-  which restarted the production review that had begun minutes earlier.
+  approves it. versionCode 17 (2.2.1: bank alerts posted before the listener was bound, a late
+  second reading, its outcome in the capture log) went to closed testing in the same review, which
+  restarted the production review that had begun minutes earlier. Both were approved about three
+  hours later: 6pm has been public on Google Play since 21 Nov 2026, and the site links to the
+  listing. versionCode 17 was sent to production the same afternoon as the first update.
 - **Local builds**: `eas build --local` needs `ANDROID_HOME` set (the SDK is at
   `~/Library/Android/sdk`); every attempt takes the next versionCode, failed or not.
