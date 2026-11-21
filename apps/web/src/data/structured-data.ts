@@ -20,6 +20,7 @@ import {
   ctaMode,
   founder,
   maxPrices,
+  playStoreUrl,
   studioName,
   studioProfiles,
   studioUrl,
@@ -89,10 +90,12 @@ function appNode(lang: BlogLang): Json {
     '@id': ids.app,
     name: '6pm',
     description: siteCopy[lang].meta.description,
-    operatingSystem: 'iOS',
+    operatingSystem: 'iOS, Android',
     applicationCategory: 'FinanceApplication',
     url: `${siteUrl}${lang === 'vi' ? '/vi' : '/'}`,
-    ...(ctaMode === 'store' ? { downloadUrl: appStoreUrl, installUrl: appStoreUrl } : {}),
+    ...(ctaMode === 'store'
+      ? { downloadUrl: [appStoreUrl, playStoreUrl], installUrl: [appStoreUrl, playStoreUrl] }
+      : { downloadUrl: playStoreUrl, installUrl: playStoreUrl }),
     publisher: { '@id': ids.studio },
     offers: [
       { '@type': 'Offer', name: '6pm', price: '0', priceCurrency: currency },

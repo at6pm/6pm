@@ -115,7 +115,7 @@ Chúng tôi không lưu giao dịch của bạn; chúng nằm trên iPhone của
 
 ### Có bản Android không?
 
-Có, đang ở bản thử. App 6pm có trên iPhone qua App Store; bản Android đang thử kín trên Google Play và ai cũng tham gia được: bấm **Thử bản Android** ở [at6pm.app/vi](https://at6pm.app/vi), rồi làm hai bước với cùng một tài khoản Google. Trên Android không có Apple Pay; thay vào đó 6pm tự ghi từ thông báo của app ngân hàng và ví.
+Có. App 6pm có trên App Store cho iPhone và trên [Google Play](https://play.google.com/store/apps/details?id=app.at6pm) cho Android. Trên Android không có Apple Pay; thay vào đó 6pm tự ghi từ thông báo của app ngân hàng và ví.
 
 ## Thử 6pm
 

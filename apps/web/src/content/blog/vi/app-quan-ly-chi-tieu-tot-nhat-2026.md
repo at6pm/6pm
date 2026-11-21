@@ -13,7 +13,7 @@ hero: [today, close-receipt]
 
 # App quản lý chi tiêu tốt nhất 2026 cho iPhone: so sánh thật lòng
 
-Không có một app quản lý chi tiêu "tốt nhất" cho mọi người. Muốn liên kết ngân hàng và có bản Android đã phát hành chính thức, chọn Money Lover hoặc Sổ Thu Chi MISA. Muốn ví chung và bản web, chọn Spendee. Muốn chi tiêu tự ghi, mỗi tối chốt một phút, sáng ra nhìn một con số, chọn 6pm.
+Không có một app quản lý chi tiêu "tốt nhất" cho mọi người. Muốn liên kết ngân hàng, chọn Money Lover hoặc Sổ Thu Chi MISA. Muốn ví chung và bản web, chọn Spendee. Muốn chi tiêu tự ghi, mỗi tối chốt một phút, sáng ra nhìn một con số, chọn 6pm.
 
 Bài này do đội 6pm viết. Thông tin về app khác lấy từ trang App Store và website của chính họ (link cuối bài), và chỗ nào họ hơn, mình nói thẳng.
 
@@ -29,7 +29,7 @@ Trước khi xem bảng, hỏi mình ba câu:
 
 | | 6pm | Money Lover | Sổ Thu Chi MISA (MoneyKeeper) | Spendee |
 |---|---|---|---|---|
-| Nền tảng | iPhone (Android đang thử) | iPhone, iPad, Mac, Apple Watch, Android | iPhone, iPad, Mac, Android | iPhone, Android, web |
+| Nền tảng | iPhone, Android | iPhone, iPad, Mac, Apple Watch, Android | iPhone, iPad, Mac, Android | iPhone, Android, web |
 | Bản miễn phí | Có: chốt ngày, mọi cách ghi, Cùng chia ngân sách | Có, kèm mua thêm | Có, kèm mua thêm | Có: 1 ví tiền mặt, 1 ngân sách |
 | Gói trả phí | Max 99.000₫/tháng hoặc 799.000₫/năm, thử 7 ngày | Premium trọn đời 599.000₫; Ví liên kết 39.000–49.000₫/tháng | Premium năm 215.000₫, trọn đời 799.000₫; biến động số dư 49.000₫ | Plus, Premium (xem giá hiện tại trên App Store) |
 | Liên kết ngân hàng | Không, có chủ đích | Có, gói trả phí | Có, gói trả phí | Có |
@@ -61,7 +61,7 @@ Cách ghi là thứ 6pm đầu tư nhiều nhất:
 
 Con số mỗi ngày được tính từ lương, trừ hoá đơn, trừ phần cho **bạn của tương lai** và các hũ, rồi chia đều cho số ngày đến kỳ lương. Bạn hỏi được luôn: "Thứ Bảy tiêu 2tr được không?" và **Hỏi 6pm** trả lời từ chính số liệu của bạn.
 
-**Điểm yếu, nói thật:** bản Android còn đang thử kín trên Google Play (ai cũng tham gia được qua nút **Thử bản Android** ở [at6pm.app/vi](https://at6pm.app/vi)), chưa có bản web hay máy tính. Không liên kết ngân hàng, nên khoản nào không quét, không chia sẻ, không qua email thì phải tự ghi. Ít báo cáo theo danh mục. Và 6pm còn mới, chưa có đánh giá trên App Store.
+**Điểm yếu, nói thật:** chưa có bản web hay máy tính. Không liên kết ngân hàng, nên khoản nào không quét, không chia sẻ, không qua email thì phải tự ghi. Ít báo cáo theo danh mục. Và 6pm còn mới, chưa có đánh giá trên App Store.
 
 <!-- media: close-swipe-clip -->
 
@@ -73,7 +73,7 @@ Money Lover (của Finsify) có tên trên App Store Việt Nam là "Money Lover
 
 Liên kết ngân hàng nằm trong gói "Ví liên kết" trả theo tháng, có thử 7 ngày. Premium trọn đời trên App Store Việt Nam là 599.000₫.
 
-**Hơn 6pm ở:** có bản Android chính thức, Apple Watch và Mac ngay hôm nay; có liên kết ngân hàng; quản lý nợ và ngân sách theo danh mục rất chi tiết; đã chạy nhiều năm.
+**Hơn 6pm ở:** có Apple Watch và Mac ngay hôm nay; có liên kết ngân hàng; quản lý nợ và ngân sách theo danh mục rất chi tiết; đã chạy nhiều năm.
 
 ## 3. Sổ Thu Chi MISA (MISA MoneyKeeper): quen thuộc với người Việt
 
@@ -83,7 +83,7 @@ Nhiều người tìm "sổ thu chi" và gặp app này: tên trên App Store Vi
 
 MISA cho ghi bằng giọng nói, tin nhắn hoặc ảnh hoá đơn, đặt hạn mức theo danh mục kèm cảnh báo, chia sẻ sổ với gia đình, theo dõi nợ, tiết kiệm và xuất Excel/PDF. Gói "Biến động số dư ngân hàng" trả phí để giao dịch tự cập nhật; trang của họ không nêu danh sách ngân hàng.
 
-**Hơn 6pm ở:** có bản Android chính thức; nhiều người cùng ghi một sổ; báo cáo và xuất dữ liệu phong phú; Premium trọn đời 799.000₫ nếu bạn không thích thuê bao.
+**Hơn 6pm ở:** nhiều người cùng ghi một sổ; báo cáo và xuất dữ liệu phong phú; Premium trọn đời 799.000₫ nếu bạn không thích thuê bao.
 
 ## 4. Spendee: ví chung và bản web
 
@@ -91,11 +91,11 @@ MISA cho ghi bằng giọng nói, tin nhắn hoặc ảnh hoá đơn, đặt h�
 
 Spendee có ví chung cho cặp đôi, gia đình, bạn cùng phòng; ngân sách theo danh mục; mục tiêu tiết kiệm; quét hoá đơn bằng AI; nhiều loại tiền. Trang giá ghi bản Basic miễn phí với 1 ví tiền mặt và 1 ngân sách, các gói Plus và Premium trả phí, thử 7 ngày. Có tiếng Việt trên App Store.
 
-**Hơn 6pm ở:** có bản Android chính thức và bản web; ví chung cho cả nhóm cùng xem giao dịch; kết nối ví điện tử như PayPal và tiền mã hoá.
+**Hơn 6pm ở:** có bản web; ví chung cho cả nhóm cùng xem giao dịch; kết nối ví điện tử như PayPal và tiền mã hoá.
 
 ## Vậy nên chọn app nào?
 
-- **Cần bản Android chính thức, hoặc cần máy tính:** Money Lover, Sổ Thu Chi MISA hoặc Spendee.
+- **Cần dùng trên máy tính:** Money Lover, Sổ Thu Chi MISA hoặc Spendee.
 - **Muốn liên kết ngân hàng tự động và chịu trả phí:** Money Lover hoặc MISA.
 - **Cả nhà cùng ghi một sổ:** MISA hoặc Spendee.
 - **Trả tiền chủ yếu bằng QR, ghét gõ tay, muốn mỗi sáng biết hôm nay tiêu được bao nhiêu:** 6pm.
@@ -118,7 +118,7 @@ Không. Đó là cùng một app của MISA; "Sổ Thu Chi MISA" là tên trên 
 
 ### 6pm có bản Android không?
 
-Có, đang ở bản thử. App 6pm có trên iPhone qua App Store; bản Android đang thử kín trên Google Play và ai cũng tham gia được: bấm **Thử bản Android** ở [at6pm.app/vi](https://at6pm.app/vi), rồi làm hai bước với cùng một tài khoản Google. Bản Android tự ghi được từ thông báo của app ngân hàng và ví; không có Apple Pay, Siri và Cùng chia ngân sách.
+Có. App 6pm có trên App Store cho iPhone và trên [Google Play](https://play.google.com/store/apps/details?id=app.at6pm) cho Android. Bản Android tự ghi được từ thông báo của app ngân hàng và ví; không có Apple Pay, Siri và Cùng chia ngân sách.
 
 ### 6pm có an toàn không?
 

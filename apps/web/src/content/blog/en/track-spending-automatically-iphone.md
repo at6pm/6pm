@@ -130,7 +130,7 @@ We never store your transactions; they live on your iPhone, encrypted. No bank l
 
 ### Is 6pm on Android?
 
-In beta. The 6pm app is on the App Store for iPhone, and Android is in a closed test on Google Play that anyone can join: tap **Join the Android beta** on [at6pm.app](https://at6pm.app), then take two steps with the same Google account. Android has no Apple Pay; 6pm catches spends from bank and wallet notifications there instead.
+Yes. The 6pm app is on the App Store for iPhone and on [Google Play](https://play.google.com/store/apps/details?id=app.at6pm) for Android. Android has no Apple Pay; 6pm catches spends from bank and wallet notifications there instead.
 
 ## Try 6pm
 
