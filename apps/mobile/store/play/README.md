@@ -185,15 +185,19 @@ https://at6pm.app/privacy#your-choices-and-rights.
 Processors (Anthropic, Deepgram, ElevenLabs, RevenueCat, Sentry, Cloudflare) act for 6pm, so this is
 "collected", not "shared". Data is encrypted in transit. Users can ask for deletion (the policy's contact).
 
-**Not collected**: bank and wallet notifications (read on the phone only), location (country worked out
-on the phone), contacts, calendar, files, web history. The encrypted backup (Max) is end-to-end
-encrypted, so Play counts it as not collected.
+Bank and wallet notifications are part of "Other financial info": the phone reads each one first, then
+its words and amounts (account, card and phone numbers hidden) go to our server to be read a second
+time and are not stored. The form's answers for that type already said collected, not shared, optional,
+so nothing in the Console changed when the second reading shipped (checked 21 Nov 2026).
+
+**Not collected**: location (country worked out on the phone), contacts, calendar, files, web history.
+The encrypted backup (Max) is end-to-end encrypted, so Play counts it as not collected.
 
 ### Permissions Play may ask about
 
 | Permission                                         | Why                                                                                                                                                                             |
 | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Notification listener (Notification access)        | Bank and wallet alerts, read on the phone, only from known bank and wallet apps. The guide shows what is read before the switch is turned on. No declaration form exists for it |
+| Notification listener (Notification access)        | Bank and wallet alerts, read on the phone first, only from known bank and wallet apps. The guide shows what is read before the switch is turned on. No declaration form exists for it |
 | `SCHEDULE_EXACT_ALARM`                             | The daily close reminder at the time the person chose. Not `USE_EXACT_ALARM`, so no declaration                                                                                 |
 | `CAMERA`, `RECORD_AUDIO`, coarse and fine location | Scan, voice, Travel mode (foreground only)                                                                                                                                      |
 | No `READ_MEDIA_*`                                  | Scan uses the system Photo Picker; saving pictures needs no read access                                                                                                         |
@@ -227,5 +231,11 @@ encrypted, so Play counts it as not collected.
   failed local build), sent for review with the app content on 1 Nov 2026. Testers come from the
   "Internal" list until a Google Group is added. Production needs 12 or more testers opted in for 14
   days in a row.
+- **Production**: the first production release, versionCode 15 (2.2.1), every country, full rollout,
+  was sent for review on 21 Nov 2026 with managed publishing off, so it goes live when Google
+  approves it. The site's `androidMode` (`apps/web/src/data/site/config.ts`) moves from `beta` to
+  `store` once it is live. versionCode 17 (2.2.1: bank alerts posted before the listener was bound, a
+  late second reading, its outcome in the capture log) went to closed testing in the same review,
+  which restarted the production review that had begun minutes earlier.
 - **Local builds**: `eas build --local` needs `ANDROID_HOME` set (the SDK is at
   `~/Library/Android/sdk`); every attempt takes the next versionCode, failed or not.
