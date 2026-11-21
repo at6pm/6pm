@@ -1,13 +1,7 @@
 import type { APIRoute } from 'astro';
 
 import { blogPath, isEngineering, postsIn, type Post } from '../data/blog';
-import {
-  androidBetaGroupUrl,
-  appStoreUrl,
-  maxPrices,
-  playTestUrl,
-  repoUrl,
-} from '../data/site/config';
+import { appStoreUrl, maxPrices, playStoreUrl, repoUrl } from '../data/site/config';
 import { absolute } from '../data/structured-data';
 
 const line = (post: Post) =>
@@ -19,7 +13,7 @@ export const GET: APIRoute = async () => {
   const body = [
     '# 6pm',
     '',
-    '> 6pm is a phone app for a daily money ritual, on iPhone and in beta on Android. Spends are caught through the day (Apple Pay via a Shortcuts automation on iPhone, VietQR scans, receipt photos, forwarded bank and receipt emails, voice, a keypad), and at a close time (6pm by default) the day is swiped through in about a minute. The next morning starts with one number: safe to spend today.',
+    '> 6pm is a phone app for a daily money ritual, on iPhone and Android. Spends are caught through the day (Apple Pay via a Shortcuts automation on iPhone, VietQR scans, receipt photos, forwarded bank and receipt emails, voice, a keypad), and at a close time (6pm by default) the day is swiped through in about a minute. The next morning starts with one number: safe to spend today.',
     '',
     '- Made by Odd Eggs, a small studio in Saigon, Vietnam. Open source (Apache 2.0): ' + repoUrl,
     '- English and Vietnamese. Works in any currency; VietQR payments in Vietnam hand off to the bank app.',
@@ -27,11 +21,9 @@ export const GET: APIRoute = async () => {
     '- Capture, the daily close and privacy are free. 6pm Max (US $' +
       `${maxPrices.en.month}/month or $${maxPrices.en.year}/year; Vietnam ${maxPrices.vi.month.toLocaleString('vi-VN')}₫/month or ${maxPrices.vi.year.toLocaleString('vi-VN')}₫/year, 7 days free) adds every look, unlimited Ask and pots, Travel mode, and encrypted backup and export.`,
     '- On the App Store: ' + appStoreUrl,
-    '- On Android: a closed test on Google Play (6pm: Safe to Spend) that anyone can join. With one Google account, join the tester group at ' +
-      androidBetaGroupUrl +
-      ', then become a tester at ' +
-      playTestUrl +
-      ' and install from Google Play. The Android app also catches spends from bank and wallet notifications; it has no Apple Pay, Siri or Budget together.',
+    '- On Google Play (6pm: Safe to Spend): ' +
+      playStoreUrl +
+      '. The Android app also catches spends from bank and wallet notifications; it has no Apple Pay, Siri or Budget together.',
     '',
     '## Guides (English)',
     '',

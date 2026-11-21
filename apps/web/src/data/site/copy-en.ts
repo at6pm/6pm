@@ -1,4 +1,4 @@
-import { androidBetaGroupUrl, playTestUrl } from './config';
+import { playStoreUrl } from './config';
 import type { SiteCopy } from './copy';
 import { duoCopyEn } from './duo-copy-en';
 import { surfacesCopy } from './surfaces-copy';
@@ -37,6 +37,8 @@ export const siteCopyEn: SiteCopy = {
     note: 'One email on launch day. That’s all.',
     beta: 'Can’t wait? Try the public beta on TestFlight',
     android: {
+      store: 'Get it on Google Play',
+      storeTop: 'Get it on',
       button: 'Join the Android beta',
       title: 'Join the Android beta',
       close: 'Close',
@@ -282,7 +284,7 @@ export const siteCopyEn: SiteCopy = {
       ],
       [
         'Is it on Android?',
-        `Yes, in a closed test on Google Play that anyone can join. With one Google account, join the tester group at ${androidBetaGroupUrl}, then become a tester at ${playTestUrl}. Scan, bank alerts, receipt email, voice, the close and Ask are all there; Home screen widgets and Quick Settings tiles are on the way.`,
+        `Yes, on Google Play: ${playStoreUrl}. Scan, bank alerts, receipt email, voice, the close and Ask are all there, with Home screen widgets and Quick Settings tiles.`,
       ],
     ],
   },

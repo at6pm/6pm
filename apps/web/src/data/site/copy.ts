@@ -78,6 +78,9 @@ export interface SiteCopy {
      * become a tester), then the install. The links come from `config.ts`.
      */
     readonly android: {
+      /** Google Play's badge: its name for screen readers, and the line above "Google Play". */
+      readonly store: string;
+      readonly storeTop: string;
       /** The button beside the App Store badge that opens the dialog. */
       readonly button: string;
       /** The dialog's title, and its close button's label. */
