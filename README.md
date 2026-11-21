@@ -6,10 +6,12 @@
 
 **Close your day at six. Wake up to one number.**
 
-A daily money ritual for iPhone. 6pm catches what you spend all day, you swipe once at six to close
-the day, and tomorrow morning you get one number: what's safe to spend today.
+A daily money ritual for iPhone and Android. 6pm catches what you spend all day, you swipe once at
+six to close the day, and tomorrow morning you get one number: what's safe to spend today.
 
-[at6pm.app](https://at6pm.app) · [Tiếng Việt](https://at6pm.app/vi) · [hello@at6pm.app](mailto:hello@at6pm.app) · On the App Store 6 Nov 2026, 18:00
+[at6pm.app](https://at6pm.app) · [Tiếng Việt](https://at6pm.app/vi) · [hello@at6pm.app](mailto:hello@at6pm.app)
+
+[App Store](https://apps.apple.com/app/id6504689878) · [Google Play](https://play.google.com/store/apps/details?id=app.at6pm)
 
 </div>
 
