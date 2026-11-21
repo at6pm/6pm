@@ -1,4 +1,4 @@
-import { androidBetaGroupUrl, playTestUrl } from './config';
+import { playStoreUrl } from './config';
 import type { SiteCopy } from './copy';
 import { duoCopyVi } from './duo-copy-vi';
 import { surfacesCopy } from './surfaces-copy';
@@ -37,6 +37,8 @@ export const siteCopyVi: SiteCopy = {
     note: 'Một email vào ngày ra mắt. Vậy thôi.',
     beta: 'Muốn dùng ngay? Thử bản beta công khai trên TestFlight',
     android: {
+      store: 'Tải trên Google Play',
+      storeTop: 'Tải nội dung trên',
       button: 'Thử bản Android',
       title: 'Tham gia bản thử Android',
       close: 'Đóng',
@@ -286,7 +288,7 @@ export const siteCopyVi: SiteCopy = {
       ],
       [
         'Có bản Android không?',
-        `Có, đang thử kín trên Google Play và ai cũng tham gia được. Dùng một tài khoản Google, vào nhóm người thử tại ${androidBetaGroupUrl}, rồi đăng ký thử tại ${playTestUrl}. Đã có quét mã, thông báo ngân hàng, email hoá đơn, nhập bằng giọng nói, chốt ngày và Hỏi; widget màn hình chính và ô Cài đặt nhanh sắp có.`,
+        `Có, trên Google Play: ${playStoreUrl}. Đã có quét mã, thông báo ngân hàng, email hoá đơn, nhập bằng giọng nói, chốt ngày và Hỏi, cùng widget màn hình chính và ô Cài đặt nhanh.`,
       ],
     ],
   },
