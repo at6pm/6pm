@@ -52,23 +52,23 @@ categories are written in it):
 
 ### en-US
 
-**App name** (≤ 30): 6pm: Safe to Spend
+**App name** (≤ 30): 6pm: Auto Expense Tracker
 
-**Short description** (≤ 80): Know what’s safe to spend today. Close your day in one swipe at six.
+**Short description** (≤ 80): Expense tracker that logs itself from bank alerts. Know what's safe to spend.
 
 **Full description** (≤ 4000):
 
 ```
-Most budget apps want an hour a week. 6pm wants one minute a day. All day it catches what you spend: your bank's notifications, VietQR scans, receipt photos, bank emails, your voice. At six, you swipe once to close the day. Tomorrow morning you get one number: what's safe to spend today.
+6pm is an expense tracker that fills itself in. Pay by card or transfer, and the notification from your bank or wallet app becomes a line in your spending log: nothing to type, no bank login, no account linking. At six, you swipe once to close the day. Tomorrow morning there is one number: what's safe to spend today. Free.
+
+YOUR BANK'S NOTIFICATIONS LOG THEMSELVES
+Turn on notification access once, and every payment alert from your bank or wallet lands in your inbox by itself. Codes, failed payments and promotions are skipped. 6pm reads nothing from any other app.
 
 KNOW WHAT'S SAFE TO SPEND TODAY
 One number on your Today screen, worked out from your pay, your bills and what you have already spent. Spend less today and tomorrow's number grows.
 
 CLOSE YOUR DAY IN ONE SWIPE
 At six, 6pm shows what it caught. Keep it, edit it, or mark it not yours, then swipe once. The day is closed.
-
-YOUR BANK'S NOTIFICATIONS LOG THEMSELVES
-Turn on notification access once, and every payment alert from your bank or wallet lands in your inbox by itself. Codes, failed payments and promotions are skipped. 6pm reads nothing from any other app.
 
 SIX WAYS TO LOG, ONE INBOX
 Bank notifications, VietQR scans, receipt photos, forwarded bank emails, your voice and a quick keypad. Everything lands in one inbox for the close.
@@ -105,7 +105,7 @@ Privacy Policy: https://at6pm.app/privacy
 **Mô tả đầy đủ**:
 
 ```
-6pm là app quản lý chi tiêu tự động. Chuyển khoản hay quẹt thẻ xong, thông báo biến động số dư của ngân hàng và ví (Vietcombank, MoMo và nhiều ngân hàng khác) tự thành một dòng trong sổ thu chi: không cần nhập tay, không cần liên kết hay đăng nhập ngân hàng. Sáu giờ tối, bạn vuốt một lần để chốt ngày. Sáng mai chỉ một con số: hôm nay tiêu được bao nhiêu. Miễn phí.
+6pm là app quản lý chi tiêu tự động. Chuyển khoản hay quẹt thẻ xong, thông báo biến động số dư từ app ngân hàng và ví điện tử tự thành một dòng trong sổ thu chi: không cần nhập tay, không cần liên kết hay đăng nhập ngân hàng. Sáu giờ tối, bạn vuốt một lần để chốt ngày. Sáng mai chỉ một con số: hôm nay tiêu được bao nhiêu. Miễn phí.
 
 THÔNG BÁO NGÂN HÀNG TỰ GHI
 Bật quyền truy cập thông báo một lần, mọi thông báo biến động số dư của ngân hàng và ví tự về thẳng hộp thư. Mã OTP, giao dịch lỗi và khuyến mãi được bỏ qua. 6pm không đọc gì từ ứng dụng khác.
@@ -144,8 +144,9 @@ Chính sách quyền riêng tư: https://at6pm.app/vi/privacy
 The Vietnamese name and short description carry the words people search the store with ("quản lý chi
 tiêu", "sổ thu chi", "tự động", "thông báo ngân hàng"): on 22 Nov 2026 nearly every app ranking for the
 category had the phrase in its title and 6pm, under its English name, did not appear. The description
-opens with the bank-alert capture and keeps that section first. Sent for review 22 Nov 2026. The
-English listing is unchanged.
+opens with the bank-alert capture and keeps that section first, and names no bank or wallet (the
+founder's choice). The English listing follows the same pattern, with the category in its name since
+Play has no subtitle. Both were sent for review on 22 Nov 2026.
 
 
 **Category**: Finance. **Tags**: Finance, Personal finance (Play has no budgeting tag). **Contact**:
