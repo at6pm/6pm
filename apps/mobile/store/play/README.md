@@ -23,7 +23,16 @@ with what it has instead (bank and wallet notifications).
 Real captures of the developer build on the Android emulator (`sixpm-pixel`), in order: Today, the
 Close, Bank alerts, the Inbox, Quick add, Plan and Diary. Each is the Friday fixture with the clock
 pinned at 18:07 (`dev-command.json`: `{"seed":"friday","at":"18:07","route":"/close"}`, in dollars for
-en-US and đồng for vi; its categories take the app's language). The screen is set to 2:1 (`adb shell wm size 1080x2160`), with the dev Tools button off and Android's demo status bar at
+en-US and đồng for vi). The fixture is local per language. Its names follow the app's language:
+English and Vietnamese keep the prototype's Hồ Chí Minh City, and every other language has its own
+everyday shops, bills and dated jar (plain descriptions or invented names, never a real brand), with
+no bank named: the coffee is caught from a bank alert and the shop from a shared receipt. Its amounts
+follow `currency`: round local prices and a salaried month in EUR (de, es, fr), IDR (id), JPY (ja),
+KRW (ko), THB (th) and CNY (zh-Hans), the prototype's own in VND, and the đồng amounts by rate in
+any other currency, dollars included. So seed each language with its home currency
+(`{"seed":"friday","currency":"EUR","at":"18:07"}` in German). Today's line stays close to the
+designed one on any day of the pay cycle, so the capture day matters little. The screen is set to 2:1
+(`adb shell wm size 1080x2160`), with the dev Tools button off and Android's demo status bar at
 18:07 (`com.android.systemui.demo`); each is then scaled to 1920 tall and its own side edges extended to
 1080 wide, since Play takes only 9:16. The app language follows Android's per-app language
 (`cmd locale set-app-locales app.at6pm.dev --locales vi-VN`).
@@ -39,7 +48,7 @@ one (`design/prototype/StoreShot.dc.html`), in English and Vietnamese.
 The captures are the developer build with the Friday fixture, the emulator's clock set to Friday
 16 October 2026 at 18:07, gesture navigation, the dev Tools button off, in dollars for en-US and
 đồng for vi (set the language with one `dev-command.json`, then seed with the next, so the seed's
-categories are written in it):
+names and categories are written in it; a `language` in the seeding command does the same):
 
 - Foldable: the `sixpm-zfold8` emulator. Opened: Home (01), the Close as a book (02), the Diary
   (04), Plan (06). The cover screen: Home (03). Turned upright and half open

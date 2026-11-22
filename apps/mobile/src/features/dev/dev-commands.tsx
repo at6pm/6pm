@@ -209,7 +209,7 @@ export function DevCommands() {
       // database (a set-aside written for a jar the seed has just deleted).
       await store.exclusive(async () => {
         if (captureHealth) await seedCaptureHealth(store, day);
-        if (seed === 'friday') await seedDesignFriday(store, day, currency, language);
+        if (seed === 'friday') await seedDesignFriday(store, day, currency, speak ?? language);
         if (tet) {
           await seedDesignTet(store, day, tet, currency, speak ?? language);
           await resetSeasonOffer(store.db);
