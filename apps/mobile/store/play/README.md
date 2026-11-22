@@ -98,23 +98,23 @@ Privacy Policy: https://at6pm.app/privacy
 
 ### vi
 
-**Tên ứng dụng**: 6pm: Safe to Spend
+**Tên ứng dụng** (≤ 30): 6pm: Quản lý chi tiêu tự động
 
-**Mô tả ngắn** (≤ 80): Biết hôm nay tiêu được bao nhiêu. Chốt ngày bằng một cú vuốt lúc 6 giờ.
+**Mô tả ngắn** (≤ 80): Sổ thu chi tự động ghi chi tiêu từ thông báo ngân hàng, VietQR, hoá đơn
 
 **Mô tả đầy đủ**:
 
 ```
-Phần lớn app chi tiêu cần một giờ mỗi tuần. 6pm chỉ cần một phút mỗi ngày. Cả ngày, app tự ghi: thông báo ngân hàng, VietQR, biên lai, email ngân hàng, giọng nói. Sáu giờ tối, bạn vuốt một lần để chốt ngày. Sáng mai, chỉ một con số: hôm nay tiêu được bao nhiêu.
+6pm là app quản lý chi tiêu tự động. Chuyển khoản hay quẹt thẻ xong, thông báo biến động số dư của ngân hàng và ví (Vietcombank, MoMo và nhiều ngân hàng khác) tự thành một dòng trong sổ thu chi: không cần nhập tay, không cần liên kết hay đăng nhập ngân hàng. Sáu giờ tối, bạn vuốt một lần để chốt ngày. Sáng mai chỉ một con số: hôm nay tiêu được bao nhiêu. Miễn phí.
+
+THÔNG BÁO NGÂN HÀNG TỰ GHI
+Bật quyền truy cập thông báo một lần, mọi thông báo biến động số dư của ngân hàng và ví tự về thẳng hộp thư. Mã OTP, giao dịch lỗi và khuyến mãi được bỏ qua. 6pm không đọc gì từ ứng dụng khác.
 
 BIẾT HÔM NAY TIÊU ĐƯỢC BAO NHIÊU
 Một con số trên màn hình Hôm nay, tính từ lương, hoá đơn và những gì bạn đã tiêu. Hôm nay tiêu ít hơn, ngày mai con số lớn hơn.
 
 CHỐT NGÀY BẰNG MỘT CÚ VUỐT
 Sáu giờ tối, 6pm cho bạn xem những gì đã ghi. Giữ, sửa hoặc đánh dấu không phải của bạn, rồi vuốt một lần. Ngày đã chốt.
-
-THÔNG BÁO NGÂN HÀNG TỰ GHI
-Bật quyền truy cập thông báo một lần, mọi thông báo biến động số dư của ngân hàng và ví tự về thẳng hộp thư. Mã OTP, giao dịch lỗi và khuyến mãi được bỏ qua. 6pm không đọc gì từ ứng dụng khác.
 
 SÁU CÁCH GHI, MỘT HỘP THƯ
 Thông báo ngân hàng, quét VietQR, chụp biên lai, chuyển tiếp email ngân hàng, giọng nói và bàn phím nhanh. Mọi khoản về một hộp thư để chốt ngày.
@@ -141,6 +141,12 @@ Không bao giờ hỏi mật khẩu ngân hàng. Dữ liệu được mã hoá t
 Điều khoản sử dụng: https://at6pm.app/vi/terms
 Chính sách quyền riêng tư: https://at6pm.app/vi/privacy
 ```
+The Vietnamese name and short description carry the words people search the store with ("quản lý chi
+tiêu", "sổ thu chi", "tự động", "thông báo ngân hàng"): on 22 Nov 2026 nearly every app ranking for the
+category had the phrase in its title and 6pm, under its English name, did not appear. The description
+opens with the bank-alert capture and keeps that section first. Sent for review 22 Nov 2026. The
+English listing is unchanged.
+
 
 **Category**: Finance. **Tags**: Finance, Personal finance (Play has no budgeting tag). **Contact**:
 hello@oddeggs.studio, the studio's address, as on its other listings; website https://at6pm.app.
