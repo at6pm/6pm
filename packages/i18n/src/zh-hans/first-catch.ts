@@ -83,4 +83,14 @@ export const zhHansFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: En
   'catch.reading.privateLooked': {
     other: '在这里读取，只有 {count} 张照片发出去仔细看过一次，且不会保留。',
   },
+
+  'testAlert.send': '发一条测试通知',
+  'testAlert.sent': '已发送，正在等它到达…',
+  'testAlert.works': '成功了。真正的银行通知也会这样到达。',
+  'testAlert.nothing': '什么都没收到。请看看 6pm 是否还有通知使用权。',
+  'testAlert.blocked': '6pm 没有发送通知的权限，所以测试发不出去。',
+  'testAlert.notice.title': '6pm · 测试通知',
+  'testAlert.notice.body': '测试：支付 {amount}。这不是真实付款。',
+  'testAlert.channel': '测试通知',
+  'testAlert.slip.note': '只是测试，不是付款。什么都没有记下。',
 };

@@ -93,4 +93,16 @@ export const enFirstCatch = {
     one: 'Read here, but for {count} photo sent once for a closer look and never kept.',
     other: 'Read here, but for {count} photos sent once for a closer look and never kept.',
   },
+
+  // The test alert a person sends to themselves on Android: what its tile and button say, what
+  // became of it, the notification's own words, and the foot of the slip that proves it arrived.
+  'testAlert.send': 'Send a test alert',
+  'testAlert.sent': 'Sent. Watching for it…',
+  'testAlert.works': 'It works. Real bank alerts will arrive the same way.',
+  'testAlert.nothing': 'Nothing arrived. Check that 6pm still has notification access.',
+  'testAlert.blocked': '6pm isn’t allowed to send notifications, so the test can’t go out.',
+  'testAlert.notice.title': '6pm · test alert',
+  'testAlert.notice.body': 'Test: {amount} paid. This is not a real payment.',
+  'testAlert.channel': 'Test alerts',
+  'testAlert.slip.note': 'A test, not a payment. Nothing was added.',
 } as const;

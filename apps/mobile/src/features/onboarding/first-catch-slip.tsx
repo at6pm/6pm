@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { Text, View } from 'react-native';
 import Animated, {
   Easing,
@@ -24,22 +24,28 @@ import { PaperEdge } from '../../ui/paper-edge';
 import { body, display, leading, mono } from '../../ui/type/fonts';
 import { fadeEntering } from './onboarding-motion';
 
-/** `catchDrop`: from 140 pt above, tilted, past its place by 8 pt and back, 650 ms. */
-const slipDrop = new Keyframe({
-  0: { opacity: 0, transform: [{ translateY: -140 }, { rotate: '-5deg' }] },
-  60: {
-    opacity: 1,
-    transform: [{ translateY: 8 }, { rotate: '1deg' }],
-    easing: Easing.bezier(0.2, 0.9, 0.25, 1.1),
-  },
-  100: {
-    opacity: 1,
-    transform: [{ translateY: 0 }, { rotate: '0deg' }],
-    easing: Easing.bezier(0.2, 0.9, 0.25, 1.1),
-  },
-})
-  .duration(650)
-  .reduceMotion(ReduceMotion.Never);
+/**
+ * `catchDrop`: from 140 pt above, tilted, past its place by 8 pt and back, 650 ms; after `delay`
+ * ms where what it lands among needs a moment to make room.
+ */
+const slipDropAfter = (delay: number) =>
+  new Keyframe({
+    0: { opacity: 0, transform: [{ translateY: -140 }, { rotate: '-5deg' }] },
+    60: {
+      opacity: 1,
+      transform: [{ translateY: 8 }, { rotate: '1deg' }],
+      easing: Easing.bezier(0.2, 0.9, 0.25, 1.1),
+    },
+    100: {
+      opacity: 1,
+      transform: [{ translateY: 0 }, { rotate: '0deg' }],
+      easing: Easing.bezier(0.2, 0.9, 0.25, 1.1),
+    },
+  })
+    .duration(650)
+    .delay(delay)
+    .reduceMotion(ReduceMotion.Never);
+const slipDrop = slipDropAfter(0);
 
 /** The CAUGHT stamp lands big and tilted, then down: `stampIn` 500 ms, 350 ms after the drop. */
 const stampIn = new Keyframe({
@@ -122,7 +128,93 @@ export function FirstCatchSlip({ spend }: { readonly spend: SpendRow }) {
   }, [reduceMotion]);
 
   return (
-    <Animated.View entering={reduceMotion ? fadeEntering(200, 0, true) : slipDrop}>
+    <SlipPaper>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Text style={{ ...mono(11.5, 500, 0.1), color: catchInk.soft, textTransform: 'uppercase' }}>
+          {`${t('firstCatch.slip.no', { no: '001' })} · ${t(`source.${spend.source}`)}`}
+        </Text>
+        <Text style={{ ...mono(11.5, 500, 0.1), color: catchInk.soft }}>{time}</Text>
+      </View>
+      <DashedRule color={catchInk.rule} />
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+        <SlipMark
+          spend={spend}
+          bankId={bank?.id ?? null}
+          icon={category?.icon}
+          hue={category?.hue}
+        />
+        <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
+          <Text numberOfLines={1} style={{ ...body(20, 650, -0.02), color: catchInk.ink }}>
+            {name}
+          </Text>
+          {sub !== '' ? (
+            <Text numberOfLines={1} style={{ ...body(13), color: catchInk.soft }}>
+              {sub}
+            </Text>
+          ) : null}
+        </View>
+      </View>
+      <Text
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        style={{
+          ...leading(display(72, 500, -0.02), 72, true),
+          color: catchInk.ink,
+          paddingTop: 6,
+        }}
+      >
+        {parts.prefix ? <Text style={{ fontSize: 30, opacity: 0.55 }}>{parts.prefix}</Text> : null}
+        {parts.number}
+        {parts.suffix ? (
+          <Text style={{ fontSize: 30, opacity: 0.55 }}>{` ${parts.suffix.trim()}`}</Text>
+        ) : null}
+      </Text>
+      <View style={{ gap: 10 }}>
+        <DashedRule color={catchInk.rule} />
+        <Text style={{ ...mono(11.5, 400), color: catchInk.note }}>
+          {noteOf(spend, bank?.name ?? null, t)}
+        </Text>
+      </View>
+      <Animated.View
+        entering={reduceMotion ? fadeEntering(200, 0, true) : stampIn}
+        style={{
+          position: 'absolute',
+          top: 70,
+          right: 18,
+          paddingVertical: 5,
+          paddingHorizontal: 12,
+          borderWidth: 3,
+          borderColor: catchInk.stamp,
+          borderRadius: 6,
+          opacity: 0.92,
+          transform: [{ rotate: '-7deg' }],
+        }}
+      >
+        <Text style={{ ...mono(22, 600, 0.16), color: catchInk.stamp }}>
+          {t('firstCatch.slip.stamp')}
+        </Text>
+      </Animated.View>
+    </SlipPaper>
+  );
+}
+
+/**
+ * The slip's paper, for whatever is printed on it: it drops in from above, casts the slip's
+ * shadow and ends in the torn edge. The first catch prints on it, and so does the proof that a
+ * test alert arrived.
+ */
+export function SlipPaper({
+  children,
+  delay = 0,
+}: {
+  readonly children: ReactNode;
+  /** Waits this long before dropping, while what is round it moves out of its way. */
+  readonly delay?: number;
+}) {
+  const reduceMotion = useReducedMotion();
+  const drop = delay > 0 ? slipDropAfter(delay) : slipDrop;
+  return (
+    <Animated.View entering={reduceMotion ? fadeEntering(200, 0, true) : drop}>
       {/* The paper casts the shadow, not its torn edge, which would show it between the teeth. */}
       <View
         style={{
@@ -144,75 +236,7 @@ export function FirstCatchSlip({ spend }: { readonly spend: SpendRow }) {
             overflow: 'hidden',
           }}
         >
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text
-              style={{ ...mono(11.5, 500, 0.1), color: catchInk.soft, textTransform: 'uppercase' }}
-            >
-              {`${t('firstCatch.slip.no', { no: '001' })} · ${t(`source.${spend.source}`)}`}
-            </Text>
-            <Text style={{ ...mono(11.5, 500, 0.1), color: catchInk.soft }}>{time}</Text>
-          </View>
-          <DashedRule color={catchInk.rule} />
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-            <SlipMark
-              spend={spend}
-              bankId={bank?.id ?? null}
-              icon={category?.icon}
-              hue={category?.hue}
-            />
-            <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
-              <Text numberOfLines={1} style={{ ...body(20, 650, -0.02), color: catchInk.ink }}>
-                {name}
-              </Text>
-              {sub !== '' ? (
-                <Text numberOfLines={1} style={{ ...body(13), color: catchInk.soft }}>
-                  {sub}
-                </Text>
-              ) : null}
-            </View>
-          </View>
-          <Text
-            numberOfLines={1}
-            adjustsFontSizeToFit
-            style={{
-              ...leading(display(72, 500, -0.02), 72, true),
-              color: catchInk.ink,
-              paddingTop: 6,
-            }}
-          >
-            {parts.prefix ? (
-              <Text style={{ fontSize: 30, opacity: 0.55 }}>{parts.prefix}</Text>
-            ) : null}
-            {parts.number}
-            {parts.suffix ? (
-              <Text style={{ fontSize: 30, opacity: 0.55 }}>{` ${parts.suffix.trim()}`}</Text>
-            ) : null}
-          </Text>
-          <View style={{ gap: 10 }}>
-            <DashedRule color={catchInk.rule} />
-            <Text style={{ ...mono(11.5, 400), color: catchInk.note }}>
-              {noteOf(spend, bank?.name ?? null, t)}
-            </Text>
-          </View>
-          <Animated.View
-            entering={reduceMotion ? fadeEntering(200, 0, true) : stampIn}
-            style={{
-              position: 'absolute',
-              top: 70,
-              right: 18,
-              paddingVertical: 5,
-              paddingHorizontal: 12,
-              borderWidth: 3,
-              borderColor: catchInk.stamp,
-              borderRadius: 6,
-              opacity: 0.92,
-              transform: [{ rotate: '-7deg' }],
-            }}
-          >
-            <Text style={{ ...mono(22, 600, 0.16), color: catchInk.stamp }}>
-              {t('firstCatch.slip.stamp')}
-            </Text>
-          </Animated.View>
+          {children}
         </View>
       </View>
       <PaperEdge color={catchInk.paperBottom} height={9} step={12} />

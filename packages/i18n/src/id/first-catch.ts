@@ -89,4 +89,15 @@ export const idFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
     other:
       'Dibaca di sini, kecuali {count} foto yang dikirim sekali untuk dilihat lebih teliti dan tidak disimpan.',
   },
+
+  'testAlert.send': 'Kirim notifikasi uji coba',
+  'testAlert.sent': 'Terkirim. Menunggu notifikasinya masuk…',
+  'testAlert.works': 'Berhasil. Notifikasi bank yang asli akan masuk dengan cara yang sama.',
+  'testAlert.nothing': 'Belum ada yang masuk. Cek apakah 6pm masih punya akses notifikasi.',
+  'testAlert.blocked':
+    '6pm belum diizinkan mengirim notifikasi, jadi uji cobanya tidak bisa dikirim.',
+  'testAlert.notice.title': '6pm · notifikasi uji coba',
+  'testAlert.notice.body': 'Uji coba: pembayaran {amount}. Ini bukan pembayaran sungguhan.',
+  'testAlert.channel': 'Notifikasi uji coba',
+  'testAlert.slip.note': 'Hanya uji coba, bukan pembayaran. Tidak ada yang dicatat.',
 };

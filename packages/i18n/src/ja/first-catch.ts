@@ -89,4 +89,14 @@ export const jaFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
     other:
       'ここで読み取りました。ただし{count}枚の写真は一度だけ詳しく見るために送られ、保存されていません。',
   },
+
+  'testAlert.send': '通知をテスト',
+  'testAlert.sent': '送信しました。届くのを待っています…',
+  'testAlert.works': 'うまくいきました。本物の銀行の通知も同じように届きます。',
+  'testAlert.nothing': '何も届きませんでした。6pmに通知へのアクセスがあるか確認してください。',
+  'testAlert.blocked': '6pmは通知を送る許可がないため、テストを送れません。',
+  'testAlert.notice.title': '6pm · テスト通知',
+  'testAlert.notice.body': 'テスト：{amount}の支払い。実際の支払いではありません。',
+  'testAlert.channel': 'テスト通知',
+  'testAlert.slip.note': 'テストです。支払いではないので、何も記録していません。',
 };

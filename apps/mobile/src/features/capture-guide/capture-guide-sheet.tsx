@@ -13,6 +13,7 @@ import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading } from '../../ui/type/fonts';
 import { WordFitText } from '../../ui/type/word-fit-text';
+import { proofRoom } from '../capture/test-alert-proof';
 import { nativeReach } from '../surfaces/native-reach';
 import { captureColours } from './capture-colours';
 import { GuideActions } from './guide-actions';
@@ -169,34 +170,37 @@ export function CaptureGuideSheet({ source: asked }: { readonly source: CaptureS
             note={source === 'alerts' ? t('capture.alerts.privacy') : null}
           />
 
-          {emailOff ? null : (
-            <HowItWorks
-              source={source}
-              guide={guide}
-              addressChip={addressChip}
-              emailAddress={emailAddress}
-            />
-          )}
+          {/* What is under the buttons makes room when a test alert's proof shows above it. */}
+          <Animated.View {...proofRoom} style={{ gap: 24 }}>
+            {emailOff ? null : (
+              <HowItWorks
+                source={source}
+                guide={guide}
+                addressChip={addressChip}
+                emailAddress={emailAddress}
+              />
+            )}
 
-          {emailOff || shortcut ? null : (
-            <GuideSection title={t('capture.guide.lands')}>
-              <GuideSample guide={guide} />
-              <Text
-                style={{
-                  ...body(13),
-                  lineHeight: 18.2,
-                  color: palette.inkSoft,
-                  paddingHorizontal: 6,
-                }}
-              >
-                {t('capture.guide.landsNote')}
-              </Text>
-            </GuideSection>
-          )}
+            {emailOff || shortcut ? null : (
+              <GuideSection title={t('capture.guide.lands')}>
+                <GuideSample guide={guide} />
+                <Text
+                  style={{
+                    ...body(13),
+                    lineHeight: 18.2,
+                    color: palette.inkSoft,
+                    paddingHorizontal: 6,
+                  }}
+                >
+                  {t('capture.guide.landsNote')}
+                </Text>
+              </GuideSection>
+            )}
 
-          {shortcut ? null : (
-            <GuideTip text={emailOff ? t('receiptEmail.deviceMode.body') : t(guide.tip)} />
-          )}
+            {shortcut ? null : (
+              <GuideTip text={emailOff ? t('receiptEmail.deviceMode.body') : t(guide.tip)} />
+            )}
+          </Animated.View>
         </Animated.View>
       </ScrollView>
     </SheetFrame>

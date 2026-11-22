@@ -18,6 +18,7 @@ import { useApi } from '../api/native-api';
 import { createEnrichShared } from '../capture/enrich-shared';
 import { createLateAlertReads } from '../capture/late-alert-read';
 import { createReadAlerts } from '../capture/read-alert';
+import { noteTestAlertArrived } from '../capture/test-alert';
 import { priceWaitingNow } from '../travel/price-waiting';
 import { setInboxRunner } from './inbox-runner';
 
@@ -101,6 +102,7 @@ export function useInboxImport() {
             enrich,
             readAlerts,
             keepForLateRead: (entry) => waiting.keep(entry),
+            testArrived: (item) => noteTestAlertArrived(item.token, item.at),
             home: home.code,
             language,
             keepPhoto: keepPhotoAt,

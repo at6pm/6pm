@@ -94,4 +94,14 @@ export const deFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
     other:
       'Hier gelesen, bis auf {count} Fotos, die einmal genauer angesehen und nicht behalten wurden.',
   },
+
+  'testAlert.send': 'Testmitteilung senden',
+  'testAlert.sent': 'Gesendet. Ich warte, bis sie ankommt…',
+  'testAlert.works': 'Es klappt. Echte Bankmitteilungen kommen genauso an.',
+  'testAlert.nothing': 'Nichts angekommen. Prüf, ob 6pm noch Benachrichtigungszugriff hat.',
+  'testAlert.blocked': '6pm darf keine Mitteilungen senden, deshalb kann der Test nicht raus.',
+  'testAlert.notice.title': '6pm · Testmitteilung',
+  'testAlert.notice.body': 'Test: {amount} bezahlt. Das ist keine echte Zahlung.',
+  'testAlert.channel': 'Testmitteilungen',
+  'testAlert.slip.note': 'Nur ein Test, keine Zahlung. Nichts wurde eingetragen.',
 };
