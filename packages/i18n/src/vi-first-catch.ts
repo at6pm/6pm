@@ -92,6 +92,8 @@ export const viFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'testAlert.sent': 'Đã gửi. Đang chờ nó về…',
   'testAlert.works': 'Chạy rồi. Thông báo ngân hàng thật cũng sẽ về như vậy.',
   'testAlert.nothing': 'Chưa thấy gì. Kiểm tra xem 6pm còn quyền truy cập thông báo không.',
+  'testAlert.nothingShortcut':
+    'Chưa thấy gì. Trong Phím tắt, kiểm tra xem tự động hóa đã bật chưa và 6pm có trong danh sách ứng dụng không.',
   'testAlert.blocked': '6pm chưa được phép gửi thông báo nên chưa gửi thử được.',
   'testAlert.notice.title': '6pm · thông báo thử',
   'testAlert.notice.body': 'Thử: đã thanh toán {amount}. Đây không phải giao dịch thật.',

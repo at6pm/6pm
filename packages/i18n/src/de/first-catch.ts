@@ -99,6 +99,8 @@ export const deFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'testAlert.sent': 'Gesendet. Ich warte, bis sie ankommt…',
   'testAlert.works': 'Es klappt. Echte Bankmitteilungen kommen genauso an.',
   'testAlert.nothing': 'Nichts angekommen. Prüf, ob 6pm noch Benachrichtigungszugriff hat.',
+  'testAlert.nothingShortcut':
+    'Nichts angekommen. Prüf in Kurzbefehle, ob die Automation eingeschaltet ist und 6pm bei ihren Apps steht.',
   'testAlert.blocked': '6pm darf keine Mitteilungen senden, deshalb kann der Test nicht raus.',
   'testAlert.notice.title': '6pm · Testmitteilung',
   'testAlert.notice.body': 'Test: {amount} bezahlt. Das ist keine echte Zahlung.',

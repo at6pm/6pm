@@ -6,12 +6,15 @@ import {
   type ShareCard,
   type SurfaceContext,
 } from '../contracts/surfaces';
+import type { ShortcutAlertResult } from '../contracts/shortcut-alert';
+import { pendingTestAlertSchema, type PendingTestAlert } from '../contracts/test-alert';
 import { receiptReadingOrder } from '../capture/bank-receipt';
 import { currencyAt } from '../capture/photo-place';
 import { readReceipt } from '../capture/read-receipt';
 import { alertPackages } from '../capture/bank-alert-senders';
 import { contextMoney } from './context-money';
 import { buildBankAlert } from './log-bank-alert';
+import { buildShortcutAlert } from './log-shortcut-alert';
 import { buildLogSpend } from './log-spend';
 import { buildTestAlert } from './log-test-alert';
 import { shareAmount } from './share-amount';
@@ -256,6 +259,62 @@ export function logBankAlert(
   }
 }
 
+/** What 6pm answers to on this phone, from a JSON array of strings; none when unreadable. */
+function ownNamesOf(ownJson: unknown): readonly string[] {
+  const names = json(ownJson);
+  if (!Array.isArray(names)) return [];
+  return names.filter((name): name is string => typeof name === 'string');
+}
+
+function pendingTestOf(pendingJson: unknown): PendingTestAlert | null {
+  const parsed = pendingTestAlertSchema.safeParse(json(pendingJson));
+  return parsed.success ? parsed.data : null;
+}
+
+/**
+ * The iPhone's "Catch a bank alert": one notification the Shortcuts automation passed, sorted by
+ * the app it came from before any of it is read. The first seven arguments are `logBankAlert`'s.
+ * `ownJson` is a JSON array of what 6pm answers to on this phone (its name, its bundle id);
+ * `pendingJson` is the test alert the app last said it is waiting for (`PendingTestAlert`), or
+ * empty. Returns `ShortcutAlertResult`: a bank's or wallet's alert as `logBankAlert` reads it,
+ * 6pm's own test alert as `test`, and nothing at all (no item, no `last`) for any other app.
+ */
+export function logShortcutAlert(
+  app: string,
+  title: string,
+  subtitle: string,
+  body: string,
+  dateIso: string,
+  contextJson: string,
+  nowIso: string,
+  ownJson: string,
+  pendingJson: string,
+): string {
+  const nothing: ShortcutAlertResult = { item: null, last: null };
+  const text = (value: unknown) => (typeof value === 'string' ? value : '');
+  try {
+    const input = {
+      app: text(app),
+      title: text(title),
+      subtitle: text(subtitle),
+      body: text(body),
+      date: text(dateIso) || null,
+    };
+    return JSON.stringify(
+      buildShortcutAlert(
+        input,
+        ownNamesOf(ownJson),
+        pendingTestOf(pendingJson),
+        contextOf(contextJson),
+        nowOf(nowIso),
+        randomUuid(),
+      ),
+    );
+  } catch {
+    return JSON.stringify(nothing);
+  }
+}
+
 /**
  * The Android packages whose notifications are read as bank and wallet alerts, as a JSON array:
  * every bank and wallet in Vietnam's catalogue with an app on Google Play, then the banks and
@@ -268,7 +327,7 @@ export function alertApps(): string {
 
 /**
  * Reads a test alert 6pm posted to itself, which Android's listener knows by the channel it was
- * posted on: `token` is what the app gave it. Returns `TestAlertResult`: an inbox item of kind
+ * posted on: `token` is what the app gave it. (The iPhone's comes through `logShortcutAlert`.) Returns `TestAlertResult`: an inbox item of kind
  * `test` with a fresh lower-case UUID, which is never money, or null for one with no token.
  */
 export function logTestAlert(token: string, nowIso: string): string {

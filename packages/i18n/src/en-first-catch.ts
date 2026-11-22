@@ -94,12 +94,16 @@ export const enFirstCatch = {
     other: 'Read here, but for {count} photos sent once for a closer look and never kept.',
   },
 
-  // The test alert a person sends to themselves on Android: what its tile and button say, what
-  // became of it, the notification's own words, and the foot of the slip that proves it arrived.
+  // The test alert a person sends to themselves: what its tile and button say, what became of it
+  // (nothing arrived is said for Android's Notification access and, apart, for the iPhone's
+  // Shortcuts automation), the notification's own words, and the foot of the slip that proves it
+  // arrived.
   'testAlert.send': 'Send a test alert',
   'testAlert.sent': 'Sent. Watching for it…',
   'testAlert.works': 'It works. Real bank alerts will arrive the same way.',
   'testAlert.nothing': 'Nothing arrived. Check that 6pm still has notification access.',
+  'testAlert.nothingShortcut':
+    'Nothing arrived. In Shortcuts, check that the automation is on and that 6pm is among its apps.',
   'testAlert.blocked': '6pm isn’t allowed to send notifications, so the test can’t go out.',
   'testAlert.notice.title': '6pm · test alert',
   'testAlert.notice.body': 'Test: {amount} paid. This is not a real payment.',

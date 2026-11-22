@@ -1,0 +1,33 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "com.mbmobile", "name": "MB Bank", "team": "HR8KMXWN6N", "bank": "MB" },
+  { "bundle": "com.vcb.VCB", "name": "VCB Digibank", "team": "V74636U6QW", "bank": "VCB" },
+  {
+    "bundle": "vn.com.techcombank.bb.app",
+    "name": "Techcombank Mobile",
+    "team": "78XUPF722V",
+    "bank": "TCB"
+  },
+  { "bundle": "com.vnp.VpBankOnline", "name": "VPBank NEO", "team": "W3RYY993BA", "bank": "VPB" },
+  { "bundle": "com.vib.myvib2prod", "name": "MyVIB", "team": "88E8Z3FQ5T", "bank": "VIB" },
+  { "bundle": "vn.com.be.cake", "name": "Cake", "team": "W3RYY993BA", "bank": "CAKE" },
+  {
+    "bundle": "com.mservice.com.vn.MoMoTransfer",
+    "name": "MoMo",
+    "team": "HTKVRHE3RY",
+    "bank": "MOMO"
+  },
+  { "bundle": "mobileapp.acb.com.vn", "bank": "ACB" },
+  { "bundle": "com.bidv.smartbanking", "bank": "BIDV" },
+  { "bundle": "com.vietinbank.mobilebanking", "bank": "ICB" },
+  { "bundle": "com.fpt.tpb.emobile", "bank": "TPB" },
+  { "bundle": "com.vnp.Agribank", "bank": "VBA" },
+  { "bundle": "com.sacombank.ewallet", "bank": "STB" },
+  { "bundle": "com.sacombank.Sacombank", "bank": "STB" },
+  { "bundle": "com.vnpay.HDBank", "bank": "HDB" },
+  { "bundle": "vn.com.ocb.awe", "bank": "OCB" },
+  { "bundle": "vn.com.shb.omni.appstore", "bank": "SHB" },
+  { "bundle": "com.msb.mobileBanking", "bank": "MSB" },
+  { "bundle": "io.lifestyle.plusdigital", "bank": "TIMO" },
+  { "bundle": "com.viettel.viettelpay", "bank": "VTLMONEY" }
+]

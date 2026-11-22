@@ -29,16 +29,25 @@ export interface SetUpSigns {
   readonly alertAccess: boolean | null;
   /** The Shortcut or the listener has read an alert, caught or skipped. */
   readonly alertRead: boolean;
+  /** A test alert has come the whole way in through the Shortcut. */
+  readonly alertProven?: boolean;
 }
 
 /**
  * Whether a way that runs by itself is set up, as far as the phone can tell: Android's
- * Notification access is on; or, where a Shortcut does the work, its set-up was walked or it has
- * already passed an alert on; or the Wallet or mail set-up was walked. Android's access switched
- * off is not set up, whatever was read before.
+ * Notification access is on; or, where a Shortcut does the work, its set-up was walked, it has
+ * already passed an alert on, or a test alert came through it; or the Wallet or mail set-up was
+ * walked. Android's access switched off is not set up, whatever was read or tested before.
  */
-export function selfRunningSetUp({ walked, alertAccess, alertRead }: SetUpSigns): boolean {
+export function selfRunningSetUp({
+  walked,
+  alertAccess,
+  alertRead,
+  alertProven = false,
+}: SetUpSigns): boolean {
   const alerts =
-    alertAccess === null ? walked.includes('alerts') || alertRead : alertAccess === true;
+    alertAccess === null
+      ? walked.includes('alerts') || alertRead || alertProven
+      : alertAccess === true;
   return alerts || walked.includes('wallet') || walked.includes('email');
 }

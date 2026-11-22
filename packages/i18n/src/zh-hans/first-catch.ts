@@ -88,6 +88,8 @@ export const zhHansFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: En
   'testAlert.sent': '已发送，正在等它到达…',
   'testAlert.works': '成功了。真正的银行通知也会这样到达。',
   'testAlert.nothing': '什么都没收到。请看看 6pm 是否还有通知使用权。',
+  'testAlert.nothingShortcut':
+    '什么都没收到。请在“快捷指令”里看看自动化是否已开启，以及 6pm 是否在它的 App 列表里。',
   'testAlert.blocked': '6pm 没有发送通知的权限，所以测试发不出去。',
   'testAlert.notice.title': '6pm · 测试通知',
   'testAlert.notice.body': '测试：支付 {amount}。这不是真实付款。',

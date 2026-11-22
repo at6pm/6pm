@@ -90,6 +90,8 @@ export const thFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'testAlert.sent': 'ส่งแล้ว กำลังรอให้มาถึง…',
   'testAlert.works': 'ใช้ได้แล้ว แจ้งเตือนธนาคารจริงก็จะมาถึงแบบเดียวกัน',
   'testAlert.nothing': 'ยังไม่มีอะไรมาถึง ลองดูว่า 6pm ยังมีสิทธิ์เข้าถึงการแจ้งเตือนอยู่ไหม',
+  'testAlert.nothingShortcut':
+    'ยังไม่มีอะไรมาถึง ในแอปคำสั่งลัด ลองดูว่าระบบอัตโนมัติเปิดอยู่ไหม และ 6pm อยู่ในรายการแอปหรือเปล่า',
   'testAlert.blocked': '6pm ยังไม่ได้รับอนุญาตให้ส่งการแจ้งเตือน จึงส่งทดสอบไม่ได้',
   'testAlert.notice.title': '6pm · แจ้งเตือนทดสอบ',
   'testAlert.notice.body': 'ทดสอบ: จ่าย {amount} นี่ไม่ใช่การจ่ายเงินจริง',

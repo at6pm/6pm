@@ -57,14 +57,24 @@ export const enCaptureAlerts = {
   'capture.walk.alerts.l1Title': 'Add the 6pm shortcut',
   'capture.walk.alerts.l1Body':
     'Tap “Get the 6pm shortcut” above, then Add Shortcut. It’s called “Catch a bank alert”.',
+  'capture.walk.alerts.l2Title': 'Turn the automation on',
   'capture.walk.alerts.l2Body':
-    'Open it in Shortcuts, tap App at the top and pick your bank, then + for each other bank and wallet.',
+    'Open it in Shortcuts and tap › on the trigger. Turn Automation on and leave Notify off, so alerts are caught quietly. Going back saves it.',
+  'capture.walk.alerts.l3Title': 'Send a test alert',
+  'capture.walk.alerts.l3Body':
+    'Come back to 6pm and tap “Send a test alert”. 6pm sends itself one and tells you when it arrives.',
+  'capture.walk.alerts.addBank':
+    'Your bank isn’t on the shortcut’s list? Open it and tap + on the trigger to add its app.',
   'capture.walk.alerts.mistake1':
     'Title, Body or Date left empty. Tap each and pick the Notification’s own, or alerts log nothing.',
   'capture.walk.alerts.mistake2':
     'Notify turned on. Every alert then pings you a second time instead of being caught quietly.',
   'capture.walk.alerts.mistake3':
     'Only one app chosen. Tick each bank and wallet you use, MoMo and ZaloPay included.',
+  'capture.walk.alerts.linkedMistake1':
+    'Automation left off. The shortcut arrives switched off: open it, tap › on the trigger and turn Automation on.',
+  'capture.walk.alerts.linkedMistake3':
+    '6pm taken off the trigger. The test alert only arrives with 6pm among its apps: add it back with +.',
 
   'capture.walk.ios.notification': 'Notification',
   'capture.walk.ios.notificationEx': '“When I receive a notification from News”',

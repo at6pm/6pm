@@ -98,6 +98,8 @@ export const esFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'testAlert.works': 'Funciona. Los avisos reales del banco llegarán igual.',
   'testAlert.nothing':
     'No ha llegado nada. Mira si 6pm sigue teniendo acceso a las notificaciones.',
+  'testAlert.nothingShortcut':
+    'No ha llegado nada. En Atajos, mira si la automatización está activada y si 6pm está entre sus apps.',
   'testAlert.blocked':
     '6pm no tiene permiso para enviar notificaciones, así que la prueba no puede salir.',
   'testAlert.notice.title': '6pm · aviso de prueba',

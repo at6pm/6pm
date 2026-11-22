@@ -104,6 +104,8 @@ export const frFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'testAlert.sent': 'Envoyée. J’attends qu’elle arrive…',
   'testAlert.works': 'Ça marche. Les vraies alertes bancaires arriveront de la même façon.',
   'testAlert.nothing': 'Rien n’est arrivé. Vérifie que 6pm a toujours accès aux notifications.',
+  'testAlert.nothingShortcut':
+    'Rien n’est arrivé. Dans Raccourcis, vérifie que l’automatisation est activée et que 6pm fait partie de ses apps.',
   'testAlert.blocked':
     '6pm n’a pas le droit d’envoyer des notifications, donc le test ne peut pas partir.',
   'testAlert.notice.title': '6pm · alerte de test',

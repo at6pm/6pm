@@ -18,7 +18,8 @@ import { PressScale } from '../../ui/primitives/press-scale';
 import { body, mono } from '../../ui/type/fonts';
 import { SlipPaper } from '../onboarding/first-catch-slip';
 import { fadeEntering, riseEntering } from '../onboarding/onboarding-motion';
-import { testAlertAvailable, type TestAlert } from './use-test-alert';
+import { nativeReach } from '../surfaces/native-reach';
+import { openTestAlertFix, testAlertAvailable, type TestAlert } from './use-test-alert';
 
 /** The colours of the screen the proof is drawn on: onboarding's dusk, or a sheet's look. */
 export interface ProofInks {
@@ -39,8 +40,8 @@ const proofReflow = LinearTransition.springify()
 
 /**
  * For what sits above and under the proof on its screen, so it makes room rather than jumps:
- * spread onto an animated view. Empty where no test alert can be sent (the iPhone), so nothing
- * there moves differently.
+ * spread onto an animated view. Empty where no test alert can be sent (an iPhone before iOS 27),
+ * so nothing there moves differently.
  */
 export const proofRoom: { readonly layout?: typeof proofReflow } = testAlertAvailable
   ? { layout: proofReflow }
@@ -52,18 +53,17 @@ const SLIP_AFTER_MS = 180;
 /**
  * What became of a test alert, on the screen it was sent from. On its way: a quiet line. Arrived:
  * a slip on the first catch's paper, "It works. Real bank alerts will arrive the same way.", with
- * no amount on it, since it is not a payment. Nothing after ten seconds: what to check, and Check
- * access. 6pm not allowed to post notifications: that, and Turn on. Nothing before one is sent.
+ * no amount on it, since it is not a payment. Nothing after ten seconds: what to check, and the
+ * way there (Android's Notification access; on the iPhone the Shortcuts app, where the automation
+ * may be off or 6pm may not be among its apps). 6pm not allowed to post notifications: that, and
+ * Turn on. Nothing before one is sent.
  */
 export function TestAlertProof({
   inks,
   test,
-  onCheckAccess,
 }: {
   readonly inks: ProofInks;
   readonly test: TestAlert;
-  /** Opens Android's Notification access at 6pm's switch. */
-  readonly onCheckAccess: () => void;
 }) {
   const { t, language } = useI18n();
   const reduceMotion = useReducedMotion();
@@ -143,6 +143,18 @@ export function TestAlertProof({
   }
   const missing = state.kind === 'missing';
   const icon: SymbolName = missing ? 'notifications' : 'notifications_off';
+  // What a missing test alert points at: Android's access switch, or the iPhone's automation.
+  const fix = nativeReach.alertListener
+    ? ({
+        words: 'testAlert.nothing',
+        label: 'firstCatch.fix.access',
+        icon: 'notifications',
+      } as const)
+    : ({
+        words: 'testAlert.nothingShortcut',
+        label: 'capture.alerts.actionOpen',
+        icon: 'bolt',
+      } as const);
   return (
     <Animated.View
       key={state.kind}
@@ -174,7 +186,7 @@ export function TestAlertProof({
           accessibilityLiveRegion="polite"
           style={{ ...body(15, 550), lineHeight: 21, color: inks.ink, flex: 1 }}
         >
-          {t(missing ? 'testAlert.nothing' : 'testAlert.blocked')}
+          {t(missing ? fix.words : 'testAlert.blocked')}
         </Text>
       </View>
       <PressScale
@@ -182,7 +194,7 @@ export function TestAlertProof({
         accessibilityRole="button"
         onPress={() => {
           haptics.tap();
-          if (missing) onCheckAccess();
+          if (missing) openTestAlertFix();
           else test.allow();
         }}
         style={{
@@ -195,9 +207,9 @@ export function TestAlertProof({
           gap: 6,
         }}
       >
-        <Symbol name="notifications" size={18} color={inks.btnFg} />
+        <Symbol name={missing ? fix.icon : 'notifications'} size={18} color={inks.btnFg} />
         <Text numberOfLines={1} style={{ ...body(14.5, 650), color: inks.btnFg }}>
-          {t(missing ? 'firstCatch.fix.access' : 'notify.settings.turnOn')}
+          {t(missing ? fix.label : 'notify.settings.turnOn')}
         </Text>
       </PressScale>
     </Animated.View>

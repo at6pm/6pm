@@ -91,6 +91,8 @@ export const koFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'testAlert.sent': '보냈어요. 도착하는지 보고 있어요…',
   'testAlert.works': '잘 돼요. 실제 은행 알림도 똑같이 도착해요.',
   'testAlert.nothing': '아무것도 안 왔어요. 6pm에 알림 접근 권한이 있는지 확인하세요.',
+  'testAlert.nothingShortcut':
+    '아무것도 안 왔어요. 단축어에서 자동화가 켜져 있는지, 6pm이 앱 목록에 있는지 확인하세요.',
   'testAlert.blocked': '6pm에 알림을 보낼 권한이 없어서 테스트를 보낼 수 없어요.',
   'testAlert.notice.title': '6pm · 테스트 알림',
   'testAlert.notice.body': '테스트: {amount} 결제. 실제 결제가 아니에요.',

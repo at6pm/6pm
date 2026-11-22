@@ -1,8 +1,9 @@
 /**
- * The test alert a person sends to themselves on Android, as the screen that sent it sees it.
- * 6pm posts a notification marked as a test; the listener reads it on the road a bank alert
- * takes and the app's import tells of its arrival here. Nothing in this file is money: a test
- * alert is never a spend, and a real catch is waited for exactly as before.
+ * The test alert a person sends to themselves, as the screen that sent it sees it. 6pm posts a
+ * notification marked as a test; it comes in on the road a bank alert takes (Android's listener,
+ * or on the iPhone the Shortcuts automation, which has 6pm among its apps) and the app's import
+ * tells of its arrival here. Nothing in this file is money: a test alert is never a spend, and a
+ * real catch is waited for exactly as before.
  */
 
 /** With nothing arrived this long after sending, the screen says what to check. */
@@ -17,7 +18,10 @@ export type TestAlertState =
   | { readonly kind: 'sent'; readonly token: string }
   /** It came all the way in: the road works. `at` is when the phone read it. */
   | { readonly kind: 'arrived'; readonly at: string }
-  /** Posted, and nothing came in time: Notification access is the thing to check. */
+  /**
+   * Posted, and nothing came in time: Android's Notification access is the thing to check, or on
+   * the iPhone the automation (it may be off, or 6pm may not be among its apps).
+   */
   | { readonly kind: 'missing'; readonly token: string }
   /**
    * 6pm may not post notifications, so no test went out. `canAsk` while the phone will still

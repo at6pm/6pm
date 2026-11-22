@@ -28,6 +28,9 @@ const OPTION_ROW = 44;
 /** How tall it stands with its Automation and Notify switches open. */
 export const NOTIFICATION_CARD_OPEN_HEIGHT = NOTIFICATION_CARD_HEIGHT + OPTION_ROW * 2;
 
+/** The Automation switch's row, from the open card's top: where the finger turns it on. */
+export const AUTOMATION_ROW_Y = NOTIFICATION_CARD_HEIGHT + OPTION_ROW / 2;
+
 /** The trigger's App token's centre, from the card's top left, where the finger taps it. */
 export const APP_TOKEN = { x: 16 + 26 + 12 + 24, y: 16 + 60 + 8 + 15 } as const;
 
@@ -73,21 +76,28 @@ function Chip({ children }: { readonly children: ReactNode }) {
  * "When I receive a notification from App": the unset App until the first pick, then each bank
  * or wallet as it is picked (at the times in `picks`, one per `PICKED_APPS`), with + after them.
  * Picked from the start when `picks` is undefined. With `open`, the Automation and Notify
- * switches show under it.
+ * switches show under it; the published shortcut arrives with 6pm first among its apps (`own`)
+ * and Automation off, which turns on at `turnsOnAt`.
  */
 export function NotificationTriggerCard({
   t,
   picks,
   open = false,
+  own = false,
+  turnsOnAt,
 }: {
   readonly t: SharedValue<number>;
   readonly picks?: readonly number[];
   readonly open?: boolean;
+  readonly own?: boolean;
+  readonly turnsOnAt?: number;
 }) {
   const { t: tr } = useI18n();
   const at = (k: number) => picks?.[k] ?? -1;
   // The + after app k goes when the next is picked; the last one stays.
   const plusGone = (k: number) => (k + 1 < PICKED_APPS.length ? at(k + 1) : 2);
+  // 6pm's own chip, where there is one, stands before the banks.
+  const lead = own ? 1 : 0;
   return (
     <View style={{ height: open ? NOTIFICATION_CARD_OPEN_HEIGHT : NOTIFICATION_CARD_HEIGHT }}>
       <View style={{ padding: 16, paddingRight: 48, flexDirection: 'row', gap: 12 }}>
@@ -107,6 +117,13 @@ export function NotificationTriggerCard({
                 <Token text={tr('capture.walk.ios.app')} unset />
               </Reveal>
             ) : null}
+            {own ? (
+              <View style={{ position: 'absolute', left: 0 }}>
+                <Chip>
+                  <SixPmIcon size={22} />
+                </Chip>
+              </View>
+            ) : null}
             {PICKED_APPS.map((id, k) => (
               <Reveal
                 key={id}
@@ -114,7 +131,7 @@ export function NotificationTriggerCard({
                 from={at(k)}
                 to={at(k) + 0.06}
                 fromScale={0.85}
-                style={{ position: 'absolute', left: CHIP_STEP * k }}
+                style={{ position: 'absolute', left: CHIP_STEP * (k + lead) }}
               >
                 <Chip>
                   <AppTile id={id} size={22} />
@@ -129,7 +146,7 @@ export function NotificationTriggerCard({
                 from={at(k)}
                 to={at(k) + 0.06}
                 fromScale={0.85}
-                style={{ position: 'absolute', left: CHIP_STEP * (k + 1) }}
+                style={{ position: 'absolute', left: CHIP_STEP * (k + 1 + lead) }}
               >
                 <Reveal t={t} from={plusGone(k)} to={plusGone(k) + 0.02} out>
                   <Chip>
@@ -145,7 +162,11 @@ export function NotificationTriggerCard({
       {open ? (
         <>
           <FieldRow label={tr('capture.walk.ios.automation')}>
-            <Switch t={t} from={2} to={2.1} startsOn />
+            {turnsOnAt === undefined ? (
+              <Switch t={t} from={2} to={2.1} startsOn />
+            ) : (
+              <Switch t={t} from={turnsOnAt} to={turnsOnAt + 0.06} startsOn={false} />
+            )}
           </FieldRow>
           <FieldRow label={tr('capture.walk.ios.notify')}>
             <Switch t={t} from={2} to={2.1} startsOn={false} />

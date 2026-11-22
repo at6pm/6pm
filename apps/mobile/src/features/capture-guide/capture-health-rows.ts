@@ -68,7 +68,8 @@ export interface HealthInput {
   readonly off: readonly HealthWay[];
   /**
    * Ways that run by themselves and that the phone can see are switched on though they have read
-   * nothing yet: bank alerts on Android once Notification access is given.
+   * nothing yet: bank alerts on Android once Notification access is given, and on the iPhone once
+   * a test alert has come through the Shortcut.
    */
   readonly on?: readonly HealthWay[];
 }

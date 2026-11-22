@@ -53,14 +53,24 @@ export const jaCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l1Title': '6pmのショートカットを追加',
   'capture.walk.alerts.l1Body':
     '上の「6pmのショートカットを追加」をタップし、「ショートカットを追加」をタップします。名前は「Catch a bank alert」です。',
+  'capture.walk.alerts.l2Title': 'オートメーションをオンにする',
   'capture.walk.alerts.l2Body':
-    'ショートカットでそれを開き、上の「App」をタップして銀行を選びます。ほかの銀行やウォレットも「＋」で追加します。',
+    'ショートカットでそれを開き、トリガーの「›」をタップします。「オートメーション」をオンにし、「通知」はオフのままにします。これで銀行の通知が静かにキャッチされます。戻ると保存されます。',
+  'capture.walk.alerts.l3Title': '通知をテストする',
+  'capture.walk.alerts.l3Body':
+    '6pmに戻って「通知をテスト」をタップします。6pmが自分あてにテスト通知を送り、届いたらお知らせします。',
+  'capture.walk.alerts.addBank':
+    'お使いの銀行がショートカットのリストにないときは、ショートカットを開き、トリガーの「＋」でそのアプリを追加します。',
   'capture.walk.alerts.mistake1':
     '「タイトル」「本文」「日付」が空のまま。それぞれタップして通知の同じ項目を選ばないと、何も記録されません。',
   'capture.walk.alerts.mistake2':
     '「通知」がオンのまま。通知のたびにもう一度知らせが届き、静かにキャッチされません。',
   'capture.walk.alerts.mistake3':
     'アプリをひとつしか選んでいない。MoMoやZaloPayも含め、使っている銀行とウォレットをすべて選びます。',
+  'capture.walk.alerts.linkedMistake1':
+    '「オートメーション」がオフのまま。ショートカットはオフの状態で追加されます。開いてトリガーの「›」をタップし、「オートメーション」をオンにします。',
+  'capture.walk.alerts.linkedMistake3':
+    'トリガーから6pmを外した。テスト通知は、6pmがトリガーのアプリに入っているときだけ届きます。「＋」で追加し直します。',
   'capture.walk.ios.notification': '通知',
   'capture.walk.ios.notificationEx': '「“ニュース”から通知を受信したとき」',
   'capture.walk.ios.whenNotified': '次のAppから通知を受信したとき',

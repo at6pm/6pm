@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 import { designAmount } from '@6pm/domain';
 
 import { useI18n } from '../../../i18n/i18n';
-import { useMoneyFormat } from '../../../money/use-money-format';
+import { useHomeCurrency, useMoneyFormat } from '../../../money/use-money-format';
 import { Symbol } from '../../../ui/icons/symbol';
 import { body } from '../../../ui/type/fonts';
 import {
@@ -360,6 +360,123 @@ export function AlertTestFrame({ t, scale }: FrameProps) {
           <TapFlash t={t} at={0.72} radius={26} />
         </View>
       </Reveal>
+    </Phone>
+  );
+}
+
+/** Where the pictured "Send a test alert" sits, and the proof under it. */
+const SEND_TOP = 196;
+const SEND_HEIGHT = 56;
+
+/**
+ * 6pm's own screen: "Send a test alert" is tapped, the test alert drops in as a banner, and the
+ * slip says it works. Nothing in it is a payment, so no row lands in the Inbox.
+ */
+export function SendTestFrame({ t, scale }: FrameProps) {
+  const { t: tr } = useI18n();
+  const money = useMoneyFormat();
+  const step = useHomeCurrency().step;
+  return (
+    <Phone t={t} scale={scale} background={iosInk.grouped}>
+      <LargeTitle title={tr('capture.alerts.name')} />
+      <View
+        style={{
+          position: 'absolute',
+          top: SEND_TOP,
+          left: 16,
+          right: 16,
+          height: SEND_HEIGHT,
+          borderRadius: SEND_HEIGHT / 2,
+          backgroundColor: iosInk.label,
+          alignItems: 'center',
+          justifyContent: 'center',
+          overflow: 'hidden',
+        }}
+      >
+        <Text numberOfLines={1} style={{ ...body(17, 600), color: iosInk.bg }}>
+          {tr('testAlert.send')}
+        </Text>
+        <TapFlash t={t} at={0.16} />
+      </View>
+      <Reveal
+        t={t}
+        from={0.56}
+        to={0.66}
+        dy={-14}
+        style={{ position: 'absolute', top: SEND_TOP + SEND_HEIGHT + 18, left: 16, right: 16 }}
+      >
+        <View
+          style={{
+            borderRadius: 26,
+            backgroundColor: iosInk.bg,
+            padding: 16,
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 14,
+          }}
+        >
+          <View
+            style={{
+              width: 46,
+              height: 46,
+              borderRadius: 14,
+              backgroundColor: iosInk.green,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Symbol name="check_circle" size={26} color={iosInk.bg} />
+          </View>
+          <Text style={{ flex: 1, ...body(17, 600), lineHeight: 22, color: iosInk.label }}>
+            {tr('testAlert.works')}
+          </Text>
+        </View>
+      </Reveal>
+      <Reveal
+        t={t}
+        from={0.26}
+        to={0.36}
+        dy={-140}
+        style={{ position: 'absolute', top: 58, left: 10, right: 10 }}
+      >
+        <Reveal t={t} from={0.6} to={0.68} out dy={-140}>
+          <View
+            style={{
+              borderRadius: 24,
+              backgroundColor: iosInk.bg,
+              boxShadow: iosInk.shadow,
+              padding: 14,
+              flexDirection: 'row',
+              gap: 12,
+            }}
+          >
+            <SixPmIcon size={38} />
+            <View style={{ flex: 1, gap: 2 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 8 }}>
+                <Text
+                  numberOfLines={1}
+                  style={{ flexShrink: 1, ...body(15, 600), color: iosInk.label }}
+                >
+                  {tr('testAlert.notice.title')}
+                </Text>
+                <Text style={{ ...body(13), color: iosInk.secondary }}>
+                  {tr('capture.walk.ios.now')}
+                </Text>
+              </View>
+              <Text style={{ ...body(15), lineHeight: 20, color: iosInk.label }}>
+                {tr('testAlert.notice.body', { amount: money.full(step) })}
+              </Text>
+            </View>
+          </View>
+        </Reveal>
+      </Reveal>
+      <Touch
+        t={t}
+        stops={[
+          { at: 0.04, x: 260, y: 560 },
+          { at: 0.16, x: 201, y: SEND_TOP + SEND_HEIGHT / 2, tap: true },
+        ]}
+      />
     </Phone>
   );
 }

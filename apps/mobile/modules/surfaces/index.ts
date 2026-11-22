@@ -47,8 +47,10 @@ interface SurfacesNative {
   /** Android: opens Notification access at 6pm's switch. */
   openAlertAccess?(): Promise<void>;
   /**
-   * Android: posts the test alert the person sends to themselves, in the app's words, for the
-   * listener to read as it reads a bank's. `off` when 6pm may not post notifications.
+   * Posts the test alert the person sends to themselves, in the app's words. On Android the
+   * listener reads it as it reads a bank's, and knows it by `channel`. On the iPhone the Shortcuts
+   * automation hands it to "Catch a bank alert", which knows it by `token`: `body` must print the
+   * token, and `channel` is not used. `off` when 6pm may not post notifications.
    */
   postTestAlert?(
     token: string,

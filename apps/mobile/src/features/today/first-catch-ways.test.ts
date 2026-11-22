@@ -32,6 +32,12 @@ describe('whether a way that runs by itself is set up', () => {
     expect(selfRunningSetUp({ ...none, alertRead: true })).toBe(true);
   });
 
+  it('is set up once a test alert has come through the Shortcut', () => {
+    expect(selfRunningSetUp({ ...none, alertProven: true })).toBe(true);
+    // Android's switch decides there, not a test sent while it was on.
+    expect(selfRunningSetUp({ ...none, alertAccess: false, alertProven: true })).toBe(false);
+  });
+
   it('follows Android’s Notification access where the phone has it', () => {
     expect(selfRunningSetUp({ ...none, alertAccess: true })).toBe(true);
     expect(selfRunningSetUp({ ...none, alertAccess: false })).toBe(false);

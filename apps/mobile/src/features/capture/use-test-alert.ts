@@ -1,6 +1,8 @@
-import { randomUUID } from 'expo-crypto';
+import { getRandomBytes, randomUUID } from 'expo-crypto';
 import { useCallback, useEffect, useReducer, useRef } from 'react';
-import { AppState, Linking } from 'react-native';
+import { AppState, Linking, Platform } from 'react-native';
+
+import { TEST_ALERT_CODE_LENGTH, testAlertBodyWithCode, testAlertCodeOf } from '@6pm/domain';
 
 import { surfaces } from '../../../modules/surfaces';
 import { useI18n } from '../../i18n/i18n';
@@ -21,7 +23,10 @@ import {
 } from './test-alert';
 
 export interface TestAlert {
-  /** This phone reads bank alerts through Android's listener, and this build can post a test. */
+  /**
+   * This phone reads bank alerts (Android's listener, or the iPhone's Shortcuts automation) and
+   * this build can post a test.
+   */
   readonly available: boolean;
   readonly state: TestAlertState;
   /** Sends one, asking the phone to let 6pm post notifications first when it does not yet. */
@@ -30,16 +35,35 @@ export interface TestAlert {
   readonly allow: () => void;
 }
 
-/** Whether a test alert can be sent here at all. Never on the iPhone. */
+/**
+ * Whether a test alert can be sent here at all: where the phone reads bank alerts, in a build
+ * whose native side posts one (an iPhone build from before it could is not offered a test).
+ */
 export const testAlertAvailable =
-  nativeReach.alertListener && typeof surfaces?.postTestAlert === 'function';
+  nativeReach.bankAlerts && typeof surfaces?.postTestAlert === 'function';
+
+/** The iPhone's alerts come through a Shortcut, which passes only a notification's words. */
+const throughShortcut = Platform.OS === 'ios';
+
+/**
+ * Opens where a test alert that never arrived is put right: Android's Notification access at
+ * 6pm's switch, or on the iPhone the Shortcuts app, where the automation is turned on and its
+ * apps are chosen.
+ */
+export function openTestAlertFix(): void {
+  if (throughShortcut) void Linking.openURL('shortcuts://').catch(() => undefined);
+  else void surfaces?.openAlertAccess?.().catch(() => undefined);
+}
 
 /**
  * A test alert the person sends to themselves, and what became of it. Sending posts a real
  * notification, worded like a small payment and marked as a test, in the app's language; then the
  * app's one inbox importer is asked to run every 600 ms until the alert has come the whole way in
- * (the listener, the reader, the inbox, the import), or ten seconds have passed with nothing. The
- * permission to post is asked for as it is for reminders. Nothing is saved from a test alert.
+ * (Android: the listener, the reader, the inbox, the import; the iPhone: the Shortcuts
+ * automation, "Catch a bank alert", the inbox, the import), or ten seconds have passed with
+ * nothing. On the iPhone the notification prints a one-time code, which is how the action knows
+ * it from anything else 6pm posts. The permission to post is asked for as it is for reminders.
+ * Nothing is saved from a test alert.
  */
 export function useTestAlert(): TestAlert {
   const { t } = useI18n();
@@ -62,12 +86,15 @@ export function useTestAlert(): TestAlert {
         dispatch({ type: 'blocked', canAsk: permission === 'ask' });
         return;
       }
-      const token = randomUUID();
+      const token = throughShortcut
+        ? testAlertCodeOf(getRandomBytes(TEST_ALERT_CODE_LENGTH))
+        : randomUUID();
+      const words = t('testAlert.notice.body', { amount: money.full(step) });
       const posted = await native
         .postTestAlert?.(
           token,
           t('testAlert.notice.title'),
-          t('testAlert.notice.body', { amount: money.full(step) }),
+          throughShortcut ? testAlertBodyWithCode(words, token) : words,
           t('testAlert.channel'),
         )
         .catch(() => 'off' as const);
