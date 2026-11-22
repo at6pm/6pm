@@ -6,8 +6,10 @@
  * A card's file name carries a hash of the image (`/og/en/home.3f9a1c2b7e.jpg`), so a changed card
  * gets a new URL and X, Facebook and Zalo fetch it fresh instead of a copy they cached. The script
  * writes the list the site reads (`apps/web/src/data/og-images.json`), removes cards no page uses,
- * and keeps the first, unversioned paths (`/og/en/home.jpg`) answering with a redirect in
- * `apps/web/public/_redirects`, for links already shared. Run it on a Mac after adding an article,
+ * and keeps two kinds of old path answering with a redirect to the current card in
+ * `apps/web/public/_redirects`, for links already shared: the first, unversioned paths
+ * (`/og/en/home.jpg`), and the versioned path of every card that has changed since (a post made
+ * before the change still asks for it). Run it on a Mac after adding an article,
  * changing a title or hero, or switching `ctaMode`, then commit the images:
  *
  *   pnpm exec tsx tools/scripts/og-images.ts
@@ -17,7 +19,15 @@
  */
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -181,11 +191,26 @@ try {
   rmSync(work, { recursive: true, force: true });
 }
 
+// A changed card's old versioned path keeps answering: the ones already redirected, and the ones
+// this run replaces.
+const versioned = /^\/og\/((?:en|vi)\/[^\s.]+)\.[0-9a-f]{10}\.jpg$/u;
+const retired = new Map<string, string>();
+const retire = (from: string) => {
+  const key = versioned.exec(from)?.[1];
+  if (key && manifest[key] && manifest[key] !== from) retired.set(from, key);
+};
+if (existsSync(redirectsFile)) {
+  for (const line of readFileSync(redirectsFile, 'utf8').split('\n'))
+    retire(line.split(' ')[0] ?? '');
+}
+
 // Cards no page uses any more go; the list and the redirects follow what is left.
 const used = new Set(Object.values(manifest));
 for (const lang of ['en', 'vi'] as const) {
   for (const file of readdirSync(path.join(outDir, lang))) {
-    if (!used.has(`/og/${lang}/${file}`)) rmSync(path.join(outDir, lang, file));
+    if (used.has(`/og/${lang}/${file}`)) continue;
+    retire(`/og/${lang}/${file}`);
+    rmSync(path.join(outDir, lang, file));
   }
 }
 const keys = Object.keys(manifest).sort();
@@ -196,9 +221,11 @@ writeFileSync(
 writeFileSync(
   redirectsFile,
   [
-    '# Written by tools/scripts/og-images.ts: the first, unversioned social card paths, kept for',
-    '# links already shared, answer with the current card.',
+    '# Written by tools/scripts/og-images.ts: the first, unversioned social card paths, and the',
+    '# versioned paths of cards that changed since, answer with the current card for links',
+    '# already shared.',
     ...keys.map((k) => `/og/${k}.jpg ${manifest[k]} 302`),
+    ...[...retired.keys()].sort().map((from) => `${from} ${manifest[retired.get(from) ?? '']} 302`),
     '',
   ].join('\n'),
 );

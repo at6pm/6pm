@@ -1,5 +1,6 @@
-# Written by tools/scripts/og-images.ts: the first, unversioned social card paths, kept for
-# links already shared, answer with the current card.
+# Written by tools/scripts/og-images.ts: the first, unversioned social card paths, and the
+# versioned paths of cards that changed since, answer with the current card for links
+# already shared.
 /og/en/bank-alert-emails-expense-log.jpg /og/en/bank-alert-emails-expense-log.bddbf15b16.jpg 302
 /og/en/best-expense-tracker-apps-iphone-2026.jpg /og/en/best-expense-tracker-apps-iphone-2026.3b0a121f67.jpg 302
 /og/en/black-friday-spending-daily-number.jpg /og/en/black-friday-spending-daily-number.7219fafb81.jpg 302
@@ -46,3 +47,7 @@
 /og/vi/tien-di-dau-het-7-khoan-ro-ri.jpg /og/vi/tien-di-dau-het-7-khoan-ro-ri.c5c5d7b9e5.jpg 302
 /og/vi/tu-dong-ghi-chi-tieu-tu-email-ngan-hang.jpg /og/vi/tu-dong-ghi-chi-tieu-tu-email-ngan-hang.62dfe75595.jpg 302
 /og/vi/vi-sao-ghi-chi-tieu-that-bai-sau-2-tuan.jpg /og/vi/vi-sao-ghi-chi-tieu-that-bai-sau-2-tuan.c09294884f.jpg 302
+/og/en/home.1aca057c57.jpg /og/en/home.dff051d3f5.jpg 302
+/og/en/home.67335a9e68.jpg /og/en/home.dff051d3f5.jpg 302
+/og/vi/home.01be3b1538.jpg /og/vi/home.13939a4878.jpg 302
+/og/vi/home.d94c66ce3c.jpg /og/vi/home.13939a4878.jpg 302
