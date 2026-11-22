@@ -98,7 +98,7 @@ const commandSchema = z.object({
     .string()
     .regex(/^\d{4}$/)
     .optional(),
-  /** "later": onboarding's "I'll do it later" said yesterday, so Today shows its empty slip. */
+  /** "later": onboarding's catching step skipped yesterday, so Today shows its reminder. */
   firstCatch: z.literal('later').optional(),
   /** After the seed: this many evenings closed back to back, ending yesterday (share cards). */
   streak: z.number().int().min(1).max(400).optional(),

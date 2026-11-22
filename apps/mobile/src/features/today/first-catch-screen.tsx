@@ -32,9 +32,10 @@ import { CATCH_STEP } from '../onboarding/use-onboarding';
 import { useFirstCatch } from '../onboarding/use-first-catch';
 
 /**
- * "Catch one" from Today's empty slip: onboarding's wait for a first catch again, over the same
- * dusk, with the ways set up before "later" (sharing always). Back, Later or Continue close it;
- * a catch that lands prints as receipt Nº 001 and Today's card folds away behind it.
+ * "Set it up" or "Check it" from Today's reminder: onboarding's wait for a first catch again,
+ * over the same dusk, with the ways walked in onboarding (sharing always). Back, Skip for now or
+ * Continue close it; a catch that lands prints as receipt Nº 001, and Today's card folds away
+ * behind it when a way that runs by itself caught it.
  */
 export function FirstCatchScreen() {
   const router = useRouter();
@@ -66,7 +67,7 @@ export function FirstCatchScreen() {
   useEffect(() => {
     void (async () => {
       const kept = await readFirstCatch(store.db);
-      if (kept?.state === 'later') setSetUp((kept.ways ?? []) as CatchWay[]);
+      setSetUp((kept?.ways ?? []) as CatchWay[]);
       setBankId(ownBankOf(await readWallets(store)));
     })().catch(() => undefined);
   }, [store]);

@@ -40,9 +40,10 @@ const TILE_ICON: Readonly<Record<ListenWay, SymbolName>> = {
  * The catching step once a way is set up: it waits, live, for one real catch. "Waiting for your
  * first one…" over the companion in its rings, a tile for each way that was set up to make one
  * happen now, a card for each way that catches by itself but is not set up yet (set up right
- * there, it folds away and joins the tiles), and "I'll do it later", which always moves on. After 90 s with nothing it shows
- * the walked way's path and where it may be stuck, still listening. When the catch lands it
- * prints as receipt Nº 001 ("Caught it.") with the companion's line and Continue.
+ * there, it folds away and joins the tiles), and a quiet "Skip for now", which always moves on.
+ * After 90 s with nothing it shows the walked way's path and where it may be stuck, still
+ * listening. When the catch lands it prints as receipt Nº 001 ("Caught it.") with the companion's
+ * line and Continue.
  */
 export function FirstCatchListen({
   pal,
@@ -165,7 +166,7 @@ function Waiting({
       ? t('firstCatch.tile.alerts', { amount: money.full(step) })
       : t(way === 'share' ? 'firstCatch.tile.share' : 'firstCatch.tile.wallet');
   // A short phone, a larger text size or set-up cards scroll the wait rather than push
-  // "I'll do it later" off the screen.
+  // "Skip for now" off the screen.
   return (
     <ScrollView
       style={{ flex: 1, marginHorizontal: -20 }}
@@ -308,6 +309,10 @@ function BreathingDot({
   );
 }
 
+/**
+ * The way past the wait: small and quiet, drawn as the header's Skip is (soft words, no fill, a
+ * full tap target), so setting a way up stays the thing to do.
+ */
 function LaterButton({
   pal,
   onPress,
@@ -318,20 +323,20 @@ function LaterButton({
   const { t } = useI18n();
   return (
     <PressScale
-      scaleTo={0.97}
+      scaleTo={0.92}
       accessibilityRole="button"
       onPress={onPress}
       style={{
-        height: 56,
+        alignSelf: 'center',
+        minWidth: 44,
+        height: 44,
         marginTop: 6,
-        borderRadius: 99,
-        borderWidth: 1,
-        borderColor: pal.inkSoft,
+        paddingHorizontal: 16,
         alignItems: 'center',
         justifyContent: 'center',
       }}
     >
-      <Text style={{ ...body(17, 650), color: pal.ink }}>{t('firstCatch.later')}</Text>
+      <Text style={{ ...body(15, 600), color: pal.inkSoft }}>{t('firstCatch.later')}</Text>
     </PressScale>
   );
 }

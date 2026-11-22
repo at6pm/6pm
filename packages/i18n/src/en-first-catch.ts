@@ -1,14 +1,15 @@
 /**
  * The first catch: onboarding waiting live for one real catch and printing it as receipt Nº 001,
- * where it got stuck after a while, Today's empty slip the morning after "later", each way's
- * heartbeat in Settings and the receipts read on this phone.
+ * where it got stuck after a while, Today's reminder to let spending log itself (from the morning
+ * after, until a way that runs by itself catches something), each way's heartbeat in Settings and
+ * the receipts read on this phone.
  */
 export const enFirstCatch = {
   'firstCatch.waiting': 'Waiting for your first one…',
   'firstCatch.caught': 'Caught it.',
   'firstCatch.still': 'Still listening…',
   'firstCatch.tryHere': 'DO ANY ONE · TAP TO TRY IT HERE',
-  'firstCatch.later': 'I’ll do it later',
+  'firstCatch.later': 'Skip for now',
   'firstCatch.tile.alerts': 'Move {amount} to yourself',
   'firstCatch.tile.share': 'Share a bank receipt',
   'firstCatch.tile.wallet': 'Tap to pay with Wallet',
@@ -43,8 +44,10 @@ export const enFirstCatch = {
   'firstCatch.fix.access': 'Check access',
   'firstCatch.fix.share': 'See how',
   'firstCatch.another': 'Try another way',
-  'firstCatch.card.title': 'Your first receipt goes here',
-  'firstCatch.card.action': 'Catch one',
+  'firstCatch.card.title': 'Let your payments log themselves',
+  'firstCatch.card.action': 'Set it up',
+  'firstCatch.card.check': 'Check it',
+  'firstCatch.card.notNow': 'Not now',
   'companion.firstCatch.soft': 'That’s how they’ll all arrive. You just say yes at six.',
   'companion.firstCatch.cheeky': 'One down. The rest turn up on their own. You just nod at six.',
   'companion.firstCatch.roast': 'See? Zero effort. Just say yes at six. Even you can manage that.',

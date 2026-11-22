@@ -82,8 +82,11 @@ export function CompanionGreeting({
   const { t } = useI18n();
   const money = useMoneyFormat();
   const { hour } = useClock();
+  // The companion asks to be let in only while nothing at all has been caught: a shared receipt
+  // is something seen.
+  const firstCatch = useFirstCatchCard();
+  const waitingForCatch = firstCatch.reminder !== null && firstCatch.nothingYet;
   // "Tomorrow's 43k, not 43k" says nothing: a day whose lines read the same is a calm one.
-  const waitingForCatch = useFirstCatchCard().due;
   const calm: HomeEvent =
     event === 'replan' && !replanWorded(day, (amount) => money.short(amount)) ? 'idle' : event;
   const said: SaidEvent = calm === 'idle' && waitingForCatch ? 'firstCatchWaiting' : calm;

@@ -114,6 +114,9 @@ export const thOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
 
   'onboarding.catch.title': '6pm จับรายจ่ายยังไง',
   'onboarding.catch.sub': 'ส่วนใหญ่เข้ามาเอง แล้วรอใน Inbox ให้คุณเช็กหนึ่งนาทีตอน {time}',
+  'onboarding.catch.auto.title': 'ให้รายการจ่ายบันทึกเอง',
+  'onboarding.catch.auto.body':
+    'ต้องตั้งค่าและตรวจสอบไม่กี่ขั้นตอน แต่คุ้มค่า 6pm มีประโยชน์ที่สุดเมื่อรายการจ่ายเข้ามาเอง ลองใช้สักสองสามวันแล้วคุณจะเห็นเอง',
   'onboarding.catch.readyNothing': 'พร้อมแล้ว ไม่ต้องตั้งค่าอะไร',
   'onboarding.catch.ready': 'พร้อมแล้ว',
   'onboarding.catch.seeHow': 'ดูวิธี',
@@ -202,6 +205,7 @@ export const thOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.line.aiServer': 'คำตอบฉลาดๆ จาก Claude',
   'onboarding.line.aiDevice': 'อยู่กับคุณทั้งหมด ไม่มีอะไรออกไปไหน',
   'onboarding.line.catch': 'ใช้ได้แล้ว {count} จาก {total} วิธี',
+  'onboarding.line.catchSetUp': 'ตั้งค่าสักวิธีนะ ที่เหลือปล่อยให้เราจัดการ',
   'onboarding.line.close': 'เจอกันตอน {time}',
 
   'onboarding.category.food': 'อาหาร',

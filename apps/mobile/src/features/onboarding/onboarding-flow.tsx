@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import Animated, { useReducedMotion } from 'react-native-reanimated';
 
-import { writeFirstCatch } from '../../data/first-catch';
+import { keepFirstCatch, keepFirstCatchLeft } from '../../data/first-catch';
 import { useMoneyStore } from '../../data/money-provider';
 import { useI18n, type I18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
@@ -19,9 +19,11 @@ import {
   catchWaysFor,
   listenWaysOf,
   readyWays,
+  selfRunningOf,
   setupCardsOf,
   type CatchWay,
   type ListenWay,
+  type SelfRunning,
 } from './catch-ways';
 import { ownBankOf, tryWay } from './first-catch-try';
 import { CompanionLine, OnboardingCta, OnboardingHeader } from './onboarding-chrome';
@@ -64,9 +66,16 @@ import {
 
 /**
  * The companion's line for the step, from what has been answered so far. The welcome and the
- * privacy promise have none: the companion is already the picture on both.
+ * privacy promise have none: the companion is already the picture on both. On the catching step
+ * it counts the ways that work already only once nothing is left to set up: while a way that runs
+ * by itself still is, it asks for that instead.
  */
-function stepLine(o: Onboarding, i18n: I18n, mode: AiMode): string | null {
+function stepLine(
+  o: Onboarding,
+  i18n: I18n,
+  mode: AiMode,
+  selfRunning: SelfRunning,
+): string | null {
   const { t } = i18n;
   switch (o.step) {
     case MONEY_IN_STEP:
@@ -91,6 +100,7 @@ function stepLine(o: Onboarding, i18n: I18n, mode: AiMode): string | null {
     case AI_STEP:
       return t(mode === 'device' ? 'onboarding.line.aiDevice' : 'onboarding.line.aiServer');
     case CATCH_STEP: {
+      if (selfRunning === 'toSetUp') return t('onboarding.line.catchSetUp');
       const ways = catchWaysFor(o.currency, mode, nativeReach);
       return t('onboarding.line.catch', { count: readyWays(ways), total: ways.length });
     }
@@ -159,7 +169,6 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
   const column = usePhoneColumn();
   const pal = onboardingPalette(o.step);
   const aiMode = useAiMode();
-  const line = stepLine(o, i18n, aiMode);
   const cta = ctaFor(o, i18n);
   const store = useMoneyStore();
   const alertAccess = useAlertAccess();
@@ -180,13 +189,20 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
     .filter((row) => row.state.kind === 'caught' || row.state.kind === 'quiet')
     .map((row) => row.way)
     .filter((way): way is 'alerts' | 'wallet' => way === 'alerts' || way === 'wallet');
-  const listenWays = listenWaysOf(catchWays, [
+  const known: readonly CatchWay[] = [
     ...setUp,
     ...ranBefore,
     ...(alertAccess === true ? (['alerts'] as const) : []),
-  ]);
+  ];
+  const listenWays = listenWaysOf(catchWays, known);
   const setupWays = setupCardsOf(catchWays, listenWays, alertAccess, nativeReach.alertListener);
-  const listen = useFirstCatch(onCatchStep && listening, since.current ?? '');
+  // While a way that runs by itself is still to set up, the companion asks for the set-up.
+  const selfRunning = selfRunningOf(catchWays, known);
+  const line = stepLine(o, i18n, aiMode, selfRunning);
+  const listen = useFirstCatch(onCatchStep && listening, since.current ?? '', {
+    day: o.today,
+    ways: setUp,
+  });
   const waiting = onCatchStep && listening;
   useEffect(() => {
     if (!onCatchStep) setListening(false);
@@ -201,13 +217,25 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
     hadAccess.current = alertAccess;
   }, [alertAccess, onCatchStep]);
   const later = () => {
-    // "Later" always moves on; Today picks it up the next morning.
-    void writeFirstCatch(store.db, {
-      state: 'later',
+    // "Skip for now" always moves on; Today picks it up the next morning.
+    void keepFirstCatchLeft(store.db, {
       day: o.today,
       at: new Date().toISOString(),
-      ways: [...setUp],
+      ways: setUp,
     }).catch(() => undefined);
+    o.next();
+  };
+  const caughtOne = () => {
+    // The ways walked since the catch landed are kept with it: Today's reminder reads them.
+    const caught = listen.caught;
+    if (caught) {
+      void keepFirstCatch(store.db, {
+        source: caught.source,
+        at: new Date().toISOString(),
+        day: o.today,
+        ways: setUp,
+      }).catch(() => undefined);
+    }
     o.next();
   };
 
@@ -310,6 +338,7 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
             date={`${i18n.weekday(new Date())} ${i18n.dayMonth(new Date())}`}
             closeAt={o.closeAt}
             safe={money.short(o.first.line)}
+            selfRunning={selfRunning}
             listening={listening}
             listen={listen}
             listenWays={listenWays}
@@ -326,7 +355,7 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
               tryWay(way, ownBankOf(o.wallets));
             }}
             onLater={later}
-            onContinue={o.next}
+            onContinue={caughtOne}
           />
         );
       case CLOSE_STEP:

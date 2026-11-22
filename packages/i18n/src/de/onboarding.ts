@@ -124,6 +124,9 @@ export const deOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.catch.title': 'So erwischt 6pm Ausgaben',
   'onboarding.catch.sub':
     'Das meiste kommt von selbst und wartet dann im Eingang auf einen Ein-Minuten-Check um {time}.',
+  'onboarding.catch.auto.title': 'Zahlungen von selbst eintragen lassen',
+  'onboarding.catch.auto.body':
+    'Einrichten und prüfen: ein paar Schritte, die sich lohnen. 6pm ist am nützlichsten, wenn Zahlungen von selbst ankommen. Gib ihm ein paar Tage, dann merkst du es.',
   'onboarding.catch.readyNothing': 'Bereit, nichts einzurichten',
   'onboarding.catch.ready': 'Bereit',
   'onboarding.catch.seeHow': 'So geht’s',
@@ -221,6 +224,7 @@ export const deOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.line.aiServer': 'Kluge Antworten, von Claude.',
   'onboarding.line.aiDevice': 'Alles bleibt bei dir. Nichts geht raus.',
   'onboarding.line.catch': '{count} von {total} laufen schon.',
+  'onboarding.line.catchSetUp': 'Richte eine ein. Den Rest mach ich.',
   'onboarding.line.close': 'Bis {time}.',
 
   'onboarding.category.food': 'Essen',

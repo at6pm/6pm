@@ -4,13 +4,17 @@ import type { SymbolName } from '../../ui/icons/symbols.generated';
 import type { AiMode } from '../privacy/ai-mode';
 import type { NativeReach } from '../surfaces/native-reach';
 
-/** The ways onboarding shows spending being caught, in the order of its cards. */
-export const CATCH_WAYS = ['scan', 'share', 'wallet', 'alerts', 'email', 'add', 'lock'] as const;
+/**
+ * The ways onboarding shows spending being caught, in the order of its cards: bank alerts first,
+ * since a phone that can read them catches the most with them and they take a set-up.
+ */
+export const CATCH_WAYS = ['alerts', 'scan', 'share', 'wallet', 'email', 'add', 'lock'] as const;
 export type CatchWay = (typeof CATCH_WAYS)[number];
 
 /**
- * The ways set up once outside 6pm: the Wallet automation in Shortcuts, Android's Notification
- * access for bank alerts, and mail forwarding.
+ * The ways set up once outside 6pm, which then run by themselves: the Wallet automation in
+ * Shortcuts, bank alerts (a Shortcuts automation, or Android's Notification access) and mail
+ * forwarding.
  */
 export type SetupWay = Extract<CatchWay, 'wallet' | 'alerts' | 'email'>;
 
@@ -74,6 +78,21 @@ export function catchWaysFor(
 /** How many work the moment onboarding ends, with nothing to set up. */
 export function readyWays(ways: readonly CatchWay[]): number {
   return ways.filter((way) => !needsSetup(way)).length;
+}
+
+/**
+ * Where the ways that run by themselves stand on the catching step: `none` when the phone shows
+ * no such way, `on` once one of those shown is set up (walked here, switched on, or seen running
+ * before), `toSetUp` while none is. Scanning, sharing, typing and the widgets work at once and
+ * never count: they catch nothing unless the person does something each time. The step's heading
+ * and the companion's line follow it.
+ */
+export type SelfRunning = 'none' | 'toSetUp' | 'on';
+
+export function selfRunningOf(ways: readonly CatchWay[], setUp: readonly CatchWay[]): SelfRunning {
+  const can = ways.filter(needsSetup);
+  if (can.length === 0) return 'none';
+  return can.some((way) => setUp.includes(way)) ? 'on' : 'toSetUp';
 }
 
 export const WAY_ICON: Readonly<Record<CatchWay, SymbolName>> = {

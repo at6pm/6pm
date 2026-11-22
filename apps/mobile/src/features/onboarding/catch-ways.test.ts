@@ -2,7 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 
 import { currencyOf, VND } from '@6pm/domain';
 
-import { catchWaysFor, listenWaysOf, readyWays, setupCardsOf } from './catch-ways';
+import { catchWaysFor, listenWaysOf, readyWays, selfRunningOf, setupCardsOf } from './catch-ways';
 
 describe('the ways onboarding shows', () => {
   it('offers receipt email in server mode', () => {
@@ -34,9 +34,29 @@ describe('the ways onboarding shows', () => {
       alertListener: true,
     };
     const ways = catchWaysFor(VND, 'server', android);
-    expect(ways).toEqual(['scan', 'alerts', 'email', 'add']);
+    expect(ways).toEqual(['alerts', 'scan', 'email', 'add']);
     expect(readyWays(ways)).toBe(2);
     expect(catchWaysFor(VND)).not.toContain('alerts');
+  });
+
+  it('puts bank alerts first wherever the phone can read them, before scan and share', () => {
+    const android = {
+      scan: true,
+      share: false,
+      wallet: false,
+      widgets: false,
+      alertListener: true,
+    };
+    const ios27 = { ...android, share: true, wallet: true, alertListener: false, bankAlerts: true };
+    expect(catchWaysFor(VND, 'server', android)[0]).toBe('alerts');
+    expect(catchWaysFor(VND, 'device', android)[0]).toBe('alerts');
+    expect(catchWaysFor(VND, 'server', ios27)[0]).toBe('alerts');
+    expect(catchWaysFor(currencyOf('USD'), 'server', ios27).slice(0, 2)).toEqual([
+      'alerts',
+      'share',
+    ]);
+    // An iPhone before iOS 27 has no bank alerts: its cards start as they did.
+    expect(catchWaysFor(VND).slice(0, 2)).toEqual(['scan', 'share']);
   });
 
   it('offers bank alerts on an iPhone whose Shortcuts can run on a notification', () => {
@@ -49,14 +69,54 @@ describe('the ways onboarding shows', () => {
       bankAlerts: true,
     };
     expect(catchWaysFor(VND, 'server', ios27)).toEqual([
+      'alerts',
       'scan',
       'share',
       'wallet',
-      'alerts',
       'email',
       'add',
       'lock',
     ]);
+  });
+});
+
+describe('where the ways that run by themselves stand', () => {
+  const iphone = catchWaysFor(VND, 'server', {
+    scan: true,
+    share: true,
+    wallet: true,
+    widgets: true,
+    alertListener: false,
+    bankAlerts: true,
+  });
+
+  it('is still to set up while only the ways that work at once are there', () => {
+    expect(selfRunningOf(iphone, [])).toBe('toSetUp');
+    expect(selfRunningOf(iphone, ['share', 'scan'])).toBe('toSetUp');
+  });
+
+  it('is on once bank alerts, the Wallet automation or mail forwarding is set up', () => {
+    expect(selfRunningOf(iphone, ['alerts'])).toBe('on');
+    expect(selfRunningOf(iphone, ['wallet'])).toBe('on');
+    expect(selfRunningOf(iphone, ['email'])).toBe('on');
+  });
+
+  it('never counts a way the phone does not show', () => {
+    const android = catchWaysFor(VND, 'device', {
+      scan: true,
+      share: false,
+      wallet: false,
+      widgets: false,
+      alertListener: true,
+    });
+    expect(selfRunningOf(android, ['wallet', 'email'])).toBe('toSetUp');
+    expect(selfRunningOf(android, ['alerts'])).toBe('on');
+  });
+
+  it('is none on a phone with no such way: nothing there is left to set up', () => {
+    const bare = { scan: true, share: false, wallet: false, widgets: false, alertListener: false };
+    expect(selfRunningOf(catchWaysFor(VND, 'device', bare), [])).toBe('none');
+    expect(selfRunningOf(catchWaysFor(VND, 'server', bare), [])).toBe('toSetUp');
   });
 });
 

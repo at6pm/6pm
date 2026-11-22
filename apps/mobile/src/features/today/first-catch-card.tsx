@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import Animated, {
   Easing,
   FadeIn,
+  LayoutAnimationConfig,
   ReduceMotion,
   interpolate,
   useAnimatedStyle,
@@ -11,9 +12,11 @@ import Animated, {
   useSharedValue,
   withRepeat,
   withTiming,
+  type SharedValue,
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
+import type { FirstCatchReminder } from '@6pm/domain';
 import { localeOf } from '@6pm/i18n';
 import { catchInk, curves } from '@6pm/theme';
 
@@ -22,11 +25,10 @@ import { useMoneyFormat } from '../../money/use-money-format';
 import { DashedRule } from '../../ui/dashed-rule';
 import { haptics } from '../../ui/haptics';
 import { Symbol } from '../../ui/icons/symbol';
-import type { SymbolName } from '../../ui/icons/symbols.generated';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading, mono } from '../../ui/type/fonts';
-import { nativeReach } from '../surfaces/native-reach';
+import { REMINDER_ICON } from './first-catch-ways';
 import { useFirstCatchCard } from './use-first-catch-card';
 
 /** The sheet's gap under each card: taken back as the card folds away, so nothing jumps. */
@@ -36,18 +38,36 @@ const PRINTED_MS = 1100;
 const COLLAPSE_MS = 400;
 const BREATHE_MS = 2600;
 
-/** The ways a first catch can come from on this phone, as the card's icons show them. */
-const WAYS: readonly { readonly icon: SymbolName; readonly on: boolean }[] = [
-  { icon: 'account_balance', on: nativeReach.bankAlerts },
-  { icon: 'ios_share', on: nativeReach.share },
-  { icon: 'contactless', on: nativeReach.wallet },
-];
+/** Folds the card away (400 ms, the entrance curve), then takes it out of the sheet. */
+function foldAway(
+  fold: SharedValue<number>,
+  reduceMotion: boolean,
+  onGone: (gone: boolean) => void,
+): void {
+  fold.set(
+    withTiming(
+      1,
+      {
+        duration: reduceMotion ? 200 : COLLAPSE_MS,
+        easing: Easing.bezier(...curves.enter),
+        reduceMotion: ReduceMotion.Never,
+      },
+      (done) => {
+        if (done) scheduleOnRN(onGone, true);
+      },
+    ),
+  );
+}
 
 /**
- * Today's "Your first receipt goes here": the morning after "I'll do it later", an empty dashed
- * slip waiting to be filled, the ways left to set up, and "Catch one", which opens the wait for a
- * first catch again. When a real capture lands, its slip prints into the outline, then the card
- * folds away (400 ms) and what is under it slides up; it never comes back.
+ * Today's reminder to let spending log itself, from the morning after the catching step ended:
+ * an empty dashed slip waiting to be filled, the ways that run by themselves on this phone, and
+ * what to do next. With none of them set up it says "Let your payments log themselves" over "Set
+ * it up"; once one is set up and nothing has come from it, "Waiting for your first one…" over
+ * "Check it". Either opens the wait for a first catch again. "Not now" folds the card away for a
+ * week, and for good the third time. When a bank alert, a Wallet tap or a forwarded email lands,
+ * its slip prints into the outline, then the card folds away (400 ms) and what is under it slides
+ * up; it never comes back.
  */
 export function FirstCatchCard() {
   const { palette } = useTheme();
@@ -55,7 +75,9 @@ export function FirstCatchCard() {
   const money = useMoneyFormat();
   const router = useRouter();
   const reduceMotion = useReducedMotion();
-  const { due, caught, settle } = useFirstCatchCard();
+  const { reminder, ways, caught, putAway } = useFirstCatchCard();
+  // What the card says stays while it prints a catch and folds away.
+  const [said, setSaid] = useState<FirstCatchReminder>('notSetUp');
   const [shown, setShown] = useState(false);
   const [gone, setGone] = useState(false);
   const height = useSharedValue(0);
@@ -63,36 +85,31 @@ export function FirstCatchCard() {
   const settled = useRef(false);
 
   useEffect(() => {
-    if (!due) return;
+    if (reminder === null) return;
     settled.current = false;
     fold.set(0);
+    setSaid(reminder);
     setGone(false);
     setShown(true);
-  }, [due, fold]);
+  }, [reminder, fold]);
 
-  // A real catch landed while the card was up: print it, then fold the card away for good.
+  // A way that runs by itself caught something while the card was up: print it, then fold the
+  // card away for good.
   useEffect(() => {
     if (!shown || caught === null || settled.current) return undefined;
     settled.current = true;
     haptics.success();
-    settle();
-    const timer = setTimeout(() => {
-      fold.set(
-        withTiming(
-          1,
-          {
-            duration: reduceMotion ? 200 : COLLAPSE_MS,
-            easing: Easing.bezier(...curves.enter),
-            reduceMotion: ReduceMotion.Never,
-          },
-          (done) => {
-            if (done) scheduleOnRN(setGone, true);
-          },
-        ),
-      );
-    }, PRINTED_MS);
+    const timer = setTimeout(() => foldAway(fold, reduceMotion, setGone), PRINTED_MS);
     return () => clearTimeout(timer);
-  }, [shown, caught, settle, fold, reduceMotion]);
+  }, [shown, caught, fold, reduceMotion]);
+
+  const notNow = () => {
+    if (settled.current) return;
+    settled.current = true;
+    haptics.tap();
+    putAway();
+    foldAway(fold, reduceMotion, setGone);
+  };
 
   const folding = useAnimatedStyle(() => {
     const p = fold.get();
@@ -106,7 +123,7 @@ export function FirstCatchCard() {
   });
 
   if (!shown || gone) return null;
-  const ways = WAYS.filter((way) => way.on);
+  const waiting = said === 'waiting';
   return (
     <Animated.View
       style={folding}
@@ -158,13 +175,18 @@ export function FirstCatchCard() {
           <Scallops color={caught ? catchInk.paperBottom : palette.ink} filled={caught !== null} />
         </View>
         <View style={{ flex: 1, minWidth: 0, gap: 10 }}>
-          <Text style={{ ...leading(display(21, 500), 23.5), color: palette.ink }}>
-            {t('firstCatch.card.title')}
-          </Text>
+          {/* The words fade over when a way gets set up; the card itself arrives with them in place. */}
+          <LayoutAnimationConfig skipEntering>
+            <Animated.View key={said} entering={FadeIn.duration(300)}>
+              <Text style={{ ...leading(display(21, 500), 23.5), color: palette.ink }}>
+                {t(waiting ? 'firstCatch.waiting' : 'firstCatch.card.title')}
+              </Text>
+            </Animated.View>
+          </LayoutAnimationConfig>
           <View style={{ flexDirection: 'row', gap: 6 }}>
             {ways.map((way) => (
               <View
-                key={way.icon}
+                key={way}
                 style={{
                   width: 30,
                   height: 30,
@@ -174,7 +196,7 @@ export function FirstCatchCard() {
                   justifyContent: 'center',
                 }}
               >
-                <Symbol name={way.icon} size={17} color={palette.ink} />
+                <Symbol name={REMINDER_ICON[way]} size={17} color={palette.ink} />
               </View>
             ))}
           </View>
@@ -197,9 +219,25 @@ export function FirstCatchCard() {
             }}
           >
             <Text style={{ ...body(15, 650), color: palette.accentFg }}>
-              {t('firstCatch.card.action')}
+              {t(waiting ? 'firstCatch.card.check' : 'firstCatch.card.action')}
             </Text>
             <Symbol name="arrow_forward" size={18} color={palette.accentFg} />
+          </PressScale>
+          {/* The quiet way out, as the season's card has it; its tap area reaches into the gaps. */}
+          <PressScale
+            accessibilityRole="button"
+            onPress={notNow}
+            style={{
+              height: 40,
+              marginTop: -6,
+              marginBottom: -8,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Text style={{ ...body(15), color: palette.inkSoft }}>
+              {t('firstCatch.card.notNow')}
+            </Text>
           </PressScale>
         </View>
       </View>
