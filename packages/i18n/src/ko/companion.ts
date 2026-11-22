@@ -23,7 +23,7 @@ export const koCompanion: { readonly [Key in keyof typeof enCompanion]: Entry } 
   'companion.replan.soft': '내일은 {b} 대신 {t}. 그래도 이번 달은 괜찮아요.',
   'companion.replan.cheeky': '오늘 좀 질렀죠? 내일은 {b} 말고 {t}. 그래도 이번 달은 버텨요.',
   'companion.replan.roast': '내일은 {b} 말고 {t}. 이번 달은 버틴다. 가자.',
-  'companion.replan.plain': '내일 금액: {b} 대신 {t}. 이번 달 계획은 유지돼요.',
+  'companion.replan.plain': '내일 금액: {b} 대신 {t}. 이번 달 플랜은 유지돼요.',
   'companion.pastPlan.soft': '이번 주기는 플랜을 넘었어요. 월급날 새로 시작해요.',
   'companion.pastPlan.cheeky': '잠깐 플랜 초과예요. 월급날 리셋!',
   'companion.pastPlan.roast': '달보다 플랜이 먼저 끝났네. 월급날 다시 가 보자.',

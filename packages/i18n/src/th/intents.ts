@@ -15,7 +15,7 @@ export const thIntents: { readonly [Key in keyof typeof enIntents]: Entry } = {
   'capture.guide.back': 'การตั้งค่า',
   'capture.guide.howItWorks': 'ทำงานยังไง',
   'capture.guide.trouble': 'ยังไม่ทำงาน?',
-  'capture.guide.lands': 'อะไรจะเข้ามาใน Inbox',
+  'capture.guide.lands': 'อะไรจะเข้ามาในกล่องขาเข้า',
   'capture.guide.landsNote':
     'รายการจะรออยู่ตรงนั้นจนกว่าคุณจะเก็บไว้ตอนปิดวันหกโมงเย็น ยังไม่นับอะไรจนกว่าคุณจะตกลง',
 
@@ -26,8 +26,8 @@ export const thIntents: { readonly [Key in keyof typeof enIntents]: Entry } = {
   'capture.share.step1': 'เปิดใบเสร็จการโอนในแอปธนาคาร',
   'capture.share.step2': 'แตะ แชร์ แล้วเลือก 6pm',
   'capture.share.step2Chip': 'แชร์ → 6pm',
-  'capture.share.step3': 'กลับไปใช้ชีวิตต่อ รายการอยู่ใน Inbox แล้ว',
-  'capture.share.step3Chip': 'เข้า Inbox',
+  'capture.share.step3': 'กลับไปใช้ชีวิตต่อ รายการอยู่ในกล่องขาเข้าแล้ว',
+  'capture.share.step3Chip': 'กล่องขาเข้า',
   'capture.share.tip': 'ลาก 6pm ไปไว้หน้าสุดของแถวแชร์ แล้วจากใบเสร็จไหนก็แตะครั้งเดียวถึง',
   'capture.share.action': 'ปักหมุด 6pm ในแชร์',
   'capture.share.pinText': 'แตะ เพิ่มเติม แล้ว แก้ไข แล้วเพิ่ม 6pm',

@@ -49,7 +49,7 @@ export const deClose: { readonly [Key in keyof typeof enClose]: Entry } = {
   'close.cash.fare': 'Busticket',
   'close.cash.coffee': 'Kaffee',
   'close.cash.snack': 'Imbiss',
-  'close.cash.groceries': 'Lebensmittel',
+  'close.cash.groceries': 'Einkauf',
   'close.work.title': 'War das für die Arbeit?',
   'close.work.sub': 'Wenn ja, wandert es in die Erstattung und bleibt aus deiner Tageszahl raus.',
   'close.work.yes': 'Ja, beruflich',

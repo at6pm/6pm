@@ -7,8 +7,8 @@ import { curves } from '@6pm/theme';
 import { useI18n } from '../../i18n/i18n';
 import { CategoryTile } from '../../ui/category-tile';
 import { Symbol } from '../../ui/icons/symbol';
+import { BackSheetHeader } from '../../ui/navigation/back-sheet-header';
 import { SheetFrame } from '../../ui/navigation/sheet-frame';
-import { PressScale } from '../../ui/primitives/press-scale';
 import { Switch } from '../../ui/primitives/switch';
 import { useHideAmounts } from '../surfaces/use-hide-amounts';
 import { useTheme } from '../../ui/theme/theme';
@@ -53,44 +53,12 @@ export function WidgetsGuideSheet() {
   const stageWidth = sheet.width - 64;
 
   const header = (
-    <View style={{ paddingTop: 8, paddingHorizontal: 14, paddingBottom: 6, gap: 6 }}>
-      <View
-        style={{
-          alignSelf: 'center',
-          width: 36,
-          height: 5,
-          borderRadius: 9,
-          backgroundColor: palette.inkSoft,
-          opacity: 0.35,
-        }}
-      />
-      <View style={{ minHeight: 44, alignItems: 'center', justifyContent: 'center' }}>
-        <Text style={{ ...body(17, 650), color: palette.ink }}>{t('widgetsGuide.title')}</Text>
-        <PressScale
-          accessibilityRole="button"
-          onPress={() => router.back()}
-          hitSlop={8}
-          style={{
-            position: 'absolute',
-            left: 0,
-            paddingVertical: 8,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}
-        >
-          <Symbol name="chevron_left" size={26} color={palette.ink} style={{ marginLeft: -4 }} />
-          <Text style={{ ...body(17, 500), color: palette.ink }}>{t('capture.guide.back')}</Text>
-        </PressScale>
-        <PressScale
-          accessibilityRole="button"
-          onPress={() => router.dismissTo('/')}
-          hitSlop={8}
-          style={{ position: 'absolute', right: 0, paddingVertical: 8, paddingHorizontal: 4 }}
-        >
-          <Text style={{ ...body(17, 650), color: palette.ink }}>{t('common.done')}</Text>
-        </PressScale>
-      </View>
-    </View>
+    <BackSheetHeader
+      title={t('widgetsGuide.title')}
+      backLabel={t('capture.guide.back')}
+      onBack={() => router.back()}
+      onDone={() => router.dismissTo('/')}
+    />
   );
 
   return (

@@ -32,7 +32,7 @@ export const idAsk: { readonly [Key in keyof typeof enAsk]: Entry } = {
   'ask.row.leftPerDay': 'Sisa per hari',
   'ask.row.safeToday': 'Aman hari ini',
   'ask.row.tomorrow': 'Besok',
-  'ask.row.futureYou': 'Kamu di masa depan tiap bulan',
+  'ask.row.futureYou': 'Masa depanmu tiap bulan',
   'ask.row.moving': 'Ditabung lagi',
   'ask.row.inPot': 'Di toples',
   'ask.row.goal': 'Jumlah target',

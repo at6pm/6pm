@@ -46,7 +46,7 @@ export const thClose: { readonly [Key in keyof typeof enClose]: Entry } = {
   'close.cash.fare': 'ค่ารถเมล์',
   'close.cash.coffee': 'กาแฟ',
   'close.cash.snack': 'ของว่าง',
-  'close.cash.groceries': 'ของใช้ในบ้าน',
+  'close.cash.groceries': 'จ่ายตลาด',
   'close.work.title': 'รายการนี้เป็นค่างานไหม?',
   'close.work.sub': 'ถ้าใช่ รายการนี้จะย้ายไปที่เบิกคืน และไม่นับรวมในยอดรายวันของคุณ',
   'close.work.yes': 'ใช่ ค่างาน',

@@ -2,8 +2,8 @@ import type { Entry } from '../catalogue-types';
 import type { enQuickAdd } from '../en-quick-add';
 
 export const deQuickAdd: { readonly [Key in keyof typeof enQuickAdd]: Entry } = {
-  'quick.face.out': 'Ausgegeben',
-  'quick.face.in': 'Bekommen',
+  'quick.face.out': 'Ausgabe',
+  'quick.face.in': 'Einnahme',
   'quick.tool.photo': 'Foto',
   'quick.tool.split': 'Teilen',
   'quick.tool.jar': 'Aus einem Glas',
