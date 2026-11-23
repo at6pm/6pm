@@ -59,7 +59,7 @@ export const jaDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.missed.close': '{day}を締める · {amount}',
   'diary.missed.notNow': 'あとで',
   'diary.zine.kicker': 'お金日記 · No.{no}',
-  'diary.zine.headline.spare': '{month}は{amount}余らせて終わりました。',
+  'diary.zine.headline.spare': '{month}は{amount}の余りでした。',
   'diary.zine.headline.overPaid': 'プランを少しオーバー。それでも未来の自分には先に払えました。',
   'diary.zine.headline.over': 'プランを少しオーバー。来月はまたまっさらから。',
   'diary.zine.stamp': '締め済み',
