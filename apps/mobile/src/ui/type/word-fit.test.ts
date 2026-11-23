@@ -2,6 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 
 import {
   breaksMidWord,
+  keepCountersWithNumbers,
   keepHangulWords,
   scaleTextStyle,
   wordFitScale,
@@ -125,5 +126,19 @@ describe('keepHangulWords', () => {
   it('leaves text with no Hangul as it is', () => {
     expect(keepHangulWords('Your bank and wallet alerts')).toBe('Your bank and wallet alerts');
     expect(keepHangulWords('今日は5件キャッチ')).toBe('今日は5件キャッチ');
+  });
+});
+
+describe('keepCountersWithNumbers', () => {
+  const J = '\u2060';
+
+  it('joins a number to the Japanese or Chinese counter after it', () => {
+    expect(keepCountersWithNumbers('給料日までの1日あたり')).toBe(`給料日までの1${J}日あたり`);
+    expect(keepCountersWithNumbers('今天记下5笔')).toBe(`今天记下5${J}笔`);
+  });
+
+  it('leaves a number before a space, a Latin word or nothing as it is', () => {
+    expect(keepCountersWithNumbers('5 things caught')).toBe('5 things caught');
+    expect(keepCountersWithNumbers('¥3,850')).toBe('¥3,850');
   });
 });

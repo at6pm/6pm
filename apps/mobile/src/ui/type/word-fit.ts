@@ -105,3 +105,22 @@ export function keepHangulWords(text: string): string {
   });
   return out;
 }
+
+const DIGIT = /\p{Nd}/u;
+/** Kana and Han: Japanese and Chinese, which a line may break between any two characters of. */
+const KANA_OR_HAN = /[\u3040-\u30FF\u3400-\u9FFF]/u;
+
+/**
+ * A number kept with the counter after it (1日, 5件, 10天): a word joiner between a digit and the
+ * Japanese or Chinese character that follows, where Android would otherwise end a line.
+ */
+export function keepCountersWithNumbers(text: string): string {
+  const chars = Array.from(text);
+  let out = '';
+  chars.forEach((char, i) => {
+    const before = chars[i - 1];
+    if (before !== undefined && DIGIT.test(before) && KANA_OR_HAN.test(char)) out += WORD_JOINER;
+    out += char;
+  });
+  return out;
+}

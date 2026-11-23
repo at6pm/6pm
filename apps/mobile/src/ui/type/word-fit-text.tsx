@@ -12,6 +12,7 @@ import {
 import { FIT_MIN_SCALE } from './fit-text';
 import {
   breaksMidWord,
+  keepCountersWithNumbers,
   keepHangulWords,
   scaleTextStyle,
   wordFitScale,
@@ -19,11 +20,11 @@ import {
 } from './word-fit';
 
 /**
- * A heading's words as they are drawn. iOS keeps Korean to its words by itself (the `standard`
- * line break strategy); Android needs them joined.
+ * A heading's words as they are drawn. iOS keeps Korean to its words, and a number with its
+ * counter, by itself (the `standard` line break strategy); Android needs them joined.
  */
 export function headingWords(text: string): string {
-  return Platform.OS === 'android' ? keepHangulWords(text) : text;
+  return Platform.OS === 'android' ? keepCountersWithNumbers(keepHangulWords(text)) : text;
 }
 
 /** Wider than any word at any size. */
