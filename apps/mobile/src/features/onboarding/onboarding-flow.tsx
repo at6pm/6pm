@@ -221,7 +221,8 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
     hadAccess.current = alertAccess;
   }, [alertAccess, onCatchStep]);
   const later = () => {
-    // "Skip for now" always moves on; Today picks it up the next morning.
+    // The header's Skip on the ways and the wait's "Skip for now" always move on; Today picks it
+    // up the next morning.
     void keepFirstCatchLeft(store.db, {
       day: o.today,
       at: new Date().toISOString(),
@@ -425,9 +426,10 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
         <OnboardingHeader
           step={o.step}
           pal={pal}
-          showSkip={o.step >= BILLS_STEP && o.step <= AI_STEP}
+          // On the catching step's ways Skip is the one tap past the set-up; the wait has its own.
+          showSkip={o.step >= BILLS_STEP && o.step <= CATCH_STEP && !waiting}
           onBack={waiting ? () => setListening(false) : o.back}
-          onSkip={o.skip}
+          onSkip={onCatchStep ? later : o.skip}
           ahead={waiting && listen.caught ? 1 : 0}
         />
         {line !== null && !waiting ? (
