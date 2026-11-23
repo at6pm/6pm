@@ -4,6 +4,7 @@ import {
   breaksMidWord,
   keepCountersWithNumbers,
   keepHangulWords,
+  keepThaiWords,
   scaleTextStyle,
   wordFitScale,
   wordsToMeasure,
@@ -140,5 +141,15 @@ describe('keepCountersWithNumbers', () => {
   it('leaves a number before a space, a Latin word or nothing as it is', () => {
     expect(keepCountersWithNumbers('5 things caught')).toBe('5 things caught');
     expect(keepCountersWithNumbers('¥3,850')).toBe('¥3,850');
+  });
+});
+
+describe('keepThaiWords', () => {
+  it('joins the two parts of a word Android would break', () => {
+    expect(keepThaiWords('โหลจะเต็มเมื่อไหร่ เรา')).toBe('โหลจะเต็มเมื่อ\u2060ไหร่ เรา');
+  });
+
+  it('leaves other text as it is', () => {
+    expect(keepThaiWords('วันนี้จับได้ 5 รายการ')).toBe('วันนี้จับได้ 5 รายการ');
   });
 });

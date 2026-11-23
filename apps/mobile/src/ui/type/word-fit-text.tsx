@@ -14,6 +14,7 @@ import {
   breaksMidWord,
   keepCountersWithNumbers,
   keepHangulWords,
+  keepThaiWords,
   scaleTextStyle,
   wordFitScale,
   wordsToMeasure,
@@ -21,10 +22,12 @@ import {
 
 /**
  * A heading's words as they are drawn. iOS keeps Korean to its words, and a number with its
- * counter, by itself (the `standard` line break strategy); Android needs them joined.
+ * counter, by itself (the `standard` line break strategy); Android needs them joined, and breaks
+ * inside a Thai word or two it does not know.
  */
 export function headingWords(text: string): string {
-  return Platform.OS === 'android' ? keepCountersWithNumbers(keepHangulWords(text)) : text;
+  if (Platform.OS !== 'android') return text;
+  return keepThaiWords(keepCountersWithNumbers(keepHangulWords(text)));
 }
 
 /** Wider than any word at any size. */

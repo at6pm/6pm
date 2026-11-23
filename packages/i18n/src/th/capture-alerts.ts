@@ -12,8 +12,7 @@ export const thCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'native.intents.catchAlert.app': 'แอป',
   'capture.alerts.name': 'แจ้งเตือนธนาคาร',
   'capture.alerts.sub': 'แจ้งเตือนธนาคารและอีวอลเล็ตจดลงเองอัตโนมัติ',
-  // U+2060 keeps เมื่อไหร่ whole: Android's Thai dictionary would break a line inside it.
-  'capture.alerts.headline': 'ธนาคารแจ้งมาเมื่อ\u2060ไหร่ 6pm จดให้ทันที',
+  'capture.alerts.headline': 'ธนาคารแจ้งมาเมื่อไหร่ 6pm จดให้ทันที',
   'capture.alerts.time': 'ราวหนึ่งนาที ครั้งเดียว',
   'capture.alerts.step1': 'ในคำสั่งลัด สร้างระบบอัตโนมัติสำหรับการแจ้งเตือน',
   'capture.alerts.step1Chip': 'ระบบอัตโนมัติ → การแจ้งเตือน',

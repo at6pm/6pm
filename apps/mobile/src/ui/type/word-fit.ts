@@ -124,3 +124,17 @@ export function keepCountersWithNumbers(text: string): string {
   });
   return out;
 }
+
+/**
+ * Thai words Android's line breaker does not know as one word, each as the two parts it would end
+ * a line between ("…เต็มเมื่อ" / "ไหร่").
+ */
+const THAI_WORDS: readonly (readonly [string, string])[] = [['เมื่อ', 'ไหร่']];
+
+/** Those Thai words kept whole, with a word joiner where Android would break them. */
+export function keepThaiWords(text: string): string {
+  let out = text;
+  for (const [head, tail] of THAI_WORDS)
+    out = out.replaceAll(head + tail, head + WORD_JOINER + tail);
+  return out;
+}
