@@ -19,6 +19,7 @@ import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
 import { balanceTwoLines } from '../../ui/type/balanced-text';
+import { wordsToMeasure } from '../../ui/type/word-fit';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, tabular } from '../../ui/type/fonts';
@@ -45,6 +46,8 @@ const NAME = body(12, 650);
 const NAME_WIDTH = 64;
 const NAME_LINE = 15;
 const NAME_SMALLEST = 11 / 12;
+/** A name of one long word (Weihnachten) keeps to one line and shrinks this far, never cut in two. */
+const WORD_SMALLEST = 9 / 12;
 const HELD = { ...body(11), ...tabular };
 
 /**
@@ -186,6 +189,8 @@ function ShelfCell({
   });
 
   const own = jar.kind === 'own' ? jar : null;
+  // One word with nowhere to break: a second line would cut it in two, so it shrinks to its line.
+  const oneWord = wordsToMeasure(jar.name) === jar.name;
   return (
     <Animated.View style={[{ width: CELL, alignItems: 'center', gap: 7 }, landStyle]}>
       <PressScale
@@ -216,9 +221,9 @@ function ShelfCell({
         <View style={{ alignItems: 'center', width: '100%' }}>
           <View style={{ width: NAME_WIDTH, minHeight: nameLines * NAME_LINE }}>
             <Text
-              numberOfLines={2}
+              numberOfLines={oneWord ? 1 : 2}
               adjustsFontSizeToFit
-              minimumFontScale={NAME_SMALLEST}
+              minimumFontScale={oneWord ? WORD_SMALLEST : NAME_SMALLEST}
               onTextLayout={(e) => {
                 const lines = Math.min(2, e.nativeEvent.lines.length);
                 if (lines === 2 && !twoLines) setTwoLines(true);
