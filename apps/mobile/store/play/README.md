@@ -4,8 +4,9 @@ What the Play Console asks for before a build can go to a testing track, for `ap
 build is `app.at6pm.dev`). Android cannot use the iOS id: `ai.sixpm.app` is held on Play by a
 developer account that was closed, and Play never frees a package name. The text
 follows the App Store listing (`../README.md`, `store.config.json`), less what Android does not have
-(Apple Pay, widgets, Siri, Budget together, the companion's Home Screen icon, on-device mode) and
-with what it has instead (bank and wallet notifications).
+(Apple Pay, Siri, Budget together, the companion's Home Screen icon, on-device mode) and with what it
+has instead (bank and wallet notifications). Android ships seven Home screen widgets, so the listing
+names them.
 
 ## Graphics
 
@@ -59,7 +60,7 @@ categories are written in it):
 **Full description** (≤ 4000):
 
 ```
-6pm is an expense tracker that fills itself in. Pay by card or transfer, and the notification from your bank or wallet app becomes a line in your spending log: nothing to type, no bank login, no account linking. At six, you swipe once to close the day. Tomorrow morning there is one number: what's safe to spend today. Free.
+6pm is an expense tracker that fills itself in. Pay by card or transfer, and the notification from your bank or wallet app becomes a line in your spending log: nothing to type, no bank login, no account linking. You always know what's safe to spend today and where your money went, for about a minute a day. Free.
 
 YOUR BANK'S NOTIFICATIONS LOG THEMSELVES
 Turn on notification access once, and every payment alert from your bank or wallet lands in your inbox by itself. Codes, failed payments and promotions are skipped. 6pm reads nothing from any other app.
@@ -67,26 +68,29 @@ Turn on notification access once, and every payment alert from your bank or wall
 KNOW WHAT'S SAFE TO SPEND TODAY
 One number on your Today screen, worked out from your pay, your bills and what you have already spent. Spend less today and tomorrow's number grows.
 
-CLOSE YOUR DAY IN ONE SWIPE
-At six, 6pm shows what it caught. Keep it, edit it, or mark it not yours, then swipe once. The day is closed.
+A MINUTE A DAY AND YOUR BOOKS ARE DONE
+Each evening 6pm shows you what it caught that day. Keep it, fix it or mark it not yours, and you're done. No catching up at the end of the month.
 
-SIX WAYS TO LOG, ONE INBOX
-Bank notifications, VietQR scans, receipt photos, forwarded bank emails, your voice and a quick keypad. Everything lands in one inbox for the close.
+PAID IN CASH? ADD IT IN SECONDS
+Scan a VietQR code, snap a receipt, forward a bank email, say it out loud, or tap it in on a quick keypad. What your bank doesn't announce still gets in.
 
 ASK BEFORE YOU SPEND
 Can I afford a dinner on Saturday? Ask 6pm answers from your own numbers.
 
-A BUDGET PLANNER THAT PAYS YOU FIRST
-Bills are set aside and pots fill each pay cycle before anything is called spendable.
+BILLS AND SAVINGS SET ASIDE ON PAYDAY
+Each payday your budget plan sets your bills aside and fills your pots, before anything counts as spendable. What's left is truly yours to spend.
 
-A MONEY DIARY YOU'LL ACTUALLY KEEP
-Every closed day is a page. Look back at a month in one glance.
+SEE WHERE YOUR MONEY WENT
+Every day is a page in your money diary. Look back over any month and see where it all went.
+
+YOUR NUMBER ON YOUR HOME SCREEN
+Widgets for today's number, this week, this month, a pot and today's receipt. Check before you spend, without opening the app.
 
 LOOKS AND COMPANIONS
 Eleven looks, from Sơn Mài lacquer to Neon Alley, that follow your real clock from dawn to midnight. Six companions keep you company.
 
 PRIVATE BY DESIGN
-No bank login, ever. Your money stays encrypted on your phone. 6pm is open source.
+No bank login, ever. Your data is encrypted on your phone. 6pm is open source.
 
 6pm is free. 6pm Max adds every look, unlimited Ask and pots, Travel mode, the Year book, and encrypted backup and export.
 
@@ -105,7 +109,7 @@ Privacy Policy: https://at6pm.app/privacy
 **Mô tả đầy đủ**:
 
 ```
-6pm là app quản lý chi tiêu tự động. Chuyển khoản hay quẹt thẻ xong, thông báo biến động số dư từ app ngân hàng và ví điện tử tự thành một dòng trong sổ thu chi: không cần nhập tay, không cần liên kết hay đăng nhập ngân hàng. Sáu giờ tối, bạn vuốt một lần để chốt ngày. Sáng mai chỉ một con số: hôm nay tiêu được bao nhiêu. Miễn phí.
+6pm là app quản lý chi tiêu tự động. Chuyển khoản hay quẹt thẻ xong, thông báo biến động số dư từ app ngân hàng và ví điện tử tự thành một dòng trong sổ thu chi: không cần nhập tay, không cần liên kết hay đăng nhập ngân hàng. Mỗi ngày chỉ mất chừng một phút, bạn luôn biết hôm nay còn tiêu được bao nhiêu và tiền đã đi đâu. Miễn phí.
 
 THÔNG BÁO NGÂN HÀNG TỰ GHI
 Bật quyền truy cập thông báo một lần, mọi thông báo biến động số dư của ngân hàng và ví tự về thẳng hộp thư. Mã OTP, giao dịch lỗi và khuyến mãi được bỏ qua. 6pm không đọc gì từ ứng dụng khác.
@@ -113,20 +117,23 @@ Bật quyền truy cập thông báo một lần, mọi thông báo biến độ
 BIẾT HÔM NAY TIÊU ĐƯỢC BAO NHIÊU
 Một con số trên màn hình Hôm nay, tính từ lương, hoá đơn và những gì bạn đã tiêu. Hôm nay tiêu ít hơn, ngày mai con số lớn hơn.
 
-CHỐT NGÀY BẰNG MỘT CÚ VUỐT
-Sáu giờ tối, 6pm cho bạn xem những gì đã ghi. Giữ, sửa hoặc đánh dấu không phải của bạn, rồi vuốt một lần. Ngày đã chốt.
+MỖI NGÀY MỘT PHÚT LÀ XONG SỔ
+Mỗi tối, 6pm cho bạn xem những khoản đã ghi trong ngày. Giữ, sửa hoặc bỏ khoản không phải của bạn là xong. Không còn cảnh cuối tháng ngồi nhớ lại từng khoản.
 
-SÁU CÁCH GHI, MỘT HỘP THƯ
-Thông báo ngân hàng, quét VietQR, chụp biên lai, chuyển tiếp email ngân hàng, giọng nói và bàn phím nhanh. Mọi khoản về một hộp thư để chốt ngày.
+TRẢ TIỀN MẶT? GHI TRONG VÀI GIÂY
+Quét VietQR lúc trả tiền, chụp biên lai, chuyển tiếp email ngân hàng, nói một câu hoặc gõ nhanh số tiền. Khoản nào ngân hàng không báo vẫn vào sổ.
 
 HỎI TRƯỚC KHI TIÊU
 Thứ Bảy đi ăn 2 triệu có được không? Hỏi 6pm trả lời từ chính con số của bạn.
 
-KẾ HOẠCH CHI TIÊU TRẢ CHO BẠN TRƯỚC
-Hoá đơn được để riêng, các hũ được nạp mỗi kỳ lương trước khi tính tiền được tiêu.
+LƯƠNG VỀ, HOÁ ĐƠN VÀ TIỀN ĐỂ DÀNH ĐƯỢC ĐỂ RIÊNG TRƯỚC
+Mỗi kỳ lương, kế hoạch chi tiêu để riêng hoá đơn và nạp các hũ trước, rồi mới tính tiền được tiêu. Phần còn lại, bạn cứ thoải mái tiêu.
 
-NHẬT KÝ CHI TIÊU BẠN SẼ GIỮ ĐƯỢC
-Mỗi ngày đã chốt là một trang. Nhìn lại cả tháng trong một cái liếc.
+CUỐI THÁNG THẤY TIỀN ĐÃ ĐI ĐÂU
+Mỗi ngày là một trang nhật ký chi tiêu. Nhìn lại tháng nào cũng thấy ngay tiền đã đi đâu.
+
+CON SỐ NGAY TRÊN MÀN HÌNH CHÍNH
+Tiện ích cho số tiêu hôm nay, tuần này, tháng này, hũ và biên lai ngày. Xem trước khi tiêu, không cần mở app.
 
 GIAO DIỆN VÀ BẠN ĐỒNG HÀNH
 Mười một giao diện, từ Sơn Mài đến Neon Alley, đổi theo giờ thật từ bình minh đến nửa đêm. Sáu bạn đồng hành ở bên bạn.
@@ -148,6 +155,12 @@ opens with the bank-alert capture and keeps that section first, and names no ban
 founder's choice). The English listing follows the same pattern, with the category in its name since
 Play has no subtitle. Both were sent for review on 22 Nov 2026.
 
+
+The other nine languages on Play (de-DE, es-ES, es-419, fr-FR, id, ja-JP, ko-KR, th, zh-CN) carry the
+same sections in the same order. Every section opens on what the person gets (payments that log
+themselves, what is safe to spend, a minute a day, cash in seconds, bills and savings set aside,
+where the money went, the number on the Home screen); the six o'clock close is described, not led
+with. No listing names a bank or a wallet.
 
 **Category**: Finance. **Tags**: Finance, Personal finance (Play has no budgeting tag). **Contact**:
 hello@oddeggs.studio, the studio's address, as on its other listings; website https://at6pm.app.
