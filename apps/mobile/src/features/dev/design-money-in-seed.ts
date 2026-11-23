@@ -1,17 +1,32 @@
 import { randomUUID } from 'expo-crypto';
 
-import { addDays, parts, type LocalDate, type SpendRow } from '@6pm/domain';
+import { addDays, currencyOf, parts, type LocalDate, type SpendRow } from '@6pm/domain';
+import type { Language } from '@6pm/i18n';
 
 import type { MoneyStore } from '../../data/money-store';
 import { seedDesignFriday } from './design-friday-seed';
+import { FRIDAY_HOME_CURRENCY } from './design-friday-locales';
+import { SEED_NAMES } from './design-seed-names';
+import { seedPricesIn } from './design-seed-prices';
+
+/** The person's own 6pm address: what an emailed receipt was forwarded to. */
+const OWN_ADDRESS = 'k7m2qx@at6pm.app';
 
 /**
  * The designed Friday with money coming in: a gift to spread or save, the pay (above the plan, so
  * its extra peels off), a refund of an order from last week, and a Future you goal to save in.
- * Opens the close's money cards and its pay and refund questions.
+ * Opens the close's money cards and its pay and refund questions. Names follow `language` and
+ * amounts the currency (`SEED_NAMES`, `SEED_PRICES`); no shop or bank is named.
  */
-export async function seedDesignMoneyIn(store: MoneyStore, today: LocalDate): Promise<void> {
-  await seedDesignFriday(store, today);
+export async function seedDesignMoneyIn(
+  store: MoneyStore,
+  today: LocalDate,
+  code?: string,
+  language: Language = 'en',
+): Promise<void> {
+  await seedDesignFriday(store, today, code, language);
+  const names = SEED_NAMES[language].moneyIn;
+  const prices = seedPricesIn(currencyOf(code ?? FRIDAY_HOME_CURRENCY[language])).moneyIn;
   const { tables } = store;
   const iso = new Date().toISOString();
   const at = (day: LocalDate, time: string) => {
@@ -23,10 +38,10 @@ export async function seedDesignMoneyIn(store: MoneyStore, today: LocalDate): Pr
     await tables.pots.put({
       id: 'cushion',
       kind: 'goal',
-      name: 'Cushion',
+      name: names.cushion,
       icon: 'savings',
       hue: 150,
-      goal: 30_000_000,
+      goal: prices.cushionGoal,
       neededBy: null,
       share: 1,
       paused: false,
@@ -38,65 +53,65 @@ export async function seedDesignMoneyIn(store: MoneyStore, today: LocalDate): Pr
       {
         day: earbuds,
         at: at(earbuds, '20:12'),
-        amount: 349_000,
+        amount: prices.order,
         categoryId: 'shopping',
-        merchant: 'Shopee',
+        merchant: names.order,
         note: null,
         source: 'email',
         status: 'kept',
         previousStatus: null,
         wallet: null,
         forWork: false,
-        detail: 'no-reply@shopee.vn',
+        detail: OWN_ADDRESS,
         foreignAmount: null,
       },
       {
         day: today,
         at: at(today, '10:05'),
-        amount: 19_000_000,
+        amount: prices.pay,
         categoryId: 'shopping',
-        merchant: 'Mây Xanh JSC',
+        merchant: names.employer,
         note: null,
         source: 'shared',
         status: 'caught',
         previousStatus: null,
         wallet: null,
         forWork: false,
-        detail: 'VPBank · FT26300LUONG',
+        detail: null,
         foreignAmount: null,
-        memo: 'LUONG THANG 10',
+        memo: names.payMemo,
         direction: 'in',
       },
       {
         day: today,
         at: at(today, '14:22'),
-        amount: 2_000_000,
+        amount: prices.gift,
         categoryId: 'gifts',
-        merchant: 'Lan Nguyễn',
+        merchant: names.giver,
         note: null,
         source: 'email',
         status: 'caught',
         previousStatus: null,
         wallet: null,
         forWork: false,
-        detail: 'alert@techcombank.com.vn',
+        detail: OWN_ADDRESS,
         foreignAmount: null,
-        memo: 'Chuc mung sinh nhat em',
+        memo: names.giftMemo,
         direction: 'in',
       },
       {
         day: today,
         at: at(today, '17:40'),
-        amount: 349_000,
+        amount: prices.order,
         categoryId: 'shopping',
-        merchant: 'Shopee',
+        merchant: names.order,
         note: null,
         source: 'email',
         status: 'caught',
         previousStatus: null,
         wallet: null,
         forWork: false,
-        detail: 'no-reply@shopee.vn',
+        detail: OWN_ADDRESS,
         foreignAmount: null,
         direction: 'in',
         moneyIn: 'refund',

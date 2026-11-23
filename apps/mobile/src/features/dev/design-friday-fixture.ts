@@ -1,9 +1,12 @@
 import {
   addDays,
+  addMonthsTo,
   currencyOf,
   cycleMonth,
   dailyNumber,
   diffDays,
+  lunarNewYear,
+  monthsBetween,
   payCycleOn,
   potMonthlyNeed,
   toMinor,
@@ -19,10 +22,14 @@ import { t, type Language } from '@6pm/i18n';
 
 import {
   DESIGN_PRICES,
+  FRIDAY_HOME_CURRENCY,
   FRIDAY_NAMES,
   FRIDAY_PRICES,
+  LEBARAN_MONTHS,
   type FridayCategoryId,
+  type FridayNames,
   type FridayPrices,
+  type SeasonFalls,
 } from './design-friday-locales';
 
 /** Money lands on the 31st, as in the prototype. */
@@ -31,7 +38,7 @@ export const FRIDAY_PAYDAY: Payday = { kind: 'sameDay', day: 31 };
 /** The prototype's Friday has 22 days after it through payday: its free money covers 23. */
 const DESIGN_DAYS = 23;
 
-/** The dated jar is always three paydays away, so a third of its goal is set aside each cycle. */
+/** The dated jar is three paydays away at most, and a third of its full goal is set aside each cycle. */
 const JAR_MONTHS = 3;
 
 /**
@@ -96,6 +103,8 @@ export interface FridayFixture {
   }[];
   readonly jar: {
     readonly name: string;
+    readonly icon: string;
+    /** What is still to set aside: `monthly` for each cycle before its month. */
     readonly goal: Money;
     /** 'YYYY-MM'. */
     readonly neededBy: string;
@@ -133,12 +142,66 @@ function priced(prices: FridayPrices, worth: (amount: number) => Money): FridayP
 }
 
 /** The Friday's amounts in `currency`'s minor unit: its own list, or the prototype's by rate. */
-function pricesIn(currency: Currency): FridayPrices {
+export function fridayPricesIn(currency: Currency): FridayPrices {
   const own = FRIDAY_PRICES[currency.code];
   if (own) return priced(own, (major) => toMinor(major, currency));
   return priced(DESIGN_PRICES, (dong) =>
     Math.round((dong / VND.perUsd) * currency.perUsd * currency.minorPerMajor),
   );
+}
+
+/** The line the Friday is designed to: what its free money leaves for each of its 23 days. */
+export function fridayLine(currency: Currency): Money {
+  const prices = fridayPricesIn(currency);
+  const { bills } = prices;
+  const free =
+    prices.income -
+    (bills.rent + bills.phone + bills.internet + bills.power) -
+    prices.futureYou -
+    potMonthlyNeed(prices.jarGoal, 0, JAR_MONTHS, currency);
+  return Math.floor((free - prices.earlier) / DESIGN_DAYS / currency.step) * currency.step;
+}
+
+/** The first month ('YYYY-MM') after `month` that a season falls in; null past what is known. */
+export function seasonMonthAfter(falls: SeasonFalls, month: string): string | null {
+  const year = Number(month.slice(0, 4));
+  for (const y of [year, year + 1]) {
+    const when =
+      falls === 'lebaran'
+        ? LEBARAN_MONTHS[y]
+        : falls === 'tet' || falls === 'seollal' || falls === 'chunjie'
+          ? lunarNewYear(y, falls)?.slice(0, 7)
+          : `${y}-${falls}`;
+    if (when !== undefined && when > month) return when;
+  }
+  return null;
+}
+
+/**
+ * The dated jar in a cycle's month: the season people there save for while it is one to three
+ * paydays away (Christmas in November, Tết from November to January), dated by its real month;
+ * otherwise a trip three paydays out, which no date can contradict.
+ */
+export function datedJarIn(
+  names: Pick<FridayNames, 'season' | 'trip'>,
+  month: string,
+): {
+  readonly name: string;
+  readonly icon: string;
+  readonly neededBy: string;
+  readonly months: number;
+} {
+  const falls = seasonMonthAfter(names.season.falls, month);
+  const months = falls === null ? null : monthsBetween(month, falls);
+  if (falls !== null && months !== null && months <= JAR_MONTHS) {
+    return { name: names.season.name, icon: 'celebration', neededBy: falls, months };
+  }
+  return {
+    name: names.trip,
+    icon: 'luggage',
+    neededBy: addMonthsTo(month, JAR_MONTHS),
+    months: JAR_MONTHS,
+  };
 }
 
 /** Mon = 0 … Sun = 6. */
@@ -151,15 +214,20 @@ function weekdayOf(day: LocalDate): number {
  * what was spent earlier in the cycle and the six spends of the day) placed on `today`, as pure
  * data.
  *
- * Names follow `language`: each has everyday descriptions of its own and a season of its own for
- * the jar, and none names a real shop, brand, bank or wallet. Every spend arrives the way such a
- * spend would: breakfast in cash, typed; the coffee by card, caught from the bank's alert (which
- * the app words with no bank's name); lunch by QR, not yet confirmed; the ride from its emailed
- * receipt; the afternoon drink said aloud; the shop from one photo of its receipt.
+ * Names follow `language`: each has everyday descriptions of its own, and none names a real shop,
+ * brand, bank or wallet. The day is mostly caught by itself, as such spends are: breakfast in
+ * cash, typed; the coffee and the ride home by card, each caught from the bank's alert (which the
+ * app words with no bank's name); lunch by QR, not yet confirmed; the afternoon tea ordered in,
+ * from its emailed receipt; the shop from one photo of its receipt.
  *
- * Amounts follow the currency alone: one with a list in `FRIDAY_PRICES` (every language's home
+ * Amounts follow the currency alone: the language's home currency when none is given (dollars in
+ * English, đồng in Vietnamese). One with a list in `FRIDAY_PRICES` (every language's home
  * currency has one) uses its round local prices, any other the prototype's đồng amounts by its
  * rough rate. So German with đồng is German names at Vietnamese prices.
+ *
+ * The dated jar is the season the language saves for while that is one to three paydays away, by
+ * its real month, and a trip three paydays out the rest of the year (`datedJarIn`). Each cycle
+ * sets aside the same third of the list's goal either way, so the day's line does not move.
  *
  * The earlier days spend what leaves today the prototype's line whatever the date (on the
  * prototype's own day, exactly its 2.365.000₫), one spend a day, each under that line: a card at
@@ -169,12 +237,12 @@ function weekdayOf(day: LocalDate): number {
  */
 export function buildDesignFriday(
   today: LocalDate,
-  code = 'VND',
+  code?: string,
   language: Language = 'en',
 ): FridayFixture {
-  const currency = currencyOf(code);
+  const currency = currencyOf(code ?? FRIDAY_HOME_CURRENCY[language]);
   const names = FRIDAY_NAMES[language];
-  const prices = pricesIn(currency);
+  const prices = fridayPricesIn(currency);
   const cycle = payCycleOn(today, FRIDAY_PAYDAY);
 
   const billsTotal =
@@ -276,8 +344,8 @@ export function buildDesignFriday(
       amount: prices.today.ride,
       categoryId: 'transport',
       status: 'caught',
-      source: 'email',
-      detail: 'k7m2qx@at6pm.app',
+      source: 'alert',
+      detail: null,
     },
     {
       ...day,
@@ -285,9 +353,10 @@ export function buildDesignFriday(
       merchant: names.treat,
       amount: prices.today.treat,
       categoryId: 'drinks',
-      status: 'kept',
-      source: 'voice',
-      detail: null,
+      status: 'caught',
+      // Its receipt, forwarded to the person's own 6pm address.
+      source: 'email',
+      detail: 'k7m2qx@at6pm.app',
     },
     {
       ...day,
@@ -328,8 +397,7 @@ export function buildDesignFriday(
     if (weekday === 0) break;
   }
 
-  const [year = 0, month = 1] = cycleMonth(cycle).split('-').map(Number);
-  const neededBy = new Date(Date.UTC(year, month - 1 + JAR_MONTHS, 1)).toISOString().slice(0, 7);
+  const dated = datedJarIn(names, cycleMonth(cycle));
 
   return {
     currency,
@@ -365,7 +433,13 @@ export function buildDesignFriday(
         paid: false,
       },
     ],
-    jar: { name: names.jar, goal: prices.jarGoal, neededBy, monthly: jarMonthly },
+    jar: {
+      name: dated.name,
+      icon: dated.icon,
+      goal: jarMonthly * dated.months,
+      neededBy: dated.neededBy,
+      monthly: jarMonthly,
+    },
     spends: [...earlier, ...todays],
     closedDays,
   };

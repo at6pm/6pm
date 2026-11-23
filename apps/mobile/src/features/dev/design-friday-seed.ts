@@ -13,15 +13,16 @@ import { buildDesignFriday, FRIDAY_PAYDAY } from './design-friday-fixture';
  * bills, a dated jar, what was spent earlier this cycle and the six spends of the day) placed on
  * today's date, so every screen can be compared with the design renders. Replaces everything in
  * the money tables.
- * The fixture is local: its names follow `language` and its amounts the currency (see
- * `buildDesignFriday`); the categories are named in `language`, as onboarding names a new
- * install's. In đồng its amounts are the prototype's own (income 17,4tr, 750k a month into the
- * dated jar, 2.365.000₫ spent before its Friday).
+ * The fixture is local: its names follow `language` and its amounts the currency, the language's
+ * own when none is given: dollars in English, đồng in Vietnamese (see `buildDesignFriday`). The
+ * categories are named in `language`, as onboarding names a new install's. In đồng its amounts
+ * are the prototype's own (income 17,4tr, 750k a month into the dated jar, 2.365.000₫ spent
+ * before its Friday).
  */
 export async function seedDesignFriday(
   store: MoneyStore,
   today: LocalDate,
-  code = 'VND',
+  code?: string,
   language: Language = 'en',
 ): Promise<void> {
   const fixture = buildDesignFriday(today, code, language);
@@ -74,7 +75,7 @@ export async function seedDesignFriday(
       id: randomUUID(),
       kind: 'occasion',
       name: fixture.jar.name,
-      icon: 'celebration',
+      icon: fixture.jar.icon,
       hue: 20,
       goal: fixture.jar.goal,
       neededBy: fixture.jar.neededBy,

@@ -56,9 +56,12 @@ const commandSchema = z.object({
   seed: z.enum(['friday', 'year', 'moneyIn']).optional(),
   /** After the seed: the Pots and Plan canvases' jars and states (see `seedDesignJars`). */
   jars: z.enum(['shelf', 'due', 'payday', 'tomorrow', 'over', 'first']).optional(),
-  /** After the seed: a split dinner owed by Linh, Nam and Huy, Linh's payback, or both. */
+  /** After the seed: a dinner split with three friends, the first one's payback, or both. */
   owed: z.enum(['dinner', 'payback', 'both']).optional(),
-  /** The friday or year seed's currency (ISO 4217); đồng when not given. */
+  /**
+   * The seed's currency (ISO 4217). When not given it is the language's own: dollars in English,
+   * đồng in Vietnamese, euros in German (`FRIDAY_HOME_CURRENCY`).
+   */
   currency: z
     .string()
     .regex(/^[A-Z]{3}$/)
@@ -207,21 +210,25 @@ export function DevCommands() {
       } else if (on === '') pinClock(null);
       // In the store's turn, so a load or write already under way never meets a half-cleared
       // database (a set-aside written for a jar the seed has just deleted).
+      // Every seed speaks the command's language, or the app's, and counts in the command's
+      // currency, or that language's own.
+      const spoken = speak ?? language;
       await store.exclusive(async () => {
-        if (captureHealth) await seedCaptureHealth(store, day);
-        if (seed === 'friday') await seedDesignFriday(store, day, currency, speak ?? language);
+        if (captureHealth) await seedCaptureHealth(store, day, currency, spoken);
+        if (seed === 'friday') await seedDesignFriday(store, day, currency, spoken);
         if (tet) {
-          await seedDesignTet(store, day, tet, currency, speak ?? language);
+          await seedDesignTet(store, day, tet, currency, spoken);
           await resetSeasonOffer(store.db);
         }
         if (seed === 'year')
           await seedDesignYear(store, day, {
             ...(currency ? { code: currency } : {}),
             ...(scale ? { scale } : {}),
+            language: spoken,
           });
-        if (seed === 'moneyIn') await seedDesignMoneyIn(store, day);
-        if (jars) await seedDesignJars(store, day, jars);
-        if (owed) await seedDesignOwed(store, day, owed);
+        if (seed === 'moneyIn') await seedDesignMoneyIn(store, day, currency, spoken);
+        if (jars) await seedDesignJars(store, day, jars, spoken);
+        if (owed) await seedDesignOwed(store, day, owed, spoken);
         if (streak) await seedDesignStreak(store, day, streak);
       });
       if (serious !== undefined) await settingsActions(store).updatePlan({ serious });

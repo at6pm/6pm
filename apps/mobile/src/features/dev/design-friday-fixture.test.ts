@@ -2,9 +2,10 @@ import { describe, expect, it } from '@jest/globals';
 
 import {
   addDays,
-  BANKS,
+  cycleMonth,
   dailyNumber,
   diffDays,
+  monthsBetween,
   payCycleOn,
   toMinor,
   VND,
@@ -12,8 +13,10 @@ import {
 } from '@6pm/domain';
 import { languages, t, type Language } from '@6pm/i18n';
 
+import { merchantIcon } from '../today/merchant-icon';
 import { buildDesignFriday, FRIDAY_PAYDAY, type FridayFixture } from './design-friday-fixture';
-import { FRIDAY_NAMES, FRIDAY_PRICES } from './design-friday-locales';
+import { FRIDAY_HOME_CURRENCY as HOME, FRIDAY_NAMES, FRIDAY_PRICES } from './design-friday-locales';
+import { BANNED, SCRIPT, VIETNAMESE } from './design-seed-checks';
 
 /** The prototype's Friday: payday 31 Oct, 22 days after it. */
 const FRIDAY = '2026-10-09';
@@ -31,20 +34,6 @@ const ROUND: Readonly<Record<string, number>> = {
 };
 const LISTED = Object.keys(ROUND);
 
-/** The currency each language's screenshots are seeded in: where it is mostly spoken. */
-const HOME: Readonly<Record<Language, string>> = {
-  en: 'USD',
-  vi: 'VND',
-  de: 'EUR',
-  es: 'EUR',
-  fr: 'EUR',
-  id: 'IDR',
-  ja: 'JPY',
-  ko: 'KRW',
-  th: 'THB',
-  'zh-Hans': 'CNY',
-};
-
 /**
  * What a coffee and a month's take-home pay cost where each currency is spent, lowest and highest,
  * in whole units: a list outside them is a price by rate, not a local one.
@@ -60,19 +49,6 @@ const LOCAL_RANGE: Readonly<Record<string, { coffee: [number, number]; pay: [num
   CNY: { coffee: [10, 35], pay: [6_000, 20_000] },
 };
 
-/**
- * Real names that must never be in sample data, with every bank the app knows: banks and wallets,
- * ride and delivery apps, shop and phone brands.
- */
-const BANNED = [
-  ...BANKS.flatMap((bank) => [bank.shortName, bank.name]),
-  ...['MB Bank', 'Vietcombank', 'Techcombank', 'BIDV', 'VietinBank', 'TPBank', 'VPBank'],
-  ...['MoMo', 'ZaloPay', 'VNPay', 'ShopeePay', 'Viettel', 'FPT', 'EVN', 'Grab', 'Gojek'],
-  ...['Circle K', '7-Eleven', 'Starbucks', 'Uber', 'PayPal', 'Venmo', 'Revolut', 'Chase'],
-  ...['Sparkasse', 'GoPay', 'OVO', 'DANA', 'PromptPay', 'PayPay', 'LINE Pay', 'Alipay'],
-  ...['WeChat', '카카오', '토스', '支付宝', '微信', 'セブン', 'เซเว่น'],
-].filter((name) => name.length > 2);
-
 /** Every word of the fixture a person reads, the catalogue's own aside. */
 function wordsOf(fixture: FridayFixture, language: Language): string[] {
   const catalogue = new Set([t(language, 'close.card.fromQr'), 'k7m2qx@at6pm.app']);
@@ -82,17 +58,6 @@ function wordsOf(fixture: FridayFixture, language: Language): string[] {
     ...fixture.spends.flatMap((s) => [s.merchant, s.detail ?? '']),
   ].filter((word) => word !== '' && !catalogue.has(word));
 }
-
-/** Letters only Vietnamese writes. */
-const VIETNAMESE = /[ăđơưảãạằẳẵắặầẩẫấậẻẽẹềểễếệỉĩịỏõọồổỗốộờởỡớợủũụừửữứựỳỷỹỵ]/i;
-
-/** The script a language is written in, where it is not Latin. */
-const SCRIPT: Partial<Record<Language, RegExp>> = {
-  ja: /[\u3040-\u30ff\u4e00-\u9fff]/,
-  ko: /[\uac00-\ud7af]/,
-  th: /[\u0e00-\u0e7f]/,
-  'zh-Hans': /[\u4e00-\u9fff]/,
-};
 
 const sum = (amounts: readonly number[]) => amounts.reduce((total, amount) => total + amount, 0);
 
@@ -134,12 +99,25 @@ describe('buildDesignFriday', () => {
         [names.bills.internet, 220_000],
         [names.bills.power, 380_000],
       ]);
-      expect(fixture.jar).toEqual({
-        name: names.jar,
-        goal: 2_250_000,
-        neededBy: '2027-01',
-        monthly: 750_000,
-      });
+      // In October Tết is four paydays away, so the Vietnamese jar is the trip, three paydays
+      // out; the English one is the holidays, two away.
+      expect(fixture.jar).toEqual(
+        language === 'vi'
+          ? {
+              name: 'Đà Lạt',
+              icon: 'luggage',
+              goal: 2_250_000,
+              neededBy: '2027-01',
+              monthly: 750_000,
+            }
+          : {
+              name: 'Holidays',
+              icon: 'celebration',
+              goal: 1_500_000,
+              neededBy: '2026-12',
+              monthly: 750_000,
+            },
+      );
       expect(todays(fixture, FRIDAY).map((s) => [s.time, s.merchant, s.amount])).toEqual([
         ['07:42', names.breakfast, 25_000],
         ['08:15', names.coffee, 29_000],
@@ -192,10 +170,10 @@ describe('buildDesignFriday', () => {
         ['alert', 'caught', null],
         // Lunch by QR, never confirmed.
         ['qr', 'pending', t(language, 'close.card.fromQr')],
-        // The ride's emailed receipt.
+        // The ride home by card: a bank alert too.
+        ['alert', 'caught', null],
+        // The afternoon tea, ordered in: its emailed receipt, the Inbox's one email.
         ['email', 'caught', 'k7m2qx@at6pm.app'],
-        // The afternoon drink, said aloud.
-        ['voice', 'kept', null],
         // One photo of the shop's receipt, and the day's only one.
         ['shared', 'caught', null],
       ]);
@@ -263,8 +241,13 @@ describe('buildDesignFriday', () => {
     const shared = new Set(['Internet']);
     const all = (language: Language) => {
       const names = FRIDAY_NAMES[language];
-      const { earlier, bills, ...day } = names;
-      return [...Object.values(day), ...Object.values(earlier), ...Object.values(bills)];
+      const { earlier, bills, season, ...day } = names;
+      return [
+        ...Object.values(day),
+        ...Object.values(earlier),
+        ...Object.values(bills),
+        season.name,
+      ];
     };
     for (const language of languages) {
       const own = all(language);
@@ -303,8 +286,13 @@ describe('buildDesignFriday', () => {
       expect(day[1]?.amount).toBe(coffee[code]);
       const unit = ROUND[code] ?? 1;
       expect(day.filter((s) => s.amount % unit !== 0)).toEqual([]);
-      // The jar is three paydays away and its goal divides into them.
-      expect(fixture.jar.monthly * 3).toBe(fixture.jar.goal);
+      // The jar's goal is what its paydays still to come set aside, a third of the list's each.
+      const months = monthsBetween('2026-10', fixture.jar.neededBy);
+      expect(months).toBeLessThanOrEqual(3);
+      expect(fixture.jar.monthly * months).toBe(fixture.jar.goal);
+      expect(fixture.jar.monthly * 3).toBe(
+        toMinor(FRIDAY_PRICES[code]?.jarGoal ?? 0, fixture.currency),
+      );
     }
   });
 
@@ -346,6 +334,106 @@ describe('buildDesignFriday', () => {
         expect(spend.amount).toBeLessThan(number.line);
         expect(spend.amount).toBeGreaterThan(number.line / 2);
       }
+    }
+  });
+
+  it('counts in the language’s own currency when none is given: dollars in English', () => {
+    for (const language of languages) {
+      expect(buildDesignFriday(FRIDAY, undefined, language).currency.code).toBe(HOME[language]);
+    }
+    expect(buildDesignFriday(FRIDAY, undefined, 'en').currency.code).toBe('USD');
+    expect(buildDesignFriday(FRIDAY, undefined, 'vi').currency.code).toBe('VND');
+    expect(buildDesignFriday(FRIDAY).income).toBe(420_000);
+    // A currency that is given still wins.
+    expect(buildDesignFriday(FRIDAY, 'VND', 'en').income).toBe(17_400_000);
+    expect(buildDesignFriday(FRIDAY, 'EUR', 'vi').currency.code).toBe('EUR');
+  });
+
+  it('dates the jar by a season still ahead, and by a trip when it is not', () => {
+    const jarOn = (day: LocalDate, language: Language) => {
+      const { name, neededBy } = buildDesignFriday(day, undefined, language).jar;
+      return `${name} ${neededBy}`;
+    };
+    // Late November: Christmas and the New Year are a payday or two away, Tết three.
+    expect(
+      Object.fromEntries(languages.map((language) => [language, jarOn('2026-11-25', language)])),
+    ).toEqual({
+      en: 'Holidays 2026-12',
+      vi: 'Tết 2027-02',
+      de: 'Weihnachten 2026-12',
+      es: 'Navidad 2026-12',
+      fr: 'Noël 2026-12',
+      id: 'Liburan ke pantai 2027-02',
+      ja: 'お正月 2027-01',
+      ko: '설날 2027-02',
+      th: 'เที่ยวทะเล 2027-02',
+      'zh-Hans': '春节 2027-02',
+    });
+    // Mid-December: Christmas is this month's, so it is the trip; Lebaran is three paydays away.
+    expect(jarOn('2026-12-15', 'de')).toBe('Wochenende am Meer 2027-03');
+    expect(jarOn('2026-12-15', 'en')).toBe('Beach trip 2027-03');
+    expect(jarOn('2026-12-15', 'ja')).toBe('お正月 2027-01');
+    expect(jarOn('2026-12-15', 'vi')).toBe('Tết 2027-02');
+    expect(jarOn('2026-12-15', 'id')).toBe('Lebaran 2027-03');
+    // January: Songkran comes into reach. February, the month of Tết itself: the trip.
+    expect(jarOn('2027-01-15', 'th')).toBe('สงกรานต์ 2027-04');
+    expect(jarOn('2027-01-15', 'ja')).toBe('温泉旅行 2027-04');
+    expect(jarOn('2027-02-10', 'vi')).toBe('Đà Lạt 2027-05');
+    expect(jarOn('2027-02-10', 'ko')).toBe('바다 여행 2027-05');
+
+    // Whatever the day, the jar is due in a month still to come, its season's real one, and it
+    // takes the same from every cycle, so the day's line does not depend on the season.
+    for (const language of languages) {
+      const names = FRIDAY_NAMES[language];
+      const monthly = buildDesignFriday(FRIDAY, undefined, language).jar.monthly;
+      for (let d = 0; d < 500; d += 3) {
+        const today = addDays('2026-11-23', d);
+        const { jar } = buildDesignFriday(today, undefined, language);
+        const month = cycleMonth(payCycleOn(today, FRIDAY_PAYDAY));
+        const months = monthsBetween(month, jar.neededBy);
+        expect(jar.neededBy > month).toBe(true);
+        expect(months).toBeLessThanOrEqual(3);
+        expect([jar.monthly, jar.goal]).toEqual([monthly, monthly * months]);
+        expect([names.season.name, names.trip]).toContain(jar.name);
+        expect(jar.icon).toBe(jar.name === names.trip ? 'luggage' : 'celebration');
+        if (jar.name === names.trip) expect(months).toBe(3);
+      }
+    }
+  });
+
+  it('wears the same glyph for the same thing in every language', () => {
+    for (const language of languages) {
+      const fixture = buildDesignFriday(FRIDAY, undefined, language);
+      const glyph = (merchant: string) => {
+        const spend = fixture.spends.find((s) => s.merchant === merchant);
+        const category = fixture.categories.find((c) => c.id === spend?.categoryId);
+        return merchantIcon(merchant, (category?.icon ?? 'payments') as never);
+      };
+      const names = FRIDAY_NAMES[language];
+      expect([
+        glyph(names.coffee),
+        glyph(names.ride),
+        glyph(names.treat),
+        // Indonesia's corner shop is a minimarket, and wears the market's basket.
+        language === 'id' ? 'local_mall' : glyph(names.shop),
+        glyph(names.earlier.supermarket),
+        glyph(names.earlier.market),
+        glyph(names.earlier.pharmacy),
+        glyph(names.earlier.lunchOut),
+      ]).toEqual([
+        'coffee',
+        'two_wheeler',
+        'emoji_food_beverage',
+        'local_mall',
+        'shopping_basket',
+        'shopping_basket',
+        'local_mall',
+        'restaurant',
+      ]);
+    }
+    // Breakfast is each market's own: a bakery's glyph where it is one, the meal's elsewhere.
+    for (const language of ['en', 'vi', 'de', 'es', 'fr'] as const) {
+      expect(merchantIcon(FRIDAY_NAMES[language].breakfast, 'restaurant')).toBe('bakery_dining');
     }
   });
 

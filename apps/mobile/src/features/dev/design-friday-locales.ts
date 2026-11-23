@@ -1,3 +1,4 @@
+import type { LunarTradition } from '@6pm/domain';
 import type { Language } from '@6pm/i18n';
 
 /** The Friday's default categories, in the order onboarding lists them. */
@@ -14,9 +15,9 @@ export interface FridayNames {
   readonly coffee: string;
   /** Lunch, paid by QR and never confirmed. */
   readonly lunch: string;
-  /** The ride home, from its emailed receipt. */
+  /** The ride home, paid by card and caught from the bank's alert. */
   readonly ride: string;
-  /** The afternoon drink, as it was said to the microphone. */
+  /** The afternoon tea, ordered in: its receipt came by email. */
   readonly treat: string;
   /** The shop on the way home, from a photo of its receipt. */
   readonly shop: string;
@@ -37,9 +38,25 @@ export interface FridayNames {
     readonly internet: string;
     readonly power: string;
   };
-  /** The dated jar: the season people there save for. */
-  readonly jar: string;
+  /**
+   * The season people there save for, and when it falls: a month of every year ('12'), the Lunar
+   * New Year of a tradition, or Lebaran, which both move. It names the dated jar while it is one
+   * to three paydays away.
+   */
+  readonly season: { readonly name: string; readonly falls: SeasonFalls };
+  /** What the dated jar saves for the rest of the year: a trip, tied to no date. */
+  readonly trip: string;
 }
+
+export type SeasonFalls = '01' | '04' | '12' | LunarTradition | 'lebaran';
+
+/** The month Lebaran (Eid al-Fitr) falls in, by year. */
+export const LEBARAN_MONTHS: Readonly<Record<number, string>> = {
+  2027: '2027-03',
+  2028: '2028-02',
+  2029: '2029-02',
+  2030: '2030-02',
+};
 
 export const FRIDAY_NAMES: Readonly<Record<Language, FridayNames>> = {
   en: {
@@ -56,7 +73,8 @@ export const FRIDAY_NAMES: Readonly<Record<Language, FridayNames>> = {
       pharmacy: 'Pharmacy',
     },
     bills: { rent: 'Rent', phone: 'Phone', internet: 'Internet', power: 'Electricity' },
-    jar: 'Holidays',
+    season: { name: 'Holidays', falls: '12' },
+    trip: 'Beach trip',
   },
   vi: {
     breakfast: 'Bánh mì trứng',
@@ -72,7 +90,8 @@ export const FRIDAY_NAMES: Readonly<Record<Language, FridayNames>> = {
       pharmacy: 'Nhà thuốc',
     },
     bills: { rent: 'Tiền nhà', phone: 'Điện thoại', internet: 'Internet', power: 'Tiền điện' },
-    jar: 'Tết',
+    season: { name: 'Tết', falls: 'tet' },
+    trip: 'Đà Lạt',
   },
   de: {
     breakfast: 'Bäckerei',
@@ -88,14 +107,15 @@ export const FRIDAY_NAMES: Readonly<Record<Language, FridayNames>> = {
       pharmacy: 'Drogerie',
     },
     bills: { rent: 'Miete', phone: 'Handy', internet: 'Internet', power: 'Strom' },
-    jar: 'Weihnachten',
+    season: { name: 'Weihnachten', falls: '12' },
+    trip: 'Wochenende am Meer',
   },
   es: {
     breakfast: 'Panadería',
     coffee: 'Cafetería',
     lunch: 'Menú del día',
     ride: 'Taxi a casa',
-    treat: 'Zumo de naranja',
+    treat: 'Té helado',
     shop: 'Tienda de la esquina',
     earlier: {
       supermarket: 'Supermercado',
@@ -104,7 +124,8 @@ export const FRIDAY_NAMES: Readonly<Record<Language, FridayNames>> = {
       pharmacy: 'Farmacia',
     },
     bills: { rent: 'Alquiler', phone: 'Móvil', internet: 'Internet', power: 'Luz' },
-    jar: 'Navidad',
+    season: { name: 'Navidad', falls: '12' },
+    trip: 'Escapada a la playa',
   },
   fr: {
     breakfast: 'Boulangerie',
@@ -120,7 +141,8 @@ export const FRIDAY_NAMES: Readonly<Record<Language, FridayNames>> = {
       pharmacy: 'Pharmacie',
     },
     bills: { rent: 'Loyer', phone: 'Forfait mobile', internet: 'Internet', power: 'Électricité' },
-    jar: 'Noël',
+    season: { name: 'Noël', falls: '12' },
+    trip: 'Week-end à la mer',
   },
   id: {
     breakfast: 'Bubur ayam',
@@ -136,7 +158,8 @@ export const FRIDAY_NAMES: Readonly<Record<Language, FridayNames>> = {
       pharmacy: 'Apotek',
     },
     bills: { rent: 'Kos', phone: 'Paket data', internet: 'WiFi', power: 'Listrik' },
-    jar: 'Lebaran',
+    season: { name: 'Lebaran', falls: 'lebaran' },
+    trip: 'Liburan ke pantai',
   },
   ja: {
     breakfast: 'おにぎり',
@@ -152,7 +175,8 @@ export const FRIDAY_NAMES: Readonly<Record<Language, FridayNames>> = {
       pharmacy: 'ドラッグストア',
     },
     bills: { rent: '家賃', phone: '携帯代', internet: 'ネット代', power: '電気代' },
-    jar: 'お正月',
+    season: { name: 'お正月', falls: '01' },
+    trip: '温泉旅行',
   },
   ko: {
     breakfast: '김밥',
@@ -168,7 +192,8 @@ export const FRIDAY_NAMES: Readonly<Record<Language, FridayNames>> = {
       pharmacy: '약국',
     },
     bills: { rent: '월세', phone: '휴대폰 요금', internet: '인터넷', power: '전기요금' },
-    jar: '설날',
+    season: { name: '설날', falls: 'seollal' },
+    trip: '바다 여행',
   },
   th: {
     breakfast: 'ข้าวเหนียวหมูปิ้ง',
@@ -184,7 +209,8 @@ export const FRIDAY_NAMES: Readonly<Record<Language, FridayNames>> = {
       pharmacy: 'ร้านขายยา',
     },
     bills: { rent: 'ค่าห้อง', phone: 'ค่าโทรศัพท์', internet: 'ค่าเน็ต', power: 'ค่าไฟ' },
-    jar: 'สงกรานต์',
+    season: { name: 'สงกรานต์', falls: '04' },
+    trip: 'เที่ยวทะเล',
   },
   'zh-Hans': {
     breakfast: '包子豆浆',
@@ -200,7 +226,8 @@ export const FRIDAY_NAMES: Readonly<Record<Language, FridayNames>> = {
       pharmacy: '药店',
     },
     bills: { rent: '房租', phone: '话费', internet: '宽带', power: '电费' },
-    jar: '春节',
+    season: { name: '春节', falls: 'chunjie' },
+    trip: '海边旅行',
   },
 };
 
@@ -324,4 +351,18 @@ export const FRIDAY_PRICES: Readonly<Record<string, FridayPrices>> = {
     earlier: 1_300,
     today: { breakfast: 8, coffee: 18, lunch: 28, ride: 26, treat: 16, shop: 68 },
   },
+};
+
+/** Where each language is mostly spoken: the currency its fixture is in when none is asked for. */
+export const FRIDAY_HOME_CURRENCY: Readonly<Record<Language, string>> = {
+  en: 'USD',
+  vi: 'VND',
+  de: 'EUR',
+  es: 'EUR',
+  fr: 'EUR',
+  id: 'IDR',
+  ja: 'JPY',
+  ko: 'KRW',
+  th: 'THB',
+  'zh-Hans': 'CNY',
 };

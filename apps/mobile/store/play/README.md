@@ -22,16 +22,32 @@ with what it has instead (bank and wallet notifications).
 
 Real captures of the developer build on the Android emulator (`sixpm-pixel`), in order: Today, the
 Close, Bank alerts, the Inbox, Quick add, Plan and Diary. Each is the Friday fixture with the clock
-pinned at 18:07 (`dev-command.json`: `{"seed":"friday","at":"18:07","route":"/close"}`, in dollars for
-en-US and đồng for vi). The fixture is local per language. Its names follow the app's language:
-English and Vietnamese keep the prototype's Hồ Chí Minh City, and every other language has its own
-everyday shops, bills and dated jar (plain descriptions or invented names, never a real brand), with
-no bank named: the coffee is caught from a bank alert and the shop from a shared receipt. Its amounts
-follow `currency`: round local prices and a salaried month in EUR (de, es, fr), IDR (id), JPY (ja),
-KRW (ko), THB (th) and CNY (zh-Hans), the prototype's own in VND, and the đồng amounts by rate in
-any other currency, dollars included. So seed each language with its home currency
-(`{"seed":"friday","currency":"EUR","at":"18:07"}` in German). Today's line stays close to the
-designed one on any day of the pay cycle, so the capture day matters little. The screen is set to 2:1
+pinned at 18:07 (`dev-command.json`: `{"seed":"friday","at":"18:07","route":"/close"}`).
+
+The fixture is local per language, and so is every seed that builds on it (`jars`, `owed`, `year`,
+`moneyIn`, `captureHealth`, `tet`):
+
+- **Names follow the app's language.** Each of the ten has its own everyday descriptions for the
+  day's spends, the bills, the jars, the friends who owe a share and the Diary's notes. Nothing
+  names a real shop, brand, bank or wallet, and no receipt line names a bank: an alert reads
+  "Caught from Bank alert", a shared receipt "From a photo you shared".
+- **Amounts follow the currency**, and with no `currency` in the command that is the language's
+  own: dollars in English, đồng in Vietnamese, euros in German, Spanish and French, rupiah, yen,
+  won, baht and yuan in the rest. Each of those eight has prices set by hand (a coffee is $4.50,
+  €3,80, ¥480, ₩5,500, ฿85, Rp 28.000, CN¥18), with pay, rent and the jars in proportion. A
+  `currency` in the command still wins (`{"seed":"friday","currency":"VND"}` is the prototype's
+  own amounts, in any language); one with no list takes the đồng amounts by rate.
+- **The day is mostly caught by itself**: breakfast typed, the coffee and the ride home from bank
+  alerts, lunch by QR, the afternoon tea from an emailed receipt, the shop from one receipt photo.
+  The Inbox so shows a bank alert, a QR, an email and a shared receipt.
+- **The dated jar fits the date.** While the season a language saves for is one to three paydays
+  away it is that season, dated by its real month (Christmas in November, Japan's New Year in
+  November and December, Tết, Seollal and the Spring Festival from November to January, Lebaran
+  from December, Songkran from January); otherwise it is a trip three paydays out. The Pots shelf
+  (`jars`) dates its season jar the same way.
+
+Today's line stays close to the designed one on any day of the pay cycle, so the capture day
+matters little. The screen is set to 2:1
 (`adb shell wm size 1080x2160`), with the dev Tools button off and Android's demo status bar at
 18:07 (`com.android.systemui.demo`); each is then scaled to 1920 tall and its own side edges extended to
 1080 wide, since Play takes only 9:16. The app language follows Android's per-app language
@@ -47,8 +63,9 @@ one (`design/prototype/StoreShot.dc.html`), in English and Vietnamese.
 
 The captures are the developer build with the Friday fixture, the emulator's clock set to Friday
 16 October 2026 at 18:07, gesture navigation, the dev Tools button off, in dollars for en-US and
-đồng for vi (set the language with one `dev-command.json`, then seed with the next, so the seed's
-names and categories are written in it; a `language` in the seeding command does the same):
+đồng for vi, as the fixture gives each by itself (set the language with one `dev-command.json`,
+then seed with the next, so the seed's names and categories are written in it; a `language` in the
+seeding command does the same):
 
 - Foldable: the `sixpm-zfold8` emulator. Opened: Home (01), the Close as a book (02), the Diary
   (04), Plan (06). The cover screen: Home (03). Turned upright and half open
