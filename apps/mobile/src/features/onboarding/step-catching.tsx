@@ -51,7 +51,8 @@ const SIDE = 20;
  *
  * Where the phone has a way that runs by itself, the heading asks for it ("Let your payments log
  * themselves", and why the set-up is worth its few steps) and bank alerts are the first card.
- * Nothing here blocks: Continue starts the wait, whose quiet "Skip for now" always moves on.
+ * Nothing here blocks: the header's Skip moves on in one tap, and Continue starts the wait, whose
+ * quiet "Skip for now" always moves on too.
  */
 export function StepCatching({
   pal,
