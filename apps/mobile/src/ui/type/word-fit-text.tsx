@@ -1,5 +1,6 @@
 import { useRef, useState, type ReactNode } from 'react';
 import {
+  Platform,
   Text,
   View,
   type LayoutChangeEvent,
@@ -9,7 +10,21 @@ import {
 } from 'react-native';
 
 import { FIT_MIN_SCALE } from './fit-text';
-import { breaksMidWord, scaleTextStyle, wordFitScale, wordsToMeasure } from './word-fit';
+import {
+  breaksMidWord,
+  keepHangulWords,
+  scaleTextStyle,
+  wordFitScale,
+  wordsToMeasure,
+} from './word-fit';
+
+/**
+ * A heading's words as they are drawn. iOS keeps Korean to its words by itself (the `standard`
+ * line break strategy); Android needs them joined.
+ */
+export function headingWords(text: string): string {
+  return Platform.OS === 'android' ? keepHangulWords(text) : text;
+}
 
 /** Wider than any word at any size. */
 const STAGE = 4096;
@@ -140,7 +155,7 @@ export function WordFitText({
           onTextLayout?.(e);
         }}
       >
-        {children}
+        {headingWords(children)}
       </Text>
       {fit.probe}
     </>

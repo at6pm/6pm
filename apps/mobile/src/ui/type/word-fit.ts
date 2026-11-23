@@ -82,3 +82,26 @@ export function scaleTextStyle(style: TextStyle, scale: number): TextStyle {
   }
   return { ...style, ...scaled };
 }
+
+const HANGUL = /[\u1100-\u11FF\uAC00-\uD7A3]/u;
+const SPACE = /\s/u;
+/** U+2060, which no line may break at and which draws nothing. */
+const WORD_JOINER = '\u2060';
+
+/**
+ * Korean kept to its words: a word joiner between the characters of every word that has Hangul in
+ * it, so a line breaks only at a space. Android otherwise breaks between any two syllables, and
+ * leaves a particle alone at the start of a line ("6pm" / "이 받아 적어요").
+ */
+export function keepHangulWords(text: string): string {
+  if (!HANGUL.test(text)) return text;
+  const chars = Array.from(text);
+  let out = '';
+  chars.forEach((char, i) => {
+    const before = chars[i - 1];
+    const inside = before !== undefined && !SPACE.test(before) && !SPACE.test(char);
+    if (inside && (HANGUL.test(before) || HANGUL.test(char))) out += WORD_JOINER;
+    out += char;
+  });
+  return out;
+}

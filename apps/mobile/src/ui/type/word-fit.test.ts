@@ -1,6 +1,12 @@
 import { describe, expect, it } from '@jest/globals';
 
-import { breaksMidWord, scaleTextStyle, wordFitScale, wordsToMeasure } from './word-fit';
+import {
+  breaksMidWord,
+  keepHangulWords,
+  scaleTextStyle,
+  wordFitScale,
+  wordsToMeasure,
+} from './word-fit';
 
 describe('breaksMidWord', () => {
   it('finds a word iOS cut in two', () => {
@@ -101,5 +107,23 @@ describe('scaleTextStyle', () => {
   it('returns the same style at full size', () => {
     const style = { fontSize: 30 };
     expect(scaleTextStyle(style, 1)).toBe(style);
+  });
+});
+
+describe('keepHangulWords', () => {
+  const J = '\u2060';
+
+  it('joins the characters of a Korean word, and a particle to the word before it', () => {
+    expect(keepHangulWords('받아 적어요')).toBe(`받${J}아 적${J}어${J}요`);
+    expect(keepHangulWords('6pm이 받아')).toBe(`6pm${J}이 받${J}아`);
+  });
+
+  it('leaves the spaces between words to break at', () => {
+    expect(keepHangulWords('은행이 알리면').split(' ')).toHaveLength(2);
+  });
+
+  it('leaves text with no Hangul as it is', () => {
+    expect(keepHangulWords('Your bank and wallet alerts')).toBe('Your bank and wallet alerts');
+    expect(keepHangulWords('今日は5件キャッチ')).toBe('今日は5件キャッチ');
   });
 });

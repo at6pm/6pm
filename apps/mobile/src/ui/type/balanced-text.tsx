@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Text, type TextProps, type TextStyle } from 'react-native';
 
-import { useWordFit } from './word-fit-text';
+import { headingWords, useWordFit } from './word-fit-text';
 
 /** Chinese and Japanese break after their own commas and stops, as they have no spaces. */
 const WIDE_PUNCTUATION = /[，、；：！？]/u;
@@ -58,7 +58,7 @@ export function BalancedText({
           props.onTextLayout?.(e);
         }}
       >
-        {twoLines ? balanceTwoLines(children) : children}
+        {headingWords(twoLines ? balanceTwoLines(children) : children)}
       </Text>
       {fit.probe}
     </>
