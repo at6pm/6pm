@@ -47,6 +47,9 @@ export function BalancedText({
   return (
     <>
       <Text
+        // As the system's own labels break lines: Korean between its words.
+        lineBreakStrategyIOS="standard"
+        textBreakStrategy="balanced"
         {...props}
         style={fit.style}
         onTextLayout={(e) => {

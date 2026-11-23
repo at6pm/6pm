@@ -145,7 +145,11 @@ export function TonightCard({
           )}
         </View>
         <View style={{ flex: 1, minWidth: 0, gap: 4 }}>
-          <Text style={{ ...leading(display(21, 500, -0.01), 24), color: palette.ink }}>
+          <Text
+            lineBreakStrategyIOS="standard"
+            textBreakStrategy="balanced"
+            style={{ ...leading(display(21, 500, -0.01), 24), color: palette.ink }}
+          >
             {title}
           </Text>
           <Text style={{ ...body(14), lineHeight: 19, color: palette.inkSoft }}>{sub}</Text>

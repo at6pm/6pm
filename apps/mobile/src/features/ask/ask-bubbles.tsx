@@ -202,7 +202,11 @@ export function AnswerBubble({
         transformOrigin: 'left bottom',
       }}
     >
-      <Text style={{ ...leading(display(21, 500, -0.01), 25.2), color: palette.ink }}>
+      <Text
+        lineBreakStrategyIOS="standard"
+        textBreakStrategy="balanced"
+        style={{ ...leading(display(21, 500, -0.01), 25.2), color: palette.ink }}
+      >
         {card.text}
       </Text>
       {card.bars === null ? null : <Bars bars={card.bars} />}

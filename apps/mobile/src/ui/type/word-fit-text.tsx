@@ -129,6 +129,10 @@ export function WordFitText({
   return (
     <>
       <Text
+        // As the system's own labels break lines: Korean between its words, and no last line of a
+        // character or two.
+        lineBreakStrategyIOS="standard"
+        textBreakStrategy="balanced"
         {...props}
         style={fit.style}
         onTextLayout={(e) => {
