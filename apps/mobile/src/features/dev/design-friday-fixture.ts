@@ -34,6 +34,20 @@ const DESIGN_DAYS = 23;
 /** The dated jar is always three paydays away, so a third of its goal is set aside each cycle. */
 const JAR_MONTHS = 3;
 
+/**
+ * The earlier days' one spend each, taken in turn: what it was, how it reached 6pm and when. A
+ * card payment arrives as a bank alert; cash is typed or said.
+ */
+const EARLIER = [
+  ['supermarket', 'groceries', 'alert', '17:20'],
+  ['lunchOut', 'food', 'manual', '12:30'],
+  ['market', 'groceries', 'voice', '09:10'],
+  ['pharmacy', 'shopping', 'alert', '13:05'],
+] as const;
+
+/** How far an earlier day's spend strays from the even share, so no two days read alike. */
+const SWING = 0.12;
+
 const CATEGORIES = [
   ['food', 'restaurant', 45],
   ['drinks', 'local_cafe', 25],
@@ -137,17 +151,21 @@ function weekdayOf(day: LocalDate): number {
  * what was spent earlier in the cycle and the six spends of the day) placed on `today`, as pure
  * data.
  *
- * Names follow `language`: Vietnamese and English keep the prototype's Hồ Chí Minh City; every
- * other language has everyday descriptions and invented shops of its own, a season of its own for
- * the jar, and no bank's name (the coffee arrives as a bank alert, the shop as a shared photo of
- * its receipt). Amounts follow the
- * currency alone: one with a list in `FRIDAY_PRICES` uses its round local prices, any other the
- * prototype's đồng amounts by its rough rate. So German with đồng is German names at Vietnamese
- * prices, and English with euros the prototype's shops at euro prices.
+ * Names follow `language`: each has everyday descriptions of its own and a season of its own for
+ * the jar, and none names a real shop, brand, bank or wallet. Every spend arrives the way such a
+ * spend would: breakfast in cash, typed; the coffee by card, caught from the bank's alert (which
+ * the app words with no bank's name); lunch by QR, not yet confirmed; the ride from its emailed
+ * receipt; the afternoon drink said aloud; the shop from one photo of its receipt.
+ *
+ * Amounts follow the currency alone: one with a list in `FRIDAY_PRICES` (every language's home
+ * currency has one) uses its round local prices, any other the prototype's đồng amounts by its
+ * rough rate. So German with đồng is German names at Vietnamese prices.
  *
  * The earlier days spend what leaves today the prototype's line whatever the date (on the
- * prototype's own day, exactly its 2.365.000₫), one spend a day, each under that line. A closed
- * day carries the line and tomorrow the engine gives it from the days before.
+ * prototype's own day, exactly its 2.365.000₫), one spend a day, each under that line: a card at
+ * the supermarket, a lunch out, cash at the market, the chemist's, in turn, a little more one day
+ * and as much less the next. A closed day carries the line and tomorrow the engine gives it from
+ * the days before.
  */
 export function buildDesignFriday(
   today: LocalDate,
@@ -181,18 +199,39 @@ export function buildDesignFriday(
   const each = earlierDays > 0 ? floor(before / earlierDays) : 0;
   // What does not divide goes a step at a time to the latest days.
   const extra = earlierDays > 0 ? Math.round((before - each * earlierDays) / unit) : 0;
+  // Days go in pairs, the first up and the second down by as much (a full swing, then half of
+  // one), so the total holds; an odd last day keeps the even share.
+  const sharesWith = (swing: number) =>
+    Array.from({ length: earlierDays }, (_, d) => {
+      const pair = Math.floor(d / 2);
+      const paired = pair * 2 + 1 < earlierDays;
+      const size = paired ? (pair % 2 === 0 ? swing : floor(swing / 2)) : 0;
+      return each + (d >= earlierDays - extra ? unit : 0) + (d % 2 === 0 ? size : -size);
+    });
+  // Each day still ends under the line it woke up to: the swing halves until they all do.
+  const cycleDays = earlierDays + cycle.daysLeft + 1;
+  const underTheirLines = (shares: readonly number[]) => {
+    let spent = 0;
+    return shares.every((share, d) => {
+      const line = floor((free - spent) / (cycleDays - d));
+      spent += share;
+      return share <= line;
+    });
+  };
+  let swing = Math.max(0, floor(Math.min(each * SWING, underLine - each - unit)));
+  while (swing > 0 && !underTheirLines(sharesWith(swing))) swing = floor(swing / 2);
   const earlier: FridaySpend[] = [];
-  for (let d = 0; d < earlierDays; d++) {
-    const amount = each + (d >= earlierDays - extra ? unit : 0);
+  for (const [d, amount] of sharesWith(swing).entries()) {
     if (amount <= 0) continue;
+    const [what, categoryId, source, time] = EARLIER[d % EARLIER.length] ?? EARLIER[0];
     earlier.push({
       day: addDays(cycle.start, d),
-      time: '12:30',
-      merchant: names.earlier.merchant,
+      time,
+      merchant: names.earlier[what],
       amount,
-      categoryId: names.earlier.categoryId,
+      categoryId,
       status: 'kept',
-      source: 'manual',
+      source,
       detail: null,
     });
   }
@@ -216,9 +255,9 @@ export function buildDesignFriday(
       amount: prices.today.coffee,
       categoryId: 'drinks',
       status: 'caught',
-      // A bank's shared receipt where one is named, else a bank alert, worded with no name.
-      source: names.receipts ? 'shared' : 'alert',
-      detail: names.receipts?.coffee ?? null,
+      // A card payment's bank alert: with no detail, the app words it with no bank's name.
+      source: 'alert',
+      detail: null,
     },
     {
       ...day,
@@ -228,7 +267,7 @@ export function buildDesignFriday(
       categoryId: 'food',
       status: 'pending',
       source: 'qr',
-      detail: names.unconfirmed ?? t(language, 'close.card.fromQr'),
+      detail: t(language, 'close.card.fromQr'),
     },
     {
       ...day,
@@ -257,8 +296,9 @@ export function buildDesignFriday(
       amount: prices.today.shop,
       categoryId: 'shopping',
       status: 'caught',
+      // One photo of the receipt, shared to 6pm.
       source: 'shared',
-      detail: names.receipts?.shop ?? null,
+      detail: null,
     },
   ];
 

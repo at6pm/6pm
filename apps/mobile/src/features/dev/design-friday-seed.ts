@@ -15,8 +15,8 @@ import { buildDesignFriday, FRIDAY_PAYDAY } from './design-friday-fixture';
  * the money tables.
  * The fixture is local: its names follow `language` and its amounts the currency (see
  * `buildDesignFriday`); the categories are named in `language`, as onboarding names a new
- * install's. In đồng, in Vietnamese or English, it is the prototype's own (income 17,4tr, a
- * 750k-a-month Tết jar, 2.365.000₫ spent before its Friday).
+ * install's. In đồng its amounts are the prototype's own (income 17,4tr, 750k a month into the
+ * dated jar, 2.365.000₫ spent before its Friday).
  */
 export async function seedDesignFriday(
   store: MoneyStore,

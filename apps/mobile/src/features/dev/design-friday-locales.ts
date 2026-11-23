@@ -3,22 +3,34 @@ import type { Language } from '@6pm/i18n';
 /** The Friday's default categories, in the order onboarding lists them. */
 export type FridayCategoryId = 'food' | 'drinks' | 'transport' | 'groceries' | 'shopping' | 'gifts';
 
-/** What the Friday's lines are called where a language is spoken. */
+/**
+ * What the Friday's lines are called where a language is spoken: everyday descriptions, never a
+ * real shop, brand, bank or wallet.
+ */
 export interface FridayNames {
-  /** Typed at breakfast. */
+  /** Paid in cash and typed at breakfast. */
   readonly breakfast: string;
-  /** The morning coffee, caught from the bank. */
+  /** The morning coffee, paid by card and caught from the bank's alert. */
   readonly coffee: string;
-  /** The lunch place paid by QR and never confirmed. */
+  /** Lunch, paid by QR and never confirmed. */
   readonly lunch: string;
-  /** The ride home, from an emailed receipt. */
+  /** The ride home, from its emailed receipt. */
   readonly ride: string;
   /** The afternoon drink, as it was said to the microphone. */
   readonly treat: string;
-  /** The corner shop on the way home, from a shared receipt. */
+  /** The shop on the way home, from a photo of its receipt. */
   readonly shop: string;
-  /** The one spend of each earlier day of the cycle. */
-  readonly earlier: { readonly merchant: string; readonly categoryId: FridayCategoryId };
+  /** The earlier days of the cycle, one spend a day, taken in turn. */
+  readonly earlier: {
+    /** The big shop, paid by card. */
+    readonly supermarket: string;
+    /** A lunch out, typed. */
+    readonly lunchOut: string;
+    /** Cash at the market, as it was said to the microphone. */
+    readonly market: string;
+    /** The chemist's, paid by card. */
+    readonly pharmacy: string;
+  };
   readonly bills: {
     readonly rent: string;
     readonly phone: string;
@@ -27,146 +39,168 @@ export interface FridayNames {
   };
   /** The dated jar: the season people there save for. */
   readonly jar: string;
-  /**
-   * The banks whose shared receipts caught the coffee and the shop (a spend's detail line). Null
-   * where no bank is named: the coffee arrives as a bank alert and the shop as a shared photo,
-   * which the app words without a name.
-   */
-  readonly receipts: { readonly coffee: string; readonly shop: string } | null;
-  /** The unconfirmed QR's detail line; null for the catalogue's own words in the language. */
-  readonly unconfirmed: string | null;
 }
 
-/** The prototype's own Friday in Hồ Chí Minh City: Vietnamese and English keep it. */
-const SAIGON: FridayNames = {
-  breakfast: 'Bánh mì Cô Ba',
-  coffee: 'Cà phê sữa đá',
-  lunch: 'Phở Hòa',
-  ride: 'Grab ride home',
-  treat: 'Trà sữa',
-  shop: 'Circle K',
-  earlier: { merchant: 'Lunch', categoryId: 'food' },
-  bills: {
-    rent: 'Rent',
-    phone: 'Viettel phone',
-    internet: 'FPT internet',
-    power: 'EVN electricity',
-  },
-  jar: 'Tết',
-  receipts: { coffee: 'MB Bank · FT26285XYZ', shop: 'Vietcombank · FT26285ABC' },
-  unconfirmed: 'You didn’t say if it went through',
-};
-
-/**
- * Everyday names per language. Outside Vietnamese and English they are plain descriptions or
- * invented shops, never a real brand, and no bank is named.
- */
 export const FRIDAY_NAMES: Readonly<Record<Language, FridayNames>> = {
-  en: SAIGON,
-  vi: SAIGON,
+  en: {
+    breakfast: 'Bakery',
+    coffee: 'Coffee shop',
+    lunch: 'Noodle bar',
+    ride: 'Ride home',
+    treat: 'Iced tea',
+    shop: 'Corner store',
+    earlier: {
+      supermarket: 'Supermarket',
+      lunchOut: 'Lunch with friends',
+      market: 'Farmers market',
+      pharmacy: 'Pharmacy',
+    },
+    bills: { rent: 'Rent', phone: 'Phone', internet: 'Internet', power: 'Electricity' },
+    jar: 'Holidays',
+  },
+  vi: {
+    breakfast: 'Bánh mì trứng',
+    coffee: 'Cà phê sữa đá',
+    lunch: 'Cơm tấm',
+    ride: 'Đặt xe về nhà',
+    treat: 'Trà sữa',
+    shop: 'Cửa hàng tiện lợi',
+    earlier: {
+      supermarket: 'Siêu thị',
+      lunchOut: 'Ăn trưa với bạn',
+      market: 'Đi chợ',
+      pharmacy: 'Nhà thuốc',
+    },
+    bills: { rent: 'Tiền nhà', phone: 'Điện thoại', internet: 'Internet', power: 'Tiền điện' },
+    jar: 'Tết',
+  },
   de: {
-    breakfast: 'Bäckerei am Markt',
+    breakfast: 'Bäckerei',
     coffee: 'Cappuccino',
-    lunch: 'Mittagstisch Zur Linde',
+    lunch: 'Mittagstisch',
     ride: 'Fahrt nach Hause',
     treat: 'Eistee',
     shop: 'Kiosk an der Ecke',
-    earlier: { merchant: 'Supermarkt', categoryId: 'groceries' },
+    earlier: {
+      supermarket: 'Supermarkt',
+      lunchOut: 'Mittagessen mit Freunden',
+      market: 'Wochenmarkt',
+      pharmacy: 'Drogerie',
+    },
     bills: { rent: 'Miete', phone: 'Handy', internet: 'Internet', power: 'Strom' },
     jar: 'Weihnachten',
-    receipts: null,
-    unconfirmed: null,
   },
   es: {
-    breakfast: 'Panadería La Espiga',
-    coffee: 'Café con leche',
-    lunch: 'Bar La Plaza',
+    breakfast: 'Panadería',
+    coffee: 'Cafetería',
+    lunch: 'Menú del día',
     ride: 'Taxi a casa',
     treat: 'Zumo de naranja',
     shop: 'Tienda de la esquina',
-    earlier: { merchant: 'Supermercado', categoryId: 'groceries' },
+    earlier: {
+      supermarket: 'Supermercado',
+      lunchOut: 'Comida con amigos',
+      market: 'Mercado',
+      pharmacy: 'Farmacia',
+    },
     bills: { rent: 'Alquiler', phone: 'Móvil', internet: 'Internet', power: 'Luz' },
     jar: 'Navidad',
-    receipts: null,
-    unconfirmed: null,
   },
   fr: {
-    breakfast: 'Boulangerie du coin',
+    breakfast: 'Boulangerie',
     coffee: 'Café crème',
-    lunch: 'Bistrot du marché',
-    ride: 'Trajet retour',
-    treat: 'Jus d’orange',
-    shop: 'Épicerie du quartier',
-    earlier: { merchant: 'Supermarché', categoryId: 'groceries' },
+    lunch: 'Plat du jour',
+    ride: 'Retour en taxi',
+    treat: 'Thé glacé',
+    shop: 'Épicerie du coin',
+    earlier: {
+      supermarket: 'Supermarché',
+      lunchOut: 'Déjeuner entre amis',
+      market: 'Marché',
+      pharmacy: 'Pharmacie',
+    },
     bills: { rent: 'Loyer', phone: 'Forfait mobile', internet: 'Internet', power: 'Électricité' },
     jar: 'Noël',
-    receipts: null,
-    unconfirmed: null,
   },
   id: {
     breakfast: 'Bubur ayam',
     coffee: 'Es kopi susu',
-    lunch: 'Warung Bu Sri',
+    lunch: 'Nasi padang',
     ride: 'Ojek pulang',
     treat: 'Es boba',
     shop: 'Minimarket',
-    earlier: { merchant: 'Belanja harian', categoryId: 'groceries' },
-    bills: { rent: 'Kos', phone: 'Paket data', internet: 'Internet', power: 'Listrik' },
+    earlier: {
+      supermarket: 'Swalayan',
+      lunchOut: 'Makan siang bareng teman',
+      market: 'Pasar',
+      pharmacy: 'Apotek',
+    },
+    bills: { rent: 'Kos', phone: 'Paket data', internet: 'WiFi', power: 'Listrik' },
     jar: 'Lebaran',
-    receipts: null,
-    unconfirmed: null,
   },
   ja: {
     breakfast: 'おにぎり',
     coffee: 'カフェラテ',
-    lunch: 'さくら食堂',
+    lunch: '日替わり定食',
     ride: '帰りのタクシー',
     treat: 'タピオカミルクティー',
     shop: 'コンビニ',
-    earlier: { merchant: 'スーパー', categoryId: 'groceries' },
-    bills: { rent: '家賃', phone: '携帯', internet: 'ネット', power: '電気' },
+    earlier: {
+      supermarket: 'スーパー',
+      lunchOut: '友達とランチ',
+      market: 'お米と野菜',
+      pharmacy: 'ドラッグストア',
+    },
+    bills: { rent: '家賃', phone: '携帯代', internet: 'ネット代', power: '電気代' },
     jar: 'お正月',
-    receipts: null,
-    unconfirmed: null,
   },
   ko: {
     breakfast: '김밥',
     coffee: '아이스 아메리카노',
-    lunch: '정든식당',
+    lunch: '김치찌개',
     ride: '집 가는 택시',
     treat: '버블티',
     shop: '편의점',
-    earlier: { merchant: '장보기', categoryId: 'groceries' },
-    bills: { rent: '월세', phone: '휴대폰', internet: '인터넷', power: '전기요금' },
+    earlier: {
+      supermarket: '마트 장보기',
+      lunchOut: '친구랑 점심',
+      market: '시장',
+      pharmacy: '약국',
+    },
+    bills: { rent: '월세', phone: '휴대폰 요금', internet: '인터넷', power: '전기요금' },
     jar: '설날',
-    receipts: null,
-    unconfirmed: null,
   },
   th: {
-    breakfast: 'หมูปิ้งข้าวเหนียว',
-    coffee: 'กาแฟเย็น',
-    lunch: 'ร้านตามสั่งป้าแดง',
+    breakfast: 'ข้าวเหนียวหมูปิ้ง',
+    coffee: 'ลาเต้เย็น',
+    lunch: 'ร้านอาหารตามสั่ง',
     ride: 'แท็กซี่กลับบ้าน',
     treat: 'ชานมไข่มุก',
     shop: 'ร้านสะดวกซื้อ',
-    earlier: { merchant: 'ตลาดสด', categoryId: 'groceries' },
-    bills: { rent: 'ค่าห้อง', phone: 'ค่ามือถือ', internet: 'ค่าเน็ต', power: 'ค่าไฟ' },
+    earlier: {
+      supermarket: 'ซูเปอร์มาร์เก็ต',
+      lunchOut: 'มื้อเที่ยงกับเพื่อน',
+      market: 'ตลาดสด',
+      pharmacy: 'ร้านขายยา',
+    },
+    bills: { rent: 'ค่าห้อง', phone: 'ค่าโทรศัพท์', internet: 'ค่าเน็ต', power: 'ค่าไฟ' },
     jar: 'สงกรานต์',
-    receipts: null,
-    unconfirmed: null,
   },
   'zh-Hans': {
-    breakfast: '包子铺',
+    breakfast: '包子豆浆',
     coffee: '拿铁',
-    lunch: '老张面馆',
+    lunch: '牛肉面',
     ride: '打车回家',
     treat: '珍珠奶茶',
     shop: '便利店',
-    earlier: { merchant: '买菜', categoryId: 'groceries' },
+    earlier: {
+      supermarket: '超市',
+      lunchOut: '和朋友吃午饭',
+      market: '菜市场',
+      pharmacy: '药店',
+    },
     bills: { rent: '房租', phone: '话费', internet: '宽带', power: '电费' },
     jar: '春节',
-    receipts: null,
-    unconfirmed: null,
   },
 };
 
@@ -213,19 +247,28 @@ export const DESIGN_PRICES: FridayPrices = {
 };
 
 /**
- * Round, everyday prices for a salaried person where each home currency is spent: a month's pay,
- * its bills and a day whose spending ends a little under its line, as the prototype's does. A
- * currency with no list here takes the prototype's amounts by its rough rate.
+ * Round, everyday prices for a salaried person where each home currency is spent, chosen by hand:
+ * a month's pay, its bills and a day whose spending ends a little under its line, as the
+ * prototype's does. Every language's home currency has a list. A currency with none takes the
+ * prototype's amounts by its rough rate.
  */
 export const FRIDAY_PRICES: Readonly<Record<string, FridayPrices>> = {
   VND: DESIGN_PRICES,
+  USD: {
+    income: 4_200,
+    futureYou: 400,
+    bills: { rent: 1_450, phone: 45, internet: 60, power: 85 },
+    jarGoal: 600,
+    earlier: 465,
+    today: { breakfast: 6.5, coffee: 4.5, lunch: 14, ride: 16, treat: 5.5, shop: 9.5 },
+  },
   EUR: {
-    income: 2_400,
+    income: 2_600,
     futureYou: 250,
     bills: { rent: 780, phone: 20, internet: 35, power: 55 },
     jarGoal: 450,
-    earlier: 250,
-    today: { breakfast: 2.5, coffee: 3.5, lunch: 9.5, ride: 6, treat: 4, shop: 5.5 },
+    earlier: 270,
+    today: { breakfast: 3.5, coffee: 3.8, lunch: 11.5, ride: 9, treat: 3.5, shop: 6.5 },
   },
   IDR: {
     income: 9_000_000,
@@ -235,8 +278,8 @@ export const FRIDAY_PRICES: Readonly<Record<string, FridayPrices>> = {
     earlier: 1_030_000,
     today: {
       breakfast: 15_000,
-      coffee: 25_000,
-      lunch: 28_000,
+      coffee: 28_000,
+      lunch: 30_000,
       ride: 22_000,
       treat: 18_000,
       shop: 27_000,
@@ -258,10 +301,10 @@ export const FRIDAY_PRICES: Readonly<Record<string, FridayPrices>> = {
     earlier: 410_000,
     today: {
       breakfast: 4_000,
-      coffee: 4_500,
-      lunch: 9_500,
+      coffee: 5_500,
+      lunch: 10_000,
       ride: 12_000,
-      treat: 5_500,
+      treat: 5_000,
       shop: 16_000,
     },
   },
@@ -271,7 +314,7 @@ export const FRIDAY_PRICES: Readonly<Record<string, FridayPrices>> = {
     bills: { rent: 8_500, phone: 400, internet: 600, power: 1_200 },
     jarGoal: 4_500,
     earlier: 3_800,
-    today: { breakfast: 45, coffee: 65, lunch: 70, ride: 95, treat: 55, shop: 155 },
+    today: { breakfast: 45, coffee: 85, lunch: 70, ride: 95, treat: 55, shop: 155 },
   },
   CNY: {
     income: 12_000,
