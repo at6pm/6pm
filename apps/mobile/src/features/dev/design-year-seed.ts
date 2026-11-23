@@ -1,9 +1,18 @@
 import { randomUUID } from 'expo-crypto';
 
-import { addDays, currencyOf, parts, payCycleOn, type LocalDate } from '@6pm/domain';
+import {
+  addDays,
+  currencyOf,
+  FUTURE_YOU_POT_ID,
+  futureYouPotRow,
+  parts,
+  payCycleOn,
+  type LocalDate,
+} from '@6pm/domain';
 import type { Language } from '@6pm/i18n';
 
 import type { MoneyStore } from '../../data/money-store';
+import { fridayPricesIn } from './design-friday-fixture';
 import { seedDesignFriday } from './design-friday-seed';
 import { FRIDAY_HOME_CURRENCY, FRIDAY_NAMES } from './design-friday-locales';
 import { SEED_NAMES } from './design-seed-names';
@@ -35,7 +44,29 @@ export async function seedDesignYear(
   const iso = new Date().toISOString();
   const cycle = payCycleOn(today, { kind: 'sameDay', day: 31 });
   const first = `${parts(today).year - 1}-01-01`;
+  const payday = { kind: 'sameDay', day: 31 } as const;
+  const futureYou = fridayPricesIn(currency).futureYou;
   await db.withTransactionAsync(async () => {
+    // Future you was paid first on every payday of those years too, so an earlier month's Money
+    // diary and the jar itself show what the plan has been setting aside all along.
+    await tables.pots.put(futureYouPotRow(new Date(`${first}T03:00:00.000Z`).toISOString()));
+    for (
+      let past = payCycleOn(first, payday);
+      past.start < cycle.start;
+      past = payCycleOn(past.payday, payday)
+    ) {
+      await db.runAsync(
+        `INSERT OR IGNORE INTO pot_moves (id, pot_id, amount, kind, cycle, at)
+         VALUES (?, ?, ?, 'setAside', ?, ?)`,
+        [
+          `set-aside:${FUTURE_YOU_POT_ID}:${past.start}`,
+          FUTURE_YOU_POT_ID,
+          futureYou,
+          past.start,
+          iso,
+        ],
+      );
+    }
     for (let day = first, n = 0; day < cycle.start; day = addDays(day, 1), n++) {
       if (n % 9 === 4) continue;
       const { year, month, day: dd } = parts(day);
