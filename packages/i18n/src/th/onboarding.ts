@@ -211,7 +211,7 @@ export const thOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.category.food': 'อาหาร',
   'onboarding.category.drinks': 'เครื่องดื่ม',
   'onboarding.category.transport': 'เดินทาง',
-  'onboarding.category.groceries': 'ของใช้ในบ้าน',
+  'onboarding.category.groceries': 'จ่ายตลาด',
   'onboarding.category.shopping': 'ช้อปปิ้ง',
   'onboarding.category.fun': 'บันเทิง',
   'onboarding.category.health': 'สุขภาพ',

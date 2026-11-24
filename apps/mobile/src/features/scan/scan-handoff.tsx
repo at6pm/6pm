@@ -22,6 +22,7 @@ import { Sky } from '../../ui/sky/sky';
 import { useClock } from '../../ui/theme/clock';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading } from '../../ui/type/fonts';
+import { WordFitText } from '../../ui/type/word-fit-text';
 import type { Handoff } from './bank-handoff';
 import { sheetUp } from './scan-card';
 import { scanColours as c } from './scan-colours';
@@ -126,12 +127,12 @@ export function ScanHandoff({
         ) : waiting ? null : (
           <Spinner />
         )}
-        <Text
+        <WordFitText
           accessibilityRole="header"
           style={{ ...display(30, 500), color: c.text, textAlign: 'center' }}
         >
           {line}
-        </Text>
+        </WordFitText>
         <Text style={{ ...body(14), color: c.sub, textAlign: 'center' }}>
           {t(handoff?.qrSaved ? 'scan.handoff.savedQr' : 'scan.handoff.copied')}
         </Text>
@@ -200,9 +201,9 @@ export function ScanReturn({
           }}
         >
           {!serious ? <Companion size={56} mood="calm" /> : null}
-          <Text style={{ ...leading(display(38, 500, -0.01), 40), color: palette.ink }}>
+          <WordFitText style={{ ...leading(display(38, 500, -0.01), 40), color: palette.ink }}>
             {t('scan.return.title')}
-          </Text>
+          </WordFitText>
           <Text style={{ ...body(15), color: palette.inkSoft }}>
             {wallet
               ? t('scan.return.to', { amount, payee: payment.payee, wallet })

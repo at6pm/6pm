@@ -9,6 +9,7 @@ import { useMoney } from '../../../data/money-provider';
 import { useI18n } from '../../../i18n/i18n';
 import { useMoneyFormat } from '../../../money/use-money-format';
 import { body } from '../../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../../ui/type/word-fit-text';
 import { useDiaryDates } from '../../diary/diary-dates';
 import { incomePlanOf } from '../../plan/income-plan-view';
 import { defineCard, type CardLayoutProps } from './card-definition';
@@ -158,16 +159,19 @@ function CoveredLayout({
           {t('shareCards.covered.kicker', { month: data.monthName }).toLocaleUpperCase()}
         </Text>
         <Text
+          {...HEADING_BREAKS}
           {...ON_CARD}
           numberOfLines={story ? 3 : 2}
           adjustsFontSizeToFit
           minimumFontScale={0.6}
           style={title(inks, inks.titleSize, 0.98)}
         >
-          {t('shareCards.covered.title', {
-            landed,
-            covered: t('shareCards.covered.days', { count: card.covered }),
-          })}
+          {headingWords(
+            t('shareCards.covered.title', {
+              landed,
+              covered: t('shareCards.covered.days', { count: card.covered }),
+            }),
+          )}
         </Text>
         <View style={{ gap: 8, paddingTop: 8, paddingBottom: 2 }}>
           <ArtInTurn

@@ -255,6 +255,8 @@ export default function QuickAdd() {
     setFace(next);
   };
 
+  // In the Lunar New Year season a spend's header holds the keypad and envelope modes instead.
+  const modeSwitch = envelopesOn && face === 'out';
   const header = (
     <View
       onLayout={(e) => setHeaderHeight(e.nativeEvent.layout.height)}
@@ -271,7 +273,10 @@ export default function QuickAdd() {
         }}
       />
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-        {/* Both sides as wide as Cancel, so the middle stays centred in what is left. */}
+        {/* Both sides as wide as Cancel, so the middle stays centred in what is left. The mode
+            switch fits itself to that room. The face switch keeps its words: where a language
+            leaves them too little (a long Cancel beside two long faces), the empty side
+            gives way first, and the switch keeps its gap from Cancel. */}
         <View style={{ minWidth: side, flexShrink: 0, alignItems: 'flex-start' }}>
           <PressScale
             onPress={edge.dismiss}
@@ -287,8 +292,14 @@ export default function QuickAdd() {
             </Text>
           </PressScale>
         </View>
-        <View style={{ flex: 1, minWidth: 0, alignItems: 'center' }}>
-          {envelopesOn && face === 'out' ? (
+        <View
+          style={
+            modeSwitch
+              ? { flex: 1, minWidth: 0, alignItems: 'center' }
+              : { flexGrow: 1, flexShrink: 0, alignItems: 'center' }
+          }
+        >
+          {modeSwitch ? (
             <QuickModeSwitch
               mode={mode}
               envelope={lixi.season.envelope}
@@ -308,7 +319,13 @@ export default function QuickAdd() {
             <FaceSwitch face={face} onFace={turn} />
           )}
         </View>
-        <View style={{ minWidth: side, flexShrink: 0 }} />
+        <View
+          style={
+            modeSwitch
+              ? { minWidth: side, flexShrink: 0 }
+              : { flexBasis: side, flexShrink: 1, minWidth: 0 }
+          }
+        />
       </View>
     </View>
   );

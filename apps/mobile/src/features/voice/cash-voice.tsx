@@ -7,6 +7,7 @@ import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import type { DictationState } from './dictation-state';
 import { MicButton } from './mic-button';
 import { OpenSettingsPill } from './open-settings-pill';
@@ -88,8 +89,11 @@ export function CashVoice({ onSaid }: { readonly onSaid: (cash: SaidCash) => voi
       />
       <View style={{ minHeight: 30, maxWidth: 310, justifyContent: 'center' }}>
         {said !== '' ? (
-          <Text style={{ ...display(22, 500), color: palette.inkSoft, textAlign: 'center' }}>
-            {said}
+          <Text
+            {...HEADING_BREAKS}
+            style={{ ...display(22, 500), color: palette.inkSoft, textAlign: 'center' }}
+          >
+            {headingWords(said)}
           </Text>
         ) : line ? (
           <Animated.Text

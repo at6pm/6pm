@@ -67,7 +67,7 @@ export const idDiary: { readonly [Key in keyof typeof enDiary]: Entry } = {
   'diary.zine.stamp': 'DITUTUP',
   'diary.zine.spent': 'Terpakai',
   'diary.zine.spentSub': 'rencananya {plan}',
-  'diary.zine.futureYou': 'Kamu di masa depan',
+  'diary.zine.futureYou': 'Masa depanmu',
   'diary.zine.futureYouSub': 'total {total}',
   'diary.zine.under': 'Di bawah batas',
   'diary.zine.underSub': 'dari {closed} hari ditutup',

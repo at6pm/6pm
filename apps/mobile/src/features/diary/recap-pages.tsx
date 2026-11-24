@@ -11,6 +11,7 @@ import { DashedRule } from '../../ui/dashed-rule';
 import { isSymbolName } from '../../ui/icons/symbol';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import { merchantIcon } from '../today/merchant-icon';
 import { inkWash, recapAccent } from './diary-colours';
 
@@ -47,10 +48,13 @@ export function StoryPage({ story }: { readonly story: RecapStory }) {
   return (
     <View style={{ flex: 1, gap: 14 }}>
       {!serious ? <Companion size={72} mood={happy ? 'happy' : 'nod'} /> : null}
-      <Text style={{ ...leading(display(31, 500, -0.02), 33.5), color: palette.ink }}>
-        {lead}{' '}
+      <Text
+        {...HEADING_BREAKS}
+        style={{ ...leading(display(31, 500, -0.02), 33.5), color: palette.ink }}
+      >
+        {headingWords(lead)}{' '}
         <Text style={{ color: serious ? palette.inkSoft : recapAccent(palette.dark) }}>
-          {accent}
+          {headingWords(accent)}
         </Text>
       </Text>
     </View>
@@ -71,10 +75,10 @@ export function BarsPage({
   const wash = inkWash(palette.dark);
   return (
     <View style={{ flex: 1, gap: 12 }}>
-      <Text style={{ ...leading(display(24, 500), 26.4), color: palette.ink }}>
-        {t('diary.recap.total', { total: money.short(recap.total) })}{' '}
+      <Text {...HEADING_BREAKS} style={{ ...leading(display(24, 500), 26.4), color: palette.ink }}>
+        {headingWords(t('diary.recap.total', { total: money.short(recap.total) }))}{' '}
         <Text style={{ color: palette.inkSoft }}>
-          {t('diary.recap.under', { under: recap.under, count: recap.days })}
+          {headingWords(t('diary.recap.under', { under: recap.under, count: recap.days }))}
         </Text>
       </Text>
       <View style={{ height: 140, flexDirection: 'row', gap: 10, alignItems: 'flex-end' }}>
@@ -135,8 +139,11 @@ export function PlacesPage({ recap }: { readonly recap: WeekRecap }) {
   const { categories } = useMoney();
   return (
     <View style={{ flex: 1, gap: 4 }}>
-      <Text style={{ ...leading(display(24, 500), 26.4), paddingBottom: 8, color: palette.ink }}>
-        {t('diary.recap.places')}
+      <Text
+        {...HEADING_BREAKS}
+        style={{ ...leading(display(24, 500), 26.4), paddingBottom: 8, color: palette.ink }}
+      >
+        {headingWords(t('diary.recap.places'))}
       </Text>
       {recap.places.length === 0 ? (
         <Text style={{ ...body(15), color: palette.inkSoft }}>{t('diary.recap.placesEmpty')}</Text>

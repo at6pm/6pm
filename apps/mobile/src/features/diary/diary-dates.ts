@@ -4,6 +4,7 @@ import { addDays, type LocalDate } from '@6pm/domain';
 import { localeOf } from '@6pm/i18n';
 
 import { useI18n } from '../../i18n/i18n';
+import { diaryDateLabels } from './date-labels';
 
 const noon = (day: LocalDate) => new Date(`${day}T12:00:00`);
 const capitalise = (text: string) => text.charAt(0).toLocaleUpperCase() + text.slice(1);
@@ -15,10 +16,9 @@ export function useDiaryDates() {
     const locale = localeOf(language);
     const format = (options: Intl.DateTimeFormatOptions) =>
       new Intl.DateTimeFormat(locale, options);
+    const labels = diaryDateLabels(locale);
     const weekdayShort = format({ weekday: 'short' });
     const weekdayLong = format({ weekday: 'long' });
-    const twoDigit = format({ day: '2-digit' });
-    const numeric = format({ day: 'numeric' });
     const monthShort = format({ month: 'short' });
     const monthLong = format({ month: 'long' });
     const dayMonth = format({ day: 'numeric', month: 'short' });
@@ -26,19 +26,10 @@ export function useDiaryDates() {
     const clock = format({ hour: '2-digit', minute: '2-digit', hour12: false });
     const month = (key: string) => noon(`${key}-01`);
     return {
-      /** "WED 07 OCT" */
-      stamp: (day: LocalDate) =>
-        `${weekdayShort.format(noon(day))} ${twoDigit.format(noon(day))} ${monthShort.format(noon(day))}`.toLocaleUpperCase(),
-      /** "5–9 OCT", or "28 SEP – 2 OCT" across a month end ("5–9 Oct" when not shouted). */
-      range: (from: LocalDate, to: LocalDate, shout = true) => {
-        const text =
-          from.slice(0, 7) === to.slice(0, 7)
-            ? from === to
-              ? `${numeric.format(noon(to))} ${monthShort.format(noon(to))}`
-              : `${numeric.format(noon(from))}–${numeric.format(noon(to))} ${monthShort.format(noon(to))}`
-            : `${dayMonth.format(noon(from))} – ${dayMonth.format(noon(to))}`;
-        return shout ? text.toLocaleUpperCase() : text;
-      },
+      /** "WED 07 OCT"; "10月7日(水)" where the month comes first. */
+      stamp: labels.stamp,
+      /** "5–9 OCT", or "28 SEP – 2 OCT" across a month end; "10月5日–9日" where the month comes first. */
+      range: labels.range,
       /** "October" */
       month: (key: string) => capitalise(monthLong.format(month(key))),
       /** "october", for the note's handwriting; German keeps its nouns' capital ("Oktober"). */

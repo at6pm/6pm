@@ -8,6 +8,7 @@ import { useMoneyFormat } from '../../money/use-money-format';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading, mono } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import { coverTint, inkWash, zineInk } from './diary-colours';
 import { useDiaryDates } from './diary-dates';
 
@@ -155,8 +156,8 @@ export function MoneyDiaries({
           paddingHorizontal: 6,
         }}
       >
-        <Text style={{ ...body(20, 700, -0.02), color: palette.ink }}>
-          {t('diary.zines.title')}
+        <Text {...HEADING_BREAKS} style={{ ...body(20, 700, -0.02), color: palette.ink }}>
+          {headingWords(t('diary.zines.title'))}
         </Text>
         <Text style={{ ...body(14, 500), color: palette.inkSoft }}>{t('diary.zines.bound')}</Text>
       </View>

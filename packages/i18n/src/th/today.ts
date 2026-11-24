@@ -30,7 +30,7 @@ export const thToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'today.list.spent': 'ใช้ไป {amount}',
   'today.list.empty':
     'ยังไม่จับได้อะไรเลย สแกนคิวอาร์ แชร์ใบเสร็จธนาคารมาที่ 6pm หรือแตะ + ตอนใช้เงิน',
-  'today.inbox.waiting': { other: 'รออยู่ใน Inbox {count} รายการ' },
+  'today.inbox.waiting': { other: 'รออยู่ในกล่องขาเข้า {count} รายการ' },
   'common.done': 'เสร็จสิ้น',
   'home.settings': 'การตั้งค่า',
   'home.quickAdd': 'เพิ่มด่วน',
@@ -62,7 +62,7 @@ export const thToday: { readonly [Key in keyof typeof enToday]: Entry } = {
   'source.email': 'อีเมล',
   'source.applePay': 'Apple Pay',
   'source.cash': 'เงินสด',
-  'inbox.title': 'Inbox',
+  'inbox.title': 'กล่องขาเข้า',
   'inbox.today': 'วันนี้ · {weekday}',
   'inbox.afterClose': '{weekday} · หลังปิดวัน',
   'inbox.empty.title': 'เคลียร์หมดแล้ว',

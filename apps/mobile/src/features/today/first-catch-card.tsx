@@ -28,6 +28,7 @@ import { Symbol } from '../../ui/icons/symbol';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading, mono } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import { REMINDER_ICON } from './first-catch-ways';
 import { useFirstCatchCard } from './use-first-catch-card';
 
@@ -178,8 +179,11 @@ export function FirstCatchCard() {
           {/* The words fade over when a way gets set up; the card itself arrives with them in place. */}
           <LayoutAnimationConfig skipEntering>
             <Animated.View key={said} entering={FadeIn.duration(300)}>
-              <Text style={{ ...leading(display(21, 500), 23.5), color: palette.ink }}>
-                {t(waiting ? 'firstCatch.waiting' : 'firstCatch.card.title')}
+              <Text
+                {...HEADING_BREAKS}
+                style={{ ...leading(display(21, 500), 23.5), color: palette.ink }}
+              >
+                {headingWords(t(waiting ? 'firstCatch.waiting' : 'firstCatch.card.title'))}
               </Text>
             </Animated.View>
           </LayoutAnimationConfig>
