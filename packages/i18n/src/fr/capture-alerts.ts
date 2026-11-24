@@ -126,8 +126,7 @@ export const frCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.steps.addLine': 'Quand il s’ouvre, touche Ajouter le raccourci.',
   'capture.alerts.steps.addAction': 'Obtenir le raccourci',
   'capture.alerts.steps.onTitle': 'Active Automatisation',
-  'capture.alerts.steps.onLine':
-    'Dans « Catch a bank alert », touche › sur le déclencheur. Automatisation activée, Notifier désactivé.',
+  'capture.alerts.steps.onLine': 'Ouvre-le, touche › et active Automatisation.',
   'capture.alerts.steps.testTitle': 'Vérifie que ça marche',
   'capture.alerts.steps.testLine': '6pm s’envoie une alerte de test. Rien n’est noté.',
   'capture.alerts.steps.privacy': 'Les longs numéros sont masqués pour notre serveur.',

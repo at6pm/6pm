@@ -121,8 +121,7 @@ export const zhHansCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlert
   'capture.alerts.steps.addLine': '打开后，轻点“添加快捷指令”。',
   'capture.alerts.steps.addAction': '获取快捷指令',
   'capture.alerts.steps.onTitle': '开启“自动化”',
-  'capture.alerts.steps.onLine':
-    '在“Catch a bank alert”里轻点触发条件上的 ›。开启“自动化”，关闭“通知”。',
+  'capture.alerts.steps.onLine': '打开它，轻点 ›，开启“自动化”。',
   'capture.alerts.steps.testTitle': '试试是否有效',
   'capture.alerts.steps.testLine': '6pm 会给自己发一条测试通知，不会记任何账。',
   'capture.alerts.steps.privacy': '服务器读取通知前，长号码会先被隐藏。',

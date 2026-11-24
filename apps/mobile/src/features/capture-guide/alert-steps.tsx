@@ -110,9 +110,11 @@ export function AlertSteps({
         />
       </StepCard>
 
+      {/* The step people miss: outlined in the accent until it is known done. */}
       <StepCard
         n={2}
         done={known.running}
+        marked={!known.running}
         title={t('capture.alerts.steps.onTitle')}
         line={t('capture.alerts.steps.onLine')}
       >
@@ -198,21 +200,33 @@ function useBackFromShortcuts(
   };
 }
 
-/** One step: its number (a tick once done), title and line, then what it holds. */
+/**
+ * One step: its number (a tick once done), title and line, then what it holds. A `marked` card
+ * wears a soft accent outline, which fades once it is not.
+ */
 function StepCard({
   n,
   done,
+  marked = false,
   title,
   line,
   children,
 }: {
   readonly n: number;
   readonly done: boolean;
+  readonly marked?: boolean;
   readonly title: string;
   readonly line: string;
   readonly children: ReactNode;
 }) {
   const { palette } = useTheme();
+  const outline = useAnimatedStyle(() => ({
+    opacity: withTiming(marked ? 0.55 : 0, {
+      duration: 300,
+      easing: easeOut,
+      reduceMotion: ReduceMotion.System,
+    }),
+  }));
   return (
     <Animated.View
       layout={settle}
@@ -224,6 +238,19 @@ function StepCard({
         gap: 14,
       }}
     >
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          {
+            position: 'absolute',
+            inset: 0,
+            borderRadius: 26,
+            borderWidth: 1.5,
+            borderColor: palette.accent,
+          },
+          outline,
+        ]}
+      />
       <View style={{ flexDirection: 'row', gap: 12 }}>
         <StepMark n={n} done={done} />
         <View style={{ flex: 1, minWidth: 0, gap: 3, paddingTop: 3 }}>

@@ -125,8 +125,7 @@ export const koCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.steps.addLine': '열리면 단축어 추가를 탭하세요.',
   'capture.alerts.steps.addAction': '단축어 받기',
   'capture.alerts.steps.onTitle': '자동화 켜기',
-  'capture.alerts.steps.onLine':
-    '“Catch a bank alert”에서 트리거의 ›를 탭하세요. 자동화는 켜고, 실행할 때 알림은 끄세요.',
+  'capture.alerts.steps.onLine': '열어서 ›를 탭하고 자동화를 켜세요.',
   'capture.alerts.steps.testTitle': '잘 되는지 확인하기',
   'capture.alerts.steps.testLine': '6pm이 스스로 테스트 알림을 보내요. 아무것도 기록되지 않아요.',
   'capture.alerts.steps.privacy': '서버가 알림을 읽기 전에 긴 번호는 가려져요.',

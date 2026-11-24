@@ -125,8 +125,7 @@ export const thCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.steps.addLine': 'เมื่อเปิดขึ้นมา แตะ เพิ่มคำสั่งลัด',
   'capture.alerts.steps.addAction': 'รับคำสั่งลัด',
   'capture.alerts.steps.onTitle': 'เปิด ระบบอัตโนมัติ',
-  'capture.alerts.steps.onLine':
-    'ใน “Catch a bank alert” แตะ › ที่ตัวเรียก เปิด ระบบอัตโนมัติ และปิด แจ้ง',
+  'capture.alerts.steps.onLine': 'เปิดคำสั่งลัด แตะ › แล้วเปิด ระบบอัตโนมัติ',
   'capture.alerts.steps.testTitle': 'ลองดูว่าใช้ได้ไหม',
   'capture.alerts.steps.testLine': '6pm ส่งแจ้งเตือนทดสอบหาตัวเอง ไม่มีอะไรถูกจด',
   'capture.alerts.steps.privacy': 'เลขยาว ๆ ถูกซ่อนก่อนเซิร์ฟเวอร์ของเราอ่านแจ้งเตือน',

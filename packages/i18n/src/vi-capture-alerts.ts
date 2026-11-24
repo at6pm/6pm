@@ -131,8 +131,7 @@ export const viCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.steps.addLine': 'Khi phím tắt mở ra, chạm Thêm phím tắt.',
   'capture.alerts.steps.addAction': 'Lấy phím tắt',
   'capture.alerts.steps.onTitle': 'Bật Tự động hóa',
-  'capture.alerts.steps.onLine':
-    'Trong “Catch a bank alert”, chạm › trên bộ kích hoạt rồi bật Tự động hóa. Để Thông báo tắt.',
+  'capture.alerts.steps.onLine': 'Mở phím tắt, chạm › rồi bật Tự động hóa.',
   'capture.alerts.steps.testTitle': 'Thử xem đã chạy chưa',
   'capture.alerts.steps.testLine': '6pm tự gửi một thông báo thử. Không ghi khoản nào.',
   'capture.alerts.steps.privacy': 'Dãy số dài được che trước khi máy chủ đọc.',

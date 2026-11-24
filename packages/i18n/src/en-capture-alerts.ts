@@ -133,8 +133,7 @@ export const enCaptureAlerts = {
   'capture.alerts.steps.addLine': 'Tap Add Shortcut when it opens.',
   'capture.alerts.steps.addAction': 'Get the shortcut',
   'capture.alerts.steps.onTitle': 'Turn on Automation',
-  'capture.alerts.steps.onLine':
-    'In “Catch a bank alert”, tap › on the trigger. Automation on, Notify off.',
+  'capture.alerts.steps.onLine': 'Open it, tap ›, turn on Automation.',
   'capture.alerts.steps.testTitle': 'Check it works',
   'capture.alerts.steps.testLine': '6pm sends itself a test. Nothing is logged.',
   'capture.alerts.steps.privacy': 'Long numbers are hidden from our server.',

@@ -125,8 +125,7 @@ export const idCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.steps.addLine': 'Saat terbuka, ketuk Tambahkan Pintasan.',
   'capture.alerts.steps.addAction': 'Ambil pintasannya',
   'capture.alerts.steps.onTitle': 'Nyalakan Otomatisasi',
-  'capture.alerts.steps.onLine':
-    'Di “Catch a bank alert”, ketuk › di pemicu. Otomatisasi nyala, Beri Tahu mati.',
+  'capture.alerts.steps.onLine': 'Buka, ketuk ›, lalu nyalakan Otomatisasi.',
   'capture.alerts.steps.testTitle': 'Cek apakah sudah jalan',
   'capture.alerts.steps.testLine':
     '6pm mengirim notifikasi uji coba ke dirinya sendiri. Tidak ada yang dicatat.',

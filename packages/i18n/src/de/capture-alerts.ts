@@ -127,8 +127,7 @@ export const deCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.steps.addLine': 'Wenn er sich öffnet, tippe auf „Kurzbefehl hinzufügen“.',
   'capture.alerts.steps.addAction': 'Kurzbefehl holen',
   'capture.alerts.steps.onTitle': 'Automation einschalten',
-  'capture.alerts.steps.onLine':
-    'Tippe in „Catch a bank alert“ beim Auslöser auf ›. Automation an, Mitteilen aus.',
+  'capture.alerts.steps.onLine': 'Öffne ihn, tippe auf ›, schalte Automation ein.',
   'capture.alerts.steps.testTitle': 'Prüfen, ob es klappt',
   'capture.alerts.steps.testLine':
     '6pm schickt sich selbst eine Testmitteilung. Nichts wird eingetragen.',
