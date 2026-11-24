@@ -111,6 +111,9 @@ export const zhHansOnboarding: { readonly [Key in keyof typeof enOnboarding]: En
 
   'onboarding.catch.title': '6pm 怎么记下开销',
   'onboarding.catch.sub': '大部分会自己进来，在收件箱里等你 {time} 花一分钟确认。',
+  'onboarding.catch.auto.title': '让付款自己记账',
+  'onboarding.catch.auto.body':
+    '设置和检查要花几步，但值得。付款自己进来的时候，6pm 最有用。用上几天你就知道了。',
   'onboarding.catch.readyNothing': '已就绪，无需设置',
   'onboarding.catch.ready': '已就绪',
   'onboarding.catch.seeHow': '看看怎么做',
@@ -197,6 +200,7 @@ export const zhHansOnboarding: { readonly [Key in keyof typeof enOnboarding]: En
   'onboarding.line.aiServer': '聪明的回答，来自 Claude。',
   'onboarding.line.aiDevice': '全都在你手里，什么也不外传。',
   'onboarding.line.catch': '{total} 种里已有 {count} 种能用了。',
+  'onboarding.line.catchSetUp': '设置好一种，剩下的交给我。',
   'onboarding.line.close': '{time} 见。',
 
   'onboarding.category.food': '餐饮',

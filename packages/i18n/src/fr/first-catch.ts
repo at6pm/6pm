@@ -6,7 +6,7 @@ export const frFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'firstCatch.caught': 'Attrapée.',
   'firstCatch.still': 'Toujours à l’écoute…',
   'firstCatch.tryHere': 'FAIS-EN UNE · TOUCHE POUR ESSAYER ICI',
-  'firstCatch.later': 'Je le ferai plus tard',
+  'firstCatch.later': 'Passer pour l’instant',
   'firstCatch.tile.alerts': 'Vire-toi {amount}',
   'firstCatch.tile.share': 'Partage un reçu bancaire',
   'firstCatch.tile.wallet': 'Paie avec Wallet',
@@ -42,8 +42,10 @@ export const frFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'firstCatch.fix.access': 'Vérifier l’accès',
   'firstCatch.fix.share': 'Voir comment',
   'firstCatch.another': 'Essayer autrement',
-  'firstCatch.card.title': 'Ton premier reçu ira ici',
-  'firstCatch.card.action': 'En attraper une',
+  'firstCatch.card.title': 'Laisse tes paiements se noter tout seuls',
+  'firstCatch.card.action': 'Configurer',
+  'firstCatch.card.check': 'Vérifier',
+  'firstCatch.card.notNow': 'Pas maintenant',
   'companion.firstCatch.soft':
     'C’est comme ça qu’elles arriveront toutes. À six heures, tu dis juste oui.',
   'companion.firstCatch.cheeky':

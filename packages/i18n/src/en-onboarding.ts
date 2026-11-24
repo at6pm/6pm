@@ -118,6 +118,9 @@ export const enOnboarding = {
   'onboarding.catch.title': 'How 6pm catches spending',
   'onboarding.catch.sub':
     'Most of it lands by itself, then waits in your Inbox for a one-minute check at {time}.',
+  'onboarding.catch.auto.title': 'Let your payments log themselves',
+  'onboarding.catch.auto.body':
+    'It takes a few steps to set up and check. It’s worth it: 6pm is most useful when payments arrive on their own. Give it a few days and you’ll see.',
   'onboarding.catch.readyNothing': 'Ready, nothing to set up',
   'onboarding.catch.ready': 'Ready',
   'onboarding.catch.seeHow': 'See how',
@@ -212,6 +215,7 @@ export const enOnboarding = {
   'onboarding.line.aiServer': 'Clever answers, from Claude.',
   'onboarding.line.aiDevice': 'All yours. Nothing leaves.',
   'onboarding.line.catch': '{count} of {total} work already.',
+  'onboarding.line.catchSetUp': 'Set one up. I’ll do the rest.',
   'onboarding.line.close': 'See you at {time}.',
 
   'onboarding.category.food': 'Food',
