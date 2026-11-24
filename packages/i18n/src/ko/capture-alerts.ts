@@ -110,4 +110,14 @@ export const koCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.ios.notificationSubtitle': '알림 › 부제목',
   'capture.walk.ios.notify': '실행할 때 알림',
   'capture.walk.ios.cancel': '취소',
+
+  // Android: letting 6pm keep running, and bank alerts paused while access is off.
+  'capture.alerts.keepRunning':
+    '6pm이 계속 실행되게 하면 휴대폰이 잠자는 동안에도 알림이 들어와요. 휴대폰에 따라 자동 실행 또는 백그라운드 활동이라고 해요.',
+  'capture.alerts.keepRunningChip': '배터리 → 6pm',
+  'capture.alerts.keepRunningOpen': '배터리 설정 열기',
+  'capture.alerts.paused.title': '은행 알림이 멈췄어요',
+  'capture.alerts.paused.body':
+    '6pm이 알림을 볼 수 없어요. 접근 권한을 다시 켜면 결제가 다시 저절로 기록돼요.',
+  'capture.alerts.paused.action': '접근 권한 다시 켜기',
 };

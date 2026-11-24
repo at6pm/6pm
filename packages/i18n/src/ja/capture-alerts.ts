@@ -110,4 +110,14 @@ export const jaCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.ios.notificationSubtitle': '通知 › サブタイトル',
   'capture.walk.ios.notify': '通知',
   'capture.walk.ios.cancel': 'キャンセル',
+
+  // Android: letting 6pm keep running, and bank alerts paused while access is off.
+  'capture.alerts.keepRunning':
+    '6pmが動き続けられるようにすると、スマホがスリープ中でも通知が届きます。機種によっては「自動起動」や「バックグラウンドアクティビティ」という名前です。',
+  'capture.alerts.keepRunningChip': 'バッテリー → 6pm',
+  'capture.alerts.keepRunningOpen': 'バッテリー設定を開く',
+  'capture.alerts.paused.title': '銀行の通知が止まっています',
+  'capture.alerts.paused.body':
+    '6pmが通知を読めません。アクセスを戻すと、支払いがまた自動で記録されます。',
+  'capture.alerts.paused.action': 'アクセスを戻す',
 };

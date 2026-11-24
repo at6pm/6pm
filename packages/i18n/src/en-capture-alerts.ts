@@ -117,4 +117,14 @@ export const enCaptureAlerts = {
   'capture.walk.ios.notificationSubtitle': 'Notification › Subtitle',
   'capture.walk.ios.notify': 'Notify',
   'capture.walk.ios.cancel': 'Cancel',
+
+  // Android: letting 6pm keep running, and bank alerts paused while access is off.
+  'capture.alerts.keepRunning':
+    'Let 6pm keep running, so alerts still arrive while your phone sleeps. Some phones call this Autostart or Background activity.',
+  'capture.alerts.keepRunningChip': 'Battery → 6pm',
+  'capture.alerts.keepRunningOpen': 'Open battery settings',
+  'capture.alerts.paused.title': 'Bank alerts are paused',
+  'capture.alerts.paused.body':
+    '6pm can’t see your notifications. Turn access back on and your payments log themselves again.',
+  'capture.alerts.paused.action': 'Turn access back on',
 } as const;

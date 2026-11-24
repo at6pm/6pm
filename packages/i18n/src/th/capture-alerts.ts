@@ -110,4 +110,14 @@ export const thCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.ios.notificationSubtitle': 'การแจ้งเตือน › ชื่อเรื่องรอง',
   'capture.walk.ios.notify': 'แจ้ง',
   'capture.walk.ios.cancel': 'ยกเลิก',
+
+  // Android: letting 6pm keep running, and bank alerts paused while access is off.
+  'capture.alerts.keepRunning':
+    'ให้ 6pm ทำงานต่อไปได้ การแจ้งเตือนจะยังเข้ามาแม้โทรศัพท์พักหน้าจอ บางเครื่องเรียกว่า เริ่มอัตโนมัติ หรือ กิจกรรมเบื้องหลัง',
+  'capture.alerts.keepRunningChip': 'แบตเตอรี่ → 6pm',
+  'capture.alerts.keepRunningOpen': 'เปิดการตั้งค่าแบตเตอรี่',
+  'capture.alerts.paused.title': 'แจ้งเตือนธนาคารหยุดชั่วคราว',
+  'capture.alerts.paused.body':
+    '6pm มองไม่เห็นการแจ้งเตือนของคุณ เปิดสิทธิ์เข้าถึงอีกครั้ง แล้วรายการจ่ายจะบันทึกเองเหมือนเดิม',
+  'capture.alerts.paused.action': 'เปิดสิทธิ์อีกครั้ง',
 };

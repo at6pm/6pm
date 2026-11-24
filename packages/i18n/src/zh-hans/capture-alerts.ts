@@ -107,4 +107,13 @@ export const zhHansCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlert
   'capture.walk.ios.notificationSubtitle': '通知 › 副标题',
   'capture.walk.ios.notify': '通知',
   'capture.walk.ios.cancel': '取消',
+
+  // Android: letting 6pm keep running, and bank alerts paused while access is off.
+  'capture.alerts.keepRunning':
+    '让 6pm 保持运行，手机休眠时通知也照样进来。有的手机把这项叫作“自启动”或“后台活动”。',
+  'capture.alerts.keepRunningChip': '电池 → 6pm',
+  'capture.alerts.keepRunningOpen': '打开电池设置',
+  'capture.alerts.paused.title': '银行通知已暂停',
+  'capture.alerts.paused.body': '6pm 看不到你的通知了。重新开启通知使用权，付款就会再次自动记下。',
+  'capture.alerts.paused.action': '重新开启',
 };

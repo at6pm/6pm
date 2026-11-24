@@ -110,4 +110,14 @@ export const esCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.ios.notificationSubtitle': 'Notificación › Subtítulo',
   'capture.walk.ios.notify': 'Notificar',
   'capture.walk.ios.cancel': 'Cancelar',
+
+  // Android: letting 6pm keep running, and bank alerts paused while access is off.
+  'capture.alerts.keepRunning':
+    'Deja que 6pm siga funcionando para que los avisos lleguen aunque el móvil esté en reposo. Algunos móviles lo llaman Inicio automático o Actividad en segundo plano.',
+  'capture.alerts.keepRunningChip': 'Batería → 6pm',
+  'capture.alerts.keepRunningOpen': 'Abrir ajustes de batería',
+  'capture.alerts.paused.title': 'Los avisos del banco están en pausa',
+  'capture.alerts.paused.body':
+    '6pm no puede ver tus notificaciones. Vuelve a darle acceso y tus pagos se anotarán solos otra vez.',
+  'capture.alerts.paused.action': 'Volver a dar acceso',
 };

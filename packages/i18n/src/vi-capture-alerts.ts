@@ -116,4 +116,14 @@ export const viCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.ios.notificationSubtitle': 'Thông báo › Tiêu đề phụ',
   'capture.walk.ios.notify': 'Thông báo',
   'capture.walk.ios.cancel': 'Hủy',
+
+  // Android: letting 6pm keep running, and bank alerts paused while access is off.
+  'capture.alerts.keepRunning':
+    'Cho 6pm chạy nền để thông báo vẫn về khi điện thoại ngủ. Một số máy gọi mục này là Tự khởi động hoặc Hoạt động nền.',
+  'capture.alerts.keepRunningChip': 'Pin → 6pm',
+  'capture.alerts.keepRunningOpen': 'Mở cài đặt pin',
+  'capture.alerts.paused.title': 'Thông báo ngân hàng đang tạm dừng',
+  'capture.alerts.paused.body':
+    '6pm không xem được thông báo của bạn. Bật lại quyền truy cập để các khoản tự ghi như trước.',
+  'capture.alerts.paused.action': 'Bật lại quyền truy cập',
 };

@@ -110,4 +110,14 @@ export const idCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.ios.notificationSubtitle': 'Notifikasi › Subjudul',
   'capture.walk.ios.notify': 'Beri Tahu',
   'capture.walk.ios.cancel': 'Batal',
+
+  // Android: letting 6pm keep running, and bank alerts paused while access is off.
+  'capture.alerts.keepRunning':
+    'Biarkan 6pm tetap berjalan, supaya notifikasi tetap masuk saat ponselmu tidur. Di beberapa ponsel namanya Mulai otomatis atau Aktivitas latar belakang.',
+  'capture.alerts.keepRunningChip': 'Baterai → 6pm',
+  'capture.alerts.keepRunningOpen': 'Buka pengaturan baterai',
+  'capture.alerts.paused.title': 'Notifikasi bank sedang terjeda',
+  'capture.alerts.paused.body':
+    '6pm tidak bisa melihat notifikasimu. Nyalakan lagi aksesnya supaya pembayaranmu tercatat sendiri lagi.',
+  'capture.alerts.paused.action': 'Nyalakan lagi akses',
 };

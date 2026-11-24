@@ -64,6 +64,9 @@ class SurfacesModule : Module() {
 
     AsyncFunction("readStatus") { name: String -> SurfaceFiles.readStatus(context, name) }
 
+    // Where 6pm is let keep running in the background (battery, autostart), so alerts keep coming.
+    AsyncFunction("openKeepRunning") { -> openKeepRunning() }
+
     Function("activitiesEnabled") { false }
 
     AsyncFunction("listActivities") { -> emptyList<Map<String, String>>() }
@@ -105,6 +108,12 @@ class SurfacesModule : Module() {
       Pins.addTile(context, kind) { result -> promise.resolve(result) }
     }
   }
+
+  /** Opens where 6pm is let keep running (see `KeepRunning`); says which page opened, or -1. */
+  private fun openKeepRunning(): Int =
+    KeepRunning.open(KeepRunning.pages(Build.MANUFACTURER ?: "")) { page ->
+      open(KeepRunning.intentOf(page, context.packageName))
+    }
 
   private fun openAlertAccess() {
     val component = AlertListener.component(context).flattenToString()
