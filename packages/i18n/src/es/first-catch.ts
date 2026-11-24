@@ -102,6 +102,8 @@ export const esFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
     'No ha llegado nada. En Atajos, mira si la automatización está activada y si 6pm está entre sus apps.',
   'testAlert.blocked':
     '6pm no tiene permiso para enviar notificaciones, así que la prueba no puede salir.',
+  'testAlert.failed': 'No se pudo enviar la prueba. Inténtalo otra vez.',
+  'testAlert.retry': 'Enviar de nuevo',
   'testAlert.notice.title': '6pm · aviso de prueba',
   'testAlert.notice.body': 'Prueba: pago de {amount}. No es un pago real.',
   'testAlert.channel': 'Avisos de prueba',

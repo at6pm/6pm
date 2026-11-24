@@ -17,7 +17,9 @@ const NOTHING: ShortcutAlertResult = { item: null, last: null };
  * - 6pm's own is taken only when it is the test alert the app is waiting for (`ownTestToken`),
  *   and then leaves an inbox item of the kind `test`, which is never money. Every other
  *   notification of 6pm's (the close reminder, "Caught your first one…") leaves nothing;
- * - an automation that names no app is read as before: there is no sender to check;
+ * - an automation that names no app is read as before, there being no sender to check, except
+ *   what 6pm said itself: its test alert (as a test when it carries the awaited token, else
+ *   nothing) and its first-catch notice;
  * - any other app's leaves nothing, whatever its words say: a chat message that names a bank and
  *   an amount is not read, not kept for a second reading, and not noted as the last alert.
  */
@@ -31,11 +33,37 @@ export function buildShortcutAlert(
 ): ShortcutAlertResult {
   const sender = alertSenderOf(input.app, own);
   if (sender === 'other') return NOTHING;
-  if (sender === 'own') {
+  if (sender === 'own' || sender === 'unnamed') {
+    // With no app named, 6pm's own test is still known by its token, never read as money.
     const token = ownTestToken(input, pending, now);
-    return token === null ? NOTHING : { ...NOTHING, test: buildTestAlert(token, now, id).item };
+    if (token !== null) return { ...NOTHING, test: buildTestAlert(token, now, id).item };
+    if (sender === 'own' || saidBy6pm(input, context)) return NOTHING;
   }
   return buildBankAlert(input, context, now, id);
+}
+
+/**
+ * Whether an alert passed with no app is one 6pm said itself: a test alert (every language's
+ * title starts with "6pm ·"), stale or never awaited, or the first catch it told ("Caught your
+ * first one: 50.000₫ · MB Bank…"), from the words the app left in the context.
+ */
+function saidBy6pm(input: BankAlertInput, context: SurfaceContext | null): boolean {
+  if (OWN_TITLE.test(input.title ?? '')) return true;
+  const body = (input.body ?? '').trim();
+  const strings = context?.strings ?? {};
+  return [strings['firstCatch'], strings['firstCatchNoName']].some(
+    (template) => template !== undefined && fitsTemplate(body, template),
+  );
+}
+
+const OWN_TITLE = /^\s*6pm\s*·/iu;
+
+/** Whether some text is a template's words with anything in place of `{amount}` and `{name}`. */
+function fitsTemplate(text: string, template: string): boolean {
+  const parts = template.trim().split(/\{amount\}|\{name\}/u);
+  if (parts.join('').trim() === '') return false;
+  const escaped = parts.map((part) => part.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&'));
+  return new RegExp(`^${escaped.join('.*')}$`, 'su').test(text);
 }
 
 /**

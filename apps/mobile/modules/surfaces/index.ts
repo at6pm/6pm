@@ -50,14 +50,15 @@ interface SurfacesNative {
    * Posts the test alert the person sends to themselves, in the app's words. On Android the
    * listener reads it as it reads a bank's, and knows it by `channel`. On the iPhone the Shortcuts
    * automation hands it to "Catch a bank alert", which knows it by `token`: `body` must print the
-   * token, and `channel` is not used. `off` when 6pm may not post notifications.
+   * token, and `channel` is not used. `off` when 6pm may not post notifications; `failed` (the
+   * iPhone) when it may and the test still could not be written or posted.
    */
   postTestAlert?(
     token: string,
     title: string,
     body: string,
     channel: string,
-  ): Promise<'posted' | 'off'>;
+  ): Promise<'posted' | 'off' | 'failed'>;
   /** Android: whether the launcher can pin a widget from inside the app. */
   canPinWidgets?(): boolean;
   /** Android: shows the launcher's sheet to add a widget; false when it would not. */

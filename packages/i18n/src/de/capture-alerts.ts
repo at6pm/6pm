@@ -56,6 +56,8 @@ export const deCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l2Title': 'Die Automation einschalten',
   'capture.walk.alerts.l2Body':
     'Öffne ihn in Kurzbefehle und tippe beim Auslöser auf ›. Schalte „Automation“ ein und lass „Mitteilen“ aus, damit Mitteilungen still erwischt werden. Beim Zurückgehen wird sie gesichert.',
+  'capture.walk.alerts.l2ChooseBody':
+    'Öffne ihn in Kurzbefehle, tippe oben auf „App“ und wähl deine Bank, dann + für jede weitere Bank und E-Wallet.',
   'capture.walk.alerts.l3Title': 'Eine Testmitteilung senden',
   'capture.walk.alerts.l3Body':
     'Geh zurück zu 6pm und tippe auf „Testmitteilung senden“. 6pm schickt sich selbst eine und sagt dir, wenn sie ankommt.',

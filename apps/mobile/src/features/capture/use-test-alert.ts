@@ -97,9 +97,11 @@ export function useTestAlert(): TestAlert {
           throughShortcut ? testAlertBodyWithCode(words, token) : words,
           t('testAlert.channel'),
         )
-        .catch(() => 'off' as const);
-      // Allowed by the phone and still not posted: this channel is off, which only settings change.
+        .catch(() => 'failed' as const);
+      // Allowed by the phone and still not posted: this channel is off, which only settings
+      // change, or the phone could not take it this time, which another try may mend.
       if (posted === 'posted') dispatch({ type: 'sent', token });
+      else if (posted === 'failed') dispatch({ type: 'failed' });
       else dispatch({ type: 'blocked', canAsk: false });
     })().finally(() => {
       sending.current = false;

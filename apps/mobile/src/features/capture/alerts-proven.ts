@@ -12,26 +12,47 @@ import type { SqlDatabase } from '../../data/table';
  */
 const watchers = new Set<() => void>();
 
+/**
+ * What the phone keeps, once read since the app opened: every screen that asks after that starts
+ * from it, so none shows "not set up" for a frame before turning to "set up".
+ */
+let known: boolean | null = null;
+
+function tellAll(): void {
+  for (const tell of [...watchers]) tell();
+}
+
+/** Reads the kept sign into memory, once, as early as the app can: the inbox import calls it. */
+export function primeAlertsProven(db: SqlDatabase): Promise<boolean> {
+  if (known !== null) return Promise.resolve(known);
+  return readAlertsProven(db).then((at) => {
+    const proven = at !== null;
+    if (known !== proven) {
+      known = proven;
+      tellAll();
+    }
+    return proven;
+  });
+}
+
 /** A test alert came in through the Shortcut: kept, and every reader told. */
 export async function noteAlertsProven(db: SqlDatabase, at: string): Promise<void> {
   await keepAlertsProven(db, at);
-  for (const tell of [...watchers]) tell();
+  known = true;
+  tellAll();
 }
 
 export function useAlertsProven(): boolean {
   const store = useMoneyStore();
-  const [proven, setProven] = useState(false);
+  const [proven, setProven] = useState(known ?? false);
   useEffect(() => {
     let live = true;
     const load = () => {
-      readAlertsProven(store.db)
-        .then((at) => {
-          if (live) setProven(at !== null);
-        })
-        .catch(() => undefined);
+      if (live && known !== null) setProven(known);
     };
-    load();
     watchers.add(load);
+    load();
+    primeAlertsProven(store.db).catch(() => undefined);
     return () => {
       live = false;
       watchers.delete(load);

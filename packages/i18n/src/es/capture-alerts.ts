@@ -56,6 +56,8 @@ export const esCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l2Title': 'Activa la automatización',
   'capture.walk.alerts.l2Body':
     'Ábrelo en Atajos y toca › en el activador. Activa Automatización y deja Notificar desactivado, para que los avisos se pillen en silencio. Al volver atrás se guarda.',
+  'capture.walk.alerts.l2ChooseBody':
+    'Ábrelo en Atajos, toca App arriba y elige tu banco; luego toca + para cada uno de tus otros bancos y monederos.',
   'capture.walk.alerts.l3Title': 'Envía un aviso de prueba',
   'capture.walk.alerts.l3Body':
     'Vuelve a 6pm y toca “Enviar un aviso de prueba”. 6pm se manda uno y te avisa cuando llegue.',

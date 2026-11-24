@@ -56,6 +56,8 @@ export const koCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l2Title': '자동화 켜기',
   'capture.walk.alerts.l2Body':
     '단축어에서 열고 트리거의 ›를 탭하세요. 자동화를 켜고 실행할 때 알림은 꺼 두면 알림을 조용히 잡아요. 돌아가면 저장돼요.',
+  'capture.walk.alerts.l2ChooseBody':
+    '단축어에서 열고 맨 위의 앱을 탭해 은행을 고른 다음, 다른 은행·페이 앱마다 +를 탭하세요.',
   'capture.walk.alerts.l3Title': '알림 테스트하기',
   'capture.walk.alerts.l3Body':
     '6pm으로 돌아와 “알림 테스트하기”를 탭하세요. 6pm이 스스로에게 테스트 알림을 보내고, 도착하면 알려 줘요.',

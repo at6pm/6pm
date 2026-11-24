@@ -2,7 +2,7 @@ import { View } from 'react-native';
 
 import { useI18n } from '../../i18n/i18n';
 import { ForwardingCheckCard } from '../receipt-email/forwarding-check-card';
-import { BANK_ALERT_SHORTCUT_URL } from './bank-alert-shortcut';
+import { BANK_ALERT_SHORTCUT_READY, BANK_ALERT_SHORTCUT_URL } from './bank-alert-shortcut';
 import type { GuideContent } from './guide-content';
 import { MistakesCard, OtherMailCard } from './guide-notes';
 import { GuideSection, GuideSteps, GuideTip, type LiveChip } from './guide-sections';
@@ -10,6 +10,9 @@ import { GuideTrouble } from './guide-trouble';
 import { isWalked, useWalkthroughSteps, type WalkedSource } from './guide-walkthroughs';
 import type { CaptureSource } from './source-status';
 import { Walkthrough } from './walkthrough/walkthrough';
+
+/** The template, with its banks and 6pm on the trigger, is what the guide walks through. */
+const linked = BANK_ALERT_SHORTCUT_URL !== null && BANK_ALERT_SHORTCUT_READY;
 
 /**
  * "How it works": the drawn step-by-step walkthrough for the ways set up in another app, the
@@ -81,14 +84,12 @@ function Walked({
 
       {source === 'alerts' ? (
         <>
-          {/* The published shortcut's trigger has the likely banks chosen; any other is added. */}
-          {BANK_ALERT_SHORTCUT_URL !== null ? (
-            <GuideTip text={t('capture.walk.alerts.addBank')} />
-          ) : null}
+          {/* The template's trigger has the likely banks chosen; any other is added. */}
+          {linked ? <GuideTip text={t('capture.walk.alerts.addBank')} /> : null}
           <GuideTrouble>
             <MistakesCard
               items={
-                BANK_ALERT_SHORTCUT_URL !== null
+                linked
                   ? [
                       'capture.walk.alerts.linkedMistake1',
                       'capture.walk.alerts.mistake2',

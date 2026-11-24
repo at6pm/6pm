@@ -18,7 +18,7 @@ import {
 import { useMoney, useMoneyStore } from '../../data/money-provider';
 import { useAlertAccess } from '../capture-guide/alert-access';
 import { useLastAlert } from '../capture-guide/last-alert';
-import { useAlertsProven } from '../capture/alerts-proven';
+import { primeAlertsProven, useAlertsProven } from '../capture/alerts-proven';
 import { nativeReach } from '../surfaces/native-reach';
 import { reminderWaysOf, selfRunningSetUp, type ReminderWay } from './first-catch-ways';
 
@@ -103,7 +103,8 @@ export function useFirstCatchCard(): FirstCatchCard {
           walked: kept?.ways ?? [],
           alertAccess,
           alertRead,
-          alertProven,
+          // Read here too, so the card is drawn once with it, never "not set up" for a moment.
+          alertProven: alertProven || (await primeAlertsProven(store.db).catch(() => false)),
         }),
         away: await readFirstCatchAway(store.db),
       });

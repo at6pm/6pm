@@ -1,5 +1,6 @@
 import AppIntents
 import Foundation
+import UserNotifications
 
 /// Catches a bank or wallet alert: a Shortcuts automation on the user's banking apps' notifications
 /// hands it the notification's app, title, subtitle, body and date. The domain bundle looks at the
@@ -34,9 +35,10 @@ struct CatchBankAlertIntent: AppIntent {
   func perform() async throws -> some IntentResult {
     // An alert that cannot be read is let go: an automation that fails shows the user an error.
     let now = Date()
+    let sender = await CaughtAlert.senderOf(app: app, title: alertTitle, body: body)
     guard
       let read = try? CaughtAlert.read(
-        app: app, title: alertTitle, subtitle: subtitle, body: body, date: date, now: now)
+        app: sender, title: alertTitle, subtitle: subtitle, body: body, date: date, now: now)
     else { return .result() }
     // Read at all, the automation still runs: no "Nothing from your bank in 3 days".
     if read.last != nil { CaptureNotices.wayRan("alert") }
@@ -65,6 +67,18 @@ enum CaughtAlert {
     let plain = keys.compactMap { app?.infoDictionary?[$0] as? String }
     return Array(Set(shown + plain + [GroupFiles.appBundleId])).filter { !$0.isEmpty }
   }()
+
+  /// The app an alert came from. With none named (an automation built by hand with App left
+  /// empty), a notification 6pm itself is showing (a reminder, a test alert, the first catch) is
+  /// named as 6pm's, so the bundle never reads it as a bank's.
+  static func senderOf(app: String?, title: String?, body: String) async -> String? {
+    guard (app ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return app }
+    let shown = await UNUserNotificationCenter.current().deliveredNotifications()
+    let ours = shown.contains {
+      $0.request.content.body == body && $0.request.content.title == (title ?? "")
+    }
+    return ours ? GroupFiles.appBundleId : app
+  }
 
   /// What was caught (nil for an alert that moved no money) and the last alert as noted (nil for
   /// an alert that was not a bank's or wallet's: nothing of that one is written anywhere).

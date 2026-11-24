@@ -56,7 +56,8 @@ const SLIP_AFTER_MS = 180;
  * no amount on it, since it is not a payment. Nothing after ten seconds: what to check, and the
  * way there (Android's Notification access; on the iPhone the Shortcuts app, where the automation
  * may be off or 6pm may not be among its apps). 6pm not allowed to post notifications: that, and
- * Turn on. Nothing before one is sent.
+ * Turn on. Allowed, and the test still could not be posted: that, and Send again. Nothing before
+ * one is sent.
  */
 export function TestAlertProof({
   inks,
@@ -142,7 +143,8 @@ export function TestAlertProof({
     );
   }
   const missing = state.kind === 'missing';
-  const icon: SymbolName = missing ? 'notifications' : 'notifications_off';
+  const failed = state.kind === 'failed';
+  const icon: SymbolName = missing || failed ? 'notifications' : 'notifications_off';
   // What a missing test alert points at: Android's access switch, or the iPhone's automation.
   const fix = nativeReach.alertListener
     ? ({
@@ -186,7 +188,7 @@ export function TestAlertProof({
           accessibilityLiveRegion="polite"
           style={{ ...body(15, 550), lineHeight: 21, color: inks.ink, flex: 1 }}
         >
-          {t(missing ? fix.words : 'testAlert.blocked')}
+          {t(missing ? fix.words : failed ? 'testAlert.failed' : 'testAlert.blocked')}
         </Text>
       </View>
       <PressScale
@@ -195,6 +197,7 @@ export function TestAlertProof({
         onPress={() => {
           haptics.tap();
           if (missing) openTestAlertFix();
+          else if (failed) test.send();
           else test.allow();
         }}
         style={{
@@ -207,9 +210,13 @@ export function TestAlertProof({
           gap: 6,
         }}
       >
-        <Symbol name={missing ? fix.icon : 'notifications'} size={18} color={inks.btnFg} />
+        <Symbol
+          name={missing ? fix.icon : failed ? 'autorenew' : 'notifications'}
+          size={18}
+          color={inks.btnFg}
+        />
         <Text numberOfLines={1} style={{ ...body(14.5, 650), color: inks.btnFg }}>
-          {t(missing ? fix.label : 'notify.settings.turnOn')}
+          {t(missing ? fix.label : failed ? 'testAlert.retry' : 'notify.settings.turnOn')}
         </Text>
       </PressScale>
     </Animated.View>

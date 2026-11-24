@@ -175,6 +175,43 @@ describe('an alert from a bank or wallet 6pm knows, or from an automation that n
   });
 });
 
+describe('6pm’s own notifications passed by an automation that names no app', () => {
+  it('leave a test item for the test alert the app is waiting for, never a spend', () => {
+    expect(read('', TEST_WORDS, SENT)).toEqual({
+      item: null,
+      last: null,
+      test: { v: 1, id: ID, kind: 'test', at: NOW.toISOString(), token: TOKEN },
+    });
+  });
+
+  it('leave nothing for a test alert no longer awaited', () => {
+    expect(read('', TEST_WORDS, null)).toEqual({ item: null, last: null });
+    const inVietnamese = { ...TEST_WORDS, title: '6pm · thông báo thử' };
+    expect(read('', inVietnamese, { ...SENT, token: 'ZZZZ9999' })).toEqual({
+      item: null,
+      last: null,
+    });
+  });
+
+  it('leave nothing for the first catch 6pm told, in the words the app left', () => {
+    const told = {
+      ...context,
+      strings: {
+        firstCatch: 'Caught your first one: {amount} · {name}. That’s all it takes.',
+        firstCatchNoName: 'Caught your first one. That’s all it takes.',
+      },
+    };
+    const said = (body: string) => buildShortcutAlert({ app: '', body }, OWN, null, told, NOW, ID);
+    expect(said('Caught your first one: 50.000₫ · MB Bank. That’s all it takes.')).toEqual({
+      item: null,
+      last: null,
+    });
+    expect(said('Caught your first one. That’s all it takes.')).toEqual({ item: null, last: null });
+    // A bank's alert is still read: only 6pm's own words are passed over.
+    expect(said(`MB Bank: ${PAID}`).item).toMatchObject({ kind: 'spend', amount: 50_000 });
+  });
+});
+
 describe('6pm’s own notifications', () => {
   it('leave a test item, and only that, for the test alert the app is waiting for', () => {
     const result = read('6pm', TEST_WORDS, SENT);
@@ -293,6 +330,14 @@ describe('the apps on the published shortcut’s trigger', () => {
       expect(bankOfApp(app.name)?.id, app.name).toBe(app.bank);
       expect(alertSenderOf(app.name, OWN), app.name).toBe('bank');
     }
+  });
+
+  it('are known to the action by their bundle id as well, should the trigger pass that', () => {
+    for (const app of apps.filter((entry) => entry.own !== true)) {
+      expect(bankOfApp(app.bundle)?.id, app.bundle).toBe(app.bank);
+      expect(alertSenderOf(app.bundle, OWN), app.bundle).toBe('bank');
+    }
+    expect(alertSenderOf('ai.sixpm.app', OWN)).toBe('own');
   });
 
   it('never carry a name without a team id, which iOS answers with another app', () => {

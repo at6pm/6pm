@@ -98,6 +98,8 @@ export const idFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
     'Belum ada yang masuk. Di Pintasan, cek apakah otomatisasinya menyala dan 6pm ada di daftar app-nya.',
   'testAlert.blocked':
     '6pm belum diizinkan mengirim notifikasi, jadi uji cobanya tidak bisa dikirim.',
+  'testAlert.failed': 'Tes belum bisa dikirim. Coba sekali lagi.',
+  'testAlert.retry': 'Kirim lagi',
   'testAlert.notice.title': '6pm · notifikasi uji coba',
   'testAlert.notice.body': 'Uji coba: pembayaran {amount}. Ini bukan pembayaran sungguhan.',
   'testAlert.channel': 'Notifikasi uji coba',

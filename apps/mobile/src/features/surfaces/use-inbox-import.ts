@@ -18,7 +18,7 @@ import { useApi } from '../api/native-api';
 import { createEnrichShared } from '../capture/enrich-shared';
 import { createLateAlertReads } from '../capture/late-alert-read';
 import { createReadAlerts } from '../capture/read-alert';
-import { noteAlertsProven } from '../capture/alerts-proven';
+import { noteAlertsProven, primeAlertsProven } from '../capture/alerts-proven';
 import { noteTestAlertArrived } from '../capture/test-alert';
 import { priceWaitingNow } from '../travel/price-waiting';
 import { setInboxRunner } from './inbox-runner';
@@ -47,6 +47,11 @@ export function useInboxImport() {
   const home = useHomeCurrency();
   const { language } = useI18n();
   const running = useRef<Promise<unknown>>(Promise.resolve());
+
+  // Whether a test alert ever came through the Shortcut, read before any screen asks.
+  useEffect(() => {
+    primeAlertsProven(store.db).catch(() => undefined);
+  }, [store]);
 
   useEffect(() => {
     const native = surfaces;

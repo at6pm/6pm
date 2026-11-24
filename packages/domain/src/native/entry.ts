@@ -11,6 +11,7 @@ import { pendingTestAlertSchema, type PendingTestAlert } from '../contracts/test
 import { receiptReadingOrder } from '../capture/bank-receipt';
 import { currencyAt } from '../capture/photo-place';
 import { readReceipt } from '../capture/read-receipt';
+import { alertSenderOf } from '../capture/alert-sender';
 import { alertPackages } from '../capture/bank-alert-senders';
 import { contextMoney } from './context-money';
 import { buildBankAlert } from './log-bank-alert';
@@ -311,7 +312,21 @@ export function logShortcutAlert(
       ),
     );
   } catch {
-    return JSON.stringify(nothing);
+    // A bank's alert the reader could not read still says the automation ran, as
+    // `logBankAlert` does: noted as unread, so no "Nothing from your bank" follows.
+    const sender = alertSenderOf(text(app), ownNamesOf(ownJson));
+    if (sender !== 'bank' && sender !== 'unnamed') return JSON.stringify(nothing);
+    const unread: ShortcutAlertResult = {
+      item: null,
+      last: {
+        v: 1,
+        at: nowOf(nowIso).toISOString(),
+        bank: null,
+        amountText: '',
+        skipped: 'unread',
+      },
+    };
+    return JSON.stringify(unread);
   }
 }
 

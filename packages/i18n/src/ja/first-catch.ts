@@ -97,6 +97,8 @@ export const jaFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'testAlert.nothingShortcut':
     '何も届きませんでした。ショートカットで、オートメーションがオンになっているか、6pmがアプリのリストにあるか確認してください。',
   'testAlert.blocked': '6pmは通知を送る許可がないため、テストを送れません。',
+  'testAlert.failed': 'テストを送れませんでした。もう一度お試しください。',
+  'testAlert.retry': 'もう一度送る',
   'testAlert.notice.title': '6pm · テスト通知',
   'testAlert.notice.body': 'テスト：{amount}の支払い。実際の支払いではありません。',
   'testAlert.channel': 'テスト通知',

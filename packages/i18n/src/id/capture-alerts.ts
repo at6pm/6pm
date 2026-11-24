@@ -56,6 +56,8 @@ export const idCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l2Title': 'Nyalakan otomatisasinya',
   'capture.walk.alerts.l2Body':
     'Buka di Pintasan dan ketuk › di pemicu. Nyalakan Otomatisasi dan biarkan Beri Tahu mati, supaya notifikasi ditangkap diam-diam. Kembali berarti tersimpan.',
+  'capture.walk.alerts.l2ChooseBody':
+    'Buka di Pintasan, ketuk App di atas dan pilih bankmu, lalu + untuk setiap bank dan e-wallet lain.',
   'capture.walk.alerts.l3Title': 'Kirim notifikasi uji coba',
   'capture.walk.alerts.l3Body':
     'Kembali ke 6pm dan ketuk “Kirim notifikasi uji coba”. 6pm mengirim satu ke dirinya sendiri dan memberi tahu kamu saat notifikasinya masuk.',

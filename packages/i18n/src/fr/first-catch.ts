@@ -108,6 +108,8 @@ export const frFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
     'Rien n’est arrivé. Dans Raccourcis, vérifie que l’automatisation est activée et que 6pm fait partie de ses apps.',
   'testAlert.blocked':
     '6pm n’a pas le droit d’envoyer des notifications, donc le test ne peut pas partir.',
+  'testAlert.failed': 'Le test n’a pas pu partir. Réessaie.',
+  'testAlert.retry': 'Renvoyer',
   'testAlert.notice.title': '6pm · alerte de test',
   'testAlert.notice.body': 'Test : paiement de {amount}. Ce n’est pas un vrai paiement.',
   'testAlert.channel': 'Alertes de test',

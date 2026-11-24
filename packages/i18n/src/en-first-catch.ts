@@ -105,6 +105,8 @@ export const enFirstCatch = {
   'testAlert.nothingShortcut':
     'Nothing arrived. In Shortcuts, check that the automation is on and that 6pm is among its apps.',
   'testAlert.blocked': '6pm isn’t allowed to send notifications, so the test can’t go out.',
+  'testAlert.failed': 'The test couldn’t be sent. Try once more.',
+  'testAlert.retry': 'Send again',
   'testAlert.notice.title': '6pm · test alert',
   'testAlert.notice.body': 'Test: {amount} paid. This is not a real payment.',
   'testAlert.channel': 'Test alerts',

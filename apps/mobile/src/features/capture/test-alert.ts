@@ -27,11 +27,14 @@ export type TestAlertState =
    * 6pm may not post notifications, so no test went out. `canAsk` while the phone will still
    * show its own question; after that only the phone's settings can change it.
    */
-  | { readonly kind: 'blocked'; readonly canAsk: boolean };
+  | { readonly kind: 'blocked'; readonly canAsk: boolean }
+  /** 6pm may post notifications, and still the test could not be sent: another try may do. */
+  | { readonly kind: 'failed' };
 
 export type TestAlertEvent =
   | { readonly type: 'sent'; readonly token: string }
   | { readonly type: 'blocked'; readonly canAsk: boolean }
+  | { readonly type: 'failed' }
   /** 6pm may post notifications again: nothing stands in the way of sending one. */
   | { readonly type: 'allowed' }
   | { readonly type: 'arrived'; readonly token: string; readonly at: string }
@@ -50,6 +53,8 @@ export function testAlertStep(state: TestAlertState, event: TestAlertEvent): Tes
       return { kind: 'sent', token: event.token };
     case 'blocked':
       return state.kind === 'sent' ? state : { kind: 'blocked', canAsk: event.canAsk };
+    case 'failed':
+      return state.kind === 'sent' ? state : { kind: 'failed' };
     case 'allowed':
       return state.kind === 'blocked' ? TEST_ALERT_IDLE : state;
     case 'arrived':

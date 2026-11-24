@@ -60,6 +60,8 @@ export const enCaptureAlerts = {
   'capture.walk.alerts.l2Title': 'Turn the automation on',
   'capture.walk.alerts.l2Body':
     'Open it in Shortcuts and tap › on the trigger. Turn Automation on and leave Notify off, so alerts are caught quietly. Going back saves it.',
+  'capture.walk.alerts.l2ChooseBody':
+    'Open it in Shortcuts, tap App at the top and pick your bank, then + for each other bank and wallet.',
   'capture.walk.alerts.l3Title': 'Send a test alert',
   'capture.walk.alerts.l3Body':
     'Come back to 6pm and tap “Send a test alert”. 6pm sends itself one and tells you when it arrives.',

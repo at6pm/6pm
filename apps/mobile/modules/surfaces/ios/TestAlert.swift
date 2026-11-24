@@ -18,7 +18,8 @@ enum TestAlert {
   static let idPrefix = "test-alert:"
 
   /// Notes the token, then posts the notification with the app's words. `posted` when iOS took
-  /// it; `off` when 6pm may not show notifications, so there is nothing for the automation to see.
+  /// it; `off` when 6pm may not show notifications, so there is nothing for the automation to see;
+  /// `failed` when the note or the notification could not be written, which another try may mend.
   static func post(token: String, title: String, body: String) async -> String {
     let center = UNUserNotificationCenter.current()
     let settings = await center.notificationSettings()
@@ -33,7 +34,7 @@ enum TestAlert {
         to: GroupFiles.folder("surfaces").appendingPathComponent("\(surface).json"))
     } catch {
       // Without the note the action could not know the alert: say it was not sent.
-      return "off"
+      return "failed"
     }
     // One test alert at a time in Notification Centre: an earlier one is of no use to anyone.
     let earlier = await center.deliveredNotifications().map(\.request.identifier)
@@ -48,7 +49,7 @@ enum TestAlert {
         UNNotificationRequest(identifier: idPrefix + token, content: content, trigger: nil))
       return "posted"
     } catch {
-      return "off"
+      return "failed"
     }
   }
 }

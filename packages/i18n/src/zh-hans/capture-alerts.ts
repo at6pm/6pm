@@ -55,6 +55,8 @@ export const zhHansCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlert
   'capture.walk.alerts.l2Title': '开启自动化',
   'capture.walk.alerts.l2Body':
     '在“快捷指令”中打开它，轻点触发条件上的 ›。开启“自动化”，保持“通知”关闭，这样通知会被悄悄记下。返回即自动存储。',
+  'capture.walk.alerts.l2ChooseBody':
+    '在“快捷指令”中打开它，轻点顶部的“App”并选择你的银行，再轻点 + 逐个添加其他银行和电子钱包。',
   'capture.walk.alerts.l3Title': '发一条测试通知',
   'capture.walk.alerts.l3Body':
     '回到 6pm，轻点“发一条测试通知”。6pm 会给自己发一条，到达后告诉你。',

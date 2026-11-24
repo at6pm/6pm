@@ -59,6 +59,8 @@ export const viCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l2Title': 'Bật tự động hóa',
   'capture.walk.alerts.l2Body':
     'Mở nó trong Phím tắt và chạm › trên bộ kích hoạt. Bật Tự động hóa và để Thông báo tắt, để thông báo được bắt lặng lẽ. Quay lại là đã lưu.',
+  'capture.walk.alerts.l2ChooseBody':
+    'Mở nó trong Phím tắt, chạm Ứng dụng ở trên cùng và chọn ngân hàng, rồi chạm + cho từng ngân hàng và ví khác.',
   'capture.walk.alerts.l3Title': 'Gửi thử một thông báo',
   'capture.walk.alerts.l3Body':
     'Quay lại 6pm và chạm “Gửi thử một thông báo”. 6pm tự gửi cho mình một thông báo và báo bạn khi nó về.',

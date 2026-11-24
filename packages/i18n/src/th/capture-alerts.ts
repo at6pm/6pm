@@ -56,6 +56,8 @@ export const thCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l2Title': 'เปิดระบบอัตโนมัติ',
   'capture.walk.alerts.l2Body':
     'เปิดในแอปคำสั่งลัด แล้วแตะ › ที่ตัวเรียก เปิด ระบบอัตโนมัติ และปิด แจ้ง ไว้ เพื่อให้จับแจ้งเตือนได้เงียบๆ ย้อนกลับก็บันทึกแล้ว',
+  'capture.walk.alerts.l2ChooseBody':
+    'เปิดในแอปคำสั่งลัด แตะ แอป ด้านบนแล้วเลือกธนาคารของคุณ จากนั้นแตะ + ทีละธนาคารและอีวอลเล็ต',
   'capture.walk.alerts.l3Title': 'ส่งแจ้งเตือนทดสอบ',
   'capture.walk.alerts.l3Body':
     'กลับมาที่ 6pm แล้วแตะ “ส่งแจ้งเตือนทดสอบ” 6pm จะส่งแจ้งเตือนหาตัวเองหนึ่งรายการ แล้วบอกคุณเมื่อมาถึง',

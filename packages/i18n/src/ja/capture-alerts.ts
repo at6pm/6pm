@@ -56,6 +56,8 @@ export const jaCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l2Title': 'オートメーションをオンにする',
   'capture.walk.alerts.l2Body':
     'ショートカットでそれを開き、トリガーの「›」をタップします。「オートメーション」をオンにし、「通知」はオフのままにします。これで銀行の通知が静かにキャッチされます。戻ると保存されます。',
+  'capture.walk.alerts.l2ChooseBody':
+    'ショートカットでそれを開き、上の「App」をタップして銀行を選びます。ほかの銀行やウォレットも「＋」で追加します。',
   'capture.walk.alerts.l3Title': '通知をテストする',
   'capture.walk.alerts.l3Body':
     '6pmに戻って「通知をテスト」をタップします。6pmが自分あてにテスト通知を送り、届いたらお知らせします。',
