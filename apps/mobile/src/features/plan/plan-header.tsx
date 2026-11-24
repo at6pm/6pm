@@ -9,6 +9,7 @@ import { Symbol } from '../../ui/icons/symbol';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import { useHeaderMeasure, type HeaderShape } from '../home/header-measure';
 import { planRoutes } from './plan-routes';
 
@@ -58,12 +59,13 @@ export function PlanHeader({
         style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
       >
         <Text
+          {...HEADING_BREAKS}
           accessibilityRole="header"
           onLayout={measure.layout('title')}
           onTextLayout={measure.lines('title')}
           style={{ ...body(34, 700, -0.03), color: palette.ink }}
         >
-          {t('potsPlan.title')}
+          {headingWords(t('potsPlan.title'))}
         </Text>
         <PressScale
           onLayout={measure.layout('button')}

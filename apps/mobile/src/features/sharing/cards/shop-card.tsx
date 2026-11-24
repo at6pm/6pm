@@ -24,6 +24,7 @@ import { defineCard, type CardLayoutProps } from './card-definition';
 import { CardCompanion, CardGround, CardMark, kicker, ON_CARD, title } from './card-parts';
 import { CARD_WIDTH, cardHeight, type ArtBox } from './card-size';
 import { CardRow, CardRows, companionLine, RowAmount } from './income-parts';
+import { HEADING_BREAKS, headingWords } from '../../../ui/type/word-fit-text';
 
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -152,15 +153,18 @@ function ShopLayout({ data, format, amounts, inks, serious }: CardLayoutProps<Sh
           }).toLocaleUpperCase()}
         </Text>
         <Text
+          {...HEADING_BREAKS}
           {...ON_CARD}
           numberOfLines={story ? 3 : 2}
           adjustsFontSizeToFit
           minimumFontScale={0.6}
           style={title(inks, inks.titleSize, 0.98)}
         >
-          {card.soldOut > 0
-            ? t('shareCards.shop.titleSoldOut', { open, count: card.soldOut })
-            : t('shareCards.shop.titleSales', { open, count: card.transfers })}
+          {headingWords(
+            card.soldOut > 0
+              ? t('shareCards.shop.titleSoldOut', { open, count: card.soldOut })
+              : t('shareCards.shop.titleSales', { open, count: card.transfers }),
+          )}
         </Text>
         <View style={{ paddingTop: 8, paddingBottom: 2 }}>
           <CardArt boxes={bars} width={barsW} height={barsH} />

@@ -6,6 +6,7 @@ import { haptics } from '../../ui/haptics';
 import { Symbol } from '../../ui/icons/symbol';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { body, display, leading } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import { MAX_CREAM, MAX_FONT, MAX_GOLD } from './max-colours';
 
 /**
@@ -49,10 +50,11 @@ export function MaxMakers({ onSource }: { readonly onSource: () => void }) {
           {t('max.makers.kicker')}
         </Text>
         <Text
+          {...HEADING_BREAKS}
           accessibilityRole="header"
           style={{ ...leading(display(22, 600, -0.015, MAX_FONT), 24.2), color: MAX_CREAM }}
         >
-          {t('max.makers.title')}
+          {headingWords(t('max.makers.title'))}
         </Text>
       </View>
       <Text style={{ ...body(13.5), lineHeight: 19.6, color: 'rgba(246,239,230,.8)' }}>

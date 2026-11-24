@@ -10,7 +10,7 @@ import { Symbol } from '../../ui/icons/symbol';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading, mono, tabular } from '../../ui/type/fonts';
-import { WordFitText } from '../../ui/type/word-fit-text';
+import { HEADING_BREAKS, headingWords, WordFitText } from '../../ui/type/word-fit-text';
 
 /** The bubble pops with the design's springy `cubic-bezier(.2,1.6,.4,1)`. */
 const pop = ZoomIn.springify().damping(9).stiffness(220);
@@ -55,10 +55,11 @@ export function SortedStep({
         <Symbol name="check" size={56} weight={600} color={palette.accentFg} />
       </Animated.View>
       <Animated.Text
+        {...HEADING_BREAKS}
         entering={FadeInDown.delay(150).duration(400)}
         style={{ ...display(42, 500, -0.01), color: palette.ink, paddingTop: 8 }}
       >
-        {title}
+        {headingWords(title)}
       </Animated.Text>
       <Animated.Text
         entering={FadeInDown.delay(250).duration(400)}

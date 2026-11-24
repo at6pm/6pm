@@ -12,7 +12,7 @@ export const frClose: { readonly [Key in keyof typeof enClose]: Entry } = {
     one: '{count} dépense repérée aujourd’hui',
     other: '{count} dépenses repérées aujourd’hui',
   },
-  'close.hint': 'Droite pour garder · gauche pour modifier · bas si pas à toi',
+  'close.hint': 'Droite, garde · gauche, modifie · bas, pas à toi',
   'close.undoKept': 'Gardé : {name}',
   'close.undoEdited': 'Modifié : {name}',
   'close.undoSkipped': 'Pas à moi : {name}',

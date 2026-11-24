@@ -26,7 +26,7 @@ import { PaperEdge } from '../../ui/paper-edge';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading, mono } from '../../ui/type/fonts';
-import { WordFitText } from '../../ui/type/word-fit-text';
+import { HEADING_BREAKS, headingWords, WordFitText } from '../../ui/type/word-fit-text';
 import { ShareChip } from '../sharing/share-chip';
 import { Avatar, PaidStamp, Slip } from './owed-parts';
 import { stampIn } from './owed-motion';
@@ -424,18 +424,18 @@ export function MatchByHand({
               backgroundColor: palette.bubbleBg,
             }}
           >
-            <Text style={{ ...display(16), color: palette.bubbleFg }}>
-              {t('request.hand.line')}
+            <Text {...HEADING_BREAKS} style={{ ...display(16), color: palette.bubbleFg }}>
+              {headingWords(t('request.hand.line'))}
             </Text>
           </View>
         </View>
       ) : null}
       <Receipt spend={spend} code={null} />
-      <Text style={{ ...leading(display(30, 500, -0.01), 33), color: palette.ink }}>
+      <WordFitText style={{ ...leading(display(30, 500, -0.01), 33), color: palette.ink }}>
         {from
           ? t('request.hand.title', { amount, name: from })
           : t('request.hand.titleNoName', { amount })}
-      </Text>
+      </WordFitText>
       <View style={{ gap: 10 }}>
         {candidates.length === 0 ? (
           <Animated.Text

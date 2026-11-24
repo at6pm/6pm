@@ -10,6 +10,7 @@ import type { MoneyStore } from '../../../data/money-store';
 import { useMoney } from '../../../data/money-provider';
 import { useI18n } from '../../../i18n/i18n';
 import { display, leading } from '../../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../../ui/type/word-fit-text';
 import { useDiaryDates } from '../../diary/diary-dates';
 import { defineCard, type CardLayoutProps } from './card-definition';
 import { CardMark, glowStyle, kicker, ON_CARD, title } from './card-parts';
@@ -211,8 +212,13 @@ function StreakLayout({ data, format, inks, still = false }: CardLayoutProps<Str
           </View>
         </View>
         <View style={{ paddingTop: 20 }}>
-          <Text {...ON_CARD} numberOfLines={2} style={title(inks, 20, 1.15, inks.lineWeight)}>
-            {line}
+          <Text
+            {...HEADING_BREAKS}
+            {...ON_CARD}
+            numberOfLines={2}
+            style={title(inks, 20, 1.15, inks.lineWeight)}
+          >
+            {headingWords(line)}
           </Text>
         </View>
         <View style={{ flex: 1 }} />

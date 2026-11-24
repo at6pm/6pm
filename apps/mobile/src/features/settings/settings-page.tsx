@@ -1,16 +1,13 @@
 import { useRouter } from 'expo-router';
 import type { ReactNode } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView } from 'react-native';
 import Animated, { Easing, Keyframe } from 'react-native-reanimated';
 
 import { curves } from '@6pm/theme';
 
 import { useI18n } from '../../i18n/i18n';
-import { Symbol } from '../../ui/icons/symbol';
+import { BackSheetHeader } from '../../ui/navigation/back-sheet-header';
 import { SheetFrame } from '../../ui/navigation/sheet-frame';
-import { PressScale } from '../../ui/primitives/press-scale';
-import { useTheme } from '../../ui/theme/theme';
-import { body } from '../../ui/type/fonts';
 
 /** The prototype's `screenIn`: up 12 pt from 98.5 %, over 0.35 s on the entrance curve. */
 const screenIn = new Keyframe({
@@ -64,55 +61,14 @@ export function SettingsPage({
 
 /** The grabber, "‹ Settings", the page's name, and Done. */
 export function SettingsPageTop({ title }: { readonly title: string }) {
-  const { palette } = useTheme();
   const { t } = useI18n();
   const router = useRouter();
   return (
-    <View style={{ paddingTop: 8, paddingHorizontal: 14, paddingBottom: 6, gap: 6 }}>
-      <View
-        style={{
-          alignSelf: 'center',
-          width: 36,
-          height: 5,
-          borderRadius: 9,
-          backgroundColor: palette.inkSoft,
-          opacity: 0.35,
-        }}
-      />
-      <View style={{ minHeight: 44, alignItems: 'center', justifyContent: 'center' }}>
-        <Text
-          accessibilityRole="header"
-          numberOfLines={1}
-          adjustsFontSizeToFit
-          minimumFontScale={0.8}
-          style={{ ...body(17, 650), color: palette.ink, maxWidth: '52%' }}
-        >
-          {title}
-        </Text>
-        <PressScale
-          accessibilityRole="button"
-          onPress={() => router.back()}
-          hitSlop={8}
-          style={{
-            position: 'absolute',
-            left: 0,
-            paddingVertical: 8,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}
-        >
-          <Symbol name="chevron_left" size={26} color={palette.ink} style={{ marginLeft: -4 }} />
-          <Text style={{ ...body(17, 500), color: palette.ink }}>{t('capture.guide.back')}</Text>
-        </PressScale>
-        <PressScale
-          accessibilityRole="button"
-          onPress={() => router.dismissTo('/')}
-          hitSlop={8}
-          style={{ position: 'absolute', right: 0, paddingVertical: 8, paddingHorizontal: 4 }}
-        >
-          <Text style={{ ...body(17, 650), color: palette.ink }}>{t('common.done')}</Text>
-        </PressScale>
-      </View>
-    </View>
+    <BackSheetHeader
+      title={title}
+      backLabel={t('capture.guide.back')}
+      onBack={() => router.back()}
+      onDone={() => router.dismissTo('/')}
+    />
   );
 }

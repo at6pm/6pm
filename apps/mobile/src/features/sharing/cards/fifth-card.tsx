@@ -9,6 +9,7 @@ import { useMoney } from '../../../data/money-provider';
 import { useI18n } from '../../../i18n/i18n';
 import { useMoneyFormat } from '../../../money/use-money-format';
 import { mono } from '../../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../../ui/type/word-fit-text';
 import { useDiaryDates } from '../../diary/diary-dates';
 import { defineCard, type CardLayoutProps } from './card-definition';
 import { CardCompanion, CardGround, CardMark, kicker, ON_CARD, title } from './card-parts';
@@ -137,15 +138,18 @@ function FifthLayout({
           ).toLocaleUpperCase()}
         </Text>
         <Text
+          {...HEADING_BREAKS}
           {...ON_CARD}
           numberOfLines={story ? 3 : 2}
           adjustsFontSizeToFit
           minimumFontScale={0.6}
           style={title(inks, inks.titleSize, 0.98)}
         >
-          {weekly
-            ? t('shareCards.fifth.titleWeekly', { weekday: data.weekday })
-            : t('shareCards.fifth.titleFortnight')}
+          {headingWords(
+            weekly
+              ? t('shareCards.fifth.titleWeekly', { weekday: data.weekday })
+              : t('shareCards.fifth.titleFortnight'),
+          )}
         </Text>
         <View style={{ paddingTop: 8, paddingHorizontal: 2, paddingBottom: 2, gap: 6 }}>
           <ArtInTurn

@@ -2,7 +2,7 @@ import type { Entry } from '../catalogue-types';
 import type { enPots } from '../en-pots';
 
 export const idPots: { readonly [Key in keyof typeof enPots]: Entry } = {
-  'pots.futureYou': 'Kamu di masa depan',
+  'pots.futureYou': 'Masa depanmu',
   'pots.shelf.title': 'Celengan',
   'pots.shelf.each': '{amount} tiap gajian',
   'pots.shelf.eachMonth': '{amount} tiap bulan',
@@ -42,7 +42,7 @@ export const idPots: { readonly [Key in keyof typeof enPots]: Entry } = {
   'pots.page.addFromCycle': 'Uang bulan ini',
   'pots.page.addFromSaved': 'Sudah ditabung',
   'pots.page.addDayStays': 'Tiap hari tetap',
-  'pots.page.sliderLabel': 'Kamu di masa depan tiap gajian',
+  'pots.page.sliderLabel': 'Masa depanmu tiap gajian',
   'pots.move.payday': 'Gajian',
   'pots.move.topUp': 'Ditambahkan',
   'pots.move.alreadySaved': 'Sudah ditabung',

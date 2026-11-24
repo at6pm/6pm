@@ -8,6 +8,7 @@ import { PressScale } from '../../ui/primitives/press-scale';
 import { useClock } from '../../ui/theme/clock';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import { usePhoneColumn } from '../../ui/layout/phone-column';
 import { useLookCardLines } from '../looks/look-card-lines';
 import { LookSkyPreview } from '../looks/look-sky-preview';
@@ -96,12 +97,13 @@ export function SettingsLookCard({ onPress }: { readonly onPress: () => void }) 
             {t('settings.look')}
           </Text>
           <Text
+            {...HEADING_BREAKS}
             style={{
               ...leading(display(23, 500, 0, lookById(worn).font), 25.3),
               color: palette.ink,
             }}
           >
-            {name}
+            {headingWords(name)}
           </Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, minWidth: 0 }}>
             <View style={{ flexDirection: 'row' }}>
