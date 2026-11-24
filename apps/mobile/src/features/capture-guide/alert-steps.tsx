@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { AppState, Linking, Text, View } from 'react-native';
 import Animated, {
   FadeIn,
@@ -10,6 +10,8 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
+import { keepShortcutAdded, readShortcutAdded } from '../../data/first-catch';
+import { useMoneyStore } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
 import { Symbol } from '../../ui/icons/symbol';
 import type { SymbolName } from '../../ui/icons/symbols.generated';
@@ -44,10 +46,40 @@ const lineIn = FadeIn.duration(220).delay(80).reduceMotion(ReduceMotion.System);
 const lineOut = FadeOut.duration(140).reduceMotion(ReduceMotion.System);
 
 /**
- * Added once the person came back from Shortcuts after tapping Get: kept while the app runs, so
- * the guide opened again still shows it. The phone cannot see Shortcuts, so this is all it knows.
+ * Added once the person came back from Shortcuts after tapping Get, kept on the phone so the
+ * guide opened again (in this launch or a later one) still shows it. The phone cannot see
+ * Shortcuts, so this is all it knows. Read once into memory, so a guide opened after the first
+ * starts from it.
  */
-let addedThisRun = false;
+let addedKnown: boolean | null = null;
+
+/** Whether the shortcut was added, and how to say it was (or, with false, that it is missing). */
+function useShortcutAdded(): readonly [boolean, (added: boolean) => void] {
+  const { db } = useMoneyStore();
+  const [added, setAdded] = useState(addedKnown ?? false);
+  useEffect(() => {
+    if (addedKnown !== null) return undefined;
+    let live = true;
+    readShortcutAdded(db)
+      .then((at) => {
+        addedKnown = at !== null;
+        if (live) setAdded(addedKnown);
+      })
+      .catch(() => undefined);
+    return () => {
+      live = false;
+    };
+  }, [db]);
+  const keep = useCallback(
+    (next: boolean) => {
+      addedKnown = next;
+      setAdded(next);
+      void keepShortcutAdded(db, next ? new Date().toISOString() : null).catch(() => undefined);
+    },
+    [db],
+  );
+  return [added, keep] as const;
+}
 
 /** The steps to show done, from what the phone knows. */
 interface Known {
@@ -75,16 +107,17 @@ export function AlertSteps({
   const { palette } = useTheme();
   const aiMode = useAiMode();
   const test = useTestAlert();
-  const [added, setAdded] = useState(addedThisRun);
+  const [added, keepAdded] = useShortcutAdded();
   // Back from "Open Shortcuts": the test is what comes next, so its button takes the colour.
   const [visited, setVisited] = useState(false);
   const away = useBackFromShortcuts((what) => {
-    if (what === 'get') {
-      addedThisRun = true;
-      setAdded(true);
-    } else setVisited(true);
+    if (what === 'get') keepAdded(true);
+    else setVisited(true);
   });
   const leave = (what: 'get' | 'open', url: string) => {
+    // A test that never came, and Get tapped again: the shortcut is missing, so step 1 is
+    // undone until the person comes back from adding it.
+    if (what === 'get' && test.state.kind === 'missing') keepAdded(false);
     away(what);
     onLeave?.();
     void Linking.openURL(url).catch(() => undefined);
