@@ -4,6 +4,7 @@ import type { enSurfaces } from '../en-surfaces';
 // Widgets and the Live Activity are small: the shortest natural word wins.
 export const koSurfaces: { readonly [Key in keyof typeof enSurfaces]: Entry } = {
   'surfaces.scanQr': 'QR 스캔',
+  'surfaces.scanReceipt': '영수증 스캔',
   'surfaces.safeTodayShort': '오늘 쓸 돈',
   'surfaces.today': '오늘',
   'surfaces.left': '남음',

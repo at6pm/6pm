@@ -1,14 +1,15 @@
 /**
  * The first catch: onboarding waiting live for one real catch and printing it as receipt Nº 001,
- * where it got stuck after a while, Today's empty slip the morning after "later", each way's
- * heartbeat in Settings and the receipts read on this phone.
+ * where it got stuck after a while, Today's reminder to let spending log itself (from the morning
+ * after, until a way that runs by itself catches something), each way's heartbeat in Settings and
+ * the receipts read on this phone.
  */
 export const enFirstCatch = {
   'firstCatch.waiting': 'Waiting for your first one…',
   'firstCatch.caught': 'Caught it.',
   'firstCatch.still': 'Still listening…',
   'firstCatch.tryHere': 'DO ANY ONE · TAP TO TRY IT HERE',
-  'firstCatch.later': 'I’ll do it later',
+  'firstCatch.later': 'Skip for now',
   'firstCatch.tile.alerts': 'Move {amount} to yourself',
   'firstCatch.tile.share': 'Share a bank receipt',
   'firstCatch.tile.wallet': 'Tap to pay with Wallet',
@@ -43,8 +44,10 @@ export const enFirstCatch = {
   'firstCatch.fix.access': 'Check access',
   'firstCatch.fix.share': 'See how',
   'firstCatch.another': 'Try another way',
-  'firstCatch.card.title': 'Your first receipt goes here',
-  'firstCatch.card.action': 'Catch one',
+  'firstCatch.card.title': 'Let your payments log themselves',
+  'firstCatch.card.action': 'Set it up',
+  'firstCatch.card.check': 'Check it',
+  'firstCatch.card.notNow': 'Not now',
   'companion.firstCatch.soft': 'That’s how they’ll all arrive. You just say yes at six.',
   'companion.firstCatch.cheeky': 'One down. The rest turn up on their own. You just nod at six.',
   'companion.firstCatch.roast': 'See? Zero effort. Just say yes at six. Even you can manage that.',
@@ -90,4 +93,16 @@ export const enFirstCatch = {
     one: 'Read here, but for {count} photo sent once for a closer look and never kept.',
     other: 'Read here, but for {count} photos sent once for a closer look and never kept.',
   },
+
+  // The test alert a person sends to themselves on Android: what its tile and button say, what
+  // became of it, the notification's own words, and the foot of the slip that proves it arrived.
+  'testAlert.send': 'Send a test alert',
+  'testAlert.sent': 'Sent. Watching for it…',
+  'testAlert.works': 'It works. Real bank alerts will arrive the same way.',
+  'testAlert.nothing': 'Nothing arrived. Check that 6pm still has notification access.',
+  'testAlert.blocked': '6pm isn’t allowed to send notifications, so the test can’t go out.',
+  'testAlert.notice.title': '6pm · test alert',
+  'testAlert.notice.body': 'Test: {amount} paid. This is not a real payment.',
+  'testAlert.channel': 'Test alerts',
+  'testAlert.slip.note': 'A test, not a payment. Nothing was added.',
 } as const;

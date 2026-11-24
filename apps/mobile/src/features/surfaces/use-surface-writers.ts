@@ -80,6 +80,7 @@ export function useSurfaceWriters() {
         tradition,
         hideAmounts,
         pinnedAt: pinnedNow,
+        scan: nativeReach.scan,
       }),
     [money, widget, max, worn, t, format, language, history, tradition, hideAmounts, pinnedNow],
   );

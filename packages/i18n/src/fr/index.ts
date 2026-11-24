@@ -53,6 +53,7 @@ import { frWorkYear } from './work-year';
 import { frImport } from './import';
 import { frOwed } from './owed';
 import { frNotifications } from './notifications';
+import { frFunnel } from './funnel';
 import { frSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
@@ -116,6 +117,7 @@ export const fr: Catalogue = {
   ...importSketchMomo,
   ...frSeason,
   ...frNotifications,
+  ...frFunnel,
 };
 
 /**

@@ -7,6 +7,7 @@ import {
   type InboxKept,
   type InboxPaid,
   type InboxSpend,
+  type InboxTest,
   type InboxUnread,
   waitsForLateRead,
   type AlertReadWaiting,
@@ -50,6 +51,11 @@ export interface InboxImportDeps {
    * again (`createLateAlertReads`). Without it such an alert's row stays as the phone read it.
    */
   readonly keepForLateRead?: (entry: AlertReadWaiting) => Promise<void>;
+  /**
+   * Told that a test alert the person sent to themselves came all the way in. Nothing else is
+   * done with one: it is never a spend.
+   */
+  readonly testArrived?: (item: InboxTest) => void;
   /** Told when a file is dropped; never given the file's content. */
   readonly report: (message: string) => void;
   /**
@@ -119,6 +125,8 @@ export interface InboxImportResult {
  * again); an alert the phone could not read is saved only if that reader finds a payment in
  * it, and waits two days at most for an answer. A file is removed only after what it said is committed, and importing
  * the same file twice changes nothing: its id is the spend's, or its sighting is already there.
+ * A test alert the person sent to themselves (`test`) is never money: its arrival is told to the
+ * screen that sent it and its file removed, with nothing saved, logged or read a second time.
  * Then every caught spend that looks like an unpaid bill's payment is marked as paying it.
  */
 export async function importInbox(deps: InboxImportDeps): Promise<InboxImportResult> {
@@ -156,6 +164,8 @@ export async function importInbox(deps: InboxImportDeps): Promise<InboxImportRes
       if (await markKept(deps, item)) saved += 1;
     } else if (item.kind === 'heard') {
       deps.actions.hear(item);
+    } else if (item.kind === 'test') {
+      deps.testArrived?.(item);
     } else if (item.kind === 'unread') {
       const read = reread.get(item.id);
       if (read?.kind === 'spend') {

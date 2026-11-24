@@ -54,6 +54,7 @@ export function AndroidSurfaces({
           t('widgetsGuide.home.step2'),
           t('widgetsGuide.home.step3'),
         ]}
+        note={{ icon: 'add', text: t('widgetsGuide.home.actions') }}
         actions={
           canPin
             ? [

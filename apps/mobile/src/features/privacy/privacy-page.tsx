@@ -21,6 +21,7 @@ import { useToast } from '../../ui/toast/toast-host';
 import { body, display, leading, mono } from '../../ui/type/fonts';
 import { WordFitText } from '../../ui/type/word-fit-text';
 import { TapeEdge } from '../capture-guide/capture-log-tape';
+import { FunnelSwitchRow } from '../funnel/funnel-row';
 import { LEGAL_LINKS } from '../purchases/products';
 import { SettingRow } from '../settings/setting-rows';
 import { useAiMode } from './use-ai-mode';
@@ -199,6 +200,7 @@ export function PrivacyPage() {
               router.push('/ai');
             }}
           />
+          <FunnelSwitchRow />
         </View>
       ) : null}
 

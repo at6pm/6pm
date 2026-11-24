@@ -6,7 +6,7 @@ export const deFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'firstCatch.caught': 'Erwischt.',
   'firstCatch.still': 'Ich höre weiter…',
   'firstCatch.tryHere': 'MACH EINS · TIPP, UM ES HIER ZU PROBIEREN',
-  'firstCatch.later': 'Mach ich später',
+  'firstCatch.later': 'Erst mal überspringen',
   'firstCatch.tile.alerts': 'Überweis dir selbst {amount}',
   'firstCatch.tile.share': 'Teile einen Bankbeleg',
   'firstCatch.tile.wallet': 'Zahl per Wallet',
@@ -42,8 +42,10 @@ export const deFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'firstCatch.fix.access': 'Zugriff prüfen',
   'firstCatch.fix.share': 'So geht’s',
   'firstCatch.another': 'Anders versuchen',
-  'firstCatch.card.title': 'Hier kommt dein erster Beleg hin',
-  'firstCatch.card.action': 'Einen erfassen',
+  'firstCatch.card.title': 'Zahlungen von selbst eintragen lassen',
+  'firstCatch.card.action': 'Einrichten',
+  'firstCatch.card.check': 'Prüfen',
+  'firstCatch.card.notNow': 'Nicht jetzt',
   'companion.firstCatch.soft': 'So kommen ab jetzt alle an. Um sechs sagst du nur noch Ja.',
   'companion.firstCatch.cheeky': 'Eins geschafft. Der Rest kommt von allein. Um sechs nur nicken.',
   'companion.firstCatch.roast':
@@ -92,4 +94,14 @@ export const deFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
     other:
       'Hier gelesen, bis auf {count} Fotos, die einmal genauer angesehen und nicht behalten wurden.',
   },
+
+  'testAlert.send': 'Testmitteilung senden',
+  'testAlert.sent': 'Gesendet. Ich warte, bis sie ankommt…',
+  'testAlert.works': 'Es klappt. Echte Bankmitteilungen kommen genauso an.',
+  'testAlert.nothing': 'Nichts angekommen. Prüf, ob 6pm noch Benachrichtigungszugriff hat.',
+  'testAlert.blocked': '6pm darf keine Mitteilungen senden, deshalb kann der Test nicht raus.',
+  'testAlert.notice.title': '6pm · Testmitteilung',
+  'testAlert.notice.body': 'Test: {amount} bezahlt. Das ist keine echte Zahlung.',
+  'testAlert.channel': 'Testmitteilungen',
+  'testAlert.slip.note': 'Nur ein Test, keine Zahlung. Nichts wurde eingetragen.',
 };

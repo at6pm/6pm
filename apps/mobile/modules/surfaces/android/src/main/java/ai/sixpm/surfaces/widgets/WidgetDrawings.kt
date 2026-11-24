@@ -96,14 +96,19 @@ class WidgetDrawings(private val faces: WidgetFaces) {
     }
   }
 
-  /** Medium: the kicker, the number, the day's bar and what it means, then up to four jars. */
-  fun medium(canvas: WidgetCanvas, moment: WidgetMoment, card: PostcardCard): List<JarSpot> {
+  /**
+   * Medium: the kicker, the number, the day's bar and what it means, then up to four jars, with
+   * Scan and Quick add in the corner above them.
+   */
+  fun medium(canvas: WidgetCanvas, moment: WidgetMoment, card: PostcardCard): Pair<List<JarSpot>, List<WidgetAction>> {
     sky(canvas, moment)
     sun(canvas, moment, card, 54f, small = false)
     val ink = ink(moment)
     val pad = 16f
     val jars = moment.postcards?.jars.orEmpty().take(4)
-    val shelf = if (jars.isEmpty()) 0f else jars.size * 34f + (jars.size - 1) * 5f + 12f
+    val jarsWidth = if (jars.isEmpty()) 0f else jars.size * 34f + (jars.size - 1) * 5f
+    val column = maxOf(jarsWidth, WidgetActions.width(moment))
+    val shelf = if (column == 0f) 0f else column + 12f
     val room = canvas.width - pad * 2 - shelf
     val head = kicker(canvas, moment, 10f, ink)
     canvas.text(card.kicker, pad, pad + top(head), head, room)
@@ -136,7 +141,8 @@ class WidgetDrawings(private val faces: WidgetFaces) {
       spots.add(JarSpot(jar, RectF(rect.left, rect.top, rect.right, labelBaseline + label.fontMetrics.descent)))
       x += 39
     }
-    return spots
+    val actions = WidgetActions.draw(canvas, moment, faces, canvas.width - pad, pad + WidgetActions.SIZE / 2, ink, dark(moment))
+    return spots to actions
   }
 
   /** A jar as the look draws it: the lid, the glass, what it holds, its icon. */
@@ -241,9 +247,12 @@ class WidgetDrawings(private val faces: WidgetFaces) {
     canvas.text(moment.text("streakLine2"), 14 + width + 8, baseline - 4, word, canvas.width - width - 36)
   }
 
-  /** The month as suns: the title, the headline, a sun for each evening and tonight's close. */
-  fun month(canvas: WidgetCanvas, moment: WidgetMoment, card: PostcardCard) {
-    val cards = moment.postcards ?: return
+  /**
+   * The month as suns: the title, the headline, a sun for each evening and tonight's close beside
+   * Scan and Quick add.
+   */
+  fun month(canvas: WidgetCanvas, moment: WidgetMoment, card: PostcardCard): List<WidgetAction> {
+    val cards = moment.postcards ?: return emptyList()
     sky(canvas, moment)
     val ink = ink(moment)
     val side = 18f
@@ -256,7 +265,11 @@ class WidgetDrawings(private val faces: WidgetFaces) {
     canvas.text(cards.monthHeadline, side, y, headline, canvas.width - side * 2, minScale = 0.7f)
     y += headline.fontMetrics.descent + 12
     val rows = maxOf(5, (cards.monthCells.size + 6) / 7)
-    val footTop = canvas.height - 16 - 24
+    val foot = canvas.ink(faces.mono(), 11f, ink)
+    val buttons = WidgetActions.width(moment)
+    // The foot's row is as tall as its line, or as the buttons beside it.
+    val row = maxOf(foot.fontMetrics.descent - foot.fontMetrics.ascent, if (buttons > 0) WidgetActions.SIZE else 0f)
+    val footTop = canvas.height - 16 - 10 - row
     val gap = 8f
     val dot = minOf((canvas.width - side * 2 - 12 - gap * 6) / 7, (footTop - y - 8 - (rows - 1) * 6) / rows)
     val gridWidth = dot * 7 + gap * 6
@@ -267,11 +280,13 @@ class WidgetDrawings(private val faces: WidgetFaces) {
       daySun(canvas, moment, cell, rect, ink)
     }
     canvas.dashedLine(side, footTop, canvas.width - side, 1f, WidgetInk.faded(ink, if (dark(moment)) 0.4 else 0.3), 3f, 3f)
-    val foot = canvas.ink(faces.mono(), 11f, ink)
-    val baseline = footTop + 10 + top(foot)
-    canvas.text(moment.text("tonight"), side, baseline, foot, canvas.width / 2)
+    val centre = footTop + 10 + row / 2
+    val baseline = centre - (foot.fontMetrics.ascent + foot.fontMetrics.descent) / 2
+    val end = canvas.width - side - if (buttons > 0) buttons + 10 else 0f
+    val label = canvas.text(moment.text("tonight"), side, baseline, foot, canvas.width / 2)
     val tonight = if (moment.state == WidgetMoment.State.STALE) moment.text("openApp") else card.tonight
-    canvas.text(tonight, canvas.width - side, baseline, foot, canvas.width / 2, alignEnd = true)
+    canvas.text(tonight, end, baseline, foot, end - side - label - 8, alignEnd = true)
+    return WidgetActions.draw(canvas, moment, faces, canvas.width - side, centre, ink, dark(moment))
   }
 
   /** One day as a sun: whole, half, a missed ring, today's accent ring, or still ahead. */

@@ -30,6 +30,8 @@ export const idWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.home.month': 'Bulanku',
   'widgetsGuide.home.monthWhat':
     'Sebulan sebagai matahari: setiap malam yang kamu tutup, dan berapa dalam batas.',
+  'widgetsGuide.home.actions':
+    'Catat pengeluaran sekali ketuk: widget sedang dan besar punya Pindai dan +.',
   'widgetsGuide.home.step1':
     'Sentuh dan tahan area kosong di Layar Utama sampai aplikasinya bergoyang.',
   'widgetsGuide.home.step2': 'Ketuk Edit di pojok atas, lalu Tambah Widget.',

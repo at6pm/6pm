@@ -3,7 +3,8 @@ import WidgetKit
 
 /// Safe today, as postcards ("6pm Widgets"): on the Home Screen the number on its sky (small) and
 /// with the jars (medium); on the Lock Screen the ring for what is left, the number in a line and
-/// the inline "FRI 9 · 49K LEFT". Each opens Today; a jar on the medium one opens that jar.
+/// the inline "FRI 9 · 49K LEFT". Each opens Today; a jar on the medium one opens that jar, and
+/// its Scan and Quick add open theirs.
 struct SafeTodayWidget: Widget {
   var body: some WidgetConfiguration {
     StaticConfiguration(kind: "SafeToday", provider: SurfaceTimelineProvider()) { entry in
@@ -95,7 +96,7 @@ struct ClosedStamp: View {
 }
 
 /// Medium (`W:51-71`): the kicker, the number, the day's bar and what it means, then the jars,
-/// each opening its own page.
+/// each opening its own page; Scan and Quick add in the corner above the jars.
 struct SafeMedium: View {
   let entry: SurfaceEntry
 
@@ -123,25 +124,31 @@ struct SafeMedium: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         let jars = Array((entry.snapshot?.jars ?? []).prefix(4))
-        if !jars.isEmpty {
-          HStack(alignment: .bottom, spacing: 5) {
-            ForEach(Array(jars.enumerated()), id: \.element.id) { index, jar in
-              Link(destination: entry.link(jar.path) ?? URL(fileURLWithPath: "/")) {
-                VStack(spacing: 4) {
-                  PostcardJar(jar: jar, index: index, entry: entry)
-                  PrivateText(text: jar.amountText, entry: entry)
-                    .font(SurfaceFont.body(size: 9.5, weight: 700))
-                    .monospacedDigit()
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
-                    .opacity(0.85)
-                    .frame(width: 38)
+        if !jars.isEmpty || WidgetActions.shown(entry) {
+          VStack(alignment: .trailing, spacing: 0) {
+            WidgetActions(entry: entry, ink: entry.ink, dark: entry.dark)
+            Spacer(minLength: 0)
+            if !jars.isEmpty {
+              HStack(alignment: .bottom, spacing: 5) {
+                ForEach(Array(jars.enumerated()), id: \.element.id) { index, jar in
+                  Link(destination: entry.link(jar.path) ?? URL(fileURLWithPath: "/")) {
+                    VStack(spacing: 4) {
+                      PostcardJar(jar: jar, index: index, entry: entry)
+                      PrivateText(text: jar.amountText, entry: entry)
+                        .font(SurfaceFont.body(size: 9.5, weight: 700))
+                        .monospacedDigit()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                        .opacity(0.85)
+                        .frame(width: 38)
+                    }
+                  }
                 }
               }
+              .padding(.bottom, 2)
             }
           }
-          .padding(.bottom, 2)
-          .frame(maxHeight: .infinity, alignment: .bottom)
+          .frame(maxHeight: .infinity)
         }
       }
       .foregroundStyle(entry.ink)

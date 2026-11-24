@@ -53,6 +53,7 @@ import { enImport, importSketchMomo } from './en-import';
 import { enOwed } from './en-owed';
 import { enNotifications } from './en-notifications';
 import { enSeason } from './en-season';
+import { enFunnel } from './en-funnel';
 
 /** The source catalogue: every key the app uses, in English. */
 export const en = {
@@ -112,4 +113,5 @@ export const en = {
   ...importSketchMomo,
   ...enSeason,
   ...enNotifications,
+  ...enFunnel,
 } as const;

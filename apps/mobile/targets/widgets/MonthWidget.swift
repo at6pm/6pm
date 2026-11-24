@@ -2,7 +2,8 @@ import SwiftUI
 import WidgetKit
 
 /// My month (large, `W:104-112`): the month as suns, each evening closed a whole sun, over the
-/// line half of one, and tonight's close at the foot. Opens the Diary at the month.
+/// line half of one, and tonight's close at the foot beside Scan and Quick add. Opens the Diary
+/// at the month.
 struct MonthWidget: Widget {
   var body: some WidgetConfiguration {
     StaticConfiguration(kind: "Month", provider: SurfaceTimelineProvider()) { entry in
@@ -54,6 +55,8 @@ struct MonthView: View {
           Text(entry.text("tonight"))
           Spacer(minLength: 8)
           Text(entry.state == .stale ? entry.text("openApp") : card.tonight).fontWeight(.semibold)
+          WidgetActions(entry: entry, ink: entry.ink, dark: entry.dark)
+            .padding(.leading, 10)
         }
         .font(SurfaceFont.mono(size: 11))
         .lineLimit(1)

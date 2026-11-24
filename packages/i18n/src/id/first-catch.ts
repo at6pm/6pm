@@ -6,7 +6,7 @@ export const idFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'firstCatch.caught': 'Tertangkap.',
   'firstCatch.still': 'Masih mendengarkan…',
   'firstCatch.tryHere': 'LAKUKAN SATU · KETUK UNTUK MENCOBA DI SINI',
-  'firstCatch.later': 'Nanti saja',
+  'firstCatch.later': 'Lewati dulu',
   'firstCatch.tile.alerts': 'Transfer {amount} ke dirimu sendiri',
   'firstCatch.tile.share': 'Bagikan struk bank',
   'firstCatch.tile.wallet': 'Bayar pakai Wallet',
@@ -42,8 +42,10 @@ export const idFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'firstCatch.fix.access': 'Cek akses',
   'firstCatch.fix.share': 'Lihat caranya',
   'firstCatch.another': 'Coba cara lain',
-  'firstCatch.card.title': 'Struk pertamamu akan ada di sini',
-  'firstCatch.card.action': 'Tangkap satu',
+  'firstCatch.card.title': 'Biarkan pembayaranmu tercatat sendiri',
+  'firstCatch.card.action': 'Atur',
+  'firstCatch.card.check': 'Cek',
+  'firstCatch.card.notNow': 'Nanti saja',
   'companion.firstCatch.soft': 'Begitulah semuanya akan datang. Jam enam kamu tinggal bilang ya.',
   'companion.firstCatch.cheeky': 'Satu beres. Sisanya datang sendiri. Jam enam tinggal angguk.',
   'companion.firstCatch.roast': 'Lihat? Nol usaha. Jam enam bilang ya. Kamu pasti bisa.',
@@ -87,4 +89,15 @@ export const idFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
     other:
       'Dibaca di sini, kecuali {count} foto yang dikirim sekali untuk dilihat lebih teliti dan tidak disimpan.',
   },
+
+  'testAlert.send': 'Kirim notifikasi uji coba',
+  'testAlert.sent': 'Terkirim. Menunggu notifikasinya masuk…',
+  'testAlert.works': 'Berhasil. Notifikasi bank yang asli akan masuk dengan cara yang sama.',
+  'testAlert.nothing': 'Belum ada yang masuk. Cek apakah 6pm masih punya akses notifikasi.',
+  'testAlert.blocked':
+    '6pm belum diizinkan mengirim notifikasi, jadi uji cobanya tidak bisa dikirim.',
+  'testAlert.notice.title': '6pm · notifikasi uji coba',
+  'testAlert.notice.body': 'Uji coba: pembayaran {amount}. Ini bukan pembayaran sungguhan.',
+  'testAlert.channel': 'Notifikasi uji coba',
+  'testAlert.slip.note': 'Hanya uji coba, bukan pembayaran. Tidak ada yang dicatat.',
 };

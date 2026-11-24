@@ -132,6 +132,7 @@ export function WidgetsGuideSheet() {
                   t('widgetsGuide.home.step2'),
                   t('widgetsGuide.home.step3'),
                 ]}
+                note={{ icon: 'add', text: t('widgetsGuide.home.actions') }}
               >
                 <HomeStage preview={preview} width={stageWidth} />
               </SurfaceCard>
