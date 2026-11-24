@@ -54,6 +54,7 @@ import { viImport } from './vi-import';
 import { viOwed } from './vi-owed';
 import { viNotifications } from './vi-notifications';
 import { viSeason } from './vi-season';
+import { viFunnel } from './vi-funnel';
 import { importSketchMomo } from './en-import';
 
 export const vi: Catalogue = {
@@ -113,4 +114,5 @@ export const vi: Catalogue = {
   ...importSketchMomo,
   ...viSeason,
   ...viNotifications,
+  ...viFunnel,
 };

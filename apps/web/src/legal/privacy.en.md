@@ -2,15 +2,15 @@
 title: Privacy Policy
 description: What 6pm keeps on your phone, the little that leaves it, and who handles it.
 lede: 6pm keeps your money on your phone. This page says exactly what we do with the little that leaves it.
-updated: '2026-11-20'
+updated: '2026-11-24'
 ---
 
 ## The short version
 
 - Your spending, plan and diary live on your iPhone, in an encrypted database. We cannot read them.
 - 6pm needs no account. Only if you use Budget together do you sign in, with Apple. We never ask for your phone number, your email or your bank login.
-- We do not run ads or sell data. The app has no analytics or tracking tools. This website counts visits with Cloudflare Web Analytics, which sets no cookies and does not identify you.
-- A few small things do leave your phone: an anonymous device ID, your purchase status, app updates, crash reports, questions you ask 6pm, your voice while you say a spend, a few facts about your day for your companion’s lines, a receipt photo your phone cannot read, the words and amounts of the bank alerts 6pm reads for you (with account, card and phone numbers hidden), bank emails you forward to your receipt address, the shared pots you keep with someone in Budget together and, only if you turn it on, your encrypted backup. Each one is explained below.
+- We do not run ads or sell data. The app has no tracking tools and no third-party analytics. It sends anonymous counts of the steps it reaches, such as a first open or a first close, which you can turn off. This website counts visits with Cloudflare Web Analytics, which sets no cookies and does not identify you.
+- A few small things do leave your phone: an anonymous device ID, anonymous counts of the steps the app reaches, your purchase status, app updates, crash reports, questions you ask 6pm, your voice while you say a spend, a few facts about your day for your companion’s lines, a receipt photo your phone cannot read, the words and amounts of the bank alerts 6pm reads for you (with account, card and phone numbers hidden), bank emails you forward to your receipt address, the shared pots you keep with someone in Budget together and, only if you turn it on, your encrypted backup. Each one is explained below.
 - You can keep all of 6pm's AI on your iPhone instead (Settings → AI). Then your questions, the facts for your companion's lines, receipt photos, bank alerts and your voice stay on the phone too.
 
 ## Who we are
@@ -36,6 +36,14 @@ Only the things below, and only for the reasons given.
 When the app talks to our server, it first gets a random token that stands for your copy of the app. The token is kept on your phone. Our server stores only a scrambled form of it (a SHA-256 hash), plus your app language (English or Vietnamese) and the times it was first and last seen.
 
 None of this is linked to your name, your email or anything in your money. We use it to check that requests come from a real copy of the app, to limit abuse, and to count roughly how many devices use 6pm each day.
+
+### Anonymous counts
+
+To see where new people get stuck, the app sends our server anonymous counts of the steps it reaches: that it was opened for the first time; which onboarding steps were shown and whether onboarding was finished; which days of its first month it was opened on; on which of those days something was caught, and which way (a bank or wallet notification, the Wallet automation, an email, a shared receipt, a scan, your voice or typing); which of those days were closed, and how many days of the first week were caught and closed; whether the 6pm Max offer was shown and from which screen; whether Max was bought and which plan; and, when Max was bought with a code from one of our channels, which channel. Each report also says the platform (iPhone or Android), the app version and the app language, and nothing else.
+
+The counts carry no device ID, install ID, account, amount, merchant, bank name, note or any word you typed, and they are sent without the anonymous device ID above. Our server only adds one to a total for that step and that day; it keeps no record per phone, so counts from one phone cannot be put back together. Your phone remembers which steps it has already sent, so each one is sent once. As with every request, our server counts requests per IP address only to slow down abuse, and does not store the address.
+
+You can turn the counts off in Settings → Privacy → Anonymous counts. Steps reached while they are off are never sent, even if you turn them back on. In on-device mode they are off.
 
 ### Purchases
 
@@ -75,7 +83,7 @@ When you say a spend out loud, the app streams the sound from your microphone st
 
 ### On-device mode
 
-In Settings → AI you can keep 6pm's AI on your iPhone. Then nothing in "Ask 6pm and your companion's lines" or "Your voice" leaves it: questions are read, lines written and receipts read on your phone, with a model you download once. The model is downloaded from Hugging Face, which sees your IP address and which model you asked for, and nothing else. In this mode receipt email is off, crash reports are off, and Travel tells your country from your phone's time zone instead of your location.
+In Settings → AI you can keep 6pm's AI on your iPhone. Then nothing in "Ask 6pm and your companion's lines" or "Your voice" leaves it: questions are read, lines written and receipts read on your phone, with a model you download once. The model is downloaded from Hugging Face, which sees your IP address and which model you asked for, and nothing else. In this mode receipt email is off, crash reports and anonymous counts are off, and Travel tells your country from your phone's time zone instead of your location.
 
 ### Receipt email
 
@@ -171,6 +179,7 @@ We use them only for these purposes.
 
 - **On your phone.** Until you delete it. "Delete all data" in Settings erases your spends, plan and diary from the phone and turns off the reminder. Deleting the app removes the data too.
 - **Device ID.** For as long as the app is used on that device.
+- **Anonymous counts.** Kept as daily totals. They hold nothing that points to a phone or a person.
 - **Crash reports.** Up to 90 days, then deleted.
 - **Receipt email.** Until your phone collects the receipt, and never more than 30 days. Your receipt address lasts as long as your device ID.
 - **Questions, facts for lines, receipt lines and forwarded emails.** We do not keep them. Anthropic deletes them within 30 days, as described above.

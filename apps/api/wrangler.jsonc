@@ -92,6 +92,13 @@
           "namespace_id": "6307",
           "simple": { "limit": 10, "period": 60 },
         },
+        // Anonymous funnel counts, keyed by address only: a phone reports a few times a day
+        // (see `limitFunnelReports`).
+        {
+          "name": "FUNNEL_RATE_LIMIT",
+          "namespace_id": "6309",
+          "simple": { "limit": 10, "period": 60 },
+        },
       ],
     },
     "prd": {
@@ -165,6 +172,13 @@
         {
           "name": "IMPORT_MAP_RATE_LIMIT",
           "namespace_id": "6317",
+          "simple": { "limit": 10, "period": 60 },
+        },
+        // Anonymous funnel counts, keyed by address only: a phone reports a few times a day
+        // (see `limitFunnelReports`).
+        {
+          "name": "FUNNEL_RATE_LIMIT",
+          "namespace_id": "6319",
           "simple": { "limit": 10, "period": 60 },
         },
       ],

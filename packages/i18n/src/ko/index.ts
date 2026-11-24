@@ -53,6 +53,7 @@ import { koWorkYear } from './work-year';
 import { koImport } from './import';
 import { koOwed } from './owed';
 import { koNotifications } from './notifications';
+import { koFunnel } from './funnel';
 import { koSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
@@ -116,6 +117,7 @@ export const ko: Catalogue = {
   ...importSketchMomo,
   ...koSeason,
   ...koNotifications,
+  ...koFunnel,
 };
 
 /**
