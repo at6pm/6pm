@@ -2,15 +2,15 @@
 title: Chính sách quyền riêng tư
 description: Những gì 6pm giữ trên điện thoại của bạn, phần rất nhỏ rời khỏi máy, và ai xử lý chúng.
 lede: 6pm giữ tiền của bạn ngay trên điện thoại. Trang này nói rõ chúng tôi làm gì với phần rất nhỏ rời khỏi máy.
-updated: '2026-11-20'
+updated: '2026-11-24'
 ---
 
 ## Tóm tắt
 
 - Chi tiêu, kế hoạch và nhật ký của bạn nằm trên iPhone, trong một cơ sở dữ liệu được mã hoá. Chúng tôi không đọc được.
 - 6pm không cần tài khoản. Chỉ khi dùng Cùng chia ngân sách bạn mới đăng nhập, bằng Apple. Chúng tôi không hỏi số điện thoại, email hay thông tin đăng nhập ngân hàng của bạn.
-- Chúng tôi không chạy quảng cáo và không bán dữ liệu. Ứng dụng không có công cụ phân tích hay theo dõi. Trang web này đếm lượt truy cập bằng Cloudflare Web Analytics, công cụ không đặt cookie và không nhận diện bạn.
-- Có một vài thứ nhỏ rời khỏi điện thoại: mã thiết bị ẩn danh, trạng thái mua hàng, bản cập nhật ứng dụng, báo cáo lỗi, câu hỏi bạn hỏi 6pm, giọng nói khi bạn đọc một khoản chi, vài thông tin về ngày của bạn để bạn đồng hành viết lời, ảnh biên lai mà điện thoại không đọc được, phần chữ và số tiền của các thông báo ngân hàng mà 6pm đọc giúp bạn (số tài khoản, số thẻ và số điện thoại đã được che), email ngân hàng bạn chuyển tới địa chỉ nhận biên lai, các hũ chung bạn góp cùng ai đó trong Cùng chia ngân sách và, chỉ khi bạn bật, bản sao lưu đã mã hoá. Từng thứ được giải thích bên dưới.
+- Chúng tôi không chạy quảng cáo và không bán dữ liệu. Ứng dụng không có công cụ theo dõi và không có công cụ phân tích của bên thứ ba. Ứng dụng gửi số đếm ẩn danh về các bước đã qua, như lần mở đầu tiên hay lần chốt ngày đầu tiên, và bạn có thể tắt. Trang web này đếm lượt truy cập bằng Cloudflare Web Analytics, công cụ không đặt cookie và không nhận diện bạn.
+- Có một vài thứ nhỏ rời khỏi điện thoại: mã thiết bị ẩn danh, số đếm ẩn danh về các bước ứng dụng đã qua, trạng thái mua hàng, bản cập nhật ứng dụng, báo cáo lỗi, câu hỏi bạn hỏi 6pm, giọng nói khi bạn đọc một khoản chi, vài thông tin về ngày của bạn để bạn đồng hành viết lời, ảnh biên lai mà điện thoại không đọc được, phần chữ và số tiền của các thông báo ngân hàng mà 6pm đọc giúp bạn (số tài khoản, số thẻ và số điện thoại đã được che), email ngân hàng bạn chuyển tới địa chỉ nhận biên lai, các hũ chung bạn góp cùng ai đó trong Cùng chia ngân sách và, chỉ khi bạn bật, bản sao lưu đã mã hoá. Từng thứ được giải thích bên dưới.
 - Bạn có thể giữ toàn bộ AI của 6pm trên iPhone (Cài đặt → AI). Khi đó câu hỏi, thông tin để bạn đồng hành viết lời, ảnh biên lai, thông báo ngân hàng và giọng nói của bạn cũng ở lại trên điện thoại.
 
 ## Chúng tôi là ai
@@ -36,6 +36,14 @@ Chỉ những thứ dưới đây, và chỉ vì những lý do nêu ra.
 Khi ứng dụng làm việc với máy chủ của chúng tôi, trước tiên nó nhận một mã ngẫu nhiên đại diện cho bản cài đặt của bạn. Mã này được giữ trên điện thoại. Máy chủ chỉ lưu dạng đã băm của mã (SHA-256), cùng ngôn ngữ ứng dụng (tiếng Anh hoặc tiếng Việt) và thời điểm thấy mã lần đầu và lần gần nhất.
 
 Không thứ nào trong số này gắn với tên, email hay bất cứ điều gì trong chuyện tiền bạc của bạn. Chúng tôi dùng nó để kiểm tra yêu cầu đến từ một bản cài đặt thật của ứng dụng, hạn chế lạm dụng, và đếm số thiết bị dùng 6pm mỗi ngày.
+
+### Số đếm ẩn danh
+
+Để biết người mới hay dừng lại ở đâu, ứng dụng gửi tới máy chủ của chúng tôi số đếm ẩn danh về các bước nó đã qua: lần đầu được mở; những bước làm quen nào đã hiện và đã làm quen xong chưa; những ngày nào trong tháng đầu ứng dụng được mở; trong những ngày đó, ngày nào có khoản được bắt và bắt bằng cách nào (thông báo ngân hàng hay ví, tự động hoá Wallet, email, biên lai được chia sẻ, quét mã, giọng nói hay gõ tay); ngày nào đã chốt, và tuần đầu có bao nhiêu ngày bắt được khoản và bao nhiêu ngày đã chốt; ưu đãi 6pm Max đã hiện chưa và từ màn hình nào; đã mua Max chưa và gói nào; và, khi Max được mua bằng mã từ một kênh của chúng tôi, đó là kênh nào. Mỗi lần gửi còn kèm nền tảng (iPhone hay Android), phiên bản và ngôn ngữ ứng dụng, ngoài ra không gì khác.
+
+Số đếm không mang mã thiết bị, mã cài đặt, tài khoản, số tiền, nơi chi tiêu, tên ngân hàng, ghi chú hay bất kỳ chữ nào bạn gõ, và được gửi đi mà không kèm mã thiết bị ẩn danh ở trên. Máy chủ chỉ cộng thêm một vào tổng của bước đó trong ngày đó; nó không giữ bản ghi nào cho từng điện thoại, nên không thể ghép các số đếm của cùng một máy lại với nhau. Điện thoại nhớ những bước đã gửi, nên mỗi bước chỉ được gửi một lần. Như với mọi yêu cầu, máy chủ đếm yêu cầu theo địa chỉ IP chỉ để hạn chế lạm dụng, và không lưu địa chỉ đó.
+
+Bạn có thể tắt số đếm trong Cài đặt → Quyền riêng tư → Đếm ẩn danh. Các bước đã qua trong lúc tắt sẽ không bao giờ được gửi, kể cả khi bạn bật lại. Ở chế độ trên máy, số đếm luôn tắt.
 
 ### Mua hàng
 
@@ -75,7 +83,7 @@ Khi bạn nói một khoản chi, ứng dụng truyền âm thanh từ micrô th
 
 ### Chế độ trên máy
 
-Trong Cài đặt → AI, bạn có thể giữ AI của 6pm trên iPhone. Khi đó không thứ nào trong mục "Hỏi 6pm và lời của bạn đồng hành" hay "Giọng nói của bạn" rời khỏi máy: câu hỏi được hiểu, lời được viết và biên lai được đọc ngay trên điện thoại, bằng một mô hình bạn tải về một lần. Mô hình được tải từ Hugging Face; họ thấy địa chỉ IP của bạn và mô hình bạn tải, ngoài ra không gì khác. Ở chế độ này, biên lai qua email tắt, báo cáo lỗi tắt, và chế độ Du lịch biết bạn ở nước nào qua múi giờ của điện thoại thay vì vị trí.
+Trong Cài đặt → AI, bạn có thể giữ AI của 6pm trên iPhone. Khi đó không thứ nào trong mục "Hỏi 6pm và lời của bạn đồng hành" hay "Giọng nói của bạn" rời khỏi máy: câu hỏi được hiểu, lời được viết và biên lai được đọc ngay trên điện thoại, bằng một mô hình bạn tải về một lần. Mô hình được tải từ Hugging Face; họ thấy địa chỉ IP của bạn và mô hình bạn tải, ngoài ra không gì khác. Ở chế độ này, biên lai qua email tắt, báo cáo lỗi và số đếm ẩn danh tắt, và chế độ Du lịch biết bạn ở nước nào qua múi giờ của điện thoại thay vì vị trí.
 
 ### Biên lai qua email
 
@@ -171,6 +179,7 @@ Chúng tôi chỉ dùng họ cho những mục đích này.
 
 - **Trên điện thoại.** Cho đến khi bạn xoá. "Xoá toàn bộ dữ liệu" trong Cài đặt sẽ xoá các khoản chi, kế hoạch và nhật ký khỏi điện thoại và tắt lời nhắc. Xoá ứng dụng cũng xoá dữ liệu.
 - **Mã thiết bị.** Chừng nào ứng dụng còn được dùng trên thiết bị đó.
+- **Số đếm ẩn danh.** Giữ dưới dạng tổng theo ngày. Không chứa gì trỏ tới một điện thoại hay một người.
 - **Báo cáo lỗi.** Tối đa 90 ngày, sau đó bị xoá.
 - **Biên lai qua email.** Cho đến khi điện thoại lấy biên lai về, và không bao giờ quá 30 ngày. Địa chỉ nhận biên lai tồn tại chừng nào mã thiết bị còn.
 - **Câu hỏi, thông tin để viết lời, dòng biên lai và email chuyển tới.** Chúng tôi không giữ. Anthropic xoá trong vòng 30 ngày, như mô tả ở trên.

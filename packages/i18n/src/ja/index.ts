@@ -53,6 +53,7 @@ import { jaWorkYear } from './work-year';
 import { jaImport } from './import';
 import { jaOwed } from './owed';
 import { jaNotifications } from './notifications';
+import { jaFunnel } from './funnel';
 import { jaSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
@@ -116,6 +117,7 @@ export const ja: Catalogue = {
   ...importSketchMomo,
   ...jaSeason,
   ...jaNotifications,
+  ...jaFunnel,
 };
 
 /**

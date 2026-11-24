@@ -1,9 +1,10 @@
 import { useFocusEffect, useRouter, type Href } from 'expo-router';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 
 import {
   DEFAULT_CLOSE_AT,
+  FUNNEL_ONBOARDING_STEPS,
   leadIncome,
   perPayOf,
   startingBankWork,
@@ -18,6 +19,7 @@ import { useI18n } from '../../i18n/i18n';
 import { useHomeCurrency } from '../../money/use-money-format';
 import { haptics } from '../../ui/haptics';
 import { GOT_PAID } from '../today/money-came-in-card';
+import { noteFunnel } from '../funnel/funnel-sync';
 import { useClock } from '../../ui/theme/clock';
 import { billName } from './bill-copy';
 import { billTotal, chosenBills, dealDeck, NO_BILL_ANSWERS, type BillAnswers } from './bill-deck';
@@ -113,6 +115,11 @@ export function useOnboarding(startStep = 0) {
   const [futureYouAtPayday, setFutureYouAtPayday] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const busy = useRef(false);
+  // Anonymous counts: which steps were reached, so the steps people stop at can be seen.
+  useEffect(() => {
+    const reached = FUNNEL_ONBOARDING_STEPS[step];
+    if (reached) noteFunnel({ step: 'onboarding_step', detail: reached });
+  }, [step]);
   // A currency picked on the way: every amount answered so far was in the old one, so they start
   // again where the design starts them.
   const [countedIn, setCountedIn] = useState(currency.code);
@@ -225,6 +232,7 @@ export function useOnboarding(startStep = 0) {
       setLeaving(false);
       return;
     }
+    noteFunnel({ step: 'onboarding_done' });
     // The month is set up either way; a reminder iOS refuses to schedule must not undo that.
     if (reminders) await scheduleCloseReminder(i18n.language, closeAt).catch(() => undefined);
     await shown;
