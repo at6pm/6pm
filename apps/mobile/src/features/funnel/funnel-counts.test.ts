@@ -1,7 +1,14 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-import { localDateOf, type FunnelEvent } from '@6pm/domain';
+import {
+  localDateOf,
+  type FunnelEvent,
+  type InboxItem,
+  type InboxSpend,
+  type InboxTest,
+} from '@6pm/domain';
 
+import { importInbox } from '../../data/inbox-import';
 import { moneyActions } from '../../data/money-actions';
 import { createMoneyStore, type MoneyStore } from '../../data/money-store';
 import { DEFAULT_PLAN, writePlan } from '../../data/plan-settings';
@@ -93,6 +100,77 @@ describe('funnel counts on the phone', () => {
     const payload = JSON.stringify(sent);
     expect(payload).not.toContain('Phở');
     expect(payload).not.toContain('45000');
+  });
+
+  it('never counts a test alert as a catch, on either platform', async () => {
+    const counts = funnel();
+    await counts.report();
+    await writePlan(store.db, { ...DEFAULT_PLAN, startedOn: TODAY });
+    await store.tables.categories.put({
+      id: 'food',
+      name: 'food',
+      icon: 'restaurant',
+      hue: 40,
+      countsDaily: true,
+      sort: 0,
+      archivedAt: null,
+    });
+    await store.load(TODAY);
+    // The Android listener and the iPhone Shortcut both leave a test as an inbox item of kind `test`.
+    const test = (token: string): InboxTest => ({
+      v: 1,
+      id: crypto.randomUUID(),
+      kind: 'test',
+      at: new Date().toISOString(),
+      token,
+    });
+    const run = (items: readonly InboxItem[]) => {
+      const files = new Map(items.map((item, i) => [`f${i}`, JSON.stringify(item)]));
+      return importInbox({
+        store,
+        actions: moneyActions(store),
+        inbox: {
+          readInbox: () => Promise.resolve([...files].map(([id, json]) => ({ id, json }))),
+          removeInbox: (ids) => {
+            for (const id of ids) files.delete(id);
+            return Promise.resolve();
+          },
+        },
+        report: () => undefined,
+        enrich: (item) => Promise.resolve(item),
+        readAlerts: () => Promise.resolve({ answers: new Map(), outcomes: new Map() }),
+        testArrived: () => undefined,
+        language: 'en',
+      });
+    };
+    await run([test('android-test'), test('iphone-test')]);
+    await counts.report();
+    expect(sent.slice(1).flat()).toEqual([]);
+
+    // A real alert after it is the first catch, and the only one.
+    const real: InboxSpend = {
+      v: 1,
+      id: crypto.randomUUID(),
+      kind: 'spend',
+      source: 'alert',
+      status: 'caught',
+      at: new Date().toISOString(),
+      amount: 45_000,
+      merchant: 'Phở Hòa',
+      categoryId: 'food',
+      receipt: { bank: 'MB Bank', namingLines: [] },
+      direction: 'out',
+      atKind: 'delivered',
+      alertWords: { app: 'com.mbmobile', title: 'MB Bank', subtitle: '', body: 'GD -45,000VND' },
+    };
+    await run([test('again'), real]);
+    await counts.report();
+    expect(sent.slice(1).flat()).toEqual([
+      { step: 'first_capture', detail: 'alert', day: 0 },
+      { step: 'capture', detail: 'alert', day: 0 },
+      { step: 'capture_day', day: 0 },
+      { step: 'auto_capture_day', day: 0 },
+    ]);
   });
 
   it('counts the days it was opened again', async () => {
