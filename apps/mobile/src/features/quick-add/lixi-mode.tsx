@@ -21,6 +21,7 @@ import type { SymbolName } from '../../ui/icons/symbols.generated';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import { FanEnvelope } from '../pots/envelopes';
 import { jarColours } from '../pots/jar-colours';
 
@@ -286,11 +287,17 @@ export function LixiMode({
         </View>
       </View>
       <View style={{ alignItems: 'center', gap: 2 }}>
-        <Text style={{ ...leading(display(38, 500), 38, true), color: palette.ink }}>
-          {t('season.quick.count', { count, each: eachText })}
+        <Text
+          {...HEADING_BREAKS}
+          style={{ ...leading(display(38, 500), 38, true), color: palette.ink }}
+        >
+          {headingWords(t('season.quick.count', { count, each: eachText }))}
         </Text>
-        <Text style={{ ...leading(display(20, 500), 24, true), color: palette.inkSoft }}>
-          {t('season.quick.total', { amount: money.short(total) })}
+        <Text
+          {...HEADING_BREAKS}
+          style={{ ...leading(display(20, 500), 24, true), color: palette.inkSoft }}
+        >
+          {headingWords(t('season.quick.total', { amount: money.short(total) }))}
         </Text>
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>

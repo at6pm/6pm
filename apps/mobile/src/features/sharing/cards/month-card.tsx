@@ -15,6 +15,7 @@ import { useMoney } from '../../../data/money-provider';
 import { useI18n } from '../../../i18n/i18n';
 import { useMoneyFormat } from '../../../money/use-money-format';
 import { body } from '../../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../../ui/type/word-fit-text';
 import { useDiaryDates } from '../../diary/diary-dates';
 import { CardArt } from './card-art';
 import { defineCard, type CardLayoutProps } from './card-definition';
@@ -142,13 +143,14 @@ function MonthLayout({ data, format, amounts, inks, serious }: CardLayoutProps<M
           {t('shareCards.month.kicker', { month: data.monthName }).toLocaleUpperCase()}
         </Text>
         <Text
+          {...HEADING_BREAKS}
           {...ON_CARD}
           numberOfLines={story ? 3 : 2}
           adjustsFontSizeToFit
           minimumFontScale={0.6}
           style={title(inks, inks.titleSize, 0.98)}
         >
-          {t('shareCards.month.title', { count: card.closed, under: card.under })}
+          {headingWords(t('shareCards.month.title', { count: card.closed, under: card.under }))}
         </Text>
         <View
           style={{

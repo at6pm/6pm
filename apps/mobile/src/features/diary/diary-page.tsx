@@ -7,6 +7,7 @@ import { useI18n } from '../../i18n/i18n';
 import { useDesignInsets } from '../../ui/layout/design-insets';
 import { useTheme } from '../../ui/theme/theme';
 import { body } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import { useHeaderMeasure, type HeaderShape } from '../home/header-measure';
 import { useHomePageShown } from '../home/home-page';
 import { useHomePageScroll, useHomeScroll } from '../home/home-scroll';
@@ -116,11 +117,12 @@ export function DiaryPage({ scrollRef }: { readonly scrollRef: AnimatedRef<Anima
           {diary.kicker}
         </Text>
         <Text
+          {...HEADING_BREAKS}
           onLayout={measure.layout('title')}
           onTextLayout={measure.lines('title')}
           style={{ ...body(34, 700, -0.03), color: palette.ink }}
         >
-          {t('diary.title')}
+          {headingWords(t('diary.title'))}
         </Text>
       </Animated.View>
 

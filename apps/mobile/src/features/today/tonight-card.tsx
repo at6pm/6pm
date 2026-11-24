@@ -14,7 +14,7 @@ import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { FitText } from '../../ui/type/fit-text';
 import { body, display, leading, mono } from '../../ui/type/fonts';
-import { headingWords } from '../../ui/type/word-fit-text';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import type { WeekDay } from './today-view';
 
 /** The CLOSED stamp lands the way the receipt's does: big and tilted, then down with a thump. */
@@ -147,8 +147,7 @@ export function TonightCard({
         </View>
         <View style={{ flex: 1, minWidth: 0, gap: 4 }}>
           <Text
-            lineBreakStrategyIOS="standard"
-            textBreakStrategy="balanced"
+            {...HEADING_BREAKS}
             style={{ ...leading(display(21, 500, -0.01), 24), color: palette.ink }}
           >
             {headingWords(title)}

@@ -16,7 +16,7 @@ import { haptics } from '../../ui/haptics';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading, tabular } from '../../ui/type/fonts';
-import { headingWords } from '../../ui/type/word-fit-text';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import { answerBubbleIn, growEase, meBubbleIn, riseIn } from './ask-motion';
 import type { AskBarsView, AskCard } from './ask-words';
 
@@ -41,7 +41,7 @@ export function IntroBubble({ text }: { readonly text: string }) {
         boxShadow: palette.cardShadow,
       }}
     >
-      <Text style={{ ...body(16), lineHeight: 22.4, color: palette.ink }}>
+      <Text {...HEADING_BREAKS} style={{ ...body(16), lineHeight: 22.4, color: palette.ink }}>
         {headingWords(text)}
       </Text>
     </Animated.View>
@@ -206,8 +206,7 @@ export function AnswerBubble({
       }}
     >
       <Text
-        lineBreakStrategyIOS="standard"
-        textBreakStrategy="balanced"
+        {...HEADING_BREAKS}
         style={{ ...leading(display(21, 500, -0.01), 25.2), color: palette.ink }}
       >
         {headingWords(card.text)}

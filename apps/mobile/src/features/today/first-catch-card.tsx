@@ -26,6 +26,7 @@ import type { SymbolName } from '../../ui/icons/symbols.generated';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading, mono } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import { nativeReach } from '../surfaces/native-reach';
 import { useFirstCatchCard } from './use-first-catch-card';
 
@@ -158,8 +159,11 @@ export function FirstCatchCard() {
           <Scallops color={caught ? catchInk.paperBottom : palette.ink} filled={caught !== null} />
         </View>
         <View style={{ flex: 1, minWidth: 0, gap: 10 }}>
-          <Text style={{ ...leading(display(21, 500), 23.5), color: palette.ink }}>
-            {t('firstCatch.card.title')}
+          <Text
+            {...HEADING_BREAKS}
+            style={{ ...leading(display(21, 500), 23.5), color: palette.ink }}
+          >
+            {headingWords(t('firstCatch.card.title'))}
           </Text>
           <View style={{ flexDirection: 'row', gap: 6 }}>
             {ways.map((way) => (

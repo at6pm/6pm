@@ -11,6 +11,7 @@ import { Symbol } from '../../ui/icons/symbol';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading, mono } from '../../ui/type/fonts';
+import { WordFitText } from '../../ui/type/word-fit-text';
 import { BANK_ALERT_SHORTCUT_URL } from '../capture-guide/bank-alert-shortcut';
 import { captureColours } from '../capture-guide/capture-colours';
 import { GuideSection } from '../capture-guide/guide-sections';
@@ -139,7 +140,7 @@ function SetupBody({
       </View>
       <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
         <View style={{ paddingTop: 6, paddingHorizontal: 16, paddingBottom: 44, gap: 22 }}>
-          <Text
+          <WordFitText
             style={{
               ...leading(display(29, 500, -0.015), 32),
               color: palette.ink,
@@ -147,7 +148,7 @@ function SetupBody({
             }}
           >
             {t(words.headline)}
-          </Text>
+          </WordFitText>
           <GuideSection title={t('capture.guide.howItWorks')} note={t(words.time)}>
             <Walkthrough steps={steps} />
           </GuideSection>

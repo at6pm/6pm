@@ -30,6 +30,16 @@ export function headingWords(text: string): string {
   return keepThaiWords(keepCountersWithNumbers(keepHangulWords(text)));
 }
 
+/**
+ * How a heading's lines break, as the system's own labels do: on iOS Korean between its words and
+ * no last line of a character or two, on Android lines of about even length. Spread on every
+ * heading's `Text`, with its words through `headingWords`; `WordFitText` and `BalancedText` do both.
+ */
+export const HEADING_BREAKS = {
+  lineBreakStrategyIOS: 'standard',
+  textBreakStrategy: 'balanced',
+} as const satisfies Pick<TextProps, 'lineBreakStrategyIOS' | 'textBreakStrategy'>;
+
 /** Wider than any word at any size. */
 const STAGE = 4096;
 
@@ -148,10 +158,7 @@ export function WordFitText({
   return (
     <>
       <Text
-        // As the system's own labels break lines: Korean between its words, and no last line of a
-        // character or two.
-        lineBreakStrategyIOS="standard"
-        textBreakStrategy="balanced"
+        {...HEADING_BREAKS}
         {...props}
         style={fit.style}
         onTextLayout={(e) => {

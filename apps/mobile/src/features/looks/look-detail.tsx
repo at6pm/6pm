@@ -14,6 +14,7 @@ import { PressScale } from '../../ui/primitives/press-scale';
 import { useToast } from '../../ui/toast/toast-host';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import { useCompanionToast } from '../companion/use-companion-toast';
 import { canUseLook, lookAccess, resolveLook } from '../purchases/entitlement';
 import { isPaidLook } from '../purchases/products';
@@ -147,13 +148,14 @@ export function LookDetail({
                 {t('look.tryingOn', { tier: t(`look.tier.${tierOf(look)}`) })}
               </Text>
               <Text
+                {...HEADING_BREAKS}
                 accessibilityRole="header"
                 style={{
                   ...leading(display(34, 500, -0.015, def.font), 34, true),
                   color: palette.ink,
                 }}
               >
-                {copy.name(look)}
+                {headingWords(copy.name(look))}
               </Text>
             </View>
             {badgeText ? (

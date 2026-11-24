@@ -10,6 +10,7 @@ import type { Half } from '../../ui/layout/fold-form';
 import { useDesignInsets } from '../../ui/layout/design-insets';
 import { GlassButton } from '../../ui/primitives/glass-button';
 import { body, display, leading, mono, tabular } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import { dots } from '../diary/diary-colours';
 import { scanColours as c } from '../scan/scan-colours';
 import type { Payment } from '../scan/use-scan';
@@ -151,9 +152,10 @@ export function ProppedHint({
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 18, padding: 28 }}>
       <Text
+        {...HEADING_BREAKS}
         style={{ ...leading(display(26, 500, -0.01), 31), color: c.cardInk, textAlign: 'center' }}
       >
-        {t('duo.scan.stand')}
+        {headingWords(t('duo.scan.stand'))}
       </Text>
       <Text onPress={onType} style={{ ...body(15, 650), color: c.cardSoft }}>
         {typeLabel}

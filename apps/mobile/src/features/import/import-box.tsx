@@ -20,6 +20,7 @@ import { curves, importInk } from '@6pm/theme';
 import { useI18n } from '../../i18n/i18n';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading, mono, tabular } from '../../ui/type/fonts';
+import { WordFitText } from '../../ui/type/word-fit-text';
 import { FileCard, ImportFoot, PillButton } from './import-parts';
 import { useCount, useMonthLabel } from './import-format';
 
@@ -209,9 +210,9 @@ export function ImportBox({
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 4 }}>
           <FileCard ext={ext} tilt={-6} />
           <View style={{ flexShrink: 1 }}>
-            <Text style={{ ...leading(display(38, 500, -0.03), 38), color: palette.ink }}>
+            <WordFitText style={{ ...leading(display(38, 500, -0.03), 38), color: palette.ink }}>
               {t('import.box.count', { count: total, n: count(total) })}
-            </Text>
+            </WordFitText>
             {total > 0 ? (
               <Text style={{ ...body(13), color: palette.inkSoft }}>
                 {from === to

@@ -23,6 +23,7 @@ import { wordsToMeasure } from '../../ui/type/word-fit';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, tabular } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import { sharedPotRoute } from '../together/shared-jar';
 import { Jar } from './jar';
 import { alpha } from './jar-colours';
@@ -84,7 +85,9 @@ export function JarShelf() {
           paddingHorizontal: 6,
         }}
       >
-        <Text style={{ ...body(20, 700, -0.02), color: palette.ink }}>{t('pots.shelf.title')}</Text>
+        <Text {...HEADING_BREAKS} style={{ ...body(20, 700, -0.02), color: palette.ink }}>
+          {headingWords(t('pots.shelf.title'))}
+        </Text>
         <Text style={{ ...body(14, 500), ...tabular, color: palette.inkSoft }}>
           {t(hasPayday(plan) ? 'pots.shelf.each' : 'pots.shelf.eachMonth', {
             amount: money.short(jars.eachPayday),

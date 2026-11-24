@@ -20,6 +20,7 @@ import { Symbol } from '../../ui/icons/symbol';
 import { useClock } from '../../ui/theme/clock';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading, mono } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import type { MaxFrom } from './max-context';
 import { Coin, ICON_SAMPLES, LockRing, SPINES, WIDGET_GLOW } from './max-tile-art';
 import { MAX_CREAM, MAX_FONT, MAX_GOLD, MAX_INK } from './max-colours';
@@ -135,12 +136,13 @@ function Bubble({ mine, text }: { readonly mine: boolean; readonly text: string 
       }}
     >
       <Text
+        {...HEADING_BREAKS}
         style={{
           ...leading(display(17, 500, 0, MAX_FONT), 21.25),
           color: mine ? MAX_CREAM : MAX_INK,
         }}
       >
-        {text}
+        {headingWords(text)}
       </Text>
     </View>
   );

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Text, type TextProps, type TextStyle } from 'react-native';
 
-import { headingWords, useWordFit } from './word-fit-text';
+import { HEADING_BREAKS, headingWords, useWordFit } from './word-fit-text';
 
 /** Chinese and Japanese break after their own commas and stops, as they have no spaces. */
 const WIDE_PUNCTUATION = /[，、；：！？]/u;
@@ -47,9 +47,7 @@ export function BalancedText({
   return (
     <>
       <Text
-        // As the system's own labels break lines: Korean between its words.
-        lineBreakStrategyIOS="standard"
-        textBreakStrategy="balanced"
+        {...HEADING_BREAKS}
         {...props}
         style={fit.style}
         onTextLayout={(e) => {

@@ -23,6 +23,7 @@ import {
 } from './card-parts';
 import { CARD_WIDTH, cardHeight } from './card-size';
 import { jarBoxes } from './jar-art';
+import { HEADING_BREAKS, headingWords } from '../../../ui/type/word-fit-text';
 
 export interface JarCardData {
   readonly id: string;
@@ -79,13 +80,14 @@ function JarLayout({ data, format, amounts, inks, serious }: CardLayoutProps<Jar
           {t('shareCards.jar.kicker', { month: data.month }).toLocaleUpperCase()}
         </Text>
         <Text
+          {...HEADING_BREAKS}
           {...ON_CARD}
           numberOfLines={2}
           adjustsFontSizeToFit
           minimumFontScale={0.6}
           style={title(inks, inks.titleSize, 0.98)}
         >
-          {t('shareCards.jar.title', { jar: data.name })}
+          {headingWords(t('shareCards.jar.title', { jar: data.name }))}
         </Text>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <View style={{ width: w, height: h }}>
