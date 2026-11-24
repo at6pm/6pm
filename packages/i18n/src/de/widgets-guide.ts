@@ -29,6 +29,8 @@ export const deWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.home.month': 'Mein Monat',
   'widgetsGuide.home.monthWhat':
     'Der Monat als Sonnen: jeder Abend, den du abgeschlossen hast, und wie viele im Rahmen.',
+  'widgetsGuide.home.actions':
+    'Eine Ausgabe mit einem Tipp erfassen: Mittlere und große Widgets haben Scannen und +.',
   'widgetsGuide.home.step1':
     'Lege den Finger auf eine leere Stelle des Home-Bildschirms, bis die Apps wackeln.',
   'widgetsGuide.home.step2': 'Tippe oben auf „Bearbeiten“ und dann auf „Widget hinzufügen“.',

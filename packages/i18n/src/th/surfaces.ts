@@ -3,6 +3,7 @@ import type { enSurfaces } from '../en-surfaces';
 
 export const thSurfaces: { readonly [Key in keyof typeof enSurfaces]: Entry } = {
   'surfaces.scanQr': 'สแกนคิวอาร์',
+  'surfaces.scanReceipt': 'สแกนใบเสร็จ',
   'surfaces.safeTodayShort': 'วันนี้ใช้ได้',
   'surfaces.today': 'วันนี้',
   'surfaces.left': 'เหลือ',

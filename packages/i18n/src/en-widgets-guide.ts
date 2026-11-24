@@ -25,6 +25,7 @@ export const enWidgetsGuide = {
   'widgetsGuide.home.month': 'My month',
   'widgetsGuide.home.monthWhat':
     'The month as suns: every evening you closed, and how many inside the line.',
+  'widgetsGuide.home.actions': 'Log a spend in one tap: medium and large widgets have Scan and +.',
   'widgetsGuide.home.step1':
     'Touch and hold an empty spot on your Home Screen until the apps jiggle.',
   'widgetsGuide.home.step2': 'Tap Edit in the top corner, then Add Widget.',

@@ -25,7 +25,7 @@ const caught = (id: string): InboxSpend => {
 
 /** What the import matches with, from an inbox item. */
 const sightingOf = (item: InboxSpend): NewSighting => ({
-  amount: item.amount,
+  amount: item.amount ?? 0,
   source: item.source,
   status: item.status,
   at: item.at,
@@ -47,13 +47,13 @@ describe('one bank alert passed on by two automations', () => {
   it('is one payment: the second is matched to the row the first saved', () => {
     const first = caught('0b0e7c5e-3f0a-4c1d-9a51-2f6f2f1f7a10');
     const second = caught('7d9c2a44-6f1b-4a3e-8f55-0c1d2e3f4a5b');
-    const saved: SightedSpend = { id: first.id, ...sightingOf(first) };
+    const saved: SightedSpend = { ...sightingOf(first), id: first.id, status: first.status };
     expect(findDuplicate(sightingOf(second), [saved])?.id).toBe(first.id);
   });
 
   it('is still two payments when the bank sends a second alert a moment later', () => {
     const first = caught('0b0e7c5e-3f0a-4c1d-9a51-2f6f2f1f7a10');
-    const saved: SightedSpend = { id: first.id, ...sightingOf(first) };
+    const saved: SightedSpend = { ...sightingOf(first), id: first.id, status: first.status };
     const { item: later } = buildBankAlert(
       { ...ALERT, date: '2026-11-24T05:15:40.112Z' },
       null,

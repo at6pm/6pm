@@ -4,6 +4,7 @@ import type { enSurfaces } from '../en-surfaces';
 // Widget and Live Activity text is glanced at: keep it to a few characters.
 export const zhHansSurfaces: { readonly [Key in keyof typeof enSurfaces]: Entry } = {
   'surfaces.scanQr': '扫码',
+  'surfaces.scanReceipt': '扫小票',
   'surfaces.safeTodayShort': '今天可以花',
   'surfaces.today': '今天',
   'surfaces.left': '剩余',

@@ -458,8 +458,19 @@ export const surfaceSnapshotSchema = z.object({
     })
     .optional(),
   look: surfaceLookSchema.optional(),
-  /** The app's links: Today, the Diary's month, the streak's share. */
-  links: z.object({ today: z.string(), month: z.string(), streak: z.string() }).optional(),
+  /**
+   * The app's links: Today, the Diary's month, the streak's share, and the two buttons on the
+   * medium and large widgets: Scan (only on a phone that can scan) and Quick add.
+   */
+  links: z
+    .object({
+      today: z.string(),
+      month: z.string(),
+      streak: z.string(),
+      scan: z.string().optional(),
+      add: z.string().optional(),
+    })
+    .optional(),
   /** Development builds only: the clock the app was pinned to, which the widgets then follow. */
   pinnedAt: instant.optional(),
 });

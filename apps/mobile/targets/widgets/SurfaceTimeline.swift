@@ -128,6 +128,10 @@ struct SurfaceSnapshot: Decodable {
     let today: String
     let month: String
     let streak: String
+    /// Scan, on a phone that scans; nil from an app that wrote no buttons.
+    let scan: String?
+    /// Quick add.
+    let add: String?
   }
 
   let v: Int
@@ -288,7 +292,8 @@ enum CompanionImage {
   }
 }
 
-/// Where a widget's links go: the app's universal links (`/app/scan`, `/app/pot/<id>`).
+/// Where a widget's links go: the app's universal links (`/app/scan`, `/app/quick-add`,
+/// `/app/pot/<id>`).
 func appLink(_ path: String) -> URL? {
   URL(string: "https://\(GroupFiles.host)\(path)")
 }
