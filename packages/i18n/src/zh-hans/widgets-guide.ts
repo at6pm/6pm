@@ -24,6 +24,7 @@ export const zhHansWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]
   'widgetsGuide.home.largeWhat': '还剩多少，以及今天最新的几笔开销。',
   'widgetsGuide.home.month': '我的一个月',
   'widgetsGuide.home.monthWhat': '整个月化作太阳：每个结算过的晚上，以及有几次在额度内。',
+  'widgetsGuide.home.actions': '一下就能记一笔：中号和大号小组件上有“扫码”和“+”。',
   'widgetsGuide.home.step1': '按住主屏幕上的空白处，直到 App 开始晃动。',
   'widgetsGuide.home.step2': '轻点顶部角落的“编辑”，然后轻点“添加小组件”。',
   'widgetsGuide.home.step3': '搜索 6pm，滑到想要的尺寸，然后轻点“添加小组件”。',

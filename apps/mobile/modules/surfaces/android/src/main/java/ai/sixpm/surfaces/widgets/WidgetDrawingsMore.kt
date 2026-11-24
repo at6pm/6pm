@@ -4,9 +4,6 @@ import android.graphics.Path
 import android.graphics.RectF
 import android.text.TextPaint
 
-/** The Scan QR and Quick add pills' places on the Today list, in dp, for their tap areas. */
-data class WidgetTargets(val scan: RectF?, val add: RectF?)
-
 /**
  * The Today list (large), This week (small) and Today's receipt (medium), drawn as the iPhone
  * draws them. The list and the week are postcards on the look's sky; the receipt is the close's
@@ -18,10 +15,10 @@ class MoreDrawings(private val faces: WidgetFaces, private val base: WidgetDrawi
   private fun lineHeight(paint: TextPaint): Float = paint.fontMetrics.descent - paint.fontMetrics.ascent
 
   /**
-   * Today: the kicker, what is left, the day's spend against its line, today's newest spends and
-   * "+N more", as many as fit above Scan QR and Quick add along its foot.
+   * Today: the kicker, what is left with Scan and Quick add beside it, the day's spend against its
+   * line, today's newest spends and "+N more", as many as fit.
    */
-  fun list(canvas: WidgetCanvas, moment: WidgetMoment, day: WidgetDay, card: PostcardCard): WidgetTargets {
+  fun list(canvas: WidgetCanvas, moment: WidgetMoment, day: WidgetDay, card: PostcardCard): List<WidgetAction> {
     base.sky(canvas, moment)
     val ink = base.ink(moment)
     val dark = base.dark(moment)
@@ -32,7 +29,10 @@ class MoreDrawings(private val faces: WidgetFaces, private val base: WidgetDrawi
     canvas.text(moment.text("brand"), canvas.width - side, y, canvas.ink(faces.display(moment.displayFont, 15f, 600), 15f, ink), 40f, alignEnd = true)
     val figure = base.number(canvas, moment, moment.postcards?.ink?.numberMedium ?: 44f, ink)
     y += head.fontMetrics.descent + 14 + top(figure)
-    canvas.text(base.amount(moment, card.number), side, y, figure, canvas.width - side * 2, minScale = 0.5f)
+    val buttons = WidgetActions.width(moment)
+    val room = canvas.width - side * 2 - if (buttons > 0) buttons + 8 else 0f
+    canvas.text(base.amount(moment, card.number), side, y, figure, room, minScale = 0.5f)
+    val actions = WidgetActions.draw(canvas, moment, faces, canvas.width - side, y + (figure.fontMetrics.ascent + figure.fontMetrics.descent) / 2, ink, dark)
     y += figure.fontMetrics.descent
 
     val fraction = day.spentFraction
@@ -60,11 +60,7 @@ class MoreDrawings(private val faces: WidgetFaces, private val base: WidgetDrawi
       y += 6 + lineHeight(faint) + 6
     }
     val pendingInk = base.color(moment, if (dark) "pendingInkDark" else "pendingInk")
-    // The pills along the foot, as `sixpm_widget_today` lays out their tap areas.
-    val pillTop = canvas.height - 14 - 40
-    val scan = RectF(16f, pillTop, canvas.width / 2 - 4, pillTop + 40)
-    val add = RectF(canvas.width / 2 + 4, pillTop, canvas.width - 16, pillTop + 40)
-    val floor = pillTop - 6
+    val floor = canvas.height - 12
     for (row in day.list) {
       if (y + 38 > floor) break
       canvas.line(side, y, canvas.width - side, 0.5f, rule)
@@ -77,22 +73,7 @@ class MoreDrawings(private val faces: WidgetFaces, private val base: WidgetDrawi
       canvas.text(day.moreText, side, baseline, faint, canvas.width / 2)
       canvas.text(base.amount(moment, day.moreAmountText.orEmpty()), canvas.width - side, baseline, faint, canvas.width / 2, alignEnd = true)
     }
-    pill(canvas, scan, moment.text("glyph.scan"), moment.text("scanQr"), base.color(moment, "accent"), base.color(moment, "onAccent"))
-    pill(canvas, add, moment.text("glyph.add"), moment.text("quickAdd"), WidgetInk.faded(ink, 0.14), ink)
-    return WidgetTargets(scan = scan, add = add)
-  }
-
-  /** A pill along the list's foot: a 20 dp glyph and a 13 dp label side by side, centred. */
-  private fun pill(canvas: WidgetCanvas, rect: RectF, glyph: String, label: String, background: Int, foreground: Int) {
-    canvas.roundRect(rect, rect.height() / 2, background)
-    val symbol = canvas.ink(faces.symbol(20f), 20f, foreground)
-    val words = canvas.ink(faces.body(650), 13f, foreground)
-    val glyphBox = 20f
-    val labelWidth = words.measureText(label).coerceAtMost(rect.width() - glyphBox - 6 - 24)
-    val x = rect.centerX() - (glyphBox + 6 + labelWidth) / 2
-    canvas.glyph(glyph, RectF(x, rect.centerY() - glyphBox / 2, x + glyphBox, rect.centerY() + glyphBox / 2), symbol)
-    val baseline = rect.centerY() - (words.fontMetrics.ascent + words.fontMetrics.descent) / 2
-    canvas.text(label, x + glyphBox + 6, baseline, words, labelWidth)
+    return actions
   }
 
   /** One spend: its 26 dp tile, the name (and PENDING while it waits), the amount. */
@@ -145,9 +126,12 @@ class MoreDrawings(private val faces: WidgetFaces, private val base: WidgetDrawi
     }
   }
 
-  /** Today's receipt: the head, today's lines (the unconfirmed faint), what is left, the stamp. */
-  fun receipt(canvas: WidgetCanvas, moment: WidgetMoment, card: PostcardCard) {
-    val receipt = moment.postcards?.receipt ?: return
+  /**
+   * Today's receipt: the head, today's lines (the unconfirmed faint), what is left with Scan and
+   * Quick add in the paper's ink, the stamp.
+   */
+  fun receipt(canvas: WidgetCanvas, moment: WidgetMoment, card: PostcardCard): List<WidgetAction> {
+    val receipt = moment.postcards?.receipt ?: return emptyList()
     val today = card.day == null || card.day == receipt.day
     canvas.fill(receipt.paper("sheet"))
     val ink = receipt.paper("ink")
@@ -183,11 +167,16 @@ class MoreDrawings(private val faces: WidgetFaces, private val base: WidgetDrawi
       y += lineHeight(row) + 6
     }
     val total = canvas.ink(faces.display(moment.displayFont, 20f, 500), 20f, ink)
-    val footBaseline = canvas.height - 16 - total.fontMetrics.descent
-    canvas.dashedLine(side, footBaseline + total.fontMetrics.ascent - 6, canvas.width - side, 1f, rule, 3f, 3f)
+    val buttons = WidgetActions.width(moment)
+    // The foot keeps the total's height; the buttons stand a little proud of it, as on the iPhone.
+    val foot = lineHeight(total)
+    val footCentre = canvas.height - 16 - foot / 2
+    val footBaseline = footCentre - (total.fontMetrics.ascent + total.fontMetrics.descent) / 2
+    canvas.dashedLine(side, footCentre - foot / 2 - 6, canvas.width - side, 1f, rule, 3f, 3f)
     val label = canvas.ink(faces.mono(), 12f, ink)
-    canvas.text(receipt.left, side, footBaseline, label, canvas.width / 2)
-    canvas.text(base.amount(moment, card.amount), canvas.width - side, footBaseline, total, canvas.width / 2, alignEnd = true)
+    val labelWidth = canvas.text(receipt.left, side, footBaseline, label, canvas.width / 2)
+    val end = canvas.width - side - if (buttons > 0) buttons + 10 else 0f
+    canvas.text(base.amount(moment, card.amount), end, footBaseline, total, end - side - labelWidth - 8, alignEnd = true)
     if (card.closed && today && card.closedAt != null) stamp(canvas, moment.text("stamp"), card.closedAt, receipt.paper("stamp"))
     // The torn foot: the soft shadow of its teeth along the bottom edge.
     var x = 5f
@@ -195,6 +184,7 @@ class MoreDrawings(private val faces: WidgetFaces, private val base: WidgetDrawi
       canvas.circle(x, canvas.height + 2.5f, 4.5f, receipt.paper("edge"))
       x += 10
     }
+    return WidgetActions.draw(canvas, moment, faces, canvas.width - side, footCentre, ink, dark = false)
   }
 
   /** CLOSED and the time in the receipt's red, pressed on at an angle. */

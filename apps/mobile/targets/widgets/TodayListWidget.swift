@@ -3,7 +3,8 @@ import WidgetKit
 
 /// Today (large): what is left on the hour's sky, the day's spend against its line, then today's
 /// newest three spends and "+N more" with what they add up to. A postcard like the rest, in the
-/// look's sky and type; its list leaves no room for the sun. Opens Today.
+/// look's sky and type; its list leaves no room for the sun. Opens Today; Scan and Quick add sit
+/// beside the number.
 struct TodayListWidget: Widget {
   var body: some WidgetConfiguration {
     StaticConfiguration(kind: "TodayList", provider: SurfaceTimelineProvider()) { entry in
@@ -29,8 +30,12 @@ struct TodayListView: View {
           Text(entry.text("brand"))
             .font(SurfaceFont.display(entry.displayFont, size: 15, weight: 600))
         }
-        PostcardNumber(text: card.number, entry: entry, size: entry.look.numberMedium)
-          .padding(.top, 14)
+        HStack(alignment: .center, spacing: 8) {
+          PostcardNumber(text: card.number, entry: entry, size: entry.look.numberMedium)
+          Spacer(minLength: 0)
+          WidgetActions(entry: entry, ink: ink, dark: entry.dark)
+        }
+        .padding(.top, 14)
         if let fraction = day.spentFraction {
           VStack(spacing: 5) {
             LineBar(
