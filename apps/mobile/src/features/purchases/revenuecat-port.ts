@@ -1,5 +1,5 @@
 import * as Application from 'expo-application';
-import { Linking, Platform } from 'react-native';
+import { AppState, Linking, Platform } from 'react-native';
 import Purchases, {
   PRODUCT_CATEGORY,
   type CustomerInfo,
@@ -26,6 +26,7 @@ import {
   type PurchaseOutcome,
   type PurchasesPort,
 } from './purchases-port';
+import { redeemThroughStore } from './max-codes/redeem-code';
 import { customerFromStore } from './revenuecat-customer';
 
 // RevenueCat behind the port. Unit tests cover the mapping in revenuecat-customer.ts; this file
@@ -180,6 +181,23 @@ export function revenueCatPurchases(apiKey: string | undefined): PurchasesPort {
       const { managementURL } = await Purchases.getCustomerInfo();
       await Linking.openURL(managementURL ?? playSubscriptionsUrl(Application.applicationId));
     },
+    redeemCode: (code) =>
+      redeemThroughStore(
+        {
+          platform: Platform.OS,
+          presentSheet: () => Purchases.presentCodeRedemptionSheet(),
+          openUrl: (url) => Linking.openURL(url),
+          // A code redeemed on the App Store's page is not seen until the store is asked again.
+          syncWhenBack: () => {
+            const back = AppState.addEventListener('change', (state) => {
+              if (state !== 'active') return;
+              back.remove();
+              void Purchases.syncPurchases().catch(() => undefined);
+            });
+          },
+        },
+        code,
+      ),
     onCustomerChange: (listener) => {
       const heard = (info: CustomerInfo) => listener(customerFromStore(info));
       Purchases.addCustomerInfoUpdateListener(heard);

@@ -1,4 +1,5 @@
 import type { Catalogue } from '../catalogue-types';
+import { frMaxCodes } from './max-codes';
 import { frAsk } from './ask';
 import { frAskActions } from './ask-actions';
 import { frAskChat } from './ask-chat';
@@ -60,6 +61,7 @@ export { frAndroid } from './android';
 
 /** French: every key of the English catalogue. */
 export const fr: Catalogue = {
+  ...frMaxCodes,
   ...frOnboarding,
   ...frDiary,
   ...frYearBook,

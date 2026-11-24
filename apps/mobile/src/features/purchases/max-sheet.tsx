@@ -2,6 +2,8 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Linking, ScrollView, Text, View } from 'react-native';
 
+import { parseMaxChannel, parseMaxCode, type MaxCodeArrival } from '@6pm/domain';
+
 import { useDay } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
@@ -21,6 +23,7 @@ import { parseMaxClosedDays, parseMaxCompanion, parseMaxFrom } from './max-conte
 import { MaxFooter } from './max-footer';
 import { MaxMakers } from './max-makers';
 import { MaxTiles } from './max-tiles';
+import { useRedeemCode } from './max-codes/use-redeem-code';
 import { trialDaysFor, yearlySavingPercent } from './max-pricing';
 import { MaxSheetFrame } from './max-sheet-frame';
 import { MaxPage, MaxSpread } from './max-spread';
@@ -36,11 +39,19 @@ import { MAX_CREAM, MAX_FONT, MAX_SOFT } from './max-colours';
  * saving, the trial and whether Max can be bought once all come from the store; what the store
  * has not told us is left out, and the button waits. On a folding phone opened flat it is not a
  * sheet but two pages (`MaxSpread`): what Max adds to read on the left, the headline, the plans
- * and the button on the right.
+ * and the button on the right. A Max code link opens it with its channel and code (`via`, `code`),
+ * and "Redeem a code" with `redeem`: either opens the store's own redemption at once.
  */
 export function MaxSheet() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ from?: string; companion?: string; closed?: string }>();
+  const params = useLocalSearchParams<{
+    from?: string;
+    companion?: string;
+    closed?: string;
+    via?: string;
+    code?: string;
+    redeem?: string;
+  }>();
   const from = parseMaxFrom(params.from);
   /** The days closed so far, when a finished close opened the sheet. */
   const closedDays = parseMaxClosedDays(params.closed);
@@ -54,6 +65,7 @@ export function MaxSheet() {
   const { hour } = useClock();
   const day = useDay();
   const {
+    port,
     customer,
     offerings,
     offeringsStatus,
@@ -76,6 +88,32 @@ export function MaxSheet() {
   const [chosen, setChosen] = useState<MaxPlan | null>(null);
   const [footerHeight, setFooterHeight] = useState(0);
   useEffect(() => loadOfferings(), [loadOfferings]);
+
+  // A code link, or "Redeem a code", opens the store's redemption as the sheet opens.
+  const via = parseMaxChannel(params.via);
+  const [arrival] = useState<MaxCodeArrival | null>(() =>
+    via !== null && via !== 'other' ? { channel: via, code: parseMaxCode(params.code) } : null,
+  );
+  const { redeem, playHint, opened } = useRedeemCode();
+  const doRedeem = (link: MaxCodeArrival | null) => {
+    redeem(link).catch(() => toast(t('looks.restore.failed')));
+  };
+  const [askedOnOpen] = useState(() => !on && (arrival !== null || params.redeem === '1'));
+  useEffect(() => {
+    // Once, as the sheet opens.
+    if (askedOnOpen) doRedeem(arrival);
+  }, []);
+  // Google Play takes a code on the plan it was made for: the yearly one.
+  useEffect(() => {
+    if (playHint) setChosen('yearly');
+  }, [playHint]);
+  // A code the store took turns Max on while the sheet is open: welcome, as a purchase does.
+  useEffect(() => {
+    if (!on || !opened.current) return;
+    opened.current = false;
+    haptics.success();
+    router.replace({ pathname: '/max-welcome', params: { from } });
+  }, [on, opened, router, from]);
   // The yearly plan is the one the sheet opens on, if the store sells it.
   const plan: MaxPlan =
     chosen ??
@@ -126,14 +164,16 @@ export function MaxSheet() {
 
   const head = on
     ? t('max.head.on')
-    : closedDays !== null
-      ? t('max.head.closed', { count: closedDays })
-      : from === 'looks'
-        ? t('max.head.looks')
-        : t(`max.head.${from}`);
+    : arrival !== null
+      ? t(arrival.channel === 'friend' ? 'maxCodes.head.friend' : 'maxCodes.head.code')
+      : closedDays !== null
+        ? t('max.head.closed', { count: closedDays })
+        : from === 'looks'
+          ? t('max.head.looks')
+          : t(`max.head.${from}`);
   const sub = on
     ? t('max.sub.on')
-    : closedDays !== null
+    : arrival !== null || closedDays !== null
       ? t('max.sub.closed')
       : from === 'looks'
         ? t('max.sub.looks', { count: PAID_LOOKS.length })
@@ -151,19 +191,23 @@ export function MaxSheet() {
   const ctaOff = !on && (busy || !offer);
   const terms = on
     ? (statusLine ?? '')
-    : offer
-      ? plan === 'lifetime'
-        ? t('max.terms.lifetime', { price: offer.priceText })
-        : trial !== null
-          ? plan === 'yearly'
-            ? t('max.terms.trialYear', { count: trial, price: offer.priceText })
-            : t('max.terms.trialMonth', { count: trial, price: offer.priceText })
-          : plan === 'yearly'
-            ? t('max.terms.year', { price: offer.priceText })
-            : t('max.terms.month', { price: offer.priceText })
-      : offeringsStatus === 'unavailable'
-        ? t('max.terms.storeOff')
-        : '';
+    : playHint
+      ? playHint.code === null
+        ? t('maxCodes.playHint')
+        : t('maxCodes.playHint.code', { code: playHint.code })
+      : offer
+        ? plan === 'lifetime'
+          ? t('max.terms.lifetime', { price: offer.priceText })
+          : trial !== null
+            ? plan === 'yearly'
+              ? t('max.terms.trialYear', { count: trial, price: offer.priceText })
+              : t('max.terms.trialMonth', { count: trial, price: offer.priceText })
+            : plan === 'yearly'
+              ? t('max.terms.year', { price: offer.priceText })
+              : t('max.terms.month', { price: offer.priceText })
+        : offeringsStatus === 'unavailable'
+          ? t('max.terms.storeOff')
+          : '';
 
   const heading = (
     <View style={{ alignItems: 'center', gap: 6 }}>
@@ -190,6 +234,23 @@ export function MaxSheet() {
       </Text>
     </View>
   );
+  // Codes are the store's: there is nothing to redeem where it cannot be asked, or for a member.
+  const redeemLink =
+    on || !port.available ? null : (
+      <PressScale
+        accessibilityRole="link"
+        disabled={busy}
+        onPress={() => {
+          haptics.tap();
+          doRedeem(null);
+        }}
+        style={{ height: 34, paddingHorizontal: 10, justifyContent: 'center', alignSelf: 'center' }}
+      >
+        <Text style={{ ...body(12.5, 600), color: 'rgba(246,239,230,.5)' }}>
+          {t('maxCodes.redeem')}
+        </Text>
+      </PressScale>
+    );
   const links = (
     <View
       style={{
@@ -270,7 +331,10 @@ export function MaxSheet() {
           <>
             {heading}
             {footer(true)}
-            {links}
+            <View>
+              {redeemLink}
+              {links}
+            </View>
           </>
         }
       />
@@ -299,7 +363,10 @@ export function MaxSheet() {
           {heading}
           <MaxTiles from={from} on={on} hour={hour} configs={config} safe={safe} />
           <MaxMakers onSource={() => open(LEGAL_LINKS.source)} />
-          {links}
+          <View>
+            {redeemLink}
+            {links}
+          </View>
         </View>
       </ScrollView>
 

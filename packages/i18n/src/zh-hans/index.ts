@@ -1,4 +1,5 @@
 import type { Catalogue } from '../catalogue-types';
+import { zhHansMaxCodes } from './max-codes';
 import { zhHansAsk } from './ask';
 import { zhHansAskActions } from './ask-actions';
 import { zhHansAskChat } from './ask-chat';
@@ -60,6 +61,7 @@ export { zhHansAndroid } from './android';
 
 /** Simplified Chinese: every key of the English catalogue. */
 export const zhHans: Catalogue = {
+  ...zhHansMaxCodes,
   ...zhHansOnboarding,
   ...zhHansDiary,
   ...zhHansYearBook,

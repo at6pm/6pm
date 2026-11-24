@@ -1,0 +1,268 @@
+---
+import {
+  appStoreRedeemUrl,
+  maxCodeAppPath,
+  playListingWithCode,
+  type MaxLinkChannel,
+} from '@6pm/domain';
+
+import { androidPackages, appleAppId, maxCodeCopy, maxCodeLinks } from '../../data/max-codes';
+import { appStoreUrl } from '../../data/site/config';
+import { homePath } from '../../data/site/copy';
+import PageLayout from '../../layouts/page-layout.astro';
+import '../../styles/reading.css';
+
+interface Props {
+  readonly channel: MaxLinkChannel;
+}
+
+// Where a Max code link lands. An iPhone goes on to the App Store's own redemption with the code
+// filled in (it asks for 6pm first when it is not installed). An Android phone opens 6pm on the
+// Max sheet with the code, through the app's own link, and without 6pm goes to Google Play, whose
+// install referrer hands 6pm the channel and code once installed. A store without the code yet
+// gets the plain listing. Anything else stays on the page, which shows the code and both stores.
+// The visit is left a moment to be counted (Cloudflare Web Analytics reports the path) first.
+const { channel } = Astro.props;
+const link = maxCodeLinks[channel];
+const { en, vi } = maxCodeCopy;
+const ios = link.appStore ? appStoreRedeemUrl(appleAppId, link.code) : appStoreUrl;
+const playCode = link.googlePlay ? link.code : null;
+const appPath = maxCodeAppPath(channel, playCode);
+const fallbacks = {
+  prd: playListingWithCode(androidPackages.prd, channel, playCode),
+  dev: playListingWithCode(androidPackages.dev, channel, playCode),
+};
+const offer = link.appStore || link.googlePlay;
+const friend = channel === 'friend';
+---
+
+<PageLayout
+  title={`${en.title} · 6pm`}
+  description={en.description}
+  noindex
+  themeColors={[
+    { color: '#fbf7ef', media: '(prefers-color-scheme: light)' },
+    { color: '#0b0716', media: '(prefers-color-scheme: dark)' },
+  ]}
+>
+  <script
+    is:inline
+    slot="head"
+    define:vars={{ ios, appPath, fallbacks, packages: androidPackages }}
+  >
+    (function () {
+      var ua = navigator.userAgent || '';
+      var iPad = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
+      var target = null;
+      if (/iPhone|iPad|iPod/.test(ua) || iPad) target = ios;
+      else if (/Android/i.test(ua)) {
+        var dev = location.hostname.indexOf('dev.') === 0;
+        target =
+          'intent://' +
+          location.host +
+          appPath +
+          '#Intent;scheme=https;package=' +
+          (dev ? packages.dev : packages.prd) +
+          ';S.browser_fallback_url=' +
+          encodeURIComponent(dev ? fallbacks.dev : fallbacks.prd) +
+          ';end';
+      }
+      if (!target) return;
+      var leave = function () {
+        setTimeout(function () {
+          location.replace(target);
+        }, 150);
+      };
+      if (document.readyState === 'complete') leave();
+      else window.addEventListener('load', leave);
+    })();
+  </script>
+  <div class="legal">
+    <div class="glow" aria-hidden="true"></div>
+    <header class="bar">
+      <a class="brand" href={homePath.en} aria-label="6pm">6pm</a>
+    </header>
+    <main class="wrap">
+      <section>
+        <h1>{friend ? en.headingFriend : en.headingChannel}</h1>
+        <p class="lede">{offer ? en.bodyOffer : en.bodyStore}</p>
+        {
+          offer && (
+            <p class="code">
+              {en.codeLabel} <strong>{link.code}</strong>
+            </p>
+          )
+        }
+        <p class="stores">
+          <a class="store" href={ios}>{link.appStore ? en.iosRedeem : en.ios}</a>
+          <a class="store ghost" href={fallbacks.prd}>{en.android}</a>
+        </p>
+      </section>
+      <section lang="vi">
+        <h2>{friend ? vi.headingFriend : vi.headingChannel}</h2>
+        <p class="lede">{offer ? vi.bodyOffer : vi.bodyStore}</p>
+        {
+          offer && (
+            <p class="code">
+              {vi.codeLabel} <strong>{link.code}</strong>
+            </p>
+          )
+        }
+        <p class="stores">
+          <a class="store" href={ios}>{link.appStore ? vi.iosRedeem : vi.ios}</a>
+          <a class="store ghost" href={fallbacks.prd}>{vi.android}</a>
+        </p>
+      </section>
+      <p class="home">
+        <a href={homePath.en}>{en.home}</a> · <a href={homePath.vi} lang="vi">{vi.home}</a>
+      </p>
+    </main>
+  </div>
+</PageLayout>
+
+<style>
+  .legal {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: clip;
+    color: var(--lg-ink);
+    background: var(--lg-bg);
+    font-family: var(--font-text);
+    font-size: 17px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  .glow {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 560px;
+    pointer-events: none;
+    background: radial-gradient(65% 100% at 50% 0%, var(--lg-glow), transparent);
+    mask-image: linear-gradient(#000 30%, transparent);
+    -webkit-mask-image: linear-gradient(#000 30%, transparent);
+  }
+  .wrap,
+  .bar {
+    position: relative;
+    box-sizing: border-box;
+    width: min(680px, 100% - 40px);
+    margin-inline: auto;
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    padding-top: max(20px, env(safe-area-inset-top));
+    height: 72px;
+  }
+  .brand {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 28px;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    color: var(--lg-ink);
+    text-decoration: none;
+  }
+  main {
+    padding: clamp(36px, 8vw, 72px) 0 72px;
+  }
+  section + section {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--lg-hair);
+  }
+  h1,
+  h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-variation-settings:
+      'wdth' 78,
+      'opsz' 96;
+    line-height: 0.96;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+  }
+  h1 {
+    font-size: clamp(44px, 9vw, 68px);
+  }
+  h2 {
+    font-size: clamp(32px, 6vw, 44px);
+  }
+  .lede {
+    margin: 22px 0 0;
+    font-size: clamp(18px, 2.4vw, 20px);
+    line-height: 1.55;
+    color: var(--lg-soft);
+    text-wrap: pretty;
+  }
+  .stores {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 24px 0 0;
+  }
+  .store {
+    display: inline-flex;
+    align-items: center;
+    height: 48px;
+    padding: 0 22px;
+    border-radius: 99px;
+    background: var(--lg-ink);
+    color: var(--lg-bg);
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .store:hover {
+    background: var(--lg-soft);
+  }
+  .store.ghost {
+    background: transparent;
+    color: var(--lg-ink);
+    box-shadow: inset 0 0 0 1.5px var(--lg-hair);
+  }
+  .store.ghost:hover {
+    background: var(--lg-hair);
+  }
+  .code {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 22px 0 0;
+    padding: 10px 16px;
+    border-radius: 14px;
+    box-shadow: inset 0 0 0 1.5px var(--lg-hair);
+    font-size: 15px;
+    color: var(--lg-soft);
+  }
+  .code strong {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--lg-ink);
+    user-select: all;
+  }
+  .home {
+    margin: 48px 0 0;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--lg-faint);
+  }
+  .home a {
+    color: var(--lg-soft);
+    text-decoration: none;
+  }
+  .home a:hover {
+    color: var(--lg-ink);
+  }
+  :where(a):focus-visible {
+    outline: 2px solid var(--lg-link);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+</style>

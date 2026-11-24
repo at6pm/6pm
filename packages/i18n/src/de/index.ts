@@ -1,4 +1,5 @@
 import type { Catalogue } from '../catalogue-types';
+import { deMaxCodes } from './max-codes';
 import { deAsk } from './ask';
 import { deAskActions } from './ask-actions';
 import { deAskChat } from './ask-chat';
@@ -60,6 +61,7 @@ export { deAndroid } from './android';
 
 /** German: every key of the English catalogue. */
 export const de: Catalogue = {
+  ...deMaxCodes,
   ...deOnboarding,
   ...deDiary,
   ...deYearBook,

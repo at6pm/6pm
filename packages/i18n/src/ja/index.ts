@@ -1,4 +1,5 @@
 import type { Catalogue } from '../catalogue-types';
+import { jaMaxCodes } from './max-codes';
 import { jaAsk } from './ask';
 import { jaAskActions } from './ask-actions';
 import { jaAskChat } from './ask-chat';
@@ -60,6 +61,7 @@ export { jaAndroid } from './android';
 
 /** Japanese: every key of the English catalogue. */
 export const ja: Catalogue = {
+  ...jaMaxCodes,
   ...jaOnboarding,
   ...jaDiary,
   ...jaYearBook,

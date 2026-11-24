@@ -13,6 +13,7 @@ import { viTogether } from './vi-together';
 import { viReceiptEmail } from './vi-receipt-email';
 import { viBackup } from './vi-backup';
 import { viExport } from './vi-export';
+import { viMaxCodes } from './vi-max-codes';
 import { viAsk } from './vi-ask';
 import { viAskActions } from './vi-ask-actions';
 import { viPrivacyAi } from './vi-privacy-ai';
@@ -72,6 +73,7 @@ export const vi: Catalogue = {
   ...viInsightsHabits,
   ...viBackup,
   ...viExport,
+  ...viMaxCodes,
   ...viAsk,
   ...viAskLedger,
   ...viAskChat,

@@ -1,4 +1,5 @@
 import type { Catalogue } from '../catalogue-types';
+import { koMaxCodes } from './max-codes';
 import { koAsk } from './ask';
 import { koAskActions } from './ask-actions';
 import { koAskChat } from './ask-chat';
@@ -60,6 +61,7 @@ export { koAndroid } from './android';
 
 /** Korean: every key of the English catalogue. */
 export const ko: Catalogue = {
+  ...koMaxCodes,
   ...koOnboarding,
   ...koDiary,
   ...koYearBook,

@@ -7,6 +7,7 @@ type LooseCatalogue = Readonly<Record<string, Entry>>;
 export const sameInBothLanguages: readonly string[] = [
   ...importSameEverywhere,
   '6pm',
+  '6pm Max',
   'Max',
   'MAX',
   'PHOTO',

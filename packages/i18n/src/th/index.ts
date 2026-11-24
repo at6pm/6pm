@@ -1,4 +1,5 @@
 import type { Catalogue } from '../catalogue-types';
+import { thMaxCodes } from './max-codes';
 import { thAsk } from './ask';
 import { thAskActions } from './ask-actions';
 import { thAskChat } from './ask-chat';
@@ -60,6 +61,7 @@ export { thAndroid } from './android';
 
 /** Thai: every key of the English catalogue. */
 export const th: Catalogue = {
+  ...thMaxCodes,
   ...thOnboarding,
   ...thDiary,
   ...thYearBook,

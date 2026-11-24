@@ -13,6 +13,7 @@ import { enTogether } from './en-together';
 import { enReceiptEmail } from './en-receipt-email';
 import { enBackup } from './en-backup';
 import { enExport } from './en-export';
+import { enMaxCodes } from './en-max-codes';
 import { enAsk } from './en-ask';
 import { enAskActions } from './en-ask-actions';
 import { enPrivacyAi } from './en-privacy-ai';
@@ -71,6 +72,7 @@ export const en = {
   ...enInsightsHabits,
   ...enBackup,
   ...enExport,
+  ...enMaxCodes,
   ...enAsk,
   ...enAskLedger,
   ...enAskChat,
