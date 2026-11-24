@@ -5,19 +5,56 @@ import UserNotifications
 /// ever ("Caught your first one: 1.000₫ · MB. That's all it takes."), once, and never between
 /// 22:00 and 08:00. Its words come from the context the app last wrote, and only while the first
 /// catch is still to come; without them nothing is said. While 6pm is open it shows the catch
-/// itself and keeps this one off screen. A catch also takes away the app's pending "Nothing from
-/// MB in 3 days" for the way that caught, since the way is plainly still running.
+/// itself and keeps this one off screen. A catch also moves the app's pending "Nothing from MB in
+/// 3 days" for the way that caught to its third quiet day from now, since the way is plainly still
+/// running: had it been taken away, a person who stops opening 6pm would never hear the way stop.
 enum CaptureNotices {
   static let firstCatchId = "first-catch"
   private static let told = "first-catch-told"
   private static let quietFrom = 22
   private static let quietUntil = 8
 
-  /// The way that caught (`alert`, `applePay`) is running: its pending question about going quiet goes.
-  static func wayRan(_ way: String) {
-    UNUserNotificationCenter.current().removePendingNotificationRequests(
-      withIdentifiers: ["capture-quiet:\(way)"])
+  /// The way that caught (`alert`, `applePay`) is running: its pending question about going
+  /// quiet waits for three more quiet days, at the hour the app chose for it (09:00), and never
+  /// comes sooner than the app had placed it. Its words already say three days.
+  static func wayRan(_ way: String) async {
+    let id = "capture-quiet:\(way)"
+    let center = UNUserNotificationCenter.current()
+    let pending = await center.pendingNotificationRequests().first { $0.identifier == id }
+    guard let pending, let placed = placedAt(pending) else { return }
+    center.removePendingNotificationRequests(withIdentifiers: [id])
+    let calendar = Calendar.current
+    let hour = calendar.component(.hour, from: placed)
+    let minute = calendar.component(.minute, from: placed)
+    guard
+      let third = calendar.date(
+        byAdding: .day, value: quietAfterDays, to: calendar.startOfDay(for: Date())),
+      let at = calendar.date(bySettingHour: hour, minute: minute, second: 0, of: third)
+    else { return }
+    let parts = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: max(at, placed))
+    try? await center.add(
+      UNNotificationRequest(
+        identifier: id, content: pending.content,
+        trigger: UNCalendarNotificationTrigger(dateMatching: parts, repeats: false)))
   }
+
+  /// When the app placed a pending question for: the date it carries in its data (`at`), else a
+  /// calendar trigger's own date. An interval trigger's next date counts from now, not from when
+  /// it was added, so it is never read.
+  private static func placedAt(_ request: UNNotificationRequest) -> Date? {
+    // A scheduled notification keeps the app's data as its userInfo; a pushed one under "body".
+    let info = request.content.userInfo
+    let data = (info["body"] as? [AnyHashable: Any]) ?? info
+    if let text = data["at"] as? String {
+      let clock = ISO8601DateFormatter()
+      clock.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+      if let at = clock.date(from: text) { return at }
+    }
+    return (request.trigger as? UNCalendarNotificationTrigger)?.nextTriggerDate()
+  }
+
+  /// The quiet days after which the app asks about a way (`QUIET_WAY_AFTER_DAYS`).
+  private static let quietAfterDays = 3
 
   /// The first catch, said once ever: `amountText` as the domain bundle wrote it, `name` the bank
   /// or the shop.

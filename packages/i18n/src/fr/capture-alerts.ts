@@ -52,7 +52,7 @@ export const frCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
     'Paie un petit montant depuis une de ces apps. Quand son alerte arrive, le paiement est dans ta Boîte de réception.',
   'capture.walk.alerts.l1Title': 'Ajoute le raccourci 6pm',
   'capture.walk.alerts.l1Body':
-    'Touche « Obtenir le raccourci 6pm » ci-dessus, puis Ajouter un raccourci. Il s’appelle « Catch a bank alert ».',
+    'Touche « Obtenir le raccourci 6pm », puis Ajouter un raccourci. Il s’appelle « Catch a bank alert ».',
   'capture.walk.alerts.l2Title': 'Active l’automatisation',
   'capture.walk.alerts.l2Body':
     'Ouvre-le dans Raccourcis et touche › sur le déclencheur. Active Automatisation et laisse Notifier désactivé, pour que les alertes soient repérées sans bruit. Revenir en arrière l’enregistre.',
@@ -62,7 +62,7 @@ export const frCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l3Body':
     'Reviens dans 6pm et touche « Envoyer une alerte de test ». 6pm s’en envoie une et te dit quand elle arrive.',
   'capture.walk.alerts.addBank':
-    'Ta banque n’est pas dans la liste du raccourci ? Ouvre-le et touche + sur le déclencheur pour ajouter son app.',
+    'Ta banque n’est pas dans la liste du raccourci ? Ouvre-le et touche + sur le déclencheur pour ajouter son app. Si iOS vide alors la liste, rajoute 6pm et chacune de tes banques avec +.',
   'capture.walk.alerts.mistake1':
     'Titre, Corps ou Date laissé vide. Touche chacun et choisis celui de la Notification, sinon les alertes ne notent rien.',
   'capture.walk.alerts.mistake2':
@@ -110,4 +110,26 @@ export const frCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.ios.notificationSubtitle': 'Notification › Sous-titre',
   'capture.walk.ios.notify': 'Notifier',
   'capture.walk.ios.cancel': 'Annuler',
+
+  // Android: letting 6pm keep running, and bank alerts paused while access is off.
+  'capture.alerts.keepRunning':
+    'Laisse 6pm tourner, pour que les alertes arrivent même quand ton téléphone dort. Certains téléphones appellent ça Démarrage auto ou Activité en arrière-plan.',
+  'capture.alerts.keepRunningChip': 'Batterie → 6pm',
+  'capture.alerts.keepRunningOpen': 'Ouvrir les réglages de batterie',
+  'capture.alerts.paused.title': 'Les alertes bancaires sont en pause',
+  'capture.alerts.paused.body':
+    '6pm ne voit plus tes notifications. Redonne-lui l’accès et tes paiements se noteront à nouveau tout seuls.',
+  'capture.alerts.paused.action': 'Redonner l’accès',
+  'capture.alerts.steps.headline':
+    'Tes dépenses se notent toutes seules grâce aux alertes de ta banque.',
+  'capture.alerts.steps.addTitle': 'Ajoute le raccourci',
+  'capture.alerts.steps.addLine': 'Quand il s’ouvre, touche Ajouter le raccourci.',
+  'capture.alerts.steps.addAction': 'Obtenir le raccourci',
+  'capture.alerts.steps.onTitle': 'Active Automatisation',
+  'capture.alerts.steps.onLine': 'Ouvre-le, touche › et active Automatisation.',
+  'capture.alerts.steps.testTitle': 'Vérifie que ça marche',
+  'capture.alerts.steps.testLine': '6pm s’envoie une alerte de test. Rien n’est noté.',
+  'capture.alerts.steps.privacy': 'Les longs numéros sont masqués pour notre serveur.',
+  'capture.alerts.steps.privacyDevice': 'Les alertes sont lues sur cet iPhone uniquement.',
+  'capture.alerts.steps.done': 'Fait',
 };

@@ -52,7 +52,7 @@ export const thCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
     'จ่ายเงินนิดหน่อยจากแอปใดแอปหนึ่งในนั้น พอแจ้งเตือนเด้งมา รายการนั้นจะอยู่ในกล่องขาเข้าแล้ว',
   'capture.walk.alerts.l1Title': 'เพิ่มคำสั่งลัดของ 6pm',
   'capture.walk.alerts.l1Body':
-    'แตะ “รับคำสั่งลัดของ 6pm” ด้านบน แล้วแตะ เพิ่มคำสั่งลัด คำสั่งลัดนี้ชื่อ “Catch a bank alert”',
+    'แตะ “รับคำสั่งลัดของ 6pm” แล้วแตะ เพิ่มคำสั่งลัด คำสั่งลัดนี้ชื่อ “Catch a bank alert”',
   'capture.walk.alerts.l2Title': 'เปิดระบบอัตโนมัติ',
   'capture.walk.alerts.l2Body':
     'เปิดในแอปคำสั่งลัด แล้วแตะ › ที่ตัวเรียก เปิด ระบบอัตโนมัติ และปิด แจ้ง ไว้ เพื่อให้จับแจ้งเตือนได้เงียบๆ ย้อนกลับก็บันทึกแล้ว',
@@ -62,7 +62,7 @@ export const thCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l3Body':
     'กลับมาที่ 6pm แล้วแตะ “ส่งแจ้งเตือนทดสอบ” 6pm จะส่งแจ้งเตือนหาตัวเองหนึ่งรายการ แล้วบอกคุณเมื่อมาถึง',
   'capture.walk.alerts.addBank':
-    'ธนาคารของคุณยังไม่อยู่ในรายการของคำสั่งลัดใช่ไหม เปิดคำสั่งลัดแล้วแตะ + ที่ตัวเรียกเพื่อเพิ่มแอปนั้น',
+    'ธนาคารของคุณยังไม่อยู่ในรายการของคำสั่งลัดใช่ไหม เปิดคำสั่งลัดแล้วแตะ + ที่ตัวเรียกเพื่อเพิ่มแอปนั้น ถ้า iOS ล้างรายการจนว่าง ให้แตะ + เพิ่ม 6pm และทุกธนาคารที่ใช้กลับเข้าไป',
   'capture.walk.alerts.mistake1':
     'ปล่อย ชื่อเรื่อง เนื้อหา หรือ วันที่ ว่างไว้ แตะทีละช่องแล้วเลือกของการแจ้งเตือน ไม่อย่างนั้นจะไม่มีอะไรถูกจดเลย',
   'capture.walk.alerts.mistake2':
@@ -110,4 +110,25 @@ export const thCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.ios.notificationSubtitle': 'การแจ้งเตือน › ชื่อเรื่องรอง',
   'capture.walk.ios.notify': 'แจ้ง',
   'capture.walk.ios.cancel': 'ยกเลิก',
+
+  // Android: letting 6pm keep running, and bank alerts paused while access is off.
+  'capture.alerts.keepRunning':
+    'ให้ 6pm ทำงานต่อไปได้ การแจ้งเตือนจะยังเข้ามาแม้โทรศัพท์พักหน้าจอ บางเครื่องเรียกว่า เริ่มอัตโนมัติ หรือ กิจกรรมเบื้องหลัง',
+  'capture.alerts.keepRunningChip': 'แบตเตอรี่ → 6pm',
+  'capture.alerts.keepRunningOpen': 'เปิดการตั้งค่าแบตเตอรี่',
+  'capture.alerts.paused.title': 'แจ้งเตือนธนาคารหยุดชั่วคราว',
+  'capture.alerts.paused.body':
+    '6pm มองไม่เห็นการแจ้งเตือนของคุณ เปิดสิทธิ์เข้าถึงอีกครั้ง แล้วรายการจ่ายจะบันทึกเองเหมือนเดิม',
+  'capture.alerts.paused.action': 'เปิดสิทธิ์อีกครั้ง',
+  'capture.alerts.steps.headline': 'รายจ่ายของคุณจดเองจากแจ้งเตือนธนาคาร',
+  'capture.alerts.steps.addTitle': 'เพิ่มคำสั่งลัด',
+  'capture.alerts.steps.addLine': 'เมื่อเปิดขึ้นมา แตะ เพิ่มคำสั่งลัด',
+  'capture.alerts.steps.addAction': 'รับคำสั่งลัด',
+  'capture.alerts.steps.onTitle': 'เปิด ระบบอัตโนมัติ',
+  'capture.alerts.steps.onLine': 'เปิดคำสั่งลัด แตะ › แล้วเปิด ระบบอัตโนมัติ',
+  'capture.alerts.steps.testTitle': 'ลองดูว่าใช้ได้ไหม',
+  'capture.alerts.steps.testLine': '6pm ส่งแจ้งเตือนทดสอบหาตัวเอง ไม่มีอะไรถูกจด',
+  'capture.alerts.steps.privacy': 'เลขยาว ๆ ถูกซ่อนก่อนเซิร์ฟเวอร์ของเราอ่านแจ้งเตือน',
+  'capture.alerts.steps.privacyDevice': 'แจ้งเตือนถูกอ่านบน iPhone เครื่องนี้เท่านั้น',
+  'capture.alerts.steps.done': 'เสร็จแล้ว',
 };

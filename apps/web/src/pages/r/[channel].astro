@@ -1,0 +1,15 @@
+---
+import { MAX_LINK_CHANNELS, type MaxLinkChannel } from '@6pm/domain';
+
+import MaxCodeLink from '../../components/site/max-code-link.astro';
+
+// One page per Max code link, at6pm.app/r/<channel>: a place 6pm posts in, or a friend's link from
+// the app. Each has its own path, so the site's analytics count the visits each one brings.
+export function getStaticPaths() {
+  return MAX_LINK_CHANNELS.map((channel) => ({ params: { channel } }));
+}
+
+const channel = Astro.params.channel as MaxLinkChannel;
+---
+
+<MaxCodeLink channel={channel} />

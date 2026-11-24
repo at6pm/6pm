@@ -118,4 +118,14 @@ export const esAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
     'Este móvil lee los recibos que compartes o escaneas. Un punto marca el que tuviste que corregir: el importe o la tienda.',
   'privacyPage.headline': 'Tu dinero se queda en este móvil, cifrado.',
   'privacyPage.keep': 'Guardarlo todo en este móvil',
+
+  // Capture: Android reads bank alerts through Notification access, not a Shortcuts automation.
+  'notify.quiet.soft':
+    'Nada de {way} en {count} días. ¿6pm sigue teniendo acceso a las notificaciones?',
+  'notify.quiet.cheeky':
+    'Nada de {way} en {count} días. ¿Mucha calma, o 6pm perdió el acceso a las notificaciones?',
+  'notify.quiet.roast':
+    'Nada de {way} en {count} días. O eres pura disciplina o 6pm perdió el acceso a las notificaciones.',
+  'notify.quiet.plain':
+    'Nada de {way} en {count} días. Comprueba que 6pm siga teniendo acceso a las notificaciones.',
 };

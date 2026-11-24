@@ -3,13 +3,26 @@ import { View } from 'react-native';
 import { useI18n } from '../../i18n/i18n';
 import { ForwardingCheckCard } from '../receipt-email/forwarding-check-card';
 import { BANK_ALERT_SHORTCUT_READY, BANK_ALERT_SHORTCUT_URL } from './bank-alert-shortcut';
-import type { GuideContent } from './guide-content';
+import { surfaces } from '../../../modules/surfaces';
+import { haptics } from '../../ui/haptics';
+import { nativeReach } from '../surfaces/native-reach';
+import type { GuideContent, GuideStep } from './guide-content';
 import { MistakesCard, OtherMailCard } from './guide-notes';
 import { GuideSection, GuideSteps, GuideTip, type LiveChip } from './guide-sections';
 import { GuideTrouble } from './guide-trouble';
 import { isWalked, useWalkthroughSteps, type WalkedSource } from './guide-walkthroughs';
 import type { CaptureSource } from './source-status';
 import { Walkthrough } from './walkthrough/walkthrough';
+
+/**
+ * Android only: phones that stop apps in the background would stop the alert listener too, so the
+ * bank alerts guide ends with letting 6pm keep running. Its chip opens the page the phone has.
+ */
+const KEEP_RUNNING: GuideStep = {
+  text: 'capture.alerts.keepRunning',
+  icon: 'power',
+  chip: 'capture.alerts.keepRunningChip',
+};
 
 /** The template, with its banks and 6pm on the trigger, is what the guide walks through. */
 const linked = BANK_ALERT_SHORTCUT_URL !== null && BANK_ALERT_SHORTCUT_READY;
@@ -31,10 +44,30 @@ export function HowItWorks({
   readonly emailAddress: string | null;
 }) {
   const { t } = useI18n();
+  // Android's bank alerts: a fourth step lets 6pm keep running, on the page that phone has.
+  const keepRunning = source === 'alerts' && nativeReach.alertListener;
   if (!isWalked(source)) {
     return (
       <GuideSection title={t('capture.guide.howItWorks')} note={t(guide.time)}>
-        <GuideSteps guide={guide} firstChip={addressChip} />
+        <GuideSteps
+          guide={guide}
+          firstChip={addressChip}
+          {...(keepRunning
+            ? {
+                steps: [...guide.steps, KEEP_RUNNING],
+                chips: {
+                  [guide.steps.length]: {
+                    text: t('capture.alerts.keepRunningChip'),
+                    label: t('capture.alerts.keepRunningOpen'),
+                    onPress: () => {
+                      haptics.tap();
+                      void surfaces?.openKeepRunning?.().catch(() => undefined);
+                    },
+                  },
+                },
+              }
+            : {})}
+        />
       </GuideSection>
     );
   }

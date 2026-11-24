@@ -101,4 +101,13 @@ export const koAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
     '공유하거나 스캔한 영수증은 이 휴대폰에서 읽어요. 점은 직접 고친 영수증 표시예요: 금액이나 가게 이름.',
   'privacyPage.headline': '돈 기록은 이 휴대폰에 암호화되어 남아요.',
   'privacyPage.keep': '전부 이 휴대폰에 두기',
+
+  // Capture: Android reads bank alerts through Notification access, not a Shortcuts automation.
+  'notify.quiet.soft': '{count}일째 {way}에서 소식이 없어요. 6pm에 알림 접근 권한이 아직 있나요?',
+  'notify.quiet.cheeky':
+    '{count}일째 {way}에서 소식이 없어요. 아주 알뜰한 건가요, 6pm의 알림 접근 권한이 꺼진 건가요?',
+  'notify.quiet.roast':
+    '{count}일째 {way}에서 소식이 없어요. 성인군자거나, 6pm의 알림 접근 권한이 꺼졌거나.',
+  'notify.quiet.plain':
+    '{count}일째 {way}에서 소식이 없습니다. 6pm에 알림 접근 권한이 있는지 확인하세요.',
 };

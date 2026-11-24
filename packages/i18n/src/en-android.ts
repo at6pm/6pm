@@ -114,4 +114,14 @@ export const enAndroid = {
     'Receipts you share or scan are read by this phone. A dot marks one you had to fix: its amount or its shop.',
   'privacyPage.headline': 'Your money stays on this phone, encrypted.',
   'privacyPage.keep': 'Keep all of it on this phone',
+
+  // Capture: Android reads bank alerts through Notification access, not a Shortcuts automation.
+  'notify.quiet.soft':
+    'Nothing from {way} in {count} days. Does 6pm still have notification access?',
+  'notify.quiet.cheeky':
+    'Nothing from {way} in {count} days. Very calm, or did 6pm lose notification access?',
+  'notify.quiet.roast':
+    'Nothing from {way} in {count} days. Either you’re a saint or 6pm lost notification access.',
+  'notify.quiet.plain':
+    'Nothing from {way} in {count} days. Check that 6pm still has notification access.',
 } as const satisfies Variants;

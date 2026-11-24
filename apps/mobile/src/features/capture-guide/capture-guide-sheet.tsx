@@ -14,10 +14,12 @@ import { body, display, leading } from '../../ui/type/fonts';
 import { WordFitText } from '../../ui/type/word-fit-text';
 import { proofRoom } from '../capture/test-alert-proof';
 import { nativeReach } from '../surfaces/native-reach';
+import { AlertSteps, alertStepsShown } from './alert-steps';
 import { captureColours } from './capture-colours';
 import { GuideActions } from './guide-actions';
 import { HowItWorks } from './guide-how';
 import { GuideSample, GuideSection, GuideTip, type LiveChip } from './guide-sections';
+import type { GuideContent } from './guide-content';
 import type { CaptureSource } from './source-status';
 import { useCaptureSources } from './use-capture-sources';
 
@@ -50,6 +52,8 @@ export function CaptureGuideSheet({ source: asked }: { readonly source: CaptureS
   // The ways that live in Shortcuts: their walkthrough shows what lands, so nothing repeats it.
   // Android's bank alerts are a switch in its settings instead, shown like the other ways.
   const shortcut = source === 'wallet' || (source === 'alerts' && !nativeReach.alertListener);
+  // Bank alerts on an iPhone that can test them: three steps, each with its own button.
+  const stepped = source === 'alerts' && alertStepsShown;
   // Receipt email's first step shows the address itself; tapping it offers the share sheet.
   const addressChip: LiveChip | null =
     source === 'email' && emailAddress !== null
@@ -126,50 +130,89 @@ export function CaptureGuideSheet({ source: asked }: { readonly source: CaptureS
               </View>
             </View>
             <WordFitText style={{ ...leading(display(31, 500, -0.015), 33.5), color: palette.ink }}>
-              {t(guide.headline)}
+              {t(stepped ? 'capture.alerts.steps.headline' : guide.headline)}
             </WordFitText>
           </View>
 
-          <GuideActions
-            source={source}
-            on={view.on}
-            emailAddress={emailAddress}
-            note={source === 'alerts' ? t('capture.alerts.privacy') : null}
-          />
-
-          {/* What is under the buttons makes room when a test alert's proof shows above it. */}
-          <Animated.View {...proofRoom} style={{ gap: 24 }}>
-            {emailOff ? null : (
-              <HowItWorks
-                source={source}
-                guide={guide}
-                addressChip={addressChip}
-                emailAddress={emailAddress}
-              />
-            )}
-
-            {emailOff || shortcut ? null : (
-              <GuideSection title={t('capture.guide.lands')}>
-                <GuideSample guide={guide} />
-                <Text
-                  style={{
-                    ...body(13),
-                    lineHeight: 18.2,
-                    color: palette.inkSoft,
-                    paddingHorizontal: 6,
-                  }}
-                >
-                  {t('capture.guide.landsNote')}
-                </Text>
-              </GuideSection>
-            )}
-
-            {shortcut ? null : (
-              <GuideTip text={emailOff ? t('receiptEmail.deviceMode.body') : t(guide.tip)} />
-            )}
-          </Animated.View>
+          {stepped ? (
+            <AlertSteps on={view.on} />
+          ) : (
+            <Ways
+              source={source}
+              on={view.on}
+              guide={guide}
+              emailOff={emailOff}
+              shortcut={shortcut}
+              addressChip={addressChip}
+              emailAddress={emailAddress}
+            />
+          )}
         </Animated.View>
       </ScrollView>
     </SheetFrame>
+  );
+}
+
+/** Every other way's guide under its headline: its buttons, how it works, what lands, a tip. */
+function Ways({
+  source,
+  on,
+  guide,
+  emailOff,
+  shortcut,
+  addressChip,
+  emailAddress,
+}: {
+  readonly source: CaptureSource;
+  readonly on: boolean;
+  readonly guide: GuideContent;
+  readonly emailOff: boolean;
+  readonly shortcut: boolean;
+  readonly addressChip: LiveChip | null;
+  readonly emailAddress: string | null;
+}) {
+  const { palette } = useTheme();
+  const { t } = useI18n();
+  return (
+    <>
+      <GuideActions
+        source={source}
+        on={on}
+        emailAddress={emailAddress}
+        note={source === 'alerts' ? t('capture.alerts.privacy') : null}
+      />
+
+      {/* What is under the buttons makes room when a test alert's proof shows above it. */}
+      <Animated.View {...proofRoom} style={{ gap: 24 }}>
+        {emailOff ? null : (
+          <HowItWorks
+            source={source}
+            guide={guide}
+            addressChip={addressChip}
+            emailAddress={emailAddress}
+          />
+        )}
+
+        {emailOff || shortcut ? null : (
+          <GuideSection title={t('capture.guide.lands')}>
+            <GuideSample guide={guide} />
+            <Text
+              style={{
+                ...body(13),
+                lineHeight: 18.2,
+                color: palette.inkSoft,
+                paddingHorizontal: 6,
+              }}
+            >
+              {t('capture.guide.landsNote')}
+            </Text>
+          </GuideSection>
+        )}
+
+        {shortcut ? null : (
+          <GuideTip text={emailOff ? t('receiptEmail.deviceMode.body') : t(guide.tip)} />
+        )}
+      </Animated.View>
+    </>
   );
 }

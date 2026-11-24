@@ -11,7 +11,7 @@ export const zhHansCaptureWalk: { readonly [Key in keyof typeof enCaptureWalk]: 
 
   'capture.walk.wallet.s1Title': '添加 6pm 的快捷指令',
   'capture.walk.wallet.s1Body':
-    '轻点上方的“添加 6pm 快捷指令”，再轻点“添加快捷指令”。它的名字是“Log to 6pm”。',
+    '轻点“添加 6pm 快捷指令”，再轻点“添加快捷指令”。它的名字是“Log to 6pm”。',
   'capture.walk.wallet.s2Title': '打开“自动化”并轻点 +',
   'capture.walk.wallet.s2Body':
     '在“快捷指令”中，依次轻点“资源库”“自动化”和 +。如果看到“描述快捷指令”，轻点“编辑”。',

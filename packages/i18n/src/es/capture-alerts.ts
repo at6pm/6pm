@@ -52,7 +52,7 @@ export const esCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
     'Paga algo pequeño desde una de esas apps. Cuando llegue su aviso, el pago estará en tu Bandeja.',
   'capture.walk.alerts.l1Title': 'Añade el atajo de 6pm',
   'capture.walk.alerts.l1Body':
-    'Toca “Conseguir el atajo de 6pm” aquí arriba y luego Añadir atajo. Se llama “Catch a bank alert”.',
+    'Toca “Conseguir el atajo de 6pm” y luego Añadir atajo. Se llama “Catch a bank alert”.',
   'capture.walk.alerts.l2Title': 'Activa la automatización',
   'capture.walk.alerts.l2Body':
     'Ábrelo en Atajos y toca › en el activador. Activa Automatización y deja Notificar desactivado, para que los avisos se pillen en silencio. Al volver atrás se guarda.',
@@ -62,7 +62,7 @@ export const esCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l3Body':
     'Vuelve a 6pm y toca “Enviar un aviso de prueba”. 6pm se manda uno y te avisa cuando llegue.',
   'capture.walk.alerts.addBank':
-    '¿Tu banco no está en la lista del atajo? Ábrelo y toca + en el activador para añadir su app.',
+    '¿Tu banco no está en la lista del atajo? Ábrelo y toca + en el activador para añadir su app. Si iOS vacía entonces la lista, vuelve a añadir 6pm y cada banco que uses con +.',
   'capture.walk.alerts.mistake1':
     'Título, Cuerpo o Fecha vacíos. Toca cada uno y elige el de la Notificación, o los avisos no apuntan nada.',
   'capture.walk.alerts.mistake2':
@@ -110,4 +110,25 @@ export const esCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.ios.notificationSubtitle': 'Notificación › Subtítulo',
   'capture.walk.ios.notify': 'Notificar',
   'capture.walk.ios.cancel': 'Cancelar',
+
+  // Android: letting 6pm keep running, and bank alerts paused while access is off.
+  'capture.alerts.keepRunning':
+    'Deja que 6pm siga funcionando para que los avisos lleguen aunque el móvil esté en reposo. Algunos móviles lo llaman Inicio automático o Actividad en segundo plano.',
+  'capture.alerts.keepRunningChip': 'Batería → 6pm',
+  'capture.alerts.keepRunningOpen': 'Abrir ajustes de batería',
+  'capture.alerts.paused.title': 'Los avisos del banco están en pausa',
+  'capture.alerts.paused.body':
+    '6pm no puede ver tus notificaciones. Vuelve a darle acceso y tus pagos se anotarán solos otra vez.',
+  'capture.alerts.paused.action': 'Volver a dar acceso',
+  'capture.alerts.steps.headline': 'Tus gastos se apuntan solos con los avisos de tu banco.',
+  'capture.alerts.steps.addTitle': 'Añade el atajo',
+  'capture.alerts.steps.addLine': 'Cuando se abra, toca Añadir atajo.',
+  'capture.alerts.steps.addAction': 'Conseguir el atajo',
+  'capture.alerts.steps.onTitle': 'Activa Automatización',
+  'capture.alerts.steps.onLine': 'Ábrelo, toca › y activa Automatización.',
+  'capture.alerts.steps.testTitle': 'Comprueba que funciona',
+  'capture.alerts.steps.testLine': '6pm se envía un aviso de prueba. No se apunta nada.',
+  'capture.alerts.steps.privacy': 'Los números largos se ocultan a nuestro servidor.',
+  'capture.alerts.steps.privacyDevice': 'Los avisos solo se leen en este iPhone.',
+  'capture.alerts.steps.done': 'Hecho',
 };

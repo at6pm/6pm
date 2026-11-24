@@ -50,10 +50,18 @@ enum GroupFiles {
     try url.setResourceValues(values)
   }
 
-  /// Leaves one capture for the app to import. Extensions only ever write here.
+  /// Leaves one capture for the app to import. Extensions only ever write here. A 6pm that is
+  /// open hears of it at once (`inboxSignal`) and brings it in.
   static func writeInbox(id: String, json: Data) throws {
     try write(json, to: folder("inbox").appendingPathComponent("\(id).json"))
+    CFNotificationCenterPostNotification(
+      CFNotificationCenterGetDarwinNotifyCenter(), CFNotificationName(inboxSignal as CFString),
+      nil, nil, true)
   }
+
+  /// The Darwin notification posted each time something is left in the inbox. It carries nothing:
+  /// the app reads the inbox as it always does.
+  static var inboxSignal: String { "\(groupId).inbox" }
 
   /// Leaves the photo a capture was read from beside it (`<id>.jpg`), for the app to keep with
   /// the spend. Written before the capture itself, so the app never imports one without it.

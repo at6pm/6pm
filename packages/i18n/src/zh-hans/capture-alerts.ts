@@ -51,7 +51,7 @@ export const zhHansCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlert
   'capture.walk.alerts.s6Body': '用其中一个 App 付一小笔钱。通知一到，这笔付款就在收件箱里了。',
   'capture.walk.alerts.l1Title': '添加 6pm 的快捷指令',
   'capture.walk.alerts.l1Body':
-    '轻点上方的“获取 6pm 快捷指令”，再轻点“添加快捷指令”。它的名字是“Catch a bank alert”。',
+    '轻点“获取 6pm 快捷指令”，再轻点“添加快捷指令”。它的名字是“Catch a bank alert”。',
   'capture.walk.alerts.l2Title': '开启自动化',
   'capture.walk.alerts.l2Body':
     '在“快捷指令”中打开它，轻点触发条件上的 ›。开启“自动化”，保持“通知”关闭，这样通知会被悄悄记下。返回即自动存储。',
@@ -61,7 +61,7 @@ export const zhHansCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlert
   'capture.walk.alerts.l3Body':
     '回到 6pm，轻点“发一条测试通知”。6pm 会给自己发一条，到达后告诉你。',
   'capture.walk.alerts.addBank':
-    '你的银行不在快捷指令的列表里？打开它，轻点触发条件上的 + 添加该 App。',
+    '你的银行不在快捷指令的列表里？打开它，轻点触发条件上的 + 添加该 App。如果 iOS 随后清空了列表，再用 + 把 6pm 和你用的每家银行加回来。',
   'capture.walk.alerts.mistake1':
     '“标题”“正文”或“日期”留空了。逐个轻点，选这条通知自己的对应项，否则什么都记不下来。',
   'capture.walk.alerts.mistake2': '“通知”开着。这样每条通知都会再提醒你一次，而不是被悄悄记下。',
@@ -107,4 +107,24 @@ export const zhHansCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlert
   'capture.walk.ios.notificationSubtitle': '通知 › 副标题',
   'capture.walk.ios.notify': '通知',
   'capture.walk.ios.cancel': '取消',
+
+  // Android: letting 6pm keep running, and bank alerts paused while access is off.
+  'capture.alerts.keepRunning':
+    '让 6pm 保持运行，手机休眠时通知也照样进来。有的手机把这项叫作“自启动”或“后台活动”。',
+  'capture.alerts.keepRunningChip': '电池 → 6pm',
+  'capture.alerts.keepRunningOpen': '打开电池设置',
+  'capture.alerts.paused.title': '银行通知已暂停',
+  'capture.alerts.paused.body': '6pm 看不到你的通知了。重新开启通知使用权，付款就会再次自动记下。',
+  'capture.alerts.paused.action': '重新开启',
+  'capture.alerts.steps.headline': '银行一发通知，开销就自己记好。',
+  'capture.alerts.steps.addTitle': '添加快捷指令',
+  'capture.alerts.steps.addLine': '打开后，轻点“添加快捷指令”。',
+  'capture.alerts.steps.addAction': '获取快捷指令',
+  'capture.alerts.steps.onTitle': '开启“自动化”',
+  'capture.alerts.steps.onLine': '打开它，轻点 ›，开启“自动化”。',
+  'capture.alerts.steps.testTitle': '试试是否有效',
+  'capture.alerts.steps.testLine': '6pm 会给自己发一条测试通知，不会记任何账。',
+  'capture.alerts.steps.privacy': '服务器读取通知前，长号码会先被隐藏。',
+  'capture.alerts.steps.privacyDevice': '通知只在这台 iPhone 上读取。',
+  'capture.alerts.steps.done': '完成',
 };

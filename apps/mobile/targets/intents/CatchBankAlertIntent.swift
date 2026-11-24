@@ -41,7 +41,7 @@ struct CatchBankAlertIntent: AppIntent {
         app: sender, title: alertTitle, subtitle: subtitle, body: body, date: date, now: now)
     else { return .result() }
     // Read at all, the automation still runs: no "Nothing from your bank in 3 days".
-    if read.last != nil { CaptureNotices.wayRan("alert") }
+    if read.last != nil { await CaptureNotices.wayRan("alert") }
     // A payment that failed only voids the one it tells of: nothing was caught to say so.
     if let item = read.item, item["what"] as? String != "failed" {
       let bank = (read.last?["bank"] as? String).flatMap { $0.isEmpty ? nil : $0 }

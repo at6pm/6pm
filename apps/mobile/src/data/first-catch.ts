@@ -36,6 +36,8 @@ import type { SqlDatabase } from './table';
 const STATE_KEY = 'first_catch';
 const AWAY_KEY = 'first_catch_away';
 const ALERTS_PROVEN_KEY = 'bank_alerts_proven';
+const ACCESS_SEEN_KEY = 'bank_alerts_access_seen';
+const SHORTCUT_ADDED_KEY = 'bank_alerts_shortcut_added';
 const FIXES_KEY = 'receipt_fixes';
 const LOOKED_KEY = 'receipts_looked';
 /** When this phone began keeping how receipts were read: older ones are not counted. */
@@ -124,6 +126,42 @@ export async function readAlertsProven(db: SqlDatabase): Promise<string | null> 
 /** A test alert came the whole way in at `at`: the bank alert automation runs. */
 export async function keepAlertsProven(db: SqlDatabase, at: string): Promise<void> {
   await writeJson(db, ALERTS_PROVEN_KEY, at);
+}
+
+/**
+ * When the person came back to 6pm from adding the bank alert shortcut, or null while they have
+ * not (or since showed it missing). The phone cannot see Shortcuts: this is what the guide has to
+ * tick its first step by.
+ */
+export async function readShortcutAdded(db: SqlDatabase): Promise<string | null> {
+  const parsed = z
+    .string()
+    .min(20)
+    .safeParse(await readJson(db, SHORTCUT_ADDED_KEY));
+  return parsed.success ? parsed.data : null;
+}
+
+/** Back from adding the shortcut at `at`; or, with null, the shortcut is to be added again. */
+export async function keepShortcutAdded(db: SqlDatabase, at: string | null): Promise<void> {
+  if (at === null) await db.runAsync('DELETE FROM settings WHERE key = ?', [SHORTCUT_ADDED_KEY]);
+  else await writeJson(db, SHORTCUT_ADDED_KEY, at);
+}
+
+/**
+ * When Android's Notification access was first seen switched on for 6pm, or null while it never
+ * was: bank alerts were set up once, so access switched off again is a pause worth saying.
+ */
+export async function readAlertAccessSeen(db: SqlDatabase): Promise<string | null> {
+  const parsed = z
+    .string()
+    .min(20)
+    .safeParse(await readJson(db, ACCESS_SEEN_KEY));
+  return parsed.success ? parsed.data : null;
+}
+
+/** Notification access is on now; the first time is kept. */
+export async function keepAlertAccessSeen(db: SqlDatabase, at: string): Promise<void> {
+  if ((await readAlertAccessSeen(db)) === null) await writeJson(db, ACCESS_SEEN_KEY, at);
 }
 
 /**

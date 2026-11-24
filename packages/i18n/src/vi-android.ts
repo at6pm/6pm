@@ -102,4 +102,14 @@ export const viAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
     'Biên lai bạn chia sẻ hay quét được đọc ngay trên máy này. Dấu chấm đánh dấu tờ bạn phải sửa: số tiền hoặc tên quán.',
   'privacyPage.headline': 'Tiền của bạn ở lại trên máy này, được mã hoá.',
   'privacyPage.keep': 'Giữ tất cả trên máy này',
+
+  // Capture: Android reads bank alerts through Notification access, not a Shortcuts automation.
+  'notify.quiet.soft':
+    '{count} ngày nay không có gì từ {way}. 6pm còn quyền truy cập thông báo không?',
+  'notify.quiet.cheeky':
+    '{count} ngày nay {way} im re. Bạn tiết kiệm, hay 6pm mất quyền truy cập thông báo?',
+  'notify.quiet.roast':
+    '{count} ngày nay {way} im re. Hoặc bạn là thánh, hoặc 6pm mất quyền truy cập thông báo rồi.',
+  'notify.quiet.plain':
+    '{count} ngày nay không có gì từ {way}. Kiểm tra quyền truy cập thông báo của 6pm.',
 };

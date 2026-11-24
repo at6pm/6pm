@@ -101,4 +101,8 @@ export const viFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'testAlert.notice.body': 'Thử: đã thanh toán {amount}. Đây không phải giao dịch thật.',
   'testAlert.channel': 'Thông báo thử',
   'testAlert.slip.note': 'Chỉ là thử, không phải thanh toán. Không có gì được ghi thêm.',
+  'testAlert.firstTry':
+    'Chưa thấy gì. iPhone đôi khi lỡ lần thử đầu sau khi cài hoặc cập nhật, gửi lại nhé.',
+  'testAlert.stillNothing':
+    'Vẫn chưa có? Trong Phím tắt, kiểm tra Tự động hóa đã bật và 6pm có trong danh sách ứng dụng.',
 };

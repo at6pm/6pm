@@ -52,7 +52,7 @@ export const jaCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
     '選んだアプリのどれかで少額を支払ってください。通知が届けば、支払いはインボックスに入っています。',
   'capture.walk.alerts.l1Title': '6pmのショートカットを追加',
   'capture.walk.alerts.l1Body':
-    '上の「6pmのショートカットを追加」をタップし、「ショートカットを追加」をタップします。名前は「Catch a bank alert」です。',
+    '「6pmのショートカットを追加」をタップし、「ショートカットを追加」をタップします。名前は「Catch a bank alert」です。',
   'capture.walk.alerts.l2Title': 'オートメーションをオンにする',
   'capture.walk.alerts.l2Body':
     'ショートカットでそれを開き、トリガーの「›」をタップします。「オートメーション」をオンにし、「通知」はオフのままにします。これで銀行の通知が静かにキャッチされます。戻ると保存されます。',
@@ -62,7 +62,7 @@ export const jaCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l3Body':
     '6pmに戻って「通知をテスト」をタップします。6pmが自分あてにテスト通知を送り、届いたらお知らせします。',
   'capture.walk.alerts.addBank':
-    'お使いの銀行がショートカットのリストにないときは、ショートカットを開き、トリガーの「＋」でそのアプリを追加します。',
+    'お使いの銀行がショートカットのリストにないときは、ショートカットを開き、トリガーの「＋」でそのアプリを追加します。iOSがリストを空にした場合は、「＋」で6pmと使っている銀行をもう一度追加します。',
   'capture.walk.alerts.mistake1':
     '「タイトル」「本文」「日付」が空のまま。それぞれタップして通知の同じ項目を選ばないと、何も記録されません。',
   'capture.walk.alerts.mistake2':
@@ -110,4 +110,25 @@ export const jaCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.ios.notificationSubtitle': '通知 › サブタイトル',
   'capture.walk.ios.notify': '通知',
   'capture.walk.ios.cancel': 'キャンセル',
+
+  // Android: letting 6pm keep running, and bank alerts paused while access is off.
+  'capture.alerts.keepRunning':
+    '6pmが動き続けられるようにすると、スマホがスリープ中でも通知が届きます。機種によっては「自動起動」や「バックグラウンドアクティビティ」という名前です。',
+  'capture.alerts.keepRunningChip': 'バッテリー → 6pm',
+  'capture.alerts.keepRunningOpen': 'バッテリー設定を開く',
+  'capture.alerts.paused.title': '銀行の通知が止まっています',
+  'capture.alerts.paused.body':
+    '6pmが通知を読めません。アクセスを戻すと、支払いがまた自動で記録されます。',
+  'capture.alerts.paused.action': 'アクセスを戻す',
+  'capture.alerts.steps.headline': '銀行の通知から、支出がひとりでに記録されます。',
+  'capture.alerts.steps.addTitle': 'ショートカットを追加',
+  'capture.alerts.steps.addLine': '開いたら「ショートカットを追加」をタップ。',
+  'capture.alerts.steps.addAction': 'ショートカットを入手',
+  'capture.alerts.steps.onTitle': 'オートメーションをオンに',
+  'capture.alerts.steps.onLine': '開いて「›」をタップし、オートメーションをオンに。',
+  'capture.alerts.steps.testTitle': '動くか確かめる',
+  'capture.alerts.steps.testLine': '6pmが自分にテスト通知を送ります。何も記録されません。',
+  'capture.alerts.steps.privacy': '長い番号は、サーバーが通知を読む前に伏せられます。',
+  'capture.alerts.steps.privacyDevice': '通知はこのiPhoneの中だけで読みます。',
+  'capture.alerts.steps.done': '完了',
 };

@@ -11,7 +11,7 @@ export const idCaptureWalk: { readonly [Key in keyof typeof enCaptureWalk]: Entr
 
   'capture.walk.wallet.s1Title': 'Tambahkan pintasan 6pm',
   'capture.walk.wallet.s1Body':
-    'Ketuk “Tambahkan pintasan 6pm” di atas, lalu Tambah Pintasan. Namanya “Log to 6pm”.',
+    'Ketuk “Tambahkan pintasan 6pm”, lalu Tambah Pintasan. Namanya “Log to 6pm”.',
   'capture.walk.wallet.s2Title': 'Buka Otomatisasi dan ketuk +',
   'capture.walk.wallet.s2Body':
     'Di Pintasan, ketuk Pustaka, lalu Otomatisasi, lalu +. Kalau muncul “Jelaskan pintasan”, ketuk Edit.',

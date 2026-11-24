@@ -108,4 +108,8 @@ export const esFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'testAlert.notice.body': 'Prueba: pago de {amount}. No es un pago real.',
   'testAlert.channel': 'Avisos de prueba',
   'testAlert.slip.note': 'Solo una prueba, no un pago. No se ha apuntado nada.',
+  'testAlert.firstTry':
+    'No ha llegado nada. Tras instalar o actualizar, el iPhone a veces pierde el primer intento: envíalo de nuevo.',
+  'testAlert.stillNothing':
+    '¿Sigue sin llegar? En Atajos, mira que Automatización esté activada y que 6pm esté entre sus apps.',
 };

@@ -114,4 +114,8 @@ export const frFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'testAlert.notice.body': 'Test : paiement de {amount}. Ce n’est pas un vrai paiement.',
   'testAlert.channel': 'Alertes de test',
   'testAlert.slip.note': 'Juste un test, pas un paiement. Rien n’a été noté.',
+  'testAlert.firstTry':
+    'Rien n’est arrivé. Après une installation ou une mise à jour, l’iPhone rate parfois le premier essai : renvoie le test.',
+  'testAlert.stillNothing':
+    'Toujours rien ? Dans Raccourcis, vérifie qu’Automatisation est activée et que 6pm fait partie de ses apps.',
 };

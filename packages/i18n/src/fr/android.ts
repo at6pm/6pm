@@ -116,4 +116,14 @@ export const frAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
     'Les reçus que tu partages ou scannes sont lus par ce téléphone. Un point marque celui que tu as dû corriger : son montant ou sa boutique.',
   'privacyPage.headline': 'Ton argent reste sur ce téléphone, chiffré.',
   'privacyPage.keep': 'Tout garder sur ce téléphone',
+
+  // Capture: Android reads bank alerts through Notification access, not a Shortcuts automation.
+  'notify.quiet.soft':
+    'Aucune nouvelle de {way} depuis {count} jours. 6pm a toujours accès aux notifications ?',
+  'notify.quiet.cheeky':
+    'Aucune nouvelle de {way} depuis {count} jours. Très sage, ou 6pm a perdu l’accès aux notifications ?',
+  'notify.quiet.roast':
+    'Aucune nouvelle de {way} depuis {count} jours. Soit tu es un ange, soit 6pm a perdu l’accès aux notifications.',
+  'notify.quiet.plain':
+    'Aucune nouvelle de {way} depuis {count} jours. Vérifie que 6pm a toujours accès aux notifications.',
 };

@@ -12,6 +12,8 @@ import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading, mono } from '../../ui/type/fonts';
 import { WordFitText } from '../../ui/type/word-fit-text';
+import { useAlertsProven } from '../capture/alerts-proven';
+import { AlertSteps, alertStepsShown } from '../capture-guide/alert-steps';
 import { BANK_ALERT_SHORTCUT_URL } from '../capture-guide/bank-alert-shortcut';
 import { captureColours } from '../capture-guide/capture-colours';
 import { GuideSection, GuideTip } from '../capture-guide/guide-sections';
@@ -105,14 +107,11 @@ function SetupBody({
   readonly onClose: () => void;
   readonly onWalked?: () => void;
 }) {
-  const open = (url: string) => {
-    onWalked?.();
-    void Linking.openURL(url).catch(() => undefined);
-  };
   const { palette } = useTheme();
   const { t } = useI18n();
-  const steps = useWalkthroughSteps(way, emailAddress);
   const words = WORDS[way];
+  // Bank alerts read the same here as in the capture guide: three steps, each with its button.
+  const stepped = way === 'alerts' && alertStepsShown;
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: palette.sheetSolid }}>
       <View style={{ paddingTop: 8, paddingHorizontal: 14, paddingBottom: 6, gap: 6 }}>
@@ -147,46 +146,13 @@ function SetupBody({
               paddingHorizontal: 4,
             }}
           >
-            {t(words.headline)}
+            {t(stepped ? 'capture.alerts.steps.headline' : words.headline)}
           </WordFitText>
-          <GuideSection title={t('capture.guide.howItWorks')} note={t(words.time)}>
-            <Walkthrough steps={steps} />
-          </GuideSection>
-          {way === 'wallet' ? (
-            <View style={{ gap: 10 }}>
-              <SheetButton
-                label={t('capture.wallet.actionAdd')}
-                accent
-                onPress={() => open(WALLET_SHORTCUT_URL)}
-              />
-              <SheetButton
-                label={t('capture.wallet.actionOff')}
-                accent={false}
-                onPress={() => open('shortcuts://')}
-              />
-            </View>
-          ) : null}
-          {/* The published shortcut's trigger has the likely banks chosen; any other is added. */}
-          {way === 'alerts' && BANK_ALERT_SHORTCUT_URL !== null ? (
-            <GuideTip text={t('capture.walk.alerts.addBank')} />
-          ) : null}
-          {way === 'alerts' ? (
-            <View style={{ gap: 10 }}>
-              {BANK_ALERT_SHORTCUT_URL !== null ? (
-                <SheetButton
-                  label={t('capture.alerts.actionAdd')}
-                  accent
-                  onPress={() => open(BANK_ALERT_SHORTCUT_URL ?? 'shortcuts://')}
-                />
-              ) : null}
-              <SheetButton
-                label={t('capture.alerts.actionOpen')}
-                accent={BANK_ALERT_SHORTCUT_URL === null}
-                onPress={() => open('shortcuts://')}
-              />
-            </View>
-          ) : null}
-          {way === 'email' ? <AddressBlock address={emailAddress} /> : null}
+          {stepped ? (
+            <SteppedAlerts {...(onWalked ? { onLeave: onWalked } : {})} />
+          ) : (
+            <Walked way={way} emailAddress={emailAddress} onWalked={onWalked} />
+          )}
           <Text
             style={{
               ...body(13),
@@ -201,6 +167,73 @@ function SetupBody({
         </View>
       </ScrollView>
     </GestureHandlerRootView>
+  );
+}
+
+/** Bank alerts on an iPhone that can test them: the capture guide's three steps. */
+function SteppedAlerts({ onLeave }: { readonly onLeave?: () => void }) {
+  const proven = useAlertsProven();
+  return <AlertSteps on={proven} {...(onLeave ? { onLeave } : {})} />;
+}
+
+/** Every other way, and bank alerts on an older build: the drawn walkthrough and its buttons. */
+function Walked({
+  way,
+  emailAddress,
+  onWalked,
+}: {
+  readonly way: WalkedWay;
+  readonly emailAddress: string | null;
+  readonly onWalked: (() => void) | undefined;
+}) {
+  const open = (url: string) => {
+    onWalked?.();
+    void Linking.openURL(url).catch(() => undefined);
+  };
+  const { t } = useI18n();
+  const steps = useWalkthroughSteps(way, emailAddress);
+  const words = WORDS[way];
+  return (
+    <>
+      <GuideSection title={t('capture.guide.howItWorks')} note={t(words.time)}>
+        <Walkthrough steps={steps} />
+      </GuideSection>
+      {way === 'wallet' ? (
+        <View style={{ gap: 10 }}>
+          <SheetButton
+            label={t('capture.wallet.actionAdd')}
+            accent
+            onPress={() => open(WALLET_SHORTCUT_URL)}
+          />
+          <SheetButton
+            label={t('capture.wallet.actionOff')}
+            accent={false}
+            onPress={() => open('shortcuts://')}
+          />
+        </View>
+      ) : null}
+      {/* The published shortcut's trigger has the likely banks chosen; any other is added. */}
+      {way === 'alerts' && BANK_ALERT_SHORTCUT_URL !== null ? (
+        <GuideTip text={t('capture.walk.alerts.addBank')} />
+      ) : null}
+      {way === 'alerts' ? (
+        <View style={{ gap: 10 }}>
+          {BANK_ALERT_SHORTCUT_URL !== null ? (
+            <SheetButton
+              label={t('capture.alerts.actionAdd')}
+              accent
+              onPress={() => open(BANK_ALERT_SHORTCUT_URL ?? 'shortcuts://')}
+            />
+          ) : null}
+          <SheetButton
+            label={t('capture.alerts.actionOpen')}
+            accent={BANK_ALERT_SHORTCUT_URL === null}
+            onPress={() => open('shortcuts://')}
+          />
+        </View>
+      ) : null}
+      {way === 'email' ? <AddressBlock address={emailAddress} /> : null}
+    </>
   );
 }
 

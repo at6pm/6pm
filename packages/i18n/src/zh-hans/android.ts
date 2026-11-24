@@ -95,4 +95,10 @@ export const zhHansAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } 
   'catch.reading.explain': '你分享或扫描的收据由这台手机读取。圆点标出你改过的那张：金额或商家。',
   'privacyPage.headline': '你的钱留在这台手机上，已加密。',
   'privacyPage.keep': '全部留在这台手机上',
+
+  // Capture: Android reads bank alerts through Notification access, not a Shortcuts automation.
+  'notify.quiet.soft': '{way}已经{count}天没动静了。6pm 还有通知使用权吗？',
+  'notify.quiet.cheeky': '{way}已经{count}天没动静了。是太省了，还是 6pm 没了通知使用权？',
+  'notify.quiet.roast': '{way}已经{count}天没动静了。要么你是圣人，要么 6pm 没了通知使用权。',
+  'notify.quiet.plain': '{way}已经{count}天没有消息。请检查 6pm 是否还有通知使用权。',
 };

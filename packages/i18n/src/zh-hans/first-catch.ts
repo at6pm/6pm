@@ -97,4 +97,7 @@ export const zhHansFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: En
   'testAlert.notice.body': '测试：支付 {amount}。这不是真实付款。',
   'testAlert.channel': '测试通知',
   'testAlert.slip.note': '只是测试，不是付款。什么都没有记下。',
+  'testAlert.firstTry': '什么都没收到。安装或更新后，iPhone 有时会漏掉第一次，再发一次试试。',
+  'testAlert.stillNothing':
+    '还是没有？请在“快捷指令”里确认“自动化”已开启，且 6pm 在它的 App 列表里。',
 };

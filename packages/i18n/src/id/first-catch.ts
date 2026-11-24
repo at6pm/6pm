@@ -104,4 +104,8 @@ export const idFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'testAlert.notice.body': 'Uji coba: pembayaran {amount}. Ini bukan pembayaran sungguhan.',
   'testAlert.channel': 'Notifikasi uji coba',
   'testAlert.slip.note': 'Hanya uji coba, bukan pembayaran. Tidak ada yang dicatat.',
+  'testAlert.firstTry':
+    'Belum ada yang masuk. Setelah instal atau pembaruan, iPhone kadang melewatkan percobaan pertama, jadi kirim lagi.',
+  'testAlert.stillNothing':
+    'Masih belum? Di Pintasan, cek apakah Otomatisasi menyala dan 6pm ada di daftar app-nya.',
 };

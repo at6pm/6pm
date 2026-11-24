@@ -56,7 +56,7 @@ export const enCaptureAlerts = {
     'Pay a little from one of those apps. When its alert arrives, the payment is in your Inbox.',
   'capture.walk.alerts.l1Title': 'Add the 6pm shortcut',
   'capture.walk.alerts.l1Body':
-    'Tap “Get the 6pm shortcut” above, then Add Shortcut. It’s called “Catch a bank alert”.',
+    'Tap “Get the 6pm shortcut”, then Add Shortcut. It’s called “Catch a bank alert”.',
   'capture.walk.alerts.l2Title': 'Turn the automation on',
   'capture.walk.alerts.l2Body':
     'Open it in Shortcuts and tap › on the trigger. Turn Automation on and leave Notify off, so alerts are caught quietly. Going back saves it.',
@@ -66,7 +66,7 @@ export const enCaptureAlerts = {
   'capture.walk.alerts.l3Body':
     'Come back to 6pm and tap “Send a test alert”. 6pm sends itself one and tells you when it arrives.',
   'capture.walk.alerts.addBank':
-    'Your bank isn’t on the shortcut’s list? Open it and tap + on the trigger to add its app.',
+    'Your bank isn’t on the shortcut’s list? Open it and tap + on the trigger to add its app. If iOS then empties the list, add 6pm and each bank you use again with +.',
   'capture.walk.alerts.mistake1':
     'Title, Body or Date left empty. Tap each and pick the Notification’s own, or alerts log nothing.',
   'capture.walk.alerts.mistake2':
@@ -117,4 +117,26 @@ export const enCaptureAlerts = {
   'capture.walk.ios.notificationSubtitle': 'Notification › Subtitle',
   'capture.walk.ios.notify': 'Notify',
   'capture.walk.ios.cancel': 'Cancel',
+
+  // Android: letting 6pm keep running, and bank alerts paused while access is off.
+  'capture.alerts.keepRunning':
+    'Let 6pm keep running, so alerts still arrive while your phone sleeps. Some phones call this Autostart or Background activity.',
+  'capture.alerts.keepRunningChip': 'Battery → 6pm',
+  'capture.alerts.keepRunningOpen': 'Open battery settings',
+  'capture.alerts.paused.title': 'Bank alerts are paused',
+  'capture.alerts.paused.body':
+    '6pm can’t see your notifications. Turn access back on and your payments log themselves again.',
+  'capture.alerts.paused.action': 'Turn access back on',
+  // The iPhone guide in three steps: add the shortcut, turn Automation on, send a test.
+  'capture.alerts.steps.headline': 'Your spending logs itself from your bank’s alerts.',
+  'capture.alerts.steps.addTitle': 'Add the shortcut',
+  'capture.alerts.steps.addLine': 'Tap Add Shortcut when it opens.',
+  'capture.alerts.steps.addAction': 'Get the shortcut',
+  'capture.alerts.steps.onTitle': 'Turn on Automation',
+  'capture.alerts.steps.onLine': 'Open it, tap ›, turn on Automation.',
+  'capture.alerts.steps.testTitle': 'Check it works',
+  'capture.alerts.steps.testLine': '6pm sends itself a test. Nothing is logged.',
+  'capture.alerts.steps.privacy': 'Long numbers are hidden from our server.',
+  'capture.alerts.steps.privacyDevice': 'Alerts are read on this iPhone only.',
+  'capture.alerts.steps.done': 'Done',
 } as const;

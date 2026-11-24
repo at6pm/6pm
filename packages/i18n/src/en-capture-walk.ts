@@ -11,7 +11,7 @@ export const enCaptureWalk = {
 
   'capture.walk.wallet.s1Title': 'Add the 6pm shortcut',
   'capture.walk.wallet.s1Body':
-    'Tap “Add the 6pm shortcut” above, then Add Shortcut. It’s called “Log to 6pm”.',
+    'Tap “Add the 6pm shortcut”, then Add Shortcut. It’s called “Log to 6pm”.',
   'capture.walk.wallet.s2Title': 'Open Automation and tap +',
   'capture.walk.wallet.s2Body':
     'In Shortcuts, tap Library, then Automation, then +. If you see “Describe a shortcut”, tap Edit.',

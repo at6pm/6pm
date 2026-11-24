@@ -16,6 +16,8 @@ import type { LookId } from '@6pm/theme';
 import { DEV_MAX_KEY, withDevMax } from '../dev/dev-max';
 import { CUSTOMER_KEY, parseCustomer, serializeCustomer } from './customer-memory';
 import { canUseLook } from './entitlement';
+import { setMaxChannelReader } from '../funnel/funnel-sync';
+import { checkInstallReferrer, readMaxChannel } from './max-codes/device-max-channel';
 import { revenueCatPurchases } from './revenuecat-port';
 import {
   unavailablePurchases,
@@ -148,6 +150,10 @@ export function PurchasesProvider({
     };
     // Prices are the shop's and the Max sheet's business: they ask when they open.
     refresh();
+    // An Android install that came through a Max code link keeps where it came from.
+    void checkInstallReferrer();
+    // A purchase is counted with the place its Max code came from, when there was one.
+    setMaxChannelReader(readMaxChannel);
     const stop = port.onCustomerChange(setCustomer);
     const app = AppState.addEventListener('change', (state) => {
       if (state === 'active') refresh();

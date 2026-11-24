@@ -1,4 +1,5 @@
 import type { Catalogue } from '../catalogue-types';
+import { esMaxCodes } from './max-codes';
 import { esAsk } from './ask';
 import { esAskActions } from './ask-actions';
 import { esAskChat } from './ask-chat';
@@ -61,6 +62,7 @@ export { esAndroid } from './android';
 
 /** Spanish: every key of the English catalogue. */
 export const es: Catalogue = {
+  ...esMaxCodes,
   ...esOnboarding,
   ...esDiary,
   ...esYearBook,

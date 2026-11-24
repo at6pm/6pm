@@ -23,6 +23,8 @@ import { CaptureSettingsSection } from '../features/capture-guide/capture-settin
 import { useDeleteBackup } from '../features/backup/use-backup';
 import { ExportRow } from '../features/export/export-row';
 import { ImportSettingsRow } from '../features/import/import-row';
+import { deviceMaxChannel } from '../features/purchases/max-codes/device-max-channel';
+import { MaxCodesSection } from '../features/purchases/max-codes/max-codes-section';
 import { usePurchases } from '../features/purchases/purchases-provider';
 import { useCompanionSettingsStore } from '../features/companion/companion-settings-provider';
 import { useLookSettingsStore } from '../features/looks/look-settings-provider';
@@ -97,6 +99,8 @@ export default function Settings() {
         void deviceCaptureLog.turnOff().catch(() => undefined);
         // So do the alerts still waiting for their second reading, with their words.
         void deviceAlertReadsWaiting.clear().catch(() => undefined);
+        // And where a Max code link brought the phone from.
+        void deviceMaxChannel.forget().catch(() => undefined);
         return Promise.all([
           lookStore.reload(),
           companionStore.reload(),
@@ -113,6 +117,7 @@ export default function Settings() {
     <SheetScreen title={t('home.settings')} gap={26}>
       {/* A member's card sits under the look it dresses; everyone else is offered Max first. */}
       {member ? null : <SettingsMaxCard onPress={openMax} />}
+      {member ? null : <MaxCodesSection />}
       <CaptureSettingsSection
         onOpen={(source) => {
           haptics.tick();
@@ -128,6 +133,7 @@ export default function Settings() {
       {/* Replace, not push: the shop and its try-on stand in for Settings, so the app shows behind. */}
       <SettingsLookCard onPress={() => router.replace('/looks')} />
       {member ? <SettingsMaxCard onPress={openMax} /> : null}
+      {member ? <MaxCodesSection /> : null}
 
       <SettingsSection title={t('settings.yourDay')}>
         <SettingRow

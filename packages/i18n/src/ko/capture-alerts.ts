@@ -52,7 +52,7 @@ export const koCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
     '그 앱 중 하나로 소액을 결제해 보세요. 알림이 오면 결제가 수신함에 와 있어요.',
   'capture.walk.alerts.l1Title': '6pm 단축어 추가하기',
   'capture.walk.alerts.l1Body':
-    '위 “6pm 단축어 받기”를 탭한 다음 단축어 추가를 탭하세요. 이름은 “Catch a bank alert”예요.',
+    '“6pm 단축어 받기”를 탭한 다음 단축어 추가를 탭하세요. 이름은 “Catch a bank alert”예요.',
   'capture.walk.alerts.l2Title': '자동화 켜기',
   'capture.walk.alerts.l2Body':
     '단축어에서 열고 트리거의 ›를 탭하세요. 자동화를 켜고 실행할 때 알림은 꺼 두면 알림을 조용히 잡아요. 돌아가면 저장돼요.',
@@ -62,7 +62,7 @@ export const koCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l3Body':
     '6pm으로 돌아와 “알림 테스트하기”를 탭하세요. 6pm이 스스로에게 테스트 알림을 보내고, 도착하면 알려 줘요.',
   'capture.walk.alerts.addBank':
-    '쓰는 은행이 단축어 목록에 없나요? 단축어를 열고 트리거의 +를 탭해 그 앱을 추가하세요.',
+    '쓰는 은행이 단축어 목록에 없나요? 단축어를 열고 트리거의 +를 탭해 그 앱을 추가하세요. iOS가 목록을 비우면 +로 6pm과 쓰는 은행을 다시 추가하세요.',
   'capture.walk.alerts.mistake1':
     '제목, 본문, 날짜를 비워 둔 경우. 하나씩 탭해 알림의 값을 고르지 않으면 아무것도 기록되지 않아요.',
   'capture.walk.alerts.mistake2':
@@ -110,4 +110,25 @@ export const koCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.ios.notificationSubtitle': '알림 › 부제목',
   'capture.walk.ios.notify': '실행할 때 알림',
   'capture.walk.ios.cancel': '취소',
+
+  // Android: letting 6pm keep running, and bank alerts paused while access is off.
+  'capture.alerts.keepRunning':
+    '6pm이 계속 실행되게 하면 휴대폰이 잠자는 동안에도 알림이 들어와요. 휴대폰에 따라 자동 실행 또는 백그라운드 활동이라고 해요.',
+  'capture.alerts.keepRunningChip': '배터리 → 6pm',
+  'capture.alerts.keepRunningOpen': '배터리 설정 열기',
+  'capture.alerts.paused.title': '은행 알림이 멈췄어요',
+  'capture.alerts.paused.body':
+    '6pm이 알림을 볼 수 없어요. 접근 권한을 다시 켜면 결제가 다시 저절로 기록돼요.',
+  'capture.alerts.paused.action': '접근 권한 다시 켜기',
+  'capture.alerts.steps.headline': '은행 알림으로 지출이 저절로 기록돼요.',
+  'capture.alerts.steps.addTitle': '단축어 추가하기',
+  'capture.alerts.steps.addLine': '열리면 단축어 추가를 탭하세요.',
+  'capture.alerts.steps.addAction': '단축어 받기',
+  'capture.alerts.steps.onTitle': '자동화 켜기',
+  'capture.alerts.steps.onLine': '열어서 ›를 탭하고 자동화를 켜세요.',
+  'capture.alerts.steps.testTitle': '잘 되는지 확인하기',
+  'capture.alerts.steps.testLine': '6pm이 스스로 테스트 알림을 보내요. 아무것도 기록되지 않아요.',
+  'capture.alerts.steps.privacy': '서버가 알림을 읽기 전에 긴 번호는 가려져요.',
+  'capture.alerts.steps.privacyDevice': '알림은 이 iPhone에서만 읽어요.',
+  'capture.alerts.steps.done': '완료',
 };
