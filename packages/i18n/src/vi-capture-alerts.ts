@@ -55,7 +55,7 @@ export const viCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
     'Trả một khoản nhỏ từ một trong các ứng dụng đó. Thông báo về là khoản tiền đã nằm trong Inbox.',
   'capture.walk.alerts.l1Title': 'Thêm phím tắt của 6pm',
   'capture.walk.alerts.l1Body':
-    'Chạm “Lấy phím tắt của 6pm” ở trên, rồi Thêm phím tắt. Nó tên là “Catch a bank alert”.',
+    'Chạm “Lấy phím tắt của 6pm”, rồi Thêm phím tắt. Nó tên là “Catch a bank alert”.',
   'capture.walk.alerts.l2Title': 'Bật tự động hóa',
   'capture.walk.alerts.l2Body':
     'Mở nó trong Phím tắt và chạm › trên bộ kích hoạt. Bật Tự động hóa và để Thông báo tắt, để thông báo được bắt lặng lẽ. Quay lại là đã lưu.',
@@ -65,7 +65,7 @@ export const viCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l3Body':
     'Quay lại 6pm và chạm “Gửi thử một thông báo”. 6pm tự gửi cho mình một thông báo và báo bạn khi nó về.',
   'capture.walk.alerts.addBank':
-    'Ngân hàng của bạn chưa có trong danh sách của phím tắt? Mở phím tắt và chạm + trên bộ kích hoạt để thêm ứng dụng đó.',
+    'Ngân hàng của bạn chưa có trong danh sách của phím tắt? Mở phím tắt và chạm + trên bộ kích hoạt để thêm ứng dụng đó. Nếu iOS xóa trống danh sách, chạm + để thêm lại 6pm và từng ngân hàng bạn dùng.',
   'capture.walk.alerts.mistake1':
     'Để trống Tiêu đề, Nội dung hoặc Ngày. Chạm từng ô và chọn của Thông báo, không thì chẳng ghi được gì.',
   'capture.walk.alerts.mistake2':
@@ -116,4 +116,14 @@ export const viCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.ios.notificationSubtitle': 'Thông báo › Tiêu đề phụ',
   'capture.walk.ios.notify': 'Thông báo',
   'capture.walk.ios.cancel': 'Hủy',
+
+  // Android: letting 6pm keep running, and bank alerts paused while access is off.
+  'capture.alerts.keepRunning':
+    'Cho 6pm chạy nền để thông báo vẫn về khi điện thoại ngủ. Một số máy gọi mục này là Tự khởi động hoặc Hoạt động nền.',
+  'capture.alerts.keepRunningChip': 'Pin → 6pm',
+  'capture.alerts.keepRunningOpen': 'Mở cài đặt pin',
+  'capture.alerts.paused.title': 'Thông báo ngân hàng đang tạm dừng',
+  'capture.alerts.paused.body':
+    '6pm không xem được thông báo của bạn. Bật lại quyền truy cập để các khoản tự ghi như trước.',
+  'capture.alerts.paused.action': 'Bật lại quyền truy cập',
 };

@@ -101,4 +101,14 @@ export const thAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
     'ใบเสร็จที่คุณแชร์หรือสแกนจะถูกอ่านบนโทรศัพท์เครื่องนี้ จุดคือใบที่คุณต้องแก้: ยอดเงินหรือชื่อร้าน',
   'privacyPage.headline': 'ข้อมูลเงินของคุณอยู่บนโทรศัพท์เครื่องนี้ และเข้ารหัสไว้',
   'privacyPage.keep': 'เก็บทั้งหมดไว้บนโทรศัพท์เครื่องนี้',
+
+  // Capture: Android reads bank alerts through Notification access, not a Shortcuts automation.
+  'notify.quiet.soft':
+    '{count} วันแล้วที่ไม่มีอะไรจาก {way} 6pm ยังมีสิทธิ์เข้าถึงการแจ้งเตือนอยู่ไหม?',
+  'notify.quiet.cheeky':
+    '{count} วันแล้วที่ไม่มีอะไรจาก {way} ประหยัดสุด ๆ หรือ 6pm เสียสิทธิ์เข้าถึงการแจ้งเตือน?',
+  'notify.quiet.roast':
+    '{count} วันแล้วที่ไม่มีอะไรจาก {way} ถ้าคุณไม่ใช่นักบุญ ก็ 6pm เสียสิทธิ์เข้าถึงการแจ้งเตือนแล้ว',
+  'notify.quiet.plain':
+    '{count} วันแล้วที่ไม่มีอะไรจาก {way} ตรวจสอบว่า 6pm ยังมีสิทธิ์เข้าถึงการแจ้งเตือน',
 };

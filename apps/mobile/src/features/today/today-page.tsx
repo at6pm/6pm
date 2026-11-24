@@ -24,6 +24,7 @@ import { useHomePageScroll, useHomeScroll } from '../home/home-scroll';
 import { PullDetector, useOverscrollPull } from '../home/overscroll-pull';
 import { CompanionGreeting } from './companion-greeting';
 import { requestDiaryDay } from './diary-request';
+import { AlertsPausedCard } from './alerts-paused-card';
 import { FirstCatchCard } from './first-catch-card';
 import { PullToAdd, usePullToAdd } from './pull-to-add';
 import { TodayHero } from './today-hero';
@@ -202,6 +203,7 @@ export function TodayPage({
                 onGotPaid={() => router.push(GOT_PAID)}
               />
             ) : null}
+            <AlertsPausedCard />
             <FirstCatchCard />
             <NewYearOfferCard />
             <TonightCard

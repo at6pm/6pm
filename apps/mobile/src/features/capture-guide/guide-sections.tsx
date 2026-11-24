@@ -14,7 +14,7 @@ import { useTheme } from '../../ui/theme/theme';
 import { body, tabular } from '../../ui/type/fonts';
 import { merchantIcon } from '../today/merchant-icon';
 import { captureColours } from './capture-colours';
-import type { GuideContent } from './guide-content';
+import type { GuideContent, GuideStep } from './guide-content';
 
 /** "HOW IT WORKS" with a note on the right, over a card. */
 export function GuideSection({
@@ -57,13 +57,21 @@ export interface LiveChip {
   readonly onPress: () => void;
 }
 
-/** The three numbered steps, each with the chip it points at; the first chip may be live. */
+/**
+ * The numbered steps, each with the chip it points at; the first chip may be live, and so may any
+ * other given in `chips` by its place.
+ */
 export function GuideSteps({
   guide,
   firstChip = null,
+  steps = guide.steps,
+  chips = {},
 }: {
   readonly guide: GuideContent;
   readonly firstChip?: LiveChip | null;
+  /** The steps to show, when they are more than the guide's three. */
+  readonly steps?: readonly GuideStep[];
+  readonly chips?: Readonly<Record<number, LiveChip>>;
 }) {
   const { palette } = useTheme();
   const { t } = useI18n();
@@ -77,69 +85,70 @@ export function GuideSteps({
         paddingHorizontal: 16,
       }}
     >
-      {guide.steps.map((step, k) => (
-        <View
-          key={step.text}
-          style={{
-            flexDirection: 'row',
-            gap: 14,
-            paddingVertical: 14,
-            borderTopWidth: 0.5,
-            borderTopColor: k === 0 ? 'transparent' : palette.hair,
-          }}
-        >
+      {steps.map((step, k) => {
+        const live = k === 0 ? (firstChip ?? chips[0] ?? null) : (chips[k] ?? null);
+        return (
           <View
+            key={step.text}
             style={{
-              width: 28,
-              height: 28,
-              borderRadius: 14,
-              backgroundColor: palette.btnBg,
-              alignItems: 'center',
-              justifyContent: 'center',
+              flexDirection: 'row',
+              gap: 14,
+              paddingVertical: 14,
+              borderTopWidth: 0.5,
+              borderTopColor: k === 0 ? 'transparent' : palette.hair,
             }}
           >
-            <Text style={{ ...body(13.5, 700), color: palette.btnFg }}>{k + 1}</Text>
-          </View>
-          <View style={{ flex: 1, minWidth: 0, gap: 9, paddingTop: 4 }}>
-            <Text style={{ ...body(15.5), lineHeight: 20.9, color: palette.ink }}>
-              {t(step.text)}
-            </Text>
-            <PressScale
-              disabled={k !== 0 || firstChip === null}
-              accessibilityRole={k === 0 && firstChip ? 'button' : 'text'}
-              {...(k === 0 && firstChip
-                ? { accessibilityLabel: firstChip.label, onPress: firstChip.onPress }
-                : {})}
+            <View
               style={{
-                alignSelf: 'flex-start',
-                maxWidth: '100%',
-                height: 32,
-                paddingLeft: 9,
-                paddingRight: 12,
-                borderRadius: 10,
-                backgroundColor: palette.chipBg,
-                borderWidth: 0.5,
-                borderColor: palette.hair,
-                flexDirection: 'row',
+                width: 28,
+                height: 28,
+                borderRadius: 14,
+                backgroundColor: palette.btnBg,
                 alignItems: 'center',
-                gap: 7,
+                justifyContent: 'center',
               }}
             >
-              <Symbol name={step.icon} size={18} color={palette.accent} />
-              <Text
-                numberOfLines={1}
-                style={{ ...body(13, 600), color: palette.ink, flexShrink: 1 }}
-              >
-                {k === 0 && firstChip
-                  ? firstChip.text
-                  : typeof step.chip === 'string'
-                    ? t(step.chip)
-                    : step.chip.names.join(' · ')}
+              <Text style={{ ...body(13.5, 700), color: palette.btnFg }}>{k + 1}</Text>
+            </View>
+            <View style={{ flex: 1, minWidth: 0, gap: 9, paddingTop: 4 }}>
+              <Text style={{ ...body(15.5), lineHeight: 20.9, color: palette.ink }}>
+                {t(step.text)}
               </Text>
-            </PressScale>
+              <PressScale
+                disabled={live === null}
+                accessibilityRole={live ? 'button' : 'text'}
+                {...(live ? { accessibilityLabel: live.label, onPress: live.onPress } : {})}
+                style={{
+                  alignSelf: 'flex-start',
+                  maxWidth: '100%',
+                  height: 32,
+                  paddingLeft: 9,
+                  paddingRight: 12,
+                  borderRadius: 10,
+                  backgroundColor: palette.chipBg,
+                  borderWidth: 0.5,
+                  borderColor: palette.hair,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 7,
+                }}
+              >
+                <Symbol name={step.icon} size={18} color={palette.accent} />
+                <Text
+                  numberOfLines={1}
+                  style={{ ...body(13, 600), color: palette.ink, flexShrink: 1 }}
+                >
+                  {live
+                    ? live.text
+                    : typeof step.chip === 'string'
+                      ? t(step.chip)
+                      : step.chip.names.join(' · ')}
+                </Text>
+              </PressScale>
+            </View>
           </View>
-        </View>
-      ))}
+        );
+      })}
     </View>
   );
 }

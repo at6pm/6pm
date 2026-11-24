@@ -216,9 +216,17 @@ export function mayBeSamePayment(
   );
 }
 
-/** Two emails from one named sender. */
+/**
+ * One sender: two emails from one named sender, or one bank's alert handed over twice (two copies
+ * of the shortcut on one notification), each carrying the phone's own delivered time.
+ */
 function sameSender(a: Witness, b: Witness): boolean {
-  if (a.source !== 'email' || b.source !== 'email' || !a.detail || !b.detail) return false;
+  if (a.source !== b.source || !a.detail || !b.detail) return false;
+  if (a.source === 'alert') {
+    if (a.atKind !== 'delivered' || b.atKind !== 'delivered') return false;
+  } else if (a.source !== 'email') {
+    return false;
+  }
   return a.detail.trim().toLowerCase() === b.detail.trim().toLowerCase();
 }
 
@@ -443,7 +451,7 @@ export function sameReference(a: Referenced, b: Referenced): boolean {
  * fifteen minutes after another sighting, since it is written after the payment. A payment already
  * seen by a witness (first, or merged in since) never absorbs another sighting from it: that is a
  * second payment, unless it sends the same amount stamped the same second (an invoice and its
- * confirmation). A charge abroad priced at the day's rate matches the bank's home-currency debit
+ * confirmation, or one bank alert handed over twice with its one delivered time). A charge abroad priced at the day's rate matches the bank's home-currency debit
  * of it within `FX_SLACK_RATIO` when both name the payee; an exact amount wins over a fee apart,
  * and a fee apart over a converted one. Two notices (emails or alerts) of a charge abroad, with
  * the same amount to the cent in the currency paid and the same payee named, are matched up to
@@ -491,8 +499,9 @@ export function findDuplicate(
     const exact = sameAmount(spend, incoming);
     const seen: Sighting = { source: spend.source, status: spend.status, at: Date.parse(spend.at) };
     // A sender writing twice about one purchase (an invoice and its confirmation) sends the same
-    // amount stamped the same second. Only a time to the second says so: a receipt that prints the
-    // minute (13:30, read as 13:30:00) can be two orders in that minute.
+    // amount stamped the same second, and one bank alert handed over twice carries the very same
+    // delivered instant. Only a time to the second says so: a receipt that prints the minute
+    // (13:30, read as 13:30:00) can be two orders in that minute.
     const echo = exact && seen.at === at && at % 60_000 !== 0 && sameSender(spend, incoming);
     if (!echo && !rules.anyWitness && !newWitness(spend, incoming)) continue;
     if (twoBanksTwoPayees(spend, incoming)) continue;

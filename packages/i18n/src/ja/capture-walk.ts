@@ -11,7 +11,7 @@ export const jaCaptureWalk: { readonly [Key in keyof typeof enCaptureWalk]: Entr
 
   'capture.walk.wallet.s1Title': '6pmのショートカットを追加',
   'capture.walk.wallet.s1Body':
-    '上の「6pmのショートカットを追加」をタップし、「ショートカットを追加」をタップします。名前は「Log to 6pm」です。',
+    '「6pmのショートカットを追加」をタップし、「ショートカットを追加」をタップします。名前は「Log to 6pm」です。',
   'capture.walk.wallet.s2Title': 'オートメーションを開いて＋をタップ',
   'capture.walk.wallet.s2Body':
     'ショートカットで「ライブラリ」→「オートメーション」→「＋」をタップします。「ショートカットを説明」が表示されたら「編集」をタップします。',

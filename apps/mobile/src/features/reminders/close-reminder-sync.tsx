@@ -31,12 +31,16 @@ const LOOK_BACK_DAYS = 30;
 /** Changes that land together are scheduled once. */
 const SETTLE_MS = 400;
 
-/** Where a notification's tap leads, carried in its data when its id does not say. */
-function dataOf(notice: PlannedNotification): Readonly<Record<string, string>> | undefined {
+/**
+ * Where a notification's tap leads, carried in its data when its id does not say. A way gone
+ * quiet also carries when it was placed for (`at`): the phone moves it after each catch of that
+ * way, and a date the system schedules as an interval cannot be read back exactly.
+ */
+export function dataOf(notice: PlannedNotification): Readonly<Record<string, string>> | undefined {
   if (notice.kind === 'reminders' && notice.people.length === 1 && notice.people[0]) {
     return { person: notice.people[0].key };
   }
-  if (notice.kind === 'capture') return { way: notice.way };
+  if (notice.kind === 'capture') return { way: notice.way, at: notice.at.toISOString() };
   return undefined;
 }
 

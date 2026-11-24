@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { AppState } from 'react-native';
 
-import { addDays, localDateOf } from '@6pm/domain';
+import { addDays, localDateOf, type LocalDate } from '@6pm/domain';
 
 import { catchesSince, type CatchSeen } from '../../data/first-catch';
 import { useMoney, useMoneyStore } from '../../data/money-provider';
+import type { SqlDatabase } from '../../data/table';
 import { useHomeCurrency } from '../../money/use-money-format';
 import { useAlertsProven } from '../capture/alerts-proven';
 import { useAiMode } from '../privacy/use-ai-mode';
@@ -27,6 +28,20 @@ let lastRead: readonly CatchSeen[] = [];
 
 /** Catches are read this far back: the heartbeat's 14 days and the fortnight before a quiet way. */
 const LOOK_BACK_DAYS = 30;
+
+function sinceOf(today: LocalDate): string {
+  const [year = 0, month = 1, day = 1] = addDays(today, -LOOK_BACK_DAYS).split('-').map(Number);
+  return new Date(year, month - 1, day).toISOString();
+}
+
+/**
+ * Reads the catches once, as the app opens, so the first time Settings opens it draws its count
+ * and rows as they are instead of "0 caught" for a moment.
+ */
+export async function primeCaptureHealth(db: SqlDatabase, today: LocalDate): Promise<void> {
+  if (lastRead.length > 0) return;
+  lastRead = await catchesSince(db, sinceOf(today));
+}
 
 /** Each way's heartbeat and where it stands, in the design's order of ways. */
 export function useCaptureHealth(): readonly HealthRow[] {
@@ -63,8 +78,7 @@ export function useCaptureHealthSection(): HealthSection {
 
   useEffect(() => {
     let live = true;
-    const [year = 0, month = 1, day = 1] = addDays(today, -LOOK_BACK_DAYS).split('-').map(Number);
-    void catchesSince(store.db, new Date(year, month - 1, day).toISOString())
+    void catchesSince(store.db, sinceOf(today))
       .then((rows) => {
         lastRead = rows;
         if (live) setCatches(rows);

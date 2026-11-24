@@ -11,7 +11,7 @@ export const deCaptureWalk: { readonly [Key in keyof typeof enCaptureWalk]: Entr
 
   'capture.walk.wallet.s1Title': 'Den 6pm-Kurzbefehl hinzufügen',
   'capture.walk.wallet.s1Body':
-    'Tippe oben auf „6pm-Kurzbefehl hinzufügen“, dann auf „Kurzbefehl hinzufügen“. Er heißt „Log to 6pm“.',
+    'Tippe auf „6pm-Kurzbefehl hinzufügen“, dann auf „Kurzbefehl hinzufügen“. Er heißt „Log to 6pm“.',
   'capture.walk.wallet.s2Title': '„Automation“ öffnen und + tippen',
   'capture.walk.wallet.s2Body':
     'Tippe in Kurzbefehle auf „Mediathek“, dann „Automation“, dann +. Siehst du „Kurzbefehl beschreiben“, tippe auf „Bearbeiten“.',

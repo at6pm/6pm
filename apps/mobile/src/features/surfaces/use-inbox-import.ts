@@ -19,6 +19,7 @@ import { createEnrichShared } from '../capture/enrich-shared';
 import { createLateAlertReads } from '../capture/late-alert-read';
 import { createReadAlerts } from '../capture/read-alert';
 import { noteAlertsProven, primeAlertsProven } from '../capture/alerts-proven';
+import { primeCaptureHealth } from '../capture-guide/use-capture-health';
 import { noteTestAlertArrived } from '../capture/test-alert';
 import { priceWaitingNow } from '../travel/price-waiting';
 import { setInboxRunner } from './inbox-runner';
@@ -27,9 +28,13 @@ import { nativeReach } from './native-reach';
 /** A run that left an alert waiting for its second reading asks once more, this long after. */
 const LATE_READ_FOLLOW_UP_MS = 15_000;
 
+/** How long after the inbox is first told of something new the import runs. */
+const INBOX_SETTLE_MS = 200;
+
 /**
  * Brings in what the share extension, the shortcuts and the Live Activity left in the App Group:
- * once the money store has loaded, and every time the app comes back to the foreground. Then
+ * once the money store has loaded, every time the app comes back to the foreground, and the moment
+ * the native side says something was left there while the app is open. Then
  * prices any captured foreign amount still waiting for a rate, in the home currency, at the rate
  * of the day it was paid, and marks a bill's payment among them as paying it. One run at a time;
  * a return to the foreground during one waits for it, and so does a screen asking for one
@@ -48,9 +53,11 @@ export function useInboxImport() {
   const { language } = useI18n();
   const running = useRef<Promise<unknown>>(Promise.resolve());
 
-  // Whether a test alert ever came through the Shortcut, read before any screen asks.
+  // Whether a test alert ever came through the Shortcut, and what each way caught lately, read
+  // before any screen asks.
   useEffect(() => {
     primeAlertsProven(store.db).catch(() => undefined);
+    primeCaptureHealth(store.db, store.getSnapshot().today).catch(() => undefined);
   }, [store]);
 
   useEffect(() => {
@@ -145,9 +152,18 @@ export function useInboxImport() {
     const sub = AppState.addEventListener('change', (state) => {
       if (state === 'active') void run(true);
     });
+    // Something left in the inbox while 6pm is open comes in at once, not on the next return. An
+    // alert can leave a few files at a time, so a moment is let pass first.
+    let settle: ReturnType<typeof setTimeout> | undefined;
+    const heard = native.addListener?.('onInbox', () => {
+      clearTimeout(settle);
+      settle = setTimeout(() => void run(), INBOX_SETTLE_MS);
+    });
     return () => {
       setInboxRunner(null);
       sub.remove();
+      heard?.remove();
+      clearTimeout(settle);
       clearTimeout(followUp);
     };
   }, [store, actions, api, db, home, language]);
