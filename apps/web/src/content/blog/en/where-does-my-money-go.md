@@ -125,7 +125,7 @@ Yes, once you set it up: a one-time Shortcuts automation for Apple Pay on your i
 
 ### Is 6pm free?
 
-The daily close, every capture method, Today, Plan and Diary are free. 6pm Max ($4.99/month or $34.99/year, 7-day trial) adds looks, unlimited Ask, Travel mode, backup and more.
+The daily close, every capture method, Today, Plan and Diary are free. 6pm Max ($2.49/month or $19.99/year, 7-day trial) adds looks, unlimited Ask, Travel mode, backup and more.
 
 ## Try 6pm
 
