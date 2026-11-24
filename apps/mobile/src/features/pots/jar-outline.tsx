@@ -146,7 +146,11 @@ export function NewJarItem({
         </View>
       ) : (
         <View style={{ alignItems: 'center', alignSelf: 'stretch', gap: lineGap }}>
-          <Text numberOfLines={1} style={{ ...label, color: palette.inkSoft, maxWidth: '100%' }}>
+          {/* Two words that do not fit the cell's width take a second line, as a jar's name does. */}
+          <Text
+            numberOfLines={2}
+            style={{ ...label, color: palette.inkSoft, maxWidth: '100%', textAlign: 'center' }}
+          >
             {words}
           </Text>
           {under ? (

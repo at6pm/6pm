@@ -15,6 +15,7 @@ import type { ScrollDismiss } from '../../ui/motion/use-sheet-drag';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useClock } from '../../ui/theme/clock';
 import { useToast } from '../../ui/toast/toast-host';
+import { BackSheetHeader } from '../../ui/navigation/back-sheet-header';
 import { useTheme } from '../../ui/theme/theme';
 import { body } from '../../ui/type/fonts';
 import { useCompanionToast } from '../companion/use-companion-toast';
@@ -25,7 +26,6 @@ import { cardBadge, firstOfTier, SHOP_ORDER, tierOf, type ShopTier } from './loo
 import { lookCopy } from './look-copy';
 import { DaySlider } from './day-slider';
 import { useLookSettings } from './look-settings-provider';
-import { BackSheetHeader } from './sheet-header';
 import type { CardHandle, CardRect } from './shop-card';
 import { ShopMaxCard } from './shop-max-card';
 import { PagerPlaceholder, ShopPager, ShopTiers, type CardFace } from './shop-pager';

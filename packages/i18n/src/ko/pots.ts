@@ -34,7 +34,7 @@ export const koPots: { readonly [Key in keyof typeof enPots]: Entry } = {
   'pots.page.paydays': { other: '{month} · 월급날 {count}번 남음' },
   'pots.page.slice': '월급의 {percent}%',
   'pots.page.eachDay': '하루',
-  'pots.page.pastPlan': '계획보다 {amount} 초과',
+  'pots.page.pastPlan': '플랜보다 {amount} 초과',
   'pots.page.add': '넣기',
   'pots.page.spend': '여기서 쓰기',
   'pots.page.edit': '편집',

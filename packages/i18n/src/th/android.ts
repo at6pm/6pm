@@ -5,7 +5,7 @@ import type { enAndroid } from '../en-android';
 // for pictures, and no Apple product named anywhere.
 export const thAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'ask.howTo.ways':
-    'มีสามช่องทาง: เพิ่มด่วน (พิมพ์หรือพูด) สแกนคิวอาร์หรือใบเสร็จ และส่งต่ออีเมลใบเสร็จ สิ่งที่ 6pm จับได้จะรออยู่ใน Inbox จนถึงเวลาปิดวัน',
+    'มีสามช่องทาง: เพิ่มด่วน (พิมพ์หรือพูด) สแกนคิวอาร์หรือใบเสร็จ และส่งต่ออีเมลใบเสร็จ สิ่งที่ 6pm จับได้จะรออยู่ในกล่องขาเข้าจนถึงเวลาปิดวัน',
   'capture.share.headline': 'บันทึกใบเสร็จเป็นรูป แล้วเลือกรูปนั้นในหน้าสแกน เราจะอ่านยอดเงินให้',
   'capture.wallet.headline':
     'โทรศัพท์เครื่องนี้ไม่มี Apple Pay ส่งต่ออีเมลใบเสร็จของบัตรมา แล้วรายการจะโผล่ขึ้นมาเอง',
@@ -76,8 +76,8 @@ export const thAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
   'capture.alerts.step1': 'เปิด 6pm ในการเข้าถึงการแจ้งเตือน',
   'capture.alerts.step1Chip': 'การเข้าถึงการแจ้งเตือน → 6pm',
   'capture.alerts.step2': 'เปิดการแจ้งเตือนของแอปธนาคารและวอลเล็ตไว้',
-  'capture.alerts.step3': 'ทุกรายการรอใน Inbox จนถึงตอนปิดวัน',
-  'capture.alerts.step3Chip': 'Inbox',
+  'capture.alerts.step3': 'ทุกรายการรอในกล่องขาเข้าจนถึงตอนปิดวัน',
+  'capture.alerts.step3Chip': 'กล่องขาเข้า',
   'capture.alerts.tip':
     'รหัส OTP การจ่ายที่ไม่สำเร็จ และโปรโมชันจะถูกข้าม รายการที่อีเมลจับได้แล้วจะไม่ถูกเพิ่มซ้ำ',
   'capture.alerts.privacy':

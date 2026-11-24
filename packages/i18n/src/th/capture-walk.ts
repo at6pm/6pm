@@ -26,7 +26,7 @@ export const thCaptureWalk: { readonly [Key in keyof typeof enCaptureWalk]: Entr
     'เปิดระบบอัตโนมัติไว้ ย้อนกลับก็บันทึกแล้ว ถ้าอยากจับเฉพาะบางบัตร แตะ บัตรใดก็ได้ แล้วเลือกบัตร',
   'capture.walk.wallet.s6Title': 'ลองดู',
   'capture.walk.wallet.s6Body':
-    'จ่ายอะไรสักอย่างด้วย Apple Pay บน iPhone เครื่องนี้ แล้วเปิด 6pm รายการที่แตะจ่ายจะอยู่ใน Inbox',
+    'จ่ายอะไรสักอย่างด้วย Apple Pay บน iPhone เครื่องนี้ แล้วเปิด 6pm รายการที่แตะจ่ายจะอยู่ในกล่องขาเข้า',
   'capture.walk.wallet.mistake1':
     'คำสั่งลัดที่ไม่มีการ์ด “เมื่อบัตรใดก็ได้ถูกแตะ” อยู่ด้านบน มันจะทำงานเฉพาะตอนที่คุณกดเรียกใช้เอง',
   'capture.walk.wallet.mistake2':
@@ -76,8 +76,8 @@ export const thCaptureWalk: { readonly [Key in keyof typeof enCaptureWalk]: Entr
   'capture.walk.share.s2Body':
     'ถ้าไม่เห็น ให้เลื่อนแถวแอปดู จะแชร์รูปใบเสร็จรูปเดียวหรือหลายรูปก็ได้',
   'capture.walk.share.s3Title': 'ตรวจดูแล้วยืนยัน',
-  'capture.walk.share.s3Body': 'เราอ่านยอดเงินและผู้รับให้ ยืนยันแล้วรายการจะอยู่ใน Inbox',
-  'capture.walk.share.inInbox': 'อยู่ใน Inbox แล้ว',
+  'capture.walk.share.s3Body': 'เราอ่านยอดเงินและผู้รับให้ ยืนยันแล้วรายการจะอยู่ในกล่องขาเข้า',
+  'capture.walk.share.inInbox': 'อยู่ในกล่องขาเข้าแล้ว',
 
   'capture.walk.bank.done': 'โอนเงินสำเร็จ',
   'capture.walk.bank.from': 'จาก',
@@ -86,7 +86,7 @@ export const thCaptureWalk: { readonly [Key in keyof typeof enCaptureWalk]: Entr
   'capture.walk.bank.home': 'หน้าหลัก',
 
   'capture.walk.test.paid': 'เสร็จ',
-  'capture.walk.test.inbox': 'Inbox',
+  'capture.walk.test.inbox': 'กล่องขาเข้า',
   'capture.walk.test.row': 'Apple Pay · รอตรวจ',
 
   'capture.walk.ios.library': 'คลัง',

@@ -53,6 +53,7 @@ import { deWorkYear } from './work-year';
 import { deImport } from './import';
 import { deOwed } from './owed';
 import { deNotifications } from './notifications';
+import { deFunnel } from './funnel';
 import { deSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
@@ -116,6 +117,7 @@ export const de: Catalogue = {
   ...importSketchMomo,
   ...deSeason,
   ...deNotifications,
+  ...deFunnel,
 };
 
 /**

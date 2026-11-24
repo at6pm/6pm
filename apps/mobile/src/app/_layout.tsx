@@ -18,6 +18,7 @@ import { LookSettingsProvider, useThemeLook } from '../features/looks/look-setti
 import { MemberCompanionForm } from '../features/purchases/member-companion-form';
 import { AppIconSync } from '../features/app-icon/app-icon-sync';
 import { ImportRepairSync } from '../features/import/import-repair-sync';
+import { FunnelSync } from '../features/funnel/funnel-sync';
 import { readSharedAiMode } from '../features/privacy/ai-mode-share';
 import { applyAiModeToCrashReports } from '../features/privacy/crash-reports';
 import { AiModeSync } from '../features/privacy/use-ai-mode';
@@ -193,6 +194,7 @@ function RootLayout() {
                               <SurfacesSync />
                               <AppIconSync />
                               <ImportRepairSync />
+                              <FunnelSync />
                               {__DEV__ ? <DevCommands /> : null}
                             </ToastHost>
                           </PlanTheme>

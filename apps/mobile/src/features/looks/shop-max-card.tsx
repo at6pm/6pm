@@ -8,6 +8,7 @@ import { Symbol } from '../../ui/icons/symbol';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import { MaxGlow } from '../purchases/max-glow';
 import { anyTrialDays, quotedOffer } from '../purchases/max-pricing';
 import { useMaxStatusLine } from '../purchases/use-max-status-line';
@@ -129,8 +130,11 @@ export const ShopMaxCard = memo(function ShopMaxCard({
         }}
       >
         <View style={{ flexShrink: 1, gap: 3 }}>
-          <Text style={{ ...leading(display(24, 500, -0.01), 25.2), color: MAX_CREAM }}>
-            {t('looks.maxCard.title')}
+          <Text
+            {...HEADING_BREAKS}
+            style={{ ...leading(display(24, 500, -0.01), 25.2), color: MAX_CREAM }}
+          >
+            {headingWords(t('looks.maxCard.title'))}
           </Text>
           {line ? (
             <Text style={{ ...body(13), lineHeight: 18.2, color: 'rgba(246,239,230,.82)' }}>

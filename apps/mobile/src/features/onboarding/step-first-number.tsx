@@ -15,6 +15,7 @@ import { FitWidth } from '../../ui/layout/fit-width';
 import { Odometer } from '../../ui/odometer';
 import { FitText } from '../../ui/type/fit-text';
 import { body, display, leading } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import type { FirstDay } from './onboarding-maths';
 import {
   ease,
@@ -201,6 +202,7 @@ export function StepFirstNumber({
           {/* The column's width, not the text's own: Android measures the display face's tight
               tracking short, so a hugging line that wraps would keep one line's height. */}
           <Text
+            {...HEADING_BREAKS}
             style={{
               ...leading(display(21, 500), 25.2),
               width: '100%',
@@ -209,9 +211,11 @@ export function StepFirstNumber({
               color: pal.ink,
             }}
           >
-            {reminded
-              ? t('onboarding.reveal.seeYou', { time: closeAt })
-              : t('onboarding.reveal.noReminder', { time: closeAt })}
+            {headingWords(
+              reminded
+                ? t('onboarding.reveal.seeYou', { time: closeAt })
+                : t('onboarding.reveal.noReminder', { time: closeAt }),
+            )}
           </Text>
         </Animated.View>
       )}

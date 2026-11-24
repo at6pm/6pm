@@ -10,6 +10,7 @@ import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { FitText } from '../../ui/type/fit-text';
 import { body } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 
 /** The prototype's `screenIn` (up 12 pt from 98.5 %, 0.35 s on the entrance curve), one card after another. */
 function cardIn(index: number) {
@@ -71,10 +72,11 @@ export function SurfaceCard({
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
           <Symbol name={icon} size={22} color={palette.ink} />
           <Text
+            {...HEADING_BREAKS}
             accessibilityRole="header"
             style={{ ...body(19, 700), color: palette.ink, flex: 1 }}
           >
-            {title}
+            {headingWords(title)}
           </Text>
           {needs ? (
             <View

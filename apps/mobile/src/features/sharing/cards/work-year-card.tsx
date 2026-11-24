@@ -8,6 +8,7 @@ import { useMoney, useMoneyStore } from '../../../data/money-provider';
 import { useI18n } from '../../../i18n/i18n';
 import { useMoneyFormat } from '../../../money/use-money-format';
 import { mono } from '../../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../../ui/type/word-fit-text';
 import { useDiaryDates } from '../../diary/diary-dates';
 import { useWorkYear } from '../../work-year/use-work-year';
 import { defineCard, type CardLayoutProps } from './card-definition';
@@ -143,18 +144,21 @@ function WorkYearLayout({
           {t('shareCards.workYear.kicker', { year: card.year }).toLocaleUpperCase()}
         </Text>
         <Text
+          {...HEADING_BREAKS}
           {...ON_CARD}
           numberOfLines={story ? 3 : 2}
           adjustsFontSizeToFit
           minimumFontScale={0.6}
           style={title(inks, inks.titleSize, 0.98)}
         >
-          {data.shop
-            ? t('shareCards.workYear.titleOpen', { count: card.daysOpen })
-            : t('shareCards.workYear.title', {
-                jobs: t('shareCards.workYear.jobs', { count: card.jobs }),
-                clients: t('shareCards.workYear.clients', { count: card.clients }),
-              })}
+          {headingWords(
+            data.shop
+              ? t('shareCards.workYear.titleOpen', { count: card.daysOpen })
+              : t('shareCards.workYear.title', {
+                  jobs: t('shareCards.workYear.jobs', { count: card.jobs }),
+                  clients: t('shareCards.workYear.clients', { count: card.clients }),
+                }),
+          )}
         </Text>
         <MonthBars data={data} inks={inks} height={story ? 190 : 104} />
         <CardRows inks={inks}>

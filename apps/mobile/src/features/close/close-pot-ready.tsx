@@ -37,6 +37,7 @@ import { isSymbolName, Symbol } from '../../ui/icons/symbol';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading, tabular } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords, WordFitText } from '../../ui/type/word-fit-text';
 import { Jar } from '../pots/jar';
 import { jarColours } from '../pots/jar-colours';
 import { jarName } from '../pots/jar-name';
@@ -292,9 +293,11 @@ function PotReady({
             <Symbol name="check" size={24} weight={600} color={palette.btnFg} />
           </Animated.View>
         </Animated.View>
-        <Text style={{ ...leading(display(42, 500), 43), color: palette.ink, textAlign: 'center' }}>
+        <WordFitText
+          style={{ ...leading(display(42, 500), 43), color: palette.ink, textAlign: 'center' }}
+        >
           {t(full ? 'potsClose.ready.full' : 'potsClose.ready.month', { jar: name })}
-        </Text>
+        </WordFitText>
         <Text style={{ ...display(22, 500), ...tabular, color: palette.ink, opacity: 0.8 }}>
           {sub}
         </Text>
@@ -333,7 +336,9 @@ function PotReady({
                 backgroundColor: palette.bubbleBg,
               }}
             >
-              <Text style={{ ...display(16, 500), color: palette.bubbleFg }}>{companion}</Text>
+              <Text {...HEADING_BREAKS} style={{ ...display(16, 500), color: palette.bubbleFg }}>
+                {headingWords(companion)}
+              </Text>
             </View>
           </View>
         ) : null}

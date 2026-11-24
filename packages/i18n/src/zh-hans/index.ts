@@ -53,6 +53,7 @@ import { zhHansWorkYear } from './work-year';
 import { zhHansImport } from './import';
 import { zhHansOwed } from './owed';
 import { zhHansNotifications } from './notifications';
+import { zhHansFunnel } from './funnel';
 import { zhHansSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
@@ -116,6 +117,7 @@ export const zhHans: Catalogue = {
   ...importSketchMomo,
   ...zhHansSeason,
   ...zhHansNotifications,
+  ...zhHansFunnel,
 };
 
 /**

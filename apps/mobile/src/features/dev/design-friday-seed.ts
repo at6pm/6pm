@@ -1,31 +1,31 @@
 import { randomUUID } from 'expo-crypto';
 
-import { addDays, currencyOf, diffDays, parts, payCycleOn, VND, type LocalDate } from '@6pm/domain';
+import { parts, payCycleOn, type LocalDate } from '@6pm/domain';
 
-import { t, type Language } from '@6pm/i18n';
+import type { Language } from '@6pm/i18n';
 
 import type { MoneyStore } from '../../data/money-store';
 import { writePlan } from '../../data/plan-settings';
+import { buildDesignFriday, FRIDAY_PAYDAY } from './design-friday-fixture';
 
 /**
- * Developer tool: fills the database with the prototype's Friday (income 17,4tr, payday the 31st,
- * four bills, a 750k-a-month occasion, 2.365.000₫ spent earlier this cycle and the six spends of
- * the day) placed on today's date, so every screen can be compared with the design renders.
- * Replaces everything in the money tables.
- * With another currency, every amount is worth about the same in it (17,4tr is about $670). The
- * categories are named in `language`, as onboarding names a new install's.
+ * Developer tool: fills the database with the prototype's Friday (a month's pay on the 31st, four
+ * bills, a dated jar, what was spent earlier this cycle and the six spends of the day) placed on
+ * today's date, so every screen can be compared with the design renders. Replaces everything in
+ * the money tables.
+ * The fixture is local: its names follow `language` and its amounts the currency, the language's
+ * own when none is given: dollars in English, đồng in Vietnamese (see `buildDesignFriday`). The
+ * categories are named in `language`, as onboarding names a new install's. In đồng its amounts
+ * are the prototype's own (income 17,4tr, 750k a month into the dated jar, 2.365.000₫ spent
+ * before its Friday).
  */
 export async function seedDesignFriday(
   store: MoneyStore,
   today: LocalDate,
-  code = 'VND',
+  code?: string,
   language: Language = 'en',
 ): Promise<void> {
-  const currency = currencyOf(code);
-  const worth = (dong: number) =>
-    currency.code === 'VND'
-      ? dong
-      : Math.round((dong / VND.perUsd) * currency.perUsd * currency.minorPerMajor);
+  const fixture = buildDesignFriday(today, code, language);
   const { db, tables } = store;
   const now = new Date();
   const iso = now.toISOString();
@@ -42,47 +42,25 @@ export async function seedDesignFriday(
       await db.runAsync(`DELETE FROM ${table}`, []);
     }
     await writePlan(db, {
-      income: worth(17_400_000),
-      payday: { kind: 'sameDay', day: 31 },
-      futureYou: worth(2_000_000),
+      income: fixture.income,
+      payday: FRIDAY_PAYDAY,
+      futureYou: fixture.futureYou,
       closeAt: '18:00',
       persona: 'cheeky',
       serious: false,
-      currency: currency.code,
+      currency: fixture.currency.code,
     });
-    const categories = [
-      ['food', 'restaurant', 45],
-      ['drinks', 'local_cafe', 25],
-      ['transport', 'two_wheeler', 245],
-      ['groceries', 'shopping_basket', 140],
-      ['shopping', 'local_mall', 300],
-      ['gifts', 'redeem', 350],
-    ] as const;
-    for (const [i, [id, icon, hue]] of categories.entries()) {
-      await tables.categories.put({
-        id,
-        name: t(language, `onboarding.category.${id}`),
-        icon,
-        hue,
-        countsDaily: true,
-        sort: i,
-        archivedAt: null,
-      });
+    for (const [i, category] of fixture.categories.entries()) {
+      await tables.categories.put({ ...category, countsDaily: true, sort: i, archivedAt: null });
     }
-    const bills = [
-      ['Rent', 'home', 3_500_000, 1, true],
-      ['Viettel phone', 'smartphone', 100_000, 3, true],
-      ['FPT internet', 'wifi', 220_000, 12, false],
-      ['EVN electricity', 'bolt', 380_000, 15, false],
-    ] as const;
-    const cycle = payCycleOn(today, { kind: 'sameDay', day: 31 });
-    for (const [i, [name, icon, amount, dueDay, paid]] of bills.entries()) {
+    const cycle = payCycleOn(today, FRIDAY_PAYDAY);
+    for (const [i, { name, icon, amount, dueDay, paid }] of fixture.bills.entries()) {
       await tables.bills.put({
         id: randomUUID(),
         name,
         icon,
         hue: 60 + i * 70,
-        amount: worth(amount),
+        amount,
         dueDay,
         paidCycle: paid ? cycle.start : null,
         sort: i,
@@ -93,85 +71,48 @@ export async function seedDesignFriday(
         askedCycle: null,
       });
     }
-    const { year, month } = parts(today);
-    const due = new Date(Date.UTC(year, month - 1 + 3, 1));
     await tables.pots.put({
       id: randomUUID(),
       kind: 'occasion',
-      name: 'Tết',
-      icon: 'celebration',
+      name: fixture.jar.name,
+      icon: fixture.jar.icon,
       hue: 20,
-      goal: worth(2_250_000),
-      neededBy: due.toISOString().slice(0, 7),
+      goal: fixture.jar.goal,
+      neededBy: fixture.jar.neededBy,
       share: null,
       paused: false,
       createdAt: iso,
       archivedAt: null,
     });
-
-    // 2.365.000₫ spread over the cycle's earlier days, one meal-sized spend per day.
-    const earlier = diffDays(today, cycle.start);
-    const spends: [string, string, string, number, string, string, string | null][] = [];
-    if (earlier > 0) {
-      const each = Math.floor(2_365_000 / earlier / 1000) * 1000;
-      for (let d = 0; d < earlier; d++) {
-        const amount = d === earlier - 1 ? 2_365_000 - each * (earlier - 1) : each;
-        spends.push([addDays(cycle.start, d), '12:30', 'Lunch', amount, 'food', 'kept', null]);
-      }
-    }
-    spends.push(
-      [today, '07:42', 'Bánh mì Cô Ba', 25_000, 'food', 'kept', null],
-      [today, '08:15', 'Cà phê sữa đá', 29_000, 'drinks', 'caught', 'MB Bank · FT26285XYZ'],
-      [today, '12:10', 'Phở Hòa', 45_000, 'food', 'pending', 'You didn’t say if it went through'],
-      [today, '13:30', 'Grab ride home', 38_000, 'transport', 'caught', 'k7m2qx@at6pm.app'],
-      [today, '15:05', 'Trà sữa', 45_000, 'drinks', 'kept', null],
-      [today, '16:40', 'Circle K', 120_000, 'shopping', 'caught', 'Vietcombank · FT26285ABC'],
-    );
-    const sourceOf = (merchant: string) =>
-      merchant === 'Cà phê sữa đá' || merchant === 'Circle K'
-        ? 'shared'
-        : merchant === 'Phở Hòa'
-          ? 'qr'
-          : merchant === 'Grab ride home'
-            ? 'email'
-            : merchant === 'Trà sữa'
-              ? 'voice'
-              : 'manual';
-    // This week's earlier days are closed, except the third (the design's missed Wednesday).
-    for (let d = new Date(`${today}T12:00:00`).getDay() === 1 ? 0 : 1; ; d++) {
-      const day = addDays(today, -d);
-      if (day < cycle.start || d > 6) break;
-      const weekday = (new Date(`${day}T12:00:00`).getDay() + 6) % 7;
-      if (weekday === 2 || day >= today) continue;
+    for (const { day, spent, line, tomorrow } of fixture.closedDays) {
       await tables.closedDays.put({
         day,
         closedAt: new Date(`${day}T18:20:00`).toISOString(),
         late: false,
-        spent: worth(280_000),
-        line: worth(340_000),
-        tomorrow: worth(345_000),
+        spent,
+        line,
+        tomorrow,
         note: null,
       });
-      if (weekday === 0) break;
     }
-    for (const [day, time, merchant, amount, categoryId, status, detail] of spends) {
-      const [h = 0, m = 0] = time.split(':').map(Number);
-      const { year: y, month: mo, day: dd } = parts(day);
+    for (const spend of fixture.spends) {
+      const [h = 0, m = 0] = spend.time.split(':').map(Number);
+      const { year: y, month: mo, day: dd } = parts(spend.day);
       const at = new Date(y, mo - 1, dd, h, m).toISOString();
       await tables.spends.put({
         id: randomUUID(),
-        day,
+        day: spend.day,
         at,
-        amount: worth(amount),
-        categoryId,
-        merchant,
+        amount: spend.amount,
+        categoryId: spend.categoryId,
+        merchant: spend.merchant,
         note: null,
-        source: sourceOf(merchant),
-        status: status as 'kept' | 'caught' | 'pending',
+        source: spend.source,
+        status: spend.status,
         previousStatus: null,
         wallet: null,
         forWork: false,
-        detail,
+        detail: spend.detail,
         foreignAmount: null,
         createdAt: iso,
         updatedAt: iso,

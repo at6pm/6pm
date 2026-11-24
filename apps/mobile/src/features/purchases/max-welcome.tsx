@@ -23,6 +23,7 @@ import { usePhoneColumn } from '../../ui/layout/phone-column';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useClock } from '../../ui/theme/clock';
 import { body, display, leading } from '../../ui/type/fonts';
+import { WordFitText } from '../../ui/type/word-fit-text';
 import { useBackupStatus } from '../backup/use-backup-status';
 import { lookCopy } from '../looks/look-copy';
 import { useLookSettings } from '../looks/look-settings-provider';
@@ -222,7 +223,7 @@ export function MaxWelcome() {
         <MaxStamp />
         <Rise delay={0.45} seconds={0.5}>
           <View style={{ alignItems: 'center', gap: 6 }}>
-            <Text
+            <WordFitText
               accessibilityRole="header"
               style={{
                 ...leading(display(36, 500, -0.02, MAX_FONT), 37.4),
@@ -231,7 +232,7 @@ export function MaxWelcome() {
               }}
             >
               {t('max.welcome.title')}
-            </Text>
+            </WordFitText>
             <Text
               style={{
                 ...body(15),

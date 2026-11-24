@@ -10,6 +10,7 @@ import { Symbol } from '../../ui/icons/symbol';
 import { useTheme } from '../../ui/theme/theme';
 import { OfferedChip } from '../sharing/offered-chip';
 import { body, display, leading, tabular } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import type { CoverRuler } from '../plan/income-plan-view';
 
 const dateOf = (day: LocalDate) => new Date(`${day}T12:00:00`);
@@ -52,12 +53,13 @@ export function NothingLandedHero({
     <View style={{ gap: 6 }}>
       <Text style={{ ...body(15, 500), color: palette.inkSoft }}>{t('today.safeToSpend')}</Text>
       <Text
+        {...HEADING_BREAKS}
         numberOfLines={2}
         adjustsFontSizeToFit
         minimumFontScale={0.7}
         style={{ ...leading(display(54, 500, -0.03), 54), color: palette.ink, maxWidth: 300 }}
       >
-        {short ? t('income.today.billsFirst') : t('income.today.nothingLanded')}
+        {headingWords(short ? t('income.today.billsFirst') : t('income.today.nothingLanded'))}
       </Text>
       <View style={{ gap: 8, paddingTop: 10, maxWidth: 262 }}>
         <DashedMeter color={track} />

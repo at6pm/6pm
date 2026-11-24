@@ -9,6 +9,7 @@ import { easeInOut } from '../../ui/motion/curves';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, tabular } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import { SpendRow, type SpendRowView } from './spend-row';
 import { useTodayJarLines } from './use-spend-rows';
 import { WorkFoldedRow } from '../work/work-today';
@@ -64,7 +65,9 @@ export function TodayList({
           paddingHorizontal: 6,
         }}
       >
-        <Text style={{ ...body(20, 700, -0.02), color: palette.ink }}>{t('today.list.title')}</Text>
+        <Text {...HEADING_BREAKS} style={{ ...body(20, 700, -0.02), color: palette.ink }}>
+          {headingWords(t('today.list.title'))}
+        </Text>
         <Text style={{ ...body(14, 500), ...tabular, color: palette.inkSoft }}>
           {t('today.list.spent', { amount: spentLabel })}
         </Text>
