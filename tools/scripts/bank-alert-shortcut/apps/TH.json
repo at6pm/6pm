@@ -1,0 +1,40 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  {
+    "bundle": "com.kasikornbank.retail.mbanking.wap",
+    "name": "K PLUS",
+    "team": "33C5EP5X49",
+    "bank": "TH.KBANK"
+  },
+  { "bundle": "com.scb.iphone", "bank": "TH.SCB" },
+  { "bundle": "com.bangkokbank.mbanking", "bank": "TH.BBL" },
+  { "bundle": "com.ktb.netbank", "bank": "TH.KTB" },
+  { "bundle": "com.krungsri.kma", "name": "krungsri", "team": "3QMTRQCNLT", "bank": "TH.KRUNGSRI" },
+  { "bundle": "com.TMBTOUCH.PRODUCTION", "bank": "TH.TTB" },
+  { "bundle": "com.gsb.mobilife.MyMo", "bank": "TH.GSB" },
+  {
+    "bundle": "com.tdcm.truemoneywallet",
+    "name": "TrueMoney",
+    "team": "X2933S7SQW",
+    "bank": "TH.TRUEMONEY"
+  },
+  { "bundle": "com.ktb.customer.qr", "bank": "TH.PAOTANG" },
+  { "bundle": "com.kasikornbank.makebykbank", "bank": "TH.MAKE" },
+  { "bundle": "com.baac.amobileplus", "bank": "TH.BAAC" },
+  { "bundle": "com.uob.mightyth", "bank": "TH.UOB" },
+  { "bundle": "com.dimekkp.dimeapp", "bank": "TH.DIME" },
+  { "bundle": "th.co.cardx", "bank": "TH.CARDX" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

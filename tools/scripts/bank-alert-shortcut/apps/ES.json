@@ -1,0 +1,37 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "com.isban.bancosantander.es.public", "bank": "ES.SANTANDER" },
+  {
+    "bundle": "com.bbva.BBVAMovil",
+    "name": "BBVA España",
+    "team": "FVZS42EB87",
+    "bank": "ES.BBVA"
+  },
+  { "bundle": "com.thenetfirm.mobile.wapicon.WapIcon", "bank": "ES.CAIXABANK" },
+  { "bundle": "com.bancosabadell.sabloc", "bank": "ES.SABADELL" },
+  {
+    "bundle": "com.bankinter.Launcher",
+    "name": "Bankinter",
+    "team": "U5QFPVANML",
+    "bank": "ES.BANKINTER"
+  },
+  { "bundle": "es.ingdirect.www", "bank": "ES.ING" },
+  { "bundle": "es.lacaixa.mobile.imaginBank", "bank": "ES.IMAGIN" },
+  { "bundle": "es.openbank.mobile", "bank": "ES.OPENBANK" },
+  { "bundle": "es.unicajabanco.app", "bank": "ES.UNICAJA" },
+  { "bundle": "com.abanca.bancamovil.particulares", "bank": "ES.ABANCA" },
+  { "bundle": "com.rsi.nba", "bank": "ES.RURALVIA" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

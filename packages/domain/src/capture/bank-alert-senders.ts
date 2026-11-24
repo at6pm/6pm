@@ -1,5 +1,6 @@
 import { BANKS, findBank, WORLD_BANKS, type BankInfo } from '../vietqr/bank-catalogue';
 import { WORLD_ALERT_APPS } from '../vietqr/world-alert-apps';
+import { WORLD_IOS_APPS } from '../vietqr/world-ios-apps';
 import { foldWords } from './spoken-spend';
 
 /**
@@ -95,11 +96,50 @@ const WORLD_BY_NAME = new Map(
 );
 
 /**
+ * An app's name as it is compared with the names iOS shows: compatibility-normalised, lower case,
+ * with every run of anything but letters and digits made one space. Letters of every script are
+ * kept, so "KB스타뱅킹" and "楽天ペイ" are names as much as "Chase" is.
+ */
+function appKey(name: string): string {
+  return name
+    .normalize('NFKC')
+    .toLowerCase()
+    .replace(/[^\p{L}\p{M}\p{N}]+/gu, ' ')
+    .trim();
+}
+
+/** The world's banks and wallets by their iPhone bundle id, lower case; the first code wins. */
+const WORLD_BY_IOS_BUNDLE = new Map<string, BankInfo>();
+/** The world's banks and wallets by the names iOS shows for their apps (`appKey`). */
+const WORLD_BY_IOS_NAME = new Map<string, BankInfo>();
+for (const [id, app] of WORLD_IOS_APPS) {
+  const bank = findBank(id);
+  if (!bank) continue;
+  const bundle = app.bundle.toLowerCase();
+  if (!WORLD_BY_IOS_BUNDLE.has(bundle)) WORLD_BY_IOS_BUNDLE.set(bundle, bank);
+  for (const name of app.names) WORLD_BY_IOS_NAME.set(appKey(name), bank);
+}
+
+/**
+ * The world's names an app's name may start with ("Chase" for "Chase Mobile"), longest first: the
+ * everyday names and the names iOS shows, four letters or more so a short one ("Up", "TD") is only
+ * ever matched whole.
+ */
+const WORLD_NAMES: readonly (readonly [name: string, bank: BankInfo])[] = [
+  ...[...WORLD_BY_IOS_NAME],
+  ...WORLD_BANKS.map((bank) => [appKey(bank.shortName), bank] as const),
+]
+  .filter(([name]) => name.length >= 4)
+  .sort(([a], [b]) => b.length - a.length);
+
+/**
  * The bank or wallet an app is, from the name a notification gives it ("MB Bank", "VCB Digibank",
- * "MoMo"), its Android package or its iPhone bundle id ("com.vcb.VCB"): the whole name, or the name a bank's app starts with.
+ * "MoMo", "KB스타뱅킹"), its Android package or its iPhone bundle id ("com.vcb.VCB", "com.chase").
  * Vietnam's banks are looked for first, so a short code they share with a bank elsewhere ("NAB",
- * "DBS", "UOB") stays theirs; a bank of another country is known only by its exact Android package
- * or its whole everyday name ("Chase", "Revolut"). Null for an app 6pm does not know.
+ * "DBS", "UOB") stays theirs: a whole name of theirs, then a whole name an iPhone shows for a bank
+ * elsewhere ("DBS digibank"), then the name a Vietnamese bank's app starts with, then a bank
+ * elsewhere by its exact Android package, its whole everyday name ("Chase", "Revolut") or, last,
+ * the name its app starts with ("Chase Mobile"). Null for an app 6pm does not know.
  */
 export function bankOfApp(app: string | null | undefined): BankInfo | null {
   const raw = (app ?? '').trim();
@@ -109,13 +149,18 @@ export function bankOfApp(app: string | null | undefined): BankInfo | null {
     (bank) => bank.android !== null && bank.android.package.toLowerCase() === lower,
   );
   if (byPackage) return byPackage;
-  const byBundle = BY_IOS_BUNDLE.get(lower);
+  const byBundle = BY_IOS_BUNDLE.get(lower) ?? WORLD_BY_IOS_BUNDLE.get(lower);
   if (byBundle) return byBundle;
   const folded = foldWords(raw);
-  for (const [name, bank] of NAMES) {
-    if (folded === ` ${name} ` || folded.startsWith(` ${name} `)) return bank;
-  }
-  return WORLD_BY_PACKAGE.get(lower) ?? WORLD_BY_NAME.get(folded.trim()) ?? null;
+  for (const [name, bank] of NAMES) if (folded === ` ${name} `) return bank;
+  const key = appKey(raw);
+  const byIosName = WORLD_BY_IOS_NAME.get(key);
+  if (byIosName) return byIosName;
+  for (const [name, bank] of NAMES) if (folded.startsWith(` ${name} `)) return bank;
+  const world = WORLD_BY_PACKAGE.get(lower) ?? WORLD_BY_NAME.get(folded.trim());
+  if (world) return world;
+  for (const [name, bank] of WORLD_NAMES) if (key.startsWith(`${name} `)) return bank;
+  return null;
 }
 
 /** Every Android package whose notifications are read as bank and wallet alerts: Vietnam's first. */

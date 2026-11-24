@@ -1,0 +1,48 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  {
+    "bundle": "au.com.commbank.commbank",
+    "name": "CommBank",
+    "team": "FP8T463CG8",
+    "bank": "AU.CBA"
+  },
+  { "bundle": "au.com.westpac.ConsultWPC", "bank": "AU.WESTPAC" },
+  { "bundle": "com.anz.ANZGrow", "name": "ANZ Australia", "team": "4W69L62Z2B", "bank": "AU.ANZ" },
+  {
+    "bundle": "au.com.nab.NAB-iPad",
+    "name": "NAB Mobile Banking",
+    "team": "7Q8JA2S38L",
+    "bank": "AU.NAB"
+  },
+  {
+    "bundle": "au.com.ing.oneapp.banking",
+    "name": "ING Australia",
+    "team": "75Q79EZ672",
+    "bank": "AU.ING"
+  },
+  { "bundle": "com.macquarie.mobilebanking", "bank": "AU.MACQUARIE" },
+  { "bundle": "com.bendigobank.mobileios.BendigoBank", "bank": "AU.BENDIGO" },
+  { "bundle": "au.com.up.money", "name": "Up", "team": "FKHRDBY9RN", "bank": "AU.UP" },
+  { "bundle": "au.com.86400", "bank": "AU.UBANK" },
+  { "bundle": "au.com.bankwest.Bankwest", "bank": "AU.BANKWEST" },
+  { "bundle": "au.com.stgeorge.Consult", "bank": "AU.STGEORGE" },
+  { "bundle": "au.com.suncorp.dmpm.marketplace", "bank": "AU.SUNCORP" },
+  { "bundle": "au.com.boq.mobilebanking", "bank": "AU.BOQ" },
+  { "bundle": "au.com.mebank.bankingman", "bank": "AU.MEBANK" },
+  { "bundle": "au.com.hsbc.hsbcaustralia", "bank": "AU.HSBC" },
+  { "bundle": "au.co.americanexpress.amexservice", "bank": "AU.AMEX" },
+  { "bundle": "au.com.cua.mb", "bank": "AU.GREATSOUTHERN" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

@@ -1,0 +1,25 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "com.enbd.MobileBanking", "bank": "AE.ENBD" },
+  { "bundle": "com.fab.PersonalBanking", "bank": "AE.FAB" },
+  { "bundle": "com.adcb.nexgen", "bank": "AE.ADCB" },
+  { "bundle": "com.dib.app", "bank": "AE.DIB" },
+  { "bundle": "com.adib.mobilebanking", "bank": "AE.ADIB" },
+  { "bundle": "com.mashreq.", "bank": "AE.MASHREQ" },
+  { "bundle": "io.wio.retail", "bank": "AE.WIO" },
+  { "bundle": "ae.e-wallet.mobileapp", "bank": "AE.EANDMONEY" },
+  { "bundle": "com.ziina.app", "bank": "AE.ZIINA" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

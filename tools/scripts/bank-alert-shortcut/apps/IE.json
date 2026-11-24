@@ -1,0 +1,19 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "ie.aib.mobilebanking", "bank": "IE.AIB" },
+  { "bundle": "com.bankofireland.mobilebanking", "bank": "IE.BOI" },
+  { "bundle": "ie.permanenttsb.ptsbapp", "bank": "IE.PTSB" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

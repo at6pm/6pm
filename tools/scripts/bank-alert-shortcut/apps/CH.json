@@ -1,0 +1,29 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "com.ubs.mobileBanking", "bank": "CH.UBS" },
+  { "bundle": "ch.post.pf.mp.iapp", "bank": "CH.POSTFINANCE" },
+  { "bundle": "ch.raiffeisen.bancomat", "bank": "CH.RAIFFEISEN" },
+  { "bundle": "ch.zkb.iapp", "bank": "CH.ZKB" },
+  { "bundle": "ch.twint.wallet", "bank": "CH.TWINT" },
+  { "bundle": "ch.migrosbank.iphonebanking", "bank": "CH.MIGROS" },
+  { "bundle": "ch.bcv.mobile.bcv", "bank": "CH.BCV" },
+  { "bundle": "ch.vab.moba", "bank": "CH.VALIANT" },
+  { "bundle": "com.swissquote.Yuh", "bank": "CH.YUH" },
+  { "bundle": "com.neonbanking.app", "bank": "CH.NEON" },
+  { "bundle": "ch.cembra.cmf", "bank": "CH.CEMBRA" },
+  { "bundle": "ch.visecaone", "bank": "CH.VISECA" },
+  { "bundle": "ch.swisscard.mobile", "bank": "CH.SWISSCARD" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

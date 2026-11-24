@@ -1,0 +1,30 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "com.paygo24.ababank", "bank": "KH.ABA" },
+  {
+    "bundle": "com.domain.acledabankqr",
+    "name": "ACLEDA mobile",
+    "team": "RJWBHET2KP",
+    "bank": "KH.ACLEDA"
+  },
+  { "bundle": "com.wingmoney.app", "bank": "KH.WING" },
+  { "bundle": "kh.org.nbc.bakong", "bank": "KH.BAKONG" },
+  { "bundle": "kh.com.prasac.ibanking.prasacmbanking", "bank": "KH.PRASAC" },
+  { "bundle": "com.amkcambodia.mobilebanking", "bank": "KH.AMK" },
+  { "bundle": "kh.com.ppcbank.mbanking3p", "bank": "KH.PPCB" },
+  { "bundle": "com.bankgenie.geniemobile.amret", "bank": "KH.AMRET" },
+  { "bundle": "kh.com.truemoney.customerapp", "bank": "KH.TRUEMONEY" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

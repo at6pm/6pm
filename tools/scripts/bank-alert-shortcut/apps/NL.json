@@ -1,0 +1,31 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  {
+    "bundle": "nl.ing.iphone.app.Bankieren",
+    "name": "ING Nederland",
+    "team": "ED83ZJR6DX",
+    "bank": "NL.ING"
+  },
+  { "bundle": "nl.Rabobank.Bankieren", "bank": "NL.RABOBANK" },
+  { "bundle": "com.abnamro.nl.bankieren", "bank": "NL.ABNAMRO" },
+  { "bundle": "com.bunq.ios", "name": "bunq", "team": "5C8Y578B5P", "bank": "NL.BUNQ" },
+  { "bundle": "nl.devolksbank.sns.banking", "bank": "NL.SNS" },
+  { "bundle": "nl.devolksbank.asn.banking", "bank": "NL.ASN" },
+  { "bundle": "nl.devolksbank.regiobank.banking", "bank": "NL.REGIO" },
+  { "bundle": "nl.aegon.knab.iphone", "bank": "NL.KNAB" },
+  { "bundle": "com.triodos.bankingnl", "bank": "NL.TRIODOS" },
+  { "bundle": "com.abnamro.tikkie", "bank": "NL.TIKKIE" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

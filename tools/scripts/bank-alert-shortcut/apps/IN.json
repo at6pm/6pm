@@ -1,0 +1,38 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "com.sbi.lotusintouch", "bank": "IN.SBI" },
+  { "bundle": "com.hdfcbank.ios.now", "bank": "IN.HDFC" },
+  { "bundle": "com.icicibank.imobile", "bank": "IN.ICICI" },
+  { "bundle": "com.axisbank.axismobile", "bank": "IN.AXIS" },
+  { "bundle": "com.kotak.bank.mobile", "bank": "IN.KOTAK" },
+  { "bundle": "com.pnbios1128", "bank": "IN.PNB" },
+  { "bundle": "com.bankofbaroda.mconnect", "bank": "IN.BOB" },
+  {
+    "bundle": "com.phonepe.PhonePeApp",
+    "name": "PhonePe",
+    "team": "9GW78CXC2W",
+    "bank": "IN.PHONEPE"
+  },
+  { "bundle": "com.google.paisa", "name": "Google Pay", "team": "EQHXZ8M8AV", "bank": "IN.GPAY" },
+  { "bundle": "com.one97.paytm", "name": "Paytm", "team": "885LR8YVNT", "bank": "IN.PAYTM" },
+  { "bundle": "com.canarabank.mobility", "bank": "IN.CANARA" },
+  { "bundle": "com.infrasoft.uboi", "bank": "IN.UNION" },
+  { "bundle": "com.boi.ua.ios", "bank": "IN.BOI" },
+  { "bundle": "com.idfcfirstbank.optimus", "bank": "IN.IDFC" },
+  { "bundle": "com.indusind.indie", "bank": "IN.INDUSIND" },
+  { "bundle": "in.org.npci.ios.upiapp", "bank": "IN.BHIM" },
+  { "bundle": "com.dreamplug.cred", "bank": "IN.CRED" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

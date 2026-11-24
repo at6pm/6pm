@@ -1,0 +1,31 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "com.chinatrust.mobilebank", "bank": "TW.CTBC" },
+  { "bundle": "com.cathaybk.cathaybk", "name": "CUBE", "team": "949C94LBAB", "bank": "TW.CATHAY" },
+  { "bundle": "com.fubon.aibank", "bank": "TW.FUBON" },
+  { "bundle": "tw.com.ESunbank.mobilebanking.release", "bank": "TW.ESUN" },
+  { "bundle": "tw.gov.post.mpost", "bank": "TW.POST" },
+  { "bundle": "com.jkos.JKOS", "name": "街口支付", "team": "GZKP525SU3", "bank": "TW.JKOPAY" },
+  { "bundle": "tw.com.taishinbank.mobile", "bank": "TW.TAISHIN" },
+  { "bundle": "tw.com.taishinbank.richart", "bank": "TW.RICHART" },
+  { "bundle": "com.firstbank.mbank", "bank": "TW.FCB" },
+  { "bundle": "tw.com.hncb.NMBank", "bank": "TW.HNCB" },
+  { "bundle": "com.chb.mobile.pmb", "bank": "TW.CHB" },
+  { "bundle": "com.yuantabank.bankinginyour.superapp.personal", "bank": "TW.YUANTA" },
+  { "bundle": "com.nextbank.ncbportal", "bank": "TW.NEXTBANK" },
+  { "bundle": "com.ipass.ipassmoney", "bank": "TW.IPASS" },
+  { "bundle": "tw.com.esunbank.app.esunwallet", "bank": "TW.ESUNWALLET" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

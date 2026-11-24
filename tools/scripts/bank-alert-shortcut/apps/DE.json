@@ -1,0 +1,41 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  {
+    "bundle": "de.starfinanz.Finanzstatus",
+    "name": "Sparkasse",
+    "team": "N4X8L897Y7",
+    "bank": "DE.SPARKASSE"
+  },
+  { "bundle": "de.fiduciagad.banking.vr", "bank": "DE.VOLKSBANK" },
+  { "bundle": "com.db.pbc.ng.mobile", "bank": "DE.DEUTSCHE" },
+  { "bundle": "de.softgames.commerzbank", "bank": "DE.COMMERZBANK" },
+  { "bundle": "de.ingdiba.bankingapp", "bank": "DE.ING" },
+  { "bundle": "de.dkb.banking", "bank": "DE.DKB" },
+  { "bundle": "de.postbank.banking", "bank": "DE.POSTBANK" },
+  {
+    "bundle": "de.comdirect.App",
+    "name": "comdirect",
+    "team": "U829YNWB46",
+    "bank": "DE.COMDIRECT"
+  },
+  { "bundle": "de.no26.Number26", "name": "N26", "team": "2EYRG96PC2", "bank": "DE.N26" },
+  { "bundle": "de.traderepublic.app", "bank": "DE.TRADEREPUBLIC" },
+  { "bundle": "de.consorsbank.universalapp", "bank": "DE.CONSORS" },
+  { "bundle": "de.c24.bankapp", "bank": "DE.C24" },
+  { "bundle": "de.sparda.banking.app", "bank": "DE.SPARDA" },
+  { "bundle": "ei.targo.release", "bank": "DE.TARGOBANK" },
+  { "bundle": "de.norisbank.app.ios.norisbank", "bank": "DE.NORISBANK" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

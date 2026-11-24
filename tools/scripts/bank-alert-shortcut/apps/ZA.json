@@ -1,0 +1,23 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "capitec.acuity.mobile.prod", "bank": "ZA.CAPITEC" },
+  { "bundle": "za.co.fnb.connect.touch", "bank": "ZA.FNB" },
+  { "bundle": "com.standardbank.retail.banking", "bank": "ZA.STANDARD" },
+  { "bundle": "za.co.absa.absabanking", "bank": "ZA.ABSA" },
+  { "bundle": "za.co.nedbank.money", "bank": "ZA.NEDBANK" },
+  { "bundle": "bank.discovery.banking.production.release", "bank": "ZA.DISCOVERY" },
+  { "bundle": "com.tymebank.smartapp.prod", "bank": "ZA.TYME" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

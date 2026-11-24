@@ -1,0 +1,25 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "se.swedbank.iphonebanken", "bank": "SE.SWEDBANK" },
+  { "bundle": "se.handelsbanken.TelesvarIBilder", "bank": "SE.HANDELSBANKEN" },
+  { "bundle": "se.seb.privatkund", "bank": "SE.SEB" },
+  { "bundle": "com.nordea.mobilebank.se", "bank": "SE.NORDEA" },
+  { "bundle": "se.bankgirot.swish", "bank": "SE.SWISH" },
+  { "bundle": "se.lansforsakringar.mobil", "bank": "SE.LF" },
+  { "bundle": "com.danskebank.mobilebank3se", "bank": "SE.DANSKE" },
+  { "bundle": "se.icabanken.iphoneapp", "bank": "SE.ICA" },
+  { "bundle": "se.sbab.bankapp", "bank": "SE.SBAB" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

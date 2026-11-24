@@ -1,0 +1,33 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "com.kbstar.kbbank", "name": "KB스타뱅킹", "team": "8MX8HQ493Q", "bank": "KR.KB" },
+  { "bundle": "com.shinhan.sbank", "bank": "KR.SHINHAN" },
+  { "bundle": "com.wooribank.smart.npib", "bank": "KR.WOORI" },
+  { "bundle": "com.hanabank.oqf", "bank": "KR.HANA" },
+  { "bundle": "com.nonghyup.newsmartbanking", "bank": "KR.NH" },
+  { "bundle": "com.ibk.ios.ionebank", "bank": "KR.IBK" },
+  { "bundle": "com.kakaobank.channel", "bank": "KR.KAKAOBANK" },
+  { "bundle": "com.kakaopay.payapp.store", "bank": "KR.KAKAOPAY" },
+  { "bundle": "com.naverfin.payapp", "bank": "KR.NAVERPAY" },
+  { "bundle": "com.kbankwith.smartbank", "bank": "KR.KBANK" },
+  { "bundle": "com.nonghyup.nhallonebank", "bank": "KR.NHALLONE" },
+  { "bundle": "com.scbank.ma30", "bank": "KR.SC" },
+  { "bundle": "com.epost.psf.sd", "bank": "KR.EPOST" },
+  { "bundle": "com.kbcard.cxh.appcard", "bank": "KR.KBCARD" },
+  { "bundle": "com.shinhancard.MobilePay", "bank": "KR.SHINHANCARD" },
+  { "bundle": "com.hyundaicard.hcappcard", "bank": "KR.HYUNDAICARD" },
+  { "bundle": "com.hanaskcard.paycli", "bank": "KR.HANACARD" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

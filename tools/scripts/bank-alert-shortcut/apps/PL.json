@@ -1,0 +1,27 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "pl.pkobp.iko", "bank": "PL.PKO" },
+  { "bundle": "pl.pekao.pekaosa.peopay", "bank": "PL.PEKAO" },
+  { "bundle": "pl.mobiltek.mbank", "bank": "PL.MBANK" },
+  { "bundle": "pl.ing.mojeing", "bank": "PL.ING" },
+  { "bundle": "pl.bzwbk.mobile.bzwbk24", "bank": "PL.ERSTE" },
+  { "bundle": "pl.millenniumbank.bankmillennium", "bank": "PL.MILLENNIUM" },
+  { "bundle": "pl.aliorbank.aib", "bank": "PL.ALIOR" },
+  { "bundle": "pl.creditagricole.nmobi", "bank": "PL.CA" },
+  { "bundle": "pl.bgzbnpparibas.gomobile", "bank": "PL.BNP" },
+  { "bundle": "com.getinbank.mobilebanking.MobileBanking", "bank": "PL.VELO" },
+  { "bundle": "pl.nestbank.nestbank-prod", "bank": "PL.NEST" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

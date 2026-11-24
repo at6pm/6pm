@@ -1,0 +1,29 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "com.ziraatbank.ZiraatMobile", "bank": "TR.ZIRAAT" },
+  { "bundle": "mobile.isbank.iscep", "bank": "TR.ISBANK" },
+  { "bundle": "com.garanti.cepsube", "bank": "TR.GARANTI" },
+  { "bundle": "com.pozitron.YKB", "bank": "TR.YKB" },
+  { "bundle": "com.Mobinex.Akbank-Direkt", "bank": "TR.AKBANK" },
+  { "bundle": "com.vakifbank.mobil", "bank": "TR.VAKIF" },
+  { "bundle": "com.halkbank.mobileapp", "bank": "TR.HALKBANK" },
+  { "bundle": "com.ibtech.finansbank.FinansbankMobile", "bank": "TR.QNB" },
+  { "bundle": "com.denizbank.mobildeniz", "bank": "TR.DENIZ" },
+  { "bundle": "com.enparabank.retail", "bank": "TR.ENPARA" },
+  { "bundle": "com.teb.CEPTETEB", "bank": "TR.TEB" },
+  { "bundle": "com.kuveytturk.mobilsube2014", "bank": "TR.KUVEYT" },
+  { "bundle": "com.mobillium.papara", "bank": "TR.PAPARA" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

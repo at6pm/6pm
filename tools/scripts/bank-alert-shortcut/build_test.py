@@ -9,7 +9,7 @@ from pathlib import Path
 # Nothing is left beside the script: no cache folder to commit by mistake.
 sys.dont_write_bytecode = True
 
-from build import PRODUCTION_BUNDLE, Refused, build, selected_apps
+from build import PRODUCTION_BUNDLE, Refused, build, build_list, lists, selected_apps
 
 HERE = Path(__file__).resolve().parent
 OWN = {"bundle": PRODUCTION_BUNDLE, "name": "6pm", "team": "TEAM000000"}
@@ -46,6 +46,14 @@ class AppList(unittest.TestCase):
             with self.assertRaises(Refused):
                 selected_apps([OWN, bad])
 
+    def test_refuses_a_bundle_alone_that_shares_a_chat_app_s_prefix(self):
+        with self.assertRaisesRegex(Refused, "Zalo"):
+            selected_apps([OWN, {"bundle": "vn.com.vng.zalopay"}])
+        with self.assertRaisesRegex(Refused, "Gojek"):
+            selected_apps([OWN, {"bundle": "com.go-jek.gopay"}])
+        # With its team id the entry is the app itself.
+        selected_apps([OWN, {"bundle": "com.go-jek.gopay", "name": "GoPay", "team": "T1"}])
+
     def test_refuses_a_list_without_6pm_itself(self):
         with self.assertRaisesRegex(Refused, "test alert"):
             selected_apps([{"bundle": "com.example.bank"}])
@@ -66,6 +74,20 @@ class Template(unittest.TestCase):
         ] = f"{PRODUCTION_BUNDLE}.dev"
         with self.assertRaisesRegex(Refused, "dev build"):
             build(dev, [OWN])
+
+
+class Lists(unittest.TestCase):
+    def test_vietnam_every_country_and_the_world_each_build(self):
+        every = lists()
+        self.assertIn("VN", every)
+        self.assertIn("world", every)
+        self.assertGreaterEqual(len(every), 30)
+        for country, path in every.items():
+            with self.subTest(country=country):
+                self.assertTrue(country == "world" or (len(country) == 2 and country.isupper()))
+                apps = build_list(path)["WFWorkflowTriggers"][0]["WFTriggerSerializedParameters"]
+                self.assertEqual(apps["SelectedApps"][0]["BundleIdentifier"], PRODUCTION_BUNDLE)
+                self.assertLessEqual(len(apps["SelectedApps"]), 22)
 
 
 if __name__ == "__main__":
