@@ -87,4 +87,14 @@ export const viFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'catch.reading.privateLooked': {
     other: 'Đọc trên máy, trừ {count} ảnh gửi một lần để xem kỹ hơn và không được giữ lại.',
   },
+
+  'testAlert.send': 'Gửi thử một thông báo',
+  'testAlert.sent': 'Đã gửi. Đang chờ nó về…',
+  'testAlert.works': 'Chạy rồi. Thông báo ngân hàng thật cũng sẽ về như vậy.',
+  'testAlert.nothing': 'Chưa thấy gì. Kiểm tra xem 6pm còn quyền truy cập thông báo không.',
+  'testAlert.blocked': '6pm chưa được phép gửi thông báo nên chưa gửi thử được.',
+  'testAlert.notice.title': '6pm · thông báo thử',
+  'testAlert.notice.body': 'Thử: đã thanh toán {amount}. Đây không phải giao dịch thật.',
+  'testAlert.channel': 'Thông báo thử',
+  'testAlert.slip.note': 'Chỉ là thử, không phải thanh toán. Không có gì được ghi thêm.',
 };

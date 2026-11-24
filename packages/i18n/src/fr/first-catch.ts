@@ -99,4 +99,15 @@ export const frFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
     other:
       'Lus ici, sauf {count} photos envoyées une fois pour un examen plus attentif et jamais gardées.',
   },
+
+  'testAlert.send': 'Envoyer une alerte de test',
+  'testAlert.sent': 'Envoyée. J’attends qu’elle arrive…',
+  'testAlert.works': 'Ça marche. Les vraies alertes bancaires arriveront de la même façon.',
+  'testAlert.nothing': 'Rien n’est arrivé. Vérifie que 6pm a toujours accès aux notifications.',
+  'testAlert.blocked':
+    '6pm n’a pas le droit d’envoyer des notifications, donc le test ne peut pas partir.',
+  'testAlert.notice.title': '6pm · alerte de test',
+  'testAlert.notice.body': 'Test : paiement de {amount}. Ce n’est pas un vrai paiement.',
+  'testAlert.channel': 'Alertes de test',
+  'testAlert.slip.note': 'Juste un test, pas un paiement. Rien n’a été noté.',
 };

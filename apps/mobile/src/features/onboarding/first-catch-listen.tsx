@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { useEffect, useRef, type ComponentRef, type ReactNode } from 'react';
+import { Platform, ScrollView, Text, View } from 'react-native';
 import Animated, {
   Easing,
   interpolate,
@@ -19,10 +19,14 @@ import type { SymbolName } from '../../ui/icons/symbols.generated';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { body, display, leading, mono } from '../../ui/type/fonts';
 import { HEADING_BREAKS, headingWords, WordFitText } from '../../ui/type/word-fit-text';
+import { openAlertAccess } from '../capture-guide/alert-access';
+import { proofRoom, TestAlertProof } from '../capture/test-alert-proof';
+import { useTestAlert, type TestAlert } from '../capture/use-test-alert';
 import type { ListenWay, SelfCatchingWay } from './catch-ways';
 import { FirstCatchPath } from './first-catch-path';
 import { FirstCatchSetupCards } from './first-catch-setup';
 import { FirstCatchSlip } from './first-catch-slip';
+import { wayTryOf } from './first-catch-try';
 import { fadeEntering, popEntering, riseEntering, useLoop } from './onboarding-motion';
 import type { OnboardingPalette } from './onboarding-palette';
 import type { FirstCatchListen } from './use-first-catch';
@@ -42,6 +46,8 @@ const TILE_ICON: Readonly<Record<ListenWay, SymbolName>> = {
  * first one…" over the companion in its rings, a tile for each way that was set up to make one
  * happen now, a card for each way that catches by itself but is not set up yet (set up right
  * there, it folds away and joins the tiles), and a quiet "Skip for now", which always moves on.
+ * On Android the bank alerts tile sends a test alert, and what became of it shows under the
+ * tiles; the wait for a real catch goes on, since a test alert is not one.
  * After 90 s with nothing it shows the walked way's path and where it may be stuck, still
  * listening. When the catch lands it prints as receipt Nº 001 ("Caught it.") with the companion's
  * line and Continue.
@@ -75,7 +81,15 @@ export function FirstCatchListen({
   readonly onContinue: () => void;
 }) {
   const { t } = useI18n();
+  const test = useTestAlert();
   const { caught, stuck, skipped } = listen;
+  // A test alert sent or arrived starts the wait for the stuck hint again: the person is trying.
+  const again = useRef(listen.again);
+  again.current = listen.again;
+  const testing = test.state.kind === 'sent' || test.state.kind === 'arrived';
+  useEffect(() => {
+    if (testing) again.current();
+  }, [testing, test.state.kind]);
   const way = skipped ? 'alerts' : (walked ?? ways[0] ?? 'share');
   const phase = caught ? 'caught' : stuck || skipped ? 'stuck' : 'waiting';
   const title =
@@ -132,7 +146,12 @@ export function FirstCatchListen({
           pal={pal}
           ways={ways}
           setupWays={setupWays}
-          onTry={onTry}
+          test={test}
+          onTry={(tried) => {
+            onTry(tried);
+            const made = wayTryOf(tried, bankId, { os: Platform.OS, testAlert: test.available });
+            if (made?.kind === 'test') test.send();
+          }}
           onSetUp={onFix}
           onLater={onLater}
         />
@@ -145,6 +164,7 @@ function Waiting({
   pal,
   ways,
   setupWays,
+  test,
   onTry,
   onSetUp,
   onLater,
@@ -152,6 +172,7 @@ function Waiting({
   readonly pal: OnboardingPalette;
   readonly ways: readonly ListenWay[];
   readonly setupWays: readonly SelfCatchingWay[];
+  readonly test: TestAlert;
   readonly onTry: (way: ListenWay) => void;
   readonly onSetUp: (way: SelfCatchingWay) => void;
   readonly onLater: () => void;
@@ -164,26 +185,46 @@ function Waiting({
   const breathe = useLoop(BREATHE_MS, 0, 1);
   const hint = (way: ListenWay) =>
     way === 'alerts'
-      ? t('firstCatch.tile.alerts', { amount: money.full(step) })
+      ? test.available
+        ? t('testAlert.send')
+        : t('firstCatch.tile.alerts', { amount: money.full(step) })
       : t(way === 'share' ? 'firstCatch.tile.share' : 'firstCatch.tile.wallet');
+  // What became of a test alert shows under the tiles: on a short phone it is scrolled to.
+  const scroll = useRef<ComponentRef<typeof ScrollView>>(null);
+  const proof = test.state.kind;
+  useEffect(() => {
+    if (proof === 'idle') return undefined;
+    const shown = setTimeout(() => scroll.current?.scrollToEnd({ animated: true }), 120);
+    return () => clearTimeout(shown);
+  }, [proof]);
   // A short phone, a larger text size or set-up cards scroll the wait rather than push
   // "Skip for now" off the screen.
   return (
     <ScrollView
+      ref={scroll}
       style={{ flex: 1, marginHorizontal: -20 }}
       contentContainerStyle={{ flexGrow: 1, gap: 14, paddingHorizontal: 20 }}
       showsVerticalScrollIndicator={false}
       alwaysBounceVertical={false}
     >
-      <View style={{ flex: 1, minHeight: 170, alignItems: 'center', justifyContent: 'center' }}>
-        <View style={{ width: 170, height: 170, alignItems: 'center', justifyContent: 'center' }}>
+      {/* What is above the proof makes room for it with the same spring as what is under it. */}
+      <Animated.View
+        {...proofRoom}
+        style={{ flex: 1, minHeight: 170, alignItems: 'center', justifyContent: 'center' }}
+      >
+        {/* Its own place inside the block moves with the block, so the companion glides too. */}
+        <Animated.View
+          {...proofRoom}
+          style={{ width: 170, height: 170, alignItems: 'center', justifyContent: 'center' }}
+        >
           <Ring clock={rings} offset={0} color={pal.accent} />
           <Ring clock={rings} offset={0.5} color={pal.accent} />
           <Companion size={104} mood="calm" />
-        </View>
-      </View>
+        </Animated.View>
+      </Animated.View>
       {ways.length > 0 ? (
-        <Text
+        <Animated.Text
+          {...proofRoom}
           style={{
             ...mono(10.5, 500, 0.14),
             color: pal.inkSoft,
@@ -192,12 +233,12 @@ function Waiting({
           }}
         >
           {t('firstCatch.tryHere')}
-        </Text>
+        </Animated.Text>
       ) : null}
       {/* A way set up while waiting pops into its tile; the tiles there from the start do not. */}
       <LayoutAnimationConfig skipEntering>
         {ways.length > 0 ? (
-          <View style={{ flexDirection: 'row', gap: 8 }}>
+          <Animated.View {...proofRoom} style={{ flexDirection: 'row', gap: 8 }}>
             {[0, 1, 2].map((slot) => {
               const way = ways[slot];
               return (
@@ -244,11 +285,14 @@ function Waiting({
                 </View>
               );
             })}
-          </View>
+          </Animated.View>
         ) : null}
       </LayoutAnimationConfig>
+      <TestAlertProof inks={pal} test={test} onCheckAccess={openAlertAccess} />
       <FirstCatchSetupCards pal={pal} ways={setupWays} onSetUp={onSetUp} />
-      <LaterButton pal={pal} onPress={onLater} />
+      <Animated.View {...proofRoom}>
+        <LaterButton pal={pal} onPress={onLater} />
+      </Animated.View>
     </ScrollView>
   );
 }

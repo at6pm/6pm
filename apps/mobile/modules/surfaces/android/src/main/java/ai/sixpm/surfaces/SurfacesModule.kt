@@ -77,6 +77,14 @@ class SurfacesModule : Module() {
     /** Opens Notification access, at 6pm's own switch where Android allows it. */
     AsyncFunction("openAlertAccess") { openAlertAccess() }
 
+    /**
+     * Posts the test alert the person sends to themselves, in the app's words; the listener reads
+     * it as it reads a bank's. `posted`, or `off` when 6pm may not post notifications.
+     */
+    AsyncFunction("postTestAlert") { token: String, title: String, body: String, channel: String ->
+      TestAlert.post(context, token, title, body, channel)
+    }
+
     /** Whether the launcher can pin a widget from inside the app. */
     Function("canPinWidgets") { Pins.canPinWidgets(context) }
 

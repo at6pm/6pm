@@ -92,4 +92,16 @@ export const esFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
     other:
       'Leídos aquí, salvo {count} fotos enviadas una vez para mirarlas mejor y nunca guardadas.',
   },
+
+  'testAlert.send': 'Enviar un aviso de prueba',
+  'testAlert.sent': 'Enviado. Esperando a que llegue…',
+  'testAlert.works': 'Funciona. Los avisos reales del banco llegarán igual.',
+  'testAlert.nothing':
+    'No ha llegado nada. Mira si 6pm sigue teniendo acceso a las notificaciones.',
+  'testAlert.blocked':
+    '6pm no tiene permiso para enviar notificaciones, así que la prueba no puede salir.',
+  'testAlert.notice.title': '6pm · aviso de prueba',
+  'testAlert.notice.body': 'Prueba: pago de {amount}. No es un pago real.',
+  'testAlert.channel': 'Avisos de prueba',
+  'testAlert.slip.note': 'Solo una prueba, no un pago. No se ha apuntado nada.',
 };

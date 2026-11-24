@@ -85,4 +85,14 @@ export const thFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
     other:
       'อ่านบนเครื่องนี้ ยกเว้นรูป {count} รูปที่ส่งไปดูให้ละเอียดขึ้นครั้งเดียวและไม่ถูกเก็บไว้',
   },
+
+  'testAlert.send': 'ส่งแจ้งเตือนทดสอบ',
+  'testAlert.sent': 'ส่งแล้ว กำลังรอให้มาถึง…',
+  'testAlert.works': 'ใช้ได้แล้ว แจ้งเตือนธนาคารจริงก็จะมาถึงแบบเดียวกัน',
+  'testAlert.nothing': 'ยังไม่มีอะไรมาถึง ลองดูว่า 6pm ยังมีสิทธิ์เข้าถึงการแจ้งเตือนอยู่ไหม',
+  'testAlert.blocked': '6pm ยังไม่ได้รับอนุญาตให้ส่งการแจ้งเตือน จึงส่งทดสอบไม่ได้',
+  'testAlert.notice.title': '6pm · แจ้งเตือนทดสอบ',
+  'testAlert.notice.body': 'ทดสอบ: จ่าย {amount} นี่ไม่ใช่การจ่ายเงินจริง',
+  'testAlert.channel': 'แจ้งเตือนทดสอบ',
+  'testAlert.slip.note': 'แค่ทดสอบ ไม่ใช่การจ่ายเงิน ไม่มีอะไรถูกบันทึก',
 };

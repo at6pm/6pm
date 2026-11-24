@@ -13,6 +13,7 @@ import { alertPackages } from '../capture/bank-alert-senders';
 import { contextMoney } from './context-money';
 import { buildBankAlert } from './log-bank-alert';
 import { buildLogSpend } from './log-spend';
+import { buildTestAlert } from './log-test-alert';
 import { shareAmount } from './share-amount';
 import {
   buildShareCard,
@@ -263,4 +264,18 @@ export function logBankAlert(
  */
 export function alertApps(): string {
   return JSON.stringify(alertPackages());
+}
+
+/**
+ * Reads a test alert 6pm posted to itself, which Android's listener knows by the channel it was
+ * posted on: `token` is what the app gave it. Returns `TestAlertResult`: an inbox item of kind
+ * `test` with a fresh lower-case UUID, which is never money, or null for one with no token.
+ */
+export function logTestAlert(token: string, nowIso: string): string {
+  try {
+    const given = typeof token === 'string' ? token : '';
+    return JSON.stringify(buildTestAlert(given, nowOf(nowIso), randomUuid()));
+  } catch {
+    return JSON.stringify({ item: null });
+  }
 }
