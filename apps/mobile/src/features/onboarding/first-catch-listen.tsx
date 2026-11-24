@@ -18,6 +18,7 @@ import { Symbol } from '../../ui/icons/symbol';
 import type { SymbolName } from '../../ui/icons/symbols.generated';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { body, display, leading, mono } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords, WordFitText } from '../../ui/type/word-fit-text';
 import { openAlertAccess } from '../capture-guide/alert-access';
 import { proofRoom, TestAlertProof } from '../capture/test-alert-proof';
 import { useTestAlert, type TestAlert } from '../capture/use-test-alert';
@@ -100,7 +101,7 @@ export function FirstCatchListen({
   return (
     <View style={{ flex: 1 }}>
       <Animated.View key={title} entering={fadeEntering(300, 0, false)}>
-        <Text
+        <WordFitText
           accessibilityRole="header"
           accessibilityLiveRegion="polite"
           style={{
@@ -111,7 +112,7 @@ export function FirstCatchListen({
           }}
         >
           {title}
-        </Text>
+        </WordFitText>
       </Animated.View>
       {phase === 'caught' && caught ? (
         <Caught pal={pal} onContinue={onContinue}>
@@ -421,8 +422,11 @@ function Caught({
             backgroundColor: pal.btnBg,
           }}
         >
-          <Text style={{ ...leading(display(16.5, 500), 20.6), color: pal.btnFg }}>
-            {t(`companion.firstCatch.${persona}`)}
+          <Text
+            {...HEADING_BREAKS}
+            style={{ ...leading(display(16.5, 500), 20.6), color: pal.btnFg }}
+          >
+            {headingWords(t(`companion.firstCatch.${persona}`))}
           </Text>
         </View>
       </Animated.View>

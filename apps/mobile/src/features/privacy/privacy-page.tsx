@@ -19,6 +19,7 @@ import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { useToast } from '../../ui/toast/toast-host';
 import { body, display, leading, mono } from '../../ui/type/fonts';
+import { WordFitText } from '../../ui/type/word-fit-text';
 import { TapeEdge } from '../capture-guide/capture-log-tape';
 import { LEGAL_LINKS } from '../purchases/products';
 import { SettingRow } from '../settings/setting-rows';
@@ -103,9 +104,9 @@ export function PrivacyPage() {
   return (
     <>
       <View style={{ gap: 8, paddingHorizontal: 4 }}>
-        <Text style={{ ...leading(display(28, 500, -0.02), 30.8), color: palette.ink }}>
+        <WordFitText style={{ ...leading(display(28, 500, -0.02), 30.8), color: palette.ink }}>
           {t('privacyPage.headline')}
-        </Text>
+        </WordFitText>
         <Text style={{ ...body(14.5), lineHeight: 21, color: palette.inkSoft }}>
           {server ? t('privacyPage.sub') : t('privacyPage.subDevice')}
         </Text>

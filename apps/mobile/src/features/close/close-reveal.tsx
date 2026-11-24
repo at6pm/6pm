@@ -10,6 +10,7 @@ import { Odometer } from '../../ui/odometer';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading, mono } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 
 /** The pause before tomorrow's number rolls in, so the eye lands on today's first. */
 const ROLL_AFTER_MS = 700;
@@ -90,6 +91,7 @@ export function CloseReveal(props: {
       </View>
       {props.line !== null ? (
         <Text
+          {...HEADING_BREAKS}
           style={{
             ...leading({ ...display(25), marginTop: 6 }, 30),
             // The column's width, not the text's own: Android measures the display face's tight
@@ -100,14 +102,16 @@ export function CloseReveal(props: {
             color: palette.ink,
           }}
         >
-          {props.line}
+          {headingWords(props.line)}
         </Text>
       ) : null}
       <Text style={{ ...mono(12, 400, 0.04), color: palette.inkSoft }}>{props.sub}</Text>
       {props.milestone ? (
         <View style={{ alignItems: 'center', gap: 10 }}>
           {props.milestone.art}
-          <Text style={{ ...display(24, 500), color: palette.ink }}>{props.milestone.line}</Text>
+          <Text {...HEADING_BREAKS} style={{ ...display(24, 500), color: palette.ink }}>
+            {headingWords(props.milestone.line)}
+          </Text>
           {props.milestone.chip}
         </View>
       ) : (

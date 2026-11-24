@@ -184,7 +184,7 @@ export const idOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.reveal.seeYou': 'Sudah, itu saja. Sampai jumpa jam {time}.',
   'onboarding.reveal.noReminder': 'Tanpa pengingat. Buka 6pm sekitar jam {time}.',
   'onboarding.reveal.bills': 'Tagihan',
-  'onboarding.reveal.future': 'Kamu di masa depan',
+  'onboarding.reveal.future': 'Masa depanmu',
   'onboarding.reveal.spend': 'Untuk dipakai',
   'onboarding.reveal.math': {
     other:
@@ -219,8 +219,8 @@ export const idOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
 
   'onboarding.category.food': 'Makan',
   'onboarding.category.drinks': 'Minuman',
-  'onboarding.category.transport': 'Transportasi',
-  'onboarding.category.groceries': 'Belanja dapur',
+  'onboarding.category.transport': 'Transpor',
+  'onboarding.category.groceries': 'Dapur',
   'onboarding.category.shopping': 'Belanja',
   'onboarding.category.fun': 'Hiburan',
   'onboarding.category.health': 'Kesehatan',

@@ -82,3 +82,59 @@ export function scaleTextStyle(style: TextStyle, scale: number): TextStyle {
   }
   return { ...style, ...scaled };
 }
+
+const HANGUL = /[\u1100-\u11FF\uAC00-\uD7A3]/u;
+const SPACE = /\s/u;
+/** U+2060, which no line may break at and which draws nothing. */
+const WORD_JOINER = '\u2060';
+
+/**
+ * Korean kept to its words: a word joiner between the characters of every word that has Hangul in
+ * it, so a line breaks only at a space. Android otherwise breaks between any two syllables, and
+ * leaves a particle alone at the start of a line ("6pm" / "이 받아 적어요").
+ */
+export function keepHangulWords(text: string): string {
+  if (!HANGUL.test(text)) return text;
+  const chars = Array.from(text);
+  let out = '';
+  chars.forEach((char, i) => {
+    const before = chars[i - 1];
+    const inside = before !== undefined && !SPACE.test(before) && !SPACE.test(char);
+    if (inside && (HANGUL.test(before) || HANGUL.test(char))) out += WORD_JOINER;
+    out += char;
+  });
+  return out;
+}
+
+const DIGIT = /\p{Nd}/u;
+/** Kana and Han: Japanese and Chinese, which a line may break between any two characters of. */
+const KANA_OR_HAN = /[\u3040-\u30FF\u3400-\u9FFF]/u;
+
+/**
+ * A number kept with the counter after it (1日, 5件, 10天): a word joiner between a digit and the
+ * Japanese or Chinese character that follows, where Android would otherwise end a line.
+ */
+export function keepCountersWithNumbers(text: string): string {
+  const chars = Array.from(text);
+  let out = '';
+  chars.forEach((char, i) => {
+    const before = chars[i - 1];
+    if (before !== undefined && DIGIT.test(before) && KANA_OR_HAN.test(char)) out += WORD_JOINER;
+    out += char;
+  });
+  return out;
+}
+
+/**
+ * Thai words Android's line breaker does not know as one word, each as the two parts it would end
+ * a line between ("…เต็มเมื่อ" / "ไหร่").
+ */
+const THAI_WORDS: readonly (readonly [string, string])[] = [['เมื่อ', 'ไหร่']];
+
+/** Those Thai words kept whole, with a word joiner where Android would break them. */
+export function keepThaiWords(text: string): string {
+  let out = text;
+  for (const [head, tail] of THAI_WORDS)
+    out = out.replaceAll(head + tail, head + WORD_JOINER + tail);
+  return out;
+}

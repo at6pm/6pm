@@ -19,10 +19,14 @@ import { Symbol } from '../../ui/icons/symbol';
 import { easeOut } from '../../ui/motion/curves';
 import { useTheme } from '../../ui/theme/theme';
 import { body, tabular } from '../../ui/type/fonts';
+import { FitText } from '../../ui/type/fit-text';
 import { useRowSwipe } from '../today/row-swipe';
 import type { SpendRowView } from '../today/spend-row';
 import { SpendRowBackdrop } from '../today/spend-row-backdrop';
 import { SpendRowMenu } from '../today/spend-row-menu';
+
+/** The line under a name (time and how it was caught) shrinks this far to stay whole. */
+const META_SMALLEST = 11 / 13;
 
 const layout = LinearTransition.springify().damping(22).stiffness(240);
 const rowIn = FadeIn.duration(220);
@@ -160,9 +164,10 @@ export function InboxRow({
               <Text numberOfLines={1} style={{ ...body(16, 550), color: palette.ink }}>
                 {row.name}
               </Text>
-              <Text numberOfLines={1} style={{ ...body(13), color: palette.inkSoft }}>
+              {/* "08:15 · Thông báo ngân hàng" beside a long amount: drawn a little smaller, never cut. */}
+              <FitText minScale={META_SMALLEST} style={{ ...body(13), color: palette.inkSoft }}>
                 {row.meta}
-              </Text>
+              </FitText>
             </View>
             <InboxAmount row={row} amountMissing={amountMissing} />
             <GestureDetector gesture={check}>

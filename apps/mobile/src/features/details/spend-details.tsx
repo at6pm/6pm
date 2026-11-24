@@ -17,6 +17,7 @@ import { isSymbolName } from '../../ui/icons/symbol';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import { CategoryChips } from './category-chips';
 import { RulePrompt } from './rule-prompt';
 import { CaptureTrail } from './capture-trail';
@@ -103,6 +104,7 @@ export function SpendDetails({
         <CategoryTile icon={icon} hue={category?.hue ?? 80} size={56} radius={19} glyph={31} />
         {/* The name keeps clear of the photo clipped at the top right. */}
         <Text
+          {...HEADING_BREAKS}
           style={{
             ...body(20, 650, -0.02),
             color: palette.ink,
@@ -111,7 +113,7 @@ export function SpendDetails({
             textAlign: 'center',
           }}
         >
-          {spend.merchant}
+          {headingWords(spend.merchant)}
         </Text>
         <Text style={{ ...body(14), color: palette.inkSoft, textAlign: 'center' }}>
           {when} · {labels.time(spend.at)}

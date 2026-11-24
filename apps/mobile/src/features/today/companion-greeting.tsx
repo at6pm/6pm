@@ -21,6 +21,7 @@ import { useFirstCatchCard } from './use-first-catch-card';
 import { useClock } from '../../ui/theme/clock';
 import { useTheme } from '../../ui/theme/theme';
 import { display, leading } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 
 type HomeEvent =
   | 'idle'
@@ -167,9 +168,10 @@ export function CompanionGreeting({
               }}
             >
               <Text
+                {...HEADING_BREAKS}
                 style={{ ...leading(display(16.5, 500, -0.005), 20.6), color: palette.bubbleFg }}
               >
-                {line}
+                {headingWords(line)}
               </Text>
             </PressScale>
           </Animated.View>

@@ -19,7 +19,7 @@ import { PaperEdge } from '../../ui/paper-edge';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading, mono } from '../../ui/type/fonts';
-import { WordFitText } from '../../ui/type/word-fit-text';
+import { HEADING_BREAKS, headingWords, WordFitText } from '../../ui/type/word-fit-text';
 import { useMoneyFormat } from '../../money/use-money-format';
 
 /** A red line drawn across a slip's line, left to right, once the card has risen. */
@@ -124,7 +124,9 @@ export function WorkQuestionStep({
               backgroundColor: palette.bubbleBg,
             }}
           >
-            <Text style={{ ...display(18), color: palette.bubbleFg }}>{line}</Text>
+            <Text {...HEADING_BREAKS} style={{ ...display(18), color: palette.bubbleFg }}>
+              {headingWords(line)}
+            </Text>
           </View>
         </View>
       ) : null}

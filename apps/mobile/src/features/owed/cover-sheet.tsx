@@ -23,6 +23,7 @@ import { useDragDismiss } from '../../ui/motion/use-drag-dismiss';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading } from '../../ui/type/fonts';
+import { WordFitText } from '../../ui/type/word-fit-text';
 import { PaidStamp, Slip } from './owed-parts';
 import { stampIn } from './owed-motion';
 import { RemindRow } from './remind-row';
@@ -259,11 +260,11 @@ export function CoverSheet({
                 </Animated.View>
               ) : null}
             </View>
-            <Text style={{ ...leading(display(30, 500), 32.4), color: palette.ink }}>
+            <WordFitText style={{ ...leading(display(30, 500), 32.4), color: palette.ink }}>
               {named
                 ? t('owed.cover.title', { name: person.name ?? '', amount })
                 : t('owed.cover.titleNoName', { amount })}
-            </Text>
+            </WordFitText>
             <Text style={{ ...leading(body(14.5), 21), color: palette.inkSoft, marginTop: -8 }}>
               {named ? t('owed.cover.sub', { name: person.name ?? '' }) : t('owed.cover.subNoName')}
             </Text>

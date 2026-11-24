@@ -1,20 +1,23 @@
 import { randomUUID } from 'expo-crypto';
 
 import {
-  designAmount,
   currencyOf,
   newYearJarRow,
+  newYearTradition,
   nextNewYearWindow,
   parts,
   payCycleOn,
   type LocalDate,
 } from '@6pm/domain';
-import type { Language } from '@6pm/i18n';
+import { t, type Language } from '@6pm/i18n';
 
 import type { MoneyStore } from '../../data/money-store';
 import { readPlan, writePlan } from '../../data/plan-settings';
 import { writeOpening } from '../../data/pot-moves';
 import { seedDesignFriday } from './design-friday-seed';
+import { FRIDAY_HOME_CURRENCY } from './design-friday-locales';
+import { SEED_NAMES } from './design-seed-names';
+import { seedPricesIn } from './design-seed-prices';
 
 /** The Tết Season canvas's states, on the designed Friday moved to the season's dates. */
 export type TetSeed = 'offer' | 'bonus' | 'window';
@@ -22,28 +25,32 @@ export type TetSeed = 'offer' | 'bonus' | 'window';
 /**
  * Developer tool for the Lunar New Year season, run with the clock pinned to a day of it (the
  * command's `on`): the designed Friday, then
- * - `offer`: no Tết jar yet, so Today shows the offer from 1 December;
- * - `bonus`: the acceptance case: plan income 15tr, a 5tr Tết jar holding 3tr, and a 9tr bonus
- *   ("THUONG TET 2027") waiting for tonight's close;
- * - `window`: a 7tr Tết jar, full, for the countdown, lì xì in Quick add and the close's question.
- * Amounts are worth the same in another currency.
+ * - `offer`: no season's jar yet, so Today shows the offer from 1 December;
+ * - `bonus`: the acceptance case: plan income 15tr, a 5tr jar holding 3tr, and a 9tr bonus
+ *   ("THUONG TET") waiting for tonight's close;
+ * - `window`: a 7tr jar, full, for the countdown, lì xì in Quick add and the close's question.
+ * The season is the one the language and currency keep (Tết, Seollal, the Spring Festival; Tết
+ * where there is none), its jar named as the app names it. Amounts follow the currency
+ * (`SEED_PRICES`): those are the canvas's own in đồng, and elsewhere the Friday's pay stays.
  */
 export async function seedDesignTet(
   store: MoneyStore,
   today: LocalDate,
   state: TetSeed,
-  code = 'VND',
+  code?: string,
   language: Language = 'en',
 ): Promise<void> {
   await seedDesignFriday(store, today, code, language);
-  const currency = currencyOf(code);
-  const worth = (dong: number) => designAmount(dong, currency);
+  const currency = currencyOf(code ?? FRIDAY_HOME_CURRENCY[language]);
+  const prices = seedPricesIn(currency);
+  const names = SEED_NAMES[language].moneyIn;
   const { db, tables } = store;
   const plan = await readPlan(db);
-  if (plan) {
-    await writePlan(db, { ...plan, income: worth(15_000_000) });
+  if (plan && prices.bonus.income !== null) {
+    await writePlan(db, { ...plan, income: prices.bonus.income });
   }
-  const window = nextNewYearWindow(today, 'tet');
+  const tradition = newYearTradition({ currency: currency.code, region: null, language }) ?? 'tet';
+  const window = nextNewYearWindow(today, tradition);
   const iso = new Date().toISOString();
   await db.withTransactionAsync(async () => {
     // The Friday's dated jar would answer the close's question first: the season's jar only.
@@ -52,11 +59,17 @@ export async function seedDesignTet(
     // The season's Today is a calm one: none of the Friday's earlier spending in this cycle.
     if (state === 'window') await db.runAsync('DELETE FROM spends WHERE day < ?', [today]);
     if (state === 'offer' || window === null) return;
-    const goal = worth(state === 'bonus' ? 5_000_000 : 7_000_000);
-    const jar = newYearJarRow({ id: 'dev-tet', name: 'Tết', goal, window, createdAt: iso });
+    const goal = state === 'bonus' ? prices.bonus.jarGoal : prices.jars.season.goal;
+    const jar = newYearJarRow({
+      id: 'dev-tet',
+      name: t(language, `season.festival.${tradition}`),
+      goal,
+      window,
+      createdAt: iso,
+    });
     await tables.pots.put(jar);
     const cycle = payCycleOn(today, { kind: 'sameDay', day: 31 });
-    await writeOpening(db, jar.id, state === 'bonus' ? worth(3_000_000) : goal, cycle.start);
+    await writeOpening(db, jar.id, state === 'bonus' ? prices.bonus.jarHeld : goal, cycle.start);
     // This payday's set-aside is already written (nothing this cycle), so the jar holds what
     // the canvas says rather than catching up from the day the seed ran.
     await db.runAsync(
@@ -71,18 +84,19 @@ export async function seedDesignTet(
       id: randomUUID(),
       day: today,
       at: new Date(year, month - 1, day, 10, 2).toISOString(),
-      amount: worth(9_000_000),
+      amount: prices.bonus.amount,
       categoryId: 'shopping',
-      merchant: 'Mây Xanh JSC',
+      merchant: names.employer,
       note: null,
+      // A photo of the transfer's receipt, shared: no bank is named.
       source: 'shared',
       status: 'caught',
       previousStatus: null,
       wallet: null,
       forWork: false,
-      detail: 'VPBank · FT27025THUONG',
+      detail: null,
       foreignAmount: null,
-      memo: 'THUONG TET 2027',
+      memo: names.bonusMemo,
       direction: 'in',
       createdAt: iso,
       updatedAt: iso,

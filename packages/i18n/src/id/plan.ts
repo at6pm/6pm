@@ -1,11 +1,12 @@
 import type { Entry } from '../catalogue-types';
 import type { enPlan } from '../en-plan';
 
-// 6pm speaks as "aku", you are "kamu". A pot is a "celengan"; Future you is "kamu di masa depan";
-// payday is "gajian"; free money is "uang bebas".
+// 6pm speaks as "aku", you are "kamu". A pot is a "celengan"; Future you, the jar, is named
+// "Masa depanmu" (short enough for a jar's label), and in a sentence the person it saves for is
+// "kamu di masa depan"; payday is "gajian"; free money is "uang bebas".
 export const idPlan: { readonly [Key in keyof typeof enPlan]: Entry } = {
   'plan.river.bills': 'Tagihan',
-  'plan.river.futureYou': 'Kamu di masa depan',
+  'plan.river.futureYou': 'Masa depanmu',
   'plan.river.free': 'Bebas',
   'plan.occasions.of': 'dari {amount}',
   'plan.occasions.full': 'Penuh',
@@ -94,7 +95,7 @@ export const idPlan: { readonly [Key in keyof typeof enPlan]: Entry } = {
   'plan.goal.start': 'Mulai celengan ini',
   'plan.goal.sumMonthly': '{amount} per bulan, dari kamu di masa depan',
   'plan.goal.sumSub': 'Diambil dari kamu di masa depan, jadi angka harianmu tetap.',
-  'plan.goal.sumNone': 'Kamu di masa depan sedang dijeda, jadi belum ada yang masuk',
+  'plan.goal.sumNone': 'Masa depanmu sedang dijeda, jadi belum ada yang masuk',
   'plan.goal.sumNoneSub': 'Geser “Kalau” di atas untuk mulai lagi.',
   'plan.bill.card': 'Melunasi kartu',
   'plan.bill.cardSub':

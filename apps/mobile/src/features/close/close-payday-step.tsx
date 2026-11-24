@@ -25,6 +25,7 @@ import { FitWidth } from '../../ui/layout/fit-width';
 import { PaperEdge } from '../../ui/paper-edge';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading, mono, tabular } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords, WordFitText } from '../../ui/type/word-fit-text';
 import { AmountKeypadSheet } from '../quick-add/amount-keypad-sheet';
 import { AmountText } from '../quick-add/amount-text';
 import { CloseCardButton } from './close-card-button';
@@ -103,9 +104,9 @@ export function PaydayStep({
     <Animated.View entering={FadeIn.duration(300)} style={{ flex: 1, gap: 18 }}>
       <View style={{ gap: 6, paddingTop: 2 }}>
         <Text style={{ ...mono(11, 400, 0.14), color: palette.inkSoft }}>{card.kicker}</Text>
-        <Text style={{ ...leading(display(40, 500, -0.01), 40.8), color: palette.ink }}>
+        <WordFitText style={{ ...leading(display(40, 500, -0.01), 40.8), color: palette.ink }}>
           {t('close.payday.title')}
-        </Text>
+        </WordFitText>
         <Text style={{ ...body(15), lineHeight: 22, color: palette.inkSoft }}>
           {t('close.payday.sub')}
         </Text>
@@ -138,8 +139,8 @@ export function PaydayStep({
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
             <CategoryTile icon="payments" hue={PAY_HUE} size={44} radius={15} glyph={24} />
             <View style={{ gap: 2, flexShrink: 1 }}>
-              <Text style={{ ...body(20, 650, -0.02), color: catchInk.ink }}>
-                {t('close.payday.yourPay')}
+              <Text {...HEADING_BREAKS} style={{ ...body(20, 650, -0.02), color: catchInk.ink }}>
+                {headingWords(t('close.payday.yourPay'))}
               </Text>
               <Text style={{ ...body(13), color: catchInk.soft }}>{card.due}</Text>
             </View>

@@ -14,6 +14,7 @@ import { Symbol } from '../../ui/icons/symbol';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 
 /** The question, asked again from Today. */
 export const REACH_ROUTE = '/reach' as Href;
@@ -103,8 +104,11 @@ export function AskReachCard({ onPutAway }: { readonly onPutAway: () => void }) 
           <Symbol name="payments" size={22} color={palette.ink} />
         </View>
         <View style={{ flex: 1, gap: 2 }}>
-          <Text style={{ ...leading(display(19, 500), 23), color: palette.ink }}>
-            {t('onboarding.reach.title')}
+          <Text
+            {...HEADING_BREAKS}
+            style={{ ...leading(display(19, 500), 23), color: palette.ink }}
+          >
+            {headingWords(t('onboarding.reach.title'))}
           </Text>
           <Text style={{ ...body(13, 500), color: palette.inkSoft }}>{t('income.ask.sub')}</Text>
         </View>

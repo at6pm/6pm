@@ -18,6 +18,7 @@ import { Companion } from '../../ui/companion/companion';
 import { haptics } from '../../ui/haptics';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading, mono } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import { inkWash } from '../diary/diary-colours';
 import { useCount, useMonthLabel } from './import-format';
 import { ImportFoot, PillButton } from './import-parts';
@@ -142,7 +143,9 @@ export function ImportBring({
             >
               {kicker}
             </Text>
-            <Text style={{ ...body(34, 700, -0.03), color: palette.ink }}>{t('diary.title')}</Text>
+            <Text {...HEADING_BREAKS} style={{ ...body(34, 700, -0.03), color: palette.ink }}>
+              {headingWords(t('diary.title'))}
+            </Text>
           </View>
           {busy && reached ? (
             <Animated.Text
@@ -238,10 +241,15 @@ export function ImportBring({
                 backgroundColor: palette.bubbleBg,
               }}
             >
-              <Text style={{ ...leading(display(16.5, 500), 20.6), color: palette.bubbleFg }}>
-                {years >= 1
-                  ? t('import.bring.years', { count: years })
-                  : t('import.bring.months', { count: spanMonths })}
+              <Text
+                {...HEADING_BREAKS}
+                style={{ ...leading(display(16.5, 500), 20.6), color: palette.bubbleFg }}
+              >
+                {headingWords(
+                  years >= 1
+                    ? t('import.bring.years', { count: years })
+                    : t('import.bring.months', { count: spanMonths }),
+                )}
               </Text>
             </View>
           </Animated.View>

@@ -16,6 +16,7 @@ import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import { useDiaryDates } from '../diary/diary-dates';
 import { planColours } from '../plan/plan-colours';
 import { riverOf } from '../plan/plan-view';
@@ -113,8 +114,11 @@ export const MonthPane = memo(function MonthPane({ day }: { readonly day: DailyN
           }}
         >
           <View style={{ gap: 4 }}>
-            <Text style={{ ...leading(display(21, 500), 23.1), color: palette.ink }}>
-              {t(pace.pace === 'steady' ? 'duo.month.steady' : 'duo.month.fast')}
+            <Text
+              {...HEADING_BREAKS}
+              style={{ ...leading(display(21, 500), 23.1), color: palette.ink }}
+            >
+              {headingWords(t(pace.pace === 'steady' ? 'duo.month.steady' : 'duo.month.fast'))}
             </Text>
             <Text style={{ ...body(13), lineHeight: 18.2, color: palette.inkSoft }}>
               {t('duo.month.paceLine', {

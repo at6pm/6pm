@@ -8,7 +8,7 @@ export const jaClose: { readonly [Key in keyof typeof enClose]: Entry } = {
   'close.step.check': '確認',
   'close.step.receipt': 'レシート',
   'close.step.tomorrow': '明日',
-  'close.title': { other: '今日キャッチしたのは{count}件' },
+  'close.title': { other: '今日は{count}件キャッチ' },
   'close.hint': '右で残す · 左で編集 · 自分のじゃなければ下へ',
   'close.undoKept': '{name}を残しました',
   'close.undoEdited': '{name}を編集しました',

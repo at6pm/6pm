@@ -33,10 +33,11 @@ export default function DeveloperTools() {
     : 'not this language';
   const localModelRows = useDevLocalModelRows();
   // `sixpm-dev://tools?seed=friday` loads the fixture without a tap, for scripted design checks.
+  // The fixture speaks the app's language and counts in that language's own currency.
   useEffect(() => {
     if (seed !== 'friday') return;
     void store
-      .exclusive(() => seedDesignFriday(store, today, 'VND', language))
+      .exclusive(() => seedDesignFriday(store, today, undefined, language))
       .then(() => router.replace('/'));
   }, [seed, store, today, router, language]);
   const rows: [string, () => void][] = [
@@ -44,7 +45,7 @@ export default function DeveloperTools() {
       'Load the designed Friday',
       () => {
         void store
-          .exclusive(() => seedDesignFriday(store, today, 'VND', language))
+          .exclusive(() => seedDesignFriday(store, today, undefined, language))
           .then(() => {
             haptics.success();
             router.back();

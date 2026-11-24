@@ -208,7 +208,17 @@ export function TodayHero({
                 style={[{ height: 6, borderRadius: 6, backgroundColor: meterColor }, fill]}
               />
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 12 }}>
+            {/* Where the two do not fit on the meter's line (rupiah, francs, a day over its
+                line), tomorrow's goes under it; they never run on under the sun. */}
+            <View
+              style={{
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                justifyContent: 'space-between',
+                columnGap: 12,
+                rowGap: 2,
+              }}
+            >
               <Text style={{ ...body(13.5, 500), ...tabular, color: palette.inkSoft }}>{left}</Text>
               {right === null ? null : (
                 <Text style={{ ...body(13.5, 500), ...tabular, color: palette.inkSoft }}>

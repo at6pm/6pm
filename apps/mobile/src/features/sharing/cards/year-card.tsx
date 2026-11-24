@@ -11,6 +11,7 @@ import { readPotMoves } from '../../../data/pot-moves';
 import { useI18n } from '../../../i18n/i18n';
 import { useMoneyFormat } from '../../../money/use-money-format';
 import { mono } from '../../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../../ui/type/word-fit-text';
 import { jarName } from '../../pots/jar-name';
 import { defineCard, type CardLayoutProps } from './card-definition';
 import { CardGround, CardMark, InkedAmount, ON_CARD, title } from './card-parts';
@@ -80,8 +81,8 @@ function YearLayout({ data, format, amounts, inks }: CardLayoutProps<YearCardDat
   return (
     <CardGround inks={inks} width={CARD_WIDTH} height={height}>
       <View style={{ flex: 1, paddingTop: 24, paddingHorizontal: 22, paddingBottom: 18, gap: 12 }}>
-        <Text {...ON_CARD} numberOfLines={2} style={title(inks, 34, 1)}>
-          {t('shareCards.year.title', { year: card.year })}
+        <Text {...HEADING_BREAKS} {...ON_CARD} numberOfLines={2} style={title(inks, 34, 1)}>
+          {headingWords(t('shareCards.year.title', { year: card.year }))}
         </Text>
         <View
           style={{

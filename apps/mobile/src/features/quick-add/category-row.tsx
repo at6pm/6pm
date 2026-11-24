@@ -12,9 +12,14 @@ import { body, mono } from '../../ui/type/fonts';
 import { useI18n } from '../../i18n/i18n';
 import { WorkStamp as WorkMark } from '../work/work-stamp';
 
+/** A category's column, and the gap to the next one. */
+const COLUMN = 62;
+const GAP = 8;
+
 /**
  * The categories under the ticket, the hour's likely ones first, edge to edge. The chosen tile
- * lifts and rings itself.
+ * lifts and rings itself. A name may run to the middle of the gap on each side before it is cut:
+ * "Gesundheit" and "Transporte" are a point or two wider than their column.
  */
 export function CategoryRow({
   categories,
@@ -32,7 +37,7 @@ export function CategoryRow({
       showsHorizontalScrollIndicator={false}
       // The chosen tile lifts and rings itself: room above and below so neither is cut off.
       style={{ marginHorizontal: -16, marginBottom: -4, flexGrow: 0 }}
-      contentContainerStyle={{ gap: 8, paddingHorizontal: 16, paddingTop: 12, paddingBottom: 6 }}
+      contentContainerStyle={{ gap: GAP, paddingHorizontal: 16, paddingTop: 12, paddingBottom: 6 }}
     >
       {categories.map((c) => {
         const on = c.id === chosen;
@@ -43,7 +48,7 @@ export function CategoryRow({
               haptics.tick();
               onPick(c.id);
             }}
-            style={{ width: 62, alignItems: 'center', gap: 6 }}
+            style={{ width: COLUMN, alignItems: 'center', gap: 6 }}
           >
             <View
               style={{
@@ -64,7 +69,12 @@ export function CategoryRow({
             </View>
             <Text
               numberOfLines={1}
-              style={{ ...body(11.5, on ? 650 : 500), color: palette.ink, maxWidth: 62 }}
+              style={{
+                ...body(11.5, on ? 650 : 500),
+                color: palette.ink,
+                maxWidth: COLUMN + GAP,
+                marginHorizontal: -GAP / 2,
+              }}
             >
               {c.name}
             </Text>
