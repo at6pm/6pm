@@ -63,16 +63,31 @@ describe('suggestedBanks', () => {
   });
 
   it('suggests nothing where 6pm has no list', () => {
+    const argentina = { region: 'AR', currency: 'ARS', timeZone: 'America/Argentina/Buenos_Aires' };
+    expect(bankCountry(argentina)).toBeNull();
+    expect(suggestedBanks(argentina, 6, 'ARS')).toEqual([]);
+  });
+
+  it('suggests the most used banks of every country with a list, by region, currency or clock', () => {
     const brazil = { region: 'BR', currency: 'BRL', timeZone: 'America/Sao_Paulo' };
-    expect(bankCountry(brazil)).toBeNull();
-    expect(suggestedBanks(brazil, 6, 'BRL')).toEqual([]);
+    expect(bankCountry(brazil)).toBe('BR');
+    expect(suggestedBanks(brazil, 3, 'BRL')).toEqual(['BR.NUBANK', 'BR.ITAU', 'BR.BRADESCO']);
+    const sweden = { region: 'SE', currency: 'SEK', timeZone: 'Europe/Stockholm' };
+    expect(suggestedBanks(sweden, 2, 'SEK')).toEqual(['SE.SWEDBANK', 'SE.HANDELSBANKEN']);
+    expect(bankCountry({ region: null, currency: 'ZAR', timeZone: null })).toBe('ZA');
+    expect(bankCountry({ region: null, currency: null, timeZone: 'Asia/Karachi' })).toBe('PK');
+    for (const region of ['AE', 'BD', 'CH', 'KE', 'MX', 'NG', 'PL', 'SA', 'TR']) {
+      const picks = suggestedBanks({ region, currency: null, timeZone: null }, 5, 'USD');
+      expect(picks).toHaveLength(5);
+      expect(picks.every((id) => id.startsWith(`${region}.`))).toBe(true);
+    }
   });
 
   it('goes by the region when the phone points two ways', () => {
     // A German phone on a trip to Japan: one vote each, the region first.
     const trip = { region: 'DE', currency: 'EUR', timeZone: 'Asia/Tokyo' };
     expect(bankCountry(trip)).toBe('DE');
-    expect(bankCountry({ region: 'BR', currency: null, timeZone: 'Asia/Tokyo' })).toBe('JP');
+    expect(bankCountry({ region: 'AR', currency: null, timeZone: 'Asia/Tokyo' })).toBe('JP');
   });
 
   it('suggests Vietnam’s banks when home is đồng or the phone is in Vietnam', () => {
@@ -127,7 +142,7 @@ describe('quickPicks', () => {
 
   it('outside Vietnam, offers cash, what was chosen, then the country’s banks', () => {
     const us = { region: 'US', currency: 'USD', timeZone: 'America/New_York' };
-    const union = namedBankId('Navy Federal') ?? '';
+    const union = namedBankId('Golden 1') ?? '';
     expect(quickPicks([], us, known, 'USD')).toEqual([
       CASH,
       'US.CHASE',
@@ -145,10 +160,14 @@ describe('quickPicks', () => {
   });
 
   it('where 6pm has no list, offers cash and what was chosen, typed names included', () => {
-    const brazil = { region: 'BR', currency: 'BRL', timeZone: 'America/Sao_Paulo' };
-    const nubank = namedBankId('Nubank') ?? '';
-    expect(quickPicks([], brazil, known, 'BRL')).toEqual([CASH]);
-    expect(quickPicks([nubank, 'MB', 'GONE'], brazil, known, 'BRL')).toEqual([CASH, nubank, 'MB']);
+    const argentina = { region: 'AR', currency: 'ARS', timeZone: 'America/Argentina/Buenos_Aires' };
+    const galicia = namedBankId('Galicia') ?? '';
+    expect(quickPicks([], argentina, known, 'ARS')).toEqual([CASH]);
+    expect(quickPicks([galicia, 'MB', 'GONE'], argentina, known, 'ARS')).toEqual([
+      CASH,
+      galicia,
+      'MB',
+    ]);
   });
 
   it('keeps a typed name in reach in Vietnam too', () => {

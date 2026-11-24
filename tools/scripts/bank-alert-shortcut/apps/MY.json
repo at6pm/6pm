@@ -1,0 +1,33 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "com.maybank2u.life", "bank": "MY.MAYBANK" },
+  { "bundle": "com.cimb.cimbocto", "bank": "MY.CIMB" },
+  { "bundle": "com.pbb.mypb", "bank": "MY.PUBLIC" },
+  { "bundle": "com.rhbgroup.rhbmobilebanking", "bank": "MY.RHB" },
+  { "bundle": "my.com.hongleongconnect.mobileconnect", "bank": "MY.HLB" },
+  { "bundle": "com.ambank.amonline", "bank": "MY.AMBANK" },
+  { "bundle": "com.bankislam.bimbmobile", "bank": "MY.BANKISLAM" },
+  { "bundle": "my.com.tngdigital.wallet", "bank": "MY.TNG" },
+  { "bundle": "my.com.myboost", "bank": "MY.BOOST" },
+  { "bundle": "com.bsn.mybsn", "bank": "MY.BSN" },
+  { "bundle": "my.com.gxbank.app", "bank": "MY.GXBANK" },
+  { "bundle": "com.uob.mightymy", "bank": "MY.UOB" },
+  { "bundle": "my.com.hsbc.hsbcmalaysia", "bank": "MY.HSBC" },
+  { "bundle": "com.personal.adb", "bank": "MY.AEONBANK" },
+  { "bundle": "co.myboostbank.boostberhad", "bank": "MY.BOOSTBANK" },
+  { "bundle": "com.bigpayme.bigpay", "bank": "MY.BIGPAY" },
+  { "bundle": "my.rytbank.app", "bank": "MY.RYT" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

@@ -1,0 +1,22 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "nz.co.anz.goMoneynz", "bank": "NZ.ANZ" },
+  { "bundle": "nz.co.asb.mobile.asbmobile", "bank": "NZ.ASB" },
+  { "bundle": "nz.co.bnz.MobileBanking", "name": "BNZ", "team": "S8V473XFX9", "bank": "NZ.BNZ" },
+  { "bundle": "nz.co.westpac.mobilebanking", "bank": "NZ.WESTPAC" },
+  { "bundle": "nz.co.kiwibank.mobile", "bank": "NZ.KIWIBANK" },
+  { "bundle": "nz.co.co-operativebank.Co-operative-Bank", "bank": "NZ.COOP" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

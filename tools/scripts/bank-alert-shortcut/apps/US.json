@@ -1,0 +1,59 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "com.chase", "name": "Chase", "team": "88MPW8R88P", "bank": "US.CHASE" },
+  { "bundle": "com.bankofamerica.BofA", "name": "BofA", "team": "6VA92R47D3", "bank": "US.BOFA" },
+  {
+    "bundle": "com.wf.mobilebanking",
+    "name": "Wells Fargo",
+    "team": "4E5S3W9PH8",
+    "bank": "US.WELLSFARGO"
+  },
+  {
+    "bundle": "com.capitalone.enterprisemobilebanking",
+    "name": "Capital One",
+    "team": "B9QGZRF45P",
+    "bank": "US.CAPITALONE"
+  },
+  { "bundle": "com.citigroup.citimobile", "bank": "US.CITI" },
+  { "bundle": "com.usbank.icmobilebanking", "bank": "US.USBANK" },
+  { "bundle": "com.pnc.pncmobile", "bank": "US.PNC" },
+  { "bundle": "com.truistmobile.truist", "bank": "US.TRUIST" },
+  { "bundle": "com.tdbank.iphoneapp", "bank": "US.TDBANK" },
+  { "bundle": "org.navyfederal.nfcuforiphone", "bank": "US.NAVYFED" },
+  { "bundle": "com.usaa.UsaaMobile", "bank": "US.USAA" },
+  {
+    "bundle": "com.americanexpress.amexservice",
+    "name": "Amex",
+    "team": "8DR9MTC4E8",
+    "bank": "US.AMEX"
+  },
+  {
+    "bundle": "com.discoverfinancial.mobile",
+    "name": "Discover",
+    "team": "29QZK2TJ24",
+    "bank": "US.DISCOVER"
+  },
+  {
+    "bundle": "com.1debit.ChimeProdApp",
+    "name": "Chime",
+    "team": "3HR65T8TDW",
+    "bank": "US.CHIME"
+  },
+  { "bundle": "com.sofi.mobile", "bank": "US.SOFI" },
+  { "bundle": "com.ally.MobileBanking", "name": "Ally", "team": "N253L8X7DJ", "bank": "US.ALLY" },
+  { "bundle": "net.kortina.labs.Venmo", "name": "Venmo", "team": "6DEPQ9SPDK", "bank": "US.VENMO" },
+  { "bundle": "com.squareup.cash", "name": "Cash App", "team": "3Q5FAW8734", "bank": "US.CASHAPP" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

@@ -1,0 +1,31 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "com.bdo.newdigital", "bank": "PH.BDO" },
+  { "bundle": "com.bpi.ng.app", "bank": "PH.BPI" },
+  { "bundle": "ph.com.metrobank.mcc.mbonline", "bank": "PH.METROBANK" },
+  { "bundle": "com.landbank.mobilebanking", "bank": "PH.LANDBANK" },
+  { "bundle": "com.securitybank.bbx", "bank": "PH.SECURITY" },
+  { "bundle": "com.unionbankph.online", "bank": "PH.UNIONBANK" },
+  { "bundle": "com.globetel.gcash", "name": "GCash", "team": "Z9783MH7AR", "bank": "PH.GCASH" },
+  { "bundle": "com.paymaya.ios", "name": "Maya", "team": "9A897GL6NF", "bank": "PH.MAYA" },
+  { "bundle": "ph.com.gotyme", "bank": "PH.GOTYME" },
+  { "bundle": "ph.com.bdo.pay", "bank": "PH.BDOPAY" },
+  { "bundle": "ph.seabank.seabank", "bank": "PH.SEABANK" },
+  { "bundle": "com.rcbc.mobile", "bank": "PH.RCBC" },
+  { "bundle": "com.cimbph.app2022", "bank": "PH.CIMB" },
+  { "bundle": "com.eastwest.mobile.dxp", "bank": "PH.EASTWEST" },
+  { "bundle": "com.mobile.tonik", "bank": "PH.TONIK" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

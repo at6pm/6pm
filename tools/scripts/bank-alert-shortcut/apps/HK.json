@@ -1,0 +1,31 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "hk.com.hsbc.hsbchkmobilebanking", "bank": "HK.HSBC" },
+  {
+    "bundle": "com.hangseng.rbmobileapp",
+    "name": "恒生",
+    "team": "D3459CP8HJ",
+    "bank": "HK.HANGSENG"
+  },
+  { "bundle": "com.bochk.app.ios", "bank": "HK.BOCHK" },
+  { "bundle": "com.sc.breezehk", "bank": "HK.SCB" },
+  { "bundle": "group.za.bank", "bank": "HK.ZA" },
+  { "bundle": "com.mox.app", "bank": "HK.MOX" },
+  { "bundle": "hk.com.hsbc.paymefromhsbc", "bank": "HK.PAYME" },
+  { "bundle": "com.octopuscards.octopus", "bank": "HK.OCTOPUS" },
+  { "bundle": "com.livibank.hk", "bank": "HK.LIVI" },
+  { "bundle": "com.airstarbank.hk", "bank": "HK.AIRSTAR" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

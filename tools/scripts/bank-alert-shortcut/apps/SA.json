@@ -1,0 +1,25 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "sa.alrajhibank.retailapp", "bank": "SA.ALRAJHI" },
+  { "bundle": "com.snb.alahlimobile", "bank": "SA.SNB" },
+  { "bundle": "com.riyadbank.digitalmobile", "bank": "SA.RIYAD" },
+  { "bundle": "com.sabb.mobilebanking", "bank": "SA.SAB" },
+  { "bundle": "com.alinma.retail.mobile.v4", "bank": "SA.ALINMA" },
+  { "bundle": "com.bankalbilad.NewRMB", "bank": "SA.ALBILAD" },
+  { "bundle": "sa.com.STCBank", "bank": "SA.STCBANK" },
+  { "bundle": "com.urpay.consumer", "bank": "SA.URPAY" },
+  { "bundle": "d360.ios.app", "bank": "SA.D360" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

@@ -25,7 +25,7 @@ describe('the world’s banks', () => {
 
   it('are Vietnam’s own list for Vietnam, and nothing where 6pm has none', () => {
     expect(banksOf('VN')).toEqual([...BANKS]);
-    expect(banksOf('BR')).toEqual([]);
+    expect(banksOf('AR')).toEqual([]);
   });
 
   it('give every listed country at least a few to pick from', () => {

@@ -1,0 +1,32 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "com.rbc.mobilebanking", "bank": "CA.RBC" },
+  { "bundle": "com.td.tdiphoneapp", "bank": "CA.TD" },
+  { "bundle": "com.scotiabank.locator", "bank": "CA.SCOTIA" },
+  { "bundle": "com.bmo.mbanking", "name": "BMO", "team": "3U5JHL548J", "bank": "CA.BMO" },
+  { "bundle": "com.CIBC.mobilebanking", "name": "CIBC", "team": "6S27LX4PA8", "bank": "CA.CIBC" },
+  { "bundle": "com.desjardins.mobile", "bank": "CA.DESJARDINS" },
+  { "bundle": "ca.bnc.BNCMobile", "bank": "CA.NBC" },
+  { "bundle": "ca.tangerine.clients.banking", "bank": "CA.TANGERINE" },
+  { "bundle": "com.cibc.mobilepcf", "bank": "CA.SIMPLII" },
+  { "bundle": "com.eqbank.eqbank", "bank": "CA.EQBANK" },
+  { "bundle": "com.wealthsimple.trade", "bank": "CA.WEALTHSIMPLE" },
+  { "bundle": "ca.koho", "bank": "CA.KOHO" },
+  { "bundle": "com.neofinancial.neo", "bank": "CA.NEO" },
+  { "bundle": "ca.pcfinancial.bank", "bank": "CA.PCFINANCIAL" },
+  { "bundle": "com.atb.ATBMobile", "bank": "CA.ATB" },
+  { "bundle": "ca.co.americanexpress.amexservice", "bank": "CA.AMEX" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

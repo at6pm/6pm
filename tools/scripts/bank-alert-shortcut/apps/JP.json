@@ -1,0 +1,38 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "jp.mufg.bk.applisp.01", "bank": "JP.MUFG" },
+  { "bundle": "jp.co.smbc.direct", "bank": "JP.SMBC" },
+  { "bundle": "jp.co.mizuhobank.bankingapp", "bank": "JP.MIZUHO" },
+  { "bundle": "jp.japanpost.jp-bank.bankbookapp", "bank": "JP.YUCHO" },
+  { "bundle": "jp.co.rakuten-bank.sapp.rbapp", "bank": "JP.RAKUTEN" },
+  { "bundle": "jp.co.resona-gr.ss.SmartApp", "bank": "JP.RESONA" },
+  { "bundle": "net.moneykit.sbw", "bank": "JP.SONY" },
+  { "bundle": "jp.pay2.app.ios", "name": "PayPay", "team": "8899ZUKF5G", "bank": "JP.PAYPAY" },
+  {
+    "bundle": "jp.co.rakuten.pay.shopper",
+    "name": "楽天ペイ",
+    "team": "87CT3T3CK2",
+    "bank": "JP.RAKUTENPAY"
+  },
+  { "bundle": "com.kddi.auwalletapp", "name": "au PAY", "team": "992GW8652B", "bank": "JP.AUPAY" },
+  { "bundle": "jp.co.japannetbank.smtapp.balance", "bank": "JP.PAYPAYBANK" },
+  { "bundle": "jp.co.netbk.netbanking", "bank": "JP.DOCOMOSMTB" },
+  { "bundle": "jp.co.jibunbank.jibunmain", "bank": "JP.JIBUN" },
+  { "bundle": "com.shinseibank.powerdirect", "bank": "JP.SHINSEI" },
+  { "bundle": "com.gmo-aozora.bank-app", "bank": "JP.GMOAOZORA" },
+  { "bundle": "com.smbc-card.vpass", "bank": "JP.VPASS" },
+  { "bundle": "jp.co.rakuten-card.RakutenCard", "bank": "JP.RAKUTENCARD" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

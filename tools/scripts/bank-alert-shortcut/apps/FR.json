@@ -1,0 +1,36 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "fr.creditagricole.monbudget", "bank": "FR.CA" },
+  { "bundle": "net.bnpparibas.mescomptesiphone", "bank": "FR.BNP" },
+  { "bundle": "mobi.societegenerale.mobile.lappli", "bank": "FR.SG" },
+  { "bundle": "ei.cm.release", "bank": "FR.CM" },
+  { "bundle": "fr.labanquepostale.moncompte", "bank": "FR.LBP" },
+  { "bundle": "fr.caisse-epargne.dem", "bank": "FR.CE" },
+  { "bundle": "fr.banquepopulaire.launcher", "bank": "FR.BP" },
+  { "bundle": "com.lcl.application.iphone", "bank": "FR.LCL" },
+  {
+    "bundle": "com.boursorama.boursoclient",
+    "name": "BoursoBank",
+    "team": "266C9E9VH9",
+    "bank": "FR.BOURSO"
+  },
+  { "bundle": "com.lydia-app", "name": "Sumeria", "team": "R8SGCN459P", "bank": "FR.LYDIA" },
+  { "bundle": "ei.cic.release", "bank": "FR.CIC" },
+  { "bundle": "net.bnpparibas.hellobankiphone", "bank": "FR.HELLOBANK" },
+  { "bundle": "com.fortuneo.fortuneo", "bank": "FR.FORTUNEO" },
+  { "bundle": "com.fpe.comptenickel", "bank": "FR.NICKEL" },
+  { "bundle": "eu.epicompany.wero.wallet", "bank": "FR.WERO" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

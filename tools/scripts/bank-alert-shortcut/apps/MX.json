@@ -1,0 +1,29 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "com.bancomer.bbva.bancomermovil", "bank": "MX.BBVA" },
+  { "bundle": "com.isban.santander.mx.supermovil", "bank": "MX.SANTANDER" },
+  { "bundle": "com.banorte.Banorte-Movil", "bank": "MX.BANORTE" },
+  { "bundle": "com.citibanamex.iphoneprod", "bank": "MX.BANAMEX" },
+  { "bundle": "com.nu.iphone", "bank": "MX.NU" },
+  { "bundle": "com.mercadopago.MercadoPago", "bank": "MX.MERCADOPAGO" },
+  { "bundle": "mx.com.bancoazteca.bazdigitalmovil", "bank": "MX.AZTECA" },
+  { "bundle": "com.pagopopmobile", "bank": "MX.SPIN" },
+  { "bundle": "com.bancoppel.BancoppelExpress", "bank": "MX.BANCOPPEL" },
+  { "bundle": "www.inbursa.com", "bank": "MX.INBURSA" },
+  { "bundle": "mx.klar.app", "bank": "MX.KLAR" },
+  { "bundle": "ai.powerup.stori", "bank": "MX.STORI" },
+  { "bundle": "dif.tech.bank", "bank": "MX.PLATA" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

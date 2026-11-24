@@ -1,0 +1,39 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  {
+    "bundle": "com.dbs.sg.dbsmbanking",
+    "name": "DBS digibank",
+    "team": "N6MAQ56G9X",
+    "bank": "SG.DBS"
+  },
+  {
+    "bundle": "com.dbs.sg.posbmbanking",
+    "name": "POSB digibank",
+    "team": "N6MAQ56G9X",
+    "bank": "SG.POSB"
+  },
+  { "bundle": "com.ocbc.mobile", "bank": "SG.OCBC" },
+  { "bundle": "com.uob.mighty", "bank": "SG.UOB" },
+  { "bundle": "com.sc.Breeze", "bank": "SG.SCB" },
+  { "bundle": "sg.trust", "name": "Trust", "team": "9Q4SDT9QY5", "bank": "SG.TRUST" },
+  { "bundle": "sg.com.gxs.app", "bank": "SG.GXS" },
+  { "bundle": "com.dbs.dbspaylah", "bank": "SG.PAYLAH" },
+  { "bundle": "sg.com.maribankmobile.digitalbank", "bank": "SG.MARIBANK" },
+  { "bundle": "com.citibank.CitibankSG", "bank": "SG.CITI" },
+  { "bundle": "com.cimb.cimbsg", "bank": "SG.CIMB" },
+  { "bundle": "sg.co.americanexpress.amexservice", "bank": "SG.AMEX" },
+  { "bundle": "co.you.youapp", "bank": "SG.YOUTRIP" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

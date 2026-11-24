@@ -1,0 +1,36 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "com.intesasanpaolo.ibiphone", "bank": "IT.INTESA" },
+  { "bundle": "com.internet.unicredit.iphoneapp", "bank": "IT.UNICREDIT" },
+  { "bundle": "it.poste.spim", "bank": "IT.POSTE" },
+  { "bundle": "it.bancopopolare.youapp.produzione", "bank": "IT.BPM" },
+  { "bundle": "it.bper.mobilebanking", "bank": "IT.BPER" },
+  { "bundle": "com.fineco.fineco", "name": "Fineco", "team": "2A8J8AKUVX", "bank": "IT.FINECO" },
+  {
+    "bundle": "com.satispay.customer.p2p",
+    "name": "Satispay",
+    "team": "3KU6KJU4K4",
+    "bank": "IT.SATISPAY"
+  },
+  { "bundle": "it.ing.app.OneApp", "bank": "IT.ING" },
+  { "bundle": "it.bnl.apps.banking", "bank": "IT.BNL" },
+  { "bundle": "it.bancamediolanum.imedfullclient", "bank": "IT.MEDIOLANUM" },
+  { "bundle": "com.mps.mb", "bank": "IT.MPS" },
+  { "bundle": "com.intesasanpaolo.isybank.mobile", "bank": "IT.ISYBANK" },
+  { "bundle": "com.hype.it", "bank": "IT.HYPE" },
+  { "bundle": "com.bbva.italy", "bank": "IT.BBVA" },
+  { "bundle": "it.bancomat.pay.user", "bank": "IT.BANCOMATPAY" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

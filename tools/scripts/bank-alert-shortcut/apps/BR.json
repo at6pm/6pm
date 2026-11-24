@@ -1,0 +1,33 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "com.nu.iphone", "bank": "BR.NUBANK" },
+  { "bundle": "com.itau.iphone.varejo", "bank": "BR.ITAU" },
+  { "bundle": "br.com.bradescora.app", "bank": "BR.BRADESCO" },
+  { "bundle": "com.bb.bbapp", "bank": "BR.BB" },
+  { "bundle": "br.gov.caixa.CAIXA", "bank": "BR.CAIXA" },
+  { "bundle": "br.com.santander.minhacontapf", "bank": "BR.SANTANDER" },
+  { "bundle": "br.com.intermedium", "bank": "BR.INTER" },
+  { "bundle": "com.mercadopago.MercadoPago", "bank": "BR.MERCADOPAGO" },
+  { "bundle": "com.picpay.PicPay", "bank": "BR.PICPAY" },
+  { "bundle": "br.com.c6bank.app", "bank": "BR.C6" },
+  { "bundle": "br.com.uol.pagseguro.PSAccount", "bank": "BR.PAGBANK" },
+  { "bundle": "br.gov.caixa.tem", "bank": "BR.CAIXATEM" },
+  { "bundle": "br.com.sicoob", "bank": "BR.SICOOB" },
+  { "bundle": "br.com.sicredi.fisital", "bank": "BR.SICREDI" },
+  { "bundle": "br.com.Neon", "bank": "BR.NEON" },
+  { "bundle": "io.cloudwalk.infinitepaydash", "bank": "BR.INFINITEPAY" },
+  { "bundle": "com.nomadfintech.bank.app.ios", "bank": "BR.NOMAD" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

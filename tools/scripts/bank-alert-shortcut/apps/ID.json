@@ -1,0 +1,31 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "com.bca.bcamobile", "bank": "ID.BCA" },
+  { "bundle": "id.bmri.livin", "bank": "ID.MANDIRI" },
+  { "bundle": "id.co.bri.newbrimobile", "bank": "ID.BRI" },
+  { "bundle": "id.bni.wondr", "bank": "ID.BNI" },
+  { "bundle": "com.cimbniaga.CIMB", "bank": "ID.CIMBNIAGA" },
+  { "bundle": "com.jago.digitalBanking", "bank": "ID.JAGO" },
+  { "bundle": "ovo.id", "name": "OVO", "team": "842X47DEU9", "bank": "ID.OVO" },
+  { "bundle": "id.dana.app", "name": "DANA", "team": "WDSUNR4DKH", "bank": "ID.DANA" },
+  { "bundle": "com.bca.mybca.omni", "bank": "ID.MYBCA" },
+  { "bundle": "co.id.bankbsi.superapp", "bank": "ID.BSI" },
+  { "bundle": "id.co.bankbkemobile.digitalbank", "bank": "ID.SEABANK" },
+  { "bundle": "com.bcadigital.blu", "bank": "ID.BLU" },
+  { "bundle": "com.telkomsel.wallet", "bank": "ID.LINKAJA" },
+  { "bundle": "net.myinfosys.PermataMobileX", "bank": "ID.PERMATA" },
+  { "bundle": "com.ocbcnisp.onemobile", "bank": "ID.OCBC" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

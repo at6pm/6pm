@@ -1,0 +1,26 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "com.opay.pay", "bank": "NG.OPAY" },
+  { "bundle": "com.teamapt.customers.moniepoint", "bank": "NG.MONIEPOINT" },
+  { "bundle": "com.transsnet.newpalmpay", "bank": "NG.PALMPAY" },
+  { "bundle": "com.gtbank.gtworldv1", "bank": "NG.GTB" },
+  { "bundle": "com.accessbank.nextgen", "bank": "NG.ACCESS" },
+  { "bundle": "com.zenithbank.mobileapp.eaZymoney", "bank": "NG.ZENITH" },
+  { "bundle": "com.firstbank.firstmobile", "bank": "NG.FIRSTBANK" },
+  { "bundle": "com.uba.vericash", "bank": "NG.UBA" },
+  { "bundle": "com.kudabank.app", "bank": "NG.KUDA" },
+  { "bundle": "io.fairmoney.app", "bank": "NG.FAIRMONEY" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]

@@ -1,0 +1,53 @@
+[
+  { "bundle": "ai.sixpm.app", "name": "6pm", "team": "YFND2EEW8S", "own": true },
+  { "bundle": "uk.co.barclays.bmbappstore", "bank": "GB.BARCLAYS" },
+  {
+    "bundle": "com.lloydstsb.LloydsTSB",
+    "name": "Lloyds",
+    "team": "D24KY3EF68",
+    "bank": "GB.LLOYDS"
+  },
+  {
+    "bundle": "uk.co.hsbc.hsbcukmobilebanking",
+    "name": "HSBC UK",
+    "team": "AD6MER959C",
+    "bank": "GB.HSBC"
+  },
+  { "bundle": "com.monitise.matm.Monitise-iPhone-NatWest-EN-GB", "bank": "GB.NATWEST" },
+  { "bundle": "uk.co.santander.santanderUK", "bank": "GB.SANTANDER" },
+  {
+    "bundle": "co.uk.Nationwide.MobileBanking",
+    "name": "Nationwide",
+    "team": "H8UT7ZK26Q",
+    "bank": "GB.NATIONWIDE"
+  },
+  { "bundle": "com.halifax.mobilebank", "bank": "GB.HALIFAX" },
+  { "bundle": "io.b2a.BankProd", "name": "Monzo", "team": "6944V8G4S2", "bank": "GB.MONZO" },
+  {
+    "bundle": "uk.co.starlingbank.Starling",
+    "name": "Starling",
+    "team": "9Y5SA82235",
+    "bank": "GB.STARLING"
+  },
+  { "bundle": "com.chase.intl", "bank": "GB.CHASE" },
+  { "bundle": "com.firstdirect.bankingonthego", "bank": "GB.FIRSTDIRECT" },
+  { "bundle": "uk.co.tsb.mobilebankt0", "bank": "GB.TSB" },
+  { "bundle": "com.virginmoney.uk.mobile.ios", "bank": "GB.VIRGIN" },
+  { "bundle": "com.monitise.matm.Monitise-iPhone-RBS-EN-GB", "bank": "GB.RBS" },
+  { "bundle": "com.bos.mobilebank", "bank": "GB.BOS" },
+  { "bundle": "uk.co.barclays.mybarclaycard", "bank": "GB.BARCLAYCARD" },
+  { "bundle": "uk.co.americanexpress.amexservice", "bank": "GB.AMEX" },
+  {
+    "bundle": "com.yourcompany.PPClient",
+    "name": "PayPal",
+    "team": "7JMU3EK8QX",
+    "bank": "PAYPAL"
+  },
+  {
+    "bundle": "com.transferwise.Transferwise",
+    "name": "Wise",
+    "team": "W53MTDV45J",
+    "bank": "WISE"
+  },
+  { "bundle": "com.revolut.revolut", "name": "Revolut", "team": "QUZEZSEARC", "bank": "REVOLUT" }
+]
