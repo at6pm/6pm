@@ -121,4 +121,17 @@ export const deCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.paused.body':
     '6pm sieht deine Mitteilungen nicht mehr. Erlaub den Zugriff wieder, dann tragen sich deine Zahlungen wieder von selbst ein.',
   'capture.alerts.paused.action': 'Zugriff wieder erlauben',
+  'capture.alerts.steps.headline':
+    'Deine Ausgaben tragen sich selbst ein, aus den Mitteilungen deiner Bank.',
+  'capture.alerts.steps.addTitle': 'Kurzbefehl hinzufügen',
+  'capture.alerts.steps.addLine': 'Wenn er sich öffnet, tippe auf „Kurzbefehl hinzufügen“.',
+  'capture.alerts.steps.addAction': 'Kurzbefehl holen',
+  'capture.alerts.steps.onTitle': 'Automation einschalten',
+  'capture.alerts.steps.onLine': 'Öffne ihn, tippe auf ›, schalte Automation ein.',
+  'capture.alerts.steps.testTitle': 'Prüfen, ob es klappt',
+  'capture.alerts.steps.testLine':
+    '6pm schickt sich selbst eine Testmitteilung. Nichts wird eingetragen.',
+  'capture.alerts.steps.privacy': 'Lange Nummern bleiben vor unserem Server verdeckt.',
+  'capture.alerts.steps.privacyDevice': 'Mitteilungen werden nur auf diesem iPhone gelesen.',
+  'capture.alerts.steps.done': 'Erledigt',
 };

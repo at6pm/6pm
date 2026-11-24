@@ -120,4 +120,15 @@ export const thCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.paused.body':
     '6pm มองไม่เห็นการแจ้งเตือนของคุณ เปิดสิทธิ์เข้าถึงอีกครั้ง แล้วรายการจ่ายจะบันทึกเองเหมือนเดิม',
   'capture.alerts.paused.action': 'เปิดสิทธิ์อีกครั้ง',
+  'capture.alerts.steps.headline': 'รายจ่ายของคุณจดเองจากแจ้งเตือนธนาคาร',
+  'capture.alerts.steps.addTitle': 'เพิ่มคำสั่งลัด',
+  'capture.alerts.steps.addLine': 'เมื่อเปิดขึ้นมา แตะ เพิ่มคำสั่งลัด',
+  'capture.alerts.steps.addAction': 'รับคำสั่งลัด',
+  'capture.alerts.steps.onTitle': 'เปิด ระบบอัตโนมัติ',
+  'capture.alerts.steps.onLine': 'เปิดคำสั่งลัด แตะ › แล้วเปิด ระบบอัตโนมัติ',
+  'capture.alerts.steps.testTitle': 'ลองดูว่าใช้ได้ไหม',
+  'capture.alerts.steps.testLine': '6pm ส่งแจ้งเตือนทดสอบหาตัวเอง ไม่มีอะไรถูกจด',
+  'capture.alerts.steps.privacy': 'เลขยาว ๆ ถูกซ่อนก่อนเซิร์ฟเวอร์ของเราอ่านแจ้งเตือน',
+  'capture.alerts.steps.privacyDevice': 'แจ้งเตือนถูกอ่านบน iPhone เครื่องนี้เท่านั้น',
+  'capture.alerts.steps.done': 'เสร็จแล้ว',
 };

@@ -127,4 +127,16 @@ export const enCaptureAlerts = {
   'capture.alerts.paused.body':
     '6pm can’t see your notifications. Turn access back on and your payments log themselves again.',
   'capture.alerts.paused.action': 'Turn access back on',
+  // The iPhone guide in three steps: add the shortcut, turn Automation on, send a test.
+  'capture.alerts.steps.headline': 'Your spending logs itself from your bank’s alerts.',
+  'capture.alerts.steps.addTitle': 'Add the shortcut',
+  'capture.alerts.steps.addLine': 'Tap Add Shortcut when it opens.',
+  'capture.alerts.steps.addAction': 'Get the shortcut',
+  'capture.alerts.steps.onTitle': 'Turn on Automation',
+  'capture.alerts.steps.onLine': 'Open it, tap ›, turn on Automation.',
+  'capture.alerts.steps.testTitle': 'Check it works',
+  'capture.alerts.steps.testLine': '6pm sends itself a test. Nothing is logged.',
+  'capture.alerts.steps.privacy': 'Long numbers are hidden from our server.',
+  'capture.alerts.steps.privacyDevice': 'Alerts are read on this iPhone only.',
+  'capture.alerts.steps.done': 'Done',
 } as const;

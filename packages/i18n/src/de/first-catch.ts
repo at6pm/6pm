@@ -108,4 +108,8 @@ export const deFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'testAlert.notice.body': 'Test: {amount} bezahlt. Das ist keine echte Zahlung.',
   'testAlert.channel': 'Testmitteilungen',
   'testAlert.slip.note': 'Nur ein Test, keine Zahlung. Nichts wurde eingetragen.',
+  'testAlert.firstTry':
+    'Nichts angekommen. Nach einer Installation oder einem Update verpasst das iPhone manchmal den ersten Versuch. Schick ihn einfach noch mal.',
+  'testAlert.stillNothing':
+    'Immer noch nichts? Prüf in Kurzbefehle, ob Automation an ist und 6pm bei den Apps steht.',
 };

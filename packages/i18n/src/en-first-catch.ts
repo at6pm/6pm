@@ -111,4 +111,9 @@ export const enFirstCatch = {
   'testAlert.notice.body': 'Test: {amount} paid. This is not a real payment.',
   'testAlert.channel': 'Test alerts',
   'testAlert.slip.note': 'A test, not a payment. Nothing was added.',
+  // A test that never came through the Shortcut: the first try after an install is often lost.
+  'testAlert.firstTry':
+    'Nothing arrived. iPhone can miss the first try after an install or update, so send it again.',
+  'testAlert.stillNothing':
+    'Still nothing? In Shortcuts, check that Automation is on and 6pm is among its apps.',
 } as const;

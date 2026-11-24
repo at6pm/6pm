@@ -126,4 +126,15 @@ export const viCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.paused.body':
     '6pm không xem được thông báo của bạn. Bật lại quyền truy cập để các khoản tự ghi như trước.',
   'capture.alerts.paused.action': 'Bật lại quyền truy cập',
+  'capture.alerts.steps.headline': 'Chi tiêu tự ghi lại từ thông báo ngân hàng.',
+  'capture.alerts.steps.addTitle': 'Thêm phím tắt',
+  'capture.alerts.steps.addLine': 'Khi phím tắt mở ra, chạm Thêm phím tắt.',
+  'capture.alerts.steps.addAction': 'Lấy phím tắt',
+  'capture.alerts.steps.onTitle': 'Bật Tự động hóa',
+  'capture.alerts.steps.onLine': 'Mở phím tắt, chạm › rồi bật Tự động hóa.',
+  'capture.alerts.steps.testTitle': 'Thử xem đã chạy chưa',
+  'capture.alerts.steps.testLine': '6pm tự gửi một thông báo thử. Không ghi khoản nào.',
+  'capture.alerts.steps.privacy': 'Dãy số dài được che trước khi máy chủ đọc.',
+  'capture.alerts.steps.privacyDevice': 'Thông báo chỉ được đọc trên iPhone này.',
+  'capture.alerts.steps.done': 'Xong',
 };
