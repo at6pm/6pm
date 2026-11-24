@@ -13,6 +13,7 @@ import { Symbol } from '../../ui/icons/symbol';
 import { useTheme } from '../../ui/theme/theme';
 import { useToast } from '../../ui/toast/toast-host';
 import { body, display, leading } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 
 const fade = {
   entering: FadeIn.duration(200).reduceMotion(ReduceMotion.System),
@@ -105,9 +106,10 @@ export function BankDrop({ children }: { readonly children: ReactNode }) {
           >
             <Symbol name="add_box" size={36} color={palette.accent} />
             <Text
+              {...HEADING_BREAKS}
               style={{ ...leading(display(22, 500), 26), color: palette.ink, textAlign: 'center' }}
             >
-              {t('duo.drop.title')}
+              {headingWords(t('duo.drop.title'))}
             </Text>
             <Text
               style={{ ...body(14), lineHeight: 19, color: palette.inkSoft, textAlign: 'center' }}

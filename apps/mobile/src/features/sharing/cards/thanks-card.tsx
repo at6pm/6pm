@@ -10,6 +10,7 @@ import { useI18n } from '../../../i18n/i18n';
 import { useMoneyFormat } from '../../../money/use-money-format';
 import { PaperEdge } from '../../../ui/paper-edge';
 import { display, mono } from '../../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../../ui/type/word-fit-text';
 import { useDiaryDates } from '../../diary/diary-dates';
 import { stampIn } from '../../owed/owed-motion';
 import { askedOn } from '../../owed/request-words';
@@ -200,15 +201,18 @@ function ThanksLayout(props: CardLayoutProps<ThanksCardData>) {
           ).toLocaleUpperCase()}
         </Text>
         <Text
+          {...HEADING_BREAKS}
           {...ON_CARD}
           numberOfLines={story ? 3 : 2}
           adjustsFontSizeToFit
           minimumFontScale={0.6}
           style={title(inks, inks.titleSize, 0.98)}
         >
-          {card.name
-            ? t('shareCards.thanks.title', { name: card.name })
-            : t('shareCards.thanks.titleNoName')}
+          {headingWords(
+            card.name
+              ? t('shareCards.thanks.title', { name: card.name })
+              : t('shareCards.thanks.titleNoName'),
+          )}
         </Text>
         <View style={story ? null : { marginVertical: -24 }}>
           <Receipt {...props} />

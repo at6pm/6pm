@@ -1,6 +1,14 @@
 import { describe, expect, it } from '@jest/globals';
 
-import { breaksMidWord, scaleTextStyle, wordFitScale, wordsToMeasure } from './word-fit';
+import {
+  breaksMidWord,
+  keepCountersWithNumbers,
+  keepHangulWords,
+  keepThaiWords,
+  scaleTextStyle,
+  wordFitScale,
+  wordsToMeasure,
+} from './word-fit';
 
 describe('breaksMidWord', () => {
   it('finds a word iOS cut in two', () => {
@@ -101,5 +109,47 @@ describe('scaleTextStyle', () => {
   it('returns the same style at full size', () => {
     const style = { fontSize: 30 };
     expect(scaleTextStyle(style, 1)).toBe(style);
+  });
+});
+
+describe('keepHangulWords', () => {
+  const J = '\u2060';
+
+  it('joins the characters of a Korean word, and a particle to the word before it', () => {
+    expect(keepHangulWords('받아 적어요')).toBe(`받${J}아 적${J}어${J}요`);
+    expect(keepHangulWords('6pm이 받아')).toBe(`6pm${J}이 받${J}아`);
+  });
+
+  it('leaves the spaces between words to break at', () => {
+    expect(keepHangulWords('은행이 알리면').split(' ')).toHaveLength(2);
+  });
+
+  it('leaves text with no Hangul as it is', () => {
+    expect(keepHangulWords('Your bank and wallet alerts')).toBe('Your bank and wallet alerts');
+    expect(keepHangulWords('今日は5件キャッチ')).toBe('今日は5件キャッチ');
+  });
+});
+
+describe('keepCountersWithNumbers', () => {
+  const J = '\u2060';
+
+  it('joins a number to the Japanese or Chinese counter after it', () => {
+    expect(keepCountersWithNumbers('給料日までの1日あたり')).toBe(`給料日までの1${J}日あたり`);
+    expect(keepCountersWithNumbers('今天记下5笔')).toBe(`今天记下5${J}笔`);
+  });
+
+  it('leaves a number before a space, a Latin word or nothing as it is', () => {
+    expect(keepCountersWithNumbers('5 things caught')).toBe('5 things caught');
+    expect(keepCountersWithNumbers('¥3,850')).toBe('¥3,850');
+  });
+});
+
+describe('keepThaiWords', () => {
+  it('joins the two parts of a word Android would break', () => {
+    expect(keepThaiWords('โหลจะเต็มเมื่อไหร่ เรา')).toBe('โหลจะเต็มเมื่อ\u2060ไหร่ เรา');
+  });
+
+  it('leaves other text as it is', () => {
+    expect(keepThaiWords('วันนี้จับได้ 5 รายการ')).toBe('วันนี้จับได้ 5 รายการ');
   });
 });

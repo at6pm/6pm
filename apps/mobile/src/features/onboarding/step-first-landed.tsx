@@ -7,6 +7,7 @@ import { useI18n } from '../../i18n/i18n';
 import { useMoneyFormat } from '../../money/use-money-format';
 import { Companion } from '../../ui/companion/companion';
 import { body, display, leading } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords, WordFitText } from '../../ui/type/word-fit-text';
 import { MoneyCameInCard } from '../today/money-came-in-card';
 import { DashedMeter } from '../today/landed-hero';
 import { fadeEntering, popEntering, riseEntering, ease } from './onboarding-motion';
@@ -46,9 +47,9 @@ export function StepFirstLanded({
       </Animated.View>
       <View style={{ gap: 6, paddingHorizontal: 4 }}>
         <Text style={{ ...body(15, 500), color: pal.inkSoft }}>{t('today.safeToSpend')}</Text>
-        <Text style={{ ...leading(display(44, 500, -0.03), 46), color: pal.ink }}>
+        <WordFitText style={{ ...leading(display(44, 500, -0.03), 46), color: pal.ink }}>
           {t('income.today.nothingLanded')}
-        </Text>
+        </WordFitText>
         <View style={{ paddingTop: 10, gap: 8 }}>
           <DashedMeter color={pal.track} />
           {billsStillNeed > 0 ? (
@@ -78,6 +79,7 @@ export function StepFirstLanded({
         />
       </Animated.View>
       <Text
+        {...HEADING_BREAKS}
         style={{
           ...leading(display(19, 500), 23),
           textAlign: 'center',
@@ -85,9 +87,11 @@ export function StepFirstLanded({
           paddingTop: 4,
         }}
       >
-        {reminded
-          ? t('onboarding.reveal.seeYou', { time: closeAt })
-          : t('onboarding.reveal.noReminder', { time: closeAt })}
+        {headingWords(
+          reminded
+            ? t('onboarding.reveal.seeYou', { time: closeAt })
+            : t('onboarding.reveal.noReminder', { time: closeAt }),
+        )}
       </Text>
       <View style={{ flex: 1 }} />
     </Animated.View>

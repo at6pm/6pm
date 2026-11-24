@@ -21,6 +21,7 @@ import { Symbol } from '../../ui/icons/symbol';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, leading, mono } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import { ListeningRing } from './listening-ring';
 import { VoiceShimmer } from './voice-shimmer';
 import { dictationName, type VoiceChip } from './voice-support';
@@ -149,8 +150,8 @@ function MissedLine({
     >
       <Companion size={58} mood="calm" serious={serious} />
       <View style={{ flex: 1, gap: 5 }}>
-        <Text style={{ ...leading(display(20, 500), 23), color: palette.ink }}>
-          {nothing ? t('voice.nothingHeard') : t('voice.missed')}
+        <Text {...HEADING_BREAKS} style={{ ...leading(display(20, 500), 23), color: palette.ink }}>
+          {headingWords(nothing ? t('voice.nothingHeard') : t('voice.missed'))}
         </Text>
         {nothing ? null : heard === '' ? (
           <Text numberOfLines={3} style={how}>
@@ -260,10 +261,11 @@ export function QuickVoicePanel({
       {said !== '' ? (
         <View style={{ minHeight: stuck ? 0 : 58, maxWidth: 300, justifyContent: 'center' }}>
           <Text
+            {...HEADING_BREAKS}
             numberOfLines={2}
             style={{ ...leading(display(23, 500), 28.75), color: saidInk, textAlign: 'center' }}
           >
-            {said}
+            {headingWords(said)}
           </Text>
         </View>
       ) : null}

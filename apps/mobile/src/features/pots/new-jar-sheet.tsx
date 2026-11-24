@@ -16,6 +16,7 @@ import { EdgeSheetScroll, FittedSheet } from '../../ui/navigation/edge-sheet';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, display, families, leading, tabular, UNPADDED } from '../../ui/type/fonts';
+import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
 import { useOfferUndo } from '../../ui/undo/undo-host';
 import { useCompanionToast } from '../companion/use-companion-toast';
 import { useRunAction } from '../companion/use-run-action';
@@ -199,8 +200,11 @@ export function NewJarSheet({
           </View>
           <View style={{ flex: 1, gap: 4 }}>
             {fy ? (
-              <Text style={{ ...leading(display(30, 500), 30 * 1.05, true), color: palette.ink }}>
-                {t('pots.futureYou')}
+              <Text
+                {...HEADING_BREAKS}
+                style={{ ...leading(display(30, 500), 30 * 1.05, true), color: palette.ink }}
+              >
+                {headingWords(t('pots.futureYou'))}
               </Text>
             ) : (
               <TextInput

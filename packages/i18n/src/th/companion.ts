@@ -116,7 +116,7 @@ export const thCompanion: { readonly [Key in keyof typeof enCompanion]: Entry } 
   'companion.pinned.cheeky': 'ปักหมุดแล้ว ใบเสร็จไหนก็แตะทีเดียวถึง',
   'companion.pinned.roast': 'ปักหมุดแล้ว ซ่อนใบเสร็จไม่ได้แล้วนะ',
   'companion.pinned.plain': 'ปักหมุด 6pm ในแชร์แล้ว',
-  'companion.walletOn.soft': 'ทุกครั้งที่แตะ Apple Pay จะขึ้นใน Inbox นะ',
+  'companion.walletOn.soft': 'ทุกครั้งที่แตะ Apple Pay จะขึ้นในกล่องขาเข้านะ',
   'companion.walletOn.cheeky': 'เปิดกระเป๋าสตางค์แล้ว ตอนนี้แตะทีไรเราเห็นหมด',
   'companion.walletOn.roast': 'แตะทุกครั้ง จับได้ทุกครั้ง แตะให้ดีๆ นะ',
   'companion.walletOn.plain': 'เปิดการทำงานอัตโนมัติของกระเป๋าสตางค์แล้ว',

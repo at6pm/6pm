@@ -4,7 +4,7 @@ import type { enCaptureAlerts } from '../en-capture-alerts';
 export const thCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: Entry } = {
   'native.intents.catchAlert.title': 'จับแจ้งเตือนธนาคาร',
   'native.intents.catchAlert.description':
-    'อ่านการแจ้งเตือนจากธนาคารหรืออีวอลเล็ตบน iPhone ของคุณ แล้ววางเงินที่เข้าออกไว้ใน Inbox ของ 6pm ข้ามรหัส OTP รายการที่จ่ายไม่สำเร็จ และโปรโมชัน',
+    'อ่านการแจ้งเตือนจากธนาคารหรืออีวอลเล็ตบน iPhone ของคุณ แล้ววางเงินที่เข้าออกไว้ในกล่องขาเข้าของ 6pm ข้ามรหัส OTP รายการที่จ่ายไม่สำเร็จ และโปรโมชัน',
   'native.intents.catchAlert.alertTitle': 'ชื่อเรื่อง',
   'native.intents.catchAlert.subtitle': 'ชื่อเรื่องรอง',
   'native.intents.catchAlert.body': 'เนื้อหา',
@@ -49,7 +49,7 @@ export const thCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
     'แตะ › ที่ตัวเรียก: เปิด ระบบอัตโนมัติ ไว้และปิด แจ้ง เพื่อให้จับแจ้งเตือนได้เงียบๆ ย้อนกลับก็บันทึกแล้ว',
   'capture.walk.alerts.s6Title': 'ลองดู',
   'capture.walk.alerts.s6Body':
-    'จ่ายเงินนิดหน่อยจากแอปใดแอปหนึ่งในนั้น พอแจ้งเตือนเด้งมา รายการนั้นจะอยู่ใน Inbox แล้ว',
+    'จ่ายเงินนิดหน่อยจากแอปใดแอปหนึ่งในนั้น พอแจ้งเตือนเด้งมา รายการนั้นจะอยู่ในกล่องขาเข้าแล้ว',
   'capture.walk.alerts.l1Title': 'เพิ่มคำสั่งลัดของ 6pm',
   'capture.walk.alerts.l1Body':
     'แตะ “รับคำสั่งลัดของ 6pm” ด้านบน แล้วแตะ เพิ่มคำสั่งลัด คำสั่งลัดนี้ชื่อ “Catch a bank alert”',
