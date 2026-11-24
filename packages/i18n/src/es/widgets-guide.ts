@@ -29,6 +29,8 @@ export const esWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.home.month': 'Mi mes',
   'widgetsGuide.home.monthWhat':
     'El mes en soles: cada noche que cerraste y cuántas dentro del límite.',
+  'widgetsGuide.home.actions':
+    'Apunta un gasto con un toque: los widgets medianos y grandes tienen Escanear y +.',
   'widgetsGuide.home.step1':
     'Mantén pulsado un espacio vacío de tu pantalla de inicio hasta que las apps se muevan.',
   'widgetsGuide.home.step2': 'Toca Editar en la esquina superior y luego Añadir widget.',

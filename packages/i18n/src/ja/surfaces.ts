@@ -4,6 +4,7 @@ import type { enSurfaces } from '../en-surfaces';
 // Widget space is tight: the shortest natural words win.
 export const jaSurfaces: { readonly [Key in keyof typeof enSurfaces]: Entry } = {
   'surfaces.scanQr': 'QRをスキャン',
+  'surfaces.scanReceipt': 'レシートをスキャン',
   'surfaces.safeTodayShort': '今日使える',
   'surfaces.today': '今日',
   'surfaces.left': '残り',

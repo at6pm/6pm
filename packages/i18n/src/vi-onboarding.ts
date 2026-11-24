@@ -117,6 +117,9 @@ export const viOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.catch.title': '6pm bắt khoản chi thế nào',
   'onboarding.catch.sub':
     'Phần lớn tự vào, rồi chờ trong Inbox để bạn xem lại một phút lúc {time}.',
+  'onboarding.catch.auto.title': 'Để các khoản chi tự ghi',
+  'onboarding.catch.auto.body':
+    'Cài và kiểm tra mất vài bước, nhưng đáng. 6pm hữu ích nhất khi các khoản chi tự về. Dùng vài ngày là bạn thấy.',
   'onboarding.catch.readyNothing': 'Sẵn sàng, không cần cài gì',
   'onboarding.catch.ready': 'Sẵn sàng',
   'onboarding.catch.seeHow': 'Xem cách',
@@ -208,6 +211,7 @@ export const viOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.line.aiServer': 'Claude lo phần hiểu câu hỏi nha.',
   'onboarding.line.aiDevice': 'Tất cả nằm trên máy bạn.',
   'onboarding.line.catch': '{count} / {total} cách xài được liền.',
+  'onboarding.line.catchSetUp': 'Cài một cách, còn lại để mình lo.',
   'onboarding.line.close': 'Hẹn bạn lúc {time}.',
 
   'onboarding.category.food': 'Ăn uống',

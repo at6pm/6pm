@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import type { SpendSource } from '../spend/spend';
-import { addDays, diffDays, type LocalDate } from '../time/local-date';
+import { addDays, diffDays, localDateOf, type LocalDate } from '../time/local-date';
 
 /** Days each way's heartbeat shows in Settings, today last. */
 export const HEARTBEAT_DAYS = 14;
@@ -18,10 +18,14 @@ export const QUIET_MIN_CATCHES = 5;
  */
 export const SELF_RUNNING_SOURCES: readonly SpendSource[] = ['alert', 'applePay', 'email'];
 
+export function isSelfRunningSource(source: SpendSource): boolean {
+  return SELF_RUNNING_SOURCES.includes(source);
+}
+
 /**
  * The sources that are spending caught on its own (a shared receipt, a Wallet tap, a bank alert,
- * a forwarded email, a scanned code): any one of them is a first catch. Typed and spoken spends
- * are not.
+ * a forwarded email, a scanned code): any one of them prints as onboarding's first receipt. Typed
+ * and spoken spends are not. Only one from a way that runs by itself ends Today's reminder.
  */
 export const CAUGHT_SOURCES: readonly SpendSource[] = [
   'shared',
@@ -81,24 +85,143 @@ export function wayQuiet(
 
 /** Where onboarding's first catch stands, kept on the phone. */
 export const firstCatchStateSchema = z.discriminatedUnion('state', [
-  /** "I'll do it later": the day it was said, when, and the ways set up by then. */
+  /** The catching step was left with nothing caught: the day, when, and the ways walked by then. */
   z.object({
     state: z.literal('later'),
     day: z.string(),
     at: z.string(),
     ways: z.array(z.string()).optional(),
   }),
-  /** A real catch landed (in onboarding or from Today's card). */
-  z.object({ state: z.literal('caught'), at: z.string() }),
+  /**
+   * A real catch landed: what caught it, the day the catching step ended and the ways walked. One
+   * kept before sources were told apart has only `at`, and the spends say what caught it.
+   */
+  z.object({
+    state: z.literal('caught'),
+    at: z.string(),
+    source: z.string().optional(),
+    day: z.string().optional(),
+    ways: z.array(z.string()).optional(),
+  }),
 ]);
 export type FirstCatchState = z.infer<typeof firstCatchStateSchema>;
 
+/** Whether a way that runs by itself has caught something: the reminder is over for good. */
+export function firstCatchEnded(state: FirstCatchState | null): boolean {
+  return (
+    state?.state === 'caught' &&
+    state.source !== undefined &&
+    SELF_RUNNING_SOURCES.some((source) => source === state.source)
+  );
+}
+
+/** The day the catching step ended, as far as the state says. */
+function firstCatchDay(state: FirstCatchState): LocalDate | null {
+  if (state.day !== undefined) return state.day;
+  const at = new Date(state.at);
+  return Number.isNaN(at.getTime()) ? null : localDateOf(at);
+}
+
+function waysWith(state: FirstCatchState | null, ways: readonly string[] | undefined): string[] {
+  return [...new Set([...(state?.ways ?? []), ...(ways ?? [])])];
+}
+
+/** A catch that landed while 6pm waited for one: what caught it, when, and the ways walked. */
+export interface FirstCatchLanded {
+  readonly source: SpendSource;
+  readonly at: string;
+  /** The money day it landed on. */
+  readonly day: LocalDate;
+  readonly ways?: readonly string[];
+}
+
 /**
- * Today's "Your first receipt goes here" card: from the morning after "I'll do it later" was
- * chosen, until a real catch lands. Never for anyone who did not choose later.
+ * Folds a catch into where the first catch stands. One from a way that runs by itself (a bank
+ * alert, a Wallet tap, a forwarded email) ends the reminder for good. A shared receipt or a
+ * scanned code is kept only as the catching step's own catch, in onboarding: afterwards it leaves
+ * the state as it was, so the reminder goes on from the day it had.
  */
-export function firstCatchCardDue(state: FirstCatchState | null, today: LocalDate): boolean {
-  return state?.state === 'later' && today > state.day;
+export function foldFirstCatch(
+  state: FirstCatchState | null,
+  landed: FirstCatchLanded,
+): FirstCatchState {
+  if (state !== null && firstCatchEnded(state)) return state;
+  const ways = waysWith(state, landed.ways);
+  if (state !== null && !isSelfRunningSource(landed.source)) return { ...state, ways };
+  return {
+    state: 'caught',
+    at: landed.at,
+    source: landed.source,
+    day: (state === null ? null : firstCatchDay(state)) ?? landed.day,
+    ways,
+  };
+}
+
+/**
+ * The catching step left with no way running by itself yet ("Skip for now"): kept with the day
+ * and the ways walked, unless such a way has already caught something.
+ */
+export function leaveFirstCatch(
+  state: FirstCatchState | null,
+  left: { readonly day: LocalDate; readonly at: string; readonly ways?: readonly string[] },
+): FirstCatchState {
+  if (state !== null && firstCatchEnded(state)) return state;
+  return { state: 'later', day: left.day, at: left.at, ways: waysWith(state, left.ways) };
+}
+
+/** Days Today's reminder stays away after "Not now". */
+export const FIRST_CATCH_AWAY_DAYS = 7;
+
+/** Times the reminder can be put away before it stays away. */
+export const FIRST_CATCH_AWAY_TIMES = 3;
+
+/** How often Today's reminder was put away, and the day of the last time; kept on the phone. */
+export const firstCatchAwaySchema = z.object({
+  times: z.number().int().positive(),
+  day: z.string(),
+});
+export type FirstCatchAway = z.infer<typeof firstCatchAwaySchema>;
+
+/** "Not now" on Today's reminder: one more time put away, today. */
+export function putFirstCatchAway(away: FirstCatchAway | null, today: LocalDate): FirstCatchAway {
+  return { times: (away?.times ?? 0) + 1, day: today };
+}
+
+/**
+ * What Today's reminder says: `notSetUp` while no way that runs by itself is set up, `waiting`
+ * once one is and nothing has come from it yet.
+ */
+export type FirstCatchReminder = 'notSetUp' | 'waiting';
+
+export interface FirstCatchReminderInput {
+  /** Where the first catch stands; fold a catch found among the spends in first. */
+  readonly state: FirstCatchState | null;
+  readonly today: LocalDate;
+  /** The day 6pm was set up, for a phone that kept no state (set up before 6pm kept one). */
+  readonly started?: LocalDate | null;
+  /** Whether a way that runs by itself is set up, as far as the phone can tell. */
+  readonly setUp: boolean;
+  readonly away?: FirstCatchAway | null;
+}
+
+/**
+ * Today's reminder to let spending log itself: from the morning after the catching step ended,
+ * for anyone no bank alert, Wallet tap or forwarded email has reached yet, whether they skipped
+ * the step, walked a way that has not delivered, or caught something by sharing or scanning. It
+ * ends for good with the first such catch. Put away, it stays away for `FIRST_CATCH_AWAY_DAYS`
+ * days, and for good once put away `FIRST_CATCH_AWAY_TIMES` times.
+ */
+export function firstCatchReminder(input: FirstCatchReminderInput): FirstCatchReminder | null {
+  const { state, today } = input;
+  if (state !== null && firstCatchEnded(state)) return null;
+  const ended = state === null ? (input.started ?? null) : firstCatchDay(state);
+  if (ended !== null && today <= ended) return null;
+  const away = input.away ?? null;
+  if (away !== null) {
+    if (away.times >= FIRST_CATCH_AWAY_TIMES) return null;
+    if (today < addDays(away.day, FIRST_CATCH_AWAY_DAYS)) return null;
+  }
+  return input.setUp ? 'waiting' : 'notSetUp';
 }
 
 /** A field read on a receipt and changed by hand afterwards: what was read, what it became. */

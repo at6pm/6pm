@@ -116,6 +116,9 @@ export const koOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
 
   'onboarding.catch.title': '6pm이 지출을 잡는 방법',
   'onboarding.catch.sub': '대부분은 알아서 들어와 수신함에서 기다려요. {time}에 1분만 확인하면 끝.',
+  'onboarding.catch.auto.title': '결제가 알아서 기록되게 하세요',
+  'onboarding.catch.auto.body':
+    '설정하고 확인하는 데 몇 단계가 필요하지만, 그만한 가치가 있어요. 6pm은 결제가 알아서 들어올 때 가장 쓸모 있어요. 며칠만 써 보면 알게 돼요.',
   'onboarding.catch.readyNothing': '준비 완료, 설정할 것 없음',
   'onboarding.catch.ready': '준비 완료',
   'onboarding.catch.seeHow': '방법 보기',
@@ -206,6 +209,7 @@ export const koOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.line.aiServer': '똑똑한 답은 Claude가 맡아요.',
   'onboarding.line.aiDevice': '전부 내 폰 안에. 밖으로 안 나가요.',
   'onboarding.line.catch': '{total}개 중 {count}개는 벌써 돼요.',
+  'onboarding.line.catchSetUp': '하나만 설정해 주세요. 나머지는 제가 할게요.',
   'onboarding.line.close': '{time}에 만나요.',
 
   'onboarding.category.food': '식비',

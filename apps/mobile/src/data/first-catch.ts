@@ -2,13 +2,20 @@ import { z } from 'zod';
 
 import {
   CAUGHT_SOURCES,
+  SELF_RUNNING_SOURCES,
   captureAccuracy,
   captureFixSchema,
+  firstCatchAwaySchema,
   firstCatchStateSchema,
   foldCaptureFix,
+  foldFirstCatch,
+  leaveFirstCatch,
   localDateOf,
+  putFirstCatchAway,
   type CaptureAccuracy,
   type CaptureFix,
+  type FirstCatchAway,
+  type FirstCatchLanded,
   type FirstCatchState,
   type InboxSpend,
   type LocalDate,
@@ -21,11 +28,12 @@ import type { SqlDatabase } from './table';
 
 /**
  * What the phone keeps about capture for itself, in the settings table (never in a backup, gone
- * with Delete everything): where onboarding's first catch stands, which receipts went for a
- * closer look, and which were fixed by hand. Every count is made on the phone from these and from
- * the spends themselves; nothing here leaves it.
+ * with Delete everything): where onboarding's first catch stands, how often Today's reminder was
+ * put away, which receipts went for a closer look, and which were fixed by hand. Every count is
+ * made on the phone from these and from the spends themselves; nothing here leaves it.
  */
 const STATE_KEY = 'first_catch';
+const AWAY_KEY = 'first_catch_away';
 const FIXES_KEY = 'receipt_fixes';
 const LOOKED_KEY = 'receipts_looked';
 /** When this phone began keeping how receipts were read: older ones are not counted. */
@@ -60,6 +68,58 @@ export async function readFirstCatch(db: SqlDatabase): Promise<FirstCatchState |
 
 export async function writeFirstCatch(db: SqlDatabase, state: FirstCatchState): Promise<void> {
   await writeJson(db, STATE_KEY, state);
+}
+
+/**
+ * Keeps a catch that landed while 6pm waited for one, on top of what is kept: one from a way that
+ * runs by itself ends Today's reminder for good; a shared receipt or a scanned code is kept only
+ * as the catching step's own, and changes nothing afterwards.
+ */
+export async function keepFirstCatch(
+  db: SqlDatabase,
+  landed: FirstCatchLanded,
+): Promise<FirstCatchState> {
+  const kept = await readFirstCatch(db);
+  const next = foldFirstCatch(kept, landed);
+  if (next !== kept) await writeFirstCatch(db, next);
+  return next;
+}
+
+/** Keeps that the catching step was left with no way running by itself yet, and the ways walked. */
+export async function keepFirstCatchLeft(
+  db: SqlDatabase,
+  left: Parameters<typeof leaveFirstCatch>[1],
+): Promise<void> {
+  const kept = await readFirstCatch(db);
+  const next = leaveFirstCatch(kept, left);
+  if (next !== kept) await writeFirstCatch(db, next);
+}
+
+/** How often Today's reminder was put away with "Not now", and the day of the last time. */
+export async function readFirstCatchAway(db: SqlDatabase): Promise<FirstCatchAway | null> {
+  const parsed = firstCatchAwaySchema.safeParse(await readJson(db, AWAY_KEY));
+  return parsed.success ? parsed.data : null;
+}
+
+/** "Not now": Today's reminder put away once more, today. */
+export async function putAwayFirstCatch(db: SqlDatabase, today: LocalDate): Promise<void> {
+  await writeJson(db, AWAY_KEY, putFirstCatchAway(await readFirstCatchAway(db), today));
+}
+
+/**
+ * The first payment a way that runs by itself ever caught (a bank alert, a Wallet tap, a
+ * forwarded email): a spend it made, or one caught another way that it saw too. Null while none
+ * has. One taken back since still counts: the way caught it.
+ */
+export async function firstSelfRunningCatch(store: MoneyStore): Promise<SpendRow | null> {
+  const marks = SELF_RUNNING_SOURCES.map(() => '?').join(', ');
+  const rows = await store.tables.spends.select(
+    `WHERE source IN (${marks})
+       OR id IN (SELECT spend_id FROM spend_sightings WHERE source IN (${marks}))
+     ORDER BY created_at LIMIT 1`,
+    [...SELF_RUNNING_SOURCES, ...SELF_RUNNING_SOURCES],
+  );
+  return rows[0] ?? null;
 }
 
 /**

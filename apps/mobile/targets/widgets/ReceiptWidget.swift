@@ -3,7 +3,8 @@ import WidgetKit
 
 /// Today's receipt (medium, `W:197-205`): today's catches printing as receipt lines on the close's
 /// paper, the unconfirmed ones faint, what is left at the foot, and the CLOSED stamp once the day
-/// is closed. Paper is the same in every look. Opens Today.
+/// is closed. Paper is the same in every look. Opens Today; Scan and Quick add, in the paper's
+/// ink, close the foot.
 struct ReceiptWidget: Widget {
   var body: some WidgetConfiguration {
     StaticConfiguration(kind: "Receipt", provider: SurfaceTimelineProvider()) { entry in
@@ -67,6 +68,11 @@ struct ReceiptView: View {
             .font(SurfaceFont.display(entry.displayFont, size: 20, weight: 500))
             .monospacedDigit()
             .contentTransition(.numericText())
+          // The rounds stand 3 pt proud of the total's line, so the foot keeps the paper's height
+          // for the lines above it.
+          WidgetActions(entry: entry, ink: ink, dark: false)
+            .padding(.vertical, -3)
+            .padding(.leading, 10)
         }
         .lineLimit(1)
         .padding(.top, 6)

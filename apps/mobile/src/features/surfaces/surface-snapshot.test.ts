@@ -1,6 +1,7 @@
 import { describe, expect, it } from '@jest/globals';
 
 import {
+  currencyOf,
   formatShort,
   futureYouPotRow,
   moneyFormat,
@@ -490,6 +491,29 @@ describe('the postcards', () => {
     expect(snap.look?.id).toBe('golden');
     expect(snap.look?.jar.icon).toBe(true);
     expect(snap.links?.today).toBe('/app?tab=today');
+  });
+
+  it('gives the medium and large widgets Scan and Quick add, Scan only where the phone scans', () => {
+    const dong = snapshotOf(money(today, spends), 'vi', { scan: true });
+    expect(dong.links?.scan).toBe('/app/scan');
+    expect(dong.links?.add).toBe('/app/quick-add');
+    expect(dong.strings['scan']).toBe('Quét QR');
+    expect(dong.strings['glyph.scan']).toBe(glyphOf('qr_code_scanner'));
+
+    const noCamera = snapshotOf(money(today, spends), 'en');
+    expect(noCamera.links?.scan).toBeUndefined();
+    expect(noCamera.links?.add).toBe('/app/quick-add');
+  });
+
+  it('turns Scan into a receipt’s scan outside đồng, where there is no VietQR to pay', () => {
+    const dollars = snapshotOf(money(today, spends), 'en', {
+      scan: true,
+      format: moneyFormat(moneyLocale(currencyOf('USD'), 'en')),
+    });
+    expect(dollars.links?.scan).toBe('/app/scan');
+    expect(dollars.strings['scan']).toBe('Scan a receipt');
+    expect(dollars.strings['glyph.scan']).toBe(glyphOf('document_scanner'));
+    expect(surfaceSnapshotSchema.safeParse(dollars).success).toBe(true);
   });
 });
 

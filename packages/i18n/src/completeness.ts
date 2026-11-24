@@ -35,6 +35,8 @@ export const sameInBothLanguages: readonly string[] = [
   // A card's head and kicker put two of its own phrases side by side.
   '{landed} {covered}',
   '{month} · {shop}',
+  // The habit card's headline: a place or a category and how often, written alike everywhere.
+  '{name} ×{count}.',
   // Vietnamese freelancers say "job" (the work year's "38 job, 9 khách").
   '{count} job',
   'Vietcombank',

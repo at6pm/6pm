@@ -28,6 +28,7 @@ export const koWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.home.largeWhat': '남은 돈과 오늘의 최근 지출.',
   'widgetsGuide.home.month': '나의 한 달',
   'widgetsGuide.home.monthWhat': '한 달을 해로: 마감한 모든 저녁과 한도 안이었던 횟수.',
+  'widgetsGuide.home.actions': '한 번 탭으로 기록하세요. 중형·대형 위젯에 스캔과 + 버튼이 있어요.',
   'widgetsGuide.home.step1': '홈 화면의 빈 곳을 앱이 흔들릴 때까지 길게 누르세요.',
   'widgetsGuide.home.step2': '위쪽 모서리의 편집을 탭한 다음 위젯 추가를 탭하세요.',
   'widgetsGuide.home.step3': '6pm을 검색하고 원하는 크기로 쓸어 넘긴 다음 위젯 추가를 탭하세요.',

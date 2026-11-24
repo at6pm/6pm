@@ -127,6 +127,9 @@ export const frOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.catch.title': 'Comment 6pm repère tes dépenses',
   'onboarding.catch.sub':
     'L’essentiel arrive tout seul, puis attend dans ta Boîte de réception pour une vérif d’une minute à {time}.',
+  'onboarding.catch.auto.title': 'Laisse tes paiements se noter tout seuls',
+  'onboarding.catch.auto.body':
+    'Quelques étapes pour configurer et vérifier, et ça vaut le coup. 6pm est le plus utile quand les paiements arrivent tout seuls. Donne-lui quelques jours et tu verras.',
   'onboarding.catch.readyNothing': 'Prêt, rien à configurer',
   'onboarding.catch.ready': 'Prêt',
   'onboarding.catch.seeHow': 'Voir comment',
@@ -224,6 +227,7 @@ export const frOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.line.aiServer': 'Des réponses malignes, signées Claude.',
   'onboarding.line.aiDevice': 'Tout reste chez toi. Rien ne sort.',
   'onboarding.line.catch': '{count} sur {total} marchent déjà.',
+  'onboarding.line.catchSetUp': 'Configures-en une. Je m’occupe du reste.',
   'onboarding.line.close': 'Rendez-vous à {time}.',
 
   'onboarding.category.food': 'Repas',

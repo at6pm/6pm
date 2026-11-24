@@ -42,8 +42,10 @@ export const viFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'firstCatch.fix.access': 'Xem quyền truy cập',
   'firstCatch.fix.share': 'Xem cách làm',
   'firstCatch.another': 'Thử cách khác',
-  'firstCatch.card.title': 'Biên lai đầu tiên sẽ nằm ở đây',
-  'firstCatch.card.action': 'Bắt thử một khoản',
+  'firstCatch.card.title': 'Để các khoản chi tự ghi',
+  'firstCatch.card.action': 'Cài đặt',
+  'firstCatch.card.check': 'Kiểm tra',
+  'firstCatch.card.notNow': 'Lúc khác',
   'companion.firstCatch.soft': 'Từ giờ khoản nào cũng về như vậy. Sáu giờ bạn chỉ cần gật đầu.',
   'companion.firstCatch.cheeky': 'Xong một khoản. Mấy khoản sau tự về. Sáu giờ gật đầu là được.',
   'companion.firstCatch.roast': 'Thấy chưa? Khỏi động tay. Sáu giờ gật đầu thôi, dễ mà.',
@@ -85,4 +87,14 @@ export const viFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'catch.reading.privateLooked': {
     other: 'Đọc trên máy, trừ {count} ảnh gửi một lần để xem kỹ hơn và không được giữ lại.',
   },
+
+  'testAlert.send': 'Gửi thử một thông báo',
+  'testAlert.sent': 'Đã gửi. Đang chờ nó về…',
+  'testAlert.works': 'Chạy rồi. Thông báo ngân hàng thật cũng sẽ về như vậy.',
+  'testAlert.nothing': 'Chưa thấy gì. Kiểm tra xem 6pm còn quyền truy cập thông báo không.',
+  'testAlert.blocked': '6pm chưa được phép gửi thông báo nên chưa gửi thử được.',
+  'testAlert.notice.title': '6pm · thông báo thử',
+  'testAlert.notice.body': 'Thử: đã thanh toán {amount}. Đây không phải giao dịch thật.',
+  'testAlert.channel': 'Thông báo thử',
+  'testAlert.slip.note': 'Chỉ là thử, không phải thanh toán. Không có gì được ghi thêm.',
 };

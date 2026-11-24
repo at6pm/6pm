@@ -75,3 +75,14 @@ export async function limitImportMaps(c: Context<AppEnv>): Promise<void> {
   });
   if (!success) throw tooMany();
 }
+
+/**
+ * Called by the funnel route before the body is read. A phone reports a few times a day, so one
+ * address gets a small allowance: enough for a household on one network, too little to move the
+ * counts by hand.
+ */
+export async function limitFunnelReports(c: Context<AppEnv>): Promise<void> {
+  const ip = c.req.header('CF-Connecting-IP') ?? 'unknown';
+  const { success } = await c.env.FUNNEL_RATE_LIMIT.limit({ key: `ip:${ip}` });
+  if (!success) throw tooMany();
+}

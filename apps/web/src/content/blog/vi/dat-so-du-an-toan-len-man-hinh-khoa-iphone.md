@@ -86,7 +86,7 @@ Không thấy? Vào **Cài đặt**, mở **6pm** và bật **Hoạt động tr�
 
 ## Miễn phí hay cần Max?
 
-Mọi tiện ích và điều khiển ở trên đều **miễn phí**, hiển thị theo giao diện Golden Hour. Với **6pm Max** (99.000₫/tháng hoặc 799.000₫/năm, dùng thử 7 ngày), widget được vẽ theo giao diện bạn chọn, ví dụ Sơn Mài hay Cà Phê. Con số thì như nhau.
+Mọi tiện ích và điều khiển ở trên đều **miễn phí**, hiển thị theo giao diện Golden Hour. Với **6pm Max** (49.000₫/tháng hoặc 299.000₫/năm, dùng thử 7 ngày), widget được vẽ theo giao diện bạn chọn, ví dụ Sơn Mài hay Cà Phê. Con số thì như nhau.
 
 ## Mẹo nhỏ để màn hình khoá giúp bạn thật sự
 

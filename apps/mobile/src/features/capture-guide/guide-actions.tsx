@@ -1,6 +1,7 @@
 import * as Clipboard from 'expo-clipboard';
 import { useRouter } from 'expo-router';
 import { Linking, Share, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import { useI18n } from '../../i18n/i18n';
 import { haptics } from '../../ui/haptics';
@@ -8,6 +9,8 @@ import { Symbol } from '../../ui/icons/symbol';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body } from '../../ui/type/fonts';
+import { proofRoom, TestAlertProof } from '../capture/test-alert-proof';
+import { useTestAlert, type TestAlert } from '../capture/use-test-alert';
 import { useCompanionToast } from '../companion/use-companion-toast';
 import { nativeReach } from '../surfaces/native-reach';
 import { openAlertAccess } from './alert-access';
@@ -26,6 +29,8 @@ interface GuideAction {
 /**
  * A guide's buttons, under its headline where the thumb and the eye already are: the first as a
  * full pill, any other as a quiet line under it, and a short reassurance beneath when there is one.
+ * Android's bank alerts add "Send a test alert" once Notification access is on, and what became of
+ * the test shows under the buttons.
  */
 export function GuideActions({
   source,
@@ -40,11 +45,13 @@ export function GuideActions({
 }) {
   const { palette } = useTheme();
   const colours = captureColours(palette);
-  const actions = useGuideActions(source, on, emailAddress);
+  const test = useTestAlert();
+  const actions = useGuideActions(source, on, emailAddress, test);
   const [first, ...rest] = actions;
   if (!first) return null;
+  const proven = source === 'alerts' && test.state.kind !== 'idle';
   return (
-    <View style={{ gap: 4 }}>
+    <Animated.View {...proofRoom} style={{ gap: 4 }}>
       <PressScale
         accessibilityRole="button"
         onPress={first.run}
@@ -70,8 +77,14 @@ export function GuideActions({
           <Text style={{ ...body(16, 600), color: palette.ink }}>{action.label}</Text>
         </PressScale>
       ))}
+      {proven ? (
+        <View style={{ paddingTop: 6, paddingBottom: 14 }}>
+          <TestAlertProof inks={palette} test={test} onCheckAccess={openAlertAccess} />
+        </View>
+      ) : null}
       {note ? (
-        <View
+        <Animated.View
+          {...proofRoom}
           style={{
             flexDirection: 'row',
             alignItems: 'center',
@@ -83,9 +96,9 @@ export function GuideActions({
         >
           <Symbol name="lock" size={15} color={palette.inkSoft} />
           <Text style={{ ...body(13), color: palette.inkSoft, flexShrink: 1 }}>{note}</Text>
-        </View>
+        </Animated.View>
       ) : null}
-    </View>
+    </Animated.View>
   );
 }
 
@@ -105,6 +118,7 @@ function useGuideActions(
   source: CaptureSource,
   on: boolean,
   emailAddress: string | null,
+  test: TestAlert,
 ): readonly GuideAction[] {
   const { t } = useI18n();
   const router = useRouter();
@@ -165,11 +179,22 @@ function useGuideActions(
     case 'alerts': {
       // Android: the one switch under Notification access, still offered once it is on.
       if (nativeReach.alertListener) {
+        const access: GuideAction = {
+          label: t(on ? 'capture.alerts.actionOpen' : 'capture.alerts.actionAdd'),
+          accent: !on,
+          run: openAlertAccess,
+        };
+        // Once access is on, a test alert shows it working before a real payment comes.
+        if (!on || !test.available) return [access];
         return [
+          access,
           {
-            label: t(on ? 'capture.alerts.actionOpen' : 'capture.alerts.actionAdd'),
-            accent: !on,
-            run: openAlertAccess,
+            label: t('testAlert.send'),
+            accent: false,
+            run: () => {
+              haptics.tap();
+              test.send();
+            },
           },
         ];
       }

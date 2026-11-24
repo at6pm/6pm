@@ -42,3 +42,44 @@ struct AppMark: View {
       .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
   }
 }
+
+/// Scan and Quick add on the medium and large widgets: two 30 pt rounds in the widget's own ink,
+/// the Today header's glass buttons drawn small. Scan is there only when the app gave it a link
+/// (a phone that scans); it scans a VietQR in đồng and a receipt elsewhere, as its glyph says.
+/// Neither carries an amount, so Hide amounts and the locked phone leave them as they are.
+struct WidgetActions: View {
+  let entry: SurfaceEntry
+  let ink: Color
+  /// The sky is dark and its ink light: the glass is stronger there, as the day's bar is.
+  let dark: Bool
+
+  static let size: CGFloat = 30
+
+  /// The app wrote at least one button for the widgets.
+  static func shown(_ entry: SurfaceEntry) -> Bool {
+    entry.snapshot?.links?.scan != nil || entry.snapshot?.links?.add != nil
+  }
+
+  var body: some View {
+    let links = entry.snapshot?.links
+    HStack(spacing: 6) {
+      if let scan = entry.link(links?.scan) {
+        round(glyph: entry.text("glyph.scan"), glyphSize: 16, label: entry.text("scan"), url: scan)
+      }
+      if let add = entry.link(links?.add) {
+        round(glyph: entry.text("glyph.add"), glyphSize: 19, label: entry.text("quickAdd"), url: add)
+      }
+    }
+  }
+
+  private func round(glyph: String, glyphSize: CGFloat, label: String, url: URL) -> some View {
+    Link(destination: url) {
+      Text(glyph)
+        .font(SurfaceFont.symbol(size: glyphSize))
+        .foregroundStyle(ink)
+        .frame(width: Self.size, height: Self.size)
+        .background(Circle().fill(ink.opacity(dark ? 0.22 : 0.14)))
+    }
+    .accessibilityLabel(Text(label))
+  }
+}

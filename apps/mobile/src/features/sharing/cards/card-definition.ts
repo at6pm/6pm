@@ -17,6 +17,10 @@ export interface CardLayoutProps<D> {
   readonly still?: boolean;
   /** Turns Show amounts on or off from the card itself (a tap on the amount that is shown). */
   readonly onAmounts?: (shown: boolean) => void;
+  /** The headline names its other choice (the habit card's shop or category). */
+  readonly alternate?: boolean;
+  /** A tap on the headline switches to the other choice; absent where there is none. */
+  readonly onAlternate?: () => void;
 }
 
 /**
@@ -44,6 +48,8 @@ export interface ShareCardDefinition<D> {
    * is never taken half drawn; none when it is there on its first frame.
    */
   readonly settleMs?: (data: D) => number;
+  /** Whether a tap on the headline names something else (the habit's shop or its category). */
+  readonly canAlternate?: (data: D) => boolean;
   /** The shared file's key (`6pm-card-<path>-<key>.png`). */
   readonly fileKey: (data: D) => string;
   readonly Layout: ComponentType<CardLayoutProps<D>>;

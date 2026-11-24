@@ -54,6 +54,7 @@ import { thWorkYear } from './work-year';
 import { thImport } from './import';
 import { thOwed } from './owed';
 import { thNotifications } from './notifications';
+import { thFunnel } from './funnel';
 import { thSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
@@ -118,6 +119,7 @@ export const th: Catalogue = {
   ...importSketchMomo,
   ...thSeason,
   ...thNotifications,
+  ...thFunnel,
 };
 
 /**

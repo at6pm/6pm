@@ -423,7 +423,7 @@ export function JarPage({
               />
               {jar.state === 'full' ? (
                 <View style={{ alignItems: 'center' }}>
-                  <ShareChip card="jar" of={jar.id} label={t('shareCards.chip')} />
+                  <ShareChip card="goal" of={jar.id} label={t('shareCards.chip')} />
                 </View>
               ) : null}
               <JarMoves

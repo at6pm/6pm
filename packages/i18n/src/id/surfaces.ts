@@ -4,6 +4,7 @@ import type { enSurfaces } from '../en-surfaces';
 // Widgets and the Live Activity are tiny: the shortest natural word wins.
 export const idSurfaces: { readonly [Key in keyof typeof enSurfaces]: Entry } = {
   'surfaces.scanQr': 'Pindai QR',
+  'surfaces.scanReceipt': 'Pindai struk',
   'surfaces.safeTodayShort': 'aman hari ini',
   'surfaces.today': 'Hari ini',
   'surfaces.left': 'sisa',

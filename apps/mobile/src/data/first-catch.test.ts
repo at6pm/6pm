@@ -6,7 +6,12 @@ import { openMemoryDb } from '../features/backup/test/memory-db';
 import {
   catchesSince,
   firstCaughtSince,
+  firstSelfRunningCatch,
+  keepFirstCatch,
+  keepFirstCatchLeft,
+  putAwayFirstCatch,
   readFirstCatch,
+  readFirstCatchAway,
   readMonthReading,
   startReadingCount,
   writeFirstCatch,
@@ -97,6 +102,78 @@ describe('first catch on the phone', () => {
     await run([shared({ id: crypto.randomUUID(), amount: 32_000, merchant: 'Circle K' })]);
     expect((await firstCaughtSince(store, since))?.merchant).toBe('Circle K');
     expect(await firstCaughtSince(store, new Date(Date.now() + 60_000).toISOString())).toBeNull();
+  });
+
+  it('finds no catch from a way that runs by itself among shared, scanned and typed spends', async () => {
+    await run([shared()]);
+    for (const source of ['qr', 'manual', 'voice'] as const) {
+      await actions.addSpend({
+        amount: 30_000,
+        categoryId: 'food',
+        merchant: 'Bánh mì',
+        source,
+        status: 'kept',
+      });
+    }
+    expect(await firstCaughtSince(store, '1970-01-01T00:00:00.000Z')).not.toBeNull();
+    expect(await firstSelfRunningCatch(store)).toBeNull();
+  });
+
+  it('finds the first bank alert, Wallet tap or email, even one taken back since', async () => {
+    await run([shared()]);
+    await run([shared({ id: crypto.randomUUID(), source: 'alert', amount: 12_000 })]);
+    const caught = await firstSelfRunningCatch(store);
+    expect(caught).toMatchObject({ source: 'alert', amount: 12_000 });
+    if (!caught) throw new Error('no catch');
+    await actions.update(caught.id, { status: 'deleted' });
+    expect((await firstSelfRunningCatch(store))?.id).toBe(caught.id);
+  });
+
+  it('counts a bank alert that joined a shared receipt as the way running', async () => {
+    await run([shared()]);
+    expect(await firstSelfRunningCatch(store)).toBeNull();
+    // The bank's alert for the same payment, a moment later: one spend, seen two ways.
+    await run([shared({ id: crypto.randomUUID(), source: 'alert', at: new Date().toISOString() })]);
+    expect(await store.tables.spends.all()).toHaveLength(1);
+    expect(await firstSelfRunningCatch(store)).toMatchObject({ source: 'shared' });
+  });
+
+  it('keeps a shared catch as onboarding’s own, and lets it change nothing afterwards', async () => {
+    const at = new Date().toISOString();
+    await keepFirstCatch(store.db, { source: 'shared', at, day: TODAY, ways: ['wallet'] });
+    expect(await readFirstCatch(store.db)).toEqual({
+      state: 'caught',
+      at,
+      source: 'shared',
+      day: TODAY,
+      ways: ['wallet'],
+    });
+    await keepFirstCatchLeft(store.db, { day: TODAY, at, ways: ['alerts'] });
+    const left = await readFirstCatch(store.db);
+    expect(left).toEqual({ state: 'later', day: TODAY, at, ways: ['wallet', 'alerts'] });
+    await keepFirstCatch(store.db, { source: 'qr', at, day: NEXT_MONTH });
+    expect(await readFirstCatch(store.db)).toEqual(left);
+  });
+
+  it('ends the reminder for good once a way that runs by itself catches something', async () => {
+    const at = new Date().toISOString();
+    await writeFirstCatch(store.db, { state: 'later', day: TODAY, at });
+    await keepFirstCatch(store.db, { source: 'applePay', at, day: NEXT_MONTH });
+    const ended = await readFirstCatch(store.db);
+    expect(ended).toMatchObject({ state: 'caught', source: 'applePay', day: TODAY });
+    await keepFirstCatchLeft(store.db, { day: NEXT_MONTH, at });
+    await keepFirstCatch(store.db, { source: 'shared', at, day: NEXT_MONTH });
+    expect(await readFirstCatch(store.db)).toEqual(ended);
+  });
+
+  it('counts each time Today’s reminder is put away, next to the first-catch state', async () => {
+    expect(await readFirstCatchAway(store.db)).toBeNull();
+    await putAwayFirstCatch(store.db, TODAY);
+    expect(await readFirstCatchAway(store.db)).toEqual({ times: 1, day: TODAY });
+    await putAwayFirstCatch(store.db, NEXT_MONTH);
+    expect(await readFirstCatchAway(store.db)).toEqual({ times: 2, day: NEXT_MONTH });
+    // The state itself is untouched by it.
+    expect(await readFirstCatch(store.db)).toBeNull();
   });
 
   it('lists every catch by the day it arrived', async () => {

@@ -187,7 +187,10 @@ data class PostcardInk(
   }
 }
 
-/** The snapshot's postcard parts beside its entries: the jars, the streak, the month, the look. */
+/**
+ * The snapshot's postcard parts beside its entries: the jars, the streak, the month, the look, and
+ * the links its taps and buttons open.
+ */
 data class Postcards(
   val jars: List<PostcardJar>,
   val streakCount: Int,
@@ -201,6 +204,10 @@ data class Postcards(
   val todayLink: String,
   val monthLink: String,
   val streakLink: String,
+  /** Scan, on a phone that scans; null from an app that wrote no buttons. */
+  val scanLink: String?,
+  /** Quick add; null from an app that wrote no buttons. */
+  val addLink: String?,
   val week: PostcardWeek?,
   val receipt: PostcardReceipt?,
 ) {
@@ -255,6 +262,8 @@ data class Postcards(
         todayLink = links?.optString("today") ?: "/app",
         monthLink = links?.optString("month") ?: "/app",
         streakLink = links?.optString("streak") ?: "/app",
+        scanLink = links?.optString("scan")?.takeIf { it.isNotEmpty() },
+        addLink = links?.optString("add")?.takeIf { it.isNotEmpty() },
         week = PostcardWeek.of(json.optJSONObject("week")),
         receipt = PostcardReceipt.of(json.optJSONObject("receipt")),
       )

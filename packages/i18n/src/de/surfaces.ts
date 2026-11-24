@@ -3,6 +3,7 @@ import type { enSurfaces } from '../en-surfaces';
 
 export const deSurfaces: { readonly [Key in keyof typeof enSurfaces]: Entry } = {
   'surfaces.scanQr': 'QR scannen',
+  'surfaces.scanReceipt': 'Beleg scannen',
   'surfaces.safeTodayShort': 'heute verfügbar',
   'surfaces.today': 'Heute',
   'surfaces.left': 'übrig',

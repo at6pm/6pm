@@ -1,6 +1,7 @@
 /** Widgets and the Live Activity: the words the app writes for them, in the app's language. */
 export const enSurfaces = {
   'surfaces.scanQr': 'Scan QR',
+  'surfaces.scanReceipt': 'Scan a receipt',
   'surfaces.safeTodayShort': 'safe today',
   'surfaces.today': 'Today',
   'surfaces.left': 'left',

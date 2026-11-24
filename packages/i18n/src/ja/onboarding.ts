@@ -117,6 +117,9 @@ export const jaOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.catch.title': '6pmが支出をキャッチするしくみ',
   'onboarding.catch.sub':
     'ほとんどは自動で届き、インボックスで待っています。{time}に1分でチェック。',
+  'onboarding.catch.auto.title': '支払いを自動で記録しよう',
+  'onboarding.catch.auto.body':
+    '設定と確認に少し手順がかかりますが、その価値はあります。6pmは、支払いが自動で届くときにいちばん役立ちます。数日使えば実感できます。',
   'onboarding.catch.readyNothing': '準備OK、設定は不要',
   'onboarding.catch.ready': '準備OK',
   'onboarding.catch.seeHow': '見てみる',
@@ -207,6 +210,7 @@ export const jaOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.line.aiServer': '賢い答えはClaudeから。',
   'onboarding.line.aiDevice': '全部この中だけ。外には出ないよ。',
   'onboarding.line.catch': '{total}個中{count}個、もう使えるよ。',
+  'onboarding.line.catchSetUp': 'ひとつ設定してね。あとは任せて。',
   'onboarding.line.close': '{time}にまたね。',
 
   'onboarding.category.food': '食事',

@@ -125,7 +125,7 @@ Có, nếu bạn bật: quét VietQR bằng 6pm, Apple Pay qua một automation 
 
 ### 6pm có miễn phí không?
 
-Phần chốt ngày, mọi cách ghi, Hôm nay, Kế hoạch và Nhật ký đều miễn phí. 6pm Max (99.000₫/tháng) thêm giao diện, Hỏi không giới hạn, chế độ du lịch, sao lưu và hơn thế.
+Phần chốt ngày, mọi cách ghi, Hôm nay, Kế hoạch và Nhật ký đều miễn phí. 6pm Max (49.000₫/tháng) thêm giao diện, Hỏi không giới hạn, chế độ du lịch, sao lưu và hơn thế.
 
 ## Thử 6pm
 

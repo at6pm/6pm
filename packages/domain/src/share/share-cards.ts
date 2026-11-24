@@ -1,4 +1,4 @@
-import { daysOfMonth, monthGrid, type ClosedDayTotal, type MonthKey } from '../diary/calendar';
+import { daysOfMonth, type ClosedDayTotal, type MonthKey } from '../diary/calendar';
 import type { ClosedRun } from '../diary/month-diary';
 import type { DiarySpend } from '../diary/week-recap';
 import { monthsOfYear, type YearKey } from '../diary/year-book';
@@ -34,77 +34,84 @@ export function runDays(run: ClosedRun): LocalDate[] {
   return Array.from({ length: run.days }, (_, i) => addDays(run.from, i));
 }
 
-/** How a day of the month card draws: a full sun inside the number, half-set over it, a ring. */
-export type MonthSun = 'under' | 'over' | 'missed' | 'ahead';
+/**
+ * The streak card offered after the close reveal: the milestone the evening being closed reaches
+ * (it counts as closed, since Done files it after the reveal), when it is one of 7, 30 and 100
+ * not offered before. Each milestone is offered once, ever.
+ */
+export function streakCardOffer(input: {
+  readonly closedDays: readonly LocalDate[];
+  readonly day: LocalDate;
+  readonly offered: readonly number[];
+}): StreakMilestone | null {
+  const run = closeRunTo([...input.closedDays, input.day], input.day);
+  const reached = run ? streakMilestoneOf(run.days) : null;
+  return reached !== null && !input.offered.includes(reached) ? reached : null;
+}
 
-export interface MonthCard {
-  readonly month: MonthKey;
-  /** Monday first: null before the 1st, then one per day of the month, ending on its last. */
-  readonly suns: readonly (MonthSun | null)[];
-  readonly closed: number;
-  /** Closed days at or under their line. */
-  readonly under: number;
+/** The visits a shop must reach in a month before the habit card names it. */
+export const HABIT_SHOP_VISITS = 5;
+
+/** One side of the habit card: a shop or a category, how often, and what it came to. */
+export interface HabitCount {
+  /** The shop's name as first written, or the category's id. */
+  readonly key: string;
+  readonly count: number;
   readonly spent: Vnd;
-  /** The three places visited most often on closed days (never ranked by spend). */
-  readonly places: readonly { readonly merchant: string; readonly visits: number }[];
+}
+
+export interface MonthHabit {
+  /** The shop visited most, when it leads alone and was visited more than once. */
+  readonly shop: HabitCount | null;
+  /** The category spent in most often. */
+  readonly category: HabitCount;
+  /** What the headline names first: the shop once it clearly leads the month, else the category. */
+  readonly lead: 'shop' | 'category';
+}
+
+function mostOften(
+  spends: readonly DiarySpend[],
+  keyOf: (s: DiarySpend) => string,
+): { first: HabitCount | null; second: number } {
+  const groups = new Map<string, { key: string; count: number; spent: Vnd }>();
+  for (const s of spends) {
+    const name = keyOf(s).trim();
+    if (name === '') continue;
+    const id = name.toLocaleLowerCase();
+    const group = groups.get(id) ?? { key: name, count: 0, spent: 0 };
+    group.count += 1;
+    group.spent += s.amount;
+    groups.set(id, group);
+  }
+  // By visits, never by spend; a tie goes to the name first in the alphabet, so it never flickers.
+  const ranked = [...groups.values()].sort(
+    (a, b) => b.count - a.count || a.key.localeCompare(b.key),
+  );
+  return { first: ranked[0] ?? null, second: ranked[1]?.count ?? 0 };
 }
 
 /**
- * My month: one sun per evening (inside the number, over it, missed, or still ahead in a month
- * under way), the days closed and inside, what was spent, and the places by visits.
+ * The habit card's month: the shop and the category visited most among the spends that counted.
+ * A shop leads the headline when it was visited at least `HABIT_SHOP_VISITS` times and more often
+ * than any other shop; otherwise the category does. Null when nothing counted.
  */
-export function monthCard(input: {
-  readonly month: MonthKey;
-  readonly today: LocalDate;
-  readonly closed: readonly ClosedDayTotal[];
-  readonly spends: readonly DiarySpend[];
-  readonly notDaily: ReadonlySet<string>;
-}): MonthCard {
-  const byDay = new Map(
-    input.closed.filter((d) => d.day.startsWith(`${input.month}-`)).map((d) => [d.day, d]),
-  );
-  const grid = monthGrid(input.month);
-  // The blanks after the last day are left off: the card's grid ends with the month.
-  while (grid.length > 0 && grid[grid.length - 1] === null) grid.pop();
-  const suns = grid.map((day): MonthSun | null => {
-    if (day === null) return null;
-    const row = byDay.get(day);
-    if (row) return row.spent <= row.line ? 'under' : 'over';
-    return day >= input.today ? 'ahead' : 'missed';
-  });
-  const rows = [...byDay.values()];
-  return {
-    month: input.month,
-    suns,
-    closed: rows.length,
-    under: rows.filter((d) => d.spent <= d.line).length,
-    spent: rows.reduce((sum, d) => sum + d.spent, 0),
-    places: placesByVisits(
-      input.spends.filter((s) => byDay.has(s.day)),
-      input.notDaily,
-    ),
-  };
-}
-
-/** Merchants by how often they were visited, most first, counted spends only. */
-export function placesByVisits(
+export function monthHabit(
   spends: readonly DiarySpend[],
   notDaily: ReadonlySet<string>,
-  limit = 3,
-): { merchant: string; visits: number }[] {
-  const groups = new Map<string, { merchant: string; visits: number }>();
-  for (const s of spends) {
-    if (!countsTowardDay(s, notDaily)) continue;
-    const name = s.merchant.trim();
-    if (name === '') continue;
-    const key = name.toLocaleLowerCase();
-    const group = groups.get(key) ?? { merchant: name, visits: 0 };
-    group.visits += 1;
-    groups.set(key, group);
-  }
-  return [...groups.values()]
-    .sort((a, b) => b.visits - a.visits || a.merchant.localeCompare(b.merchant))
-    .slice(0, limit);
+): MonthHabit | null {
+  const counted = spends.filter((s) => countsTowardDay(s, notDaily));
+  const category = mostOften(counted, (s) => s.category).first;
+  if (category === null) return null;
+  const shops = mostOften(counted, (s) => s.merchant);
+  const shop =
+    shops.first !== null && shops.first.count > 1 && shops.first.count > shops.second
+      ? shops.first
+      : null;
+  return {
+    shop,
+    category,
+    lead: shop !== null && shop.count >= HABIT_SHOP_VISITS ? 'shop' : 'category',
+  };
 }
 
 /** One month on the year card's receipt: a dot per day, lit when closed. */

@@ -140,7 +140,9 @@ export interface WidgetReceiptLine<T> {
 /**
  * Today's receipt as the medium widget prints it: today's spends, oldest first, the newest
  * `most` of them (skipped and deleted ones left out), how many were left off above, and the
- * receipt's number (the close receipt's: one more than the evenings closed before today).
+ * receipt's number (the close receipt's: one more than the evenings closed before today). When
+ * not all of them fit, "+N more" takes a line's place, so the receipt prints one line fewer and
+ * keeps its head on the paper.
  */
 export function todayReceipt<
   T extends { readonly day: LocalDate; readonly at: string; readonly status: string },
@@ -153,7 +155,8 @@ export function todayReceipt<
   const todays = input.spends
     .filter((s) => s.day === input.today && s.status !== 'skipped' && s.status !== 'deleted')
     .sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0));
-  const shown = todays.slice(-input.most);
+  const room = todays.length > input.most ? input.most - 1 : input.most;
+  const shown = room > 0 ? todays.slice(-room) : [];
   return {
     lines: shown.map((spend) => ({
       spend,
