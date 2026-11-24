@@ -8,7 +8,8 @@ function sender(status: number | 'down', calls: { url: string; init: RequestInit
   return createFunnelSend({
     baseUrl: 'https://six.test/api',
     fetch: (url, init) => {
-      calls.push({ url: String(url), init: init ?? {} });
+      const href = typeof url === 'string' ? url : url instanceof URL ? url.href : url.url;
+      calls.push({ url: href, init: init ?? {} });
       return status === 'down'
         ? Promise.reject(new Error('offline'))
         : Promise.resolve(new Response('{}', { status }));
@@ -26,7 +27,7 @@ describe('sending funnel counts', () => {
     const [call] = calls;
     expect(call?.url).toBe('https://six.test/api/v1/funnel');
     expect(Object.keys(call?.init.headers ?? {}).sort()).toEqual(['Accept', 'Content-Type']);
-    const body: unknown = JSON.parse(String(call?.init.body));
+    const body: unknown = JSON.parse(typeof call?.init.body === 'string' ? call.init.body : '');
     expect(funnelReportSchema.parse(body)).toEqual({
       platform: 'ios',
       version: '2.2.2',
