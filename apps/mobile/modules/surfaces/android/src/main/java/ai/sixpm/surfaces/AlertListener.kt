@@ -21,14 +21,22 @@ import java.util.concurrent.Executors
  * the app to save on its next open and said in a quiet notification; a code, a failed payment, a
  * promotion or a balance notice leaves nothing. Either way the last alert read is noted for
  * Settings.
+ *
+ * Of 6pm's own notifications it reads one: the test alert the person sends to themselves
+ * (`TestAlert`), known by the channel it was posted on, which takes the same road into the inbox
+ * and is never money.
  */
 class AlertListener : NotificationListenerService() {
   override fun onNotificationPosted(sbn: StatusBarNotification) {
     val app = sbn.packageName
-    if (app == packageName) return
+    val context = applicationContext
+    if (app == packageName) {
+      // 6pm's own notifications are let go too, all but the test alert.
+      if (TestAlert.tokenOf(app, sbn) != null) reader.execute { handleTest(context, sbn) }
+      return
+    }
     // Every other app's notification is let go before anything in it is looked at.
     if (watched?.contains(app) == false) return
-    val context = applicationContext
     reader.execute { handle(context, sbn) }
   }
 
@@ -59,7 +67,11 @@ class AlertListener : NotificationListenerService() {
     val since = System.currentTimeMillis() - CATCH_UP_MS
     for (sbn in waiting.sortedBy { it.postTime }) {
       val app = sbn.packageName
-      if (app == packageName || sbn.postTime < since) continue
+      if (sbn.postTime < since) continue
+      if (app == packageName) {
+        if (TestAlert.tokenOf(app, sbn) != null) reader.execute { handleTest(context, sbn) }
+        continue
+      }
       if (watched?.contains(app) == false) continue
       reader.execute { handle(context, sbn) }
     }
@@ -141,6 +153,25 @@ class AlertListener : NotificationListenerService() {
       if (key in seen(context)) return
       // Remembered only once the reader has answered, so one it could not read is tried again.
       if (read(context, sbn.packageName, title, subtitle, body, sbn.postTime)) remember(context, key)
+    }
+
+    /**
+     * The test alert, read as a bank alert is: by the domain bundle, which leaves its item in the
+     * inbox for the app. Nothing else a real alert does follows: no caught notification, no first
+     * catch said, no last alert noted for Settings, and the way is not marked as having run,
+     * since a test is not a payment the way caught.
+     */
+    private fun handleTest(context: Context, sbn: StatusBarNotification) {
+      val token = TestAlert.tokenOf(context.packageName, sbn) ?: return
+      val key = "${sbn.key}@${sbn.postTime}"
+      if (key in seen(context)) return
+      val args = JSONArray().put(token).put(Instants.iso(System.currentTimeMillis()))
+      val answer = DomainSandbox.call(context, "logTestAlert", args) ?: return
+      val item = runCatching { JSONObject(answer).optJSONObject("item") }.getOrNull() ?: return
+      val id = item.optString("id")
+      if (id.isEmpty()) return
+      SurfaceFiles.writeInbox(context, id, item.toString())
+      remember(context, key)
     }
 
     /**

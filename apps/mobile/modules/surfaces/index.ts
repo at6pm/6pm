@@ -46,6 +46,16 @@ interface SurfacesNative {
   alertAccess?(): boolean;
   /** Android: opens Notification access at 6pm's switch. */
   openAlertAccess?(): Promise<void>;
+  /**
+   * Android: posts the test alert the person sends to themselves, in the app's words, for the
+   * listener to read as it reads a bank's. `off` when 6pm may not post notifications.
+   */
+  postTestAlert?(
+    token: string,
+    title: string,
+    body: string,
+    channel: string,
+  ): Promise<'posted' | 'off'>;
   /** Android: whether the launcher can pin a widget from inside the app. */
   canPinWidgets?(): boolean;
   /** Android: shows the launcher's sheet to add a widget; false when it would not. */

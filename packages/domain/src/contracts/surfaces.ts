@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { DECIMAL_PATTERN } from '../travel/fx';
 import { heardWordsSchema, inboxHeardSchema, inboxUnreadSchema } from './heard';
 import { MEMO_MAX } from './local-rows';
+import { inboxTestSchema } from './test-alert';
 
 /**
  * What the app and its extensions hand each other through the App Group. Extensions never open the
@@ -143,6 +144,7 @@ export const inboxItemSchema = z.discriminatedUnion('kind', [
   inboxKeptSchema,
   inboxHeardSchema,
   inboxUnreadSchema,
+  inboxTestSchema,
 ]);
 export type InboxItem = z.infer<typeof inboxItemSchema>;
 

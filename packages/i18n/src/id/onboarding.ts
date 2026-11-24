@@ -119,6 +119,9 @@ export const idOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.catch.title': 'Cara 6pm menangkap pengeluaran',
   'onboarding.catch.sub':
     'Sebagian besar masuk sendiri, lalu menunggu di Kotak masuk untuk dicek semenit jam {time}.',
+  'onboarding.catch.auto.title': 'Biarkan pembayaranmu tercatat sendiri',
+  'onboarding.catch.auto.body':
+    'Perlu beberapa langkah untuk mengatur dan mengeceknya. Tapi sepadan: 6pm paling berguna saat pembayaran masuk sendiri. Coba beberapa hari, nanti terasa.',
   'onboarding.catch.readyNothing': 'Siap, tidak perlu diatur',
   'onboarding.catch.ready': 'Siap',
   'onboarding.catch.seeHow': 'Lihat caranya',
@@ -211,6 +214,7 @@ export const idOnboarding: { readonly [Key in keyof typeof enOnboarding]: Entry 
   'onboarding.line.aiServer': 'Jawaban cerdas, dari Claude.',
   'onboarding.line.aiDevice': 'Semua milikmu. Tak ada yang keluar.',
   'onboarding.line.catch': '{count} dari {total} sudah jalan.',
+  'onboarding.line.catchSetUp': 'Atur satu saja. Sisanya biar aku.',
   'onboarding.line.close': 'Sampai jumpa jam {time}.',
 
   'onboarding.category.food': 'Makan',

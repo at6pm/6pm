@@ -1,6 +1,6 @@
 import { FirstCatchScreen } from '../features/today/first-catch-screen';
 
-/** Today's "Catch one": the wait for a first catch, picked up after "later". */
+/** From Today's reminder: the wait for a first catch, picked up after the catching step. */
 export default function FirstCatch() {
   return <FirstCatchScreen />;
 }

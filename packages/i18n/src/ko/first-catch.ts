@@ -41,8 +41,10 @@ export const koFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'firstCatch.fix.access': '권한 확인',
   'firstCatch.fix.share': '방법 보기',
   'firstCatch.another': '다른 방법 시도',
-  'firstCatch.card.title': '첫 영수증이 여기 들어와요',
-  'firstCatch.card.action': '하나 잡기',
+  'firstCatch.card.title': '결제가 알아서 기록되게 하세요',
+  'firstCatch.card.action': '설정하기',
+  'firstCatch.card.check': '확인하기',
+  'firstCatch.card.notNow': '나중에',
   'companion.firstCatch.soft': '앞으로 다 이렇게 들어와요. 6시에 네라고만 하면 돼요.',
   'companion.firstCatch.cheeky': '하나 끝. 나머지는 알아서 와요. 6시에 고개만 끄덕이면 돼요.',
   'companion.firstCatch.roast': '봤죠? 노력 제로. 6시에 네라고만 해요. 당신도 할 수 있어요.',
@@ -84,4 +86,14 @@ export const koFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'catch.reading.privateLooked': {
     other: '여기서 읽었어요. 단, 사진 {count}장은 한 번 더 자세히 보려고 보냈고 보관하지 않았어요.',
   },
+
+  'testAlert.send': '알림 테스트하기',
+  'testAlert.sent': '보냈어요. 도착하는지 보고 있어요…',
+  'testAlert.works': '잘 돼요. 실제 은행 알림도 똑같이 도착해요.',
+  'testAlert.nothing': '아무것도 안 왔어요. 6pm에 알림 접근 권한이 있는지 확인하세요.',
+  'testAlert.blocked': '6pm에 알림을 보낼 권한이 없어서 테스트를 보낼 수 없어요.',
+  'testAlert.notice.title': '6pm · 테스트 알림',
+  'testAlert.notice.body': '테스트: {amount} 결제. 실제 결제가 아니에요.',
+  'testAlert.channel': '테스트 알림',
+  'testAlert.slip.note': '테스트일 뿐, 결제가 아니에요. 아무것도 기록하지 않았어요.',
 };

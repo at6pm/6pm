@@ -27,6 +27,7 @@ import {
   type CatchWay,
   type ListenWay,
   type SelfCatchingWay,
+  type SelfRunning,
   type WalkedWay,
 } from './catch-ways';
 import { usePhoneColumn } from '../../ui/layout/phone-column';
@@ -42,16 +43,23 @@ const SIDE = 20;
 
 /**
  * How 6pm catches spending: a tab per way above swipeable cards, each card a small live picture,
- * a line on what it does, and whether it works already. The two that need a minute outside 6pm
- * (the Wallet automation, mail forwarding) and sharing open their drawn walkthrough in a sheet;
- * Android's bank alerts open its Notification access switch. Once a way is set up the step waits,
- * live, for its first catch (`FirstCatchListen`), which takes the whole step over.
+ * a line on what it does, and whether it works already. The ways that need a minute outside 6pm
+ * (the Wallet and bank alert automations, mail forwarding) and sharing open their drawn
+ * walkthrough in a sheet; Android's bank alerts open its Notification access switch. Once a way is
+ * set up the step waits, live, for its first catch (`FirstCatchListen`), which takes the whole
+ * step over.
+ *
+ * Where the phone has a way that runs by itself, the heading asks for it ("Let your payments log
+ * themselves", and why the set-up is worth its few steps) and bank alerts are the first card.
+ * Nothing here blocks: the header's Skip moves on in one tap, and Continue starts the wait, whose
+ * quiet "Skip for now" always moves on too.
  */
 export function StepCatching({
   pal,
   date,
   closeAt,
   safe,
+  selfRunning,
   listening,
   listen,
   listenWays,
@@ -70,6 +78,8 @@ export function StepCatching({
   readonly closeAt: string;
   /** The user's own first number, short ("245k"), for the Lock Screen picture. */
   readonly safe: string;
+  /** Where the ways that run by themselves stand: with one on this phone, the heading asks for it. */
+  readonly selfRunning: SelfRunning;
   /** Waiting for the first catch: the step shows that instead of the ways. */
   readonly listening: boolean;
   readonly listen: Listen;
@@ -242,11 +252,19 @@ export function StepCatching({
       showsVerticalScrollIndicator={false}
       alwaysBounceVertical={false}
     >
-      <StepHeading
-        title={t('onboarding.catch.title')}
-        sub={t('onboarding.catch.sub', { time: closeAt })}
-        pal={pal}
-      />
+      {selfRunning === 'none' ? (
+        <StepHeading
+          title={t('onboarding.catch.title')}
+          sub={t('onboarding.catch.sub', { time: closeAt })}
+          pal={pal}
+        />
+      ) : (
+        <StepHeading
+          title={t('onboarding.catch.auto.title')}
+          sub={t('onboarding.catch.auto.body')}
+          pal={pal}
+        />
+      )}
       <CatchRail pal={pal} x={x} page={PAGE} selected={selected} onPick={pick} ways={ways} />
       <Animated.ScrollView
         ref={cards}

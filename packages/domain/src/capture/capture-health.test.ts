@@ -3,11 +3,19 @@ import { describe, expect, it } from 'vitest';
 import { addDays } from '../time/local-date';
 import {
   captureAccuracy,
-  firstCatchCardDue,
+  firstCatchEnded,
+  firstCatchReminder,
+  firstCatchStateSchema,
   foldCaptureFix,
+  foldFirstCatch,
   heartbeat,
   isCaughtSource,
+  isSelfRunningSource,
+  leaveFirstCatch,
+  putFirstCatchAway,
   wayQuiet,
+  type FirstCatchAway,
+  type FirstCatchState,
 } from './capture-health';
 
 const today = '2026-10-10';
@@ -57,16 +65,127 @@ describe('wayQuiet', () => {
   });
 });
 
-describe('firstCatchCardDue', () => {
-  it('shows from the morning after "later", until a catch', () => {
-    const later = { state: 'later', day: today, at: `${today}T11:00:00.000Z` } as const;
-    expect(firstCatchCardDue(later, today)).toBe(false);
-    expect(firstCatchCardDue(later, addDays(today, 1))).toBe(true);
-    expect(firstCatchCardDue({ state: 'caught', at: '' }, addDays(today, 1))).toBe(false);
+describe('firstCatchReminder', () => {
+  const tomorrow = addDays(today, 1);
+  const at = `${today}T12:00:00`;
+  const later: FirstCatchState = { state: 'later', day: today, at };
+  const due = (state: FirstCatchState | null, on = tomorrow) =>
+    firstCatchReminder({ state, today: on, setUp: false });
+
+  it('shows from the morning after the catching step was skipped', () => {
+    expect(due(later, today)).toBeNull();
+    expect(due(later)).toBe('notSetUp');
+    expect(due(later, addDays(today, 40))).toBe('notSetUp');
   });
 
-  it('never shows for someone who did not choose later', () => {
-    expect(firstCatchCardDue(null, addDays(today, 3))).toBe(false);
+  it('goes on after a shared receipt or a scanned code was caught', () => {
+    for (const source of ['shared', 'qr'] as const) {
+      const state = foldFirstCatch(null, { source, at, day: today });
+      expect(state).toMatchObject({ state: 'caught', source, day: today });
+      expect(due(state, today)).toBeNull();
+      expect(due(state)).toBe('notSetUp');
+    }
+  });
+
+  it('ends for good the first time a way that runs by itself catches something', () => {
+    for (const source of ['alert', 'applePay', 'email'] as const) {
+      const state = foldFirstCatch(later, { source, at, day: tomorrow });
+      expect(firstCatchEnded(state)).toBe(true);
+      expect(due(state, addDays(today, 30))).toBeNull();
+      // Nothing afterwards brings it back: a later share, or leaving the step again.
+      expect(foldFirstCatch(state, { source: 'shared', at, day: tomorrow })).toBe(state);
+      expect(leaveFirstCatch(state, { day: tomorrow, at })).toBe(state);
+    }
+  });
+
+  it('never counts a typed or a spoken spend', () => {
+    expect(isSelfRunningSource('manual')).toBe(false);
+    expect(isSelfRunningSource('voice')).toBe(false);
+    expect(isSelfRunningSource('cash')).toBe(false);
+    expect(isSelfRunningSource('shared')).toBe(false);
+    expect(isSelfRunningSource('qr')).toBe(false);
+  });
+
+  it('says it is waiting once a way that runs by itself is set up', () => {
+    expect(firstCatchReminder({ state: later, today: tomorrow, setUp: true })).toBe('waiting');
+    expect(firstCatchReminder({ state: later, today, setUp: true })).toBeNull();
+  });
+
+  it('keeps the day the reminder began when a share lands after onboarding', () => {
+    const after = foldFirstCatch(later, { source: 'shared', at, day: addDays(today, 5) });
+    expect(after).toMatchObject({ state: 'later', day: today });
+    expect(due(after)).toBe('notSetUp');
+    // A way that runs by itself landing later keeps that day too.
+    const ended = foldFirstCatch(later, { source: 'alert', at, day: addDays(today, 5) });
+    expect(ended).toMatchObject({ state: 'caught', source: 'alert', day: today });
+  });
+
+  it('keeps the ways walked through every change', () => {
+    const walked = leaveFirstCatch(null, { day: today, at, ways: ['wallet'] });
+    expect(walked.ways).toEqual(['wallet']);
+    const shared = foldFirstCatch(walked, { source: 'shared', at, day: today, ways: ['alerts'] });
+    expect(shared.ways).toEqual(['wallet', 'alerts']);
+    expect(leaveFirstCatch(shared, { day: tomorrow, at, ways: ['wallet'] })).toEqual({
+      state: 'later',
+      day: tomorrow,
+      at,
+      ways: ['wallet', 'alerts'],
+    });
+  });
+
+  describe('a state kept before sources were told apart', () => {
+    const old = firstCatchStateSchema.parse({ state: 'caught', at });
+
+    it('starts the reminder for a catch that was a share or a scan', () => {
+      expect(firstCatchEnded(old)).toBe(false);
+      expect(due(old, today)).toBeNull();
+      expect(due(old)).toBe('notSetUp');
+    });
+
+    it('never shows once the spends say a way that runs by itself caught something', () => {
+      const found = foldFirstCatch(old, { source: 'alert', at, day: today });
+      expect(firstCatchEnded(found)).toBe(true);
+      expect(due(found)).toBeNull();
+    });
+
+    it('still reads "later" with its ways, and shows at once with no day to go by', () => {
+      const kept = firstCatchStateSchema.parse({ ...later, ways: ['wallet'] });
+      expect(due(kept)).toBe('notSetUp');
+      expect(due({ state: 'caught', at: '' }, today)).toBe('notSetUp');
+    });
+  });
+
+  describe('a phone that kept no state', () => {
+    it('shows from the morning after 6pm was set up', () => {
+      const from = (started: string | null, on: string) =>
+        firstCatchReminder({ state: null, today: on, started, setUp: false });
+      expect(from(today, today)).toBeNull();
+      expect(from(today, tomorrow)).toBe('notSetUp');
+      expect(from(null, today)).toBe('notSetUp');
+    });
+  });
+
+  describe('put away with "Not now"', () => {
+    const on = (away: FirstCatchAway | null, day: string) =>
+      firstCatchReminder({ state: later, today: day, setUp: false, away });
+
+    it('stays away for seven days, then comes back', () => {
+      const away = putFirstCatchAway(null, tomorrow);
+      expect(away).toEqual({ times: 1, day: tomorrow });
+      expect(on(away, tomorrow)).toBeNull();
+      expect(on(away, addDays(tomorrow, 6))).toBeNull();
+      expect(on(away, addDays(tomorrow, 7))).toBe('notSetUp');
+    });
+
+    it('stays away for good once put away three times', () => {
+      const second = putFirstCatchAway(putFirstCatchAway(null, tomorrow), addDays(tomorrow, 7));
+      expect(second.times).toBe(2);
+      expect(on(second, addDays(tomorrow, 14))).toBe('notSetUp');
+      const third = putFirstCatchAway(second, addDays(tomorrow, 14));
+      expect(third).toEqual({ times: 3, day: addDays(tomorrow, 14) });
+      expect(on(third, addDays(tomorrow, 21))).toBeNull();
+      expect(on(third, addDays(tomorrow, 400))).toBeNull();
+    });
   });
 });
 
