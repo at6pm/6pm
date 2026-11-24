@@ -245,6 +245,22 @@ export function CardMark({
 }
 
 /**
+ * The small mark the hero cards carry instead of the QR: 6pm and at6pm.app, at the card's foot.
+ */
+export function CardSign({ inks }: { readonly inks: ShareInks }) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 7 }}>
+      <Text {...ON_CARD} style={{ ...display(14, 700), color: inks.ink, ...glowStyle(inks.glow) }}>
+        6pm
+      </Text>
+      <Text {...ON_CARD} style={{ ...kicker(inks, 9, 0.14), color: inks.soft }}>
+        AT6PM.APP
+      </Text>
+    </View>
+  );
+}
+
+/**
  * The companion and its line in a bubble of the card's ink, as the month card's foot. Never in
  * serious mode.
  */

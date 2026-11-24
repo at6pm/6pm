@@ -5,7 +5,6 @@
  */
 export const enShareCards = {
   'shareCards.chip': 'Share',
-  'shareCards.chipPostcard': 'Share the postcard',
   'shareCards.chipSplit': 'Share your split',
   'shareCards.sheetTitle': 'Share',
   'shareCards.story': 'Story',
@@ -14,25 +13,6 @@ export const enShareCards = {
   'shareCards.hiddenSub': 'Hidden: only shares and counts',
   'shareCards.shownSub': 'Shown: every amount on the card',
   'shareCards.shareImage': 'Share image',
-  'shareCards.month.kicker': '{month} · closed at six',
-  'shareCards.month.title': {
-    one: '{count} sunset, {under} inside the line.',
-    other: '{count} sunsets, {under} inside the line.',
-  },
-  'shareCards.month.inside': 'inside',
-  'shareCards.month.over': 'over',
-  'shareCards.month.missed': 'missed',
-  'shareCards.month.spent': 'Spent',
-  'shareCards.streak.kicker': 'Close streak',
-  'shareCards.streak.evenings': { one: 'Evening', other: 'Evenings' },
-  'shareCards.streak.inARow': { other: 'in a row' },
-  'shareCards.streak.line7': 'A week of sixes.',
-  'shareCards.streak.line30': 'A month without missing an evening.',
-  'shareCards.streak.line100': 'A hundred sunsets, every one counted.',
-  'shareCards.streak.lineOther': {
-    one: '{count} evening, closed.',
-    other: '{count} evenings, every one closed.',
-  },
   'shareCards.streak.reveal': {
     one: '{count} evening in a row',
     other: '{count} evenings in a row',
@@ -53,7 +33,14 @@ export const enShareCards = {
   'shareCards.year.today': 'Your {year}',
   'shareCards.year.todaySub': 'evenings closed this year',
   'shareCards.year.todayTap': 'Tap for the whole year',
-  'shareCards.jar.kicker': 'Jar full · {month}',
-  'shareCards.jar.title': '{jar}: full.',
-  'shareCards.jar.target': 'Target',
+  'shareCards.goal.kicker': 'Saved up · {month}',
+  'shareCards.goal.title': '{jar}: {amount} saved',
+  'shareCards.habit.kicker': 'My {month}',
+  'shareCards.habit.title': '{name} ×{count}.',
+  'shareCards.habit.spent': '{amount} in all',
+  'shareCards.habit.switchHint': 'Tap the headline to switch between the place and the category',
+  'shareCards.streak.title': {
+    one: '{count} evening, books closed.',
+    other: '{count} evenings in a row, books closed.',
+  },
 } as const;

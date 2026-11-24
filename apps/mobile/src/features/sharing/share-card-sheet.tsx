@@ -23,6 +23,7 @@ import { useTheme } from '../../ui/theme/theme';
 import { body } from '../../ui/type/fonts';
 import { SheetHeader } from '../plan/pot-rows';
 import { AMOUNTS_SETTLE_MS } from './cards/card-parts';
+import { HEADLINE_SETTLE_MS } from './cards/hero-card';
 import type { ShareCardDefinition } from './cards/card-definition';
 import { CARD_WIDTH, cardHeight, cardPixels, type CardFormat } from './cards/card-size';
 import { cardRegistry, isCardId } from './cards/registry';
@@ -53,6 +54,7 @@ export function ShareCardSheet() {
     of?: string;
     format?: string;
     amounts?: string;
+    alt?: string;
     dump?: string;
   }>();
   if (!isCardId(params.card)) return null;
@@ -62,6 +64,7 @@ export function ShareCardSheet() {
         format: params.format === 'feed' ? 'feed' : 'story',
         // Unset, the card's own default (the thank-you shows its amount).
         amounts: params.amounts === undefined ? null : params.amounts === '1',
+        alternate: params.alt === '1',
         dump: params.dump && /^[\w.-]+\.png$/.test(params.dump) ? params.dump : null,
       }
     : null;
@@ -71,6 +74,8 @@ export function ShareCardSheet() {
 interface DevSetup {
   readonly format: CardFormat;
   readonly amounts: boolean | null;
+  /** The habit card's headline names its other choice. */
+  readonly alternate: boolean;
   readonly dump: string | null;
 }
 
@@ -89,6 +94,7 @@ function CardSheet({
   const [format, setFormat] = useState<CardFormat>(dev?.format ?? 'story');
   const [leaving, setLeaving] = useState<CardFormat | null>(null);
   const [amounts, setAmounts] = useState(dev?.amounts ?? def.amountsShown === true);
+  const [alternate, setAlternate] = useState(dev?.alternate ?? false);
   const settledAt = useRef(0);
   const card = useRef<ComponentRef<typeof View>>(null);
   const { share } = useShareImage();
@@ -141,6 +147,14 @@ function CardSheet({
     settledAt.current = Math.max(settledAt.current, Date.now() + AMOUNTS_SETTLE_MS);
   };
 
+  // A tap on the headline names the other choice; the image waits for it to fade in.
+  const canAlternate = data !== null && def.canAlternate?.(data) === true;
+  const switchHeadline = () => {
+    haptics.tick();
+    setAlternate((on) => !on);
+    settledAt.current = Math.max(settledAt.current, Date.now() + HEADLINE_SETTLE_MS);
+  };
+
   const shareCard = () => {
     if (!data) return;
     const size = cardPixels(format);
@@ -177,6 +191,8 @@ function CardSheet({
               haptics.tick();
               toggleAmounts(on);
             }}
+            alternate={alternate}
+            {...(canAlternate && capture ? { onAlternate: switchHeadline } : {})}
           />
         </View>
       </View>
@@ -251,6 +267,20 @@ function CardSheet({
             </PressScale>
           ))}
         </View>
+
+        {canAlternate ? (
+          <Text
+            style={{
+              ...body(12.5),
+              color: palette.inkSoft,
+              textAlign: 'center',
+              marginTop: -4,
+              paddingHorizontal: 8,
+            }}
+          >
+            {t('shareCards.habit.switchHint')}
+          </Text>
+        ) : null}
 
         {data && def.hasAmounts(data) ? (
           <View

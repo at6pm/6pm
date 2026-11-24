@@ -4,10 +4,10 @@ import type { DiarySpend } from '../diary/week-recap';
 import {
   biggestFullJar,
   closeRunTo,
-  monthCard,
-  placesByVisits,
+  monthHabit,
   runDays,
   setAsideInYear,
+  streakCardOffer,
   streakMilestoneOf,
   yearCard,
   yearCardYear,
@@ -61,65 +61,119 @@ describe('close streak', () => {
   });
 });
 
-describe('monthCard', () => {
-  it('draws a sun per day, Monday first, ending with the month', () => {
-    const card = monthCard({
-      month: '2026-10',
-      today: '2026-10-20',
-      closed: [
-        { day: '2026-10-01', spent: 100_000, line: 200_000 },
-        { day: '2026-10-02', spent: 300_000, line: 200_000 },
-        { day: '2026-10-19', spent: 0, line: 200_000 },
-        { day: '2026-09-30', spent: 0, line: 200_000 },
-      ],
-      spends: [],
-      notDaily: new Set(),
-    });
-    // 1 Oct 2026 is a Thursday: three blanks first.
-    expect(card.suns.slice(0, 5)).toEqual([null, null, null, 'under', 'over']);
-    expect(card.suns).toHaveLength(3 + 31);
-    expect(card.suns[3 + 2]).toBe('missed');
-    expect(card.suns[3 + 18]).toBe('under');
-    expect(card.suns[3 + 19]).toBe('ahead');
-    expect(card.closed).toBe(3);
-    expect(card.under).toBe(2);
-    expect(card.spent).toBe(400_000);
-  });
+describe('streakCardOffer', () => {
+  const run = (to: string, days: number) =>
+    Array.from({ length: days }, (_, i) =>
+      new Date(Date.parse(`${to}T00:00:00Z`) - i * 86_400_000).toISOString().slice(0, 10),
+    );
 
-  it('ranks places by visits on closed days only, never by spend', () => {
-    const card = monthCard({
-      month: '2026-10',
-      today: '2026-10-31',
-      closed: [
-        { day: '2026-10-01', spent: 0, line: 1 },
-        { day: '2026-10-02', spent: 0, line: 1 },
-      ],
-      spends: [
-        spend('2026-10-01', 'Highlands Coffee', 45_000),
-        spend('2026-10-02', 'highlands coffee ', 45_000),
-        spend('2026-10-01', 'Grab', 900_000),
-        spend('2026-10-03', 'Highlands Coffee'),
-        spend('2026-10-03', 'Circle K'),
-      ],
-      notDaily: new Set(),
-    });
-    expect(card.places).toEqual([
-      { merchant: 'Highlands Coffee', visits: 2 },
-      { merchant: 'Grab', visits: 1 },
-    ]);
-  });
-
-  it('leaves out spends that never counted', () => {
+  it('offers the milestone the evening being closed reaches, counting that evening', () => {
+    // Six evenings closed before tonight: tonight makes seven.
     expect(
-      placesByVisits(
-        [
-          { ...spend('2026-10-01', 'A'), status: 'skipped' },
-          { ...spend('2026-10-01', 'B'), direction: 'in' },
-          spend('2026-10-01', 'C'),
-        ],
-        new Set(),
-      ),
-    ).toEqual([{ merchant: 'C', visits: 1 }]);
+      streakCardOffer({ closedDays: run('2026-11-23', 6), day: '2026-11-24', offered: [] }),
+    ).toBe(7);
+    expect(
+      streakCardOffer({ closedDays: run('2026-11-23', 29), day: '2026-11-24', offered: [7] }),
+    ).toBe(30);
+    expect(
+      streakCardOffer({ closedDays: run('2026-11-23', 99), day: '2026-11-24', offered: [7, 30] }),
+    ).toBe(100);
+  });
+
+  it('offers each milestone once, ever', () => {
+    expect(
+      streakCardOffer({ closedDays: run('2026-11-23', 6), day: '2026-11-24', offered: [7] }),
+    ).toBeNull();
+  });
+
+  it('offers nothing between milestones or past the last', () => {
+    for (const before of [5, 7, 13, 28, 30, 98, 100, 199]) {
+      expect(
+        streakCardOffer({ closedDays: run('2026-11-23', before), day: '2026-11-24', offered: [] }),
+      ).toBeNull();
+    }
+  });
+
+  it('counts only evenings back to back: a gap starts the run again', () => {
+    const broken = [...run('2026-11-23', 3), ...run('2026-11-19', 10)];
+    expect(streakCardOffer({ closedDays: broken, day: '2026-11-24', offered: [] })).toBeNull();
+    expect(
+      streakCardOffer({ closedDays: run('2026-11-23', 6), day: '2026-11-24', offered: [] }),
+    ).toBe(7);
+  });
+});
+
+describe('monthHabit', () => {
+  const visits = (merchant: string, n: number, category = 'food', amount = 50_000) =>
+    Array.from({ length: n }, (_, i) => ({
+      ...spend(`2026-10-${String(i + 1).padStart(2, '0')}`, merchant, amount),
+      category,
+    }));
+
+  it('names the shop once it is visited five times and more than any other', () => {
+    const habit = monthHabit(
+      [
+        ...visits('Cơm tấm Cali', 5),
+        ...visits('Highlands', 4, 'coffee'),
+        ...visits('Grab', 3, 'move'),
+      ],
+      new Set(),
+    );
+    expect(habit?.lead).toBe('shop');
+    expect(habit?.shop).toEqual({ key: 'Cơm tấm Cali', count: 5, spent: 250_000 });
+    expect(habit?.category).toEqual({ key: 'food', count: 5, spent: 250_000 });
+  });
+
+  it('names the category when the top shop has fewer than five visits', () => {
+    const habit = monthHabit(
+      [...visits('Cơm tấm Cali', 4), ...visits('Phở 24', 3), ...visits('Grab', 2, 'move')],
+      new Set(),
+    );
+    expect(habit?.lead).toBe('category');
+    expect(habit?.category).toEqual({ key: 'food', count: 7, spent: 350_000 });
+    // The shop is still there for a tap on the headline.
+    expect(habit?.shop?.key).toBe('Cơm tấm Cali');
+  });
+
+  it('names the category when two shops tie for the lead, and offers no shop', () => {
+    const habit = monthHabit([...visits('A', 6), ...visits('B', 6, 'coffee')], new Set());
+    expect(habit?.lead).toBe('category');
+    expect(habit?.shop).toBeNull();
+  });
+
+  it('offers no shop visited only once', () => {
+    const habit = monthHabit([...visits('A', 1), ...visits('B', 1)], new Set());
+    expect(habit?.shop).toBeNull();
+    expect(habit?.category.count).toBe(2);
+  });
+
+  it('counts visits, not money, and groups a shop however it was written', () => {
+    const habit = monthHabit(
+      [
+        ...visits('Highlands Coffee', 3, 'coffee', 45_000),
+        ...visits(' highlands coffee', 3, 'coffee', 45_000),
+        ...visits('Vincom', 2, 'shop', 9_000_000),
+      ],
+      new Set(),
+    );
+    expect(habit?.lead).toBe('shop');
+    expect(habit?.shop).toEqual({ key: 'Highlands Coffee', count: 6, spent: 270_000 });
+    expect(habit?.category.key).toBe('coffee');
+  });
+
+  it('leaves out spends that never counted, and is nothing when none did', () => {
+    const habit = monthHabit(
+      [
+        ...visits('A', 6).map((s) => ({ ...s, status: 'skipped' as const })),
+        ...visits('B', 6).map((s) => ({ ...s, direction: 'in' as const })),
+        ...visits('C', 6, 'rent'),
+        ...visits('D', 2, 'food'),
+      ],
+      new Set(['rent']),
+    );
+    expect(habit?.lead).toBe('category');
+    expect(habit?.category).toEqual({ key: 'food', count: 2, spent: 100_000 });
+    expect(monthHabit(visits('A', 3, 'rent'), new Set(['rent']))).toBeNull();
   });
 });
 

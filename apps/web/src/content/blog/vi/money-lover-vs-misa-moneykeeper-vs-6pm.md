@@ -32,7 +32,7 @@ Bài này do đội 6pm viết. Thông tin về Money Lover và MISA lấy từ 
 | Nhà phát triển | Finsify | MISA | 6pm (Việt Nam) |
 | Nền tảng | iPhone, iPad, Mac, Apple Watch, Android | iPhone, iPad, Mac, Android | iPhone, Android |
 | Ngôn ngữ | Tiếng Việt, tiếng Anh và nhiều thứ tiếng | Tiếng Việt và nhiều thứ tiếng | Tiếng Việt, tiếng Anh |
-| Giá trả phí (App Store VN) | Premium trọn đời 599.000₫; Ví liên kết 39.000–49.000₫/tháng | Premium năm 215.000₫, trọn đời 799.000₫; Biến động số dư 49.000₫ | Max 99.000₫/tháng hoặc 799.000₫/năm, thử 7 ngày |
+| Giá trả phí (App Store VN) | Premium trọn đời 599.000₫; Ví liên kết 39.000–49.000₫/tháng | Premium năm 215.000₫, trọn đời 799.000₫; Biến động số dư 49.000₫ | Max 49.000₫/tháng hoặc 299.000₫/năm, thử 7 ngày |
 | Liên kết ngân hàng | Có, gói Ví liên kết trả phí | Có, gói trả phí | Không, có chủ đích |
 | Ghi bằng giọng nói | Có (Siri, Apple Watch) | Có | Có, hiểu "25 nghìn", "2 triệu rưỡi" |
 | Chụp hoá đơn | Có | Có | Có, đọc trên máy trước |
@@ -118,7 +118,7 @@ Hiện 6pm không nhập dữ liệu từ app khác. Bạn bắt đầu từ k�
 
 ### 6pm có miễn phí không?
 
-Có. Chốt ngày, mọi cách ghi chi tiêu, Hôm nay, Kế hoạch, Nhật ký và Cùng chia ngân sách đều miễn phí. 6pm Max (99.000₫/tháng hoặc 799.000₫/năm) thêm giao diện, Hỏi 6pm không giới hạn, chế độ du lịch, sao lưu mã hoá.
+Có. Chốt ngày, mọi cách ghi chi tiêu, Hôm nay, Kế hoạch, Nhật ký và Cùng chia ngân sách đều miễn phí. 6pm Max (49.000₫/tháng hoặc 299.000₫/năm) thêm giao diện, Hỏi 6pm không giới hạn, chế độ du lịch, sao lưu mã hoá.
 
 ## Thử 6pm
 

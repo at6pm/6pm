@@ -110,7 +110,7 @@ export function CloseRevealStep({
                 <ShareChip
                   card="streak"
                   of={day}
-                  label={t('shareCards.chipPostcard')}
+                  label={t('shareCards.chip')}
                   delay={CHIP_AFTER_MS}
                 />
               ),

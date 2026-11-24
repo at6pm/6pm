@@ -47,6 +47,6 @@ export const siteBackground = '#8fd0c6';
  * the English one. The app reads its prices from the store; these are the tiers configured there.
  */
 export const maxPrices = {
-  en: { month: 4.99, year: 34.99 },
-  vi: { month: 99_000, year: 799_000 },
+  en: { month: 2.49, year: 19.99 },
+  vi: { month: 49_000, year: 299_000 },
 } as const;

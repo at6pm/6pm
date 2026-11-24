@@ -37,7 +37,7 @@ If that is you, here are five apps that ask for less.
 | Monarch | Low to medium | Yes | Core $14.99/mo or $99.99/yr; Plus $199.99/yr | No (7-day trial) |
 | Rocket Money | Low | Yes | Free; Premium in-app | Yes |
 | Spendee | Medium | Yes | Plus $1.99/mo, Premium $5.99/mo on spendee.com (in-app prices vary) | Yes |
-| 6pm | About a minute a day | No, by design | Free; Max $4.99/mo or $34.99/yr | Yes |
+| 6pm | About a minute a day | No, by design | Free; Max $2.49/mo or $19.99/yr | Yes |
 
 Prices as listed on 21 October 2026. Check before you subscribe.
 
@@ -95,7 +95,7 @@ Before a big purchase, ask: "Can I afford $350 on Saturday?" **Ask 6pm** works o
 
 **Where 6pm is weaker than YNAB:** no bank import, so a card swipe you never tap, photograph or forward needs typing. No web or Mac app. No loan planner, net worth or investment view. And 6pm is new to the App Store; YNAB has a long track record.
 
-**What it costs:** the close, every capture method and Budget together (shared pots for two) are free. 6pm Max is $4.99 a month or $34.99 a year with a 7-day trial, for looks, unlimited Ask and pots, Travel mode, Year book and encrypted backup.
+**What it costs:** the close, every capture method and Budget together (shared pots for two) are free. 6pm Max is $2.49 a month or $19.99 a year with a 7-day trial, for looks, unlimited Ask and pots, Travel mode, Year book and encrypted backup.
 
 <!-- media: close-stamp-clip -->
 
