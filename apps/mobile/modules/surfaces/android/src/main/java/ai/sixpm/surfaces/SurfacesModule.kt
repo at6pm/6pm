@@ -27,6 +27,12 @@ class SurfacesModule : Module() {
   override fun definition() = ModuleDefinition {
     Name("Surfaces")
 
+    // Something left in the inbox while 6pm is open (a bank alert the listener read): the app is
+    // told, and brings it in at once.
+    Events("onInbox")
+    OnStartObserving { SurfaceFiles.inboxWritten = { runCatching { sendEvent("onInbox", mapOf<String, Any>()) } } }
+    OnStopObserving { SurfaceFiles.inboxWritten = null }
+
     // The first catch is said only while 6pm is away; on screen, 6pm shows it itself.
     OnActivityEntersForeground {
       CaptureNotices.appVisible = true

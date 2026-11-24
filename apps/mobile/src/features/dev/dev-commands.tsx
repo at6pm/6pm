@@ -31,7 +31,7 @@ import { languages } from '@6pm/i18n';
 import { seedCaptureHealth } from './design-capture-health-seed';
 import { seedDesignStreak, showYearCardAnyDay } from './design-streak-seed';
 import { settingsActions } from '../../data/settings-actions';
-import { writeFirstCatch } from '../../data/first-catch';
+import { putAwayFirstCatch, writeFirstCatch } from '../../data/first-catch';
 import { addDays } from '@6pm/domain';
 import {
   applyNotifyCommand,
@@ -98,8 +98,13 @@ const commandSchema = z.object({
     .string()
     .regex(/^\d{4}$/)
     .optional(),
-  /** "later": onboarding's catching step skipped yesterday, so Today shows its reminder. */
-  firstCatch: z.literal('later').optional(),
+  /**
+   * Onboarding's catching step skipped yesterday, so Today shows its reminder: "later" with the
+   * Wallet set-up walked ("Waiting for your first one…"), "skipped" with nothing walked ("Set it up").
+   */
+  firstCatch: z.enum(['later', 'skipped']).optional(),
+  /** With `firstCatch`: "Not now" tapped on the reminder this many days ago. */
+  firstCatchAway: z.number().int().min(0).max(60).optional(),
   /** After the seed: this many evenings closed back to back, ending yesterday (share cards). */
   streak: z.number().int().min(1).max(400).optional(),
   /** Shows Today's Year card whatever the date, to check it before 20 December. */
@@ -161,6 +166,7 @@ export function DevCommands() {
         yearBook,
         aiMode,
         firstCatch,
+        firstCatchAway,
         captureHealth,
         importFile,
         photo,
@@ -243,13 +249,16 @@ export function DevCommands() {
         }
       }
       // Said yesterday, but after anything seeded: only a catch from now on clears the card.
-      if (firstCatch === 'later') {
+      if (firstCatch !== undefined) {
         await writeFirstCatch(store.db, {
           state: 'later',
           day: addDays(today, -1),
           at: new Date().toISOString(),
-          ways: ['wallet'],
+          ways: firstCatch === 'later' ? ['wallet'] : [],
         });
+        if (firstCatchAway !== undefined) {
+          await putAwayFirstCatch(store.db, addDays(today, -firstCatchAway));
+        }
         await store.load(today);
       }
       // Over Home, so sheets present as sheets.

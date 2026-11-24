@@ -114,4 +114,14 @@ export const deAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
     'Belege, die du teilst oder scannst, liest dieses Handy. Ein Punkt markiert einen, den du korrigieren musstest: Betrag oder Geschäft.',
   'privacyPage.headline': 'Dein Geld bleibt verschlüsselt auf diesem Handy.',
   'privacyPage.keep': 'Alles auf diesem Handy behalten',
+
+  // Capture: Android reads bank alerts through Notification access, not a Shortcuts automation.
+  'notify.quiet.soft':
+    'Seit {count} Tagen nichts von {way}. Hat 6pm noch Benachrichtigungszugriff?',
+  'notify.quiet.cheeky':
+    'Seit {count} Tagen nichts von {way}. Sehr sparsam, oder hat 6pm keinen Benachrichtigungszugriff mehr?',
+  'notify.quiet.roast':
+    'Seit {count} Tagen nichts von {way}. Entweder bist du ein Engel, oder 6pm hat keinen Benachrichtigungszugriff mehr.',
+  'notify.quiet.plain':
+    'Seit {count} Tagen nichts von {way}. Prüf, ob 6pm noch Benachrichtigungszugriff hat.',
 };

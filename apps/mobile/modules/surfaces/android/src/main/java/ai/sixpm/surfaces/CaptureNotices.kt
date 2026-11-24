@@ -6,8 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.app.PendingIntent
+import android.os.Bundle
+import android.os.ResultReceiver
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import expo.modules.notifications.notifications.model.NotificationRequest
+import expo.modules.notifications.notifications.triggers.DateTrigger
 import expo.modules.notifications.service.NotificationsService
 import org.json.JSONObject
 import java.util.Calendar
@@ -17,8 +21,8 @@ import java.util.Calendar
  * the first catch ever ("Caught your first one: 1.000₫ · MB. That's all it takes."), in the
  * Capture channel the app names, once, and never between 22:00 and 08:00. Its words come from the
  * context the app last wrote, and only while the first catch is still to come; without them
- * nothing is said. A catch also takes away the app's pending "Nothing from MB in 3 days" for the
- * way that caught, since the way is plainly still running.
+ * nothing is said. A catch also moves the app's pending "Nothing from MB in 3 days" for the way
+ * that caught to its third quiet day from now, since the way is plainly still running.
  */
 object CaptureNotices {
   /** The Capture channel; the app makes it too, with the same id, for its scheduled ones. */
@@ -31,13 +35,53 @@ object CaptureNotices {
   /** Whether 6pm is on screen: then it shows the catch itself. Set by the module's lifecycle. */
   @Volatile var appVisible = false
 
-  /** The way that caught is running: its pending question about going quiet goes. */
+  /**
+   * The way that caught is running: its pending question about going quiet waits for three more
+   * quiet days, at the hour the app chose for it (09:00), and never comes sooner than the app had
+   * placed it. Its words already say three days. Taken away instead, a person who stops opening
+   * 6pm would never hear the way stop.
+   */
   fun wayRan(context: Context, way: String) {
+    val id = "capture-quiet:$way"
     try {
-      NotificationsService.removeScheduledNotification(context, "capture-quiet:$way")
+      NotificationsService.getScheduledNotification(
+        context,
+        id,
+        object : ResultReceiver(null) {
+          override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
+            @Suppress("DEPRECATION")
+            val request =
+              resultData?.getParcelable<NotificationRequest>(NotificationsService.NOTIFICATION_REQUEST_KEY)
+            val trigger = request?.trigger as? DateTrigger ?: return
+            val at = quietAgainAt(trigger.timestamp, System.currentTimeMillis())
+            if (at == trigger.timestamp) return
+            NotificationsService.schedule(
+              context,
+              NotificationRequest(id, request.content, DateTrigger(trigger.channelId, at, trigger.alarmClock)),
+            )
+          }
+        },
+      )
     } catch (_: Throwable) {
-      // No notifications module in this build: nothing was scheduled to take away.
+      // No notifications module in this build: nothing was scheduled to move.
     }
+  }
+
+  /** The quiet days after which the app asks about a way (`QUIET_WAY_AFTER_DAYS`). */
+  private const val QUIET_AFTER_DAYS = 3
+
+  /** The third quiet day from `now`, at the hour and minute the app placed the question. */
+  fun quietAgainAt(placed: Long, now: Long): Long {
+    val hour = Calendar.getInstance().apply { timeInMillis = placed }
+    val at = Calendar.getInstance().apply {
+      timeInMillis = now
+      add(Calendar.DAY_OF_YEAR, QUIET_AFTER_DAYS)
+      set(Calendar.HOUR_OF_DAY, hour.get(Calendar.HOUR_OF_DAY))
+      set(Calendar.MINUTE, hour.get(Calendar.MINUTE))
+      set(Calendar.SECOND, 0)
+      set(Calendar.MILLISECOND, 0)
+    }
+    return maxOf(at.timeInMillis, placed)
   }
 
   /**

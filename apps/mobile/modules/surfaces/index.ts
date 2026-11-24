@@ -24,6 +24,12 @@ export interface RunningActivity {
 }
 
 interface SurfacesNative {
+  /**
+   * Told each time something is left in the inbox while the app runs (iPhone: an extension's
+   * Darwin notification; Android: the listener, in the app's own process). Builds from before it
+   * never tell.
+   */
+  addListener?(event: 'onInbox', listener: () => void): { remove(): void };
   writeSurface(name: 'snapshot' | 'context', json: string): Promise<void>;
   writeSurfaceImage(name: string, pngBase64: string): Promise<void>;
   readInbox(): Promise<InboxFile[]>;

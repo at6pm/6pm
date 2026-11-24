@@ -52,7 +52,7 @@ export const deCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
     'Bezahl eine Kleinigkeit mit einer dieser Apps. Sobald die Mitteilung kommt, liegt die Zahlung in deinem Eingang.',
   'capture.walk.alerts.l1Title': 'Den 6pm-Kurzbefehl hinzufügen',
   'capture.walk.alerts.l1Body':
-    'Tippe oben auf „6pm-Kurzbefehl holen“, dann auf „Kurzbefehl hinzufügen“. Er heißt „Catch a bank alert“.',
+    'Tippe auf „6pm-Kurzbefehl holen“, dann auf „Kurzbefehl hinzufügen“. Er heißt „Catch a bank alert“.',
   'capture.walk.alerts.l2Title': 'Die Automation einschalten',
   'capture.walk.alerts.l2Body':
     'Öffne ihn in Kurzbefehle und tippe beim Auslöser auf ›. Schalte „Automation“ ein und lass „Mitteilen“ aus, damit Mitteilungen still erwischt werden. Beim Zurückgehen wird sie gesichert.',
@@ -62,7 +62,7 @@ export const deCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l3Body':
     'Geh zurück zu 6pm und tippe auf „Testmitteilung senden“. 6pm schickt sich selbst eine und sagt dir, wenn sie ankommt.',
   'capture.walk.alerts.addBank':
-    'Deine Bank steht nicht in der Liste des Kurzbefehls? Öffne ihn und tippe beim Auslöser auf +, um ihre App hinzuzufügen.',
+    'Deine Bank steht nicht in der Liste des Kurzbefehls? Öffne ihn und tippe beim Auslöser auf +, um ihre App hinzuzufügen. Leert iOS danach die Liste, füg 6pm und jede deiner Banken mit + wieder hinzu.',
   'capture.walk.alerts.mistake1':
     '„Titel“, „Inhalt“ oder „Datum“ leer gelassen. Tippe jeweils darauf und wähl den Wert der Mitteilung, sonst wird nichts erfasst.',
   'capture.walk.alerts.mistake2':

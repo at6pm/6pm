@@ -12,7 +12,7 @@ export const esCaptureWalk: { readonly [Key in keyof typeof enCaptureWalk]: Entr
 
   'capture.walk.wallet.s1Title': 'Añade el atajo de 6pm',
   'capture.walk.wallet.s1Body':
-    'Toca “Añadir el atajo de 6pm” aquí arriba y luego Añadir atajo. Se llama “Log to 6pm”.',
+    'Toca “Añadir el atajo de 6pm” y luego Añadir atajo. Se llama “Log to 6pm”.',
   'capture.walk.wallet.s2Title': 'Abre Automatización y toca +',
   'capture.walk.wallet.s2Body':
     'En Atajos, toca Biblioteca, luego Automatización y luego +. Si ves “Describe un atajo”, toca Editar.',

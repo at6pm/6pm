@@ -52,7 +52,7 @@ export const frCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
     'Paie un petit montant depuis une de ces apps. Quand son alerte arrive, le paiement est dans ta Boîte de réception.',
   'capture.walk.alerts.l1Title': 'Ajoute le raccourci 6pm',
   'capture.walk.alerts.l1Body':
-    'Touche « Obtenir le raccourci 6pm » ci-dessus, puis Ajouter un raccourci. Il s’appelle « Catch a bank alert ».',
+    'Touche « Obtenir le raccourci 6pm », puis Ajouter un raccourci. Il s’appelle « Catch a bank alert ».',
   'capture.walk.alerts.l2Title': 'Active l’automatisation',
   'capture.walk.alerts.l2Body':
     'Ouvre-le dans Raccourcis et touche › sur le déclencheur. Active Automatisation et laisse Notifier désactivé, pour que les alertes soient repérées sans bruit. Revenir en arrière l’enregistre.',
@@ -62,7 +62,7 @@ export const frCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l3Body':
     'Reviens dans 6pm et touche « Envoyer une alerte de test ». 6pm s’en envoie une et te dit quand elle arrive.',
   'capture.walk.alerts.addBank':
-    'Ta banque n’est pas dans la liste du raccourci ? Ouvre-le et touche + sur le déclencheur pour ajouter son app.',
+    'Ta banque n’est pas dans la liste du raccourci ? Ouvre-le et touche + sur le déclencheur pour ajouter son app. Si iOS vide alors la liste, rajoute 6pm et chacune de tes banques avec +.',
   'capture.walk.alerts.mistake1':
     'Titre, Corps ou Date laissé vide. Touche chacun et choisis celui de la Notification, sinon les alertes ne notent rien.',
   'capture.walk.alerts.mistake2':

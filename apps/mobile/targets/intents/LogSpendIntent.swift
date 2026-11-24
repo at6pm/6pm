@@ -42,7 +42,7 @@ struct LogSpendIntent: AppIntent {
     // first tap may be the first catch ever.
     let shop = (merchant ?? "").trimmingCharacters(in: .whitespaces)
     if !shop.isEmpty && logged.caught {
-      CaptureNotices.wayRan("applePay")
+      await CaptureNotices.wayRan("applePay")
       await CaptureNotices.firstCatch(amountText: logged.amountText, name: shop, now: now)
     }
     // Only Siri is asked: a Wallet tap names its merchant, and one with no amount is already in the

@@ -109,4 +109,14 @@ export const idAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
     'Struk yang kamu bagikan atau pindai dibaca oleh ponsel ini. Titik menandai struk yang harus kamu perbaiki: jumlah atau nama tokonya.',
   'privacyPage.headline': 'Uangmu tetap di ponsel ini, terenkripsi.',
   'privacyPage.keep': 'Simpan semuanya di ponsel ini',
+
+  // Capture: Android reads bank alerts through Notification access, not a Shortcuts automation.
+  'notify.quiet.soft':
+    'Tidak ada kabar dari {way} selama {count} hari. 6pm masih punya akses notifikasi?',
+  'notify.quiet.cheeky':
+    'Tidak ada kabar dari {way} selama {count} hari. Lagi hemat, atau 6pm kehilangan akses notifikasi?',
+  'notify.quiet.roast':
+    'Tidak ada kabar dari {way} selama {count} hari. Kamu super hemat, atau 6pm kehilangan akses notifikasi.',
+  'notify.quiet.plain':
+    'Tidak ada kabar dari {way} selama {count} hari. Periksa apakah 6pm masih punya akses notifikasi.',
 };

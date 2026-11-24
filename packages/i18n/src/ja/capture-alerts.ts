@@ -52,7 +52,7 @@ export const jaCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
     '選んだアプリのどれかで少額を支払ってください。通知が届けば、支払いはインボックスに入っています。',
   'capture.walk.alerts.l1Title': '6pmのショートカットを追加',
   'capture.walk.alerts.l1Body':
-    '上の「6pmのショートカットを追加」をタップし、「ショートカットを追加」をタップします。名前は「Catch a bank alert」です。',
+    '「6pmのショートカットを追加」をタップし、「ショートカットを追加」をタップします。名前は「Catch a bank alert」です。',
   'capture.walk.alerts.l2Title': 'オートメーションをオンにする',
   'capture.walk.alerts.l2Body':
     'ショートカットでそれを開き、トリガーの「›」をタップします。「オートメーション」をオンにし、「通知」はオフのままにします。これで銀行の通知が静かにキャッチされます。戻ると保存されます。',
@@ -62,7 +62,7 @@ export const jaCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l3Body':
     '6pmに戻って「通知をテスト」をタップします。6pmが自分あてにテスト通知を送り、届いたらお知らせします。',
   'capture.walk.alerts.addBank':
-    'お使いの銀行がショートカットのリストにないときは、ショートカットを開き、トリガーの「＋」でそのアプリを追加します。',
+    'お使いの銀行がショートカットのリストにないときは、ショートカットを開き、トリガーの「＋」でそのアプリを追加します。iOSがリストを空にした場合は、「＋」で6pmと使っている銀行をもう一度追加します。',
   'capture.walk.alerts.mistake1':
     '「タイトル」「本文」「日付」が空のまま。それぞれタップして通知の同じ項目を選ばないと、何も記録されません。',
   'capture.walk.alerts.mistake2':
