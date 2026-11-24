@@ -1,6 +1,9 @@
 import type { HeardWords, InboxSpend, InboxUnread } from '../contracts/surfaces';
 import { currencyOf, type Currency } from '../money/currency';
+import { isVietnameseAlert } from './alert-world';
+import { normalizeWorldAlert } from './alert-world-money';
 import { printedAmounts, readBankAlertKeys, type PrintedAmount } from './bank-alert';
+import { bankOfApp } from './bank-alert-senders';
 
 /**
  * A bank or wallet alert read a second time, by the server's model, when the app brings the
@@ -82,14 +85,16 @@ export function holdsLongNumber(text: string): boolean {
  */
 export function alertReadAsk(words: HeardWords, home: Currency): AlertReadAsk | null {
   const part = (value: string, max: number) => value.normalize('NFC').trim().slice(0, max);
+  const printed = [
+    part(words.title, PART_MAX.title),
+    part(words.subtitle, PART_MAX.subtitle),
+    part(words.body, PART_MAX.body),
+  ]
+    .filter((text) => text !== '')
+    .join('\n');
+  // An alert from abroad has its money written as the phone reads it ("1,234円" as "1,234 JPY").
   const plain = maskLongNumbers(
-    [
-      part(words.title, PART_MAX.title),
-      part(words.subtitle, PART_MAX.subtitle),
-      part(words.body, PART_MAX.body),
-    ]
-      .filter((text) => text !== '')
-      .join('\n'),
+    isVietnameseAlert(printed, bankOfApp(words.app)) ? printed : normalizeWorldAlert(printed, home),
   );
   const amounts = printedAmounts(plain, home).slice(0, ALERT_READ_AMOUNTS_MAX);
   if (amounts.length === 0) return null;

@@ -1,0 +1,290 @@
+/**
+ * How banks and wallets abroad word a payment, beside the English and Vietnamese `bank-alert`
+ * reads on its own: here English as banks elsewhere write it, and Malay, Indonesian and Filipino;
+ * Europe's languages in `alert-words-europe`, the other scripts in `alert-words-scripts`. Written as
+ * the alerts print them; they are folded (`foldAlertWords`) before they are looked for, so accents
+ * and case never matter.
+ */
+export interface AlertWords {
+  /** Money that came in. */
+  readonly in: readonly string[];
+  /** Money that went out. */
+  readonly out: readonly string[];
+  /** Money a shop gave back: it came in. */
+  readonly refund: readonly string[];
+  /** A payment the bank or the card took back: it came in. */
+  readonly reversal: readonly string[];
+  /** A payment that did not go through. */
+  readonly failed: readonly string[];
+  /** A code to sign in or to approve with. */
+  readonly code: readonly string[];
+  /** A sentence that only warns not to share a code. */
+  readonly warning: readonly string[];
+  /** Someone asking for money: nothing has moved. */
+  readonly request: readonly string[];
+  /** Marketing. */
+  readonly promo: readonly string[];
+  /** A statement or a bill that is due: nothing has moved. */
+  readonly statement: readonly string[];
+  /** Words that, last before an amount, make it the balance. */
+  readonly balance: readonly string[];
+  /** Words that, last before an amount, make it what moved. */
+  readonly amount: readonly string[];
+}
+
+/** English as banks outside Vietnam word it beyond what `bank-alert` reads. */
+const ENGLISH: AlertWords = {
+  in: [
+    'credit alert',
+    'credit',
+    'credited',
+    'received',
+    'receive',
+    'deposit',
+    'deposited',
+    'sent you',
+    'paid you',
+    'you got',
+    'money in',
+    'incoming',
+    'inward',
+    'inward remittance',
+    'has transferred',
+    'transferred to you',
+    'credited to',
+    'has been credited',
+    'cr',
+    'deposit received',
+    'payment received',
+    'money received',
+    'you have received',
+    'you’ve received',
+    'received from',
+    'paid by',
+    'incoming transfer',
+    'incoming payment',
+    'added to your',
+    'top up',
+    'topped up',
+    'cash in',
+    'cashback',
+  ],
+  out: [
+    'debit alert',
+    'send money',
+    'sent money',
+    'make payment',
+    'debit',
+    'debited',
+    'deducted',
+    'paid',
+    'you paid',
+    'payment',
+    'purchase',
+    'purchased',
+    'spent',
+    'spend',
+    'charge',
+    'charged',
+    'transferred',
+    'transfer',
+    'sent',
+    'withdraw',
+    'withdrawal',
+    'money out',
+    'transacted',
+    'used for',
+    'used at',
+    'thank you for using',
+    'transaction was made',
+    'was made',
+    'you have transferred',
+    'was made with your card',
+    'done at',
+    'debited from',
+    'has been debited',
+    'dr',
+    'withdrawn',
+    'pos purchase',
+    'card purchase',
+    'card transaction',
+    'purchase of',
+    'paid to',
+    'sent to',
+    'payment to',
+    'payment of',
+    'transfer to',
+    'you bought',
+    'buy goods',
+    'pay bill',
+    'paybill',
+    'cash out',
+    'atm withdrawal',
+    'direct debit',
+  ],
+  refund: ['refund', 'refunded', 'refund of', 'merchant refund', 'purchase refund'],
+  reversal: ['reversal', 'reversed', 'has been reversed', 'chargeback'],
+  failed: [
+    'declined',
+    'was declined',
+    'rejected',
+    'not approved',
+    'failed',
+    'unsuccessful',
+    'attempted',
+    'card has been locked',
+    'card was locked',
+  ],
+  code: [
+    'otp',
+    'one time pin',
+    'one time password',
+    'verification code',
+    'security code',
+    'tac',
+    'your code',
+    'confirmation code',
+    'verify payment',
+    'confirm payment',
+    'approve payment',
+    'tap to verify',
+    'confirm your purchase',
+    'auth code is',
+  ],
+  warning: ['never share', 'do not share', 'don’t share', 'dont share', 'do not disclose'],
+  request: [
+    'requests',
+    'requested',
+    'is requesting',
+    'has requested',
+    'payment request',
+    'money request',
+    'request for',
+    'collect request',
+    'wants you to pay',
+    'asked you for',
+    'would like to confirm',
+    'reply yes',
+    'if so reply',
+    'was this you',
+  ],
+  promo: ['offer', 'promo', 'promotion', 'win', 'discount', 'apply now'],
+  statement: [
+    'statement',
+    'payment due',
+    'is due',
+    'minimum payment',
+    'due date',
+    'bill is ready',
+    'will be debited',
+    'will be charged',
+    'scheduled',
+    'upcoming',
+    'outstanding amount',
+    'instalment',
+    'installment',
+    'has been billed',
+    'transfer limit',
+    'new limit',
+    'daily limit',
+    'due on',
+  ],
+  balance: [
+    'bal',
+    'avl bal',
+    'avail bal',
+    'avl balance',
+    'available bal',
+    'balance',
+    'new balance',
+    'closing balance',
+    'ledger balance',
+    'a c bal',
+    'clr bal',
+    'available',
+  ],
+  amount: ['amt', 'amount', 'txn amt', 'of'],
+};
+
+/** Indonesian and Malay, read as one: they share most of their words. */
+const MALAY: AlertWords = {
+  in: [
+    'dana masuk',
+    'transfer masuk',
+    'uang masuk',
+    'wang masuk',
+    'masuk',
+    'diterima',
+    'menerima',
+    'kamu menerima',
+    'anda menerima',
+    'anda telah menerima',
+    'terima',
+    'pindahan masuk',
+    'isi saldo',
+    'top up berhasil',
+    'top up saldo',
+    'pemasukan',
+    'mengirimkan dana',
+    'mengirimkan uang',
+  ],
+  out: [
+    'pembayaran',
+    'bayaran',
+    'bayar',
+    'membayar',
+    'dibayar',
+    'transfer keluar',
+    'dana keluar',
+    'uang keluar',
+    'keluar',
+    'transaksi kartu',
+    'pembelian',
+    'belian',
+    'tarik tunai',
+    'penarikan',
+    'pengeluaran',
+    'transaksi top up',
+    'dipotong',
+    'anda mengirimkan',
+    'transfer ke',
+    'kirim uang',
+    'mengirim',
+    'pindahan',
+  ],
+  refund: ['pengembalian dana', 'bayaran balik', 'dana dikembalikan'],
+  reversal: ['pembatalan transaksi'],
+  failed: [
+    'gagal',
+    'ditolak',
+    'tidak berhasil',
+    'tidak berjaya',
+    'saldo tidak cukup',
+    'tidak mencukupi',
+  ],
+  code: ['kode otp', 'kode verifikasi', 'kode rahasia', 'kod pengesahan', 'kod tac'],
+  warning: ['jangan berikan', 'jangan bagikan', 'jangan kongsi', 'jangan beritahu'],
+  request: ['permintaan', 'meminta', 'permintaan pembayaran', 'minta'],
+  promo: ['promo', 'diskon', 'potongan', 'hadiah', 'gratis', 'yuk', 'ayo'],
+  statement: ['tagihan', 'jatuh tempo', 'penyata'],
+  balance: ['saldo', 'sisa saldo', 'saldo akhir', 'baki', 'baki tersedia'],
+  amount: ['sebesar', 'senilai', 'nominal', 'jumlah', 'amaun', 'jumlah transaksi'],
+};
+
+/** Filipino, beside the English Philippine banks mostly write. */
+const FILIPINO: AlertWords = {
+  in: ['natanggap', 'nakatanggap'],
+  out: ['ipinadala', 'nagbayad', 'binayaran'],
+  refund: [],
+  reversal: [],
+  failed: ['hindi natuloy'],
+  code: [],
+  warning: ['huwag ibigay', 'huwag ibahagi'],
+  request: ['humihingi'],
+  promo: [],
+  statement: [],
+  balance: [],
+  amount: [],
+};
+
+export const ALERT_WORDS: readonly AlertWords[] = [ENGLISH, MALAY, FILIPINO];
