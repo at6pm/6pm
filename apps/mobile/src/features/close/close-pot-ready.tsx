@@ -370,7 +370,7 @@ function PotReady({
             // A full jar opens its card to share; a jar whose month came shares this card as is.
             if (full) {
               haptics.tap();
-              router.push(shareCardHref('jar', jar.id));
+              router.push(shareCardHref('goal', jar.id));
             } else void share(shareFileName('jar', jar.id), () => captureView(card));
           }}
           style={{
