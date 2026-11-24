@@ -1,6 +1,6 @@
 import { BANKS, findBank, WORLD_BANKS, type BankInfo } from '../vietqr/bank-catalogue';
 import { WORLD_ALERT_APPS } from '../vietqr/world-alert-apps';
-import { WORLD_IOS_APPS } from '../vietqr/world-ios-apps';
+import { WORLD_APP_NAMES_ONLY, WORLD_IOS_APPS } from '../vietqr/world-ios-apps';
 import { foldWords } from './spoken-spend';
 
 /**
@@ -118,6 +118,10 @@ for (const [id, app] of WORLD_IOS_APPS) {
   const bundle = app.bundle.toLowerCase();
   if (!WORLD_BY_IOS_BUNDLE.has(bundle)) WORLD_BY_IOS_BUNDLE.set(bundle, bank);
   for (const name of app.names) WORLD_BY_IOS_NAME.set(appKey(name), bank);
+}
+for (const [id, names] of WORLD_APP_NAMES_ONLY) {
+  const bank = findBank(id);
+  if (bank) for (const name of names) WORLD_BY_IOS_NAME.set(appKey(name), bank);
 }
 
 /**

@@ -21,6 +21,7 @@
   { "bundle": "com.idfcfirstbank.optimus", "bank": "IN.IDFC" },
   { "bundle": "com.indusind.indie", "bank": "IN.INDUSIND" },
   { "bundle": "in.org.npci.ios.upiapp", "bank": "IN.BHIM" },
+  { "bundle": "com.hdfcbank.payzapp", "bank": "IN.PAYZAPP" },
   { "bundle": "com.dreamplug.cred", "bank": "IN.CRED" },
   {
     "bundle": "com.yourcompany.PPClient",

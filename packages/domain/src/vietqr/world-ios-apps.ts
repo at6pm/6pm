@@ -245,11 +245,11 @@ LA.APB|com.apb.mobilebanking||APB Meporm
 LA.IB|com.iblaos.ibcool||IB Cool
 LA.MMONEY|com.ltc.lmm.consumer||M moneyX
 KR.KB|com.kbstar.kbbank|8MX8HQ493Q|KB스타뱅킹;KB Star Banking
-KR.SHINHAN|com.shinhan.sbank||신한 SOL뱅크;신한 슈퍼SOL;SOL
-KR.WOORI|com.wooribank.smart.npib||우리WON뱅킹;WON뱅킹
+KR.SHINHAN|com.shinhan.sbank||신한 SOL뱅크;신한 슈퍼SOL;SOL;신한은행
+KR.WOORI|com.wooribank.smart.npib||우리WON뱅킹;WON뱅킹;우리은행
 KR.HANA|com.hanabank.oqf||하나원큐;하나은행
-KR.NH|com.nonghyup.newsmartbanking||NH스마트뱅킹;NH Smart Banking
-KR.IBK|com.ibk.ios.ionebank||i-ONE Bank;i-ONE뱅크
+KR.NH|com.nonghyup.newsmartbanking||NH스마트뱅킹;NH Smart Banking;NH농협은행;NH농협
+KR.IBK|com.ibk.ios.ionebank||i-ONE Bank;i-ONE뱅크;IBK기업은행
 KR.KAKAOBANK|com.kakaobank.channel||카카오뱅크;KakaoBank
 KR.KAKAOPAY|com.kakaopay.payapp.store||카카오페이;Kakao Pay;KakaoPay
 KR.NAVERPAY|com.naverfin.payapp||네이버페이;Naver Pay;NaverPay
@@ -257,8 +257,8 @@ KR.KBANK|com.kbankwith.smartbank||케이뱅크
 KR.NHALLONE|com.nonghyup.nhallonebank||NH올원뱅크
 KR.SC|com.scbank.ma30||SC제일은행;SC제일은행 모바일뱅킹
 KR.EPOST|com.epost.psf.sd||우체국뱅킹
-KR.KBCARD|com.kbcard.cxh.appcard||KB Pay
-KR.SHINHANCARD|com.shinhancard.MobilePay||신한 SOL페이;SOL페이
+KR.KBCARD|com.kbcard.cxh.appcard||KB Pay;KB국민카드
+KR.SHINHANCARD|com.shinhancard.MobilePay||신한 SOL페이;SOL페이;신한카드
 KR.HYUNDAICARD|com.hyundaicard.hcappcard||현대카드
 KR.HANACARD|com.hanaskcard.paycli||하나Pay;하나페이
 JP.MUFG|jp.mufg.bk.applisp.01||三菱UFJ銀行;MUFG
@@ -330,11 +330,12 @@ IN.BOI|com.boi.ua.ios||BOI Mobile
 IN.IDFC|com.idfcfirstbank.optimus||IDFC FIRST Bank
 IN.INDUSIND|com.indusind.indie||indie;IndusInd Bank
 IN.BHIM|in.org.npci.ios.upiapp||BHIM Bharat's Own Payments App
+IN.PAYZAPP|com.hdfcbank.payzapp||PayZapp
 IN.CRED|com.dreamplug.cred||CRED
 AE.ENBD|com.enbd.MobileBanking||ENBD X
 AE.FAB|com.fab.PersonalBanking||FAB Mobile;FAB
 AE.ADCB|com.adcb.nexgen||ADCB
-AE.DIB|com.dib.app||DIB alt;DIB;DIB alt mobile banking app
+AE.DIB|com.dib.app||DIB alt;DIB;DIB alt mobile banking app;Dubai Islamic Bank
 AE.ADIB|com.adib.mobilebanking||ADIB Mobile Banking
 AE.MASHREQ|com.mashreq.||Mashreq UAE
 AE.WIO|io.wio.retail||Wio Personal;Wio
@@ -385,7 +386,7 @@ KE.DTB|com.DigitalDist.DTB||DTB 24/7;DTB
 MX.BBVA|com.bancomer.bbva.bancomermovil||BBVA México;BBVA MX
 MX.SANTANDER|com.isban.santander.mx.supermovil||Santander México;SuperMóvil
 MX.BANORTE|com.banorte.Banorte-Movil||Banorte Móvil;Banorte
-MX.BANAMEX|com.citibanamex.iphoneprod||Banamex;App Banamex
+MX.BANAMEX|com.citibanamex.iphoneprod||Banamex;App Banamex;Citibanamex
 MX.NU|com.nu.iphone||
 MX.MERCADOPAGO|com.mercadopago.MercadoPago||
 MX.AZTECA|mx.com.bancoazteca.bazdigitalmovil||Banco Azteca
@@ -414,7 +415,7 @@ PK.MCB|com.mcb.mcblive||MCB Live
 PK.ALFALAH|com.bankalfalah.bankalfalah||Alfa;Alfa by Bank Alfalah
 PK.SADAPAY|com.sadapay.app||SadaPay
 PK.NAYAPAY|com.nayapay.NayaPayApp||NayaPay
-PL.PKO|pl.pkobp.iko||IKO;PKO Bank Polski
+PL.PKO|pl.pkobp.iko||IKO;PKO Bank Polski;PKO IKO;PKO BP
 PL.PEKAO|pl.pekao.pekaosa.peopay||PeoPay
 PL.MBANK|pl.mobiltek.mbank||mBank PL
 PL.ING|pl.ing.mojeing||Moje ING;Moje ING mobile
@@ -426,7 +427,7 @@ PL.BNP|pl.bgzbnpparibas.gomobile||GOmobile;BNP Paribas GOmobile
 PL.VELO|com.getinbank.mobilebanking.MobileBanking||VeloBank
 PL.NEST|pl.nestbank.nestbank-prod||Nest Bank
 SA.ALRAJHI|sa.alrajhibank.retailapp||alrajhi bank;Al Rajhi
-SA.SNB|com.snb.alahlimobile||SNB Mobile;SNB
+SA.SNB|com.snb.alahlimobile||SNB Mobile;SNB;SNB AlAhli;AlAhli
 SA.RIYAD|com.riyadbank.digitalmobile||Riyad Bank App
 SA.SAB|com.sabb.mobilebanking||SAB Mobile;SAB
 SA.ALINMA|com.alinma.retail.mobile.v4||Alinma;الإنماء;Alinma App
@@ -468,6 +469,25 @@ WISE|com.transferwise.Transferwise|W53MTDV45J|Wise
 REVOLUT|com.revolut.revolut|QUZEZSEARC|Revolut
 `;
 
+/**
+ * The names iOS shows for banks and wallets that never go on a shortcut, by code: a super-app or
+ * a wallet inside one, a shopping app, or one whose iPhone app is not certain. A person may still
+ * put one on the trigger with +, so the action knows it by name. One row each: `code|names`.
+ */
+const NAMES_ONLY = `
+CN.ALIPAY|支付宝;Alipay
+HK.ALIPAYHK|AlipayHK;支付寶香港
+ID.GOPAY|GoPay
+ID.SHOPEEPAY|ShopeePay
+JP.DBARAI|d払い
+KE.MPESA|M-PESA;M-PESA App
+LA.UMONEY|Umoney;U-Money
+TR.PAYCELL|Paycell
+SE.KLARNA|Klarna
+IN.SBICARD|SBI Card
+KR.SAMSUNGCARD|삼성카드;monimo;모니모
+`;
+
 /** A bank's or wallet's app on the iPhone. */
 export interface WorldIosApp {
   /** Its bundle id ("com.chase"). */
@@ -490,5 +510,15 @@ export const WORLD_IOS_APPS: ReadonlyMap<string, WorldIosApp> = new Map(
         names: names === '' ? [] : names.split(';'),
       };
       return [code, app] as const;
+    }),
+);
+
+/** The names iOS shows for the apps of banks and wallets that never go on a shortcut, by code. */
+export const WORLD_APP_NAMES_ONLY: ReadonlyMap<string, readonly string[]> = new Map(
+  NAMES_ONLY.trim()
+    .split('\n')
+    .map((line) => {
+      const [code = '', names = ''] = line.split('|');
+      return [code, names.split(';')] as const;
     }),
 );

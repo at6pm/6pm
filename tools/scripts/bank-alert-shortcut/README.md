@@ -41,7 +41,7 @@ This folder is what the published shortcut is built from, so it can be built aga
 | HK | `apps/HK.json` | 14 | not yet published |
 | ID | `apps/ID.json` | 19 | not yet published |
 | IE | `apps/IE.json` | 7 | not yet published |
-| IN | `apps/IN.json` | 21 | not yet published |
+| IN | `apps/IN.json` | 22 | not yet published |
 | IT | `apps/IT.json` | 19 | not yet published |
 | JP | `apps/JP.json` | 21 | not yet published |
 | KE | `apps/KE.json` | 9 | not yet published |

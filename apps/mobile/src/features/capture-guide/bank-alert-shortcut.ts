@@ -14,15 +14,12 @@ import { bankAlertShortcutFor } from './bank-alert-shortcut-country';
  * are built from, and how each link is made, are in `tools/scripts/bank-alert-shortcut/`. A
  * country whose link is not here yet is given the world's, and Vietnam's while that is missing.
  */
-const BANK_ALERT_SHORTCUTS: Readonly<Record<string, string>> = {
-  VN: 'https://www.icloud.com/shortcuts/d13f5fcf5417402aa280c51b7ac0eb68',
-};
+const VIETNAM = 'https://www.icloud.com/shortcuts/d13f5fcf5417402aa280c51b7ac0eb68';
+const BANK_ALERT_SHORTCUTS: Readonly<Record<string, string>> = { VN: VIETNAM };
 
 /** The published shortcut for this phone's country: see `bankAlertShortcutFor`. */
-export const BANK_ALERT_SHORTCUT_TEMPLATE = bankAlertShortcutFor(
-  readDeviceRegion(),
-  BANK_ALERT_SHORTCUTS,
-);
+export const BANK_ALERT_SHORTCUT_TEMPLATE: string =
+  bankAlertShortcutFor(readDeviceRegion(), BANK_ALERT_SHORTCUTS) ?? VIETNAM;
 
 /**
  * The shortcut published before it, with no apps on its trigger: the person chose them. It stays

@@ -146,6 +146,7 @@ AU|AU.MEBANK|ME Bank|ME Bank|bank
 AU|AU.HSBC|HSBC Australia|HSBC Bank Australia|bank
 AU|AU.AMEX|Amex Australia|American Express Australia|bank
 AU|AU.GREATSOUTHERN|Great Southern Bank|Great Southern Bank|bank
+AU|AU.TMB|Teachers Mutual Bank|Teachers Mutual Bank|bank
 NZ|NZ.ANZ|ANZ|ANZ Bank New Zealand|bank
 NZ|NZ.ASB|ASB|ASB Bank|bank
 NZ|NZ.BNZ|BNZ|Bank of New Zealand|bank
@@ -183,6 +184,7 @@ MY|MY.AEONBANK|AEON Bank|AEON Bank (M)|bank
 MY|MY.BOOSTBANK|Boost Bank|Boost Bank|bank
 MY|MY.BIGPAY|BigPay|BigPay|wallet
 MY|MY.RYT|Ryt Bank|Ryt Bank|bank
+MY|MY.RIZE|Rize|AmBank Islamic|bank
 TH|TH.KBANK|K PLUS|Kasikornbank|bank
 TH|TH.SCB|SCB|Siam Commercial Bank|bank
 TH|TH.BBL|Bangkok Bank|Bangkok Bank|bank
@@ -264,6 +266,7 @@ KR|KR.KBCARD|KB Pay|KB Kookmin Card|wallet
 KR|KR.SHINHANCARD|Shinhan SOL Pay|Shinhan Card|wallet
 KR|KR.HYUNDAICARD|Hyundai Card|Hyundai Card|bank
 KR|KR.HANACARD|Hana Pay|Hana Card|wallet
+KR|KR.SAMSUNGCARD|Samsung Card|Samsung Card|bank
 JP|JP.MUFG|MUFG|MUFG Bank|bank
 JP|JP.SMBC|SMBC|Sumitomo Mitsui Banking Corporation|bank
 JP|JP.MIZUHO|Mizuho|Mizuho Bank|bank
@@ -339,14 +342,18 @@ IN|IN.BOI|Bank of India|Bank of India|bank
 IN|IN.IDFC|IDFC FIRST|IDFC FIRST Bank|bank
 IN|IN.INDUSIND|IndusInd|IndusInd Bank|bank
 IN|IN.BHIM|BHIM|National Payments Corporation of India|wallet
+IN|IN.PAYZAPP|PayZapp|HDFC Bank|wallet
 IN|IN.CRED|CRED|Dreamplug Technologies|wallet
+IN|IN.SBICARD|SBI Card|SBI Cards and Payment Services|bank
 AE|AE.ENBD|Emirates NBD|Emirates NBD Bank|bank
 AE|AE.FAB|FAB|First Abu Dhabi Bank|bank
 AE|AE.ADCB|ADCB|Abu Dhabi Commercial Bank|bank
 AE|AE.DIB|DIB|Dubai Islamic Bank|bank
+AE|AE.EI|Emirates Islamic|Emirates Islamic Bank|bank
 AE|AE.ADIB|ADIB|Abu Dhabi Islamic Bank|bank
 AE|AE.MASHREQ|Mashreq|Mashreq Bank|bank
 AE|AE.WIO|Wio|Wio Bank|bank
+AE|AE.LIV|Liv|Emirates NBD|bank
 AE|AE.EANDMONEY|e& money|Emirates Telecommunications|wallet
 AE|AE.ZIINA|Ziina|Ziina|wallet
 BD|BD.BKASH|bKash|bKash|wallet
@@ -373,6 +380,8 @@ BR|BR.SICREDI|Sicredi|Sicredi|bank
 BR|BR.NEON|Neon|Banco Neon|bank
 BR|BR.INFINITEPAY|InfinitePay|CloudWalk|wallet
 BR|BR.NOMAD|Nomad|Nomad|bank
+BR|BR.BTG|BTG Pactual|Banco BTG Pactual|bank
+BR|BR.CAJU|Caju|Caju|wallet
 CH|CH.UBS|UBS|UBS Switzerland|bank
 CH|CH.POSTFINANCE|PostFinance|PostFinance|bank
 CH|CH.RAIFFEISEN|Raiffeisen|Raiffeisen Schweiz|bank
@@ -415,6 +424,7 @@ NG|NG.FIRSTBANK|FirstBank|First Bank of Nigeria|bank
 NG|NG.UBA|UBA|United Bank for Africa|bank
 NG|NG.KUDA|Kuda|Kuda Microfinance Bank|bank
 NG|NG.FAIRMONEY|FairMoney|FairMoney Microfinance Bank|bank
+NG|NG.VFD|VFD Bank|VFD Microfinance Bank|bank
 PK|PK.EASYPAISA|easypaisa|Easypaisa Microfinance Bank|wallet
 PK|PK.JAZZCASH|JazzCash|Mobilink Microfinance Bank|wallet
 PK|PK.HBL|HBL|Habib Bank Limited|bank
@@ -422,6 +432,7 @@ PK|PK.MEEZAN|Meezan Bank|Meezan Bank|bank
 PK|PK.UBL|UBL|United Bank Limited|bank
 PK|PK.MCB|MCB|MCB Bank|bank
 PK|PK.ALFALAH|Bank Alfalah|Bank Alfalah|bank
+PK|PK.FAYSAL|Faysal Bank|Faysal Bank|bank
 PK|PK.SADAPAY|SadaPay|SadaPay|wallet
 PK|PK.NAYAPAY|NayaPay|NayaPay|wallet
 PL|PL.PKO|PKO BP|PKO Bank Polski|bank
@@ -449,6 +460,7 @@ SE|SE.HANDELSBANKEN|Handelsbanken|Svenska Handelsbanken|bank
 SE|SE.SEB|SEB|Skandinaviska Enskilda Banken|bank
 SE|SE.NORDEA|Nordea|Nordea Bank|bank
 SE|SE.SWISH|Swish|Getswish|wallet
+SE|SE.KLARNA|Klarna|Klarna Bank|wallet
 SE|SE.LF|Länsförsäkringar|Länsförsäkringar Bank|bank
 SE|SE.DANSKE|Danske Bank|Danske Bank|bank
 SE|SE.ICA|ICA Banken|ICA Banken|bank
