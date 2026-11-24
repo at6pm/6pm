@@ -1,6 +1,16 @@
 import { VND, type Currency } from '../money/currency';
 import type { SpendDirection } from '../spend/spend';
 import { payeeByShape } from './alert-payee-shapes';
+import {
+  isVietnameseAlert,
+  worldBalanceLead,
+  worldLabelled,
+  worldSkip,
+  worldWay,
+  worldWhat,
+  worldWords,
+} from './alert-world';
+import { normalizeWorldAlert } from './alert-world-money';
 import { bankNamedIn, bankOfApp } from './bank-alert-senders';
 import { cleanMemo } from './bank-receipt';
 import { tidyPayee } from './bill-topic';
@@ -12,8 +22,8 @@ import { currencyMarkOf, parseWalletAmount } from './wallet-amount';
 
 /**
  * Reading a bank's or wallet's notification, as an iOS Shortcuts automation hands it over: the
- * balance-change alerts Vietnamese banks and wallets send ("biến động số dư"), and the English
- * ones of banks and cards elsewhere. Everything is read on the phone.
+ * balance-change alerts Vietnamese banks and wallets send ("biến động số dư"), and those of banks
+ * and wallets elsewhere, in their own languages (`alert-world`). Everything is read on the phone.
  */
 
 /** One notification as the automation passes it. */
@@ -230,7 +240,7 @@ interface Found {
 }
 
 /** Every amount the alert prints that could be what moved, leaving out the balance. */
-function amountsIn(text: string, home: Currency): Found[] {
+function amountsIn(text: string, home: Currency, world: boolean): Found[] {
   const found: Found[] = [];
   // Each lead runs from the last amount kept, so a date or an account number between them never
   // hides the "SD:" before a balance.
@@ -240,9 +250,11 @@ function amountsIn(text: string, home: Currency): Found[] {
     const lead = text.slice(from, match.index);
     const mark = (before && currencyMarkOf(before, home)) || (after && currencyMarkOf(after, home));
     const signed = sign === undefined ? null : sign === '+' ? '+' : '-';
-    const labelled = CHANGE_LEAD.test(foldWords(lead + (mark ? '' : before)).trimEnd());
+    const labelled =
+      CHANGE_LEAD.test(foldWords(lead + (mark ? '' : before)).trimEnd()) ||
+      (world && worldLabelled(lead + (mark ? '' : before)));
     if (signed === null && !mark && !labelled) continue;
-    if (signed === null && readsAsBalance(lead)) continue;
+    if (signed === null && (readsAsBalance(lead) || (world && worldBalanceLead(lead)))) continue;
     const read = parseWalletAmount(mark ? `${number} ${mark}` : number, home);
     if (read === null) continue;
     from = match.index + whole.length;
@@ -300,14 +312,23 @@ export function printedAmounts(text: string, home: Currency = VND): PrintedAmoun
   return found;
 }
 
-/** The amount that moved: the first signed one, then the first after a label, then the first. */
-function movedAmount(found: readonly Found[]): Found | null {
-  return (
-    found.find((f) => f.signed !== null) ??
-    found.find((f) => f.labelled) ??
-    found.find((f) => f.marked) ??
-    null
-  );
+/**
+ * The amount that moved: the first signed one, then the first after a label, then the first.
+ * Abroad a currency mark counts first: a masked card ("(-9485)") or a date after a way word
+ * ("일시불 01/09") is no amount.
+ */
+function movedAmount(found: readonly Found[], world = false): Found | null {
+  const signed = found.find((f) => f.signed !== null);
+  if (world) {
+    return (
+      found.find((f) => f.signed !== null && f.marked) ??
+      found.find((f) => f.marked) ??
+      signed ??
+      found.find((f) => f.labelled) ??
+      null
+    );
+  }
+  return signed ?? found.find((f) => f.labelled) ?? found.find((f) => f.marked) ?? null;
 }
 
 /** The memo's text and where it sits in the alert, when it prints one. */
@@ -334,9 +355,11 @@ function earliest(folded: string, words: readonly string[]): number {
 }
 
 /** Which way money went: its sign, the word right before it, else the earliest way word. */
-function wayOf(text: string, amount: Found): SpendDirection | null {
+function wayOf(text: string, amount: Found, world: boolean): SpendDirection | null {
   if (amount.signed === '-') return 'out';
   if (amount.signed === '+') return 'in';
+  const worldly = world ? worldWay(text, amount.start) : null;
+  if (worldly !== null) return worldly;
   const lead = foldWords(text.slice(Math.max(0, amount.start - 24), amount.start)).trimEnd();
   if (/ (?:ghi co|tang|duoc cong|cong tien|nhan|nhan duoc|received)$/.test(lead)) return 'in';
   if (
@@ -451,12 +474,33 @@ function withoutWarnings(text: string): string {
     .join(' ');
 }
 
+/** Balance words that, beside an amount that moved, are only the balance printed after it. */
+const BALANCE_AFTER =
+  / (?:so du hien tai cua|so du tai khoan|your balance|balance is|available balance is) /g;
+
+/**
+ * An alert's title, subtitle and body as one text, and whether it is from outside Vietnam: then
+ * its money is rewritten as this reader reads it ("1,234円" as "1,234 JPY") and the world's words
+ * are read too.
+ */
+function alertTextOf(
+  input: BankAlertInput,
+  home: Currency,
+): { readonly text: string; readonly world: boolean; readonly printed: string } {
+  const printed = [input.title, input.subtitle, input.body]
+    .map((part) => (part ?? '').normalize('NFC').trim())
+    .filter((part) => part !== '')
+    .join('\n');
+  const world = !isVietnameseAlert(printed, bankOfApp(input.app));
+  return { text: world ? normalizeWorldAlert(printed, home) : printed, world, printed };
+}
+
 /**
  * Reads one notification into money that moved, or why it is skipped.
  *
  * - Codes (OTP, verification), payments that failed or were declined, promotions, balance and
- *   statement notices, recaps of spending over a month or a week, and sign-in or security
- *   notices are skipped (a recap as a balance notice).
+ *   statement notices, recaps of spending over a month or a week, sign-in or security notices,
+ *   and someone asking for money are skipped (a recap as a balance notice, a request as unread).
  * - The amount is the one signed `+` or `-`, else the one after a label ("GD:", "PS:", "Số
  *   tiền"), else the first with a currency mark; a balance ("SD:", "Số dư", "Balance") never.
  *   Unmarked, it is in the home currency.
@@ -464,10 +508,7 @@ function withoutWarnings(text: string): string {
  *   "ghi nợ", "trừ", "thanh toán", "chuyển", "paid", "charge" send it out.
  */
 export function readBankAlert(input: BankAlertInput, home: Currency = VND): BankAlert {
-  const parts = [input.title, input.subtitle, input.body]
-    .map((part) => (part ?? '').normalize('NFC').trim())
-    .filter((part) => part !== '');
-  const text = parts.join('\n');
+  const { text, world } = alertTextOf(input, home);
   const memoFound = memoIn(text);
   const told = memoFound ? text.slice(0, memoFound.start) : text;
   const bankInfo =
@@ -483,21 +524,29 @@ export function readBankAlert(input: BankAlertInput, home: Currency = VND): Bank
   if (FAILED.test(plain)) return skip('failed');
   // A recap's own words ("Tổng chi tiêu", "Thống kê", "weekly recap") say so whatever it prints.
   if (SUMMARY.test(plain)) return skip('balance');
+  const worldly = world ? worldSkip(told) : null;
+  if (worldly !== null) return skip(worldly);
+  const words = world ? worldWords(told) : { promo: false, statement: false, balance: false };
 
-  const found = amountsIn(told, home);
-  const amount = movedAmount(found);
-  const structured = amount?.signed != null || / (?:sd|so du|balance) /.test(plain);
-  if (!structured && (PROMO.test(plain) || /\d\s?%/.test(told))) return skip('promo');
+  const amount = movedAmount(amountsIn(told, home, world), world);
+  const balanced = / (?:sd|so du|balance) /.test(plain) || words.balance;
+  const structured = amount?.signed != null || balanced;
+  const promo = PROMO.test(plain) || words.promo;
+  if (!structured && (promo || /\d\s?%/.test(told))) return skip('promo');
   if (amount === null || amount.amount <= 0) {
     if (SECURITY.test(plain)) return skip('security');
-    if (STATEMENT.test(plain) || / (?:sd|so du|balance) /.test(plain)) return skip('balance');
-    if (PROMO.test(plain)) return skip('promo');
+    if (STATEMENT.test(plain) || balanced || words.statement) return skip('balance');
+    if (promo) return skip('promo');
     return skip('unread');
   }
-  if (amount.signed === null && STATEMENT.test(plain)) return skip('balance');
+  // Abroad, a balance printed after what moved ("New M-PESA balance is Ksh5,000.00") is no notice.
+  const statement = world
+    ? STATEMENT.test(plain.replace(BALANCE_AFTER, ' ')) || words.statement
+    : STATEMENT.test(plain);
+  if (amount.signed === null && statement) return skip('balance');
   // A while a recap covers says so only of an unsigned total: a payment's own sign wins.
   if (amount.signed === null && SUMMARY_PERIOD.test(plain)) return skip('balance');
-  const way = wayOf(told, amount);
+  const way = wayOf(told, amount, world);
   if (way === null) return skip('unread');
   const memo = cleanMemo(memoFound?.memo);
   // After the amount first, then the bank's own shapes, then a payment memo; never the bank.
@@ -522,19 +571,17 @@ export function readBankAlert(input: BankAlertInput, home: Currency = VND): Bank
  * code for the payment, and the person's account, each null when the alert does not print it.
  */
 export function readBankAlertKeys(input: BankAlertInput, home: Currency = VND): BankAlertKeys {
-  const text = [input.title, input.subtitle, input.body]
-    .map((part) => (part ?? '').normalize('NFC').trim())
-    .filter((part) => part !== '')
-    .join('\n');
+  const { text, world, printed } = alertTextOf(input, home);
   const memoFound = memoIn(text);
   const told = memoFound ? text.slice(0, memoFound.start) : text;
-  const amount = movedAmount(amountsIn(told, home));
+  const amount = movedAmount(amountsIn(told, home, world), world);
   const plain = foldWords(text);
+  const what = REVERSAL_WORDS.test(plain) ? 'reversal' : REFUND_WORDS.test(plain) ? 'refund' : null;
   return {
     atKind: atAndKindOf(input.date, text).atKind,
-    reference: referenceOf(text),
+    reference: referenceOf(printed),
     accountTail: amount ? accountTailOf(told.slice(0, amount.start)) : null,
-    what: REVERSAL_WORDS.test(plain) ? 'reversal' : REFUND_WORDS.test(plain) ? 'refund' : null,
+    what: what ?? (world ? worldWhat(text) : null),
   };
 }
 
@@ -548,11 +595,9 @@ export function readFailedBankAlert(
 ): { readonly amount: number; readonly currency: string } | null {
   const read = readBankAlert(input, home);
   if (read.kind !== 'skipped' || read.reason !== 'failed') return null;
-  const text = [input.title, input.subtitle, input.body]
-    .map((part) => (part ?? '').normalize('NFC').trim())
-    .filter((part) => part !== '')
-    .join('\n');
+  const { text, world } = alertTextOf(input, home);
   const memoFound = memoIn(text);
-  const amount = movedAmount(amountsIn(memoFound ? text.slice(0, memoFound.start) : text, home));
+  const told = memoFound ? text.slice(0, memoFound.start) : text;
+  const amount = movedAmount(amountsIn(told, home, world), world);
   return amount && amount.amount > 0 ? { amount: amount.amount, currency: amount.currency } : null;
 }
