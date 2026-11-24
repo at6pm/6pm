@@ -4,6 +4,7 @@ import type { enSurfaces } from '../en-surfaces';
 // Widget and Live Activity space is tight: the shortest natural words win.
 export const frSurfaces: { readonly [Key in keyof typeof enSurfaces]: Entry } = {
   'surfaces.scanQr': 'Scanner QR',
+  'surfaces.scanReceipt': 'Scanner un ticket',
   'surfaces.safeTodayShort': 'à dépenser',
   'surfaces.today': 'Aujourd’hui',
   'surfaces.left': 'restant',
