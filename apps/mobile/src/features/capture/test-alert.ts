@@ -8,6 +8,11 @@
 
 /** With nothing arrived this long after sending, the screen says what to check. */
 export const TEST_ALERT_WAIT_MS = 10_000;
+/**
+ * The same on the iPhone, where Shortcuts starts the automation in its own time: on the iOS 27
+ * simulator a test took six to eleven seconds to come in.
+ */
+export const TEST_ALERT_SHORTCUT_WAIT_MS = 20_000;
 /** How often the inbox is brought in while a test alert is on its way. */
 export const TEST_ALERT_LOOK_MS = 600;
 

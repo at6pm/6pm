@@ -15,6 +15,7 @@ import { nativeReach } from '../surfaces/native-reach';
 import {
   TEST_ALERT_IDLE,
   TEST_ALERT_LOOK_MS,
+  TEST_ALERT_SHORTCUT_WAIT_MS,
   TEST_ALERT_WAIT_MS,
   testAlertArrivedAt,
   testAlertStep,
@@ -44,6 +45,7 @@ export const testAlertAvailable =
 
 /** The iPhone's alerts come through a Shortcut, which passes only a notification's words. */
 const throughShortcut = Platform.OS === 'ios';
+const waitFor = throughShortcut ? TEST_ALERT_SHORTCUT_WAIT_MS : TEST_ALERT_WAIT_MS;
 
 /**
  * Opens where a test alert that never arrived is put right: Android's Notification access at
@@ -60,8 +62,8 @@ export function openTestAlertFix(): void {
  * notification, worded like a small payment and marked as a test, in the app's language; then the
  * app's one inbox importer is asked to run every 600 ms until the alert has come the whole way in
  * (Android: the listener, the reader, the inbox, the import; the iPhone: the Shortcuts
- * automation, "Catch a bank alert", the inbox, the import), or ten seconds have passed with
- * nothing. On the iPhone the notification prints a one-time code, which is how the action knows
+ * automation, "Catch a bank alert", the inbox, the import), or ten seconds (twenty through a
+ * Shortcut) have passed with nothing. On the iPhone the notification prints a one-time code, which is how the action knows
  * it from anything else 6pm posts. The permission to post is asked for as it is for reminders.
  * Nothing is saved from a test alert.
  */
@@ -137,7 +139,7 @@ export function useTestAlert(): TestAlert {
           dispatch({ type: 'blocked', canAsk: permission === 'ask' });
         }
       });
-    }, TEST_ALERT_WAIT_MS);
+    }, waitFor);
     return () => {
       stop();
       clearInterval(look);
