@@ -7,6 +7,7 @@ import {
   floorToStep,
   moneyNextOf,
   monthEnd,
+  monthHabit,
   monthOf,
   previousMonth,
   nextMonthStart,
@@ -195,6 +196,13 @@ export function useDiary() {
     }
     return { days, app: [...apps][0] ?? null };
   }, [span, month, notDaily, data]);
+  // The month's habit card is offered once it has a place or a category to name.
+  const hasHabit = useMemo(
+    () =>
+      span !== null &&
+      monthHabit(span.filter((s) => monthOf(s.day) === month).map(toDiarySpend), notDaily) !== null,
+    [span, month, notDaily],
+  );
   const firstDays = [data?.since, data?.broughtSince].filter((d): d is string => !!d).sort();
   const firstMonth = firstDays[0] ? monthOf(firstDays[0]) : null;
   const page = useCallback(
@@ -389,8 +397,8 @@ export function useDiary() {
     recapKicker: t('diary.recap.kicker', { range: dates.range(monday, today) }),
     letters: dates.letters(monday),
     monthTitle: dates.month(month),
-    /** The month shown, when it has a closed evening to put on a card. */
-    shareMonth: monthClosed.length > 0 ? month : null,
+    /** The month shown, when it has a closed evening and a habit to put on a card. */
+    shareMonth: monthClosed.length > 0 && hasHabit ? month : null,
     summary:
       monthClosed.length === 0 && brought.days.size > 0
         ? t('import.diary.summary', { app: appName })

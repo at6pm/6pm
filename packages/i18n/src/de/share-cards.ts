@@ -3,7 +3,6 @@ import type { enShareCards } from '../en-share-cards';
 
 export const deShareCards: { readonly [Key in keyof typeof enShareCards]: Entry } = {
   'shareCards.chip': 'Teilen',
-  'shareCards.chipPostcard': 'Postkarte teilen',
   'shareCards.chipSplit': 'Deine Aufteilung teilen',
   'shareCards.sheetTitle': 'Teilen',
   'shareCards.story': 'Story',
@@ -12,25 +11,6 @@ export const deShareCards: { readonly [Key in keyof typeof enShareCards]: Entry 
   'shareCards.hiddenSub': 'Verborgen: nur Anteile und Anzahlen',
   'shareCards.shownSub': 'Sichtbar: jeder Betrag auf der Karte',
   'shareCards.shareImage': 'Bild teilen',
-  'shareCards.month.kicker': '{month} · um sechs abgeschlossen',
-  'shareCards.month.title': {
-    one: '{count} Sonnenuntergang, {under} im Rahmen.',
-    other: '{count} Sonnenuntergänge, {under} im Rahmen.',
-  },
-  'shareCards.month.inside': 'im Rahmen',
-  'shareCards.month.over': 'drüber',
-  'shareCards.month.missed': 'verpasst',
-  'shareCards.month.spent': 'Ausgegeben',
-  'shareCards.streak.kicker': 'Abschluss-Serie',
-  'shareCards.streak.evenings': { one: 'Abend', other: 'Abende' },
-  'shareCards.streak.inARow': { other: 'am Stück' },
-  'shareCards.streak.line7': 'Eine Woche voller Sechsen.',
-  'shareCards.streak.line30': 'Ein Monat ohne einen verpassten Abend.',
-  'shareCards.streak.line100': 'Hundert Sonnenuntergänge, jeder gezählt.',
-  'shareCards.streak.lineOther': {
-    one: '{count} Abend, abgeschlossen.',
-    other: '{count} Abende, jeder abgeschlossen.',
-  },
   'shareCards.streak.reveal': { one: '{count} Abend am Stück', other: '{count} Abende am Stück' },
   'shareCards.split.kicker': 'Meine Aufteilung · {month}',
   'shareCards.split.lead': 'Gehalt',
@@ -48,7 +28,15 @@ export const deShareCards: { readonly [Key in keyof typeof enShareCards]: Entry 
   'shareCards.year.today': 'Dein {year}',
   'shareCards.year.todaySub': 'Abende dieses Jahr abgeschlossen',
   'shareCards.year.todayTap': 'Tippen für das ganze Jahr',
-  'shareCards.jar.kicker': 'Glas voll · {month}',
-  'shareCards.jar.title': '{jar}: voll.',
-  'shareCards.jar.target': 'Ziel',
+  'shareCards.goal.kicker': 'Gespart · {month}',
+  'shareCards.goal.title': '{jar}: {amount} gespart',
+  'shareCards.habit.kicker': 'Mein {month}',
+  'shareCards.habit.title': '{name} ×{count}.',
+  'shareCards.habit.spent': '{amount} insgesamt',
+  'shareCards.habit.switchHint':
+    'Tippe auf die Überschrift, um zwischen Laden und Kategorie zu wechseln',
+  'shareCards.streak.title': {
+    one: '{count} Abend, Tag abgeschlossen.',
+    other: '{count} Abende am Stück, jeder Tag abgeschlossen.',
+  },
 };
