@@ -30,6 +30,8 @@ export const frWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.home.month': 'Mon mois',
   'widgetsGuide.home.monthWhat':
     'Le mois en soleils : chaque soir clôturé, et combien dans la limite.',
+  'widgetsGuide.home.actions':
+    'Note une dépense d’une seule touche : les widgets moyens et grands ont Scanner et +.',
   'widgetsGuide.home.step1':
     'Touche et maintiens un espace vide de l’écran d’accueil jusqu’à ce que les apps bougent.',
   'widgetsGuide.home.step2': 'Touche Modifier en haut, puis Ajouter un widget.',

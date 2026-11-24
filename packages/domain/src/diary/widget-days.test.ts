@@ -146,14 +146,21 @@ describe('todayReceipt', () => {
       spend('2026-10-08T20:00:00Z', 'kept', '2026-10-08'),
     ];
     const receipt = todayReceipt({ spends, today: '2026-10-09', closedBefore: 8, most: 4 });
-    expect(receipt.lines.map((l) => l.spend.at.slice(11, 16))).toEqual([
-      '08:15',
-      '12:10',
-      '13:31',
-      '16:40',
-    ]);
-    expect(receipt.lines.map((l) => l.confirmed)).toEqual([true, false, true, true]);
-    expect(receipt.earlier).toBe(1);
+    expect(receipt.lines.map((l) => l.spend.at.slice(11, 16))).toEqual(['12:10', '13:31', '16:40']);
+    expect(receipt.lines.map((l) => l.confirmed)).toEqual([false, true, true]);
+    expect(receipt.earlier).toBe(2);
     expect(receipt.number).toBe(9);
+  });
+
+  it('prints every line when they all fit, and gives "+N more" a line of its own when not', () => {
+    const four = ['07:00', '08:00', '09:00', '10:00'].map((t) => spend(`2026-10-09T${t}:00Z`));
+    const fit = todayReceipt({ spends: four, today: '2026-10-09', closedBefore: 0, most: 4 });
+    expect(fit.lines).toHaveLength(4);
+    expect(fit.earlier).toBe(0);
+
+    const five = [...four, spend('2026-10-09T11:00:00Z')];
+    const over = todayReceipt({ spends: five, today: '2026-10-09', closedBefore: 0, most: 4 });
+    expect(over.lines.map((l) => l.spend.at.slice(11, 16))).toEqual(['09:00', '10:00', '11:00']);
+    expect(over.earlier).toBe(2);
   });
 });

@@ -27,6 +27,8 @@ export const viWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.home.month': 'Tháng của tôi',
   'widgetsGuide.home.monthWhat':
     'Cả tháng thành những mặt trời: mỗi tối bạn đã chốt, và bao nhiêu lần trong mức.',
+  'widgetsGuide.home.actions':
+    'Ghi một khoản chỉ bằng một chạm: widget cỡ vừa và lớn có nút Quét và +.',
   'widgetsGuide.home.step1': 'Chạm và giữ một chỗ trống trên Màn hình chính đến khi các app rung.',
   'widgetsGuide.home.step2': 'Chạm Sửa ở góc trên, rồi Thêm tiện ích.',
   'widgetsGuide.home.step3': 'Tìm 6pm, vuốt tới cỡ bạn muốn, rồi chạm Thêm tiện ích.',
