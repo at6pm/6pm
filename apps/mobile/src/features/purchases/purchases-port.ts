@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import type { RedeemRoute } from './max-codes/redeem-code';
 import { PAID_LOOKS, type MaxPlan, type PaidLookId } from './products';
 
 /** What the store says about Max for this Apple ID. Every date is the store's, never the phone's. */
@@ -104,6 +105,11 @@ export interface PurchasesPort {
   customer(): Promise<CustomerState>;
   /** Opens Apple's manage-subscriptions sheet, and resolves when it has closed. */
   manageSubscriptions(): Promise<void>;
+  /**
+   * Opens the store's own redemption for a Max code (`code`, when a code link carried one), or
+   * says the store takes codes in its purchase window instead.
+   */
+  redeemCode(code: string | null): Promise<RedeemRoute>;
   /** Tells the app when the store reports a change by itself. Returns the unsubscribe. */
   onCustomerChange(listener: (customer: CustomerState) => void): () => void;
 }
@@ -116,5 +122,6 @@ export const unavailablePurchases: PurchasesPort = {
   restore: () => Promise.reject(new PurchasesUnavailable()),
   customer: () => Promise.reject(new PurchasesUnavailable()),
   manageSubscriptions: () => Promise.reject(new PurchasesUnavailable()),
+  redeemCode: () => Promise.reject(new PurchasesUnavailable()),
   onCustomerChange: () => () => undefined,
 };

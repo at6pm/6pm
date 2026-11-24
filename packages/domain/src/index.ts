@@ -121,5 +121,6 @@ export * from './capture/way-heartbeats';
 export * from './import';
 export * from './contracts/import-map';
 export * from './share';
+export * from './purchases/max-codes';
 export * from './contracts/funnel';
 export * from './funnel/funnel-steps';

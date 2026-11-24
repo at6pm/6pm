@@ -1,4 +1,5 @@
 import type { Catalogue } from '../catalogue-types';
+import { idMaxCodes } from './max-codes';
 import { idAsk } from './ask';
 import { idAskActions } from './ask-actions';
 import { idAskChat } from './ask-chat';
@@ -61,6 +62,7 @@ export { idAndroid } from './android';
 
 /** Indonesian: every key of the English catalogue. */
 export const id: Catalogue = {
+  ...idMaxCodes,
   ...idOnboarding,
   ...idDiary,
   ...idYearBook,
