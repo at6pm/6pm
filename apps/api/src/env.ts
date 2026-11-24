@@ -37,6 +37,7 @@ export type Bindings = Secrets & {
   readonly RECEIPT_READ_RATE_LIMIT: RateLimit;
   readonly ICON_PICK_RATE_LIMIT: RateLimit;
   readonly IMPORT_MAP_RATE_LIMIT: RateLimit;
+  readonly FUNNEL_RATE_LIMIT: RateLimit;
   readonly ENVIRONMENT: EnvironmentName;
   readonly COMMIT_SHA: string;
   /** `deepgram` (the default) or `elevenlabs`. */

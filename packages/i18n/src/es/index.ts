@@ -53,6 +53,7 @@ import { esWorkYear } from './work-year';
 import { esImport } from './import';
 import { esOwed } from './owed';
 import { esNotifications } from './notifications';
+import { esFunnel } from './funnel';
 import { esSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
@@ -116,6 +117,7 @@ export const es: Catalogue = {
   ...importSketchMomo,
   ...esSeason,
   ...esNotifications,
+  ...esFunnel,
 };
 
 /**

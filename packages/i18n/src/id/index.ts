@@ -53,6 +53,7 @@ import { idWorkYear } from './work-year';
 import { idImport } from './import';
 import { idOwed } from './owed';
 import { idNotifications } from './notifications';
+import { idFunnel } from './funnel';
 import { idSeason } from './season';
 import { importSketchEnglish, importSketchMomo } from '../en-import';
 
@@ -116,6 +117,7 @@ export const id: Catalogue = {
   ...importSketchMomo,
   ...idSeason,
   ...idNotifications,
+  ...idFunnel,
 };
 
 /**

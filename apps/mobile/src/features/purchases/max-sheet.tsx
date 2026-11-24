@@ -27,6 +27,7 @@ import { MaxPage, MaxSpread } from './max-spread';
 import { LEGAL_LINKS, MAX_PLANS, PAID_LOOKS, PRESELECTED_MAX_PLAN, type MaxPlan } from './products';
 import { usePurchases } from './purchases-provider';
 import { useMaxStatusLine } from './use-max-status-line';
+import { noteFunnel, noteMaxBought } from '../funnel/funnel-sync';
 import { MAX_CREAM, MAX_FONT, MAX_SOFT } from './max-colours';
 
 /**
@@ -76,6 +77,7 @@ export function MaxSheet() {
   const [chosen, setChosen] = useState<MaxPlan | null>(null);
   const [footerHeight, setFooterHeight] = useState(0);
   useEffect(() => loadOfferings(), [loadOfferings]);
+  useEffect(() => noteFunnel({ step: 'max_shown', detail: from }), [from]);
   // The yearly plan is the one the sheet opens on, if the store sells it.
   const plan: MaxPlan =
     chosen ??
@@ -100,6 +102,7 @@ export function MaxSheet() {
     if (outcome.kind === 'failed') return toast(t('max.failed'));
     if (outcome.kind !== 'purchased') return;
     haptics.success();
+    noteMaxBought(plan);
     // A look that was being tried on stays on: Max made it the customer's.
     const tried = lookStore.getSnapshot().tryOn;
     const worn =
