@@ -257,7 +257,7 @@ The encrypted backup (Max) is end-to-end encrypted, so Play counts it as not col
   Pub/Sub Admin and Monitoring Viewer in its project. Real-time notifications go through
   `projects/sixpm-play/topics/Play-Store-Notifications`.
 - **Subscriptions**: `ai.sixpm.app.max.monthly` and `ai.sixpm.app.max.yearly`, base plans `monthly` and
-  `yearly` (auto-renewing, 7-day grace period), $4.99 and $34.99 with Play's conversion elsewhere and
+  `yearly` (auto-renewing, 7-day grace period), $2.49 and $19.99 with Play's conversion elsewhere and
   99.000₫ and 799.000₫ in Vietnam. Each has the offer `free-trial`: 7 days, for anyone who never had a
   subscription in the app (the App Store's one trial per group). `yearly` is the backwards compatible
   plan, which promo codes need.

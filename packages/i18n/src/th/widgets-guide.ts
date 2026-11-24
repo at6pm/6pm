@@ -29,6 +29,7 @@ export const thWidgetsGuide: { readonly [Key in keyof typeof enWidgetsGuide]: En
   'widgetsGuide.home.month': 'เดือนของฉัน',
   'widgetsGuide.home.monthWhat':
     'ทั้งเดือนเป็นดวงอาทิตย์: ทุกเย็นที่คุณปิดวัน และกี่ครั้งที่อยู่ในงบ',
+  'widgetsGuide.home.actions': 'บันทึกรายจ่ายได้ในแตะเดียว วิดเจ็ตขนาดกลางและใหญ่มีปุ่มสแกนและ +',
   'widgetsGuide.home.step1': 'แตะพื้นที่ว่างบนหน้าจอโฮมค้างไว้จนแอปเริ่มสั่น',
   'widgetsGuide.home.step2': 'แตะแก้ไขที่มุมบน แล้วแตะเพิ่มวิดเจ็ต',
   'widgetsGuide.home.step3': 'ค้นหา 6pm ปัดไปที่ขนาดที่ต้องการ แล้วแตะเพิ่มวิดเจ็ต',

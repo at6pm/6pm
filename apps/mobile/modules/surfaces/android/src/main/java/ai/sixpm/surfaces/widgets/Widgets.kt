@@ -15,7 +15,10 @@ import android.view.View
 import android.widget.RemoteViews
 import kotlin.math.roundToInt
 
-/** Safe today: the number on its sky (small), or with the jars (medium). Opens Today. */
+/**
+ * Safe today: the number on its sky (small), or with the jars, Scan and Quick add (medium). Opens
+ * Today.
+ */
 class SafeTodayWidget : AppWidgetProvider() {
   override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
     for (id in ids) Widgets.drawSafe(context, manager, id)
@@ -26,7 +29,10 @@ class SafeTodayWidget : AppWidgetProvider() {
   }
 }
 
-/** Today: what is left, the day against its line, and today's newest spends. Opens Today. */
+/**
+ * Today: what is left with Scan and Quick add, the day against its line, and today's newest
+ * spends. Opens Today.
+ */
 class TodayListWidget : AppWidgetProvider() {
   override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
     for (id in ids) Widgets.drawList(context, manager, id)
@@ -37,7 +43,7 @@ class TodayListWidget : AppWidgetProvider() {
   }
 }
 
-/** My month: the month as suns. Opens the Diary. */
+/** My month: the month as suns, with Scan and Quick add at its foot. Opens the Diary. */
 class MonthWidget : AppWidgetProvider() {
   override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
     for (id in ids) Widgets.drawMonth(context, manager, id)
@@ -55,7 +61,7 @@ class WeekWidget : AppWidgetProvider() {
   }
 }
 
-/** Today's receipt: today's catches as receipt lines. Opens Today. */
+/** Today's receipt: today's catches as receipt lines, with Scan and Quick add. Opens Today. */
 class ReceiptWidget : AppWidgetProvider() {
   override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
     for (id in ids) Widgets.drawReceipt(context, manager, id)
@@ -145,8 +151,9 @@ object Widgets {
         drawings.small(canvas, moment, day, card)
         return@drawn picture(context, canvas, id, "${day.safeShort} ${card.subShort}", today)
       }
-      val spots = drawings.medium(canvas, moment, card)
+      val (spots, actions) = drawings.medium(canvas, moment, card)
       val views = RemoteViews(context.packageName, R.layout.sixpm_widget_postcard_medium)
+      WidgetActions.bind(context, views, id, actions, density(context))
       views.setImageViewBitmap(R.id.sixpm_widget_picture, canvas.bitmap)
       views.setContentDescription(R.id.sixpm_widget_picture, "${card.number} · ${card.sub}")
       views.setOnClickPendingIntent(android.R.id.background, open(context, id, 0, today))
@@ -168,20 +175,8 @@ object Widgets {
     drawn(context, manager, id, 320 to 320) { canvas, moment, drawings ->
       val day = moment.day ?: return@drawn null
       val card = day.card ?: return@drawn null
-      val targets = MoreDrawings(WidgetFaces(context), drawings).list(canvas, moment, day, card)
-      val views = RemoteViews(context.packageName, R.layout.sixpm_widget_today)
-      views.setImageViewBitmap(R.id.sixpm_widget_picture, canvas.bitmap)
-      views.setContentDescription(R.id.sixpm_widget_picture, day.safeText)
-      views.setOnClickPendingIntent(android.R.id.background, open(context, id, 0, moment.postcards?.todayLink))
-      if (targets.scan != null) {
-        views.setOnClickPendingIntent(R.id.sixpm_widget_scan, open(context, id, "scan"))
-        views.setContentDescription(R.id.sixpm_widget_scan, moment.text("scanQr"))
-      }
-      if (targets.add != null) {
-        views.setOnClickPendingIntent(R.id.sixpm_widget_add, open(context, id, "quick-add"))
-        views.setContentDescription(R.id.sixpm_widget_add, moment.text("quickAdd"))
-      }
-      views
+      val actions = MoreDrawings(WidgetFaces(context), drawings).list(canvas, moment, day, card)
+      withActions(context, canvas, id, day.safeText, moment.postcards?.todayLink, actions)
     }
 
   fun drawWeek(context: Context, manager: AppWidgetManager, id: Int) =
@@ -195,16 +190,16 @@ object Widgets {
     drawn(context, manager, id, 320 to 160) { canvas, moment, drawings ->
       val card = moment.day?.card ?: return@drawn null
       val receipt = moment.postcards?.receipt ?: return@drawn null
-      MoreDrawings(WidgetFaces(context), drawings).receipt(canvas, moment, card)
-      picture(context, canvas, id, "${receipt.title} · ${receipt.left} ${card.amount}", moment.postcards.todayLink)
+      val actions = MoreDrawings(WidgetFaces(context), drawings).receipt(canvas, moment, card)
+      withActions(context, canvas, id, "${receipt.title} · ${receipt.left} ${card.amount}", moment.postcards.todayLink, actions)
     }
 
   fun drawMonth(context: Context, manager: AppWidgetManager, id: Int) =
     drawn(context, manager, id, 320 to 320) { canvas, moment, drawings ->
       val card = moment.day?.card ?: return@drawn null
-      drawings.month(canvas, moment, card)
+      val actions = drawings.month(canvas, moment, card)
       val cards = moment.postcards
-      picture(context, canvas, id, "${cards?.monthTitle} · ${cards?.monthHeadline}", cards?.monthLink)
+      withActions(context, canvas, id, "${cards?.monthTitle} · ${cards?.monthHeadline}", cards?.monthLink, actions)
     }
 
   fun drawStreak(context: Context, manager: AppWidgetManager, id: Int) =
@@ -220,6 +215,17 @@ object Widgets {
       drawings.oneJar(canvas, moment, jar)
       picture(context, canvas, id, "${jar.name} · ${jar.countText} ${jar.countUnit}", jar.path)
     }
+
+  /** A postcard drawn whole with Scan and Quick add on it: tapping elsewhere opens `link`. */
+  private fun withActions(context: Context, canvas: WidgetCanvas, id: Int, description: String, link: String?, actions: List<WidgetAction>): RemoteViews =
+    RemoteViews(context.packageName, R.layout.sixpm_widget_actions).apply {
+      setImageViewBitmap(R.id.sixpm_widget_picture, canvas.bitmap)
+      setContentDescription(R.id.sixpm_widget_picture, description)
+      setOnClickPendingIntent(android.R.id.background, open(context, id, 0, link))
+      WidgetActions.bind(context, this, id, actions, density(context))
+    }
+
+  private fun density(context: Context): Float = context.resources.displayMetrics.density
 
   private fun picture(context: Context, canvas: WidgetCanvas, id: Int, description: String, link: String?): RemoteViews =
     RemoteViews(context.packageName, R.layout.sixpm_widget_picture).apply {

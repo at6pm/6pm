@@ -5,7 +5,10 @@ import { paperInk } from '@6pm/theme';
 import type { MoneySnapshot } from '../../data/money-store';
 import type { I18n } from '../../i18n/i18n';
 
-/** The medium receipt prints this many of today's lines; earlier ones fold into "+N more". */
+/**
+ * The medium receipt has room for this many lines; with more spends than that it prints one fewer
+ * and folds the earlier ones into "+N more" (`todayReceipt`).
+ */
 export const RECEIPT_LINES = 4;
 
 /**

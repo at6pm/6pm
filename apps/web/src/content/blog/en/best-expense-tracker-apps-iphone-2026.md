@@ -34,7 +34,7 @@ Three questions sort most people:
 | **Monarch** | Core $14.99/mo or $99.99/yr; Plus $199.99/yr | No (7-day trial) | Yes | iOS, Android, web | 4.9 (~115K) |
 | **Rocket Money** | Free; Premium tiers in-app | Yes | Yes | iOS, Android, web | 4.5 (401K) |
 | **Spendee** | Plus $1.99/mo, Premium $5.99/mo on spendee.com (in-app prices vary) | Yes (1 wallet, 1 budget) | Yes | iOS, Android, web | 4.6 (6.3K) |
-| **6pm** | Max $4.99/mo or $34.99/yr | Yes: the close, every capture, Budget together | No, by design | iPhone, Android | Not yet rated (new) |
+| **6pm** | Max $2.49/mo or $19.99/yr | Yes: the close, every capture, Budget together | No, by design | iPhone, Android | Not yet rated (new) |
 
 Prices and ratings were checked on 21 October 2026 and change often. Check the store before you subscribe.
 
@@ -94,7 +94,7 @@ Spendee has shared wallets for couples, families and roommates, category budgets
 
 At 6pm (or the time you pick) you swipe through the day: Keep, Edit or Not mine. The last card stamps the day **CLOSED**. Next morning you get one number, **Safe to spend today**: your pay, minus bills, minus pots and **Future you**, spread evenly to payday. **Ask 6pm** answers "Can I afford $350 on Saturday?" from your own numbers.
 
-The free tier is the whole ritual: the close, every way to capture, Budget together (shared pots for two). 6pm Max ($4.99/month or $34.99/year, 7-day trial) adds looks, unlimited Ask and pots, Travel mode, Year book and encrypted backup.
+The free tier is the whole ritual: the close, every way to capture, Budget together (shared pots for two). 6pm Max ($2.49/month or $19.99/year, 7-day trial) adds looks, unlimited Ask and pots, Travel mode, Year book and encrypted backup.
 
 **Where 6pm is weaker, plainly:** no bank sync, so a card swipe you never photograph, forward or tap with Apple Pay has to be typed. There is no web or Mac app. No investments or net worth. Light on reports. And it is new, with no App Store ratings yet.
 

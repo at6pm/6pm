@@ -168,6 +168,19 @@ export interface SnapshotInput {
   readonly hideAmounts?: boolean;
   /** Development builds: the clock the app is pinned to, which the widgets then follow. */
   readonly pinnedAt?: Date | null;
+  /** The phone has Scan's camera: the medium and large widgets then carry a Scan button. */
+  readonly scan?: boolean;
+}
+
+/**
+ * The Scan button on the medium and large widgets: in đồng it scans a VietQR to pay; in any other
+ * home currency the same screen is for a receipt, so the button says so and wears a receipt's
+ * scanner.
+ */
+function scanAction(format: MoneyFormat, t: I18n['t']): { label: string; glyph: string } {
+  return format.currency.code === VND.code
+    ? { label: t('surfaces.scanQr'), glyph: glyphOf('qr_code_scanner') }
+    : { label: t('surfaces.scanReceipt'), glyph: glyphOf('document_scanner') };
 }
 
 /**
@@ -187,6 +200,7 @@ export function surfaceSnapshot(input: SnapshotInput): SurfaceSnapshot {
   const closeAt = money.plan?.closeAt ?? DEFAULT_CLOSE_AT;
   const context: CardContext = { t, language, format, closeAt, look: look.look };
   const closedRow = money.closedDays.find((d) => d.day === money.today) ?? null;
+  const scan = scanAction(format, t);
   const entries: Entry[] = [];
   if (today !== null) {
     const next = nextMoneyDay(money);
@@ -254,7 +268,8 @@ export function surfaceSnapshot(input: SnapshotInput): SurfaceSnapshot {
       stamp: t('widgets.stamp').toLocaleUpperCase(localeOf(language)),
       brand: '6pm',
       hidden: HIDDEN,
-      'glyph.scan': glyphOf('qr_code_scanner'),
+      scan: scan.label,
+      'glyph.scan': scan.glyph,
       'glyph.add': glyphOf('add'),
       'glyph.close': glyphOf('wb_twilight'),
       'font.display': displayFamily(look),
@@ -285,7 +300,13 @@ export function surfaceSnapshot(input: SnapshotInput): SurfaceSnapshot {
       format,
     }),
     look: surfaceLook(look),
-    links: { today: '/app?tab=today', month: '/app?tab=diary', streak: '/app?tab=diary' },
+    links: {
+      today: '/app?tab=today',
+      month: '/app?tab=diary',
+      streak: '/app?tab=diary',
+      ...(input.scan ? { scan: '/app/scan' } : {}),
+      add: '/app/quick-add',
+    },
     ...(input.pinnedAt ? { pinnedAt: input.pinnedAt.toISOString() } : {}),
   };
 }
