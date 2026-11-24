@@ -338,6 +338,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ],
     // Budget together pairs two people with Sign in with Apple.
     'expo-apple-authentication',
+    // Each app extension carries the app's version and build number. Listed before the targets
+    // plugin so it runs after it: Expo runs the mods of plugins listed earlier last.
+    './plugins/with-extension-versions',
     // Widgets, the Live Activity, controls, the share extension and the shortcuts: ./targets.
     ['@bacons/apple-targets', { appleTeamId: APPLE_TEAM_ID }],
     // Crash reports. Source maps and debug symbols upload only when the build has a Sentry token.
