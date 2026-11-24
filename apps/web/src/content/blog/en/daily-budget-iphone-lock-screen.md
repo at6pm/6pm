@@ -86,7 +86,7 @@ Not showing? In **Settings**, open **6pm** and turn on **Live Activities**.
 
 ## Free or Max?
 
-Every widget and control above is **free**, drawn in the Golden Hour look. With **6pm Max** ($4.99/month or $34.99/year, 7-day free trial), widgets wear whichever look you've picked. The number is the same either way.
+Every widget and control above is **free**, drawn in the Golden Hour look. With **6pm Max** ($2.49/month or $19.99/year, 7-day free trial), widgets wear whichever look you've picked. The number is the same either way.
 
 ## Small tweaks that make it stick
 

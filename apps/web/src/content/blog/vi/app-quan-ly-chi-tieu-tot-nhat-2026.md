@@ -31,7 +31,7 @@ Trước khi xem bảng, hỏi mình ba câu:
 |---|---|---|---|---|
 | Nền tảng | iPhone, Android | iPhone, iPad, Mac, Apple Watch, Android | iPhone, iPad, Mac, Android | iPhone, Android, web |
 | Bản miễn phí | Có: chốt ngày, mọi cách ghi, Cùng chia ngân sách | Có, kèm mua thêm | Có, kèm mua thêm | Có: 1 ví tiền mặt, 1 ngân sách |
-| Gói trả phí | Max 99.000₫/tháng hoặc 799.000₫/năm, thử 7 ngày | Premium trọn đời 599.000₫; Ví liên kết 39.000–49.000₫/tháng | Premium năm 215.000₫, trọn đời 799.000₫; biến động số dư 49.000₫ | Plus, Premium (xem giá hiện tại trên App Store) |
+| Gói trả phí | Max 49.000₫/tháng hoặc 299.000₫/năm, thử 7 ngày | Premium trọn đời 599.000₫; Ví liên kết 39.000–49.000₫/tháng | Premium năm 215.000₫, trọn đời 799.000₫; biến động số dư 49.000₫ | Plus, Premium (xem giá hiện tại trên App Store) |
 | Liên kết ngân hàng | Không, có chủ đích | Có, gói trả phí | Có, gói trả phí | Có |
 | Quét VietQR để trả và ghi | Có | Không thấy trên trang | Không thấy trên trang | Không thấy trên trang |
 | Chụp hoá đơn | Có | Có | Có | Có |
