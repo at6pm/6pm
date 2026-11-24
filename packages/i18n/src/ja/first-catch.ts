@@ -103,4 +103,8 @@ export const jaFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'testAlert.notice.body': 'テスト：{amount}の支払い。実際の支払いではありません。',
   'testAlert.channel': 'テスト通知',
   'testAlert.slip.note': 'テストです。支払いではないので、何も記録していません。',
+  'testAlert.firstTry':
+    '何も届きませんでした。インストールやアップデートの直後は、iPhoneが最初の1回を取りこぼすことがあります。もう一度送ってください。',
+  'testAlert.stillNothing':
+    'それでも届かない？ショートカットで、オートメーションがオンか、6pmがアプリのリストにあるか確認してください。',
 };

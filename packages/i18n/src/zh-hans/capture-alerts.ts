@@ -116,4 +116,16 @@ export const zhHansCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlert
   'capture.alerts.paused.title': '银行通知已暂停',
   'capture.alerts.paused.body': '6pm 看不到你的通知了。重新开启通知使用权，付款就会再次自动记下。',
   'capture.alerts.paused.action': '重新开启',
+  'capture.alerts.steps.headline': '银行一发通知，开销就自己记好。',
+  'capture.alerts.steps.addTitle': '添加快捷指令',
+  'capture.alerts.steps.addLine': '打开后，轻点“添加快捷指令”。',
+  'capture.alerts.steps.addAction': '获取快捷指令',
+  'capture.alerts.steps.onTitle': '开启“自动化”',
+  'capture.alerts.steps.onLine':
+    '在“Catch a bank alert”里轻点触发条件上的 ›。开启“自动化”，关闭“通知”。',
+  'capture.alerts.steps.testTitle': '试试是否有效',
+  'capture.alerts.steps.testLine': '6pm 会给自己发一条测试通知，不会记任何账。',
+  'capture.alerts.steps.privacy': '服务器读取通知前，长号码会先被隐藏。',
+  'capture.alerts.steps.privacyDevice': '通知只在这台 iPhone 上读取。',
+  'capture.alerts.steps.done': '完成',
 };

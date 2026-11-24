@@ -18,9 +18,16 @@ import { body } from '../../ui/type/fonts';
 
 /**
  * "Not working?": what goes wrong and the other ways in, folded away until asked for. Most people
- * follow the steps and never open it; the ones who do get every fix in one place.
+ * follow the steps and never open it; the ones who do get every fix in one place. As a `row` it
+ * is a card's width, its words on the left and the chevron on the right, closing a list of cards.
  */
-export function GuideTrouble({ children }: { readonly children: ReactNode }) {
+export function GuideTrouble({
+  look = 'link',
+  children,
+}: {
+  readonly look?: 'link' | 'row';
+  readonly children: ReactNode;
+}) {
   const { palette } = useTheme();
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
@@ -44,16 +51,36 @@ export function GuideTrouble({ children }: { readonly children: ReactNode }) {
           haptics.tap();
           setOpen((was) => !was);
         }}
-        style={{
-          alignSelf: 'center',
-          height: 44,
-          paddingHorizontal: 16,
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 4,
-        }}
+        style={
+          look === 'row'
+            ? {
+                height: 54,
+                paddingLeft: 18,
+                paddingRight: 14,
+                borderRadius: 20,
+                backgroundColor: palette.cell,
+                boxShadow: palette.cardShadow,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }
+            : {
+                alignSelf: 'center',
+                height: 44,
+                paddingHorizontal: 16,
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 4,
+              }
+        }
       >
-        <Text style={{ ...body(15, 600), color: palette.inkSoft }}>
+        <Text
+          style={
+            look === 'row'
+              ? { ...body(16, 600), color: palette.ink }
+              : { ...body(15, 600), color: palette.inkSoft }
+          }
+        >
           {t('capture.guide.trouble')}
         </Text>
         <Animated.View style={chevron}>

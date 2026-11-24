@@ -120,4 +120,17 @@ export const frCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.paused.body':
     '6pm ne voit plus tes notifications. Redonne-lui l’accès et tes paiements se noteront à nouveau tout seuls.',
   'capture.alerts.paused.action': 'Redonner l’accès',
+  'capture.alerts.steps.headline':
+    'Tes dépenses se notent toutes seules grâce aux alertes de ta banque.',
+  'capture.alerts.steps.addTitle': 'Ajoute le raccourci',
+  'capture.alerts.steps.addLine': 'Quand il s’ouvre, touche Ajouter le raccourci.',
+  'capture.alerts.steps.addAction': 'Obtenir le raccourci',
+  'capture.alerts.steps.onTitle': 'Active Automatisation',
+  'capture.alerts.steps.onLine':
+    'Dans « Catch a bank alert », touche › sur le déclencheur. Automatisation activée, Notifier désactivé.',
+  'capture.alerts.steps.testTitle': 'Vérifie que ça marche',
+  'capture.alerts.steps.testLine': '6pm s’envoie une alerte de test. Rien n’est noté.',
+  'capture.alerts.steps.privacy': 'Les longs numéros sont masqués pour notre serveur.',
+  'capture.alerts.steps.privacyDevice': 'Les alertes sont lues sur cet iPhone uniquement.',
+  'capture.alerts.steps.done': 'Fait',
 };

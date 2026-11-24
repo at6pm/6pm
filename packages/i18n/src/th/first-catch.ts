@@ -99,4 +99,8 @@ export const thFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'testAlert.notice.body': 'ทดสอบ: จ่าย {amount} นี่ไม่ใช่การจ่ายเงินจริง',
   'testAlert.channel': 'แจ้งเตือนทดสอบ',
   'testAlert.slip.note': 'แค่ทดสอบ ไม่ใช่การจ่ายเงิน ไม่มีอะไรถูกบันทึก',
+  'testAlert.firstTry':
+    'ยังไม่มีอะไรมาถึง หลังติดตั้งหรืออัปเดต iPhone อาจพลาดครั้งแรกได้ ลองส่งอีกครั้ง',
+  'testAlert.stillNothing':
+    'ยังไม่มาอีก? ในแอปคำสั่งลัด ดูว่าเปิด ระบบอัตโนมัติ แล้ว และมี 6pm อยู่ในรายการแอป',
 };

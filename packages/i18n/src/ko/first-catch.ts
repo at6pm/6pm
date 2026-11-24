@@ -100,4 +100,8 @@ export const koFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'testAlert.notice.body': '테스트: {amount} 결제. 실제 결제가 아니에요.',
   'testAlert.channel': '테스트 알림',
   'testAlert.slip.note': '테스트일 뿐, 결제가 아니에요. 아무것도 기록하지 않았어요.',
+  'testAlert.firstTry':
+    '아무것도 안 왔어요. 설치나 업데이트 직후에는 iPhone이 첫 시도를 놓칠 때가 있어요. 다시 보내 보세요.',
+  'testAlert.stillNothing':
+    '그래도 안 오나요? 단축어에서 자동화가 켜져 있는지, 6pm이 앱 목록에 있는지 확인하세요.',
 };

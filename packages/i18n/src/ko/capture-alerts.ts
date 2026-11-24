@@ -120,4 +120,16 @@ export const koCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.paused.body':
     '6pm이 알림을 볼 수 없어요. 접근 권한을 다시 켜면 결제가 다시 저절로 기록돼요.',
   'capture.alerts.paused.action': '접근 권한 다시 켜기',
+  'capture.alerts.steps.headline': '은행 알림으로 지출이 저절로 기록돼요.',
+  'capture.alerts.steps.addTitle': '단축어 추가하기',
+  'capture.alerts.steps.addLine': '열리면 단축어 추가를 탭하세요.',
+  'capture.alerts.steps.addAction': '단축어 받기',
+  'capture.alerts.steps.onTitle': '자동화 켜기',
+  'capture.alerts.steps.onLine':
+    '“Catch a bank alert”에서 트리거의 ›를 탭하세요. 자동화는 켜고, 실행할 때 알림은 끄세요.',
+  'capture.alerts.steps.testTitle': '잘 되는지 확인하기',
+  'capture.alerts.steps.testLine': '6pm이 스스로 테스트 알림을 보내요. 아무것도 기록되지 않아요.',
+  'capture.alerts.steps.privacy': '서버가 알림을 읽기 전에 긴 번호는 가려져요.',
+  'capture.alerts.steps.privacyDevice': '알림은 이 iPhone에서만 읽어요.',
+  'capture.alerts.steps.done': '완료',
 };

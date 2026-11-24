@@ -120,4 +120,16 @@ export const jaCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.paused.body':
     '6pmが通知を読めません。アクセスを戻すと、支払いがまた自動で記録されます。',
   'capture.alerts.paused.action': 'アクセスを戻す',
+  'capture.alerts.steps.headline': '銀行の通知から、支出がひとりでに記録されます。',
+  'capture.alerts.steps.addTitle': 'ショートカットを追加',
+  'capture.alerts.steps.addLine': '開いたら「ショートカットを追加」をタップ。',
+  'capture.alerts.steps.addAction': 'ショートカットを入手',
+  'capture.alerts.steps.onTitle': 'オートメーションをオンに',
+  'capture.alerts.steps.onLine':
+    '「Catch a bank alert」でトリガーの「›」をタップ。オートメーションはオン、通知はオフ。',
+  'capture.alerts.steps.testTitle': '動くか確かめる',
+  'capture.alerts.steps.testLine': '6pmが自分にテスト通知を送ります。何も記録されません。',
+  'capture.alerts.steps.privacy': '長い番号は、サーバーが通知を読む前に伏せられます。',
+  'capture.alerts.steps.privacyDevice': '通知はこのiPhoneの中だけで読みます。',
+  'capture.alerts.steps.done': '完了',
 };

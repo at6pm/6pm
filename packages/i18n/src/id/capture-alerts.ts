@@ -120,4 +120,17 @@ export const idCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.paused.body':
     '6pm tidak bisa melihat notifikasimu. Nyalakan lagi aksesnya supaya pembayaranmu tercatat sendiri lagi.',
   'capture.alerts.paused.action': 'Nyalakan lagi akses',
+  'capture.alerts.steps.headline': 'Pengeluaranmu tercatat sendiri dari notifikasi bank.',
+  'capture.alerts.steps.addTitle': 'Tambahkan pintasannya',
+  'capture.alerts.steps.addLine': 'Saat terbuka, ketuk Tambahkan Pintasan.',
+  'capture.alerts.steps.addAction': 'Ambil pintasannya',
+  'capture.alerts.steps.onTitle': 'Nyalakan Otomatisasi',
+  'capture.alerts.steps.onLine':
+    'Di “Catch a bank alert”, ketuk › di pemicu. Otomatisasi nyala, Beri Tahu mati.',
+  'capture.alerts.steps.testTitle': 'Cek apakah sudah jalan',
+  'capture.alerts.steps.testLine':
+    '6pm mengirim notifikasi uji coba ke dirinya sendiri. Tidak ada yang dicatat.',
+  'capture.alerts.steps.privacy': 'Nomor panjang disamarkan dari server kami.',
+  'capture.alerts.steps.privacyDevice': 'Notifikasi hanya dibaca di iPhone ini.',
+  'capture.alerts.steps.done': 'Selesai',
 };

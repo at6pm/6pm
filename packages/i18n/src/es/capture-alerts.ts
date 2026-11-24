@@ -120,4 +120,16 @@ export const esCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.alerts.paused.body':
     '6pm no puede ver tus notificaciones. Vuelve a darle acceso y tus pagos se anotarán solos otra vez.',
   'capture.alerts.paused.action': 'Volver a dar acceso',
+  'capture.alerts.steps.headline': 'Tus gastos se apuntan solos con los avisos de tu banco.',
+  'capture.alerts.steps.addTitle': 'Añade el atajo',
+  'capture.alerts.steps.addLine': 'Cuando se abra, toca Añadir atajo.',
+  'capture.alerts.steps.addAction': 'Conseguir el atajo',
+  'capture.alerts.steps.onTitle': 'Activa Automatización',
+  'capture.alerts.steps.onLine':
+    'En “Catch a bank alert”, toca › en el activador. Automatización activada, Notificar desactivado.',
+  'capture.alerts.steps.testTitle': 'Comprueba que funciona',
+  'capture.alerts.steps.testLine': '6pm se envía un aviso de prueba. No se apunta nada.',
+  'capture.alerts.steps.privacy': 'Los números largos se ocultan a nuestro servidor.',
+  'capture.alerts.steps.privacyDevice': 'Los avisos solo se leen en este iPhone.',
+  'capture.alerts.steps.done': 'Hecho',
 };
