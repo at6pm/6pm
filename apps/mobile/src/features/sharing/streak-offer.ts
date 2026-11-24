@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 
 import {
   addDays,
-  closeRunTo,
-  streakMilestoneOf,
+  streakCardOffer,
   STREAK_CARD_MILESTONES,
   type LocalDate,
   type StreakMilestone,
@@ -43,13 +42,13 @@ export function useStreakMilestone(day: LocalDate): StreakMilestone | null {
   useEffect(() => {
     let live = true;
     void (async () => {
-      const rows = await readClosedBetween(store, addDays(day, -LOOK_BACK), day);
+      const [rows, offered] = await Promise.all([
+        readClosedBetween(store, addDays(day, -LOOK_BACK), day),
+        offeredMilestones(store.db),
+      ]);
       // The evening being closed is filed when Done is tapped: it counts as closed already.
-      const run = closeRunTo([...rows.map((r) => r.day), day], day);
-      const reached = run ? streakMilestoneOf(run.days) : null;
-      if (reached === null) return;
-      const offered = await offeredMilestones(store.db);
-      if (!offered.includes(reached) && live) setMilestone(reached);
+      const reached = streakCardOffer({ closedDays: rows.map((r) => r.day), day, offered });
+      if (reached !== null && live) setMilestone(reached);
     })().catch(() => undefined);
     return () => {
       live = false;

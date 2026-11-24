@@ -157,7 +157,7 @@ export function DiaryPage({ scrollRef }: { readonly scrollRef: AnimatedRef<Anima
             footer={
               diary.shareMonth ? (
                 <ShareChip
-                  card="month"
+                  card="habit"
                   of={diary.shareMonth}
                   size="small"
                   label={t('shareCards.chip')}
