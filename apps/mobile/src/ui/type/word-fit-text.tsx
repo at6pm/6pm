@@ -80,13 +80,15 @@ function probeStyle(style: TextStyle): TextStyle {
  * cut a word in two (a long word, a narrow box, a large text size), the heading shrinks just
  * enough for its widest word to fit a line, down to `minScale`, and wraps between words again.
  * Returns the style to draw with, the layout handler for the text, and a hidden copy of its words
- * that measures the widest.
+ * that measures the widest. Given the `lineWidth` of a box of fixed width, it shrinks as soon as the
+ * widest word is measured, without waiting for a cut.
  */
 export function useWordFit(
   text: string,
   style: TextStyle,
   minScale = FIT_MIN_SCALE,
   textProps?: Pick<TextProps, 'allowFontScaling' | 'maxFontSizeMultiplier'>,
+  lineWidth?: number,
 ) {
   const [fit, setFit] = useState({ text, scale: 1 });
   // A new text starts again at its designed size.
@@ -109,6 +111,7 @@ export function useWordFit(
   };
   const onWords = (e: LayoutChangeEvent) => {
     wordWidth.current = e.nativeEvent.layout.width;
+    if (lineWidth !== undefined && scale === 1) cut.current = { text, lineWidth };
     settle();
   };
 

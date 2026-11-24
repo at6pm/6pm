@@ -23,7 +23,7 @@ import { wordsToMeasure } from '../../ui/type/word-fit';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { useTheme } from '../../ui/theme/theme';
 import { body, tabular } from '../../ui/type/fonts';
-import { HEADING_BREAKS, headingWords } from '../../ui/type/word-fit-text';
+import { HEADING_BREAKS, headingWords, useWordFit } from '../../ui/type/word-fit-text';
 import { sharedPotRoute } from '../together/shared-jar';
 import { Jar } from './jar';
 import { alpha } from './jar-colours';
@@ -47,7 +47,10 @@ const NAME = body(12, 650);
 const NAME_WIDTH = 64;
 const NAME_LINE = 15;
 const NAME_SMALLEST = 11 / 12;
-/** A name of one long word (Weihnachten) keeps to one line and shrinks this far, never cut in two. */
+/**
+ * A name of one long word (Weihnachten) keeps to one line, and a long word among others
+ * ("Wochenende am Meer") to its own: either shrinks this far rather than be cut in two.
+ */
 const WORD_SMALLEST = 9 / 12;
 const HELD = { ...body(11), ...tabular };
 
@@ -194,6 +197,15 @@ function ShelfCell({
   const own = jar.kind === 'own' ? jar : null;
   // One word with nowhere to break: a second line would cut it in two, so it shrinks to its line.
   const oneWord = wordsToMeasure(jar.name) === jar.name;
+  // A word too wide for the cell's line shrinks the name until it fits (`useWordFit`), with a
+  // little room to spare: the system face tracks wider as it gets smaller.
+  const fit = useWordFit(
+    jar.name,
+    { ...NAME, lineHeight: NAME_LINE, color: palette.ink, textAlign: 'center' },
+    WORD_SMALLEST,
+    undefined,
+    NAME_WIDTH - 4,
+  );
   return (
     <Animated.View style={[{ width: CELL, alignItems: 'center', gap: 7 }, landStyle]}>
       <PressScale
@@ -232,10 +244,11 @@ function ShelfCell({
                 if (lines === 2 && !twoLines) setTwoLines(true);
                 onNameLines(lines);
               }}
-              style={{ ...NAME, lineHeight: NAME_LINE, color: palette.ink, textAlign: 'center' }}
+              style={fit.style}
             >
               {twoLines ? balanceTwoLines(jar.name) : jar.name}
             </Text>
+            {oneWord ? null : fit.probe}
           </View>
           <Text style={{ ...HELD, color: alpha(palette.ink, 0.62) }}>{money.short(jar.saved)}</Text>
         </View>
