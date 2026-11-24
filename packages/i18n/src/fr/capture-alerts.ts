@@ -53,14 +53,26 @@ export const frCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l1Title': 'Ajoute le raccourci 6pm',
   'capture.walk.alerts.l1Body':
     'Touche « Obtenir le raccourci 6pm » ci-dessus, puis Ajouter un raccourci. Il s’appelle « Catch a bank alert ».',
+  'capture.walk.alerts.l2Title': 'Active l’automatisation',
   'capture.walk.alerts.l2Body':
+    'Ouvre-le dans Raccourcis et touche › sur le déclencheur. Active Automatisation et laisse Notifier désactivé, pour que les alertes soient repérées sans bruit. Revenir en arrière l’enregistre.',
+  'capture.walk.alerts.l2ChooseBody':
     'Ouvre-le dans Raccourcis, touche App en haut et choisis ta banque, puis + pour chaque autre banque et portefeuille.',
+  'capture.walk.alerts.l3Title': 'Envoie une alerte de test',
+  'capture.walk.alerts.l3Body':
+    'Reviens dans 6pm et touche « Envoyer une alerte de test ». 6pm s’en envoie une et te dit quand elle arrive.',
+  'capture.walk.alerts.addBank':
+    'Ta banque n’est pas dans la liste du raccourci ? Ouvre-le et touche + sur le déclencheur pour ajouter son app.',
   'capture.walk.alerts.mistake1':
     'Titre, Corps ou Date laissé vide. Touche chacun et choisis celui de la Notification, sinon les alertes ne notent rien.',
   'capture.walk.alerts.mistake2':
     'Notifier activé. Chaque alerte te sonne alors une deuxième fois au lieu d’être repérée sans bruit.',
   'capture.walk.alerts.mistake3':
     'Une seule app choisie. Coche chaque banque et portefeuille que tu utilises, MoMo et ZaloPay compris.',
+  'capture.walk.alerts.linkedMistake1':
+    'L’automatisation est restée désactivée. Le raccourci arrive ainsi : ouvre-le, touche › sur le déclencheur et active Automatisation.',
+  'capture.walk.alerts.linkedMistake3':
+    '6pm ne figure plus sur le déclencheur. L’alerte de test n’arrive que si 6pm fait partie de ses apps : rajoute 6pm avec +.',
   'capture.walk.ios.notification': 'Notification',
   'capture.walk.ios.notificationEx': '« Lorsque je reçois une notification de Météo »',
   'capture.walk.ios.whenNotified': 'Lorsque je reçois une notification de',

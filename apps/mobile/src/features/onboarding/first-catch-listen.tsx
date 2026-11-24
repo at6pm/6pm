@@ -19,7 +19,6 @@ import type { SymbolName } from '../../ui/icons/symbols.generated';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { body, display, leading, mono } from '../../ui/type/fonts';
 import { HEADING_BREAKS, headingWords, WordFitText } from '../../ui/type/word-fit-text';
-import { openAlertAccess } from '../capture-guide/alert-access';
 import { proofRoom, TestAlertProof } from '../capture/test-alert-proof';
 import { useTestAlert, type TestAlert } from '../capture/use-test-alert';
 import type { ListenWay, SelfCatchingWay } from './catch-ways';
@@ -46,7 +45,8 @@ const TILE_ICON: Readonly<Record<ListenWay, SymbolName>> = {
  * first one…" over the companion in its rings, a tile for each way that was set up to make one
  * happen now, a card for each way that catches by itself but is not set up yet (set up right
  * there, it folds away and joins the tiles), and a quiet "Skip for now", which always moves on.
- * On Android the bank alerts tile sends a test alert, and what became of it shows under the
+ * The bank alerts tile sends a test alert where the phone can (Android's listener; the iPhone's
+ * Shortcuts automation, which has 6pm among its apps), and what became of it shows under the
  * tiles; the wait for a real catch goes on, since a test alert is not one.
  * After 90 s with nothing it shows the walked way's path and where it may be stuck, still
  * listening. When the catch lands it prints as receipt Nº 001 ("Caught it.") with the companion's
@@ -288,7 +288,7 @@ function Waiting({
           </Animated.View>
         ) : null}
       </LayoutAnimationConfig>
-      <TestAlertProof inks={pal} test={test} onCheckAccess={openAlertAccess} />
+      <TestAlertProof inks={pal} test={test} />
       <FirstCatchSetupCards pal={pal} ways={setupWays} onSetUp={onSetUp} />
       <Animated.View {...proofRoom}>
         <LaterButton pal={pal} onPress={onLater} />

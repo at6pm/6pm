@@ -1,12 +1,18 @@
 /**
- * The test alert a person sends to themselves on Android, as the screen that sent it sees it.
- * 6pm posts a notification marked as a test; the listener reads it on the road a bank alert
- * takes and the app's import tells of its arrival here. Nothing in this file is money: a test
- * alert is never a spend, and a real catch is waited for exactly as before.
+ * The test alert a person sends to themselves, as the screen that sent it sees it. 6pm posts a
+ * notification marked as a test; it comes in on the road a bank alert takes (Android's listener,
+ * or on the iPhone the Shortcuts automation, which has 6pm among its apps) and the app's import
+ * tells of its arrival here. Nothing in this file is money: a test alert is never a spend, and a
+ * real catch is waited for exactly as before.
  */
 
 /** With nothing arrived this long after sending, the screen says what to check. */
 export const TEST_ALERT_WAIT_MS = 10_000;
+/**
+ * The same on the iPhone, where Shortcuts starts the automation in its own time: on the iOS 27
+ * simulator a test took six to eleven seconds to come in.
+ */
+export const TEST_ALERT_SHORTCUT_WAIT_MS = 20_000;
 /** How often the inbox is brought in while a test alert is on its way. */
 export const TEST_ALERT_LOOK_MS = 600;
 
@@ -17,17 +23,23 @@ export type TestAlertState =
   | { readonly kind: 'sent'; readonly token: string }
   /** It came all the way in: the road works. `at` is when the phone read it. */
   | { readonly kind: 'arrived'; readonly at: string }
-  /** Posted, and nothing came in time: Notification access is the thing to check. */
+  /**
+   * Posted, and nothing came in time: Android's Notification access is the thing to check, or on
+   * the iPhone the automation (it may be off, or 6pm may not be among its apps).
+   */
   | { readonly kind: 'missing'; readonly token: string }
   /**
    * 6pm may not post notifications, so no test went out. `canAsk` while the phone will still
    * show its own question; after that only the phone's settings can change it.
    */
-  | { readonly kind: 'blocked'; readonly canAsk: boolean };
+  | { readonly kind: 'blocked'; readonly canAsk: boolean }
+  /** 6pm may post notifications, and still the test could not be sent: another try may do. */
+  | { readonly kind: 'failed' };
 
 export type TestAlertEvent =
   | { readonly type: 'sent'; readonly token: string }
   | { readonly type: 'blocked'; readonly canAsk: boolean }
+  | { readonly type: 'failed' }
   /** 6pm may post notifications again: nothing stands in the way of sending one. */
   | { readonly type: 'allowed' }
   | { readonly type: 'arrived'; readonly token: string; readonly at: string }
@@ -46,6 +58,8 @@ export function testAlertStep(state: TestAlertState, event: TestAlertEvent): Tes
       return { kind: 'sent', token: event.token };
     case 'blocked':
       return state.kind === 'sent' ? state : { kind: 'blocked', canAsk: event.canAsk };
+    case 'failed':
+      return state.kind === 'sent' ? state : { kind: 'failed' };
     case 'allowed':
       return state.kind === 'blocked' ? TEST_ALERT_IDLE : state;
     case 'arrived':

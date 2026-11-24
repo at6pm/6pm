@@ -53,14 +53,26 @@ export const esCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l1Title': 'Añade el atajo de 6pm',
   'capture.walk.alerts.l1Body':
     'Toca “Conseguir el atajo de 6pm” aquí arriba y luego Añadir atajo. Se llama “Catch a bank alert”.',
+  'capture.walk.alerts.l2Title': 'Activa la automatización',
   'capture.walk.alerts.l2Body':
+    'Ábrelo en Atajos y toca › en el activador. Activa Automatización y deja Notificar desactivado, para que los avisos se pillen en silencio. Al volver atrás se guarda.',
+  'capture.walk.alerts.l2ChooseBody':
     'Ábrelo en Atajos, toca App arriba y elige tu banco; luego toca + para cada uno de tus otros bancos y monederos.',
+  'capture.walk.alerts.l3Title': 'Envía un aviso de prueba',
+  'capture.walk.alerts.l3Body':
+    'Vuelve a 6pm y toca “Enviar un aviso de prueba”. 6pm se manda uno y te avisa cuando llegue.',
+  'capture.walk.alerts.addBank':
+    '¿Tu banco no está en la lista del atajo? Ábrelo y toca + en el activador para añadir su app.',
   'capture.walk.alerts.mistake1':
     'Título, Cuerpo o Fecha vacíos. Toca cada uno y elige el de la Notificación, o los avisos no apuntan nada.',
   'capture.walk.alerts.mistake2':
     'Notificar activado. Cada aviso te llega dos veces en vez de pillarse en silencio.',
   'capture.walk.alerts.mistake3':
     'Solo una app elegida. Marca cada banco y monedero que uses, MoMo y ZaloPay incluidos.',
+  'capture.walk.alerts.linkedMistake1':
+    'Automatización sin activar. El atajo llega desactivado: ábrelo, toca › en el activador y activa Automatización.',
+  'capture.walk.alerts.linkedMistake3':
+    'Falta 6pm en el activador. El aviso de prueba solo llega si 6pm está entre sus apps: vuelve a añadir 6pm con +.',
   'capture.walk.ios.notification': 'Notificación',
   'capture.walk.ios.notificationEx': '“Cuando reciba una notificación de News”',
   'capture.walk.ios.whenNotified': 'Cuando reciba una notificación de',

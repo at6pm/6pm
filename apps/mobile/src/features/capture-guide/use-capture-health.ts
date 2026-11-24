@@ -6,6 +6,7 @@ import { addDays, localDateOf } from '@6pm/domain';
 import { catchesSince, type CatchSeen } from '../../data/first-catch';
 import { useMoney, useMoneyStore } from '../../data/money-provider';
 import { useHomeCurrency } from '../../money/use-money-format';
+import { useAlertsProven } from '../capture/alerts-proven';
 import { useAiMode } from '../privacy/use-ai-mode';
 import { nativeReach } from '../surfaces/native-reach';
 import { useAlertAccess } from './alert-access';
@@ -48,6 +49,8 @@ export function useCaptureHealthSection(): HealthSection {
   const aiMode = useAiMode();
   const alertAccess = useAlertAccess();
   const lastAlert = useLastAlert();
+  // On the iPhone, a test alert that came through the Shortcut is what shows it switched on.
+  const alertsProven = useAlertsProven();
   const [catches, setCatches] = useState<readonly CatchSeen[]>(() => lastRead);
   const [returned, setReturned] = useState(0);
 
@@ -92,7 +95,7 @@ export function useCaptureHealthSection(): HealthSection {
         ? { day: localDateOf(new Date(lastAlert.at)), at: lastAlert.at, bank: lastAlert.bank }
         : null,
       off,
-      on: alertAccess === true ? ['alerts'] : [],
+      on: alertAccess === true || (alertAccess === null && alertsProven) ? ['alerts'] : [],
     });
-  }, [catches, today, home, aiMode, alertAccess, lastAlert]);
+  }, [catches, today, home, aiMode, alertAccess, lastAlert, alertsProven]);
 }

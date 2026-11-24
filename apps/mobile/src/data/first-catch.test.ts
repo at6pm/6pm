@@ -7,9 +7,11 @@ import {
   catchesSince,
   firstCaughtSince,
   firstSelfRunningCatch,
+  keepAlertsProven,
   keepFirstCatch,
   keepFirstCatchLeft,
   putAwayFirstCatch,
+  readAlertsProven,
   readFirstCatch,
   readFirstCatchAway,
   readMonthReading,
@@ -174,6 +176,16 @@ describe('first catch on the phone', () => {
     expect(await readFirstCatchAway(store.db)).toEqual({ times: 2, day: NEXT_MONTH });
     // The state itself is untouched by it.
     expect(await readFirstCatch(store.db)).toBeNull();
+  });
+
+  it('keeps that a test alert showed the automation running, apart from any catch', async () => {
+    expect(await readAlertsProven(store.db)).toBeNull();
+    await keepAlertsProven(store.db, '2026-11-23T02:30:02.000Z');
+    expect(await readAlertsProven(store.db)).toBe('2026-11-23T02:30:02.000Z');
+    // It is a sign of set-up only: nothing was caught and the first catch stands where it stood.
+    expect(await readFirstCatch(store.db)).toBeNull();
+    expect(await firstSelfRunningCatch(store)).toBeNull();
+    expect(await firstCaughtSince(store, '1970-01-01T00:00:00.000Z')).toBeNull();
   });
 
   it('lists every catch by the day it arrived', async () => {

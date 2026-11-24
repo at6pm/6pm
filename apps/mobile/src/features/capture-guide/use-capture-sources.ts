@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { useMoney } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
 import { useHomeCurrency } from '../../money/use-money-format';
+import { useAlertsProven } from '../capture/alerts-proven';
 import { useAiMode } from '../privacy/use-ai-mode';
 import { useReceiptAddress } from '../receipt-email/receipt-address';
 import { nativeReach } from '../surfaces/native-reach';
@@ -49,6 +50,7 @@ export function useCaptureSources(): {
   const home = useHomeCurrency();
   const lastAlert = useLastAlert();
   const alertAccess = useAlertAccess();
+  const alertsProven = useAlertsProven();
   return useMemo(() => {
     const statuses = sourceStatuses([...cycleSpends, ...waitingBefore], home.code).filter(
       (status) => NEEDS[status.source] !== false,
@@ -74,7 +76,12 @@ export function useCaptureSources(): {
         const line = lastAlertLine(lastAlert, t, labels.time);
         return { ...status, on: true, guide, name: t(guide.name), sub: line, status: line };
       }
-      if (status.source === 'alerts' && alertAccess === true) {
+      // Android's access is on; or, on the iPhone, a test alert came through the Shortcut, which
+      // is the only way the phone learns the automation is there before a real alert.
+      if (
+        status.source === 'alerts' &&
+        (alertAccess === true || (alertAccess === null && alertsProven))
+      ) {
         const on = t('capture.status.on');
         return { ...status, on: true, guide, name: t(guide.name), sub: t(guide.sub), status: on };
       }
@@ -101,6 +108,7 @@ export function useCaptureSources(): {
     home,
     lastAlert,
     alertAccess,
+    alertsProven,
   ]);
 }
 

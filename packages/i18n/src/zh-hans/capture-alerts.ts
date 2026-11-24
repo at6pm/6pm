@@ -52,13 +52,25 @@ export const zhHansCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlert
   'capture.walk.alerts.l1Title': '添加 6pm 的快捷指令',
   'capture.walk.alerts.l1Body':
     '轻点上方的“获取 6pm 快捷指令”，再轻点“添加快捷指令”。它的名字是“Catch a bank alert”。',
+  'capture.walk.alerts.l2Title': '开启自动化',
   'capture.walk.alerts.l2Body':
+    '在“快捷指令”中打开它，轻点触发条件上的 ›。开启“自动化”，保持“通知”关闭，这样通知会被悄悄记下。返回即自动存储。',
+  'capture.walk.alerts.l2ChooseBody':
     '在“快捷指令”中打开它，轻点顶部的“App”并选择你的银行，再轻点 + 逐个添加其他银行和电子钱包。',
+  'capture.walk.alerts.l3Title': '发一条测试通知',
+  'capture.walk.alerts.l3Body':
+    '回到 6pm，轻点“发一条测试通知”。6pm 会给自己发一条，到达后告诉你。',
+  'capture.walk.alerts.addBank':
+    '你的银行不在快捷指令的列表里？打开它，轻点触发条件上的 + 添加该 App。',
   'capture.walk.alerts.mistake1':
     '“标题”“正文”或“日期”留空了。逐个轻点，选这条通知自己的对应项，否则什么都记不下来。',
   'capture.walk.alerts.mistake2': '“通知”开着。这样每条通知都会再提醒你一次，而不是被悄悄记下。',
   'capture.walk.alerts.mistake3':
     '只选了一个 App。把你用的每家银行和电子钱包都勾上，包括 MoMo 和 ZaloPay。',
+  'capture.walk.alerts.linkedMistake1':
+    '“自动化”没有开启。快捷指令添加后默认是关闭的：打开它，轻点触发条件上的 ›，开启“自动化”。',
+  'capture.walk.alerts.linkedMistake3':
+    '把 6pm 从触发条件里移除了。只有 6pm 在它的 App 列表里，测试通知才会到达：轻点 + 把它加回来。',
   'capture.walk.ios.notification': '通知',
   'capture.walk.ios.notificationEx': '“当我收到来自‘新闻’的通知时”',
   'capture.walk.ios.whenNotified': '当我收到来自以下 App 的通知时',

@@ -53,14 +53,26 @@ export const idCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l1Title': 'Tambahkan pintasan 6pm',
   'capture.walk.alerts.l1Body':
     'Ketuk “Ambil pintasan 6pm” di atas, lalu Tambah Pintasan. Namanya “Catch a bank alert”.',
+  'capture.walk.alerts.l2Title': 'Nyalakan otomatisasinya',
   'capture.walk.alerts.l2Body':
+    'Buka di Pintasan dan ketuk › di pemicu. Nyalakan Otomatisasi dan biarkan Beri Tahu mati, supaya notifikasi ditangkap diam-diam. Kembali berarti tersimpan.',
+  'capture.walk.alerts.l2ChooseBody':
     'Buka di Pintasan, ketuk App di atas dan pilih bankmu, lalu + untuk setiap bank dan e-wallet lain.',
+  'capture.walk.alerts.l3Title': 'Kirim notifikasi uji coba',
+  'capture.walk.alerts.l3Body':
+    'Kembali ke 6pm dan ketuk “Kirim notifikasi uji coba”. 6pm mengirim satu ke dirinya sendiri dan memberi tahu kamu saat notifikasinya masuk.',
+  'capture.walk.alerts.addBank':
+    'Bankmu belum ada di daftar pintasannya? Buka pintasannya dan ketuk + di pemicu untuk menambahkan app-nya.',
   'capture.walk.alerts.mistake1':
     'Judul, Isi, atau Tanggal dibiarkan kosong. Ketuk masing-masing dan pilih milik Notifikasi, kalau tidak notifikasi tidak mencatat apa-apa.',
   'capture.walk.alerts.mistake2':
     'Beri Tahu menyala. Setiap notifikasi jadi memberi tahu kamu sekali lagi, bukannya ditangkap diam-diam.',
   'capture.walk.alerts.mistake3':
     'Cuma satu app yang dipilih. Centang setiap bank dan e-wallet yang kamu pakai, termasuk MoMo dan ZaloPay.',
+  'capture.walk.alerts.linkedMistake1':
+    'Otomatisasi belum dinyalakan. Pintasannya datang dalam keadaan mati: buka, ketuk › di pemicu, lalu nyalakan Otomatisasi.',
+  'capture.walk.alerts.linkedMistake3':
+    '6pm terhapus dari pemicu. Notifikasi uji coba hanya masuk kalau 6pm ada di daftar app-nya: tambahkan lagi dengan +.',
   'capture.walk.ios.notification': 'Notifikasi',
   'capture.walk.ios.notificationEx': '“Saat saya menerima notifikasi dari Berita”',
   'capture.walk.ios.whenNotified': 'Saat saya menerima notifikasi dari',

@@ -56,14 +56,26 @@ export const viCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l1Title': 'Thêm phím tắt của 6pm',
   'capture.walk.alerts.l1Body':
     'Chạm “Lấy phím tắt của 6pm” ở trên, rồi Thêm phím tắt. Nó tên là “Catch a bank alert”.',
+  'capture.walk.alerts.l2Title': 'Bật tự động hóa',
   'capture.walk.alerts.l2Body':
+    'Mở nó trong Phím tắt và chạm › trên bộ kích hoạt. Bật Tự động hóa và để Thông báo tắt, để thông báo được bắt lặng lẽ. Quay lại là đã lưu.',
+  'capture.walk.alerts.l2ChooseBody':
     'Mở nó trong Phím tắt, chạm Ứng dụng ở trên cùng và chọn ngân hàng, rồi chạm + cho từng ngân hàng và ví khác.',
+  'capture.walk.alerts.l3Title': 'Gửi thử một thông báo',
+  'capture.walk.alerts.l3Body':
+    'Quay lại 6pm và chạm “Gửi thử một thông báo”. 6pm tự gửi cho mình một thông báo và báo bạn khi nó về.',
+  'capture.walk.alerts.addBank':
+    'Ngân hàng của bạn chưa có trong danh sách của phím tắt? Mở phím tắt và chạm + trên bộ kích hoạt để thêm ứng dụng đó.',
   'capture.walk.alerts.mistake1':
     'Để trống Tiêu đề, Nội dung hoặc Ngày. Chạm từng ô và chọn của Thông báo, không thì chẳng ghi được gì.',
   'capture.walk.alerts.mistake2':
     'Bật Thông báo. Mỗi thông báo ngân hàng sẽ báo bạn thêm lần nữa thay vì được bắt lặng lẽ.',
   'capture.walk.alerts.mistake3':
     'Chỉ chọn một ứng dụng. Đánh dấu mọi ngân hàng và ví bạn dùng, cả MoMo và ZaloPay.',
+  'capture.walk.alerts.linkedMistake1':
+    'Chưa bật Tự động hóa. Phím tắt được thêm vào ở trạng thái tắt: mở nó, chạm › trên bộ kích hoạt và bật Tự động hóa.',
+  'capture.walk.alerts.linkedMistake3':
+    'Đã bỏ 6pm khỏi bộ kích hoạt. Thông báo thử chỉ về được khi 6pm có trong danh sách ứng dụng: chạm + để thêm lại.',
 
   'capture.walk.ios.notification': 'Thông báo',
   'capture.walk.ios.notificationEx': '“Khi tôi nhận được thông báo từ Tin tức”',

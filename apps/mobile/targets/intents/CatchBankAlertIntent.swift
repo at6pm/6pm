@@ -1,13 +1,16 @@
 import AppIntents
 import Foundation
+import UserNotifications
 
 /// Catches a bank or wallet alert: a Shortcuts automation on the user's banking apps' notifications
-/// hands it the notification's title, subtitle, body and date. The domain bundle reads it on the
-/// phone; money that moved is left in the App Group inbox for the app to import on its next open,
-/// and a code, a failed payment, a promotion or a balance notice leaves nothing. Either way the
-/// last alert read is noted for Settings. It never starts the app and returns at once: it runs
-/// silently each time an alert arrives, saying something only for the first catch ever
-/// (`CaptureNotices`).
+/// hands it the notification's app, title, subtitle, body and date. The domain bundle looks at the
+/// app first and reads the words only of a bank or wallet it knows: money that moved is left in the
+/// App Group inbox for the app to import on its next open, and a code, a failed payment, a
+/// promotion or a balance notice leaves nothing but the note of the last alert read, for Settings.
+/// Any other app on the automation's trigger (a chat, a shop) leaves nothing at all. 6pm's own
+/// notification is taken only when it is the test alert the app is waiting for, which leaves an
+/// inbox item that is never money. It never starts the app and returns at once: it runs silently
+/// each time an alert arrives, saying something only for the first catch ever (`CaptureNotices`).
 struct CatchBankAlertIntent: AppIntent {
   static let title = LocalizedStringResource("catchAlert.title", table: "Intents")
   static let description = IntentDescription(
@@ -32,9 +35,10 @@ struct CatchBankAlertIntent: AppIntent {
   func perform() async throws -> some IntentResult {
     // An alert that cannot be read is let go: an automation that fails shows the user an error.
     let now = Date()
+    let sender = await CaughtAlert.senderOf(app: app, title: alertTitle, body: body)
     guard
       let read = try? CaughtAlert.read(
-        app: app, title: alertTitle, subtitle: subtitle, body: body, date: date, now: now)
+        app: sender, title: alertTitle, subtitle: subtitle, body: body, date: date, now: now)
     else { return .result() }
     // Read at all, the automation still runs: no "Nothing from your bank in 3 days".
     if read.last != nil { CaptureNotices.wayRan("alert") }
@@ -52,23 +56,59 @@ struct CatchBankAlertIntent: AppIntent {
 
 /// What the domain bundle made of one alert, written where the app finds it.
 enum CaughtAlert {
-  /// What was caught (nil for an alert that moved no money) and the last alert as noted.
+  /// What 6pm answers to on this phone when an automation names the app a notification came
+  /// from: the name under its icon and its bundle id. The extension reads them from the app it
+  /// sits in.
+  static let ownNames: [String] = {
+    let appURL = Bundle.main.bundleURL.deletingLastPathComponent().deletingLastPathComponent()
+    let app = Bundle.main.bundleURL.pathExtension == "appex" ? Bundle(url: appURL) : Bundle.main
+    let keys = ["CFBundleDisplayName", "CFBundleName"]
+    let shown = keys.compactMap { app?.object(forInfoDictionaryKey: $0) as? String }
+    let plain = keys.compactMap { app?.infoDictionary?[$0] as? String }
+    return Array(Set(shown + plain + [GroupFiles.appBundleId])).filter { !$0.isEmpty }
+  }()
+
+  /// The app an alert came from. With none named (an automation built by hand with App left
+  /// empty), a notification 6pm itself is showing (a reminder, a test alert, the first catch) is
+  /// named as 6pm's, so the bundle never reads it as a bank's.
+  static func senderOf(app: String?, title: String?, body: String) async -> String? {
+    guard (app ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return app }
+    let shown = await UNUserNotificationCenter.current().deliveredNotifications()
+    let ours = shown.contains {
+      $0.request.content.body == body && $0.request.content.title == (title ?? "")
+    }
+    return ours ? GroupFiles.appBundleId : app
+  }
+
+  /// What was caught (nil for an alert that moved no money) and the last alert as noted (nil for
+  /// an alert that was not a bank's or wallet's: nothing of that one is written anywhere).
   @discardableResult
   static func read(
     app: String?, title: String?, subtitle: String?, body: String, date: Date?, now: Date
   ) throws -> (item: [String: Any]?, last: [String: Any]?) {
-    let context = GroupFiles.readSurface("context").flatMap { String(data: $0, encoding: .utf8) }
+    let text = { (name: String) in
+      GroupFiles.readSurface(name).flatMap { String(data: $0, encoding: .utf8) } ?? ""
+    }
     let clock = ISO8601DateFormatter()
     clock.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+    let own = String(data: try JSONSerialization.data(withJSONObject: ownNames), encoding: .utf8)
+    // The sender is looked at before the words: the bundle answers with nothing at all for an app
+    // that is neither a bank or wallet it knows nor 6pm sending the test it is waiting for.
     let answer = try DomainBridge().call(
-      "logBankAlert",
+      "logShortcutAlert",
       [
         app ?? "", title ?? "", subtitle ?? "", body, date.map { clock.string(from: $0) } ?? "",
-        context ?? "", clock.string(from: now),
+        text("context"), clock.string(from: now), own ?? "[]", text("test-alert"),
       ])
     guard
       let object = try JSONSerialization.jsonObject(with: Data(answer.utf8)) as? [String: Any]
     else { throw DomainBridge.Failure.threw("not an object") }
+
+    // The test alert the person sent themselves takes the road a bank's alert does, as an item
+    // of its own kind: the app tells the screen that sent it and saves nothing.
+    if let test = object["test"] as? [String: Any], let id = test["id"] as? String {
+      try GroupFiles.writeInbox(id: id, json: JSONSerialization.data(withJSONObject: test))
+    }
 
     var caught: [String: Any]?
     if let item = object["item"] as? [String: Any], let id = item["id"] as? String {

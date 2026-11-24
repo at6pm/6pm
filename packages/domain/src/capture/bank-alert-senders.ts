@@ -33,6 +33,41 @@ const APP_NAMES: Readonly<Record<string, readonly string[]>> = {
 
 const BY_ID = new Map(BANKS.map((bank) => [bank.id, bank] as const));
 
+/**
+ * The bundle ids of Vietnam's banking and wallet apps on the iPhone, by the catalogue id of the
+ * bank behind them, as the published bank alert shortcut lists them: a Shortcuts automation may
+ * name the app a notification came from by its bundle id rather than the name under its icon.
+ */
+const IOS_APPS: Readonly<Record<string, readonly string[]>> = {
+  MB: ['com.mbmobile'],
+  VCB: ['com.vcb.VCB'],
+  TCB: ['vn.com.techcombank.bb.app'],
+  ACB: ['mobileapp.acb.com.vn'],
+  BIDV: ['com.bidv.smartbanking'],
+  ICB: ['com.vietinbank.mobilebanking'],
+  VPB: ['com.vnp.VpBankOnline'],
+  TPB: ['com.fpt.tpb.emobile'],
+  VBA: ['com.vnp.Agribank'],
+  STB: ['com.sacombank.ewallet', 'com.sacombank.Sacombank'],
+  HDB: ['com.vnpay.HDBank'],
+  VIB: ['com.vib.myvib2prod'],
+  OCB: ['vn.com.ocb.awe'],
+  SHB: ['vn.com.shb.omni.appstore'],
+  MSB: ['com.msb.mobileBanking'],
+  CAKE: ['vn.com.be.cake'],
+  TIMO: ['io.lifestyle.plusdigital'],
+  MOMO: ['com.mservice.com.vn.MoMoTransfer'],
+  VTLMONEY: ['com.viettel.viettelpay'],
+};
+
+/** Vietnam's banking and wallet apps by their iPhone bundle id, lower case. */
+const BY_IOS_BUNDLE = new Map(
+  Object.entries(IOS_APPS).flatMap(([id, bundles]) => {
+    const bank = BY_ID.get(id);
+    return bank ? bundles.map((bundle) => [bundle.toLowerCase(), bank] as const) : [];
+  }),
+);
+
 /** Every name a bank answers to, folded, longest first so "mb bank" wins over "mb". */
 const NAMES: readonly (readonly [name: string, bank: BankInfo])[] = [
   ...Object.entries(APP_NAMES).flatMap(([id, names]) => {
@@ -61,7 +96,7 @@ const WORLD_BY_NAME = new Map(
 
 /**
  * The bank or wallet an app is, from the name a notification gives it ("MB Bank", "VCB Digibank",
- * "MoMo") or its bundle id ("com.mbmobile"): the whole name, or the name a bank's app starts with.
+ * "MoMo"), its Android package or its iPhone bundle id ("com.vcb.VCB"): the whole name, or the name a bank's app starts with.
  * Vietnam's banks are looked for first, so a short code they share with a bank elsewhere ("NAB",
  * "DBS", "UOB") stays theirs; a bank of another country is known only by its exact Android package
  * or its whole everyday name ("Chase", "Revolut"). Null for an app 6pm does not know.
@@ -74,6 +109,8 @@ export function bankOfApp(app: string | null | undefined): BankInfo | null {
     (bank) => bank.android !== null && bank.android.package.toLowerCase() === lower,
   );
   if (byPackage) return byPackage;
+  const byBundle = BY_IOS_BUNDLE.get(lower);
+  if (byBundle) return byBundle;
   const folded = foldWords(raw);
   for (const [name, bank] of NAMES) {
     if (folded === ` ${name} ` || folded.startsWith(` ${name} `)) return bank;

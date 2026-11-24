@@ -15,6 +15,8 @@ import { SystemBars } from '../../ui/layout/system-bars';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { openAlertAccess, useAlertAccess } from '../capture-guide/alert-access';
 import { useCaptureHealth } from '../capture-guide/use-capture-health';
+import { useAlertsProven } from '../capture/alerts-proven';
+import { testAlertAvailable } from '../capture/use-test-alert';
 import { useAiMode } from '../privacy/use-ai-mode';
 import { nativeReach } from '../surfaces/native-reach';
 import {
@@ -57,10 +59,12 @@ export function FirstCatchScreen() {
     .filter((row) => row.state.kind === 'caught' || row.state.kind === 'quiet')
     .map((row) => row.way)
     .filter((way): way is 'alerts' | 'wallet' => way === 'alerts' || way === 'wallet');
+  // A test alert that came through the iPhone's Shortcut says bank alerts are set up, too.
+  const alertsProven = useAlertsProven() && alertAccess === null;
   const ways = listenWaysOf(catchWays, [
     ...setUp,
     ...ranBefore,
-    ...(alertAccess === true ? (['alerts'] as const) : []),
+    ...(alertAccess === true || alertsProven ? (['alerts'] as const) : []),
   ]);
   const setupWays = setupCardsOf(catchWays, ways, alertAccess, nativeReach.alertListener);
 
@@ -119,7 +123,7 @@ export function FirstCatchScreen() {
           access={nativeReach.alertListener}
           onTry={(way) => {
             setWalked(way);
-            tryWay(way, bankId);
+            tryWay(way, bankId, testAlertAvailable);
           }}
           onFix={(way) => {
             haptics.tap();

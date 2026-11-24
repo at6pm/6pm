@@ -14,7 +14,7 @@ import { body, display, leading, mono } from '../../ui/type/fonts';
 import { WordFitText } from '../../ui/type/word-fit-text';
 import { BANK_ALERT_SHORTCUT_URL } from '../capture-guide/bank-alert-shortcut';
 import { captureColours } from '../capture-guide/capture-colours';
-import { GuideSection } from '../capture-guide/guide-sections';
+import { GuideSection, GuideTip } from '../capture-guide/guide-sections';
 import { useWalkthroughSteps } from '../capture-guide/guide-walkthroughs';
 import { Walkthrough } from '../capture-guide/walkthrough/walkthrough';
 import { WALLET_SHORTCUT_URL } from '../capture-guide/wallet-shortcut';
@@ -165,6 +165,10 @@ function SetupBody({
                 onPress={() => open('shortcuts://')}
               />
             </View>
+          ) : null}
+          {/* The published shortcut's trigger has the likely banks chosen; any other is added. */}
+          {way === 'alerts' && BANK_ALERT_SHORTCUT_URL !== null ? (
+            <GuideTip text={t('capture.walk.alerts.addBank')} />
           ) : null}
           {way === 'alerts' ? (
             <View style={{ gap: 10 }}>

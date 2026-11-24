@@ -1,4 +1,5 @@
 import {
+  alertSenderOf,
   inboxItemSchema,
   inboxItemToNewSpend,
   likelyCategoriesAt,
@@ -105,6 +106,24 @@ const asksSecondRead = (item: InboxItem): item is InboxSpend | InboxUnread =>
     item.alertWords !== undefined &&
     item.what !== 'failed');
 
+/**
+ * Whether an item is an alert from an app that is named and is not a bank or wallet 6pm knows: a
+ * chat or a shop someone put on the Shortcut's trigger. The iPhone's action leaves nothing for
+ * such an app, so this only meets one left by a build from before it looked at the sender; it is
+ * dropped here just the same, before anything reads its words.
+ */
+function fromUnknownApp(item: InboxItem): boolean {
+  const words =
+    item.kind === 'unread'
+      ? item.alertWords
+      : item.kind === 'heard'
+        ? item.words
+        : item.kind === 'spend' && item.source === 'alert'
+          ? (item.alertWords ?? item.words)
+          : undefined;
+  return words !== undefined && alertSenderOf(words.app, []) === 'other';
+}
+
 /** An alert's own words go no further than its second reading. */
 function withoutAlertWords(item: InboxSpend): InboxSpend {
   const { alertWords: _alertWords, ...rest } = item;
@@ -125,6 +144,8 @@ export interface InboxImportResult {
  * again); an alert the phone could not read is saved only if that reader finds a payment in
  * it, and waits two days at most for an answer. A file is removed only after what it said is committed, and importing
  * the same file twice changes nothing: its id is the spend's, or its sighting is already there.
+ * An alert from a named app that is not a bank or wallet 6pm knows is dropped before any of that:
+ * nothing of it is saved, logged or sent for a second reading.
  * A test alert the person sent to themselves (`test`) is never money: its arrival is told to the
  * screen that sent it and its file removed, with nothing saved, logged or read a second time.
  * Then every caught spend that looks like an unpaid bill's payment is marked as paying it.
@@ -144,7 +165,9 @@ export async function importInbox(deps: InboxImportDeps): Promise<InboxImportRes
   // Every bank alert of this import is read a second time together, before any is saved: what
   // tells one payment from another (its amount, its way) is read from the item as saved.
   const alerts = files.flatMap(({ parsed }) =>
-    parsed.success && asksSecondRead(parsed.data) ? [parsed.data] : [],
+    parsed.success && asksSecondRead(parsed.data) && !fromUnknownApp(parsed.data)
+      ? [parsed.data]
+      : [],
   );
   const readAlerts = deps.readAlerts;
   const { answers: reread, outcomes } =
@@ -158,6 +181,12 @@ export async function importInbox(deps: InboxImportDeps): Promise<InboxImportRes
       continue;
     }
     const item = parsed.data;
+    if (fromUnknownApp(item)) {
+      // Not saved, not logged, not read a second time: only its file goes.
+      report('inbox: dropped an alert from an app that is not a bank or wallet');
+      await remove(file.id);
+      continue;
+    }
     if (item.kind === 'paid') {
       if (await markPaid(deps, item)) saved += 1;
     } else if (item.kind === 'kept') {
