@@ -53,14 +53,26 @@ export const koCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l1Title': '6pm 단축어 추가하기',
   'capture.walk.alerts.l1Body':
     '위 “6pm 단축어 받기”를 탭한 다음 단축어 추가를 탭하세요. 이름은 “Catch a bank alert”예요.',
+  'capture.walk.alerts.l2Title': '자동화 켜기',
   'capture.walk.alerts.l2Body':
+    '단축어에서 열고 트리거의 ›를 탭하세요. 자동화를 켜고 실행할 때 알림은 꺼 두면 알림을 조용히 잡아요. 돌아가면 저장돼요.',
+  'capture.walk.alerts.l2ChooseBody':
     '단축어에서 열고 맨 위의 앱을 탭해 은행을 고른 다음, 다른 은행·페이 앱마다 +를 탭하세요.',
+  'capture.walk.alerts.l3Title': '알림 테스트하기',
+  'capture.walk.alerts.l3Body':
+    '6pm으로 돌아와 “알림 테스트하기”를 탭하세요. 6pm이 스스로에게 테스트 알림을 보내고, 도착하면 알려 줘요.',
+  'capture.walk.alerts.addBank':
+    '쓰는 은행이 단축어 목록에 없나요? 단축어를 열고 트리거의 +를 탭해 그 앱을 추가하세요.',
   'capture.walk.alerts.mistake1':
     '제목, 본문, 날짜를 비워 둔 경우. 하나씩 탭해 알림의 값을 고르지 않으면 아무것도 기록되지 않아요.',
   'capture.walk.alerts.mistake2':
     '실행할 때 알림을 켜 둔 경우. 조용히 잡히지 않고 알림마다 한 번 더 울려요.',
   'capture.walk.alerts.mistake3':
     '앱을 하나만 고른 경우. MoMo, ZaloPay까지 쓰는 은행·페이 앱을 모두 체크하세요.',
+  'capture.walk.alerts.linkedMistake1':
+    '자동화를 켜지 않은 경우. 단축어는 꺼진 채로 추가돼요. 열어서 트리거의 ›를 탭하고 자동화를 켜세요.',
+  'capture.walk.alerts.linkedMistake3':
+    '트리거에서 6pm을 뺀 경우. 테스트 알림은 6pm이 트리거의 앱 목록에 있어야 도착해요. +로 다시 추가하세요.',
   'capture.walk.ios.notification': '알림',
   'capture.walk.ios.notificationEx': '“뉴스에서 알림을 받을 때”',
   'capture.walk.ios.whenNotified': '다음 앱에서 알림을 받을 때',

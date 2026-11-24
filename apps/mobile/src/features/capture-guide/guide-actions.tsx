@@ -29,8 +29,9 @@ interface GuideAction {
 /**
  * A guide's buttons, under its headline where the thumb and the eye already are: the first as a
  * full pill, any other as a quiet line under it, and a short reassurance beneath when there is one.
- * Android's bank alerts add "Send a test alert" once Notification access is on, and what became of
- * the test shows under the buttons.
+ * Bank alerts add "Send a test alert" (on Android once Notification access is on; on the iPhone
+ * always, since the phone cannot see the automation), and what became of the test shows under the
+ * buttons.
  */
 export function GuideActions({
   source,
@@ -79,7 +80,7 @@ export function GuideActions({
       ))}
       {proven ? (
         <View style={{ paddingTop: 6, paddingBottom: 14 }}>
-          <TestAlertProof inks={palette} test={test} onCheckAccess={openAlertAccess} />
+          <TestAlertProof inks={palette} test={test} />
         </View>
       ) : null}
       {note ? (
@@ -110,9 +111,9 @@ function openUrl(url: string): void {
 /**
  * The buttons for each way. Pinning in the share row and the automations are the user's to set in
  * iOS, so those open the share sheet and the Shortcuts app; the 6pm shortcut an automation runs is
- * offered first, once one is published, and stays offered once it is on. Receipt email copies the address, and
- * has no button until the server has given one. Siri and Back Tap need nothing from 6pm: their
- * steps are all there is.
+ * offered first, once one is published, and stays offered once it is on. Bank alerts can send a
+ * test alert. Receipt email copies the address, and has no button until the server has given one.
+ * Siri and Back Tap need nothing from 6pm: their steps are all there is.
  */
 function useGuideActions(
   source: CaptureSource,
@@ -206,9 +207,25 @@ function useGuideActions(
       // Without a published shortcut, the automation is built by hand in Shortcuts.
       if (BANK_ALERT_SHORTCUT_URL === null) return [shortcuts];
       const url = BANK_ALERT_SHORTCUT_URL;
+      const add: GuideAction = {
+        label: t('capture.alerts.actionAdd'),
+        accent: !on,
+        run: () => openUrl(url),
+      };
+      // The published shortcut has 6pm on its trigger, so a test alert shows the automation
+      // running: the only way the iPhone can tell that it is set up at all.
+      if (!test.available) return [add, shortcuts];
       return [
-        { label: t('capture.alerts.actionAdd'), accent: !on, run: () => openUrl(url) },
+        add,
         shortcuts,
+        {
+          label: t('testAlert.send'),
+          accent: false,
+          run: () => {
+            haptics.tap();
+            test.send();
+          },
+        },
       ];
     }
     case 'siri':

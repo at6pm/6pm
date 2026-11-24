@@ -2,13 +2,17 @@ import { View } from 'react-native';
 
 import { useI18n } from '../../i18n/i18n';
 import { ForwardingCheckCard } from '../receipt-email/forwarding-check-card';
+import { BANK_ALERT_SHORTCUT_READY, BANK_ALERT_SHORTCUT_URL } from './bank-alert-shortcut';
 import type { GuideContent } from './guide-content';
 import { MistakesCard, OtherMailCard } from './guide-notes';
-import { GuideSection, GuideSteps, type LiveChip } from './guide-sections';
+import { GuideSection, GuideSteps, GuideTip, type LiveChip } from './guide-sections';
 import { GuideTrouble } from './guide-trouble';
 import { isWalked, useWalkthroughSteps, type WalkedSource } from './guide-walkthroughs';
 import type { CaptureSource } from './source-status';
 import { Walkthrough } from './walkthrough/walkthrough';
+
+/** The template, with its banks and 6pm on the trigger, is what the guide walks through. */
+const linked = BANK_ALERT_SHORTCUT_URL !== null && BANK_ALERT_SHORTCUT_READY;
 
 /**
  * "How it works": the drawn step-by-step walkthrough for the ways set up in another app, the
@@ -79,15 +83,27 @@ function Walked({
       ) : null}
 
       {source === 'alerts' ? (
-        <GuideTrouble>
-          <MistakesCard
-            items={[
-              'capture.walk.alerts.mistake1',
-              'capture.walk.alerts.mistake2',
-              'capture.walk.alerts.mistake3',
-            ]}
-          />
-        </GuideTrouble>
+        <>
+          {/* The template's trigger has the likely banks chosen; any other is added. */}
+          {linked ? <GuideTip text={t('capture.walk.alerts.addBank')} /> : null}
+          <GuideTrouble>
+            <MistakesCard
+              items={
+                linked
+                  ? [
+                      'capture.walk.alerts.linkedMistake1',
+                      'capture.walk.alerts.mistake2',
+                      'capture.walk.alerts.linkedMistake3',
+                    ]
+                  : [
+                      'capture.walk.alerts.mistake1',
+                      'capture.walk.alerts.mistake2',
+                      'capture.walk.alerts.mistake3',
+                    ]
+              }
+            />
+          </GuideTrouble>
+        </>
       ) : null}
 
       {source === 'email' ? (

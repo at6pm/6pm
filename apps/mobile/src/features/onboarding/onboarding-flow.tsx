@@ -14,6 +14,8 @@ import type { AiMode } from '../privacy/ai-mode';
 import { useAiMode } from '../privacy/use-ai-mode';
 import { useAlertAccess } from '../capture-guide/alert-access';
 import { useCaptureHealth } from '../capture-guide/use-capture-health';
+import { useAlertsProven } from '../capture/alerts-proven';
+import { testAlertAvailable } from '../capture/use-test-alert';
 import { nativeReach } from '../surfaces/native-reach';
 import {
   catchWaysFor,
@@ -183,16 +185,18 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
   const [walked, setWalked] = useState<ListenWay | null>(null);
   const catchWays = catchWaysFor(o.currency, aiMode, nativeReach);
   // A way that catches by itself counts as set up once walked here, once Android's access is on,
-  // or once it has caught something (an automation set up before), as Settings' heartbeat says.
+  // once a test alert came through the iPhone's Shortcut, or once it has caught something (an
+  // automation set up before), as Settings' heartbeat says.
   const health = useCaptureHealth();
   const ranBefore = health
     .filter((row) => row.state.kind === 'caught' || row.state.kind === 'quiet')
     .map((row) => row.way)
     .filter((way): way is 'alerts' | 'wallet' => way === 'alerts' || way === 'wallet');
+  const alertsProven = useAlertsProven() && alertAccess === null;
   const known: readonly CatchWay[] = [
     ...setUp,
     ...ranBefore,
-    ...(alertAccess === true ? (['alerts'] as const) : []),
+    ...(alertAccess === true || alertsProven ? (['alerts'] as const) : []),
   ];
   const listenWays = listenWaysOf(catchWays, known);
   const setupWays = setupCardsOf(catchWays, listenWays, alertAccess, nativeReach.alertListener);
@@ -353,7 +357,7 @@ export function OnboardingFlow({ startStep = 0 }: { readonly startStep?: number 
             onListen={() => setListening(true)}
             onTry={(way) => {
               setWalked(way);
-              tryWay(way, ownBankOf(o.wallets));
+              tryWay(way, ownBankOf(o.wallets), testAlertAvailable);
             }}
             onLater={later}
             onContinue={caughtOne}

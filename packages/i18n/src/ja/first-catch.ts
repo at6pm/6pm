@@ -94,7 +94,11 @@ export const jaFirstCatch: { readonly [Key in keyof typeof enFirstCatch]: Entry 
   'testAlert.sent': '送信しました。届くのを待っています…',
   'testAlert.works': 'うまくいきました。本物の銀行の通知も同じように届きます。',
   'testAlert.nothing': '何も届きませんでした。6pmに通知へのアクセスがあるか確認してください。',
+  'testAlert.nothingShortcut':
+    '何も届きませんでした。ショートカットで、オートメーションがオンになっているか、6pmがアプリのリストにあるか確認してください。',
   'testAlert.blocked': '6pmは通知を送る許可がないため、テストを送れません。',
+  'testAlert.failed': 'テストを送れませんでした。もう一度お試しください。',
+  'testAlert.retry': 'もう一度送る',
   'testAlert.notice.title': '6pm · テスト通知',
   'testAlert.notice.body': 'テスト：{amount}の支払い。実際の支払いではありません。',
   'testAlert.channel': 'テスト通知',

@@ -53,14 +53,26 @@ export const deCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l1Title': 'Den 6pm-Kurzbefehl hinzufügen',
   'capture.walk.alerts.l1Body':
     'Tippe oben auf „6pm-Kurzbefehl holen“, dann auf „Kurzbefehl hinzufügen“. Er heißt „Catch a bank alert“.',
+  'capture.walk.alerts.l2Title': 'Die Automation einschalten',
   'capture.walk.alerts.l2Body':
+    'Öffne ihn in Kurzbefehle und tippe beim Auslöser auf ›. Schalte „Automation“ ein und lass „Mitteilen“ aus, damit Mitteilungen still erwischt werden. Beim Zurückgehen wird sie gesichert.',
+  'capture.walk.alerts.l2ChooseBody':
     'Öffne ihn in Kurzbefehle, tippe oben auf „App“ und wähl deine Bank, dann + für jede weitere Bank und E-Wallet.',
+  'capture.walk.alerts.l3Title': 'Eine Testmitteilung senden',
+  'capture.walk.alerts.l3Body':
+    'Geh zurück zu 6pm und tippe auf „Testmitteilung senden“. 6pm schickt sich selbst eine und sagt dir, wenn sie ankommt.',
+  'capture.walk.alerts.addBank':
+    'Deine Bank steht nicht in der Liste des Kurzbefehls? Öffne ihn und tippe beim Auslöser auf +, um ihre App hinzuzufügen.',
   'capture.walk.alerts.mistake1':
     '„Titel“, „Inhalt“ oder „Datum“ leer gelassen. Tippe jeweils darauf und wähl den Wert der Mitteilung, sonst wird nichts erfasst.',
   'capture.walk.alerts.mistake2':
     '„Mitteilen“ ist an. Dann meldet sich jede Mitteilung ein zweites Mal, statt still erwischt zu werden.',
   'capture.walk.alerts.mistake3':
     'Nur eine App gewählt. Wähl jede Bank und E-Wallet, die du nutzt, auch MoMo und ZaloPay.',
+  'capture.walk.alerts.linkedMistake1':
+    '„Automation“ ist noch aus. Der Kurzbefehl kommt ausgeschaltet an: Öffne ihn, tippe beim Auslöser auf › und schalte „Automation“ ein.',
+  'capture.walk.alerts.linkedMistake3':
+    '6pm wurde aus dem Auslöser entfernt. Die Testmitteilung kommt nur an, wenn 6pm bei seinen Apps steht: Füg es mit + wieder hinzu.',
   'capture.walk.ios.notification': 'Mitteilung',
   'capture.walk.ios.notificationEx': '„Wenn ich eine Mitteilung von News erhalte“',
   'capture.walk.ios.whenNotified': 'Wenn ich eine Mitteilung erhalte von',

@@ -59,6 +59,16 @@ describe('a test alert, as the screen that sent it sees it', () => {
     expect(testAlertStep(sent, { type: 'blocked', canAsk: false })).toBe(sent);
   });
 
+  it('failed, apart from being blocked, when 6pm may post and the test still could not go out', () => {
+    expect(testAlertStep(TEST_ALERT_IDLE, { type: 'failed' })).toEqual({ kind: 'failed' });
+    expect(testAlertStep({ kind: 'failed' }, { type: 'sent', token: 'b' })).toEqual({
+      kind: 'sent',
+      token: 'b',
+    });
+    // One already on its way is not undone by a later try that failed.
+    expect(testAlertStep(sent, { type: 'failed' })).toBe(sent);
+  });
+
   it('has nothing in its way once 6pm may post again, and that changes nothing else', () => {
     expect(testAlertStep({ kind: 'blocked', canAsk: false }, { type: 'allowed' })).toBe(
       TEST_ALERT_IDLE,

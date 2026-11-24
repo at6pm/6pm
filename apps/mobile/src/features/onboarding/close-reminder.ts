@@ -98,12 +98,42 @@ export function cancelCloseReminder(): Promise<void> {
   return cancelNotifications();
 }
 
+/** Every test alert's notification id starts with this (the surfaces module posts it). */
+export const TEST_ALERT_ID_PREFIX = 'test-alert:';
+
+/** How one notification is shown while 6pm is open, and whether the companion says it instead. */
+export interface PresentationWhileOpen {
+  readonly banner: boolean;
+  readonly list: boolean;
+  readonly sound: boolean;
+  /** A close reminder the companion says in the island instead of iOS showing its banner. */
+  readonly say: boolean;
+}
+
+/**
+ * How a notification that arrives while 6pm is open is shown. A close reminder is said by the
+ * companion and kept off the screen, or is neither shown nor said when `quiet` says so (the day
+ * it asks about is closed, or the close is already open). The first catch is not shown: 6pm open
+ * shows the catch itself. A test alert the person just sent is always shown as a banner with its
+ * sound, 6pm open or not: it is sent from inside 6pm, and the Shortcuts automation it proves runs
+ * on a notification the phone shows. Every other notification shows as usual.
+ */
+export function presentationWhileOpen(
+  identifier: string,
+  quiet: (identifier: string) => boolean,
+): PresentationWhileOpen {
+  if (identifier.startsWith(TEST_ALERT_ID_PREFIX)) {
+    return { banner: true, list: true, sound: true, say: false };
+  }
+  const ours = isCloseReminder(identifier);
+  const silent = (ours && quiet(identifier)) || identifier === FIRST_CATCH_ID;
+  return { banner: !ours && !silent, list: !silent, sound: !ours && !silent, say: ours && !silent };
+}
+
 /**
  * While 6pm is open, the reminder is not shown as a banner over the app: `onArrive` gets it
- * instead, so the companion can say it in the island. When `quiet` says so (the day it asks about
- * is closed, or the close is already open), it is neither shown nor said. The first catch is not
- * shown either: 6pm open shows the catch itself. Every other notification shows as usual.
- * Returns the unsubscribe.
+ * instead, so the companion can say it in the island (`presentationWhileOpen` decides each
+ * notification). Returns the unsubscribe.
  */
 export function takeOverRemindersWhileOpen(
   onArrive: () => void,
@@ -118,14 +148,12 @@ export function takeOverRemindersWhileOpen(
       if (removed) return;
       Notifications.setNotificationHandler({
         handleNotification: (n) => {
-          const { identifier } = n.request;
-          const ours = isCloseReminder(identifier);
-          const silent = (ours && quiet(identifier)) || identifier === FIRST_CATCH_ID;
-          if (ours && !silent) onArrive();
+          const shown = presentationWhileOpen(n.request.identifier, quiet);
+          if (shown.say) onArrive();
           return Promise.resolve({
-            shouldShowBanner: !ours && !silent,
-            shouldShowList: !silent,
-            shouldPlaySound: !ours && !silent,
+            shouldShowBanner: shown.banner,
+            shouldShowList: shown.list,
+            shouldPlaySound: shown.sound,
             shouldSetBadge: false,
           });
         },

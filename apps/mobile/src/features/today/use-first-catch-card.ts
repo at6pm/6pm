@@ -18,6 +18,7 @@ import {
 import { useMoney, useMoneyStore } from '../../data/money-provider';
 import { useAlertAccess } from '../capture-guide/alert-access';
 import { useLastAlert } from '../capture-guide/last-alert';
+import { primeAlertsProven, useAlertsProven } from '../capture/alerts-proven';
 import { nativeReach } from '../surfaces/native-reach';
 import { reminderWaysOf, selfRunningSetUp, type ReminderWay } from './first-catch-ways';
 
@@ -53,14 +54,17 @@ const WAYS = reminderWaysOf(nativeReach);
  * Today's reminder to let spending log itself: due from the morning after the catching step
  * ended, until a bank alert, a Wallet tap or a forwarded email catches something (a shared
  * receipt, a scanned code and a spend typed or said never end it). The first such catch is kept
- * the moment it is seen among the spends, so the reminder never comes back. Read again each time
- * the day's spends change, the app returns, or the card is put away.
+ * the moment it is seen among the spends, so the reminder never comes back. A test alert that came
+ * through the iPhone's Shortcut ends nothing: it only tells the card the way is set up. Read again
+ * each time the day's spends change, the app returns, a test alert arrives, or the card is put
+ * away.
  */
 export function useFirstCatchCard(): FirstCatchCard {
   const store = useMoneyStore();
   const { today, plan, cycleSpends } = useMoney();
   const alertAccess = useAlertAccess();
   const alertRead = useLastAlert() !== null;
+  const alertProven = useAlertsProven();
   const away = useSyncExternalStore(watch, () => putAwayTimes);
   const started = plan?.startedOn ?? null;
   const set = plan !== null;
@@ -95,7 +99,13 @@ export function useFirstCatchCard(): FirstCatchCard {
         state: kept,
         today,
         started,
-        setUp: selfRunningSetUp({ walked: kept?.ways ?? [], alertAccess, alertRead }),
+        setUp: selfRunningSetUp({
+          walked: kept?.ways ?? [],
+          alertAccess,
+          alertRead,
+          // Read here too, so the card is drawn once with it, never "not set up" for a moment.
+          alertProven: alertProven || (await primeAlertsProven(store.db).catch(() => false)),
+        }),
         away: await readFirstCatchAway(store.db),
       });
       const nothingYet = reminder !== null && (await firstCaughtSince(store, EVER)) === null;
@@ -104,7 +114,7 @@ export function useFirstCatchCard(): FirstCatchCard {
     return () => {
       live = false;
     };
-  }, [store, today, cycleSpends, set, started, alertAccess, alertRead, away]);
+  }, [store, today, cycleSpends, set, started, alertAccess, alertRead, alertProven, away]);
   return {
     ...state,
     ways: WAYS,

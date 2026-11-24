@@ -16,6 +16,7 @@ import { RunShortcutCard, TriggerCard } from './shortcuts-cards';
 import { DockedDrawer } from './shortcuts-drawer';
 import type { FrameProps } from './wallet-frames-library';
 import {
+  AUTOMATION_ROW_Y,
   CatchAlertCard,
   NOTIFICATION_CARD_HEIGHT,
   NOTIFICATION_CARD_OPEN_HEIGHT,
@@ -31,8 +32,20 @@ const ACTION_TOP = 143 + NOTIFICATION_CARD_OPEN_HEIGHT + 12;
 /** The trigger's Notify switch, which stays off. */
 const NOTIFY_Y = 143 + NOTIFICATION_CARD_HEIGHT + 44 + 22;
 
-/** Show When Run turns off; back saves it, and the automation is listed under Personal. */
-export function FinishFrame({ t, scale, kind }: FrameProps & { readonly kind: TriggerKind }) {
+/** When the finger reaches the switch the step is about. */
+const SWITCH_AT = 0.26;
+
+/**
+ * Show When Run turns off; back saves it, and the automation is listed under Personal. With
+ * `turnsOn` (the published bank alert shortcut, which arrives with 6pm among its apps and its
+ * automation off) the finger turns Automation on instead, and Notify stays off.
+ */
+export function FinishFrame({
+  t,
+  scale,
+  kind,
+  turnsOn = false,
+}: FrameProps & { readonly kind: TriggerKind; readonly turnsOn?: boolean }) {
   const { t: tr } = useI18n();
   const wallet = kind === 'wallet';
   return (
@@ -43,10 +56,16 @@ export function FinishFrame({ t, scale, kind }: FrameProps & { readonly kind: Tr
           icon={false}
         />
         <EditorCard top={143}>
-          {wallet ? <TriggerCard /> : <NotificationTriggerCard t={t} open />}
+          {wallet ? (
+            <TriggerCard />
+          ) : turnsOn ? (
+            <NotificationTriggerCard t={t} open own turnsOnAt={SWITCH_AT} />
+          ) : (
+            <NotificationTriggerCard t={t} open />
+          )}
         </EditorCard>
         <EditorCard top={wallet ? 251 : ACTION_TOP}>
-          {wallet ? <RunShortcutCard t={t} showOffAt={0.26} /> : <CatchAlertCard t={t} />}
+          {wallet ? <RunShortcutCard t={t} showOffAt={SWITCH_AT} /> : <CatchAlertCard t={t} />}
         </EditorCard>
         <DockedDrawer />
       </Reveal>
@@ -95,7 +114,12 @@ export function FinishFrame({ t, scale, kind }: FrameProps & { readonly kind: Tr
         t={t}
         stops={[
           { at: 0.08, x: 250, y: 620 },
-          { at: 0.26, x: 345, y: wallet ? 335 : NOTIFY_Y, tap: wallet },
+          {
+            at: SWITCH_AT,
+            x: 345,
+            y: wallet ? 335 : turnsOn ? 143 + AUTOMATION_ROW_Y : NOTIFY_Y,
+            tap: wallet || turnsOn,
+          },
           { at: 0.5, x: 38, y: 84, tap: true },
         ]}
       />

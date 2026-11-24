@@ -18,9 +18,11 @@ import { useApi } from '../api/native-api';
 import { createEnrichShared } from '../capture/enrich-shared';
 import { createLateAlertReads } from '../capture/late-alert-read';
 import { createReadAlerts } from '../capture/read-alert';
+import { noteAlertsProven, primeAlertsProven } from '../capture/alerts-proven';
 import { noteTestAlertArrived } from '../capture/test-alert';
 import { priceWaitingNow } from '../travel/price-waiting';
 import { setInboxRunner } from './inbox-runner';
+import { nativeReach } from './native-reach';
 
 /** A run that left an alert waiting for its second reading asks once more, this long after. */
 const LATE_READ_FOLLOW_UP_MS = 15_000;
@@ -45,6 +47,11 @@ export function useInboxImport() {
   const home = useHomeCurrency();
   const { language } = useI18n();
   const running = useRef<Promise<unknown>>(Promise.resolve());
+
+  // Whether a test alert ever came through the Shortcut, read before any screen asks.
+  useEffect(() => {
+    primeAlertsProven(store.db).catch(() => undefined);
+  }, [store]);
 
   useEffect(() => {
     const native = surfaces;
@@ -102,7 +109,13 @@ export function useInboxImport() {
             enrich,
             readAlerts,
             keepForLateRead: (entry) => waiting.keep(entry),
-            testArrived: (item) => noteTestAlertArrived(item.token, item.at),
+            testArrived: (item) => {
+              noteTestAlertArrived(item.token, item.at);
+              // Through a Shortcut, which 6pm cannot see: its arrival is what says it is set up.
+              if (!nativeReach.alertListener) {
+                void noteAlertsProven(store.db, item.at).catch(() => undefined);
+              }
+            },
             home: home.code,
             language,
             keepPhoto: keepPhotoAt,

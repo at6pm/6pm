@@ -25,6 +25,11 @@ public class SurfacesModule: Module {
       GroupFiles.readStatus(name).flatMap { String(data: $0, encoding: .utf8) }
     }
 
+    AsyncFunction("postTestAlert") {
+      (token: String, title: String, body: String, _: String) async -> String in
+      await TestAlert.post(token: token, title: title, body: body)
+    }
+
     Function("activitiesEnabled") { () -> Bool in
       LiveActivities.enabled
     }

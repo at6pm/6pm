@@ -29,11 +29,13 @@ import type { SqlDatabase } from './table';
 /**
  * What the phone keeps about capture for itself, in the settings table (never in a backup, gone
  * with Delete everything): where onboarding's first catch stands, how often Today's reminder was
- * put away, which receipts went for a closer look, and which were fixed by hand. Every count is
+ * put away, when a test alert last showed the bank alert automation running, which receipts went
+ * for a closer look, and which were fixed by hand. Every count is
  * made on the phone from these and from the spends themselves; nothing here leaves it.
  */
 const STATE_KEY = 'first_catch';
 const AWAY_KEY = 'first_catch_away';
+const ALERTS_PROVEN_KEY = 'bank_alerts_proven';
 const FIXES_KEY = 'receipt_fixes';
 const LOOKED_KEY = 'receipts_looked';
 /** When this phone began keeping how receipts were read: older ones are not counted. */
@@ -104,6 +106,24 @@ export async function readFirstCatchAway(db: SqlDatabase): Promise<FirstCatchAwa
 /** "Not now": Today's reminder put away once more, today. */
 export async function putAwayFirstCatch(db: SqlDatabase, today: LocalDate): Promise<void> {
   await writeJson(db, AWAY_KEY, putFirstCatchAway(await readFirstCatchAway(db), today));
+}
+
+/**
+ * When a test alert last came the whole way in through the bank alert automation, or null while
+ * none has. Kept where the phone cannot otherwise see the automation (the iPhone's lives in
+ * Shortcuts): it says the way is set up. It is not a catch and ends nothing.
+ */
+export async function readAlertsProven(db: SqlDatabase): Promise<string | null> {
+  const parsed = z
+    .string()
+    .min(20)
+    .safeParse(await readJson(db, ALERTS_PROVEN_KEY));
+  return parsed.success ? parsed.data : null;
+}
+
+/** A test alert came the whole way in at `at`: the bank alert automation runs. */
+export async function keepAlertsProven(db: SqlDatabase, at: string): Promise<void> {
+  await writeJson(db, ALERTS_PROVEN_KEY, at);
 }
 
 /**
