@@ -111,4 +111,14 @@ export const jaAndroid: { readonly [Key in keyof typeof enAndroid]: Entry } = {
     '共有・スキャンしたレシートはこのスマホで読み取ります。点は、金額か店名を直したレシートの印です。',
   'privacyPage.headline': 'お金のデータはこのスマホに、暗号化して保存されます。',
   'privacyPage.keep': 'すべてこのスマホに残す',
+
+  // Capture: Android reads bank alerts through Notification access, not a Shortcuts automation.
+  'notify.quiet.soft':
+    '{count}日間、{way}から何も届いていません。6pmに通知へのアクセスはまだありますか？',
+  'notify.quiet.cheeky':
+    '{count}日間、{way}から何も届いていません。節約中？それとも6pmの通知へのアクセスがオフ？',
+  'notify.quiet.roast':
+    '{count}日間、{way}から何も届いていません。聖人なのか、6pmの通知へのアクセスがオフなのか。',
+  'notify.quiet.plain':
+    '{count}日間、{way}から何も届いていません。6pmに通知へのアクセスがあるか確認してください。',
 };

@@ -33,14 +33,14 @@ import { REMINDER_ICON } from './first-catch-ways';
 import { useFirstCatchCard } from './use-first-catch-card';
 
 /** The sheet's gap under each card: taken back as the card folds away, so nothing jumps. */
-const SHEET_GAP = 28;
+export const SHEET_GAP = 28;
 /** The real slip shows in the outline this long before the card folds away. */
 const PRINTED_MS = 1100;
 const COLLAPSE_MS = 400;
 const BREATHE_MS = 2600;
 
 /** Folds the card away (400 ms, the entrance curve), then takes it out of the sheet. */
-function foldAway(
+export function foldAway(
   fold: SharedValue<number>,
   reduceMotion: boolean,
   onGone: (gone: boolean) => void,

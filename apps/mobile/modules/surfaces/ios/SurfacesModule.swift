@@ -5,6 +5,18 @@ public class SurfacesModule: Module {
   public func definition() -> ModuleDefinition {
     Name("Surfaces")
 
+    // Something left in the inbox while 6pm is open (a bank alert passed by the Shortcut, a
+    // shared receipt): the app is told, and brings it in at once.
+    Events("onInbox")
+
+    OnStartObserving {
+      InboxSignal.start { [weak self] in self?.sendEvent("onInbox", [:]) }
+    }
+
+    OnStopObserving {
+      InboxSignal.stop()
+    }
+
     AsyncFunction("writeSurface") { (name: String, json: String) in
       try SurfaceFiles.write(name: name, json: json)
     }

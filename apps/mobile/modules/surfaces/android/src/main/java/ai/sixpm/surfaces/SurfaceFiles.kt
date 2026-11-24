@@ -14,6 +14,12 @@ object SurfaceFiles {
   private val SURFACE_NAMES = setOf("snapshot", "context")
   private val STATUS_NAMES = setOf("last-alert", "first-catch-told")
 
+  /**
+   * Told each time something is left in the inbox, while the app listens: the listener runs in the
+   * app's own process, so a 6pm that is open brings a catch in at once.
+   */
+  @Volatile var inboxWritten: (() -> Unit)? = null
+
   private fun folder(context: Context, name: String): File =
     File(File(context.noBackupFilesDir, "surfaces"), name).apply { mkdirs() }
 
@@ -52,6 +58,7 @@ object SurfaceFiles {
   fun writeInbox(context: Context, id: String, json: String) {
     if (!safeId(id)) return
     write(File(folder(context, "inbox"), "$id.json"), json)
+    runCatching { inboxWritten?.invoke() }
   }
 
   /** What is waiting, oldest first. */

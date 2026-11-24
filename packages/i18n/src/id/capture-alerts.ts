@@ -52,7 +52,7 @@ export const idCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
     'Bayar sedikit dari salah satu app itu. Begitu notifikasinya datang, pembayarannya sudah ada di Kotak masuk.',
   'capture.walk.alerts.l1Title': 'Tambahkan pintasan 6pm',
   'capture.walk.alerts.l1Body':
-    'Ketuk “Ambil pintasan 6pm” di atas, lalu Tambah Pintasan. Namanya “Catch a bank alert”.',
+    'Ketuk “Ambil pintasan 6pm”, lalu Tambah Pintasan. Namanya “Catch a bank alert”.',
   'capture.walk.alerts.l2Title': 'Nyalakan otomatisasinya',
   'capture.walk.alerts.l2Body':
     'Buka di Pintasan dan ketuk › di pemicu. Nyalakan Otomatisasi dan biarkan Beri Tahu mati, supaya notifikasi ditangkap diam-diam. Kembali berarti tersimpan.',
@@ -62,7 +62,7 @@ export const idCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.alerts.l3Body':
     'Kembali ke 6pm dan ketuk “Kirim notifikasi uji coba”. 6pm mengirim satu ke dirinya sendiri dan memberi tahu kamu saat notifikasinya masuk.',
   'capture.walk.alerts.addBank':
-    'Bankmu belum ada di daftar pintasannya? Buka pintasannya dan ketuk + di pemicu untuk menambahkan app-nya.',
+    'Bankmu belum ada di daftar pintasannya? Buka pintasannya dan ketuk + di pemicu untuk menambahkan app-nya. Kalau iOS lalu mengosongkan daftarnya, tambahkan lagi 6pm dan tiap bank yang kamu pakai dengan +.',
   'capture.walk.alerts.mistake1':
     'Judul, Isi, atau Tanggal dibiarkan kosong. Ketuk masing-masing dan pilih milik Notifikasi, kalau tidak notifikasi tidak mencatat apa-apa.',
   'capture.walk.alerts.mistake2':
@@ -110,4 +110,14 @@ export const idCaptureAlerts: { readonly [Key in keyof typeof enCaptureAlerts]: 
   'capture.walk.ios.notificationSubtitle': 'Notifikasi › Subjudul',
   'capture.walk.ios.notify': 'Beri Tahu',
   'capture.walk.ios.cancel': 'Batal',
+
+  // Android: letting 6pm keep running, and bank alerts paused while access is off.
+  'capture.alerts.keepRunning':
+    'Biarkan 6pm tetap berjalan, supaya notifikasi tetap masuk saat ponselmu tidur. Di beberapa ponsel namanya Mulai otomatis atau Aktivitas latar belakang.',
+  'capture.alerts.keepRunningChip': 'Baterai → 6pm',
+  'capture.alerts.keepRunningOpen': 'Buka pengaturan baterai',
+  'capture.alerts.paused.title': 'Notifikasi bank sedang terjeda',
+  'capture.alerts.paused.body':
+    '6pm tidak bisa melihat notifikasimu. Nyalakan lagi aksesnya supaya pembayaranmu tercatat sendiri lagi.',
+  'capture.alerts.paused.action': 'Nyalakan lagi akses',
 };

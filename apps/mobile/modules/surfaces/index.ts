@@ -24,6 +24,12 @@ export interface RunningActivity {
 }
 
 interface SurfacesNative {
+  /**
+   * Told each time something is left in the inbox while the app runs (iPhone: an extension's
+   * Darwin notification; Android: the listener, in the app's own process). Builds from before it
+   * never tell.
+   */
+  addListener?(event: 'onInbox', listener: () => void): { remove(): void };
   writeSurface(name: 'snapshot' | 'context', json: string): Promise<void>;
   writeSurfaceImage(name: string, pngBase64: string): Promise<void>;
   readInbox(): Promise<InboxFile[]>;
@@ -46,6 +52,11 @@ interface SurfacesNative {
   alertAccess?(): boolean;
   /** Android: opens Notification access at 6pm's switch. */
   openAlertAccess?(): Promise<void>;
+  /**
+   * Android: opens where 6pm is let keep running in the background (the maker's Autostart page,
+   * else the battery optimisation list, else 6pm's app page). Which one opened, or -1.
+   */
+  openKeepRunning?(): Promise<number>;
   /**
    * Posts the test alert the person sends to themselves, in the app's words. On Android the
    * listener reads it as it reads a bank's, and knows it by `channel`. On the iPhone the Shortcuts
