@@ -157,6 +157,15 @@ describe('alertReadAsk', () => {
     const body = Array.from({ length: 12 }, (_, i) => `GD: -${i + 1}0,000VND`).join(' | ');
     expect(alertReadAsk(words(body), VND)?.amounts).toHaveLength(ALERT_READ_AMOUNTS_MAX);
   });
+
+  it('marks money an alert from abroad prints in its own way', () => {
+    const ask = alertReadAsk(
+      words('ご利用金額：1,234円 ご利用先：コンビニ', 'ご利用のお知らせ', 'Vpass'),
+      currencyOf('JPY'),
+    );
+    expect(ask?.amounts.map((a) => [a.amount, a.currency])).toEqual([[1234, 'JPY']]);
+    expect(ask?.text).toContain('«1: 1,234 JPY»');
+  });
 });
 
 describe('withAlertReading', () => {
