@@ -23,6 +23,7 @@ import { readSharedAiMode } from '../features/privacy/ai-mode-share';
 import { applyAiModeToCrashReports } from '../features/privacy/crash-reports';
 import { AiModeSync } from '../features/privacy/use-ai-mode';
 import { PurchasesProvider } from '../features/purchases/purchases-provider';
+import { useTodayArrival } from '../features/rating/today-arrival';
 import { TogetherProvider } from '../features/together/together-provider';
 import { TravelProvider } from '../features/travel/travel-provider';
 import { I18nProvider } from '../i18n/i18n';
@@ -57,6 +58,8 @@ function Screens() {
   // the presentation it opened with: react-native-screens cannot turn a full-screen modal into a
   // sheet under the person's hands, and folding the phone shut would ask it to.
   const spread = useFoldForm().kind === 'spread';
+  // Whether Today was opened onto or come back to: a first catch asks for a rating only on the first.
+  useTodayArrival();
   const openedAs = useRef(new Map<string, typeof sheet>()).current;
   const keep = (key: string, now: typeof sheet) => {
     const first = openedAs.get(key) ?? now;
@@ -72,7 +75,7 @@ function Screens() {
           contentStyle: { backgroundColor: palette.sheetSolid },
         }}
         // A screen finished appearing, with no transition under way: the moment a good close,
-        // just faded out, may bring up Max or the store's rating prompt.
+        // just faded out, may bring up Max or, from a closed week on, the store's rating prompt.
         screenListeners={{
           transitionEnd: (event) => {
             if (!event.data.closing) closeFollowUpSettled();

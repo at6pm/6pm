@@ -2,6 +2,8 @@ import { useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 
+import { isSelfRunningSource } from '@6pm/domain';
+
 import { readFirstCatch } from '../../data/first-catch';
 import { useMoneyStore } from '../../data/money-provider';
 import { readWallets } from '../../data/onboarding';
@@ -18,6 +20,7 @@ import { useCaptureHealth } from '../capture-guide/use-capture-health';
 import { useAlertsProven } from '../capture/alerts-proven';
 import { testAlertAvailable } from '../capture/use-test-alert';
 import { useAiMode } from '../privacy/use-ai-mode';
+import { noteFirstCatchSeen } from '../rating/today-arrival';
 import { nativeReach } from '../surfaces/native-reach';
 import {
   catchWaysFor,
@@ -78,6 +81,8 @@ export function FirstCatchScreen() {
 
   const close = () => {
     haptics.tap();
+    // A catch from a way that runs by itself just printed here: Today, under it, shows it seen.
+    if (listen.caught && isSelfRunningSource(listen.caught.source)) noteFirstCatchSeen();
     router.back();
   };
   return (
