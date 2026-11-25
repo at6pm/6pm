@@ -1,4 +1,4 @@
-import type { SiteLang } from '../../data/site/copy';
+import { siteLangInfo, type SiteLang } from '../../data/site/langs';
 import type { LiveLines } from '../../data/site/live-lines';
 import { joinWaitlist } from '../waitlist-request';
 
@@ -51,7 +51,7 @@ export function startJoinForms(root: HTMLElement, lang: SiteLang, lines: LiveLin
       }
       sending = true;
       button.setAttribute('aria-busy', 'true');
-      void joinWaitlist({ email, language: lang }).then((outcome) => {
+      void joinWaitlist({ email, language: siteLangInfo[lang].base }).then((outcome) => {
         sending = false;
         button.removeAttribute('aria-busy');
         if (outcome.kind === 'listed') listed();

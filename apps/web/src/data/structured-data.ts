@@ -25,7 +25,8 @@ import {
   studioProfiles,
   studioUrl,
 } from './site/config';
-import { siteCopy } from './site/copy';
+import { homePath, siteCopy } from './site/copy';
+import { siteLangInfo, siteLangs, type SiteLang } from './site/langs';
 
 export const siteUrl = 'https://at6pm.app';
 
@@ -39,7 +40,7 @@ const ids = {
   founder: `${siteUrl}/#founder`,
 } as const;
 
-const inLanguage = (lang: BlogLang): string => (lang === 'vi' ? 'vi-VN' : 'en');
+const inLanguage = (lang: SiteLang): string => (lang === 'vi' ? 'vi-VN' : lang);
 
 export const absolute = (path: string): string => new URL(path, siteUrl).href;
 
@@ -82,9 +83,9 @@ const organizationNode: Json = {
 };
 
 /** The app, as the home page describes it. No rating until the App Store has real ones to quote. */
-function appNode(lang: BlogLang): Json {
+function appNode(lang: SiteLang): Json {
   const price = maxPrices[lang];
-  const currency = lang === 'vi' ? 'VND' : 'USD';
+  const { currency } = siteLangInfo[lang].market;
   return {
     '@type': 'MobileApplication',
     '@id': ids.app,
@@ -92,7 +93,7 @@ function appNode(lang: BlogLang): Json {
     description: siteCopy[lang].meta.description,
     operatingSystem: 'iOS, Android',
     applicationCategory: 'FinanceApplication',
-    url: `${siteUrl}${lang === 'vi' ? '/vi' : '/'}`,
+    url: absolute(homePath[lang]),
     ...(ctaMode === 'store'
       ? { downloadUrl: [appStoreUrl, playStoreUrl], installUrl: [appStoreUrl, playStoreUrl] }
       : { downloadUrl: playStoreUrl, installUrl: playStoreUrl }),
@@ -105,7 +106,7 @@ function appNode(lang: BlogLang): Json {
 }
 
 /** The home page: who makes 6pm, the site, and the app. */
-export function homeLd(lang: BlogLang): Json {
+export function homeLd(lang: SiteLang): Json {
   return {
     '@context': 'https://schema.org',
     '@graph': [
@@ -117,7 +118,7 @@ export function homeLd(lang: BlogLang): Json {
         '@id': ids.website,
         name: '6pm',
         url: `${siteUrl}/`,
-        inLanguage: ['en', 'vi-VN'],
+        inLanguage: siteLangs.map(inLanguage),
         publisher: { '@id': ids.organization },
       },
       appNode(lang),

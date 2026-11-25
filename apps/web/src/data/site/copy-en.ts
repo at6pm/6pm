@@ -1,7 +1,7 @@
 import { playStoreUrl } from './config';
 import type { SiteCopy } from './copy';
 import { duoCopyEn } from './duo-copy-en';
-import { surfacesCopy } from './surfaces-copy';
+import { surfacesCopyEn } from './surfaces-copy-en';
 
 /** The English site: amounts in US dollars, examples from anywhere. */
 export const siteCopyEn: SiteCopy = {
@@ -83,7 +83,7 @@ export const siteCopyEn: SiteCopy = {
     inboxFoot: 'Nothing counts twice. Duplicates are merged.',
     bankStrip: '',
   },
-  surfaces: surfacesCopy.en,
+  surfaces: surfacesCopyEn,
   close: {
     mark: 'The close',
     title: 'Six o’clock. One minute. Done.',
@@ -259,6 +259,7 @@ export const siteCopyEn: SiteCopy = {
       'Encrypted backup and export',
       'Year book and widgets in your look',
     ],
+    storeNote: 'Prices shown for the US. Your store shows yours.',
   },
   faq: {
     title: 'Questions.',

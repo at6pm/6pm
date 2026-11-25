@@ -1,6 +1,7 @@
 ---
 import { siteCopy, type SiteLang } from '../../data/site/copy';
 import { duoStandIcons } from '../../data/site/duo-data';
+import { duoMoneys } from '../../data/site/duo-money';
 
 /** The stand's bottom half: the amount, the categories and the keys. */
 interface Props {
@@ -9,6 +10,7 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = siteCopy[lang].duo.screen.stand;
+const { before, after } = duoMoneys[lang].keypad;
 const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '00', '0', 'del'];
 ---
 
@@ -16,7 +18,7 @@ const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '00', '0', 'del'];
   <div class="duo-screen keypad">
     <div class="shade"></div>
     <div class="entry">
-      <div class="amount d-face" data-stand-amount>{lang === 'vi' ? '0k' : '$0'}</div>
+      <div class="amount d-face" data-stand-amount>{`${before}0${after}`}</div>
       <button type="button" class="add" tabindex="-1" data-stand-add>
         <span class="sym" style="font-size:22px">add</span>{t.add}
       </button>

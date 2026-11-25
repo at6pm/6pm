@@ -1,0 +1,17 @@
+---
+import HomePage from '../../components/site/home-page.astro';
+import { langSegment, prefixedLangs, type SiteLang } from '../../data/site/langs';
+
+// The home page in every language but English, which is the site root: `/vi`, `/ja`, `/zh-hans`…
+export function getStaticPaths() {
+  return prefixedLangs.map((lang) => ({ params: { lang: langSegment(lang) }, props: { lang } }));
+}
+
+interface Props {
+  lang: SiteLang;
+}
+
+const { lang } = Astro.props;
+---
+
+<HomePage lang={lang} />

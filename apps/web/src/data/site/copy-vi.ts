@@ -1,7 +1,7 @@
 import { playStoreUrl } from './config';
 import type { SiteCopy } from './copy';
 import { duoCopyVi } from './duo-copy-vi';
-import { surfacesCopy } from './surfaces-copy';
+import { surfacesCopyVi } from './surfaces-copy-vi';
 
 /** The Vietnamese site: amounts in đồng, Vietnamese banks and examples. */
 export const siteCopyVi: SiteCopy = {
@@ -83,7 +83,7 @@ export const siteCopyVi: SiteCopy = {
     inboxFoot: 'Không ghi trùng. Khoản lặp được gộp lại.',
     bankStrip: 'HỖ TRỢ 31 APP NGÂN HÀNG VÀ VÍ ĐIỆN TỬ',
   },
-  surfaces: surfacesCopy.vi,
+  surfaces: surfacesCopyVi,
   close: {
     mark: 'Chốt ngày',
     title: 'Sáu giờ. Một phút. Xong.',
@@ -259,6 +259,7 @@ export const siteCopyVi: SiteCopy = {
       'Sao lưu mã hoá và xuất dữ liệu',
       'Sổ kỷ niệm và widget theo giao diện',
     ],
+    storeNote: 'Giá áp dụng tại Việt Nam. Cửa hàng ứng dụng sẽ hiện đúng giá nơi bạn ở.',
   },
   faq: {
     title: 'Hỏi đáp.',

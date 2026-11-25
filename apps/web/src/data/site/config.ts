@@ -1,3 +1,5 @@
+import type { SiteLang } from './langs';
+
 /**
  * What the home page asks visitors to do: join the launch list until the app is out, then download
  * it. Flip to `store` on launch day and redeploy.
@@ -43,10 +45,19 @@ export const studioProfiles = ['https://x.com/OddEggsStudio'] as const;
 export const siteBackground = '#8fd0c6';
 
 /**
- * 6pm Max as the App Store sells it: Vietnam in đồng for the Vietnamese page, the US in dollars for
- * the English one. The app reads its prices from the store; these are the tiers configured there.
+ * 6pm Max as the App Store sells it in each page's market (`langs.ts`): the US in dollars for the
+ * English page, Vietnam in đồng for the Vietnamese one, and so on. The app reads its prices from the
+ * store; these are the tiers configured there, from 25 November 2026.
  */
 export const maxPrices = {
   en: { month: 2.49, year: 19.99 },
   vi: { month: 49_000, year: 299_000 },
-} as const;
+  'zh-Hans': { month: 18, year: 148 },
+  ja: { month: 400, year: 3_000 },
+  ko: { month: 4_400, year: 33_000 },
+  th: { month: 99, year: 699 },
+  id: { month: 49_000, year: 399_000 },
+  es: { month: 2.99, year: 22.99 },
+  fr: { month: 2.99, year: 22.99 },
+  de: { month: 2.99, year: 22.99 },
+} as const satisfies Record<SiteLang, { month: number; year: number }>;

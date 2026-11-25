@@ -1,0 +1,21 @@
+---
+import { legalDoc } from '../../data/legal-docs';
+import LegalLayout from '../../layouts/legal-layout.astro';
+import { langSegment, prefixedLangs, type SiteLang } from '../../data/site/langs';
+
+// The terms page in every language but English, which lives at `/terms`.
+export function getStaticPaths() {
+  return prefixedLangs.map((lang) => ({ params: { lang: langSegment(lang) }, props: { lang } }));
+}
+
+interface Props {
+  lang: SiteLang;
+}
+
+const { lang } = Astro.props;
+const doc = legalDoc('terms', lang);
+---
+
+<LegalLayout lang={lang} slug="terms" doc={doc}>
+  <doc.Content />
+</LegalLayout>

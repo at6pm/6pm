@@ -1,0 +1,21 @@
+---
+import { legalDoc } from '../../data/legal-docs';
+import LegalLayout from '../../layouts/legal-layout.astro';
+import { langSegment, prefixedLangs, type SiteLang } from '../../data/site/langs';
+
+// The privacy page in every language but English, which lives at `/privacy`.
+export function getStaticPaths() {
+  return prefixedLangs.map((lang) => ({ params: { lang: langSegment(lang) }, props: { lang } }));
+}
+
+interface Props {
+  lang: SiteLang;
+}
+
+const { lang } = Astro.props;
+const doc = legalDoc('privacy', lang);
+---
+
+<LegalLayout lang={lang} slug="privacy" doc={doc}>
+  <doc.Content />
+</LegalLayout>

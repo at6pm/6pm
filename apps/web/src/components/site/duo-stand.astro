@@ -1,6 +1,7 @@
 ---
 import { siteCopy, type SiteLang } from '../../data/site/copy';
-import { duoMoney, duoStandRecent, duoToday } from '../../data/site/duo-data';
+import { duoMoney } from '../../data/site/duo-money';
+import { duoStandRecent, duoToday } from '../../data/site/duo-data';
 import DuoBackdrop from './duo-backdrop.astro';
 import DuoKeypad from './duo-keypad.astro';
 
@@ -14,7 +15,7 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = siteCopy[lang].duo.screen.stand;
-const recent = duoStandRecent.map((amount, i) => ({ name: t.recent[i], amount }));
+const recent = duoStandRecent[lang].map((amount, i) => ({ name: t.recent[i], amount }));
 ---
 
 <div class="stand" data-duo-stand data-lang={lang} data-left={duoToday[lang].left} data-start={duoToday[lang].start}>

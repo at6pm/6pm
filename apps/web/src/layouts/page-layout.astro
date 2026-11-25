@@ -2,13 +2,18 @@
 import '../styles/fonts.css';
 import '../styles/global.css';
 
+import { siteLangInfo, siteLangs, type SiteLang } from '../data/site/langs';
+
 interface Props {
   title: string;
   description: string;
   /** The page's language; `lang` on the document. */
-  lang?: 'en' | 'vi';
-  /** The same page in each language, as site paths, so search engines pair them. */
-  alternates?: Readonly<Record<'en' | 'vi', string>> | undefined;
+  lang?: SiteLang;
+  /**
+   * The same page in its other languages, as site paths, so search engines pair them. English is
+   * the default for visitors in none of them.
+   */
+  alternates?: Readonly<Partial<Record<SiteLang, string>>> | undefined;
   /** Browser chrome colours; the media query picks one when the page has a light and a dark side. */
   themeColors?: readonly { color: string; media?: string }[];
   /** The social card, as a site path to a 1200×630 image, and what it shows. */
@@ -77,18 +82,24 @@ const pageUrl = new URL(Astro.url.pathname.replace(/(?:\/index)?\.html$/, ''), A
     />
     {
       alternates &&
-        (['en', 'vi'] as const).map((code) => (
-          <link rel="alternate" hreflang={code} href={new URL(alternates[code], Astro.site)} />
-        ))
+        siteLangs.map((code) => {
+          const path = alternates[code];
+          return path && <link rel="alternate" hreflang={code} href={new URL(path, Astro.site)} />;
+        })
     }
-    {alternates && <link rel="alternate" hreflang="x-default" href={new URL(alternates.en, Astro.site)} />}
+    {
+      alternates?.en && (
+        <link rel="alternate" hreflang="x-default" href={new URL(alternates.en, Astro.site)} />
+      )
+    }
     {feed && <link rel="alternate" type="application/rss+xml" title={feed.title} href={feed.path} />}
     <meta property="og:type" content={article ? 'article' : 'website'} />
-    <meta property="og:locale" content={lang === 'vi' ? 'vi_VN' : 'en_US'} />
+    <meta property="og:locale" content={siteLangInfo[lang].ogLocale} />
     {
-      alternates && (
-        <meta property="og:locale:alternate" content={lang === 'vi' ? 'en_US' : 'vi_VN'} />
-      )
+      alternates &&
+        siteLangs
+          .filter((code) => code !== lang && alternates[code])
+          .map((code) => <meta property="og:locale:alternate" content={siteLangInfo[code].ogLocale} />)
     }
     <meta property="og:site_name" content="6pm" />
     <meta property="og:title" content={title} />

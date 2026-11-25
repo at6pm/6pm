@@ -1,0 +1,51 @@
+import type { SurfacesCopy } from './surfaces-copy';
+
+export const surfacesCopyVi: SurfacesCopy = {
+  mark: 'Trước sáu giờ',
+  title: 'Nó ở ngay chỗ bạn hay nhìn.',
+  sub: 'Màn hình khoá, Dynamic Island, widget, Siri và nút Tác vụ. Hầu hết các ngày, bạn chẳng cần mở app đến tận sáu giờ.',
+  lock: {
+    label: 'MÀN HÌNH KHOÁ · LIVE ACTIVITY',
+    date: 'Thứ Sáu, 9 tháng 10',
+    left: 'còn',
+    widgetTop: '6pm · Hôm nay',
+    widgetBottom: '2 chờ kiểm',
+    activityTop: 'Chốt trong 8 phút',
+    activityMain: '4 khoản · 1 phút',
+    activityButton: 'Chốt',
+    notice: 'Đã ghi 29.000₫ · Cà phê sữa đá',
+    confirm: 'Xác nhận',
+    edit: 'Sửa',
+  },
+  safe: '183k',
+  island: {
+    label: 'DYNAMIC ISLAND',
+    countdown: '8 ph',
+    top: 'Đang chờ · chạm khi đã trả',
+    main: '45.000₫ cho Phở Hòa',
+    paid: 'Đã trả',
+    note: 'Trả bằng QR hay tiền mặt? Nó chờ ở trên cùng đến khi bạn xác nhận.',
+  },
+  widgets: {
+    label: 'WIDGET',
+    closesIn: 'Giờ chốt còn',
+    caught: 'Đã ghi 4 khoản',
+    safeToday: 'hôm nay còn',
+    note: 'Con số của bạn ngay trên màn hình chính, theo giao diện bạn chọn.',
+  },
+  siri: {
+    said: '“Ghi phở năm lăm nghìn vào 6pm”',
+    logged: 'Đã ghi. Phở · Ăn uống',
+    after: 'Hôm nay còn 128k',
+    amount: '55k',
+  },
+  action: {
+    label: 'NÚT TÁC VỤ · TRUNG TÂM ĐIỀU KHIỂN',
+    icon: 'qr_code_scanner',
+    first: 'Quét QR',
+    second: 'Ghi nhanh',
+    buttonLabel: 'Nút Tác vụ',
+    buttonMain: 'Quét QR trong 6pm',
+    note: 'Một lần bấm từ bất cứ đâu, không cần mở khoá.',
+  },
+};
