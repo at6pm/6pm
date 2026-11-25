@@ -5,6 +5,70 @@
   --font-mono: 'IBM Plex Mono', 'IBM Plex Mono Fallback', ui-monospace, monospace;
 }
 
+/*
+ * The site's own fonts carry Latin and Vietnamese only. Chinese, Japanese, Korean and Thai pages
+ * keep them for Latin letters and digits, and take the script itself from the system's font for it
+ * (Apple's, then Google's Noto, then Windows'). Nothing more is downloaded.
+ */
+:root:lang(zh-Hans) {
+  --font-display:
+    'Bricolage Grotesque', 'Bricolage Grotesque Fallback', 'PingFang SC', 'Noto Sans SC',
+    'Microsoft YaHei', system-ui, sans-serif;
+  --font-text:
+    'Be Vietnam Pro', 'Be Vietnam Pro Fallback', 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei',
+    -apple-system, system-ui, sans-serif;
+  --font-mono:
+    'IBM Plex Mono', 'IBM Plex Mono Fallback', ui-monospace, 'PingFang SC', 'Noto Sans SC',
+    'Microsoft YaHei', monospace;
+}
+:root:lang(ja) {
+  --font-display:
+    'Bricolage Grotesque', 'Bricolage Grotesque Fallback', 'Hiragino Sans', 'Noto Sans JP',
+    'Yu Gothic', system-ui, sans-serif;
+  --font-text:
+    'Be Vietnam Pro', 'Be Vietnam Pro Fallback', 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic',
+    -apple-system, system-ui, sans-serif;
+  --font-mono:
+    'IBM Plex Mono', 'IBM Plex Mono Fallback', ui-monospace, 'Hiragino Sans', 'Noto Sans JP',
+    'Yu Gothic', monospace;
+}
+:root:lang(ko) {
+  --font-display:
+    'Bricolage Grotesque', 'Bricolage Grotesque Fallback', 'Apple SD Gothic Neo', 'Noto Sans KR',
+    'Malgun Gothic', system-ui, sans-serif;
+  --font-text:
+    'Be Vietnam Pro', 'Be Vietnam Pro Fallback', 'Apple SD Gothic Neo', 'Noto Sans KR',
+    'Malgun Gothic', -apple-system, system-ui, sans-serif;
+  --font-mono:
+    'IBM Plex Mono', 'IBM Plex Mono Fallback', ui-monospace, 'Apple SD Gothic Neo', 'Noto Sans KR',
+    'Malgun Gothic', monospace;
+}
+:root:lang(th) {
+  --font-display:
+    'Bricolage Grotesque', 'Bricolage Grotesque Fallback', Thonburi, 'Noto Sans Thai',
+    'Leelawadee UI', Leelawadee, system-ui, sans-serif;
+  --font-text:
+    'Be Vietnam Pro', 'Be Vietnam Pro Fallback', Thonburi, 'Noto Sans Thai', 'Leelawadee UI',
+    Leelawadee, -apple-system, system-ui, sans-serif;
+  --font-mono:
+    'IBM Plex Mono', 'IBM Plex Mono Fallback', ui-monospace, Thonburi, 'Noto Sans Thai',
+    'Leelawadee UI', Leelawadee, monospace;
+}
+
+/* Korean breaks lines between words, never inside one; a word too long for its line still wraps. */
+:root:lang(ko) {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+/* Thai is never letter-spaced: tracking pulls its stacked marks off their letters. */
+:root:lang(th) body *:lang(th) {
+  letter-spacing: 0 !important;
+}
+/* Chinese, Japanese and Korean set their display type at the face's own spacing, not tightened. */
+:root:is(:lang(zh-Hans), :lang(ja), :lang(ko)) :is(h1, h2, h3, .beliefs p) {
+  letter-spacing: 0;
+}
+
 html {
   scroll-behavior: smooth;
 }

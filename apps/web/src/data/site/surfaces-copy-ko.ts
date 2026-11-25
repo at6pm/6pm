@@ -1,0 +1,51 @@
+import type { SurfacesCopy } from './surfaces-copy';
+
+export const surfacesCopyKo: SurfacesCopy = {
+  mark: '6시 전에도',
+  title: '늘 보는 곳에 이미 있어요.',
+  sub: '잠금 화면, Dynamic Island, 위젯, Siri, 동작 버튼. 대부분의 날은 6시까지 앱을 열 필요도 없어요.',
+  lock: {
+    label: '잠금 화면 · 실시간 현황',
+    date: '10월 9일 금요일',
+    left: '남음',
+    widgetTop: '6pm · 오늘 쓸 돈',
+    widgetBottom: '확인할 2건',
+    activityTop: '8분 뒤 마감',
+    activityMain: '4건 · 1분쯤',
+    activityButton: '마감',
+    notice: '₩5,500 · 오트 라떼 잡았어요',
+    confirm: '확인',
+    edit: '수정',
+  },
+  safe: '₩1.5만',
+  island: {
+    label: 'DYNAMIC ISLAND',
+    countdown: '8분',
+    top: '대기 중 · 결제하면 탭',
+    main: '김밥집에 ₩6,000',
+    paid: '결제 완료',
+    note: 'QR이나 현금으로 냈나요? 다 냈다고 할 때까지 화면 위에서 기다려요.',
+  },
+  widgets: {
+    label: '위젯',
+    closesIn: '마감까지',
+    caught: '지금까지 4건 잡았어요',
+    safeToday: '오늘 쓸 돈',
+    note: '홈 화면에 내 숫자를. 고른 룩 그대로.',
+  },
+  siri: {
+    said: '“6pm에 김밥 6천 원 기록해 줘”',
+    logged: '기록했어요. 김밥 · 식비',
+    after: '이제 오늘 쓸 수 있는 돈은 ₩9,000',
+    amount: '₩6,000',
+  },
+  action: {
+    label: '동작 버튼 · 제어 센터',
+    icon: 'mic',
+    first: '말로 기록',
+    second: '빠른 추가',
+    buttonLabel: '동작 버튼',
+    buttonMain: '6pm에 지출 기록',
+    note: '어디서든 한 번 누르면 끝. 잠금 해제도 필요 없어요.',
+  },
+};

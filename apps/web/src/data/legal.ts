@@ -1,3 +1,15 @@
+import { legalCopyDe } from './legal-copy-de';
+import { legalCopyEn } from './legal-copy-en';
+import { legalCopyEs } from './legal-copy-es';
+import { legalCopyFr } from './legal-copy-fr';
+import { legalCopyId } from './legal-copy-id';
+import { legalCopyJa } from './legal-copy-ja';
+import { legalCopyKo } from './legal-copy-ko';
+import { legalCopyTh } from './legal-copy-th';
+import { legalCopyVi } from './legal-copy-vi';
+import { legalCopyZhHans } from './legal-copy-zh-hans';
+import { langPath, siteLangs, type SiteLang } from './site/langs';
+
 /**
  * The facts the legal pages share: they fill the `{{OWNER}}`, `{{CONTACT_PHONE}}` and
  * `{{CONTACT_TEL}}` tokens in the documents under `src/legal`.
@@ -7,79 +19,41 @@ export const OWNER = 'Khanh Bui';
 export const CONTACT_PHONE = '+84 949 840 370';
 export const CONTACT_TEL = '+84949840370';
 
-export type LegalLang = 'en' | 'vi';
+/** The legal pages speak every language the site does. */
+export type LegalLang = SiteLang;
 export type LegalSlug = 'privacy' | 'terms';
 
-export const legalLangs: readonly LegalLang[] = ['en', 'vi'];
+export const legalLangs: readonly LegalLang[] = siteLangs;
 export const legalSlugs: readonly LegalSlug[] = ['privacy', 'terms'];
 
-/** English lives at the site root, Vietnamese under `/vi`. */
+/** English lives at the site root, every other language under its prefix: `/privacy`, `/ja/privacy`. */
 export function legalPath(lang: LegalLang, slug: LegalSlug): string {
-  return lang === 'en' ? `/${slug}` : `/vi/${slug}`;
+  return langPath(lang, slug);
 }
 
-interface LegalStrings {
+/** What the legal pages say around the documents, in one language: `legal-copy-<lang>.ts`. */
+export interface LegalStrings {
   readonly brandLabel: string;
   readonly updated: string;
   readonly contents: string;
   readonly privacy: string;
   readonly terms: string;
-  /** Names the other language, in that language. */
-  readonly otherLanguage: string;
-  readonly otherLanguageLabel: string;
+  /** Labels the language menu. */
+  readonly language: string;
   readonly rights: string;
   /** The date as the page prints it. */
   readonly formatDate: (iso: string) => string;
 }
 
-const monthsEn = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-] as const;
-
-function dateParts(iso: string): readonly [number, number, number] {
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
-  if (match === null) throw new Error(`A legal page date must be YYYY-MM-DD, not "${iso}"`);
-  return [Number(match[1]), Number(match[2]), Number(match[3])];
-}
-
 export const legalStrings: Readonly<Record<LegalLang, LegalStrings>> = {
-  en: {
-    brandLabel: '6pm, home',
-    updated: 'Last updated',
-    contents: 'On this page',
-    privacy: 'Privacy',
-    terms: 'Terms',
-    otherLanguage: 'Tiếng Việt',
-    otherLanguageLabel: 'Đọc bằng tiếng Việt',
-    rights: '© 2026',
-    formatDate: (iso) => {
-      const [year, month, day] = dateParts(iso);
-      return `${day} ${monthsEn[month - 1]} ${year}`;
-    },
-  },
-  vi: {
-    brandLabel: '6pm, trang chủ',
-    updated: 'Cập nhật lần cuối',
-    contents: 'Nội dung',
-    privacy: 'Quyền riêng tư',
-    terms: 'Điều khoản',
-    otherLanguage: 'English',
-    otherLanguageLabel: 'Read in English',
-    rights: '© 2026',
-    formatDate: (iso) => {
-      const [year, month, day] = dateParts(iso);
-      return `${day} tháng ${month}, ${year}`;
-    },
-  },
+  en: legalCopyEn,
+  vi: legalCopyVi,
+  'zh-Hans': legalCopyZhHans,
+  ja: legalCopyJa,
+  ko: legalCopyKo,
+  th: legalCopyTh,
+  id: legalCopyId,
+  es: legalCopyEs,
+  fr: legalCopyFr,
+  de: legalCopyDe,
 };

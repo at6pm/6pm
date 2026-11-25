@@ -2,7 +2,7 @@
 title: Privacy Policy
 description: What 6pm keeps on your phone, the little that leaves it, and who handles it.
 lede: 6pm keeps your money on your phone. This page says exactly what we do with the little that leaves it.
-updated: '2026-11-24'
+updated: '2026-11-25'
 ---
 
 ## The short version
@@ -33,7 +33,7 @@ Only the things below, and only for the reasons given.
 
 ### An anonymous device ID
 
-When the app talks to our server, it first gets a random token that stands for your copy of the app. The token is kept on your phone. Our server stores only a scrambled form of it (a SHA-256 hash), plus your app language (English or Vietnamese) and the times it was first and last seen.
+When the app talks to our server, it first gets a random token that stands for your copy of the app. The token is kept on your phone. Our server stores only a scrambled form of it (a SHA-256 hash), plus your app language and the times it was first and last seen.
 
 None of this is linked to your name, your email or anything in your money. We use it to check that requests come from a real copy of the app, to limit abuse, and to count roughly how many devices use 6pm each day.
 

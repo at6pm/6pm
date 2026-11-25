@@ -2,7 +2,7 @@
 title: Chính sách quyền riêng tư
 description: Những gì 6pm giữ trên điện thoại của bạn, phần rất nhỏ rời khỏi máy, và ai xử lý chúng.
 lede: 6pm giữ tiền của bạn ngay trên điện thoại. Trang này nói rõ chúng tôi làm gì với phần rất nhỏ rời khỏi máy.
-updated: '2026-11-24'
+updated: '2026-11-25'
 ---
 
 ## Tóm tắt
@@ -33,7 +33,7 @@ Chỉ những thứ dưới đây, và chỉ vì những lý do nêu ra.
 
 ### Mã thiết bị ẩn danh
 
-Khi ứng dụng làm việc với máy chủ của chúng tôi, trước tiên nó nhận một mã ngẫu nhiên đại diện cho bản cài đặt của bạn. Mã này được giữ trên điện thoại. Máy chủ chỉ lưu dạng đã băm của mã (SHA-256), cùng ngôn ngữ ứng dụng (tiếng Anh hoặc tiếng Việt) và thời điểm thấy mã lần đầu và lần gần nhất.
+Khi ứng dụng làm việc với máy chủ của chúng tôi, trước tiên nó nhận một mã ngẫu nhiên đại diện cho bản cài đặt của bạn. Mã này được giữ trên điện thoại. Máy chủ chỉ lưu dạng đã băm của mã (SHA-256), cùng ngôn ngữ ứng dụng và thời điểm thấy mã lần đầu và lần gần nhất.
 
 Không thứ nào trong số này gắn với tên, email hay bất cứ điều gì trong chuyện tiền bạc của bạn. Chúng tôi dùng nó để kiểm tra yêu cầu đến từ một bản cài đặt thật của ứng dụng, hạn chế lạm dụng, và đếm số thiết bị dùng 6pm mỗi ngày.
 

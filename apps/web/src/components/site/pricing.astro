@@ -72,6 +72,7 @@ const year = maxPriceLabel(lang, 'year');
           }
         </ul>
       </div>
+      {t.storeNote && <p class="store-note">{t.storeNote}</p>}
     </div>
 </section>
 
@@ -217,5 +218,14 @@ const year = maxPriceLabel(lang, 'year');
   }
   .max li .sym {
     color: var(--sun);
+  }
+  /* Spans both plans: the prices are one market's, and each store shows its own. */
+  .store-note {
+    grid-column: 1 / -1;
+    margin: 0;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--ink2);
   }
 </style>

@@ -1,7 +1,9 @@
 ---
 import { appStoreUrl, ctaMode } from '../../data/site/config';
 import { blogPath } from '../../data/blog';
+import { siteLangInfo } from '../../data/site/langs';
 import { homePath, siteCopy, type SiteLang } from '../../data/site/copy';
+import LangMenu from './lang-menu.astro';
 
 interface Props {
   lang: SiteLang;
@@ -26,23 +28,9 @@ const store = ctaMode === 'store';
       <a href="#duo">iPhone Duo</a>
       <a href="#privacy">{t.privacy}</a>
       <a href="#pricing">{t.pricing}</a>
-      <a href={blogPath(lang)}>{t.blog}</a>
+      <a href={blogPath(siteLangInfo[lang].base)}>{t.blog}</a>
     </nav>
-    <div class="langs mono" role="group" aria-label={t.langLabel}>
-      {
-        (['en', 'vi'] as const).map((code) => (
-          <a
-            href={homePath[code]}
-            hreflang={code}
-            lang={code}
-            data-lang-pick={code}
-            aria-current={code === lang ? 'true' : undefined}
-          >
-            {code.toUpperCase()}
-          </a>
-        ))
-      }
-    </div>
+    <LangMenu current={lang} hrefs={homePath} label={t.langLabel} look="nav" keepPlace />
     <a class="cta" href={store ? appStoreUrl : '#join'}>{store ? t.store : t.wait}</a>
   </div>
 </header>
@@ -111,30 +99,6 @@ const store = ctaMode === 'store';
   }
   .links a:hover {
     color: var(--sun);
-  }
-  .langs {
-    display: flex;
-    padding: 3px;
-    border-radius: 99px;
-    border: 0.5px solid var(--line);
-    font-size: 11.5px;
-    letter-spacing: 0.06em;
-  }
-  .langs a {
-    height: 28px;
-    min-width: 36px;
-    box-sizing: border-box;
-    padding: 0 8px;
-    border-radius: 99px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    color: var(--ink2);
-  }
-  .langs a[aria-current] {
-    background: var(--ink);
-    color: var(--inv);
   }
   .cta {
     flex-shrink: 0;

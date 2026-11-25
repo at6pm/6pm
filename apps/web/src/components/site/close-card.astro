@@ -16,7 +16,7 @@ const rest = `transform:translate(0px, ${index * 16}px) scale(${1 - index * 0.05
 <div class="receipt" style={rest} data-close-card={index}>
   <div class="paper">
     <div class="top mono">
-      <span>Nº {card.no} · {card.source}</span><span>{card.time}</span>
+      <span>{t.cardNo} {card.no} · {card.source}</span><span>{card.time}</span>
     </div>
     <div class="dash"></div>
     <div class="who">

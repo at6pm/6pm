@@ -1,0 +1,51 @@
+import type { SurfacesCopy } from './surfaces-copy';
+
+export const surfacesCopyFr: SurfacesCopy = {
+  mark: 'Avant 18 h',
+  title: 'Il est là où tu regardes déjà.',
+  sub: 'Écran verrouillé, Dynamic Island, widgets, Siri et le bouton Action. La plupart des jours, tu n’ouvriras pas l’app avant 18 h.',
+  lock: {
+    label: 'ÉCRAN VERROUILLÉ · ACTIVITÉ EN DIRECT',
+    date: 'vendredi 9 octobre',
+    left: 'restant',
+    widgetTop: '6pm · À dépenser',
+    widgetBottom: '2 à vérifier',
+    activityTop: 'Dans 8 min',
+    activityMain: '4 repérées',
+    activityButton: 'Clôturer',
+    notice: 'Repéré : 3,80 € · Café crème',
+    confirm: 'Confirmer',
+    edit: 'Modifier',
+  },
+  safe: '21 €',
+  island: {
+    label: 'DYNAMIC ISLAND',
+    countdown: '8 min',
+    top: 'Touche une fois payé',
+    main: '12,00 € à Ramen Ko',
+    paid: 'Payé',
+    note: 'Payé par QR ou en espèces ? Ça reste en haut jusqu’à ce que tu dises que c’est réglé.',
+  },
+  widgets: {
+    label: 'WIDGETS',
+    closesIn: 'Clôture dans',
+    caught: '4 repérées jusqu’ici',
+    safeToday: 'à dépenser',
+    note: 'Ton chiffre sur l’écran d’accueil, dans le look que tu as choisi.',
+  },
+  siri: {
+    said: '« Note douze euros de déjeuner dans 6pm »',
+    logged: 'Noté. Déjeuner · Repas',
+    after: 'À dépenser aujourd’hui : 9 €',
+    amount: '12 €',
+  },
+  action: {
+    label: 'BOUTON ACTION · CENTRE DE CONTRÔLE',
+    icon: 'mic',
+    first: 'Dis-le',
+    second: 'Ajout rapide',
+    buttonLabel: 'Bouton Action',
+    buttonMain: 'Noter dans 6pm',
+    note: 'Une pression, de n’importe où, sans déverrouiller.',
+  },
+};

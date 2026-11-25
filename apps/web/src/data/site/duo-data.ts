@@ -1,14 +1,75 @@
-import type { SiteLang } from './copy';
 import type { DuoKind } from './duo-copy';
+import { duoAmountsDe } from './duo-amounts-de';
+import { duoAmountsEn } from './duo-amounts-en';
+import { duoAmountsEs } from './duo-amounts-es';
+import { duoAmountsFr } from './duo-amounts-fr';
+import { duoAmountsId } from './duo-amounts-id';
+import { duoAmountsJa } from './duo-amounts-ja';
+import { duoAmountsKo } from './duo-amounts-ko';
+import { duoAmountsTh } from './duo-amounts-th';
+import { duoAmountsVi } from './duo-amounts-vi';
+import { duoAmountsZhHans } from './duo-amounts-zh-hans';
+import { siteLangs, type SiteLang } from './langs';
 
 /**
- * The made-up October behind the iPhone Duo screens. Amounts are in thousands of đồng; `duoMoney`
- * writes them in each market's money. Each market has its own month so Friday 9 October matches the
- * rest of the page: a $54 day in English and a 312k day in Vietnamese, with as much left at six as
- * the Lock Screen shows.
+ * The made-up October behind the iPhone Duo screens. Each market has its own month so Friday 9
+ * October matches the rest of the page: a $54 day in English and a 312k day in Vietnamese, with as
+ * much left at six as the Lock Screen shows. Amounts are whole steps of that market's money (ten
+ * cents in English, a thousand đồng in Vietnamese), which its `duoMoney` writes out.
  */
 
-type DuoSpends = readonly (readonly [kind: DuoKind, amount: number])[];
+export type DuoSpends = readonly (readonly [kind: DuoKind, amount: number])[];
+
+/** One market's October, in `duo-amounts-<lang>.ts`. */
+export interface DuoAmounts {
+  /** Today's spends, Friday 9 October, before the close. */
+  readonly rows: DuoSpends;
+  /** Today: what is left, today's number, what went; each day's number; what Future you has kept. */
+  readonly today: {
+    readonly left: number;
+    readonly start: number;
+    readonly spent: number;
+    readonly daily: number;
+    readonly kept: number;
+  };
+  /** What each closed day spent. 7 October slipped by; 9 October is today. */
+  readonly spent: Readonly<Record<number, number>>;
+  /** Each closed day's three spends: kind and amount, in the order of the diary's names. */
+  readonly diary: Readonly<Record<number, DuoSpends>>;
+  /** Bills, Future you and Fun this month. */
+  readonly pots: readonly [number, number, number];
+  /** The two spends already added on the propped-up keypad. */
+  readonly standRecent: readonly [number, number];
+}
+
+const amounts: Readonly<Record<SiteLang, DuoAmounts>> = {
+  en: duoAmountsEn,
+  vi: duoAmountsVi,
+  'zh-Hans': duoAmountsZhHans,
+  ja: duoAmountsJa,
+  ko: duoAmountsKo,
+  th: duoAmountsTh,
+  id: duoAmountsId,
+  es: duoAmountsEs,
+  fr: duoAmountsFr,
+  de: duoAmountsDe,
+};
+
+/** The colours of Bills, Future you and Fun. */
+const potColors = ['#7a8bd8', '#5fb08a', '#ff8552'] as const;
+
+const byLang = <T>(pick: (a: DuoAmounts) => T): Readonly<Record<SiteLang, T>> =>
+  Object.fromEntries(siteLangs.map((lang) => [lang, pick(amounts[lang])])) as Record<SiteLang, T>;
+
+export const duoRows = byLang((a) => a.rows);
+export const duoToday = byLang((a) => a.today);
+export const duoSpent = byLang((a) => a.spent);
+export const duoDiary = byLang((a) => a.diary);
+/** Bills, Future you and Fun this month, with their colours. */
+export const duoPots = byLang((a) =>
+  a.pots.map((amount, i) => [amount, potColors[i] ?? ''] as const),
+);
+export const duoStandRecent = byLang((a) => a.standRecent);
 
 /** Tile background, glyph colour and icon for each kind of spend. */
 export const duoKinds: Readonly<
@@ -21,35 +82,7 @@ export const duoKinds: Readonly<
   fun: ['#ecdcff', '#6a3fb0', 'confirmation_number'],
 };
 
-/** Today's spends, Friday 9 October, before the close. */
-export const duoRows: Readonly<Record<SiteLang, DuoSpends>> = {
-  en: [
-    ['ride', 48],
-    ['food', 95],
-    ['coffee', 55],
-    ['shop', 32],
-  ],
-  vi: [
-    ['ride', 22],
-    ['food', 60],
-    ['coffee', 35],
-    ['shop', 12],
-  ],
-};
-
-/** Today: what is left, today's number, what went; each day's number; what Future you has kept. */
-export const duoToday: Readonly<
-  Record<SiteLang, { left: number; start: number; spent: number; daily: number; kept: number }>
-> = {
-  en: { left: 310, start: 540, spent: 230, daily: 540, kept: 530 },
-  vi: { left: 183, start: 312, spent: 129, daily: 312, kept: 305 },
-};
-
-/** What each closed day spent, and when it was closed. 7 October slipped by; 9 October is today. */
-export const duoSpent: Readonly<Record<SiteLang, Readonly<Record<number, number>>>> = {
-  en: { 1: 410, 2: 655, 3: 380, 4: 290, 5: 470, 6: 505, 8: 360 },
-  vi: { 1: 236, 2: 380, 3: 225, 4: 166, 5: 275, 6: 290, 8: 210 },
-};
+/** When each closed day was closed. */
 export const duoClosedAt: Readonly<Record<number, string>> = {
   1: '18:04',
   2: '18:21',
@@ -60,111 +93,10 @@ export const duoClosedAt: Readonly<Record<number, string>> = {
   8: '18:04',
 };
 
-/** Each closed day's three spends: kind and amount, in the order of the diary's names. */
-export const duoDiary: Readonly<Record<SiteLang, Readonly<Record<number, DuoSpends>>>> = {
-  en: {
-    1: [
-      ['food', 45],
-      ['ride', 62],
-      ['shop', 303],
-    ],
-    2: [
-      ['food', 320],
-      ['fun', 180],
-      ['ride', 155],
-    ],
-    3: [
-      ['food', 65],
-      ['fun', 240],
-      ['coffee', 75],
-    ],
-    4: [
-      ['shop', 210],
-      ['coffee', 35],
-      ['ride', 45],
-    ],
-    5: [
-      ['food', 55],
-      ['ride', 96],
-      ['shop', 319],
-    ],
-    6: [
-      ['food', 60],
-      ['coffee', 55],
-      ['fun', 390],
-    ],
-    8: [
-      ['food', 40],
-      ['coffee', 65],
-      ['shop', 255],
-    ],
-  },
-  vi: {
-    1: [
-      ['food', 45],
-      ['ride', 36],
-      ['shop', 155],
-    ],
-    2: [
-      ['food', 185],
-      ['fun', 105],
-      ['ride', 90],
-    ],
-    3: [
-      ['food', 65],
-      ['fun', 120],
-      ['coffee', 40],
-    ],
-    4: [
-      ['shop', 120],
-      ['coffee', 25],
-      ['ride', 21],
-    ],
-    5: [
-      ['food', 45],
-      ['ride', 50],
-      ['shop', 180],
-    ],
-    6: [
-      ['food', 45],
-      ['coffee', 35],
-      ['fun', 210],
-    ],
-    8: [
-      ['food', 30],
-      ['coffee', 45],
-      ['shop', 135],
-    ],
-  },
-};
-
-/** Bills, Future you and Fun this month, with their colours. */
-export const duoPots: readonly (readonly [amount: number, color: string])[] = [
-  [2400, '#7a8bd8'],
-  [1100, '#5fb08a'],
-  [640, '#ff8552'],
-];
-
-/** The stand's quick-add categories' icons, and the two spends already added there. */
+/** The stand's quick-add categories' icons. */
 export const duoStandIcons = [
   'shopping_basket',
   'restaurant',
   'two_wheeler',
   'confirmation_number',
 ] as const;
-export const duoStandRecent = [40, 15] as const;
-
-/**
- * A screen amount in each market's money: thousands of đồng with `k` (and `tr` from a million) in
- * Vietnamese; in English a tenth of it in dollars, with cents under $20.
- */
-export function duoMoney(lang: SiteLang, thousands: number): string {
-  if (lang === 'vi') {
-    if (thousands < 1000) return `${thousands}k`;
-    return `${(thousands / 1000).toLocaleString('vi-VN', { maximumFractionDigits: 1 })}tr`;
-  }
-  const dollars = thousands / 10;
-  return thousands < 200
-    ? `$${dollars.toFixed(2)}`
-    : `$${Math.round(dollars).toLocaleString('en-US')}`;
-}

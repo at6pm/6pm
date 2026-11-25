@@ -1,0 +1,51 @@
+import type { SurfacesCopy } from './surfaces-copy';
+
+export const surfacesCopyId: SurfacesCopy = {
+  mark: 'Sebelum jam enam',
+  title: 'Ada di tempat yang sudah biasa kamu lihat.',
+  sub: 'Layar Terkunci, Dynamic Island, widget, Siri, dan Tombol Tindakan. Hampir setiap hari, kamu nggak perlu buka aplikasinya sampai jam enam.',
+  lock: {
+    label: 'LAYAR TERKUNCI · AKTIVITAS LANGSUNG',
+    date: 'Jumat, 9 Oktober',
+    left: 'sisa',
+    widgetTop: '6pm · Aman hari ini',
+    widgetBottom: '2 perlu dicek',
+    activityTop: 'Tutup 8 mnt lagi',
+    activityMain: '4 hal · 1 mnt',
+    activityButton: 'Tutup',
+    notice: 'Tertangkap Rp22.000 · Es kopi susu',
+    confirm: 'Konfirmasi',
+    edit: 'Ubah',
+  },
+  safe: '70rb',
+  island: {
+    label: 'DYNAMIC ISLAND',
+    countdown: '8 mnt',
+    top: 'Menunggu · ketuk kalau sudah bayar',
+    main: 'Rp25.000 ke Warung mie',
+    paid: 'Dibayar',
+    note: 'Bayar pakai QR atau tunai? Ia menunggu di atas sampai kamu bilang sudah.',
+  },
+  widgets: {
+    label: 'WIDGET',
+    closesIn: 'Hari ditutup dalam',
+    caught: '4 sudah tertangkap',
+    safeToday: 'aman hari ini',
+    note: 'Angkamu di Layar Utama, dalam tampilan apa pun yang kamu pilih.',
+  },
+  siri: {
+    said: '“Log twenty-five thousand rupiah lunch in 6pm”',
+    logged: 'Tercatat · Makan siang',
+    after: 'Aman hari ini sekarang Rp45rb',
+    amount: 'Rp25rb',
+  },
+  action: {
+    label: 'TOMBOL TINDAKAN · PUSAT KONTROL',
+    icon: 'mic',
+    first: 'Ucapkan',
+    second: 'Tambah cepat',
+    buttonLabel: 'Tombol Tindakan',
+    buttonMain: 'Catat di 6pm',
+    note: 'Sekali tekan dari mana saja, tanpa membuka kunci.',
+  },
+};

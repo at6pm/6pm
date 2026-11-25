@@ -1,6 +1,7 @@
 ---
 import { siteCopy, type SiteLang } from '../../data/site/copy';
-import { duoMoney, duoPots, duoSpent, duoToday } from '../../data/site/duo-data';
+import { duoMoney } from '../../data/site/duo-money';
+import { duoPots, duoSpent, duoToday } from '../../data/site/duo-data';
 import DuoDetail from './duo-detail.astro';
 
 /**
@@ -24,7 +25,7 @@ const days = Array.from({ length: 31 }, (_, i) => {
   if (spent) return { day, amount: money(spent), kind: spent <= duoToday[lang].daily ? 'under' : 'over' };
   return { day, amount: money(duoToday[lang].daily), kind: 'ahead' };
 });
-const pots = duoPots.map(([amount, color], i) => ({ label: t.pots[i], value: money(amount), color }));
+const pots = duoPots[lang].map(([amount, color], i) => ({ label: t.pots[i], value: money(amount), color }));
 ---
 
 <div class="month" data-duo-month>

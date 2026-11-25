@@ -1,0 +1,51 @@
+import type { SurfacesCopy } from './surfaces-copy';
+
+export const surfacesCopyZhHans: SurfacesCopy = {
+  mark: '六点之前',
+  title: '你常看的地方，它一直都在。',
+  sub: '锁定屏幕、灵动岛、小组件、Siri 和操作按钮。大多数日子，不到六点你都不用打开 App。',
+  lock: {
+    label: '锁定屏幕 · 实时活动',
+    date: '10月9日 星期五',
+    left: '剩余',
+    widgetTop: '6pm · 今天可以花',
+    widgetBottom: '2 笔待确认',
+    activityTop: '8 分钟后日结',
+    activityMain: '记下 4 笔 · 1 分钟',
+    activityButton: '日结',
+    notice: '记下了 ¥15 · 燕麦拿铁',
+    confirm: '确认',
+    edit: '修改',
+  },
+  safe: '¥91',
+  island: {
+    label: '灵动岛',
+    countdown: '8分',
+    top: '等待中 · 付完轻点',
+    main: '付给面馆 ¥22',
+    paid: '已付',
+    note: '扫码或现金付款？它会在顶部等着，直到你说付好了。',
+  },
+  widgets: {
+    label: '小组件',
+    closesIn: '距日结还有',
+    caught: '已记下 4 笔',
+    safeToday: '今天可以花',
+    note: '你的数字就在主屏幕上，跟着你选的外观。',
+  },
+  siri: {
+    said: '“用 6pm 记账，午饭二十五块”',
+    logged: '记好了。午饭 · 餐饮',
+    after: '今天还可以花 ¥66',
+    amount: '¥25',
+  },
+  action: {
+    label: '操作按钮 · 控制中心',
+    icon: 'mic',
+    first: '说一句',
+    second: '快速记账',
+    buttonLabel: '操作按钮',
+    buttonMain: '在 6pm 记一笔开销',
+    note: '在哪儿都能一按就记，不用解锁。',
+  },
+};

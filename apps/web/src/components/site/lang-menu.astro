@@ -1,0 +1,212 @@
+---
+import { siteLangInfo, siteLangs, type SiteLang } from '../../data/site/langs';
+
+/**
+ * The language menu: the page's language on a pill, and under it every language in its own name.
+ * Without a script it is a native disclosure of plain links; with one, the pick is remembered (the
+ * home page's head reads it) and a click outside or Escape closes it.
+ */
+interface Props {
+  current: SiteLang;
+  /** The same page in each language, as site paths. */
+  hrefs: Readonly<Record<SiteLang, string>>;
+  label: string;
+  /** `nav` sits in the home page's bar, `legal` in the legal pages' header. */
+  look: 'nav' | 'legal';
+  /** Carries the visitor's place on the page (its hash) to the other language. */
+  keepPlace?: boolean;
+}
+
+const { current, hrefs, label, look, keepPlace = false } = Astro.props;
+const code = (lang: SiteLang): string => lang.slice(0, 2).toUpperCase();
+---
+
+<details class:list={['menu', `on-${look}`]} data-lang-menu data-keep-place={keepPlace ? '' : undefined}>
+  <summary aria-label={`${label}: ${siteLangInfo[current].name}`}>
+    <span class="now">{look === 'nav' ? code(current) : siteLangInfo[current].name}</span>
+    <span class="chev" aria-hidden="true"></span>
+  </summary>
+  <ul class="list" aria-label={label}>
+    {
+      siteLangs.map((lang) => (
+        <li>
+          <a
+            href={hrefs[lang]}
+            hreflang={lang}
+            lang={lang}
+            data-lang-pick={lang}
+            aria-current={lang === current ? 'true' : undefined}
+          >
+            {siteLangInfo[lang].name}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</details>
+
+<script>
+  const key = '6pm-site-lang';
+
+  for (const menu of document.querySelectorAll<HTMLDetailsElement>('[data-lang-menu]')) {
+    for (const link of menu.querySelectorAll<HTMLAnchorElement>('[data-lang-pick]')) {
+      link.addEventListener('click', () => {
+        try {
+          localStorage.setItem(key, link.dataset.langPick ?? 'en');
+        } catch {
+          // Storage can be off; the link still works.
+        }
+        if (menu.hasAttribute('data-keep-place')) link.hash = location.hash;
+      });
+    }
+    document.addEventListener('click', (event) => {
+      if (menu.open && !menu.contains(event.target as Node)) menu.open = false;
+    });
+    menu.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape' || !menu.open) return;
+      menu.open = false;
+      menu.querySelector('summary')?.focus();
+    });
+  }
+</script>
+
+<style>
+  .menu {
+    position: relative;
+    flex-shrink: 0;
+  }
+  summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    box-sizing: border-box;
+    border-radius: 99px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .chev {
+    width: 5px;
+    height: 5px;
+    margin-top: -3px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .menu[open] .chev {
+    margin-top: 2px;
+    transform: rotate(-135deg);
+  }
+  .list {
+    position: absolute;
+    z-index: 60;
+    top: calc(100% + 8px);
+    right: 0;
+    width: max-content;
+    min-width: 172px;
+    max-width: calc(100vw - 32px);
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    border-radius: 18px;
+    box-shadow: 0 12px 32px rgba(11, 7, 22, 0.18);
+    transform-origin: top right;
+    animation: menu-in 0.18s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .list a {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 14px;
+    border-radius: 12px;
+    text-decoration: none;
+    white-space: nowrap;
+    font-family: var(--font-text);
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+      transform: translateY(-4px) scale(0.98);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .list {
+      animation: none;
+    }
+    .chev {
+      transition: none;
+    }
+  }
+
+  /* In the home page's bar: the pill the EN / VI toggle was, in the sky's ink. */
+  .on-nav summary {
+    height: 34px;
+    padding: 0 12px 0 13px;
+    border: 0.5px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    color: var(--ink2);
+  }
+  .on-nav summary:hover,
+  .on-nav[open] summary {
+    color: var(--ink);
+  }
+  .on-nav .list {
+    background: var(--inv);
+    border: 0.5px solid var(--line);
+  }
+  .on-nav .list a {
+    color: var(--ink);
+  }
+  .on-nav .list a:hover {
+    background: var(--line);
+    color: var(--ink);
+  }
+  .on-nav .list a[aria-current] {
+    background: var(--ink);
+    color: var(--inv);
+  }
+
+  /* In the legal pages' header: the pill the other-language link was. */
+  .on-legal summary {
+    height: 36px;
+    padding: 0 14px 0 16px;
+    border: 1px solid var(--lg-hair);
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--lg-ink);
+  }
+  .on-legal summary:hover,
+  .on-legal[open] summary {
+    border-color: var(--lg-faint);
+  }
+  .on-legal .list {
+    background: var(--lg-bg);
+    border: 1px solid var(--lg-hair);
+  }
+  .on-legal .list a {
+    color: var(--lg-ink);
+  }
+  .on-legal .list a:hover {
+    background: var(--lg-card);
+    color: var(--lg-ink);
+  }
+  .on-legal .list a[aria-current] {
+    background: var(--lg-ink);
+    color: var(--lg-bg);
+  }
+  summary:focus-visible,
+  .list a:focus-visible {
+    outline: 2px solid var(--sun, var(--lg-link));
+    outline-offset: 2px;
+  }
+</style>

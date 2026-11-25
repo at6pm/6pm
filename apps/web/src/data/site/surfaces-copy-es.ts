@@ -1,0 +1,51 @@
+import type { SurfacesCopy } from './surfaces-copy';
+
+export const surfacesCopyEs: SurfacesCopy = {
+  mark: 'Antes de las seis',
+  title: 'Está donde ya miras.',
+  sub: 'Pantalla de bloqueo, Dynamic Island, widgets, Siri y el botón de acción. Casi todos los días no abrirás la app hasta las seis.',
+  lock: {
+    label: 'PANTALLA DE BLOQUEO · ACTIVIDAD EN VIVO',
+    date: 'Viernes, 9 de octubre',
+    left: 'libres',
+    widgetTop: '6pm · Para hoy',
+    widgetBottom: '2 por revisar',
+    activityTop: 'Cierre en 8 min',
+    activityMain: '4 pagos · 1 min',
+    activityButton: 'Cerrar',
+    notice: 'Pillado 1,90 € · Café con leche',
+    confirm: 'Confirmar',
+    edit: 'Editar',
+  },
+  safe: '22 €',
+  island: {
+    label: 'DYNAMIC ISLAND',
+    countdown: '8 min',
+    top: 'Esperando · toca al pagar',
+    main: '12,00 € a Bar de ramen',
+    paid: 'Pagado',
+    note: '¿Pagas con QR o en efectivo? Espera arriba hasta que digas que está hecho.',
+  },
+  widgets: {
+    label: 'WIDGETS',
+    closesIn: 'El día cierra en',
+    caught: '4 capturados por ahora',
+    safeToday: 'para hoy',
+    note: 'Tu número en la pantalla de inicio, con el estilo que hayas elegido.',
+  },
+  siri: {
+    said: '«Apunta doce euros del menú en 6pm»',
+    logged: 'Apuntado. Menú del día · Comida',
+    after: 'Ahora puedes gastar 10 € hoy',
+    amount: '12 €',
+  },
+  action: {
+    label: 'BOTÓN DE ACCIÓN · CENTRO DE CONTROL',
+    icon: 'mic',
+    first: 'Dilo',
+    second: 'Añadir rápido',
+    buttonLabel: 'Botón de acción',
+    buttonMain: 'Apunta un gasto en 6pm',
+    note: 'Una pulsación desde cualquier sitio, sin desbloquear.',
+  },
+};

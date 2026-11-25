@@ -27,8 +27,11 @@
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
 }
-/* Vietnamese stacks its marks above the line, so display type gets a little more leading. */
-.site:lang(vi) {
+/*
+ * Vietnamese and Thai stack marks above the line, and Chinese, Japanese and Korean fill the whole
+ * em, so their display type gets a little more leading.
+ */
+.site:is(:lang(vi), :lang(th), :lang(zh-Hans), :lang(ja), :lang(ko)) {
   --hlx: 0.1;
 }
 

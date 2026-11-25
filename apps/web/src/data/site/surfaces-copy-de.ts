@@ -1,0 +1,51 @@
+import type { SurfacesCopy } from './surfaces-copy';
+
+export const surfacesCopyDe: SurfacesCopy = {
+  mark: 'Vor sechs',
+  title: 'Es ist da, wo du sowieso hinschaust.',
+  sub: 'Sperrbildschirm, Dynamic Island, Widgets, Siri und die Aktionstaste. An den meisten Tagen öffnest du die App erst um sechs.',
+  lock: {
+    label: 'SPERRBILDSCHIRM · LIVE-AKTIVITÄT',
+    date: 'Freitag, 9. Oktober',
+    left: 'übrig',
+    widgetTop: '6pm · Verfügbar',
+    widgetBottom: '2 zu prüfen',
+    activityTop: 'Abschluss in 8 Min.',
+    activityMain: '4 erwischt',
+    activityButton: 'Los',
+    notice: '3,80 € erwischt · Cappuccino',
+    confirm: 'Bestätigen',
+    edit: 'Ändern',
+  },
+  safe: '21 €',
+  island: {
+    label: 'DYNAMIC ISLAND',
+    countdown: '8 Min.',
+    top: 'Tippen, wenn bezahlt',
+    main: '12,00 € an Ramen Ko',
+    paid: 'Bezahlt',
+    note: 'Per QR oder bar bezahlt? Es wartet oben, bis du sagst, dass es erledigt ist.',
+  },
+  widgets: {
+    label: 'WIDGETS',
+    closesIn: 'Abschluss in',
+    caught: 'Bisher 4 erwischt',
+    safeToday: 'heute verfügbar',
+    note: 'Deine Zahl auf dem Home-Bildschirm, in dem Look, den du gewählt hast.',
+  },
+  siri: {
+    said: '„Erfasse zwölf Euro Mittagessen in 6pm“',
+    logged: 'Erfasst: Mittagessen',
+    after: 'Heute verfügbar: jetzt 9 €',
+    amount: '12 €',
+  },
+  action: {
+    label: 'AKTIONSTASTE · KONTROLLZENTRUM',
+    icon: 'mic',
+    first: 'Sag es',
+    second: 'Schnell erfassen',
+    buttonLabel: 'Aktionstaste',
+    buttonMain: 'In 6pm erfassen',
+    note: 'Ein Druck, von überall, ohne Entsperren.',
+  },
+};

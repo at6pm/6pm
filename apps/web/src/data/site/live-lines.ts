@@ -1,4 +1,14 @@
-import type { SiteLang } from './copy';
+import type { SiteLang } from './langs';
+import { liveLinesDe } from './live-lines-de';
+import { liveLinesEn } from './live-lines-en';
+import { liveLinesEs } from './live-lines-es';
+import { liveLinesFr } from './live-lines-fr';
+import { liveLinesId } from './live-lines-id';
+import { liveLinesJa } from './live-lines-ja';
+import { liveLinesKo } from './live-lines-ko';
+import { liveLinesTh } from './live-lines-th';
+import { liveLinesVi } from './live-lines-vi';
+import { liveLinesZhHans } from './live-lines-zh-hans';
 
 /** The lines the page writes in the browser, where they depend on the visitor's clock or the list. */
 export interface LiveLines {
@@ -14,26 +24,14 @@ export interface LiveLines {
 }
 
 export const liveLines: Readonly<Record<SiteLang, LiveLines>> = {
-  en: {
-    clock: (time, left) => `${time} where you are · next close in ${left}`,
-    closeNow: 'It’s six. Time to close the day.',
-    duration: (h, m) => (h ? `${h}h ${m}m` : `${m}m`),
-    countdown: (d, h, m) => `${d}d ${h}h ${m}m to launch`,
-    out: 'Out now',
-    sent: 'You’re on the list. See you at six.',
-    notAnEmail: 'That doesn’t look like an email yet.',
-    busy: 'Too many tries from here. Give it a minute, then try again.',
-    unreachable: 'Couldn’t reach the list. Check your connection and try again.',
-  },
-  vi: {
-    clock: (time, left) => `Chỗ bạn đang là ${time} · còn ${left} đến giờ chốt`,
-    closeNow: 'Sáu giờ rồi. Chốt ngày thôi.',
-    duration: (h, m) => (h ? `${h} giờ ${m} phút` : `${m} phút`),
-    countdown: (d, h, m) => `Còn ${d} ngày ${h} giờ ${m} phút`,
-    out: 'Đã ra mắt',
-    sent: 'Bạn đã có tên. Hẹn lúc sáu giờ.',
-    notAnEmail: 'Email này có vẻ chưa đúng.',
-    busy: 'Thử nhiều lần quá. Đợi một phút rồi thử lại nhé.',
-    unreachable: 'Chưa kết nối được. Kiểm tra mạng rồi thử lại nhé.',
-  },
+  en: liveLinesEn,
+  vi: liveLinesVi,
+  'zh-Hans': liveLinesZhHans,
+  ja: liveLinesJa,
+  ko: liveLinesKo,
+  th: liveLinesTh,
+  id: liveLinesId,
+  es: liveLinesEs,
+  fr: liveLinesFr,
+  de: liveLinesDe,
 };

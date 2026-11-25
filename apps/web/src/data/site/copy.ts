@@ -1,9 +1,18 @@
+import { siteCopyDe } from './copy-de';
 import { siteCopyEn } from './copy-en';
+import { siteCopyEs } from './copy-es';
+import { siteCopyFr } from './copy-fr';
+import { siteCopyId } from './copy-id';
+import { siteCopyJa } from './copy-ja';
+import { siteCopyKo } from './copy-ko';
+import { siteCopyTh } from './copy-th';
 import { siteCopyVi } from './copy-vi';
+import { siteCopyZhHans } from './copy-zh-hans';
 import type { DuoCopy } from './duo-copy';
+import { siteLangInfo, siteLangs, type SiteLang } from './langs';
 import type { SurfacesCopy } from './surfaces-copy';
 
-export type SiteLang = 'en' | 'vi';
+export type { SiteLang };
 
 /** One receipt in the six o'clock close, as the card prints it. */
 export interface CloseCard {
@@ -117,6 +126,8 @@ export interface SiteCopy {
     readonly sub: string;
     readonly cards: readonly CloseCard[];
     readonly cardNumSize: string;
+    /** What stands before a receipt's number on its card: `Nº`, `Nr.`. */
+    readonly cardNo: string;
     readonly keptSoFar: string;
     readonly withThis: string;
     readonly keepStamp: string;
@@ -188,6 +199,8 @@ export interface SiteCopy {
     readonly perMonth: string;
     readonly perYear: string;
     readonly max: readonly string[];
+    /** Under the plans: which market the prices are for. Empty hides it. */
+    readonly storeNote: string;
   };
   readonly faq: {
     readonly title: string;
@@ -208,7 +221,20 @@ export interface SiteCopy {
   };
 }
 
-export const siteCopy: Readonly<Record<SiteLang, SiteCopy>> = { en: siteCopyEn, vi: siteCopyVi };
+export const siteCopy: Readonly<Record<SiteLang, SiteCopy>> = {
+  en: siteCopyEn,
+  vi: siteCopyVi,
+  'zh-Hans': siteCopyZhHans,
+  ja: siteCopyJa,
+  ko: siteCopyKo,
+  th: siteCopyTh,
+  id: siteCopyId,
+  es: siteCopyEs,
+  fr: siteCopyFr,
+  de: siteCopyDe,
+};
 
 /** The home page in each language, as site paths. */
-export const homePath: Readonly<Record<SiteLang, string>> = { en: '/', vi: '/vi' };
+export const homePath = Object.fromEntries(
+  siteLangs.map((lang) => [lang, siteLangInfo[lang].home]),
+) as Readonly<Record<SiteLang, string>>;

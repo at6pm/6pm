@@ -1,15 +1,18 @@
 ---
 import type { MarkdownHeading } from 'astro';
 
+import LangMenu from '../components/site/lang-menu.astro';
 import {
   CONTACT_PHONE,
   CONTACT_TEL,
   OWNER,
+  legalLangs,
   legalPath,
   legalStrings,
   type LegalLang,
   type LegalSlug,
 } from '../data/legal';
+import { homePath } from '../data/site/copy';
 import '../styles/reading.css';
 import PageLayout from './page-layout.astro';
 
@@ -27,7 +30,11 @@ interface Props {
 
 const { lang, slug, doc } = Astro.props;
 const text = legalStrings[lang];
-const other: LegalLang = lang === 'en' ? 'vi' : 'en';
+/** This document in every language, as site paths. */
+const hrefs = Object.fromEntries(legalLangs.map((code) => [code, legalPath(code, slug)])) as Record<
+  LegalLang,
+  string
+>;
 
 function field(name: string): string {
   const value = doc.frontmatter[name];
@@ -56,7 +63,7 @@ const body = (await Astro.slots.render('default'))
   title={`${title} · 6pm`}
   description={description}
   lang={lang}
-  alternates={{ en: legalPath('en', slug), vi: legalPath('vi', slug) }}
+  alternates={hrefs}
   themeColors={[
     { color: '#fbf7ef', media: '(prefers-color-scheme: light)' },
     { color: '#0b0716', media: '(prefers-color-scheme: dark)' },
@@ -65,14 +72,8 @@ const body = (await Astro.slots.render('default'))
   <div class="legal">
     <div class="glow" aria-hidden="true"></div>
     <header class="bar">
-      <a class="brand" href="/" aria-label={text.brandLabel}>6pm</a>
-      <a
-        class="switch"
-        href={legalPath(other, slug)}
-        lang={other}
-        hreflang={other}
-        aria-label={text.otherLanguageLabel}>{text.otherLanguage}</a
-      >
+      <a class="brand" href={homePath[lang]} aria-label={text.brandLabel}>6pm</a>
+      <LangMenu current={lang} hrefs={hrefs} label={text.language} look="legal" />
     </header>
 
     <main class="wrap">
@@ -162,23 +163,6 @@ const body = (await Astro.slots.render('default'))
   }
   .brand:hover {
     color: var(--lg-ink);
-  }
-  .switch {
-    display: inline-flex;
-    align-items: center;
-    height: 36px;
-    padding: 0 16px;
-    border: 1px solid var(--lg-hair);
-    border-radius: 99px;
-    font-size: 14.5px;
-    font-weight: 600;
-    letter-spacing: 0;
-    color: var(--lg-ink);
-    text-decoration: none;
-  }
-  .switch:hover {
-    color: var(--lg-ink);
-    border-color: var(--lg-faint);
   }
   :where(a):focus-visible {
     outline: 2px solid var(--lg-link);

@@ -1,6 +1,6 @@
 /**
- * What the iPhone Duo section says, and what its phone screens print, in one language. Amounts on
- * the screens are kept in thousands of đồng (see `duo-data.ts`) and written out by `duoMoney`.
+ * What the iPhone Duo section says, and what its phone screens print, in one language. The screens'
+ * amounts live in `duo-amounts-<lang>.ts`, written out by that file's `duoMoney`.
  */
 export interface DuoCopy {
   readonly title: string;
@@ -12,7 +12,7 @@ export interface DuoCopy {
   readonly captions: readonly [string, string, string, string];
   /** Labels the stage for people who cannot see it. */
   readonly stageLabel: string;
-  /** The đồng sign beside the big number; empty where the money carries its own sign. */
+  /** The money's sign beside the big number (`₫`); empty where the amount carries its own sign. */
   readonly unit: string;
   readonly screen: DuoScreenCopy;
 }
@@ -68,6 +68,8 @@ export interface DuoScreenCopy {
     readonly over: (amount: string) => string;
     readonly ofSoFar: (amount: string) => string;
     readonly ofThatDay: (amount: string) => string;
+    /** The day's note in the language's quotation marks. */
+    readonly quote: (note: string) => string;
     /** The names of each closed day's three spends, by day of the month. */
     readonly items: Readonly<Record<number, readonly [string, string, string]>>;
   };

@@ -1,5 +1,5 @@
 import { liveLines } from '../../data/site/live-lines';
-import type { SiteLang } from '../../data/site/copy';
+import { siteLangOf } from '../../data/site/langs';
 import { startAsk } from './ask';
 import { startCapture } from './capture';
 import { startClock } from './clock';
@@ -8,7 +8,6 @@ import { defineCompanion } from './companion';
 import { startDuo } from './duo';
 import { startDuoScreens } from './duo-screens';
 import { startJoinForms } from './join-forms';
-import { startLangPicks } from './lang-picks';
 import { startMotion } from './motion';
 import { startPricing } from './pricing';
 import { startSky } from './sky';
@@ -17,7 +16,7 @@ import { startSky } from './sky';
 export function startSite(): void {
   const root = document.querySelector<HTMLElement>('[data-site]');
   if (!root) return;
-  const lang: SiteLang = document.documentElement.lang === 'vi' ? 'vi' : 'en';
+  const lang = siteLangOf(document.documentElement.lang) ?? 'en';
   const lines = liveLines[lang];
 
   defineCompanion();
@@ -31,5 +30,4 @@ export function startSite(): void {
   startDuo(root);
   startDuoScreens(root);
   startPricing(root);
-  startLangPicks(root);
 }

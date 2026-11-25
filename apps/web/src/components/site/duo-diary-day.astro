@@ -4,11 +4,11 @@ import {
   duoClosedAt,
   duoDiary,
   duoKinds,
-  duoMoney,
   duoRows,
   duoSpent,
   duoToday,
 } from '../../data/site/duo-data';
+import { duoMoney } from '../../data/site/duo-money';
 
 /** One day on the diary's right page: closed (with its stamp), still open, or slipped by. */
 interface Props {
@@ -67,7 +67,7 @@ const note = open ? d.openNote : under ? d.under(money(gap)) : d.over(money(gap)
             </div>
           )}
         </div>
-        <div class="note">“{note}”</div>
+        <div class="note">{d.quote(note)}</div>
         <div class="items">
           {items.map((it) => {
             const [tile, glyph, icon] = duoKinds[it.kind];

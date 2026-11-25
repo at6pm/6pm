@@ -1,0 +1,51 @@
+import type { SurfacesCopy } from './surfaces-copy';
+
+export const surfacesCopyJa: SurfacesCopy = {
+  mark: '6時の前に',
+  title: 'いつも見る場所に、もういます。',
+  sub: 'ロック画面、Dynamic Island、ウィジェット、Siri、アクションボタン。たいていの日は、6時までアプリを開かなくて大丈夫。',
+  lock: {
+    label: 'ロック画面 · ライブアクティビティ',
+    date: '10月9日 金曜日',
+    left: '残り',
+    widgetTop: '6pm · 今日使える',
+    widgetBottom: '確認待ち2件',
+    activityTop: '締めまであと8分',
+    activityMain: '4件 · 約1分',
+    activityButton: '締める',
+    notice: '¥580 · オーツラテをキャッチ',
+    confirm: '確認',
+    edit: '編集',
+  },
+  safe: '¥900',
+  island: {
+    label: 'DYNAMIC ISLAND',
+    countdown: '8分',
+    top: '支払い待ち · 済んだらタップ',
+    main: 'そば屋へ¥500',
+    paid: '支払い済み',
+    note: 'QRや現金で払った？ 済んだと伝えるまで、画面の上で待っています。',
+  },
+  widgets: {
+    label: 'ウィジェット',
+    closesIn: '締めまで',
+    caught: '4件キャッチ済み',
+    safeToday: '今日使える',
+    note: 'ホーム画面にあなたの数字を。選んだ着せかえのままで。',
+  },
+  siri: {
+    said: '「6pmでそば500円を記録して」',
+    logged: '記録しました。そば · 食事',
+    after: '今日使えるお金は¥400になりました',
+    amount: '¥500',
+  },
+  action: {
+    label: 'アクションボタン · コントロールセンター',
+    icon: 'mic',
+    first: '話して記録',
+    second: 'クイック追加',
+    buttonLabel: 'アクションボタン',
+    buttonMain: '6pmで支出を記録',
+    note: 'どこからでもワンプッシュ。ロック解除もいりません。',
+  },
+};

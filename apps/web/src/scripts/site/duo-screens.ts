@@ -1,4 +1,5 @@
-import { duoMoney } from '../../data/site/duo-data';
+import { duoMoneys } from '../../data/site/duo-money';
+import { siteLangOf } from '../../data/site/langs';
 
 /**
  * What works on the Duo's screens: the island opens and closes, a spend on the open screen shows
@@ -57,8 +58,8 @@ export function startDuoScreens(root: HTMLElement): void {
 function startStand(section: HTMLElement): void {
   const stand = section.querySelector<HTMLElement>('[data-duo-stand]');
   if (!stand) return;
-  const vi = stand.dataset.lang === 'vi';
-  const lang = vi ? 'vi' : 'en';
+  const money = duoMoneys[siteLangOf(stand.dataset.lang) ?? 'en'];
+  const { before, after, per, digits } = money.keypad;
   const start = Number(stand.dataset.start);
   let left = Number(stand.dataset.left);
   let typed = '';
@@ -72,14 +73,14 @@ function startStand(section: HTMLElement): void {
 
   const showTyped = (): void => {
     if (!amount) return;
-    amount.textContent = vi ? `${typed || '0'}k` : `$${typed || '0'}`;
+    amount.textContent = `${before}${typed || '0'}${after}`;
     amount.toggleAttribute('data-typed', typed !== '');
   };
 
   for (const key of stand.querySelectorAll<HTMLElement>('[data-stand-key]')) {
     key.addEventListener('click', () => {
       const k = key.dataset.standKey ?? '';
-      typed = k === 'del' ? typed.slice(0, -1) : (typed + k).replace(/^0+/, '').slice(0, 4);
+      typed = k === 'del' ? typed.slice(0, -1) : (typed + k).replace(/^0+/, '').slice(0, digits);
       showTyped();
     });
   }
@@ -92,12 +93,12 @@ function startStand(section: HTMLElement): void {
   stand.querySelector('[data-stand-add]')?.addEventListener('click', () => {
     const n = parseInt(typed, 10) || 0;
     if (!n) return;
-    // On the English page the keypad types dollars; the screen keeps thousands of đồng.
-    const thousands = vi ? n : n * 10;
-    left -= thousands;
+    // The keypad types whole units (dollars on the English page); the screen keeps smaller steps.
+    const steps = n * per;
+    left -= steps;
     typed = '';
     showTyped();
-    if (leftLabel) leftLabel.textContent = duoMoney(lang, left);
+    if (leftLabel) leftLabel.textContent = money.format(left);
     if (fill) fill.style.width = `${Math.max(0, Math.min(100, (left / start) * 100))}%`;
     if (recent) {
       const chip = document.createElement('span');
@@ -105,7 +106,7 @@ function startStand(section: HTMLElement): void {
       chip.textContent = category;
       const sum = document.createElement('span');
       sum.className = 'chip-amt';
-      sum.textContent = `−${duoMoney(lang, thousands)}`;
+      sum.textContent = `−${money.format(steps)}`;
       chip.append(sum);
       recent.prepend(chip);
       while (recent.children.length > 3) recent.lastElementChild?.remove();
