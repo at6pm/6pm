@@ -16,11 +16,12 @@ export interface MaxCodeLink {
 }
 
 export const maxCodeLinks: Readonly<Record<MaxLinkChannel, MaxCodeLink>> = {
-  threads: { code: 'THREADS6PM', appStore: false, googlePlay: false },
-  youtube: { code: 'YOUTUBE6PM', appStore: false, googlePlay: false },
-  facebook: { code: 'FACEBOOK6PM', appStore: false, googlePlay: false },
-  tinhte: { code: 'TINHTE6PM', appStore: false, googlePlay: false },
-  friend: { code: 'FRIEND6PM', appStore: false, googlePlay: false },
+  threads: { code: 'THREADS6PM', appStore: true, googlePlay: true },
+  // Google Play refuses codes that spell another company's name, so these two are short.
+  youtube: { code: 'YT6PM', appStore: true, googlePlay: true },
+  facebook: { code: 'FB6PM', appStore: true, googlePlay: true },
+  tinhte: { code: 'TINHTE6PM', appStore: true, googlePlay: true },
+  friend: { code: 'FRIEND6PM', appStore: true, googlePlay: true },
 };
 
 /** 6pm's id on the App Store, which its offer codes are redeemed against. */
