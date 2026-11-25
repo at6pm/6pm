@@ -60,7 +60,7 @@ export function zineView({
   const headline =
     diary.spare >= 0
       ? t('diary.zine.headline.spare', {
-          month: monthName,
+          month: dates.monthInText(month),
           amount: money.short(diary.spare),
         })
       : data.futureYou.added > 0

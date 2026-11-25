@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import Animated, { FadeIn, LinearTransition, ReduceMotion } from 'react-native-reanimated';
 
 import { cycleMonth, lastUntilChoices, lastUntilPreview, type LocalDate } from '@6pm/domain';
+import { inSentence } from '@6pm/i18n';
 import { incomeInk } from '@6pm/theme';
 
 import { setLastUntil } from '../../data/income-plan-actions';
@@ -71,8 +72,9 @@ export function LastUntilSheet() {
     jars: input?.jars ?? 0,
     currency: money.currency,
   });
-  const month = (i18n.language === 'vi' ? format.monthLong : format.monthShort)(
-    cycleMonth(snap.cycle),
+  const month = inSentence(
+    (i18n.language === 'vi' ? format.monthLong : format.monthShort)(cycleMonth(snap.cycle)),
+    i18n.language,
   );
   const labels = choices.map((d, k) =>
     k === 0 ? t('income.until.endOf', { month }) : format.dayMonthShort(d),

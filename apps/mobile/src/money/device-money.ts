@@ -44,11 +44,12 @@ export function deviceCurrencyCode(): string {
   return chosen ?? deviceCurrencyGuess().code;
 }
 
-/** How the phone writes numbers: its first locale and its separators. */
+/** How the phone writes numbers: its first locale, its region and its separators. */
 export function phoneNumberStyle(): PhoneNumberStyle {
   const locale = getLocales()[0];
   return {
     languageTag: locale?.languageTag ?? null,
+    region: locale?.regionCode ?? null,
     decimal: locale?.decimalSeparator ?? null,
     group: locale?.digitGroupingSeparator ?? null,
   };

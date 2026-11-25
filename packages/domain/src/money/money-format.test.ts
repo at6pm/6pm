@@ -132,6 +132,39 @@ describe('moneyLocale', () => {
     expect(moneyLocale(currencyOf('USD'), 'en').symbolAfter).toBe(false);
   });
 
+  it('puts pesos and dollars first in the Americas, whatever the language writes in Spain', () => {
+    const mxn = currencyOf('MXN');
+    const mx = { decimal: '.', group: ',' } as const;
+    const mexico = moneyFormat(moneyLocale(mxn, 'es', { languageTag: 'es-MX', ...mx }));
+    expect(mexico.full(32_700)).toBe('$327');
+    expect(mexico.full(242_450)).toBe('$2,424.50');
+    expect(mexico.short(1_380_000)).toBe(`$13.8${NBSP}mil`);
+    expect(mexico.parts(-32_700)).toEqual({ sign: '−', prefix: '$', number: '327', suffix: '' });
+    // iOS keeps the region apart from the language: Spanish with Mexico as the region.
+    const regionOnly = moneyLocale(mxn, 'es', { languageTag: 'es', region: 'MX', ...mx });
+    expect(regionOnly.symbolAfter).toBe(false);
+    expect(moneyLocale(mxn, 'es', { languageTag: 'es-419' }).symbolAfter).toBe(false);
+    expect(moneyLocale(currencyOf('USD'), 'es', { languageTag: 'es-US' }).symbolAfter).toBe(false);
+    expect(moneyLocale(currencyOf('ARS'), 'es', { languageTag: 'es-AR' }).symbolAfter).toBe(false);
+  });
+
+  it('leaves the symbol where the region writes it', () => {
+    const eur = currencyOf('EUR');
+    expect(moneyLocale(eur, 'es', { languageTag: 'es-ES' }).symbolAfter).toBe(true);
+    expect(moneyLocale(currencyOf('USD'), 'es', { languageTag: 'es-ES' }).symbolAfter).toBe(true);
+    expect(moneyLocale(currencyOf('CAD'), 'fr', { languageTag: 'fr-CA' }).symbolAfter).toBe(true);
+    expect(moneyLocale(currencyOf('CAD'), 'en', { languageTag: 'en-CA' }).symbolAfter).toBe(false);
+    expect(moneyLocale(currencyOf('AUD'), 'en', { languageTag: 'en-AU' }).symbolAfter).toBe(false);
+    expect(moneyLocale(eur, 'de', { languageTag: 'de-AT' }).symbolAfter).toBe(false);
+    expect(moneyLocale(eur, 'de', { languageTag: 'de', region: 'DE' }).symbolAfter).toBe(true);
+  });
+
+  it('puts a dollar or peso sign first when the phone names no region', () => {
+    expect(moneyLocale(currencyOf('MXN'), 'es', { languageTag: 'es' }).symbolAfter).toBe(false);
+    expect(moneyLocale(currencyOf('USD'), 'vi', { languageTag: 'vi' }).symbolAfter).toBe(false);
+    expect(moneyLocale(currencyOf('EUR'), 'es', { languageTag: 'es' }).symbolAfter).toBe(true);
+  });
+
   it('never groups with the decimal mark', () => {
     const odd = moneyLocale(currencyOf('EUR'), 'en', { decimal: ',', group: ',' });
     expect(odd.group).toBe('.');

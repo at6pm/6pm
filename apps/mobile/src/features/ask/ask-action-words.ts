@@ -1,4 +1,5 @@
 import type { ActionAnswer, HowToTopic } from '@6pm/domain';
+import { inSentence } from '@6pm/i18n';
 
 import type { NativeReach } from '../surfaces/native-reach';
 import type { AskCard } from './ask-words';
@@ -116,7 +117,10 @@ export function describeAction(
       const text =
         answer.neededBy === null
           ? say('ask.action.confirmPot', values)
-          : say('ask.action.confirmPotBy', { ...values, month: env.monthLong(answer.neededBy) });
+          : say('ask.action.confirmPotBy', {
+              ...values,
+              month: inSentence(env.monthLong(answer.neededBy), env.language),
+            });
       const params: Record<string, string> = { name: answer.name, goal: String(answer.goal) };
       if (answer.neededBy !== null) params['by'] = answer.neededBy;
       return {

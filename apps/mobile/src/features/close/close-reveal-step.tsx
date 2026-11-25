@@ -8,7 +8,7 @@ import {
   type LocalDate,
   type StreakMilestone,
 } from '@6pm/domain';
-import { localeOf } from '@6pm/i18n';
+import { inSentence, localeOf } from '@6pm/i18n';
 
 import { useMoney } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
@@ -95,7 +95,7 @@ export function CloseRevealStep({
       streak={t('close.reveal.streak', {
         closed: monthDays.filter((d) => d !== 'open').length,
         days: Number(day.slice(8, 10)),
-        month: monthName,
+        month: inSentence(monthName, language),
       })}
       nudge={t('close.reveal.nudge', { time: plan.closeAt })}
       doneLabel={t('close.reveal.done')}

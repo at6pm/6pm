@@ -10,7 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { clockOf, hourOf, type DailyNumber } from '@6pm/domain';
-import { localeOf } from '@6pm/i18n';
+import { inSentence, localeOf } from '@6pm/i18n';
 
 import { useMoney, useMoneyActions } from '../../data/money-provider';
 import { useI18n } from '../../i18n/i18n';
@@ -97,9 +97,10 @@ export function TodayPage({
     !serious &&
     view.moment !== 'closed' &&
     (parked !== null || view.moment === 'due' || view.moment === 'open' || view.moment === 'late');
-  const monthName = new Intl.DateTimeFormat(localeOf(language), {
-    month: 'long',
-  }).format(dayDate);
+  const monthName = inSentence(
+    new Intl.DateTimeFormat(localeOf(language), { month: 'long' }).format(dayDate),
+    language,
+  );
   const showDiary = (target: string) => {
     requestDiaryDay(target);
     onOpenDiary?.();

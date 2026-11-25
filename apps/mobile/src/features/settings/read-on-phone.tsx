@@ -12,7 +12,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { receiptBankOf, type CaptureFix, type SpendRow } from '@6pm/domain';
-import { localeOf } from '@6pm/i18n';
+import { inSentence, localeOf } from '@6pm/i18n';
 import { catchInk, paperInk } from '@6pm/theme';
 
 import { readMonthReading, type MonthReading } from '../../data/first-catch';
@@ -89,8 +89,7 @@ export function ReadOnPhone() {
   const named = new Intl.DateTimeFormat(localeOf(language), { month: 'long' }).format(
     new Date(`${today}T12:00:00`),
   );
-  // Vietnamese capitalises "Tháng 11" on its own, not inside a sentence ("biên lai tháng 11").
-  const month = language === 'vi' ? named.toLocaleLowerCase('vi') : named;
+  const month = inSentence(named, language);
   return (
     <View style={{ gap: 20 }}>
       <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 12, paddingHorizontal: 4 }}>

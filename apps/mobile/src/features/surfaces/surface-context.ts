@@ -108,6 +108,7 @@ export function surfaceContext(input: {
 function numberStyleOf(style: PhoneNumberStyle): NonNullable<SurfaceContext['numberStyle']> {
   return {
     languageTag: style.languageTag ?? null,
+    region: style.region ?? null,
     decimal: style.decimal ?? null,
     group: style.group ?? null,
   };
