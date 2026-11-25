@@ -286,7 +286,7 @@ export const siteCopyFr: SiteCopy = {
       ],
       [
         'Ça marche sur Android ?',
-        `Oui, sur Google Play : ${playStoreUrl}. Scan, alertes bancaires, e-mail de tickets, voix, la clôture et Demande à 6pm : tout y est, avec des widgets pour l’écran d’accueil et des tuiles de réglages rapides.`,
+        `Oui, sur Google Play\u00a0: ${playStoreUrl}. Scan, alertes bancaires, e-mail de tickets, voix, la clôture et Demande à 6pm\u00a0: tout y est, avec des widgets pour l’écran d’accueil et des tuiles de réglages rapides.`,
       ],
     ],
   },

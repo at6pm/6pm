@@ -6,8 +6,8 @@ export const duoMoneyEs: DuoMoney = {
   format: (amount) => {
     const euros = amount / 10;
     return amount < 200
-      ? `${euros.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`
-      : `${Math.round(euros).toLocaleString('es-ES')} €`;
+      ? `${euros.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\u00a0€`
+      : `${Math.round(euros).toLocaleString('es-ES')}\u00a0€`;
   },
   keypad: { before: '', after: ' €', per: 10, digits: 4 },
 };
