@@ -1,5 +1,5 @@
 import { type AskAnswer, type MoneyFormat, type AskContext, type LocalDate } from '@6pm/domain';
-import type { Language, ParamsArgument, StringKey } from '@6pm/i18n';
+import { inSentence, type Language, type ParamsArgument, type StringKey } from '@6pm/i18n';
 
 import type { CompanionMood } from '../../ui/companion/companion-mood';
 import { askExamples } from './ask-suggestions';
@@ -201,7 +201,7 @@ export function describeAnswer(
         t('ask.answer.potFull', {
           monthly: money.short(pot.monthly),
           pot: pot.name,
-          month: env.monthLong(answer.fullIn),
+          month: inSentence(env.monthLong(answer.fullIn), env.language),
         }),
         'happy',
         { rows },

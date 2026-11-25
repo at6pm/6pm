@@ -185,6 +185,7 @@ export const surfaceContextSchema = z.object({
   numberStyle: z
     .object({
       languageTag: z.string().nullable().optional(),
+      region: z.string().nullable().optional(),
       decimal: z.string().nullable().optional(),
       group: z.string().nullable().optional(),
     })

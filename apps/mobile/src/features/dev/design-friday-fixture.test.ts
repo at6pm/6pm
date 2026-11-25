@@ -31,6 +31,8 @@ const ROUND: Readonly<Record<string, number>> = {
   KRW: 500,
   THB: 500,
   CNY: 100,
+  GBP: 10,
+  MXN: 500,
 };
 const LISTED = Object.keys(ROUND);
 
@@ -47,6 +49,8 @@ const LOCAL_RANGE: Readonly<Record<string, { coffee: [number, number]; pay: [num
   KRW: { coffee: [3_000, 7_000], pay: [2_300_000, 4_500_000] },
   THB: { coffee: [45, 130], pay: [18_000, 50_000] },
   CNY: { coffee: [10, 35], pay: [6_000, 20_000] },
+  GBP: { coffee: [2.5, 4.5], pay: [1_600, 3_500] },
+  MXN: { coffee: [35, 90], pay: [12_000, 35_000] },
 };
 
 /** Every word of the fixture a person reads, the catalogue's own aside. */
@@ -198,7 +202,7 @@ describe('buildDesignFriday', () => {
 
   it('builds for every language in every home currency', () => {
     for (const language of languages) {
-      for (const code of [...LISTED, 'GBP', 'AUD']) {
+      for (const code of [...LISTED, 'CHF', 'AUD']) {
         const fixture = buildDesignFriday(FRIDAY, code, language);
         const amounts = [
           fixture.income,
@@ -276,6 +280,8 @@ describe('buildDesignFriday', () => {
       KRW: 5_500,
       THB: 8_500,
       CNY: 1_800,
+      GBP: 340,
+      MXN: 5_500,
     };
     for (const code of LISTED) {
       const amountsIn = (language: Language) =>
@@ -438,12 +444,12 @@ describe('buildDesignFriday', () => {
   });
 
   it('takes the prototype’s amounts by rate in a currency with no list', () => {
-    expect(FRIDAY_PRICES['GBP']).toBeUndefined();
-    const fixture = buildDesignFriday(FRIDAY, 'GBP', 'en');
-    const pence = (dong: number) => Math.round((dong / VND.perUsd) * 0.78 * 100);
-    expect(fixture.income).toBe(pence(17_400_000));
+    expect(FRIDAY_PRICES['CHF']).toBeUndefined();
+    const fixture = buildDesignFriday(FRIDAY, 'CHF', 'en');
+    const rappen = (dong: number) => Math.round((dong / VND.perUsd) * 0.85 * 100);
+    expect(fixture.income).toBe(rappen(17_400_000));
     expect(todays(fixture, FRIDAY).map((s) => s.amount)).toEqual(
-      [25_000, 29_000, 45_000, 38_000, 45_000, 120_000].map(pence),
+      [25_000, 29_000, 45_000, 38_000, 45_000, 120_000].map(rappen),
     );
   });
 

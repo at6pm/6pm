@@ -6,6 +6,7 @@ import {
   type ResolvedRange,
   type WordFact,
 } from '@6pm/domain';
+import { inSentence } from '@6pm/i18n';
 
 import { catalogueLine, slotValues, type SlotWords, type Voice } from '../wording/fact-words';
 import { describeChat } from './ask-chat-words';
@@ -219,7 +220,7 @@ export function describeLedgerAnswer(answer: LedgerAnswer, env: LedgerWordsEnv):
         monthly: short(answer.monthly),
         amount: short(answer.amount),
         what: answer.what,
-        month: env.monthLong(answer.reachedIn),
+        month: inSentence(env.monthLong(answer.reachedIn), env.language),
       };
       const text =
         answer.years === null
@@ -228,7 +229,7 @@ export function describeLedgerAnswer(answer: LedgerAnswer, env: LedgerWordsEnv):
       const rows = [
         { key: say('ask.row.goal'), value: env.money.full(answer.amount) },
         { key: say('ask.row.perMonth'), value: env.money.full(answer.monthly) },
-        { key: say('ask.row.reachedBy'), value: values.month },
+        { key: say('ask.row.reachedBy'), value: env.monthLong(answer.reachedIn) },
       ];
       return {
         card: card(text, 'think', rows, say('ask.answer.goalPace.note')),

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { addDays, type LocalDate } from '@6pm/domain';
-import { localeOf } from '@6pm/i18n';
+import { inSentence, localeOf } from '@6pm/i18n';
 
 import { useI18n } from '../../i18n/i18n';
 import { diaryDateLabels } from './date-labels';
@@ -32,6 +32,8 @@ export function useDiaryDates() {
       range: labels.range,
       /** "October" */
       month: (key: string) => capitalise(monthLong.format(month(key))),
+      /** "October", "octobre", "tháng 10": the month inside a sentence. */
+      monthInText: (key: string) => inSentence(monthLong.format(month(key)), language),
       /** "october", for the note's handwriting; German keeps its nouns' capital ("Oktober"). */
       monthInNote: (key: string) => {
         const name = monthLong.format(month(key));

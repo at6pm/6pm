@@ -102,7 +102,7 @@ export default function MissedDay() {
 
   const weekday = day ? dates.weekday(day) : '';
   const body15 = { ...body(15), lineHeight: 21.75, color: palette.inkSoft };
-  const copy = { day: weekday, month: day ? dates.month(monthOf(day)) : '' };
+  const copy = { day: weekday, month: day ? dates.monthInText(monthOf(day)) : '' };
 
   return (
     <CardSheet>

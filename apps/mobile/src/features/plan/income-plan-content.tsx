@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import type { SharedValue } from 'react-native-reanimated';
 
 import { cycleMonth, diffDays, futureYouPotRow, parts, type SplitPartKind } from '@6pm/domain';
+import { inSentence } from '@6pm/i18n';
 
 import type { MoneySnapshot } from '../../data/money-store';
 import { useI18n } from '../../i18n/i18n';
@@ -556,7 +557,9 @@ export function IncomePlanContent({
         label={t('onboarding.landed.lastUntil')}
         value={
           until === null || until < snap.today
-            ? t('income.until.endOf', { month: format.monthLong(cycleMonth(snap.cycle)) })
+            ? t('income.until.endOf', {
+                month: inSentence(format.monthLong(cycleMonth(snap.cycle)), i18n.language),
+              })
             : format.dayMonthShort(until)
         }
         onPress={() => router.push(planRoutes.lastUntil)}

@@ -44,7 +44,7 @@ export interface MoneyFormat {
   spoken(amount: Money): string;
 }
 
-/** Languages that write the symbol after the amount ("12,50 €"). Brazil writes it first. */
+/** Languages that write the symbol after the amount ("12,50 €"), in their home region. */
 const SYMBOL_AFTER = new Set([
   'bg',
   'cs',
@@ -76,11 +76,65 @@ const SYMBOL_AFTER = new Set([
   'vi',
 ]);
 
+/**
+ * Regions that put the symbol first although their language puts it last elsewhere: Spanish in
+ * the Americas ("$327" in Mexico), Brazil's Portuguese ("R$ 12,50"), German in Austria and
+ * Switzerland and Swiss Italian ("€ 12,50", "CHF 12.50").
+ */
+const SYMBOL_FIRST_IN: Readonly<Record<string, ReadonlySet<string>>> = {
+  es: new Set([
+    '419',
+    'AR',
+    'BO',
+    'CL',
+    'CO',
+    'CR',
+    'CU',
+    'DO',
+    'EC',
+    'GT',
+    'HN',
+    'MX',
+    'NI',
+    'PA',
+    'PE',
+    'PR',
+    'PY',
+    'SV',
+    'US',
+    'UY',
+    'VE',
+  ]),
+  pt: new Set(['BR']),
+  de: new Set(['AT', 'CH', 'LI']),
+  it: new Set(['CH']),
+};
+
 export interface PhoneNumberStyle {
   /** BCP 47 tag of the phone's first locale: "en-US", "de-DE". */
   readonly languageTag?: string | null;
+  /**
+   * The phone's region ("MX", "US"), which sets how it writes numbers; the tag's own region when
+   * absent.
+   */
+  readonly region?: string | null;
   readonly decimal?: string | null;
   readonly group?: string | null;
+}
+
+/**
+ * Whether the symbol goes after the amount, as the phone's language writes it in the phone's
+ * region. With no region to go by, a dollar or peso sign comes first: every country that spends
+ * one writes it so, French Canada aside.
+ */
+function symbolAfterFor(currency: Currency, phone: PhoneNumberStyle): boolean {
+  const [lang = '', ...subtags] = (phone.languageTag ?? '').split(/[-_]/);
+  const language = lang.toLowerCase();
+  if (!SYMBOL_AFTER.has(language)) return false;
+  const tagRegion = subtags.find((s) => /^([a-z]{2}|\d{3})$/i.test(s)) ?? '';
+  const region = (phone.region ?? tagRegion).toUpperCase();
+  if (region === '') return currency.symbol !== '$';
+  return !(SYMBOL_FIRST_IN[language]?.has(region) ?? false);
 }
 
 /** The money locale for a currency, written the way the phone writes numbers. */
@@ -89,13 +143,10 @@ export function moneyLocale(
   language: string,
   phone: PhoneNumberStyle = {},
 ): MoneyLocale {
-  const tag = (phone.languageTag ?? '').toLowerCase();
-  const [lang = ''] = tag.split(/[-_]/);
   const decimal = phone.decimal === ',' ? ',' : '.';
   const rawGroup = phone.group ?? (decimal === ',' ? '.' : ',');
   const group = rawGroup === decimal ? (decimal === ',' ? '.' : ',') : rawGroup;
-  const symbolAfter = SYMBOL_AFTER.has(lang) && tag !== 'pt-br';
-  return { currency, language, decimal, group, symbolAfter };
+  return { currency, language, decimal, group, symbolAfter: symbolAfterFor(currency, phone) };
 }
 
 /** The design's own: đồng, written the Vietnamese way in every language. */

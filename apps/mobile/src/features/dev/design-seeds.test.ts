@@ -171,9 +171,9 @@ describe('the seeds that build on the Friday', () => {
   });
 
   it('takes the canvases’ amounts by rate only in a currency with no list', () => {
-    expect(SEED_PRICES['GBP']).toBeUndefined();
-    const pounds = seedPricesIn(currencyOf('GBP'));
-    expect(pounds.owedDinner).toBe(Math.round((1_200_000 / 26_000) * 0.78 * 100));
+    expect(SEED_PRICES['CHF']).toBeUndefined();
+    const francs = seedPricesIn(currencyOf('CHF'));
+    expect(francs.owedDinner).toBe(Math.round((1_200_000 / 26_000) * 0.85 * 100));
     expect(seedPricesIn(currencyOf('VND')).jars.season).toEqual({
       goal: 7_000_000,
       held: 2_100_000,

@@ -66,6 +66,16 @@ describe('the context’s home currency', () => {
     expect(Number(money.rate('VND'))).toBeCloseTo(1 / 26_000, 12);
     expect(money.rate('THB')).toBeNull();
   });
+
+  it('writes money the way the phone’s region does', () => {
+    const mexico: SurfaceContext = {
+      ...base,
+      language: 'es',
+      currency: 'MXN',
+      numberStyle: { languageTag: 'es', region: 'MX', decimal: '.', group: ',' },
+    };
+    expect(contextMoney(mexico).format.full(242_400)).toBe('$2,424');
+  });
 });
 
 describe('Log in 6pm on a phone counting dollars', () => {

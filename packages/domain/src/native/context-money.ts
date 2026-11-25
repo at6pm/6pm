@@ -94,11 +94,16 @@ export function writeForeign(
 
 export function contextMoney(context: SurfaceContext | null): ContextMoney {
   const home = context?.currency ? currencyOf(context.currency) : VND;
-  const { languageTag = null, decimal = null, group = null } = context?.numberStyle ?? {};
+  const {
+    languageTag = null,
+    region = null,
+    decimal = null,
+    group = null,
+  } = context?.numberStyle ?? {};
   const style: WritingStyle = {
     home,
     language: context?.language ?? 'en',
-    phone: { languageTag, decimal, group },
+    phone: { languageTag, region, decimal, group },
   };
   const format = moneyFormat(moneyLocale(home, style.language, style.phone));
   const quote = (code: string) => {
