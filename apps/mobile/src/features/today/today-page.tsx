@@ -45,6 +45,7 @@ import { useIncomeToday } from './income-today';
 import { workTodayOf } from '../work/work-today';
 import { requestWorkDiary } from '../work/work-diary-request';
 import { GOT_PAID, MoneyCameInCard } from './money-came-in-card';
+import { useFirstCatchRating } from '../rating/use-first-catch-rating';
 
 /**
  * Today: the hero over the sky, then the sheet that holds the companion, tonight's card, the week
@@ -88,6 +89,8 @@ export function TodayPage({
   const work = workTodayOf(snap);
   const ask = useAskReach();
   const spreadYesterday = spreadYesterdayOf(snap);
+  // The first spend caught by itself, seen here, is the moment the store's rating prompt asks.
+  useFirstCatchRating();
   // While the tonight card holds the day's state (due at six, late, paused), the companion speaks
   // from its tile and the bubble steps aside: the bubble never restates the card.
   const cardSpeaks =

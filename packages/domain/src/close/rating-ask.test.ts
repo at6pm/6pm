@@ -1,65 +1,159 @@
 import { describe, expect, it } from 'vitest';
 
-import { closedInsideNumber, shouldAskForRating, type RatingAskInput } from './rating-ask';
+import type { SpendSource } from '../spend/spend';
+import {
+  closedInsideNumber,
+  ratingAfterClose,
+  ratingAtFirstCatch,
+  ratingSpacingAllows,
+  type CloseRatingInput,
+  type FirstCatchRatingInput,
+  type RatingHistory,
+} from './rating-ask';
 
-const now = new Date('2026-11-01T11:30:00.000Z');
+const now = new Date('2026-11-25T11:30:00.000Z');
 
-/** A good close on the third day, never asked before. */
-const due: RatingAskInput = {
-  closedDays: 3,
-  dayWithinNumber: true,
-  lastAskedAt: null,
-  lastAskedVersion: null,
-  version: '2.1.0',
+const daysBefore = (days: number) => new Date(now.getTime() - days * 86_400_000).toISOString();
+const hoursBefore = (hours: number) => new Date(now.getTime() - hours * 3_600_000).toISOString();
+
+const never: RatingHistory = { asks: [], firstCatchAsked: false };
+
+/** A bank alert caught an hour ago, seen on a settled Today, never asked before. */
+const seen: FirstCatchRatingInput = {
+  firstCatch: { source: 'alert', at: hoursBefore(1), deleted: false },
+  today: 'settled',
+  history: never,
   now,
 };
 
-const daysBefore = (days: number) => new Date(now.getTime() - days * 86_400_000).toISOString();
+/** A good close on the seventh closed day, never asked before. */
+const closed: CloseRatingInput = { closedDays: 7, dayWithinNumber: true, history: never, now };
 
-describe('shouldAskForRating', () => {
-  it('asks after a good close from the third closed day on', () => {
-    expect(shouldAskForRating(due)).toBe(true);
-    expect(shouldAskForRating({ ...due, closedDays: 40 })).toBe(true);
+describe('ratingAtFirstCatch', () => {
+  it('asks at the first catch from a way that runs by itself', () => {
+    for (const source of ['alert', 'applePay', 'email'] as const) {
+      expect(
+        ratingAtFirstCatch({ ...seen, firstCatch: { source, at: hoursBefore(1), deleted: false } }),
+      ).toBe(true);
+    }
   });
 
-  it('never asks before the third closed day', () => {
-    expect(shouldAskForRating({ ...due, closedDays: 0 })).toBe(false);
-    expect(shouldAskForRating({ ...due, closedDays: 2 })).toBe(false);
+  it('never asks for a spend typed, said, shared or scanned', () => {
+    const others: SpendSource[] = ['manual', 'voice', 'shared', 'qr', 'cash', 'import'];
+    for (const source of others) {
+      expect(
+        ratingAtFirstCatch({ ...seen, firstCatch: { source, at: hoursBefore(1), deleted: false } }),
+      ).toBe(false);
+    }
+    expect(ratingAtFirstCatch({ ...seen, firstCatch: null })).toBe(false);
+  });
+
+  it('never asks for a catch taken back, which may have been read wrong', () => {
+    expect(
+      ratingAtFirstCatch({
+        ...seen,
+        firstCatch: { source: 'alert', at: hoursBefore(1), deleted: true },
+      }),
+    ).toBe(false);
+  });
+
+  it('asks once in the life of the phone', () => {
+    const asked = { asks: [daysBefore(400)], firstCatchAsked: true };
+    expect(ratingAtFirstCatch({ ...seen, history: asked })).toBe(false);
+  });
+
+  it('never asks while something is over Today, or when Today was come back to', () => {
+    expect(ratingAtFirstCatch({ ...seen, today: 'covered' })).toBe(false);
+    expect(ratingAtFirstCatch({ ...seen, today: 'interrupted' })).toBe(false);
+  });
+
+  it('asks only while the catch is fresh', () => {
+    const at = (days: number) => ({
+      ...seen,
+      firstCatch: { source: 'alert' as const, at: daysBefore(days), deleted: false },
+    });
+    expect(ratingAtFirstCatch(at(2.9))).toBe(true);
+    expect(ratingAtFirstCatch(at(3))).toBe(true);
+    expect(ratingAtFirstCatch(at(3.1))).toBe(false);
+    expect(ratingAtFirstCatch(at(60))).toBe(false);
+  });
+
+  it('holds back when the catch time cannot be read or sits in the future', () => {
+    expect(
+      ratingAtFirstCatch({ ...seen, firstCatch: { source: 'alert', at: 'soon', deleted: false } }),
+    ).toBe(false);
+    expect(
+      ratingAtFirstCatch({
+        ...seen,
+        firstCatch: { source: 'alert', at: daysBefore(-1), deleted: false },
+      }),
+    ).toBe(false);
+  });
+
+  it('keeps to the spacing after an ask made at a close', () => {
+    const recent = { asks: [daysBefore(3)], firstCatchAsked: false };
+    expect(ratingAtFirstCatch({ ...seen, history: recent })).toBe(false);
+    const older = { asks: [daysBefore(10)], firstCatchAsked: false };
+    expect(ratingAtFirstCatch({ ...seen, history: older })).toBe(true);
+  });
+});
+
+describe('ratingAfterClose', () => {
+  it('asks after a good close from the seventh closed day on', () => {
+    expect(ratingAfterClose(closed)).toBe(true);
+    expect(ratingAfterClose({ ...closed, closedDays: 40 })).toBe(true);
+  });
+
+  it('never asks before a closed week, so the third close is left to Max', () => {
+    expect(ratingAfterClose({ ...closed, closedDays: 0 })).toBe(false);
+    expect(ratingAfterClose({ ...closed, closedDays: 3 })).toBe(false);
+    expect(ratingAfterClose({ ...closed, closedDays: 6 })).toBe(false);
   });
 
   it('never asks after a day that went over', () => {
-    expect(shouldAskForRating({ ...due, dayWithinNumber: false })).toBe(false);
+    expect(ratingAfterClose({ ...closed, dayWithinNumber: false })).toBe(false);
   });
 
-  it('asks at most once per app version', () => {
-    expect(
-      shouldAskForRating({ ...due, lastAskedAt: daysBefore(400), lastAskedVersion: '2.1.0' }),
-    ).toBe(false);
-    expect(
-      shouldAskForRating({ ...due, lastAskedAt: daysBefore(400), lastAskedVersion: '2.0.0' }),
-    ).toBe(true);
+  it('asks a closed week after the first catch asked, and not sooner', () => {
+    const caught = (days: number) => ({ asks: [daysBefore(days)], firstCatchAsked: true });
+    expect(ratingAfterClose({ ...closed, history: caught(6) })).toBe(false);
+    expect(ratingAfterClose({ ...closed, history: caught(7) })).toBe(true);
+  });
+});
+
+describe('ratingSpacingAllows', () => {
+  it('allows the first ask at any time', () => {
+    expect(ratingSpacingAllows(never, now)).toBe(true);
   });
 
-  it('waits 120 days after the last ask, even in a new version', () => {
-    const asked = { ...due, lastAskedVersion: '2.0.0', version: '2.2.0' };
-    expect(shouldAskForRating({ ...asked, lastAskedAt: daysBefore(1) })).toBe(false);
-    expect(shouldAskForRating({ ...asked, lastAskedAt: daysBefore(119) })).toBe(false);
-    expect(shouldAskForRating({ ...asked, lastAskedAt: daysBefore(120) })).toBe(true);
-    expect(shouldAskForRating({ ...asked, lastAskedAt: daysBefore(200) })).toBe(true);
+  it('waits 120 days between asks from the second on', () => {
+    const twice = (days: number) => ({
+      asks: [daysBefore(days + 30), daysBefore(days)],
+      firstCatchAsked: true,
+    });
+    expect(ratingSpacingAllows(twice(1), now)).toBe(false);
+    expect(ratingSpacingAllows(twice(119), now)).toBe(false);
+    expect(ratingSpacingAllows(twice(120), now)).toBe(true);
   });
 
-  it('holds back when the version or the last ask cannot be read', () => {
-    expect(shouldAskForRating({ ...due, version: null })).toBe(false);
-    expect(shouldAskForRating({ ...due, version: '' })).toBe(false);
-    expect(
-      shouldAskForRating({ ...due, lastAskedAt: 'not a time', lastAskedVersion: '2.0.0' }),
-    ).toBe(false);
+  it('never asks more than three times in any 365 days, as the system allows', () => {
+    const three = {
+      asks: [daysBefore(360), daysBefore(240), daysBefore(121)],
+      firstCatchAsked: true,
+    };
+    expect(ratingSpacingAllows(three, now)).toBe(false);
+    const aged = {
+      asks: [daysBefore(366), daysBefore(240), daysBefore(121)],
+      firstCatchAsked: true,
+    };
+    expect(ratingSpacingAllows(aged, now)).toBe(true);
   });
 
-  it('holds back when the last ask sits in the future, as after the clock moved back', () => {
-    expect(
-      shouldAskForRating({ ...due, lastAskedAt: daysBefore(-30), lastAskedVersion: '2.0.0' }),
-    ).toBe(false);
+  it('holds back when an ask cannot be read or sits in the future', () => {
+    expect(ratingSpacingAllows({ asks: ['not a time'], firstCatchAsked: false }, now)).toBe(false);
+    expect(ratingSpacingAllows({ asks: [daysBefore(-30)], firstCatchAsked: false }, now)).toBe(
+      false,
+    );
   });
 });
 

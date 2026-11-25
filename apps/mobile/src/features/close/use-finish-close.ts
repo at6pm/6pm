@@ -16,8 +16,8 @@ import type { useClose } from './use-close';
 /**
  * Closes the day and leaves the Close: from the reveal's Done, or by folding the iPhone Duo shut.
  * Runs once; a failed save lets it be tried again. A good close may then bring up one thing, once
- * the Close has finished leaving: Max, the two times it is offered unasked, or else the store's
- * rating prompt.
+ * the Close has finished leaving: Max, the two times it is offered unasked, or else, from a closed
+ * week on, the store's rating prompt.
  */
 export function useFinishClose(close: ReturnType<typeof useClose>, day: DailyNumber | null) {
   const router = useRouter();
