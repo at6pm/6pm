@@ -6,6 +6,7 @@ import type { Language } from '@6pm/i18n';
 
 import type { MoneyStore } from '../../data/money-store';
 import { writePlan } from '../../data/plan-settings';
+import { pinnedClock } from '../../ui/theme/clock';
 import { buildDesignFriday, FRIDAY_PAYDAY } from './design-friday-fixture';
 
 /**
@@ -95,8 +96,12 @@ export async function seedDesignFriday(
         note: null,
       });
     }
+    // A pinned morning leaves out what the day has not spent yet, so a morning shows a morning.
+    const pin = pinnedClock();
+    const until = pin ? pin.getHours() * 60 + pin.getMinutes() : 24 * 60;
     for (const spend of fixture.spends) {
       const [h = 0, m = 0] = spend.time.split(':').map(Number);
+      if (spend.day === today && h * 60 + m > until) continue;
       const { year: y, month: mo, day: dd } = parts(spend.day);
       const at = new Date(y, mo - 1, dd, h, m).toISOString();
       await tables.spends.put({

@@ -289,6 +289,22 @@ export const FRIDAY_PRICES: Readonly<Record<string, FridayPrices>> = {
     earlier: 465,
     today: { breakfast: 6.5, coffee: 4.5, lunch: 14, ride: 16, treat: 5.5, shop: 9.5 },
   },
+  GBP: {
+    income: 2_500,
+    futureYou: 250,
+    bills: { rent: 850, phone: 15, internet: 30, power: 90 },
+    jarGoal: 450,
+    earlier: 260,
+    today: { breakfast: 3.2, coffee: 3.4, lunch: 7.5, ride: 6.5, treat: 3, shop: 5.5 },
+  },
+  MXN: {
+    income: 24_000,
+    futureYou: 2_000,
+    bills: { rent: 7_000, phone: 200, internet: 400, power: 300 },
+    jarGoal: 4_500,
+    earlier: 3_000,
+    today: { breakfast: 35, coffee: 55, lunch: 95, ride: 85, treat: 35, shop: 65 },
+  },
   EUR: {
     income: 2_600,
     futureYou: 250,
