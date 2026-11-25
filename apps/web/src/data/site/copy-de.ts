@@ -8,7 +8,7 @@ export const siteCopyDe: SiteCopy = {
   meta: {
     title: '6pm: Schließ deinen Tag um sechs ab',
     description:
-      'Gib aus wie immer. Um sechs schließt ein Wisch den Tag ab, und morgen beginnt mit einer Zahl, auf die du dich verlassen kannst. Privat von Grund auf.',
+      'Gib aus wie immer. Um sechs schließt ein Wisch den Tag ab, und morgen startest du mit einer Zahl, auf die du dich verlassen kannst. Privat von Grund auf.',
   },
   nav: {
     capture: 'Erfassen',
@@ -26,7 +26,7 @@ export const siteCopyDe: SiteCopy = {
     kickCard: 'iPhone & Android · Kostenlos',
     a: 'Schließ deinen Tag',
     b: 'um sechs ab.',
-    sub: 'Gib aus wie immer. Um sechs schließt ein Wisch den Tag ab, und morgen beginnt mit einer Zahl, auf die du dich verlassen kannst.',
+    sub: 'Gib aus wie immer. Um sechs schließt ein Wisch den Tag ab, und morgen startest du mit einer Zahl, auf die du dich verlassen kannst.',
   },
   cta: {
     wait: 'Auf die Warteliste',
