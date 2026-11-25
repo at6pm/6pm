@@ -13,23 +13,22 @@ import {
   daysOfPeriod,
   isSubscriptionProduct,
   lookOfProduct,
-  maxPlanOfProduct,
-  type MaxPlan,
   type PaidLookId,
   playSubscriptionsUrl,
 } from './products';
 import {
   unavailablePurchases,
   type LookOffer,
-  type MaxOffer,
   type Offerings,
   type PurchaseOutcome,
   type PurchasesPort,
 } from './purchases-port';
+import { maxOffersOf } from './max-pricing';
 import { redeemThroughStore } from './max-codes/redeem-code';
 import { customerFromStore } from './revenuecat-customer';
 
-// RevenueCat behind the port. Unit tests cover the mapping in revenuecat-customer.ts; this file
+// RevenueCat behind the port. Unit tests cover the mappings in revenuecat-customer.ts and
+// max-pricing.ts; this file
 // runs only in a native build with products in the store.
 
 const DAYS_IN: Readonly<Record<string, number>> = { DAY: 1, WEEK: 7, MONTH: 30, YEAR: 365 };
@@ -110,9 +109,10 @@ export function revenueCatPurchases(apiKey: string | undefined): PurchasesPort {
     available: true,
     offerings: async (): Promise<Offerings> => {
       const subscriptions = MAX_SUBSCRIPTIONS.map((plan) => MAX_PRODUCTS[plan]);
+      // Max bought once is off sale, so it is never asked for: only the looks are bought once.
       const [plans, singles] = await Promise.all([
         load(subscriptions, PRODUCT_CATEGORY.SUBSCRIPTION),
-        load([...LOOK_PRODUCT_IDS, MAX_PRODUCTS.lifetime], PRODUCT_CATEGORY.NON_SUBSCRIPTION),
+        load(LOOK_PRODUCT_IDS, PRODUCT_CATEGORY.NON_SUBSCRIPTION),
       ]);
       const open = await trialsOpenFor(plans);
       const looks: Partial<Record<PaidLookId, LookOffer>> = {};
@@ -120,33 +120,9 @@ export function revenueCatPurchases(apiKey: string | undefined): PurchasesPort {
         const look = lookOfProduct(product.identifier);
         if (look) looks[look] = { productId: product.identifier, priceText: product.priceString };
       }
-      const max: Partial<Record<MaxPlan, MaxOffer>> = {};
-      // Max bought once is listed with the one-time products, where the store sells it at all.
-      const once = singles.find((p) => maxPlanOfProduct(p.identifier) === 'lifetime');
-      if (once) {
-        max.lifetime = {
-          plan: 'lifetime',
-          productId: once.identifier,
-          priceText: once.priceString,
-          price: once.price,
-          perMonthText: null,
-          perMonth: null,
-          trialDays: null,
-        };
-      }
-      for (const product of plans) {
-        const plan = maxPlanOfProduct(product.identifier);
-        if (!plan) continue;
-        max[plan] = {
-          plan,
-          productId: product.identifier,
-          priceText: product.priceString,
-          price: product.price,
-          perMonthText: product.pricePerMonthString,
-          perMonth: product.pricePerMonth,
-          trialDays: open.has(product.identifier) ? trialDaysOf(product) : null,
-        };
-      }
+      const max = maxOffersOf(plans, (product) =>
+        open.has(product.identifier) ? trialDaysOf(product) : null,
+      );
       if (Object.keys(looks).length === 0 && Object.keys(max).length === 0) {
         throw new Error('The store listed none of the 6pm products');
       }

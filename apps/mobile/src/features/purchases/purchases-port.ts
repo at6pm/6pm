@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import type { RedeemRoute } from './max-codes/redeem-code';
-import { PAID_LOOKS, type MaxPlan, type PaidLookId } from './products';
+import { PAID_LOOKS, type MaxPlan, type MaxSubscription, type PaidLookId } from './products';
 
 /** What the store says about Max for this Apple ID. Every date is the store's, never the phone's. */
 export interface MaxState {
@@ -59,8 +59,9 @@ export interface LookOffer {
   readonly priceText: string;
 }
 
+/** A plan the Max sheet offers. Only the plans that renew are sold. */
 export interface MaxOffer {
-  readonly plan: MaxPlan;
+  readonly plan: MaxSubscription;
   readonly productId: string;
   readonly priceText: string;
   /** The price in the store's currency, for comparing the plans. */
@@ -74,7 +75,7 @@ export interface MaxOffer {
 
 export interface Offerings {
   readonly looks: Readonly<Partial<Record<PaidLookId, LookOffer>>>;
-  readonly max: Readonly<Partial<Record<MaxPlan, MaxOffer>>>;
+  readonly max: Readonly<Partial<Record<MaxSubscription, MaxOffer>>>;
 }
 
 export type PurchaseOutcome =

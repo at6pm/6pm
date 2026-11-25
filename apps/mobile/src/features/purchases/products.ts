@@ -28,16 +28,22 @@ export function lookEntitlementId(look: PaidLookId): string {
   return `look_${look}`;
 }
 
+/** Every plan that can hold Max, including Max bought once, which is no longer sold. */
 export const MAX_PLANS = ['monthly', 'yearly', 'lifetime'] as const;
 export type MaxPlan = (typeof MAX_PLANS)[number];
 
-/** The plans that renew: subscriptions in the existing "Premium Subscriptions" group. */
+/**
+ * The plans that renew: subscriptions in the existing "Premium Subscriptions" group. They are the
+ * only plans the Max sheet offers.
+ */
 export const MAX_SUBSCRIPTIONS = ['monthly', 'yearly'] as const satisfies readonly MaxPlan[];
 export type MaxSubscription = (typeof MAX_SUBSCRIPTIONS)[number];
 
 /**
  * Max by the month or the year, and Max bought once: a one-time purchase (a non-consumable) that
- * never renews. The store decides where each is sold; a plan it does not list is not offered.
+ * never renews. Max bought once is off sale; its identifier stays so that whoever bought it is
+ * still read as Max. The store decides where each plan that renews is sold; a plan it does not
+ * list is not offered.
  */
 export const MAX_PRODUCTS: Readonly<Record<MaxPlan, string>> = {
   monthly: `${STORE_PREFIX}.max.monthly`,
@@ -52,7 +58,7 @@ export const MAX_PRODUCTS: Readonly<Record<MaxPlan, string>> = {
 export const MAX_ENTITLEMENT = 'max';
 
 /** The plan the Max sheet opens on. */
-export const PRESELECTED_MAX_PLAN: MaxPlan = 'yearly';
+export const PRESELECTED_MAX_PLAN: MaxSubscription = 'yearly';
 
 export const LOOK_PRODUCT_IDS: readonly string[] = PAID_LOOKS.map(lookProductId);
 
@@ -75,10 +81,15 @@ export function maxPlanOfProduct(productId: string): MaxPlan | null {
   return MAX_PLANS.find((plan) => MAX_PRODUCTS[plan] === product) ?? null;
 }
 
+/** The plan that renews a store identifier names; null for Max bought once and anything else. */
+export function maxSubscriptionOfProduct(productId: string): MaxSubscription | null {
+  const plan = maxPlanOfProduct(productId);
+  return MAX_SUBSCRIPTIONS.find((sold) => sold === plan) ?? null;
+}
+
 /** Whether the store sells this product as a subscription; everything else is bought once. */
 export function isSubscriptionProduct(productId: string): boolean {
-  const plan = maxPlanOfProduct(productId);
-  return plan !== null && (MAX_SUBSCRIPTIONS as readonly MaxPlan[]).includes(plan);
+  return maxSubscriptionOfProduct(productId) !== null;
 }
 
 const DAYS_IN: Readonly<Record<string, number>> = { D: 1, W: 7, M: 30, Y: 365 };

@@ -1,6 +1,13 @@
 import { describe, expect, it } from '@jest/globals';
 
-import { anyTrialDays, quotedOffer, trialDaysFor, yearlySavingPercent } from './max-pricing';
+import {
+  anyTrialDays,
+  maxOffersOf,
+  quotedOffer,
+  trialDaysFor,
+  yearlySavingPercent,
+  type StoreMaxProduct,
+} from './max-pricing';
 import { maxStatus } from './max-status';
 import type { MaxOffer, Offerings } from './purchases-port';
 
@@ -53,23 +60,48 @@ describe('Max pricing from the store’s prices', () => {
     expect(anyTrialDays(both)).toBe(7);
     expect(anyTrialDays({ looks: {}, max: {} })).toBeNull();
   });
+});
 
-  it('leaves Max bought once out of the saving, the quote and the trial', () => {
-    const lifetime: MaxOffer = {
-      plan: 'lifetime',
-      productId: 'ai.sixpm.app.max.lifetime',
-      priceText: '799.000₫',
-      price: 799_000,
-      perMonthText: null,
-      perMonth: null,
-      trialDays: null,
-    };
-    const all: Offerings = { looks: {}, max: { monthly, yearly, lifetime } };
-    expect(yearlySavingPercent(all)).toBe(33);
-    expect(quotedOffer(all)).toBe(yearly);
-    expect(quotedOffer({ looks: {}, max: { lifetime } })).toBeNull();
-    expect(trialDaysFor(all, 'lifetime')).toBeNull();
-    expect(anyTrialDays({ looks: {}, max: { lifetime } })).toBeNull();
+describe('the plans the Max sheet offers', () => {
+  const listed = (identifier: string, price: number): StoreMaxProduct => ({
+    identifier,
+    priceString: `${price}₫`,
+    price,
+    pricePerMonthString: null,
+    pricePerMonth: null,
+  });
+  const store = [
+    listed('ai.sixpm.app.max.yearly:yearly', 299_000),
+    listed('ai.sixpm.app.max.monthly:monthly', 49_000),
+  ];
+
+  it('offers the plans that renew, each with the trial this person can still take', () => {
+    const max = maxOffersOf(store, (p) => (p.identifier.includes('yearly') ? 7 : null));
+    expect(Object.keys(max).sort()).toEqual(['monthly', 'yearly']);
+    expect(max.yearly).toMatchObject({
+      plan: 'yearly',
+      productId: 'ai.sixpm.app.max.yearly:yearly',
+      priceText: '299000₫',
+      price: 299_000,
+      trialDays: 7,
+    });
+    expect(max.monthly?.trialDays).toBeNull();
+  });
+
+  it('never offers Max bought once, even when the store still lists it', () => {
+    const max = maxOffersOf(
+      [
+        ...store,
+        listed('ai.sixpm.app.max.lifetime', 799_000),
+        listed('ai.sixpm.app.look.neon', 49_000),
+      ],
+      () => null,
+    );
+    expect(Object.keys(max).sort()).toEqual(['monthly', 'yearly']);
+    expect(Object.values(max).map((offer) => offer.productId)).not.toContain(
+      'ai.sixpm.app.max.lifetime',
+    );
+    expect(maxOffersOf([listed('ai.sixpm.app.max.lifetime', 799_000)], () => null)).toEqual({});
   });
 });
 

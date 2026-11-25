@@ -5,6 +5,7 @@ import {
   isSubscriptionProduct,
   lookOfProduct,
   maxPlanOfProduct,
+  maxSubscriptionOfProduct,
   playSubscriptionsUrl,
   storeProductOf,
 } from './products';
@@ -29,6 +30,13 @@ describe('store identifiers', () => {
     expect(isSubscriptionProduct('ai.sixpm.app.max.yearly')).toBe(true);
     expect(isSubscriptionProduct('ai.sixpm.app.max.monthly:monthly')).toBe(true);
     expect(isSubscriptionProduct('ai.sixpm.app.look.neon')).toBe(false);
+  });
+
+  it('counts only the plans that renew as plans that are sold', () => {
+    expect(maxSubscriptionOfProduct('ai.sixpm.app.max.yearly:yearly')).toBe('yearly');
+    expect(maxSubscriptionOfProduct('ai.sixpm.app.max.monthly')).toBe('monthly');
+    expect(maxSubscriptionOfProduct('ai.sixpm.app.max.lifetime')).toBeNull();
+    expect(maxSubscriptionOfProduct('ai.sixpm.app.look.neon')).toBeNull();
   });
 });
 

@@ -126,8 +126,6 @@ export const frLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   'max.tile.buddy': 'Compagnons Max',
   'max.plan.yearly': 'Annuel',
   'max.plan.monthly': 'Mensuel',
-  'max.plan.lifetime': 'À vie',
-  'max.plan.once': 'paiement unique, sans abonnement',
   'max.perMonth': '{price}/mois',
   'max.perYear': '{price}/an',
   'max.cta.trial': {
@@ -135,7 +133,6 @@ export const frLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
     other: 'Démarrer {count} jours offerts',
   },
   'max.cta.subscribe': 'S’abonner à Max',
-  'max.cta.lifetime': 'Acheter Max une fois',
   'max.cta.done': 'OK',
   'max.cta.waiting': 'En attente de l’App Store…',
   'max.terms.trialYear': {
@@ -148,7 +145,6 @@ export const frLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   },
   'max.terms.year': '{price} par an. Résiliable à tout moment.',
   'max.terms.month': '{price} par mois. Résiliable à tout moment.',
-  'max.terms.lifetime': '{price} une seule fois. Sans renouvellement.',
   'max.terms.storeOff': 'Max ne peut pas être acheté pour l’instant : l’App Store ne répond pas.',
   'max.terms.trialEnds': 'Fin de l’essai le {date}.',
   'max.terms.renews': 'Renouvellement le {date}.',
