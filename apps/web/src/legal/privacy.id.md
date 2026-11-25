@@ -1,219 +1,219 @@
 ---
-title: Privacy Policy
-description: What 6pm keeps on your phone, the little that leaves it, and who handles it.
-lede: 6pm keeps your money on your phone. This page says exactly what we do with the little that leaves it.
-updated: '2026-11-24'
+title: Kebijakan Privasi
+description: Apa yang disimpan 6pm di ponsel Anda, sedikit data yang keluar darinya, dan siapa yang menanganinya.
+lede: 6pm menyimpan uang Anda di ponsel Anda. Halaman ini menjelaskan dengan tepat apa yang kami lakukan dengan sedikit data yang keluar darinya.
+updated: '2026-11-25'
 ---
 
-<!-- Translation pending: English text. -->
+Ini adalah terjemahan untuk memudahkan Anda. Jika ada perbedaan, yang berlaku adalah [versi bahasa Inggris](/privacy).
 
-## The short version
+## Ringkasnya
 
-- Your spending, plan and diary live on your iPhone, in an encrypted database. We cannot read them.
-- 6pm needs no account. Only if you use Budget together do you sign in, with Apple. We never ask for your phone number, your email or your bank login.
-- We do not run ads or sell data. The app has no tracking tools and no third-party analytics. It sends anonymous counts of the steps it reaches, such as a first open or a first close, which you can turn off. This website counts visits with Cloudflare Web Analytics, which sets no cookies and does not identify you.
-- A few small things do leave your phone: an anonymous device ID, anonymous counts of the steps the app reaches, your purchase status, app updates, crash reports, questions you ask 6pm, your voice while you say a spend, a few facts about your day for your companion’s lines, a receipt photo your phone cannot read, the words and amounts of the bank alerts 6pm reads for you (with account, card and phone numbers hidden), bank emails you forward to your receipt address, the shared pots you keep with someone in Budget together and, only if you turn it on, your encrypted backup. Each one is explained below.
-- You can keep all of 6pm's AI on your iPhone instead (Settings → AI). Then your questions, the facts for your companion's lines, receipt photos, bank alerts and your voice stay on the phone too.
+- Pengeluaran, rencana, dan diari Anda tersimpan di iPhone Anda, dalam basis data yang dienkripsi. Kami tidak dapat membacanya.
+- 6pm tidak memerlukan akun. Anda hanya masuk, dengan Apple, jika menggunakan Anggaran bersama. Kami tidak pernah meminta nomor telepon, email, atau login bank Anda.
+- Kami tidak menayangkan iklan dan tidak menjual data. Aplikasi ini tidak memiliki alat pelacak maupun analitik pihak ketiga. Aplikasi mengirim hitungan anonim tentang langkah yang dicapainya, seperti pembukaan pertama atau tutup hari pertama, dan Anda dapat mematikannya. Situs web ini menghitung kunjungan dengan Cloudflare Web Analytics, yang tidak memasang cookie dan tidak mengidentifikasi Anda.
+- Beberapa hal kecil memang keluar dari ponsel Anda: ID perangkat anonim, hitungan anonim langkah yang dicapai aplikasi, status pembelian Anda, pembaruan aplikasi, laporan kerusakan (crash), pertanyaan yang Anda ajukan ke 6pm, suara Anda saat mengucapkan pengeluaran, beberapa fakta tentang hari Anda untuk kalimat teman Anda, foto struk yang tidak dapat dibaca ponsel Anda, kata-kata dan jumlah dalam notifikasi bank yang dibaca 6pm untuk Anda (dengan nomor rekening, kartu, dan telepon disembunyikan), email bank yang Anda teruskan ke alamat struk Anda, celengan bersama yang Anda kelola dengan seseorang di Anggaran bersama, dan, hanya jika Anda menyalakannya, cadangan terenkripsi Anda. Masing-masing dijelaskan di bawah.
+- Anda dapat menyimpan seluruh AI 6pm di iPhone Anda saja (Pengaturan → AI). Dengan begitu, pertanyaan Anda, fakta untuk kalimat teman Anda, foto struk, notifikasi bank, dan suara Anda juga tetap di ponsel.
 
-## Who we are
+## Siapa kami
 
-6pm is made by {{OWNER}} ("we", "us"). You can reach us on [{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}}).
+6pm dibuat oleh {{OWNER}} ("kami"). Anda dapat menghubungi kami di [{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}}).
 
-This policy covers the 6pm app for iPhone and Android and the website at at6pm.app. Where the Android app works differently, "On Android" below says how.
+Kebijakan ini berlaku untuk aplikasi 6pm untuk iPhone dan Android serta situs web at6pm.app. Jika aplikasi Android bekerja secara berbeda, bagian "Di Android" di bawah menjelaskan caranya.
 
-## What stays on your phone
+## Yang tetap di ponsel Anda
 
-Everything you enter, and everything the app catches for you, stays on your phone. That means your spends, amounts, merchants, categories and notes, your payday and plan, your pots, your diary, and your settings, look and companion.
+Semua yang Anda masukkan, dan semua yang ditangkap aplikasi untuk Anda, tetap di ponsel Anda. Artinya pengeluaran, jumlah, toko, kategori, dan catatan Anda, hari gajian dan rencana Anda, celengan Anda, diari Anda, serta pengaturan, tampilan, dan teman Anda.
 
-All of it sits in a database on your phone, encrypted with SQLCipher. The key is made on your phone the first time you open 6pm and is kept in the iOS Keychain, tied to this device. It never leaves the phone, and we never receive it or the database. Only the few facts described under “Ask 6pm and your companion’s lines” are sent, one line’s worth at a time.
+Semuanya berada dalam basis data di ponsel Anda, dienkripsi dengan SQLCipher. Kuncinya dibuat di ponsel Anda saat pertama kali membuka 6pm dan disimpan di Rantai Kunci iOS, terikat pada perangkat ini. Kunci itu tidak pernah keluar dari ponsel, dan kami tidak pernah menerima kunci maupun basis datanya. Hanya beberapa fakta yang dijelaskan di bagian “Tanya 6pm dan kalimat teman Anda” yang dikirim, sebanyak yang diperlukan untuk satu kalimat setiap kali.
 
-Because the key stays on this phone, your data does not move to a new phone on its own. Without a backup, it lives only here.
+Karena kuncinya tetap di ponsel ini, data Anda tidak berpindah sendiri ke ponsel baru. Tanpa cadangan, data itu hanya ada di sini.
 
-## What leaves your phone
+## Yang keluar dari ponsel Anda
 
-Only the things below, and only for the reasons given.
+Hanya hal-hal di bawah ini, dan hanya untuk alasan yang disebutkan.
 
-### An anonymous device ID
+### ID perangkat anonim
 
-When the app talks to our server, it first gets a random token that stands for your copy of the app. The token is kept on your phone. Our server stores only a scrambled form of it (a SHA-256 hash), plus your app language (English or Vietnamese) and the times it was first and last seen.
+Saat aplikasi berkomunikasi dengan server kami, aplikasi terlebih dulu mendapatkan token acak yang mewakili salinan aplikasi Anda. Token itu disimpan di ponsel Anda. Server kami hanya menyimpan bentuk acaknya (hash SHA-256), ditambah bahasa aplikasi Anda serta waktu token itu pertama dan terakhir terlihat.
 
-None of this is linked to your name, your email or anything in your money. We use it to check that requests come from a real copy of the app, to limit abuse, and to count roughly how many devices use 6pm each day.
+Tidak satu pun dari data ini terhubung dengan nama, email, atau apa pun tentang uang Anda. Kami menggunakannya untuk memeriksa bahwa permintaan berasal dari salinan aplikasi yang asli, untuk membatasi penyalahgunaan, dan untuk menghitung kira-kira berapa banyak perangkat yang menggunakan 6pm setiap hari.
 
-### Anonymous counts
+### Hitungan anonim
 
-To see where new people get stuck, the app sends our server anonymous counts of the steps it reaches: that it was opened for the first time; which onboarding steps were shown and whether onboarding was finished; which days of its first month it was opened on; on which of those days something was caught, and which way (a bank or wallet notification, the Wallet automation, an email, a shared receipt, a scan, your voice or typing); which of those days were closed, and how many days of the first week were caught and closed; whether the 6pm Max offer was shown and from which screen; whether Max was bought and which plan; and, when Max was bought with a code from one of our channels, which channel. Each report also says the platform (iPhone or Android), the app version and the app language, and nothing else.
+Untuk melihat di mana pengguna baru tersendat, aplikasi mengirim ke server kami hitungan anonim tentang langkah yang dicapainya: bahwa aplikasi dibuka untuk pertama kali; langkah orientasi mana yang ditampilkan dan apakah orientasi diselesaikan; pada hari-hari mana di bulan pertamanya aplikasi dibuka; pada hari-hari mana di antaranya sesuatu tertangkap, dan lewat cara apa (notifikasi bank atau dompet digital, otomatisasi Wallet, email, struk yang dibagikan, pindaian, suara Anda, atau ketikan); hari-hari mana yang ditutup, dan berapa hari di minggu pertama yang tertangkap dan ditutup; apakah penawaran 6pm Max ditampilkan dan dari layar mana; apakah Max dibeli dan paket mana; dan, jika Max dibeli dengan kode dari salah satu saluran kami, saluran mana. Setiap laporan juga menyebutkan platform (iPhone atau Android), versi aplikasi, dan bahasa aplikasi, dan tidak ada yang lain.
 
-The counts carry no device ID, install ID, account, amount, merchant, bank name, note or any word you typed, and they are sent without the anonymous device ID above. Our server only adds one to a total for that step and that day; it keeps no record per phone, so counts from one phone cannot be put back together. Your phone remembers which steps it has already sent, so each one is sent once. As with every request, our server counts requests per IP address only to slow down abuse, and does not store the address.
+Hitungan ini tidak memuat ID perangkat, ID instalasi, akun, jumlah, toko, nama bank, catatan, atau kata apa pun yang Anda ketik, dan dikirim tanpa ID perangkat anonim di atas. Server kami hanya menambahkan satu ke total untuk langkah itu pada hari itu; server tidak menyimpan catatan per ponsel, sehingga hitungan dari satu ponsel tidak dapat disatukan kembali. Ponsel Anda mengingat langkah mana yang sudah dikirim, sehingga setiap langkah hanya dikirim sekali. Seperti pada setiap permintaan, server kami menghitung permintaan per alamat IP hanya untuk memperlambat penyalahgunaan, dan tidak menyimpan alamat tersebut.
 
-You can turn the counts off in Settings → Privacy → Anonymous counts. Steps reached while they are off are never sent, even if you turn them back on. In on-device mode they are off.
+Anda dapat mematikan hitungan ini di Pengaturan → Privasi → Hitungan anonim. Langkah yang dicapai saat hitungan dimatikan tidak pernah dikirim, bahkan jika Anda menyalakannya kembali. Dalam mode di perangkat, hitungan ini mati.
 
-### Purchases
+### Pembelian
 
-Apple, or Google Play on Android, takes the payment. We never see your card or your payment details.
+Apple, atau Google Play di Android, yang menerima pembayaran. Kami tidak pernah melihat kartu atau detail pembayaran Anda.
 
-To know what you have unlocked, 6pm uses RevenueCat, a service that records purchase status. RevenueCat learns from Apple or Google which looks and plans you have bought, when, and whether a trial or subscription is active. It ties this to an anonymous app user ID, not to your name or email. Like most purchase tools, it also receives basic technical details from your phone: app version, device model and system version, country and language, and your IP address.
+Untuk mengetahui apa yang telah Anda buka, 6pm menggunakan RevenueCat, layanan yang mencatat status pembelian. RevenueCat mengetahui dari Apple atau Google tampilan dan paket mana yang telah Anda beli, kapan, dan apakah uji coba atau langganan sedang aktif. RevenueCat mengaitkannya dengan ID pengguna aplikasi yang anonim, bukan dengan nama atau email Anda. Seperti kebanyakan alat pembelian, RevenueCat juga menerima detail teknis dasar dari ponsel Anda: versi aplikasi, model perangkat dan versi sistem, negara dan bahasa, serta alamat IP Anda.
 
-This is how Max and your looks stay unlocked, and how "Restore purchases" works.
+Dengan cara inilah Max dan tampilan Anda tetap terbuka, dan "Pulihkan pembelian" berfungsi.
 
-### App updates
+### Pembaruan aplikasi
 
-We send some fixes to the app over the air, using Expo's update service. Your phone asks Expo whether an update is waiting. That request includes the app version, the platform and your IP address. It carries nothing from your money.
+Kami mengirim sebagian perbaikan aplikasi lewat udara (over the air), menggunakan layanan pembaruan Expo. Ponsel Anda menanyakan ke Expo apakah ada pembaruan yang menunggu. Permintaan itu memuat versi aplikasi, platform, dan alamat IP Anda. Permintaan itu tidak membawa apa pun tentang uang Anda.
 
-### Crash reports
+### Laporan kerusakan
 
-When the app crashes or hits an error, it sends a report to Sentry so we can fix it: what went wrong in the code, the screen it happened on, the app version, the iPhone model and iOS version, and a random installation ID. Reports never include your spends, amounts, notes, plan or names, and we do not attach your IP address. In on-device mode, no crash reports are sent.
+Saat aplikasi mengalami kerusakan (crash) atau galat, aplikasi mengirim laporan ke Sentry agar kami dapat memperbaikinya: apa yang salah di kode, layar tempat kejadiannya, versi aplikasi, model iPhone dan versi iOS, serta ID instalasi acak. Laporan tidak pernah memuat pengeluaran, jumlah, catatan, rencana, atau nama Anda, dan kami tidak melampirkan alamat IP Anda. Dalam mode di perangkat, tidak ada laporan kerusakan yang dikirim.
 
-### Ask 6pm and your companion’s lines, naming a payee and reading a receipt photo
+### Tanya 6pm dan kalimat teman Anda, menamai penerima pembayaran, dan membaca foto struk
 
-When you ask 6pm a question, such as "Can I afford 2tr on Saturday?", the app sends the question's words to our server, with the names of your categories and pots so the question can be read well. Our server asks Anthropic, an AI service, what the question asks. The answer itself is worked out on your phone, from your own records, which are never sent.
+Saat Anda mengajukan pertanyaan ke 6pm, misalnya "Sabtu keluar Rp800rb, aman nggak?", aplikasi mengirim kata-kata pertanyaan itu ke server kami, bersama nama kategori dan celengan Anda agar pertanyaannya dapat dipahami dengan baik. Server kami bertanya kepada Anthropic, sebuah layanan AI, apa yang ditanyakan. Jawabannya sendiri dihitung di ponsel Anda, dari catatan Anda sendiri, yang tidak pernah dikirim.
 
-To write your companion's lines and the words of an answer, the app sends our server, and on to Anthropic, the few facts that one line is about, already worked out on your phone: for example an amount, a place, a category or pot name, or how this week compares with the last. It never sends your list of spends, your plan or your balance. Without a connection, the app uses lines written into it.
+Untuk menulis kalimat teman Anda dan kata-kata sebuah jawaban, aplikasi mengirim ke server kami, lalu ke Anthropic, beberapa fakta yang menjadi pokok kalimat itu, yang sudah dihitung di ponsel Anda: misalnya sebuah jumlah, tempat, nama kategori atau celengan, atau perbandingan minggu ini dengan minggu lalu. Aplikasi tidak pernah mengirim daftar pengeluaran, rencana, atau saldo Anda. Tanpa koneksi, aplikasi menggunakan kalimat yang sudah tertulis di dalamnya.
 
-When you share a receipt screenshot to 6pm, the text on it is read on your phone. If the app cannot tell who you paid, and none of your own rules knows the name, it sends the receipt's lines to our server, and on to Anthropic, to name the payee. Every number is taken out first, so amounts, account numbers and reference codes are never sent. If anything with a digit in it arrives, the server turns it away unread.
+Saat Anda membagikan tangkapan layar struk ke 6pm, teks di dalamnya dibaca di ponsel Anda. Jika aplikasi tidak dapat mengetahui kepada siapa Anda membayar, dan tidak ada aturan Anda sendiri yang mengenali namanya, aplikasi mengirim baris-baris struk itu ke server kami, lalu ke Anthropic, untuk menamai penerima pembayaran. Setiap angka dihapus terlebih dulu, sehingga jumlah, nomor rekening, dan kode referensi tidak pernah dikirim. Jika ada sesuatu yang mengandung digit sampai di server, server menolaknya tanpa membacanya.
 
-A bank or wallet notification 6pm reads for you (see "Bank and wallet notifications" below) is read twice. Your phone reads it first, at once. When you next open 6pm, the notification's text is sent to our server, and on to Anthropic, to be read a second time: whether money moved and which way, which of the printed amounts it was, who was paid, and which of your categories it belongs in. What is sent is the name of the bank or wallet app, the notification's words, the amounts it prints (its balance among them, when it prints one), the currency you count in and the names of your categories. The words can hold a name or a transfer's message. Before anything is sent, your phone hides long numbers digit for digit: any number of nine digits or more, whether written in one piece or in groups, card numbers, and the number that follows a word like "TK", "account" or "card". Account, card and phone numbers therefore stay on your phone, and our server turns away a text that still holds a long number. The answer never contains an amount: your phone marks each amount in the text, the answer names one of the marks, and the amount saved is the one your phone read there. A notification your phone could not read at all, but which prints a number, waits on your phone for two days at most to be read the same way, and is then deleted. So does one your phone did read, when its second reading got no answer the first time (no connection, or our server too slow): its text waits on your phone, two days at most, until the server has answered, and is then deleted. A notification your phone recognises as a one-time code, a sign-in or security notice, a failed payment, a promotion or a balance notice is never sent. With no connection, the phone's own reading is kept.
+Notifikasi bank atau dompet digital yang dibaca 6pm untuk Anda (lihat "Notifikasi bank dan dompet digital" di bawah) dibaca dua kali. Ponsel Anda membacanya lebih dulu, saat itu juga. Saat Anda berikutnya membuka 6pm, teks notifikasi itu dikirim ke server kami, lalu ke Anthropic, untuk dibaca kedua kalinya: apakah uang berpindah dan ke arah mana, jumlah tercetak mana yang dimaksud, siapa yang dibayar, dan kategori Anda mana yang cocok. Yang dikirim adalah nama aplikasi bank atau dompet digital, kata-kata notifikasi, jumlah yang tercetak di dalamnya (termasuk saldonya, jika tercetak), mata uang yang Anda gunakan untuk menghitung, dan nama kategori Anda. Kata-kata itu dapat memuat nama atau pesan transfer. Sebelum apa pun dikirim, ponsel Anda menyembunyikan angka panjang digit demi digit: angka apa pun sepanjang sembilan digit atau lebih, baik ditulis menyatu maupun berkelompok, nomor kartu, dan angka yang mengikuti kata seperti "TK", "account", atau "card". Karena itu nomor rekening, kartu, dan telepon tetap di ponsel Anda, dan server kami menolak teks yang masih memuat angka panjang. Jawabannya tidak pernah memuat jumlah: ponsel Anda menandai setiap jumlah dalam teks, jawabannya menyebut salah satu tanda itu, dan jumlah yang disimpan adalah jumlah yang dibaca ponsel Anda di tempat itu. Notifikasi yang sama sekali tidak dapat dibaca ponsel Anda, tetapi mencetak angka, menunggu di ponsel Anda paling lama dua hari untuk dibaca dengan cara yang sama, lalu dihapus. Begitu pula notifikasi yang sudah dibaca ponsel Anda, jika pembacaan keduanya tidak mendapat jawaban pada percobaan pertama (tidak ada koneksi, atau server kami terlalu lambat): teksnya menunggu di ponsel Anda, paling lama dua hari, sampai server menjawab, lalu dihapus. Notifikasi yang dikenali ponsel Anda sebagai kode sekali pakai, pemberitahuan masuk atau keamanan, pembayaran gagal, promosi, atau pemberitahuan saldo tidak pernah dikirim. Tanpa koneksi, hasil bacaan ponsel sendiri yang disimpan.
 
-If your phone cannot be sure of a shared receipt's total or currency, it sends that one receipt photo to our server, and on to Anthropic, an AI service, to read the total, the currency, the shop and the time. Our server does not store or log the photo, and it is sent to no one else. Anthropic does not use it to train its models, and deletes it within 30 days (longer only if it is flagged for breaking Anthropic's usage policy, or the law requires it). Without a connection, the app keeps what your phone read.
+Jika ponsel Anda tidak dapat memastikan total atau mata uang sebuah struk yang dibagikan, ponsel mengirim foto struk itu saja ke server kami, lalu ke Anthropic, sebuah layanan AI, untuk membaca total, mata uang, toko, dan waktunya. Server kami tidak menyimpan atau mencatat foto itu, dan foto itu tidak dikirim ke pihak lain. Anthropic tidak menggunakannya untuk melatih modelnya, dan menghapusnya dalam 30 hari (lebih lama hanya jika foto itu ditandai melanggar kebijakan penggunaan Anthropic, atau jika hukum mewajibkannya). Tanpa koneksi, aplikasi menyimpan hasil bacaan ponsel Anda.
 
-When you make a category, the app may send its name to our server, and on to Anthropic, to suggest an icon for it.
+Saat Anda membuat kategori, aplikasi dapat mengirim namanya ke server kami, lalu ke Anthropic, untuk menyarankan ikon baginya.
 
-We do not store your questions, receipt lines, notification text or receipt photos. For each request our server keeps only how much of the AI service it used, against your anonymous device ID. Anthropic does not use requests to train its models, and deletes them within 30 days (longer only if one is flagged for breaking Anthropic's usage policy, or the law requires it).
+Kami tidak menyimpan pertanyaan, baris struk, teks notifikasi, atau foto struk Anda. Untuk setiap permintaan, server kami hanya menyimpan seberapa banyak layanan AI yang digunakan, terkait dengan ID perangkat anonim Anda. Anthropic tidak menggunakan permintaan untuk melatih modelnya, dan menghapusnya dalam 30 hari (lebih lama hanya jika sebuah permintaan ditandai melanggar kebijakan penggunaan Anthropic, atau jika hukum mewajibkannya).
 
-### Your voice
+### Suara Anda
 
-When you say a spend out loud, the app streams the sound from your microphone straight to a speech-to-text service, Deepgram (or ElevenLabs), only while you hold or tap the microphone, and gets back the words. Our server only gives your phone a short-lived key for this and records that one transcription happened, against your anonymous device ID. It never hears the sound or sees the words. With Deepgram, we opt out of its model improvement programme, so the sound is kept only while it is being turned into text. Nothing is recorded on your phone. Without a connection, in on-device mode, or after 10 transcriptions a day without 6pm Max, Apple's speech recognition turns your words into text on your phone instead, and nothing is sent.
+Saat Anda mengucapkan pengeluaran, aplikasi mengalirkan suara dari mikrofon Anda langsung ke layanan ucapan-ke-teks, Deepgram (atau ElevenLabs), hanya selama Anda menahan atau mengetuk mikrofon, dan menerima kembali kata-katanya. Server kami hanya memberi ponsel Anda kunci berumur pendek untuk ini dan mencatat bahwa satu transkripsi terjadi, terkait dengan ID perangkat anonim Anda. Server tidak pernah mendengar suaranya atau melihat kata-katanya. Untuk Deepgram, kami memilih keluar dari program peningkatan modelnya, sehingga suara hanya disimpan selama diubah menjadi teks. Tidak ada yang direkam di ponsel Anda. Tanpa koneksi, dalam mode di perangkat, atau setelah 10 transkripsi sehari tanpa 6pm Max, pengenalan ucapan Apple mengubah kata-kata Anda menjadi teks di ponsel Anda, dan tidak ada yang dikirim.
 
-### On-device mode
+### Mode di perangkat
 
-In Settings → AI you can keep 6pm's AI on your iPhone. Then nothing in "Ask 6pm and your companion's lines" or "Your voice" leaves it: questions are read, lines written and receipts read on your phone, with a model you download once. The model is downloaded from Hugging Face, which sees your IP address and which model you asked for, and nothing else. In this mode receipt email is off, crash reports and anonymous counts are off, and Travel tells your country from your phone's time zone instead of your location.
+Di Pengaturan → AI, Anda dapat menyimpan AI 6pm di iPhone Anda saja. Dengan begitu, tidak ada apa pun dari "Tanya 6pm dan kalimat teman Anda" atau "Suara Anda" yang keluar darinya: pertanyaan dibaca, kalimat ditulis, dan struk dibaca di ponsel Anda, dengan model yang Anda unduh sekali. Model itu diunduh dari Hugging Face, yang melihat alamat IP Anda dan model mana yang Anda minta, dan tidak ada yang lain. Dalam mode ini email struk mati, laporan kerusakan dan hitungan anonim mati, dan Mode perjalanan mengetahui negara Anda dari zona waktu ponsel, bukan dari lokasi Anda.
 
-### Receipt email
+### Email struk
 
-6pm gives your phone its own address, like k7m2qx@at6pm.app. If you have your bank email you, or forward its emails, to that address, the payments land in your Inbox.
+6pm memberi ponsel Anda alamatnya sendiri, seperti k7m2qx@at6pm.app. Jika Anda meminta bank mengirim email ke alamat itu, atau meneruskan emailnya ke sana, pembayaran akan masuk ke Kotak masuk Anda.
 
-Our server reads each email as it arrives. An email that prints an amount is sent to Anthropic, an AI service, to tell a payment from a transfer between your own accounts, a refund or a promotion, and to read who you paid, what for, and how much; an email with no amount in it is dropped unread. If the email holds a payment, the server keeps only what was read: the amount and its currency, the merchant, the category, the time, the sender's address and the transfer's note. It locks this with encryption until your phone collects it, then deletes it. The email itself is never stored or logged by 6pm and is sent to no one but Anthropic, which does not use it to train its models and deletes it within 30 days (longer only if it is flagged for breaking Anthropic's usage policy, or the law requires it). Anything that is not a receipt is dropped. A receipt your phone has not collected after 30 days is deleted unread.
+Server kami membaca setiap email saat tiba. Email yang mencantumkan jumlah dikirim ke Anthropic, sebuah layanan AI, untuk membedakan pembayaran dari transfer antar-rekening Anda sendiri, pengembalian dana, atau promosi, dan untuk membaca kepada siapa Anda membayar, untuk apa, dan berapa; email tanpa jumlah dibuang tanpa dibaca. Jika email itu berisi pembayaran, server hanya menyimpan apa yang dibaca: jumlah dan mata uangnya, toko, kategori, waktu, alamat pengirim, dan catatan transfer. Server menguncinya dengan enkripsi sampai ponsel Anda mengambilnya, lalu menghapusnya. Email itu sendiri tidak pernah disimpan atau dicatat oleh 6pm dan tidak dikirim ke siapa pun selain Anthropic, yang tidak menggunakannya untuk melatih modelnya dan menghapusnya dalam 30 hari (lebih lama hanya jika email itu ditandai melanggar kebijakan penggunaan Anthropic, atau jika hukum mewajibkannya). Apa pun yang bukan struk dibuang. Struk yang belum diambil ponsel Anda setelah 30 hari dihapus tanpa dibaca.
 
-The address is linked to your anonymous device ID, not to your name. Mail to it from anyone is read the same way, so share it only with your bank.
+Alamat itu terhubung dengan ID perangkat anonim Anda, bukan dengan nama Anda. Email dari siapa pun ke alamat itu dibaca dengan cara yang sama, jadi bagikan alamat itu hanya kepada bank Anda.
 
-### Exchange rates (Travel)
+### Kurs (Mode perjalanan)
 
-In Travel mode the app fetches the day's exchange rates from our server. Our server gets them from Frankfurter, a free service that publishes central bank rates. The request carries nothing about you or your money.
+Dalam Mode perjalanan, aplikasi mengambil kurs hari itu dari server kami. Server kami mendapatkannya dari Frankfurter, layanan gratis yang menerbitkan kurs bank sentral. Permintaan itu tidak membawa apa pun tentang Anda atau uang Anda.
 
-### Encrypted backup (6pm Max)
+### Cadangan terenkripsi (6pm Max)
 
-Backup is a 6pm Max feature, and it is off until you turn it on. It is end-to-end encrypted: the key stays in your iCloud Keychain, and our server only stores ciphertext under an anonymous token. Ciphertext is scrambled data that we cannot read.
+Cadangan adalah fitur 6pm Max, dan fitur ini mati sampai Anda menyalakannya. Cadangan dienkripsi ujung ke ujung: kuncinya tetap di Rantai Kunci iCloud Anda, dan server kami hanya menyimpan ciphertext di bawah token anonim. Ciphertext adalah data teracak yang tidak dapat kami baca.
 
-Apple syncs the key between your devices through iCloud Keychain, under your Apple ID and Apple's terms. If you lose both the key and your phone, nobody, including us, can unlock the backup.
+Apple menyinkronkan kunci itu antarperangkat Anda melalui Rantai Kunci iCloud, di bawah Apple ID Anda dan ketentuan Apple. Jika Anda kehilangan kunci sekaligus ponsel Anda, tidak ada seorang pun, termasuk kami, yang dapat membuka cadangan itu.
 
-### Budget together
+### Anggaran bersama
 
-Budget together lets two people keep shared pots they both add to. It is the only part of 6pm with a sign-in, and nothing about it happens unless you start it or open an invite.
+Anggaran bersama memungkinkan dua orang mengelola celengan bersama yang sama-sama mereka isi. Ini satu-satunya bagian 6pm yang memakai proses masuk, dan tidak ada yang terjadi kecuali Anda memulainya atau membuka undangan.
 
-- **Sign in with Apple.** When you start or join, you sign in with Apple. Apple gives us a stable ID for you that only works with 6pm and, the first time, your first name if you choose to share it. We never ask for your email. Our server links that ID to your anonymous device ID. When you delete your account, our server also asks Apple to end 6pm's access, so 6pm leaves the "Sign in with Apple" list in your Apple ID settings.
-- **What is shared.** Our server keeps your first name, each shared pot's name, icon, colour, goal and month, and each amount either of you says you put in, with who added it and when. Your partner sees all of this, and you see theirs. Nothing else from your phone is shared: not your spends, your plan, your daily number or your own pots.
-- **Invites.** An invite link works once and for 7 days. Our server stores only a scrambled form of it.
-- **Leaving.** Either of you can leave at any time. Leaving ends Budget together for both of you and deletes the shared pots and everything in them from our server. Each phone keeps, as history, the amounts its own person put in.
-- **Deleting your account.** "Delete Budget together account" in the app deletes your sign-in, your name and everything you share from our server, and ends it for your partner too. Stopping 6pm's use of your Apple ID in your Apple ID settings does the same.
+- **Masuk dengan Apple.** Saat Anda memulai atau bergabung, Anda masuk dengan Apple. Apple memberi kami ID tetap untuk Anda yang hanya berlaku untuk 6pm dan, pada kali pertama, nama depan Anda jika Anda memilih membagikannya. Kami tidak pernah meminta email Anda. Server kami menghubungkan ID itu dengan ID perangkat anonim Anda. Saat Anda menghapus akun, server kami juga meminta Apple mengakhiri akses 6pm, sehingga 6pm keluar dari daftar "Masuk dengan Apple" di pengaturan Apple ID Anda.
+- **Apa yang dibagikan.** Server kami menyimpan nama depan Anda, nama, ikon, warna, target, dan bulan setiap celengan bersama, serta setiap jumlah yang menurut Anda masing-masing telah dimasukkan, beserta siapa yang menambahkannya dan kapan. Pasangan Anda melihat semua ini, dan Anda melihat miliknya. Tidak ada hal lain dari ponsel Anda yang dibagikan: tidak pengeluaran, rencana, angka harian, maupun celengan pribadi Anda.
+- **Undangan.** Tautan undangan hanya berlaku sekali dan selama 7 hari. Server kami hanya menyimpan bentuk acaknya.
+- **Keluar.** Anda berdua dapat keluar kapan saja. Keluar mengakhiri Anggaran bersama bagi Anda berdua dan menghapus celengan bersama beserta seluruh isinya dari server kami. Setiap ponsel menyimpan, sebagai riwayat, jumlah yang dimasukkan oleh pemiliknya sendiri.
+- **Menghapus akun Anda.** "Hapus akun Anggaran bersama" di aplikasi menghapus proses masuk Anda, nama Anda, dan semua yang Anda bagikan dari server kami, dan juga mengakhirinya bagi pasangan Anda. Menghentikan penggunaan Apple ID Anda oleh 6pm di pengaturan Apple ID Anda memiliki efek yang sama.
 
-6pm never moves money. The amounts in shared pots are what you each say you put aside; they only count.
+6pm tidak pernah memindahkan uang. Jumlah di celengan bersama adalah apa yang menurut Anda masing-masing telah disisihkan; jumlah itu hanya menghitung.
 
-### The launch list (website)
+### Daftar peluncuran (situs web)
 
-If you join the launch list on this website, we store your email address, the language of the page, the time you joined and your place in line. If you used the leak calculator before joining, we also store the monthly figure it showed. The calculator itself runs in your browser, and nothing is sent unless you join.
+Jika Anda bergabung dengan daftar peluncuran di situs web ini, kami menyimpan alamat email Anda, bahasa halaman, waktu Anda bergabung, dan urutan Anda dalam antrean. Jika Anda menggunakan kalkulator kebocoran sebelum bergabung, kami juga menyimpan angka bulanan yang ditampilkannya. Kalkulator itu sendiri berjalan di peramban Anda, dan tidak ada yang dikirim kecuali Anda bergabung.
 
-We use this only to tell you when 6pm 2.0 is out. It is kept until you ask us to remove it.
+Kami menggunakan data ini hanya untuk memberi tahu Anda saat 6pm 2.0 dirilis. Data ini disimpan sampai Anda meminta kami menghapusnya.
 
-### Visiting the website
+### Mengunjungi situs web
 
-This website sets no cookies. It counts visits with Cloudflare Web Analytics, which gives us totals only, such as page views, the page or link you came from, your country and your type of device. It uses no cookies or local storage and does not follow you across sites or identify you. Its fonts are served from the site itself. The site runs on Cloudflare, which handles each request and may keep ordinary technical logs, such as your IP address and browser type, to run and protect the service. To slow down abuse, our server counts requests per IP address. The address is only a counter key. We do not store it.
+Situs web ini tidak memasang cookie. Situs ini menghitung kunjungan dengan Cloudflare Web Analytics, yang hanya memberi kami total, seperti tayangan halaman, halaman atau tautan asal Anda, negara Anda, dan jenis perangkat Anda. Layanan itu tidak menggunakan cookie atau penyimpanan lokal dan tidak mengikuti Anda di berbagai situs atau mengidentifikasi Anda. Fontnya disajikan dari situs ini sendiri. Situs ini berjalan di Cloudflare, yang menangani setiap permintaan dan dapat menyimpan log teknis biasa, seperti alamat IP dan jenis peramban Anda, untuk menjalankan dan melindungi layanan. Untuk memperlambat penyalahgunaan, server kami menghitung permintaan per alamat IP. Alamat itu hanya menjadi kunci penghitung. Kami tidak menyimpannya.
 
-## What the app uses on your phone
+## Yang digunakan aplikasi di ponsel Anda
 
-- **Camera.** Scan uses the camera to read QR codes, such as VietQR. The picture is never saved or sent. Only the payment details in the code are used, on your phone. If you say no to the camera, everything else still works.
-- **Microphone and speech.** When you say a spend out loud, the sound goes to a speech-to-text service as described in "Your voice", or is turned into text on your phone by Apple's on-device speech recognition. The recording is never saved.
-- **Photos.** 6pm saves pictures you choose to share, such as your day's card, to your photo library. It never reads your library. Receipt screenshots you share to 6pm are read on your phone, then let go; only one your phone cannot read is sent to be read, as described above.
-- **Location.** Only after you turn on Travel mode, and only while the app is open, 6pm checks which country you are in, so it can switch currency. Your phone's own system turns the position into a country and city name. 6pm keeps the country and city name on your phone, and sends nothing about where you are to us. In on-device mode 6pm does not use your location at all: your country comes from your phone's time zone.
-- **Widgets, Live Activities and Siri.** Your widgets, Live Activities, shortcuts and controls read and write through a shared folder on your phone. Nothing in them goes through our server.
-- **Clipboard.** When you hand a payment to your bank app, 6pm copies the amount so you can paste it. 6pm writes to the clipboard. It never reads what is on it.
-- **Bank apps.** The app checks on your phone whether certain bank apps are installed, and opens the one you choose, or its App Store page. We send nothing to the bank. Your bank's own policy applies once you are in its app.
-- **Bank and wallet notifications.** Only if you set it up, 6pm reads the notifications your bank and wallet apps send when money moves, to log the payment for you. On iPhone, a Shortcuts automation you build hands 6pm each notification from the apps you choose. On Android, 6pm reads them only after you turn it on under Notification access, and only those from the bank and wallet apps 6pm knows; every other app's notification is let go without being read. Either way each one is read on your phone. Money that moved is saved in your Inbox, on your phone; codes, failed payments, promotions and balance notices are skipped and kept nowhere. A notification the phone cannot read that prints a number waits on your phone, two days at most, for the second reading described next. So does one the phone did read, when that second reading got no answer the first time. Unless 6pm's AI is kept on your phone, a notification about money is then read a second time by our server: its words and amounts are sent, with account, card and phone numbers hidden first, as described under "Ask 6pm and your companion’s lines, naming a payee and reading a receipt photo". Nothing else from a notification is sent to us or anyone else, and with 6pm's AI kept on your phone nothing is. On Android, 6pm then shows a quiet notification of its own saying what it caught. You can turn it off at any time: on iPhone by deleting the automation, on Android under Notification access.
-- **Notifications.** The daily reminder at your close time is set on your phone. There is no remote push, and no notification token is sent to us.
+- **Kamera.** Pindai menggunakan kamera untuk membaca kode QR, seperti VietQR. Gambarnya tidak pernah disimpan atau dikirim. Hanya detail pembayaran dalam kode itu yang digunakan, di ponsel Anda. Jika Anda menolak akses kamera, semua fitur lain tetap berfungsi.
+- **Mikrofon dan ucapan.** Saat Anda mengucapkan pengeluaran, suaranya dikirim ke layanan ucapan-ke-teks seperti dijelaskan di "Suara Anda", atau diubah menjadi teks di ponsel Anda oleh pengenalan ucapan di perangkat milik Apple. Rekamannya tidak pernah disimpan.
+- **Foto.** 6pm menyimpan gambar yang Anda pilih untuk dibagikan, seperti kartu hari Anda, ke perpustakaan foto Anda. 6pm tidak pernah membaca perpustakaan Anda. Tangkapan layar struk yang Anda bagikan ke 6pm dibaca di ponsel Anda, lalu dilepas; hanya struk yang tidak dapat dibaca ponsel Anda yang dikirim untuk dibaca, seperti dijelaskan di atas.
+- **Lokasi.** Hanya setelah Anda menyalakan Mode perjalanan, dan hanya selama aplikasi terbuka, 6pm memeriksa di negara mana Anda berada, agar dapat mengganti mata uang. Sistem ponsel Anda sendiri yang mengubah posisi menjadi nama negara dan kota. 6pm menyimpan nama negara dan kota itu di ponsel Anda, dan tidak mengirim apa pun tentang keberadaan Anda kepada kami. Dalam mode di perangkat, 6pm sama sekali tidak menggunakan lokasi Anda: negara Anda diambil dari zona waktu ponsel.
+- **Widget, Aktivitas Langsung, dan Siri.** Widget, Aktivitas Langsung, pintasan, dan kontrol Anda membaca dan menulis melalui folder bersama di ponsel Anda. Tidak ada isinya yang melewati server kami.
+- **Papan klip.** Saat Anda menyerahkan pembayaran ke aplikasi bank Anda, 6pm menyalin jumlahnya agar Anda dapat menempelkannya. 6pm menulis ke papan klip. 6pm tidak pernah membaca isinya.
+- **Aplikasi bank.** Aplikasi memeriksa di ponsel Anda apakah aplikasi bank tertentu terpasang, dan membuka aplikasi yang Anda pilih, atau halamannya di App Store. Kami tidak mengirim apa pun ke bank. Kebijakan bank Anda sendiri berlaku begitu Anda berada di aplikasinya.
+- **Notifikasi bank dan dompet digital.** Hanya jika Anda mengaturnya, 6pm membaca notifikasi yang dikirim aplikasi bank dan dompet digital Anda saat uang berpindah, untuk mencatat pembayaran bagi Anda. Di iPhone, otomatisasi Pintasan yang Anda buat menyerahkan setiap notifikasi dari aplikasi yang Anda pilih kepada 6pm. Di Android, 6pm hanya membacanya setelah Anda menyalakannya di Akses notifikasi, dan hanya dari aplikasi bank dan dompet digital yang dikenal 6pm; notifikasi dari aplikasi lain dilepas tanpa dibaca. Bagaimanapun caranya, setiap notifikasi dibaca di ponsel Anda. Uang yang berpindah disimpan di Kotak masuk Anda, di ponsel Anda; kode, pembayaran gagal, promosi, dan pemberitahuan saldo dilewati dan tidak disimpan di mana pun. Notifikasi yang tidak dapat dibaca ponsel tetapi mencetak angka menunggu di ponsel Anda, paling lama dua hari, untuk pembacaan kedua yang dijelaskan berikut ini. Begitu pula notifikasi yang sudah dibaca ponsel, jika pembacaan kedua itu tidak mendapat jawaban pada percobaan pertama. Kecuali AI 6pm disimpan di ponsel Anda saja, notifikasi tentang uang kemudian dibaca kedua kalinya oleh server kami: kata-kata dan jumlahnya dikirim, dengan nomor rekening, kartu, dan telepon disembunyikan terlebih dulu, seperti dijelaskan di "Tanya 6pm dan kalimat teman Anda, menamai penerima pembayaran, dan membaca foto struk". Tidak ada hal lain dari notifikasi yang dikirim kepada kami atau siapa pun, dan jika AI 6pm disimpan di ponsel Anda saja, tidak ada yang dikirim sama sekali. Di Android, 6pm kemudian menampilkan notifikasi senyap miliknya sendiri yang menyebutkan apa yang ditangkapnya. Anda dapat mematikannya kapan saja: di iPhone dengan menghapus otomatisasinya, di Android di Akses notifikasi.
+- **Notifikasi.** Pengingat harian pada jam tutup hari Anda diatur di ponsel Anda. Tidak ada push jarak jauh, dan tidak ada token notifikasi yang dikirim kepada kami.
 
-## On Android
+## Di Android
 
-The Android app works as described above, with these differences:
+Aplikasi Android bekerja seperti dijelaskan di atas, dengan perbedaan berikut:
 
-- **Your data's key** is locked by the Android Keystore on your phone instead of the iOS Keychain. Android's own cloud backup of apps is turned off for 6pm, so your data is never copied to your Google account.
-- **Backup** keeps its key on your phone, not in iCloud Keychain, so a backup can be opened only on the phone that made it.
-- **Purchases** go through Google Play. Google takes the payment, and RevenueCat learns your purchase status from Google.
-- **On-device mode** is not offered: 6pm has no model to run on an Android phone.
-- **Speech on your phone**, when the speech-to-text service is not used (offline, or after 10 a day without 6pm Max), is Android's on-device speech recognition, and only for a language already downloaded to your phone, so the sound never leaves it.
-- **Photos.** Scan picks a picture through Android's own photo picker, which hands 6pm only the picture you choose. 6pm never reads your gallery.
-- **Budget together**, widgets, Live Activities and Siri are not in the Android app.
+- **Kunci data Anda** dikunci oleh Android Keystore di ponsel Anda, bukan oleh Rantai Kunci iOS. Cadangan cloud aplikasi bawaan Android dimatikan untuk 6pm, sehingga data Anda tidak pernah disalin ke akun Google Anda.
+- **Cadangan** menyimpan kuncinya di ponsel Anda, bukan di Rantai Kunci iCloud, sehingga cadangan hanya dapat dibuka di ponsel yang membuatnya.
+- **Pembelian** melalui Google Play. Google yang menerima pembayaran, dan RevenueCat mengetahui status pembelian Anda dari Google.
+- **Mode di perangkat** tidak tersedia: 6pm tidak memiliki model yang dapat dijalankan di ponsel Android.
+- **Ucapan di ponsel Anda**, saat layanan ucapan-ke-teks tidak digunakan (offline, atau setelah 10 kali sehari tanpa 6pm Max), memakai pengenalan ucapan di perangkat milik Android, dan hanya untuk bahasa yang sudah diunduh ke ponsel Anda, sehingga suaranya tidak pernah keluar dari ponsel.
+- **Foto.** Pindai memilih gambar melalui pemilih foto bawaan Android, yang hanya memberikan gambar yang Anda pilih kepada 6pm. 6pm tidak pernah membaca galeri Anda.
+- **Anggaran bersama**, widget, Aktivitas Langsung, dan Siri tidak ada di aplikasi Android.
 
-## What we do not do
+## Yang tidak kami lakukan
 
-- We do not show ads.
-- We do not sell your data or share it for marketing.
-- We do not profile you.
-- This version of the app has no third-party analytics, advertising or tracking tools.
+- Kami tidak menayangkan iklan.
+- Kami tidak menjual data Anda atau membagikannya untuk pemasaran.
+- Kami tidak membuat profil Anda.
+- Versi aplikasi ini tidak memiliki alat analitik, iklan, atau pelacakan pihak ketiga.
 
-If you choose to share analytics with app developers in iOS Settings, Apple may give us anonymous crash and usage data. We cannot tell who it comes from.
+Jika Anda memilih membagikan analitik kepada pengembang aplikasi di Pengaturan iOS, Apple dapat memberi kami data kerusakan dan penggunaan yang anonim. Kami tidak dapat mengetahui dari siapa data itu berasal.
 
-## Who handles data for us
+## Siapa yang menangani data untuk kami
 
-These companies run the parts of the service described above. They may handle your data in other countries, including the United States and China.
+Perusahaan-perusahaan ini menjalankan bagian layanan yang dijelaskan di atas. Mereka dapat menangani data Anda di negara lain, termasuk Amerika Serikat dan Tiongkok.
 
-- **Apple** processes payments, iCloud Keychain and Sign in with Apple. [Apple's privacy policy](https://www.apple.com/legal/privacy/).
-- **Google** processes payments through Google Play on Android. [Google's privacy policy](https://policies.google.com/privacy).
-- **RevenueCat** records purchase status. [RevenueCat's privacy policy](https://www.revenuecat.com/privacy).
-- **Cloudflare** hosts our website and server, and counts visits to the website. [Cloudflare's privacy policy](https://www.cloudflare.com/privacypolicy/).
-- **Sentry** receives crash reports. [Sentry's privacy policy](https://sentry.io/privacy/).
-- **Anthropic** reads the questions you ask, writes your companion's lines from the facts about your day described above, suggests icons for your categories from their names, names payees from number-free receipt lines, reads the bank and wallet notifications described above a second time, reads a receipt photo your phone cannot read, and reads the bank and shop emails you forward to your receipt address. [Anthropic's privacy policy](https://www.anthropic.com/legal/privacy).
-- **Deepgram** turns your voice into text when you say a spend. [Deepgram's privacy policy](https://deepgram.com/privacy).
-- **ElevenLabs** can do the same in Deepgram's place. [ElevenLabs' privacy policy](https://elevenlabs.io/privacy-policy).
-- **Hugging Face** hosts the models you can download for on-device mode. [Hugging Face's privacy policy](https://huggingface.co/privacy).
-- **Expo** delivers over-the-air app updates. [Expo's privacy policy](https://expo.dev/privacy).
+- **Apple** memproses pembayaran, Rantai Kunci iCloud, dan Masuk dengan Apple. [Kebijakan privasi Apple](https://www.apple.com/legal/privacy/).
+- **Google** memproses pembayaran melalui Google Play di Android. [Kebijakan privasi Google](https://policies.google.com/privacy).
+- **RevenueCat** mencatat status pembelian. [Kebijakan privasi RevenueCat](https://www.revenuecat.com/privacy).
+- **Cloudflare** menghosting situs web dan server kami, serta menghitung kunjungan ke situs web. [Kebijakan privasi Cloudflare](https://www.cloudflare.com/privacypolicy/).
+- **Sentry** menerima laporan kerusakan. [Kebijakan privasi Sentry](https://sentry.io/privacy/).
+- **Anthropic** membaca pertanyaan yang Anda ajukan, menulis kalimat teman Anda dari fakta tentang hari Anda yang dijelaskan di atas, menyarankan ikon untuk kategori Anda dari namanya, menamai penerima pembayaran dari baris struk tanpa angka, membaca untuk kedua kalinya notifikasi bank dan dompet digital yang dijelaskan di atas, membaca foto struk yang tidak dapat dibaca ponsel Anda, dan membaca email bank dan toko yang Anda teruskan ke alamat struk Anda. [Kebijakan privasi Anthropic](https://www.anthropic.com/legal/privacy).
+- **Deepgram** mengubah suara Anda menjadi teks saat Anda mengucapkan pengeluaran. [Kebijakan privasi Deepgram](https://deepgram.com/privacy).
+- **ElevenLabs** dapat melakukan hal yang sama sebagai pengganti Deepgram. [Kebijakan privasi ElevenLabs](https://elevenlabs.io/privacy-policy).
+- **Hugging Face** menghosting model yang dapat Anda unduh untuk mode di perangkat. [Kebijakan privasi Hugging Face](https://huggingface.co/privacy).
+- **Expo** mengirimkan pembaruan aplikasi lewat udara. [Kebijakan privasi Expo](https://expo.dev/privacy).
 
-We use them only for these purposes.
+Kami menggunakan mereka hanya untuk tujuan-tujuan ini.
 
-## How long we keep things
+## Berapa lama kami menyimpan data
 
-- **On your phone.** Until you delete it. "Delete all data" in Settings erases your spends, plan and diary from the phone and turns off the reminder. Deleting the app removes the data too.
-- **Device ID.** For as long as the app is used on that device.
-- **Anonymous counts.** Kept as daily totals. They hold nothing that points to a phone or a person.
-- **Crash reports.** Up to 90 days, then deleted.
-- **Receipt email.** Until your phone collects the receipt, and never more than 30 days. Your receipt address lasts as long as your device ID.
-- **Questions, facts for lines, receipt lines and forwarded emails.** We do not keep them. Anthropic deletes them within 30 days, as described above.
-- **Receipt photos.** We do not keep them. Anthropic deletes them within 30 days, as described above.
-- **Your voice.** We do not keep it. Deepgram handles it only while you speak; ElevenLabs keeps it as its own policy says.
-- **Backup.** Until you delete it. When you do, we delete the encrypted data from our server.
-- **Budget together.** Shared pots until either of you leaves; your sign-in and name until you delete your Budget together account. Either one deletes the data from our server at once.
-- **Launch list.** Until you ask us to remove your email.
-- **Purchase records.** Apple, Google and RevenueCat keep these under their own policies and the law.
+- **Di ponsel Anda.** Sampai Anda menghapusnya. "Hapus semua data" di Pengaturan menghapus pengeluaran, rencana, dan diari Anda dari ponsel dan mematikan pengingat. Menghapus aplikasi juga menghapus datanya.
+- **ID perangkat.** Selama aplikasi digunakan di perangkat itu.
+- **Hitungan anonim.** Disimpan sebagai total harian. Hitungan ini tidak memuat apa pun yang mengarah ke sebuah ponsel atau seseorang.
+- **Laporan kerusakan.** Hingga 90 hari, lalu dihapus.
+- **Email struk.** Sampai ponsel Anda mengambil struknya, dan tidak pernah lebih dari 30 hari. Alamat struk Anda berlaku selama ID perangkat Anda.
+- **Pertanyaan, fakta untuk kalimat, baris struk, dan email yang diteruskan.** Kami tidak menyimpannya. Anthropic menghapusnya dalam 30 hari, seperti dijelaskan di atas.
+- **Foto struk.** Kami tidak menyimpannya. Anthropic menghapusnya dalam 30 hari, seperti dijelaskan di atas.
+- **Suara Anda.** Kami tidak menyimpannya. Deepgram hanya menanganinya selama Anda berbicara; ElevenLabs menyimpannya sesuai kebijakannya sendiri.
+- **Cadangan.** Sampai Anda menghapusnya. Saat Anda menghapusnya, kami menghapus data terenkripsi itu dari server kami.
+- **Anggaran bersama.** Celengan bersama sampai salah satu dari Anda keluar; proses masuk dan nama Anda sampai Anda menghapus akun Anggaran bersama. Keduanya langsung menghapus data dari server kami.
+- **Daftar peluncuran.** Sampai Anda meminta kami menghapus email Anda.
+- **Catatan pembelian.** Apple, Google, dan RevenueCat menyimpannya sesuai kebijakan mereka sendiri dan hukum.
 
-## Your choices and rights
+## Pilihan dan hak Anda
 
-You control the data on your phone: you can change or delete any of it in the app.
+Anda mengendalikan data di ponsel Anda: Anda dapat mengubah atau menghapus data apa pun di aplikasi.
 
-For anything we hold about you, you can ask us to tell you what it is, correct it, delete it, or stop using it. Contact us on [{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}}). We will answer promptly, and within the time the law gives us. Our server holds very little that points to a person, so we may ask you for something that helps us find it, such as the email you used for the launch list.
+Untuk apa pun yang kami simpan tentang Anda, Anda dapat meminta kami memberi tahu apa itu, memperbaikinya, menghapusnya, atau berhenti menggunakannya. Hubungi kami di [{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}}). Kami akan menjawab segera, dan dalam jangka waktu yang diberikan hukum kepada kami. Server kami menyimpan sangat sedikit data yang mengarah ke seseorang, sehingga kami mungkin meminta sesuatu yang membantu kami menemukannya, seperti email yang Anda gunakan untuk daftar peluncuran.
 
-You can also complain to the data protection authority where you live.
+Anda juga dapat mengajukan keluhan kepada otoritas pelindungan data di tempat tinggal Anda.
 
-## Children
+## Anak-anak
 
-6pm is not made for children under 16, and we do not knowingly collect their data. If you think a child has sent us something, write to us and we will delete it.
+6pm tidak dibuat untuk anak di bawah 16 tahun, dan kami tidak dengan sengaja mengumpulkan data mereka. Jika Anda mengira seorang anak telah mengirimi kami sesuatu, hubungi kami dan kami akan menghapusnya.
 
-## Security
+## Keamanan
 
-Your data is encrypted on your phone. Traffic to our server uses HTTPS. Backups are encrypted before they leave your phone, and receipts from your email are kept encrypted until your phone collects them. Our server stores device tokens only in hashed form. No system is perfectly safe, so if you find a problem, please tell us.
+Data Anda dienkripsi di ponsel Anda. Lalu lintas ke server kami menggunakan HTTPS. Cadangan dienkripsi sebelum keluar dari ponsel Anda, dan struk dari email Anda disimpan dalam keadaan terenkripsi sampai ponsel Anda mengambilnya. Server kami hanya menyimpan token perangkat dalam bentuk hash. Tidak ada sistem yang benar-benar aman, jadi jika Anda menemukan masalah, mohon beri tahu kami.
 
-## Changes to this policy
+## Perubahan kebijakan ini
 
-When we change this policy, we will update the date at the top. If the change matters, we will tell you in the app or on this page before it takes effect.
+Saat kami mengubah kebijakan ini, kami akan memperbarui tanggal di bagian atas. Jika perubahannya penting, kami akan memberi tahu Anda di aplikasi atau di halaman ini sebelum perubahan itu berlaku.
 
-## The law and how to reach us
+## Hukum dan cara menghubungi kami
 
-We handle personal data under Vietnamese law, including the Personal Data Protection Law. If you live elsewhere, the rights your own country gives you still apply.
+Kami menangani data pribadi berdasarkan hukum Vietnam, termasuk Undang-Undang Pelindungan Data Pribadi. Jika Anda tinggal di tempat lain, hak yang diberikan negara Anda sendiri tetap berlaku.
 
-Questions? Call or message {{OWNER}} on [{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}}).
+Ada pertanyaan? Telepon atau kirim pesan kepada {{OWNER}} di [{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}}).

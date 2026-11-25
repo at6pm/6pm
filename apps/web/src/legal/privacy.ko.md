@@ -1,219 +1,219 @@
 ---
-title: Privacy Policy
-description: What 6pm keeps on your phone, the little that leaves it, and who handles it.
-lede: 6pm keeps your money on your phone. This page says exactly what we do with the little that leaves it.
-updated: '2026-11-24'
+title: 개인정보 처리방침
+description: 6pm이 휴대폰 안에 보관하는 것, 휴대폰 밖으로 나가는 아주 적은 것, 그리고 그것을 처리하는 곳에 대하여.
+lede: 6pm은 내 돈 기록을 휴대폰 안에 둡니다. 이 페이지는 밖으로 나가는 아주 적은 정보를 저희가 어떻게 다루는지 정확히 설명합니다.
+updated: '2026-11-25'
 ---
 
-<!-- Translation pending: English text. -->
+이 한국어판은 편의를 위해 제공하는 번역본입니다. 영어판과 내용이 다를 경우 [영어판](/privacy)이 우선합니다.
 
-## The short version
+## 요약
 
-- Your spending, plan and diary live on your iPhone, in an encrypted database. We cannot read them.
-- 6pm needs no account. Only if you use Budget together do you sign in, with Apple. We never ask for your phone number, your email or your bank login.
-- We do not run ads or sell data. The app has no tracking tools and no third-party analytics. It sends anonymous counts of the steps it reaches, such as a first open or a first close, which you can turn off. This website counts visits with Cloudflare Web Analytics, which sets no cookies and does not identify you.
-- A few small things do leave your phone: an anonymous device ID, anonymous counts of the steps the app reaches, your purchase status, app updates, crash reports, questions you ask 6pm, your voice while you say a spend, a few facts about your day for your companion’s lines, a receipt photo your phone cannot read, the words and amounts of the bank alerts 6pm reads for you (with account, card and phone numbers hidden), bank emails you forward to your receipt address, the shared pots you keep with someone in Budget together and, only if you turn it on, your encrypted backup. Each one is explained below.
-- You can keep all of 6pm's AI on your iPhone instead (Settings → AI). Then your questions, the facts for your companion's lines, receipt photos, bank alerts and your voice stay on the phone too.
+- 지출, 플랜, 다이어리는 iPhone 안의 암호화된 데이터베이스에 저장됩니다. 저희는 그것을 읽을 수 없습니다.
+- 6pm은 계정이 필요 없습니다. 함께 예산을 사용할 때만 Apple로 로그인합니다. 저희는 전화번호, 이메일, 은행 로그인 정보를 절대 묻지 않습니다.
+- 저희는 광고를 운영하지 않으며 데이터를 판매하지 않습니다. 앱에는 추적 도구도, 제3자 분석 도구도 없습니다. 앱은 처음 연 것, 처음 마감한 것과 같이 도달한 단계에 대한 익명 집계를 보내며, 이는 끌 수 있습니다. 이 웹사이트는 쿠키를 설정하지 않고 사용자를 식별하지 않는 Cloudflare Web Analytics로 방문 수를 셉니다.
+- 휴대폰 밖으로 나가는 것은 몇 가지 작은 정보뿐입니다. 익명 기기 ID, 앱이 도달한 단계에 대한 익명 집계, 구매 상태, 앱 업데이트, 충돌 보고서, 6pm에게 묻는 질문, 지출을 말하는 동안의 음성, 짝꿍의 한마디를 위한 하루에 관한 몇 가지 사실, 휴대폰이 읽지 못한 영수증 사진, 6pm이 대신 읽는 은행 알림의 문구와 금액(계좌, 카드, 전화번호는 가린 상태로), 영수증 주소로 전달한 은행 메일, 함께 예산에서 다른 사람과 함께 쓰는 공동 저금통, 그리고 켠 경우에만 암호화된 백업입니다. 각각은 아래에서 설명합니다.
+- 6pm의 AI를 모두 iPhone 안에서만 쓰도록 할 수도 있습니다(설정 → AI). 그러면 질문, 짝꿍의 한마디를 위한 사실, 영수증 사진, 은행 알림, 음성도 휴대폰 안에 머뭅니다.
 
-## Who we are
+## 저희는 누구인가요
 
-6pm is made by {{OWNER}} ("we", "us"). You can reach us on [{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}}).
+6pm을 만드는 곳은 {{OWNER}}(이하 "저희")입니다. 연락처는 [{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}})입니다.
 
-This policy covers the 6pm app for iPhone and Android and the website at at6pm.app. Where the Android app works differently, "On Android" below says how.
+이 방침은 iPhone 및 Android용 6pm 앱과 웹사이트 at6pm.app에 적용됩니다. Android 앱이 다르게 작동하는 부분은 아래 "Android의 경우"에서 설명합니다.
 
-## What stays on your phone
+## 휴대폰 안에 머무는 것
 
-Everything you enter, and everything the app catches for you, stays on your phone. That means your spends, amounts, merchants, categories and notes, your payday and plan, your pots, your diary, and your settings, look and companion.
+입력한 모든 것, 그리고 앱이 대신 기록한 모든 것은 휴대폰 안에 머뭅니다. 즉 지출, 금액, 가게, 카테고리, 메모, 월급날과 플랜, 저금통, 다이어리, 그리고 설정, 룩, 짝꿍입니다.
 
-All of it sits in a database on your phone, encrypted with SQLCipher. The key is made on your phone the first time you open 6pm and is kept in the iOS Keychain, tied to this device. It never leaves the phone, and we never receive it or the database. Only the few facts described under “Ask 6pm and your companion’s lines” are sent, one line’s worth at a time.
+이 모든 것은 SQLCipher로 암호화된 휴대폰 안의 데이터베이스에 있습니다. 키는 6pm을 처음 열 때 휴대폰에서 만들어지며, 이 기기에 묶인 상태로 iOS 키체인에 보관됩니다. 키는 휴대폰 밖으로 나가지 않으며, 저희는 키나 데이터베이스를 받지 않습니다. 전송되는 것은 "6pm에게 묻기와 짝꿍의 한마디"에서 설명하는 몇 가지 사실뿐이며, 그것도 한 번에 한마디 분량씩입니다.
 
-Because the key stays on this phone, your data does not move to a new phone on its own. Without a backup, it lives only here.
+키가 이 휴대폰에 머물기 때문에, 데이터가 새 휴대폰으로 저절로 옮겨지지 않습니다. 백업이 없으면 데이터는 이 기기에만 존재합니다.
 
-## What leaves your phone
+## 휴대폰 밖으로 나가는 것
 
-Only the things below, and only for the reasons given.
+아래에 적힌 것만, 아래에 적힌 이유로만 나갑니다.
 
-### An anonymous device ID
+### 익명 기기 ID
 
-When the app talks to our server, it first gets a random token that stands for your copy of the app. The token is kept on your phone. Our server stores only a scrambled form of it (a SHA-256 hash), plus your app language (English or Vietnamese) and the times it was first and last seen.
+앱이 저희 서버와 통신할 때, 먼저 사용자의 앱을 나타내는 무작위 토큰을 받습니다. 토큰은 휴대폰에 보관됩니다. 저희 서버는 그 토큰을 변환한 형태(SHA-256 해시)와 앱 언어, 처음과 마지막으로 확인된 시각만 저장합니다.
 
-None of this is linked to your name, your email or anything in your money. We use it to check that requests come from a real copy of the app, to limit abuse, and to count roughly how many devices use 6pm each day.
+이 중 어느 것도 이름, 이메일, 돈에 관한 어떤 정보와도 연결되지 않습니다. 저희는 이를 요청이 실제 앱에서 온 것인지 확인하고, 악용을 막고, 하루에 대략 몇 대의 기기가 6pm을 쓰는지 세는 데 사용합니다.
 
-### Anonymous counts
+### 익명 집계
 
-To see where new people get stuck, the app sends our server anonymous counts of the steps it reaches: that it was opened for the first time; which onboarding steps were shown and whether onboarding was finished; which days of its first month it was opened on; on which of those days something was caught, and which way (a bank or wallet notification, the Wallet automation, an email, a shared receipt, a scan, your voice or typing); which of those days were closed, and how many days of the first week were caught and closed; whether the 6pm Max offer was shown and from which screen; whether Max was bought and which plan; and, when Max was bought with a code from one of our channels, which channel. Each report also says the platform (iPhone or Android), the app version and the app language, and nothing else.
+새로 시작한 사람들이 어디에서 막히는지 알기 위해, 앱은 도달한 단계에 대한 익명 집계를 저희 서버로 보냅니다. 내용은 다음과 같습니다. 처음 열렸다는 것, 어떤 온보딩 단계가 표시되었고 온보딩을 마쳤는지, 첫 달 중 어느 날 열렸는지, 그중 어느 날 무언가가 기록되었고 어떤 방법이었는지(은행이나 페이 앱 알림, 지갑 자동화, 이메일, 공유한 영수증, 스캔, 음성, 직접 입력), 그중 어느 날 마감했는지, 첫 주 중 며칠 기록하고 며칠 마감했는지, 6pm Max 안내가 표시되었는지와 어느 화면에서였는지, Max를 구매했는지와 어떤 플랜인지, 그리고 저희 채널의 코드로 Max를 구매한 경우 어느 채널인지입니다. 각 보고에는 플랫폼(iPhone 또는 Android), 앱 버전, 앱 언어도 담기며, 그 밖의 정보는 담기지 않습니다.
 
-The counts carry no device ID, install ID, account, amount, merchant, bank name, note or any word you typed, and they are sent without the anonymous device ID above. Our server only adds one to a total for that step and that day; it keeps no record per phone, so counts from one phone cannot be put back together. Your phone remembers which steps it has already sent, so each one is sent once. As with every request, our server counts requests per IP address only to slow down abuse, and does not store the address.
+집계에는 기기 ID, 설치 ID, 계정, 금액, 가게, 은행 이름, 메모, 입력한 어떤 단어도 포함되지 않으며, 위의 익명 기기 ID 없이 전송됩니다. 저희 서버는 해당 단계와 해당 날짜의 합계에 1을 더할 뿐, 기기별 기록은 남기지 않습니다. 따라서 한 기기에서 온 집계를 다시 이어 붙일 수 없습니다. 휴대폰은 이미 보낸 단계를 기억하므로, 각 단계는 한 번만 전송됩니다. 다른 모든 요청과 마찬가지로, 저희 서버는 악용을 늦추기 위해서만 IP 주소별 요청 수를 세며, 주소 자체는 저장하지 않습니다.
 
-You can turn the counts off in Settings → Privacy → Anonymous counts. Steps reached while they are off are never sent, even if you turn them back on. In on-device mode they are off.
+집계는 설정 → 프라이버시 → 익명 집계에서 끌 수 있습니다. 꺼져 있는 동안 도달한 단계는 나중에 다시 켜더라도 전송되지 않습니다. 기기 내 모드에서는 집계가 꺼집니다.
 
-### Purchases
+### 구매
 
-Apple, or Google Play on Android, takes the payment. We never see your card or your payment details.
+결제는 Apple(Android에서는 Google Play)이 받습니다. 저희는 카드나 결제 정보를 볼 수 없습니다.
 
-To know what you have unlocked, 6pm uses RevenueCat, a service that records purchase status. RevenueCat learns from Apple or Google which looks and plans you have bought, when, and whether a trial or subscription is active. It ties this to an anonymous app user ID, not to your name or email. Like most purchase tools, it also receives basic technical details from your phone: app version, device model and system version, country and language, and your IP address.
+무엇이 잠금 해제되었는지 알기 위해, 6pm은 구매 상태를 기록하는 서비스인 RevenueCat을 사용합니다. RevenueCat은 어떤 룩과 플랜을 언제 구매했는지, 체험이나 구독이 활성 상태인지를 Apple 또는 Google로부터 받습니다. 이 정보는 이름이나 이메일이 아니라 익명 앱 사용자 ID에 연결됩니다. 대부분의 구매 도구와 마찬가지로, RevenueCat은 휴대폰의 기본적인 기술 정보도 받습니다. 앱 버전, 기기 모델과 시스템 버전, 국가와 언어, IP 주소입니다.
 
-This is how Max and your looks stay unlocked, and how "Restore purchases" works.
+이를 통해 Max와 룩이 잠금 해제된 상태로 유지되고, "구매 복원"이 작동합니다.
 
-### App updates
+### 앱 업데이트
 
-We send some fixes to the app over the air, using Expo's update service. Your phone asks Expo whether an update is waiting. That request includes the app version, the platform and your IP address. It carries nothing from your money.
+저희는 일부 수정 사항을 Expo의 업데이트 서비스를 이용해 무선으로 앱에 보냅니다. 휴대폰은 대기 중인 업데이트가 있는지 Expo에 묻습니다. 이 요청에는 앱 버전, 플랫폼, IP 주소가 포함됩니다. 돈에 관한 정보는 전혀 담기지 않습니다.
 
-### Crash reports
+### 충돌 보고서
 
-When the app crashes or hits an error, it sends a report to Sentry so we can fix it: what went wrong in the code, the screen it happened on, the app version, the iPhone model and iOS version, and a random installation ID. Reports never include your spends, amounts, notes, plan or names, and we do not attach your IP address. In on-device mode, no crash reports are sent.
+앱이 충돌하거나 오류가 발생하면, 저희가 고칠 수 있도록 Sentry에 보고서가 전송됩니다. 내용은 코드에서 무엇이 잘못되었는지, 오류가 난 화면, 앱 버전, iPhone 모델과 iOS 버전, 그리고 무작위 설치 ID입니다. 보고서에는 지출, 금액, 메모, 플랜, 이름이 절대 포함되지 않으며, 저희는 IP 주소를 첨부하지 않습니다. 기기 내 모드에서는 충돌 보고서가 전송되지 않습니다.
 
-### Ask 6pm and your companion’s lines, naming a payee and reading a receipt photo
+### 6pm에게 묻기와 짝꿍의 한마디, 받는 곳 이름 찾기, 영수증 사진 읽기
 
-When you ask 6pm a question, such as "Can I afford 2tr on Saturday?", the app sends the question's words to our server, with the names of your categories and pots so the question can be read well. Our server asks Anthropic, an AI service, what the question asks. The answer itself is worked out on your phone, from your own records, which are never sent.
+"토요일에 30만 원 써도 돼?" 같은 질문을 6pm에게 하면, 앱은 질문을 잘 이해할 수 있도록 카테고리와 저금통 이름과 함께 질문 문구를 저희 서버로 보냅니다. 저희 서버는 AI 서비스인 Anthropic에 그 질문이 무엇을 묻는지 확인합니다. 답 자체는 사용자의 기록을 바탕으로 휴대폰 안에서 계산되며, 기록은 전송되지 않습니다.
 
-To write your companion's lines and the words of an answer, the app sends our server, and on to Anthropic, the few facts that one line is about, already worked out on your phone: for example an amount, a place, a category or pot name, or how this week compares with the last. It never sends your list of spends, your plan or your balance. Without a connection, the app uses lines written into it.
+짝꿍의 한마디와 답의 문구를 쓰기 위해, 앱은 그 한마디가 다루는, 휴대폰에서 이미 계산된 몇 가지 사실을 저희 서버와 Anthropic으로 보냅니다. 예를 들어 금액, 장소, 카테고리나 저금통 이름, 이번 주와 지난주의 비교 같은 것입니다. 지출 목록, 플랜, 잔액은 절대 보내지 않습니다. 연결이 없을 때는 앱에 미리 적혀 있는 한마디를 씁니다.
 
-When you share a receipt screenshot to 6pm, the text on it is read on your phone. If the app cannot tell who you paid, and none of your own rules knows the name, it sends the receipt's lines to our server, and on to Anthropic, to name the payee. Every number is taken out first, so amounts, account numbers and reference codes are never sent. If anything with a digit in it arrives, the server turns it away unread.
+영수증 스크린샷을 6pm으로 공유하면, 그 안의 글자는 휴대폰에서 읽힙니다. 누구에게 결제했는지 앱이 알 수 없고 사용자가 만든 규칙에도 그 이름이 없으면, 받는 곳의 이름을 찾기 위해 영수증의 각 줄을 저희 서버와 Anthropic으로 보냅니다. 그 전에 모든 숫자를 빼므로 금액, 계좌번호, 참조 코드는 절대 전송되지 않습니다. 숫자가 들어 있는 것이 도착하면 서버는 읽지 않고 거부합니다.
 
-A bank or wallet notification 6pm reads for you (see "Bank and wallet notifications" below) is read twice. Your phone reads it first, at once. When you next open 6pm, the notification's text is sent to our server, and on to Anthropic, to be read a second time: whether money moved and which way, which of the printed amounts it was, who was paid, and which of your categories it belongs in. What is sent is the name of the bank or wallet app, the notification's words, the amounts it prints (its balance among them, when it prints one), the currency you count in and the names of your categories. The words can hold a name or a transfer's message. Before anything is sent, your phone hides long numbers digit for digit: any number of nine digits or more, whether written in one piece or in groups, card numbers, and the number that follows a word like "TK", "account" or "card". Account, card and phone numbers therefore stay on your phone, and our server turns away a text that still holds a long number. The answer never contains an amount: your phone marks each amount in the text, the answer names one of the marks, and the amount saved is the one your phone read there. A notification your phone could not read at all, but which prints a number, waits on your phone for two days at most to be read the same way, and is then deleted. So does one your phone did read, when its second reading got no answer the first time (no connection, or our server too slow): its text waits on your phone, two days at most, until the server has answered, and is then deleted. A notification your phone recognises as a one-time code, a sign-in or security notice, a failed payment, a promotion or a balance notice is never sent. With no connection, the phone's own reading is kept.
+6pm이 대신 읽는 은행이나 페이 앱의 알림(아래 "은행과 페이 앱 알림" 참고)은 두 번 읽힙니다. 먼저 휴대폰이 바로 읽습니다. 다음에 6pm을 열면, 알림 문구가 저희 서버와 Anthropic으로 전송되어 다시 한 번 읽힙니다. 돈이 움직였는지와 그 방향, 표시된 금액 중 어느 것인지, 누구에게 결제했는지, 사용자의 어느 카테고리에 속하는지를 판단하기 위해서입니다. 전송되는 것은 은행이나 페이 앱의 이름, 알림 문구, 알림에 표시된 금액(잔액이 표시된 경우 잔액 포함), 사용하는 통화, 그리고 카테고리 이름입니다. 문구에는 이름이나 송금 메시지가 들어 있을 수 있습니다. 무엇이든 보내기 전에 휴대폰은 긴 숫자를 한 자리씩 가립니다. 한 덩어리든 묶음으로 나뉘어 있든 아홉 자리 이상의 숫자, 카드 번호, 그리고 "TK", "account", "card" 같은 단어 뒤에 오는 번호입니다. 따라서 계좌, 카드, 전화번호는 휴대폰에 머물며, 그래도 긴 숫자가 남아 있는 문구는 저희 서버가 거부합니다. 답에는 금액이 절대 들어 있지 않습니다. 휴대폰이 문구 속 각 금액에 표시를 하고, 답은 그 표시 중 하나를 가리키며, 저장되는 금액은 휴대폰이 그 자리에서 읽은 금액입니다. 휴대폰이 전혀 읽지 못했지만 숫자가 표시된 알림은 같은 방식으로 읽히기 위해 최대 이틀 동안 휴대폰에서 기다린 뒤 삭제됩니다. 휴대폰이 읽은 알림이라도 두 번째 읽기에서 처음에 답을 받지 못한 경우(연결이 없거나 저희 서버가 너무 느린 경우)에도 마찬가지로, 서버가 답할 때까지 최대 이틀 동안 문구가 휴대폰에서 기다린 뒤 삭제됩니다. 휴대폰이 일회용 코드, 로그인이나 보안 안내, 실패한 결제, 프로모션, 잔액 안내로 인식한 알림은 절대 전송되지 않습니다. 연결이 없으면 휴대폰이 직접 읽은 결과가 저장됩니다.
 
-If your phone cannot be sure of a shared receipt's total or currency, it sends that one receipt photo to our server, and on to Anthropic, an AI service, to read the total, the currency, the shop and the time. Our server does not store or log the photo, and it is sent to no one else. Anthropic does not use it to train its models, and deletes it within 30 days (longer only if it is flagged for breaking Anthropic's usage policy, or the law requires it). Without a connection, the app keeps what your phone read.
+공유한 영수증의 합계나 통화를 휴대폰이 확실히 알 수 없으면, 합계, 통화, 가게, 시각을 읽기 위해 그 영수증 사진 한 장을 저희 서버와 AI 서비스인 Anthropic으로 보냅니다. 저희 서버는 사진을 저장하거나 기록하지 않으며, 다른 누구에게도 보내지 않습니다. Anthropic은 이를 모델 학습에 사용하지 않으며 30일 이내에 삭제합니다(Anthropic의 사용 정책 위반으로 표시되었거나 법이 요구하는 경우에만 더 오래 보관합니다). 연결이 없으면 앱은 휴대폰이 읽은 내용을 저장합니다.
 
-When you make a category, the app may send its name to our server, and on to Anthropic, to suggest an icon for it.
+카테고리를 만들면, 아이콘을 추천하기 위해 앱이 그 이름을 저희 서버와 Anthropic으로 보낼 수 있습니다.
 
-We do not store your questions, receipt lines, notification text or receipt photos. For each request our server keeps only how much of the AI service it used, against your anonymous device ID. Anthropic does not use requests to train its models, and deletes them within 30 days (longer only if one is flagged for breaking Anthropic's usage policy, or the law requires it).
+저희는 질문, 영수증의 줄, 알림 문구, 영수증 사진을 저장하지 않습니다. 저희 서버는 요청마다 AI 서비스를 얼마나 사용했는지만 익명 기기 ID에 대해 기록합니다. Anthropic은 요청을 모델 학습에 사용하지 않으며 30일 이내에 삭제합니다(요청이 Anthropic의 사용 정책 위반으로 표시되었거나 법이 요구하는 경우에만 더 오래 보관합니다).
 
-### Your voice
+### 음성
 
-When you say a spend out loud, the app streams the sound from your microphone straight to a speech-to-text service, Deepgram (or ElevenLabs), only while you hold or tap the microphone, and gets back the words. Our server only gives your phone a short-lived key for this and records that one transcription happened, against your anonymous device ID. It never hears the sound or sees the words. With Deepgram, we opt out of its model improvement programme, so the sound is kept only while it is being turned into text. Nothing is recorded on your phone. Without a connection, in on-device mode, or after 10 transcriptions a day without 6pm Max, Apple's speech recognition turns your words into text on your phone instead, and nothing is sent.
+지출을 소리 내어 말하면, 앱은 마이크를 누르고 있거나 탭한 동안에만 마이크의 소리를 음성 인식 서비스인 Deepgram(또는 ElevenLabs)으로 바로 스트리밍하고, 글자로 바뀐 결과를 받습니다. 저희 서버는 이를 위한 짧은 시간 동안만 유효한 키를 휴대폰에 건네고, 받아쓰기가 한 번 이루어졌다는 사실을 익명 기기 ID에 대해 기록할 뿐입니다. 소리를 듣지도, 글자를 보지도 않습니다. Deepgram의 경우 저희는 모델 개선 프로그램 참여를 거부했기 때문에, 소리는 글자로 바뀌는 동안에만 보관됩니다. 휴대폰에는 아무것도 녹음되지 않습니다. 연결이 없을 때, 기기 내 모드일 때, 또는 6pm Max 없이 하루 10번의 받아쓰기를 다 쓴 뒤에는 Apple의 음성 인식이 휴대폰 안에서 말을 글자로 바꾸며, 아무것도 전송되지 않습니다.
 
-### On-device mode
+### 기기 내 모드
 
-In Settings → AI you can keep 6pm's AI on your iPhone. Then nothing in "Ask 6pm and your companion's lines" or "Your voice" leaves it: questions are read, lines written and receipts read on your phone, with a model you download once. The model is downloaded from Hugging Face, which sees your IP address and which model you asked for, and nothing else. In this mode receipt email is off, crash reports and anonymous counts are off, and Travel tells your country from your phone's time zone instead of your location.
+설정 → AI에서 6pm의 AI를 iPhone 안에서만 쓰도록 할 수 있습니다. 그러면 "6pm에게 묻기와 짝꿍의 한마디"와 "음성"에 해당하는 것은 아무것도 밖으로 나가지 않습니다. 질문 읽기, 한마디 쓰기, 영수증 읽기는 한 번 내려받은 모델로 휴대폰 안에서 이루어집니다. 모델은 Hugging Face에서 내려받으며, Hugging Face는 IP 주소와 어떤 모델을 요청했는지만 알 수 있습니다. 이 모드에서는 영수증 메일, 충돌 보고서, 익명 집계가 꺼지며, 여행 모드는 위치 대신 휴대폰의 시간대로 국가를 판단합니다.
 
-### Receipt email
+### 영수증 메일
 
-6pm gives your phone its own address, like k7m2qx@at6pm.app. If you have your bank email you, or forward its emails, to that address, the payments land in your Inbox.
+6pm은 휴대폰마다 k7m2qx@at6pm.app 같은 전용 주소를 줍니다. 은행이 이 주소로 메일을 보내도록 설정하거나 은행 메일을 이 주소로 전달하면, 결제 내역이 수신함에 들어옵니다.
 
-Our server reads each email as it arrives. An email that prints an amount is sent to Anthropic, an AI service, to tell a payment from a transfer between your own accounts, a refund or a promotion, and to read who you paid, what for, and how much; an email with no amount in it is dropped unread. If the email holds a payment, the server keeps only what was read: the amount and its currency, the merchant, the category, the time, the sender's address and the transfer's note. It locks this with encryption until your phone collects it, then deletes it. The email itself is never stored or logged by 6pm and is sent to no one but Anthropic, which does not use it to train its models and deletes it within 30 days (longer only if it is flagged for breaking Anthropic's usage policy, or the law requires it). Anything that is not a receipt is dropped. A receipt your phone has not collected after 30 days is deleted unread.
+저희 서버는 메일이 도착할 때마다 읽습니다. 금액이 적힌 메일은 결제와 본인 계좌 간 이체, 환불, 프로모션을 구분하고, 누구에게 무엇을 위해 얼마를 결제했는지 읽기 위해 AI 서비스인 Anthropic으로 보내집니다. 금액이 없는 메일은 읽지 않고 버립니다. 메일에 결제가 들어 있으면, 서버는 읽어 낸 내용만 보관합니다. 금액과 통화, 가게, 카테고리, 시각, 보낸 사람 주소, 송금 메모입니다. 이 내용은 휴대폰이 가져갈 때까지 암호화해 잠가 두고, 가져가면 삭제합니다. 메일 자체는 6pm이 저장하거나 기록하지 않으며, Anthropic 외에는 누구에게도 보내지 않습니다. Anthropic은 이를 모델 학습에 사용하지 않으며 30일 이내에 삭제합니다(Anthropic의 사용 정책 위반으로 표시되었거나 법이 요구하는 경우에만 더 오래 보관합니다). 영수증이 아닌 것은 버립니다. 30일이 지나도록 휴대폰이 가져가지 않은 영수증은 읽지 않은 채 삭제됩니다.
 
-The address is linked to your anonymous device ID, not to your name. Mail to it from anyone is read the same way, so share it only with your bank.
+이 주소는 이름이 아니라 익명 기기 ID에 연결됩니다. 누가 보낸 메일이든 같은 방식으로 읽히므로, 주소는 은행에만 알려 주세요.
 
-### Exchange rates (Travel)
+### 환율(여행)
 
-In Travel mode the app fetches the day's exchange rates from our server. Our server gets them from Frankfurter, a free service that publishes central bank rates. The request carries nothing about you or your money.
+여행 모드에서 앱은 그날의 환율을 저희 서버에서 가져옵니다. 저희 서버는 중앙은행 환율을 공개하는 무료 서비스인 Frankfurter에서 환율을 받습니다. 이 요청에는 사용자나 사용자의 돈에 관한 정보가 전혀 담기지 않습니다.
 
-### Encrypted backup (6pm Max)
+### 암호화 백업(6pm Max)
 
-Backup is a 6pm Max feature, and it is off until you turn it on. It is end-to-end encrypted: the key stays in your iCloud Keychain, and our server only stores ciphertext under an anonymous token. Ciphertext is scrambled data that we cannot read.
+백업은 6pm Max 기능이며, 켜기 전까지는 꺼져 있습니다. 백업은 종단 간 암호화됩니다. 키는 iCloud 키체인에 머물고, 저희 서버는 익명 토큰 아래 암호문만 저장합니다. 암호문은 저희가 읽을 수 없도록 뒤섞인 데이터입니다.
 
-Apple syncs the key between your devices through iCloud Keychain, under your Apple ID and Apple's terms. If you lose both the key and your phone, nobody, including us, can unlock the backup.
+Apple은 사용자의 Apple ID와 Apple 약관에 따라 iCloud 키체인을 통해 기기 사이에서 키를 동기화합니다. 키와 휴대폰을 모두 잃어버리면, 저희를 포함해 누구도 백업을 열 수 없습니다.
 
-### Budget together
+### 함께 예산
 
-Budget together lets two people keep shared pots they both add to. It is the only part of 6pm with a sign-in, and nothing about it happens unless you start it or open an invite.
+함께 예산은 두 사람이 함께 채우는 공동 저금통을 둘 수 있는 기능입니다. 6pm에서 로그인이 있는 유일한 부분이며, 직접 시작하거나 초대를 열지 않는 한 아무 일도 일어나지 않습니다.
 
-- **Sign in with Apple.** When you start or join, you sign in with Apple. Apple gives us a stable ID for you that only works with 6pm and, the first time, your first name if you choose to share it. We never ask for your email. Our server links that ID to your anonymous device ID. When you delete your account, our server also asks Apple to end 6pm's access, so 6pm leaves the "Sign in with Apple" list in your Apple ID settings.
-- **What is shared.** Our server keeps your first name, each shared pot's name, icon, colour, goal and month, and each amount either of you says you put in, with who added it and when. Your partner sees all of this, and you see theirs. Nothing else from your phone is shared: not your spends, your plan, your daily number or your own pots.
-- **Invites.** An invite link works once and for 7 days. Our server stores only a scrambled form of it.
-- **Leaving.** Either of you can leave at any time. Leaving ends Budget together for both of you and deletes the shared pots and everything in them from our server. Each phone keeps, as history, the amounts its own person put in.
-- **Deleting your account.** "Delete Budget together account" in the app deletes your sign-in, your name and everything you share from our server, and ends it for your partner too. Stopping 6pm's use of your Apple ID in your Apple ID settings does the same.
+- **Apple로 로그인.** 시작하거나 참여할 때 Apple로 로그인합니다. Apple은 6pm에서만 쓸 수 있는 변하지 않는 ID를 저희에게 주며, 처음 한 번은 공유를 선택한 경우 이름도 줍니다. 저희는 이메일을 절대 묻지 않습니다. 저희 서버는 이 ID를 익명 기기 ID에 연결합니다. 계정을 삭제하면 저희 서버가 Apple에 6pm의 접근을 끝내 달라고 요청하므로, 6pm은 Apple ID 설정의 "Apple로 로그인" 목록에서 사라집니다.
+- **공유되는 것.** 저희 서버는 이름, 각 공동 저금통의 이름, 아이콘, 색, 목표와 기한 월, 그리고 두 사람 중 누군가 넣었다고 알린 각 금액을 누가 언제 추가했는지와 함께 보관합니다. 파트너는 이 모든 것을 볼 수 있고, 사용자도 파트너의 것을 볼 수 있습니다. 휴대폰의 다른 어떤 것도 공유되지 않습니다. 지출, 플랜, 하루 금액, 개인 저금통은 공유되지 않습니다.
+- **초대.** 초대 링크는 한 번만, 7일 동안 유효합니다. 저희 서버는 변환된 형태만 저장합니다.
+- **나가기.** 두 사람 모두 언제든 나갈 수 있습니다. 나가면 두 사람 모두의 함께 예산이 끝나고, 공동 저금통과 그 안의 모든 것이 저희 서버에서 삭제됩니다. 각 휴대폰에는 그 사람이 직접 넣은 금액이 기록으로 남습니다.
+- **계정 삭제.** 앱의 "함께 예산 계정 삭제"를 사용하면 로그인 정보, 이름, 공유한 모든 것이 저희 서버에서 삭제되고, 파트너 쪽에서도 끝납니다. Apple ID 설정에서 6pm의 Apple ID 사용을 중단해도 같은 결과가 됩니다.
 
-6pm never moves money. The amounts in shared pots are what you each say you put aside; they only count.
+6pm은 절대 돈을 옮기지 않습니다. 공동 저금통의 금액은 각자 따로 모아 두었다고 알린 금액이며, 세기만 합니다.
 
-### The launch list (website)
+### 출시 알림 목록(웹사이트)
 
-If you join the launch list on this website, we store your email address, the language of the page, the time you joined and your place in line. If you used the leak calculator before joining, we also store the monthly figure it showed. The calculator itself runs in your browser, and nothing is sent unless you join.
+이 웹사이트에서 출시 알림 목록에 등록하면, 이메일 주소, 페이지 언어, 등록 시각, 대기 순서를 저장합니다. 등록 전에 새는 돈 계산기를 사용했다면, 계산기가 보여 준 월 금액도 저장합니다. 계산기 자체는 브라우저 안에서 작동하며, 등록하지 않으면 아무것도 전송되지 않습니다.
 
-We use this only to tell you when 6pm 2.0 is out. It is kept until you ask us to remove it.
+이 정보는 6pm 2.0 출시를 알리는 데만 사용합니다. 삭제를 요청할 때까지 보관합니다.
 
-### Visiting the website
+### 웹사이트 방문
 
-This website sets no cookies. It counts visits with Cloudflare Web Analytics, which gives us totals only, such as page views, the page or link you came from, your country and your type of device. It uses no cookies or local storage and does not follow you across sites or identify you. Its fonts are served from the site itself. The site runs on Cloudflare, which handles each request and may keep ordinary technical logs, such as your IP address and browser type, to run and protect the service. To slow down abuse, our server counts requests per IP address. The address is only a counter key. We do not store it.
+이 웹사이트는 쿠키를 설정하지 않습니다. 방문 수는 Cloudflare Web Analytics로 세며, 저희가 받는 것은 페이지 조회 수, 어떤 페이지나 링크에서 왔는지, 국가, 기기 종류 같은 합계뿐입니다. 쿠키나 로컬 저장소를 사용하지 않으며, 여러 사이트에 걸쳐 사용자를 추적하거나 식별하지 않습니다. 글꼴은 사이트 자체에서 제공합니다. 사이트는 Cloudflare에서 운영되며, Cloudflare는 각 요청을 처리하고 서비스 운영과 보호를 위해 IP 주소와 브라우저 종류 같은 일반적인 기술 로그를 보관할 수 있습니다. 악용을 늦추기 위해 저희 서버는 IP 주소별 요청 수를 셉니다. 주소는 카운터 키로만 쓰이며, 저장하지 않습니다.
 
-## What the app uses on your phone
+## 앱이 휴대폰에서 사용하는 것
 
-- **Camera.** Scan uses the camera to read QR codes, such as VietQR. The picture is never saved or sent. Only the payment details in the code are used, on your phone. If you say no to the camera, everything else still works.
-- **Microphone and speech.** When you say a spend out loud, the sound goes to a speech-to-text service as described in "Your voice", or is turned into text on your phone by Apple's on-device speech recognition. The recording is never saved.
-- **Photos.** 6pm saves pictures you choose to share, such as your day's card, to your photo library. It never reads your library. Receipt screenshots you share to 6pm are read on your phone, then let go; only one your phone cannot read is sent to be read, as described above.
-- **Location.** Only after you turn on Travel mode, and only while the app is open, 6pm checks which country you are in, so it can switch currency. Your phone's own system turns the position into a country and city name. 6pm keeps the country and city name on your phone, and sends nothing about where you are to us. In on-device mode 6pm does not use your location at all: your country comes from your phone's time zone.
-- **Widgets, Live Activities and Siri.** Your widgets, Live Activities, shortcuts and controls read and write through a shared folder on your phone. Nothing in them goes through our server.
-- **Clipboard.** When you hand a payment to your bank app, 6pm copies the amount so you can paste it. 6pm writes to the clipboard. It never reads what is on it.
-- **Bank apps.** The app checks on your phone whether certain bank apps are installed, and opens the one you choose, or its App Store page. We send nothing to the bank. Your bank's own policy applies once you are in its app.
-- **Bank and wallet notifications.** Only if you set it up, 6pm reads the notifications your bank and wallet apps send when money moves, to log the payment for you. On iPhone, a Shortcuts automation you build hands 6pm each notification from the apps you choose. On Android, 6pm reads them only after you turn it on under Notification access, and only those from the bank and wallet apps 6pm knows; every other app's notification is let go without being read. Either way each one is read on your phone. Money that moved is saved in your Inbox, on your phone; codes, failed payments, promotions and balance notices are skipped and kept nowhere. A notification the phone cannot read that prints a number waits on your phone, two days at most, for the second reading described next. So does one the phone did read, when that second reading got no answer the first time. Unless 6pm's AI is kept on your phone, a notification about money is then read a second time by our server: its words and amounts are sent, with account, card and phone numbers hidden first, as described under "Ask 6pm and your companion’s lines, naming a payee and reading a receipt photo". Nothing else from a notification is sent to us or anyone else, and with 6pm's AI kept on your phone nothing is. On Android, 6pm then shows a quiet notification of its own saying what it caught. You can turn it off at any time: on iPhone by deleting the automation, on Android under Notification access.
-- **Notifications.** The daily reminder at your close time is set on your phone. There is no remote push, and no notification token is sent to us.
+- **카메라.** 스캔은 VietQR 같은 QR 코드를 읽기 위해 카메라를 사용합니다. 사진은 저장되거나 전송되지 않습니다. 코드에 담긴 결제 정보만 휴대폰 안에서 사용됩니다. 카메라를 허용하지 않아도 다른 기능은 모두 작동합니다.
+- **마이크와 음성 인식.** 지출을 소리 내어 말하면, 소리는 "음성"에서 설명한 대로 음성 인식 서비스로 가거나, Apple의 기기 내 음성 인식이 휴대폰 안에서 글자로 바꿉니다. 녹음은 절대 저장되지 않습니다.
+- **사진.** 6pm은 하루 카드처럼 공유하기로 선택한 이미지를 사진 보관함에 저장합니다. 보관함을 읽지는 않습니다. 6pm으로 공유한 영수증 스크린샷은 휴대폰 안에서 읽힌 뒤 놓아 줍니다. 위에서 설명한 대로, 휴대폰이 읽지 못한 것만 읽기 위해 전송됩니다.
+- **위치.** 여행 모드를 켠 경우에만, 앱이 열려 있는 동안에만, 6pm은 통화를 바꾸기 위해 어느 나라에 있는지 확인합니다. 위치를 국가와 도시 이름으로 바꾸는 것은 휴대폰 자체 시스템입니다. 6pm은 국가와 도시 이름을 휴대폰에 보관하며, 위치에 관한 어떤 정보도 저희에게 보내지 않습니다. 기기 내 모드에서는 6pm이 위치를 전혀 사용하지 않으며, 국가는 휴대폰의 시간대로 판단합니다.
+- **위젯, 실시간 현황, Siri.** 위젯, 실시간 현황, 단축어, 제어 항목은 휴대폰의 공유 폴더를 통해 읽고 씁니다. 그중 어느 것도 저희 서버를 거치지 않습니다.
+- **클립보드.** 결제를 은행 앱으로 넘길 때, 붙여 넣을 수 있도록 6pm이 금액을 복사합니다. 6pm은 클립보드에 쓰기만 하며, 그 내용을 읽지 않습니다.
+- **은행 앱.** 앱은 특정 은행 앱이 설치되어 있는지 휴대폰 안에서 확인하고, 사용자가 고른 앱이나 그 앱의 App Store 페이지를 엽니다. 은행에는 아무것도 보내지 않습니다. 은행 앱에 들어간 뒤에는 그 은행의 방침이 적용됩니다.
+- **은행과 페이 앱 알림.** 사용자가 설정한 경우에만, 6pm은 돈이 움직일 때 은행과 페이 앱이 보내는 알림을 읽어 결제를 기록합니다. iPhone에서는 사용자가 만든 단축어 자동화가 선택한 앱의 알림을 하나씩 6pm에 넘겨줍니다. Android에서는 알림 접근 권한을 켠 뒤에만, 6pm이 아는 은행과 페이 앱의 알림만 읽습니다. 다른 앱의 알림은 읽지 않고 놓아 줍니다. 어느 쪽이든 알림은 휴대폰 안에서 읽힙니다. 돈이 움직인 내역은 휴대폰의 수신함에 저장되며, 코드, 실패한 결제, 프로모션, 잔액 안내는 건너뛰고 어디에도 보관하지 않습니다. 휴대폰이 읽지 못했지만 숫자가 표시된 알림은 다음에 설명하는 두 번째 읽기를 위해 최대 이틀 동안 휴대폰에서 기다립니다. 휴대폰이 읽은 알림이라도 두 번째 읽기에서 처음에 답을 받지 못한 경우도 마찬가지입니다. 6pm의 AI를 휴대폰 안에서만 쓰도록 하지 않았다면, 돈에 관한 알림은 이어서 저희 서버가 두 번째로 읽습니다. "6pm에게 묻기와 짝꿍의 한마디, 받는 곳 이름 찾기, 영수증 사진 읽기"에서 설명한 대로, 계좌, 카드, 전화번호를 먼저 가린 뒤 문구와 금액이 전송됩니다. 알림의 다른 어떤 것도 저희나 다른 누구에게 전송되지 않으며, 6pm의 AI를 휴대폰 안에서만 쓰는 경우에는 아무것도 전송되지 않습니다. Android에서는 이후 6pm이 무엇을 기록했는지 알려 주는 조용한 알림을 직접 표시합니다. 언제든 끌 수 있습니다. iPhone에서는 자동화를 삭제하고, Android에서는 알림 접근 권한에서 끕니다.
+- **알림.** 마감 시각의 매일 알림은 휴대폰에서 설정됩니다. 원격 푸시는 없으며, 알림 토큰이 저희에게 전송되지 않습니다.
 
-## On Android
+## Android의 경우
 
-The Android app works as described above, with these differences:
+Android 앱은 위에서 설명한 대로 작동하며, 다음이 다릅니다.
 
-- **Your data's key** is locked by the Android Keystore on your phone instead of the iOS Keychain. Android's own cloud backup of apps is turned off for 6pm, so your data is never copied to your Google account.
-- **Backup** keeps its key on your phone, not in iCloud Keychain, so a backup can be opened only on the phone that made it.
-- **Purchases** go through Google Play. Google takes the payment, and RevenueCat learns your purchase status from Google.
-- **On-device mode** is not offered: 6pm has no model to run on an Android phone.
-- **Speech on your phone**, when the speech-to-text service is not used (offline, or after 10 a day without 6pm Max), is Android's on-device speech recognition, and only for a language already downloaded to your phone, so the sound never leaves it.
-- **Photos.** Scan picks a picture through Android's own photo picker, which hands 6pm only the picture you choose. 6pm never reads your gallery.
-- **Budget together**, widgets, Live Activities and Siri are not in the Android app.
+- **데이터의 키**는 iOS 키체인 대신 휴대폰의 Android Keystore로 잠깁니다. 6pm에 대해서는 Android 자체의 앱 클라우드 백업을 꺼 두었기 때문에, 데이터가 Google 계정으로 복사되지 않습니다.
+- **백업**의 키는 iCloud 키체인이 아니라 휴대폰에 보관되므로, 백업은 그것을 만든 휴대폰에서만 열 수 있습니다.
+- **구매**는 Google Play를 통해 이루어집니다. 결제는 Google이 받고, RevenueCat은 Google로부터 구매 상태를 받습니다.
+- **기기 내 모드**는 제공하지 않습니다. Android 휴대폰에서 실행할 모델이 6pm에 없기 때문입니다.
+- **휴대폰 안의 음성 인식**은 음성 인식 서비스를 쓰지 않을 때(오프라인이거나, 6pm Max 없이 하루 10번을 넘긴 뒤) Android의 기기 내 음성 인식을 사용하며, 휴대폰에 이미 내려받은 언어에 한하므로 소리가 휴대폰 밖으로 나가지 않습니다.
+- **사진.** 스캔은 Android 자체의 사진 선택 도구로 이미지를 고르며, 이 도구는 사용자가 고른 이미지만 6pm에 넘겨줍니다. 6pm은 갤러리를 읽지 않습니다.
+- **함께 예산**, 위젯, 실시간 현황, Siri는 Android 앱에 없습니다.
 
-## What we do not do
+## 저희가 하지 않는 것
 
-- We do not show ads.
-- We do not sell your data or share it for marketing.
-- We do not profile you.
-- This version of the app has no third-party analytics, advertising or tracking tools.
+- 광고를 보여 주지 않습니다.
+- 데이터를 판매하거나 마케팅을 위해 공유하지 않습니다.
+- 사용자를 프로파일링하지 않습니다.
+- 이 버전의 앱에는 제3자 분석, 광고, 추적 도구가 없습니다.
 
-If you choose to share analytics with app developers in iOS Settings, Apple may give us anonymous crash and usage data. We cannot tell who it comes from.
+iOS 설정에서 앱 개발자와 분석 정보를 공유하기로 선택하면, Apple이 익명 충돌 및 사용 데이터를 저희에게 제공할 수 있습니다. 저희는 그것이 누구의 것인지 알 수 없습니다.
 
-## Who handles data for us
+## 저희를 대신해 데이터를 처리하는 곳
 
-These companies run the parts of the service described above. They may handle your data in other countries, including the United States and China.
+아래 회사들이 위에서 설명한 서비스의 각 부분을 운영합니다. 이 회사들은 미국과 중국을 포함한 다른 나라에서 사용자의 데이터를 처리할 수 있습니다.
 
-- **Apple** processes payments, iCloud Keychain and Sign in with Apple. [Apple's privacy policy](https://www.apple.com/legal/privacy/).
-- **Google** processes payments through Google Play on Android. [Google's privacy policy](https://policies.google.com/privacy).
-- **RevenueCat** records purchase status. [RevenueCat's privacy policy](https://www.revenuecat.com/privacy).
-- **Cloudflare** hosts our website and server, and counts visits to the website. [Cloudflare's privacy policy](https://www.cloudflare.com/privacypolicy/).
-- **Sentry** receives crash reports. [Sentry's privacy policy](https://sentry.io/privacy/).
-- **Anthropic** reads the questions you ask, writes your companion's lines from the facts about your day described above, suggests icons for your categories from their names, names payees from number-free receipt lines, reads the bank and wallet notifications described above a second time, reads a receipt photo your phone cannot read, and reads the bank and shop emails you forward to your receipt address. [Anthropic's privacy policy](https://www.anthropic.com/legal/privacy).
-- **Deepgram** turns your voice into text when you say a spend. [Deepgram's privacy policy](https://deepgram.com/privacy).
-- **ElevenLabs** can do the same in Deepgram's place. [ElevenLabs' privacy policy](https://elevenlabs.io/privacy-policy).
-- **Hugging Face** hosts the models you can download for on-device mode. [Hugging Face's privacy policy](https://huggingface.co/privacy).
-- **Expo** delivers over-the-air app updates. [Expo's privacy policy](https://expo.dev/privacy).
+- **Apple**은 결제, iCloud 키체인, Apple로 로그인을 처리합니다. [Apple 개인정보 처리방침](https://www.apple.com/legal/privacy/).
+- **Google**은 Android에서 Google Play를 통한 결제를 처리합니다. [Google 개인정보처리방침](https://policies.google.com/privacy).
+- **RevenueCat**은 구매 상태를 기록합니다. [RevenueCat 개인정보 처리방침](https://www.revenuecat.com/privacy).
+- **Cloudflare**는 저희 웹사이트와 서버를 호스팅하고, 웹사이트 방문 수를 셉니다. [Cloudflare 개인정보 처리방침](https://www.cloudflare.com/privacypolicy/).
+- **Sentry**는 충돌 보고서를 받습니다. [Sentry 개인정보 처리방침](https://sentry.io/privacy/).
+- **Anthropic**은 사용자의 질문을 읽고, 위에서 설명한 하루에 관한 사실로 짝꿍의 한마디를 쓰고, 카테고리 이름으로 아이콘을 추천하고, 숫자를 뺀 영수증 줄에서 받는 곳의 이름을 찾고, 위에서 설명한 은행과 페이 앱 알림을 두 번째로 읽고, 휴대폰이 읽지 못한 영수증 사진을 읽고, 영수증 주소로 전달한 은행과 가게의 메일을 읽습니다. [Anthropic 개인정보 처리방침](https://www.anthropic.com/legal/privacy).
+- **Deepgram**은 지출을 말할 때 음성을 글자로 바꿉니다. [Deepgram 개인정보 처리방침](https://deepgram.com/privacy).
+- **ElevenLabs**는 Deepgram 대신 같은 일을 할 수 있습니다. [ElevenLabs 개인정보 처리방침](https://elevenlabs.io/privacy-policy).
+- **Hugging Face**는 기기 내 모드를 위해 내려받을 수 있는 모델을 호스팅합니다. [Hugging Face 개인정보 처리방침](https://huggingface.co/privacy).
+- **Expo**는 무선 앱 업데이트를 전달합니다. [Expo 개인정보 처리방침](https://expo.dev/privacy).
 
-We use them only for these purposes.
+저희는 이 회사들을 위의 목적으로만 이용합니다.
 
-## How long we keep things
+## 보관 기간
 
-- **On your phone.** Until you delete it. "Delete all data" in Settings erases your spends, plan and diary from the phone and turns off the reminder. Deleting the app removes the data too.
-- **Device ID.** For as long as the app is used on that device.
-- **Anonymous counts.** Kept as daily totals. They hold nothing that points to a phone or a person.
-- **Crash reports.** Up to 90 days, then deleted.
-- **Receipt email.** Until your phone collects the receipt, and never more than 30 days. Your receipt address lasts as long as your device ID.
-- **Questions, facts for lines, receipt lines and forwarded emails.** We do not keep them. Anthropic deletes them within 30 days, as described above.
-- **Receipt photos.** We do not keep them. Anthropic deletes them within 30 days, as described above.
-- **Your voice.** We do not keep it. Deepgram handles it only while you speak; ElevenLabs keeps it as its own policy says.
-- **Backup.** Until you delete it. When you do, we delete the encrypted data from our server.
-- **Budget together.** Shared pots until either of you leaves; your sign-in and name until you delete your Budget together account. Either one deletes the data from our server at once.
-- **Launch list.** Until you ask us to remove your email.
-- **Purchase records.** Apple, Google and RevenueCat keep these under their own policies and the law.
+- **휴대폰 안.** 삭제할 때까지. 설정의 "모든 데이터 삭제"는 휴대폰에서 지출, 플랜, 다이어리를 지우고 알림을 끕니다. 앱을 삭제해도 데이터가 지워집니다.
+- **기기 ID.** 해당 기기에서 앱을 사용하는 동안.
+- **익명 집계.** 하루 합계로 보관합니다. 기기나 사람을 가리키는 것은 아무것도 담겨 있지 않습니다.
+- **충돌 보고서.** 최대 90일 동안 보관한 뒤 삭제합니다.
+- **영수증 메일.** 휴대폰이 영수증을 가져갈 때까지이며, 30일을 넘지 않습니다. 영수증 주소는 기기 ID가 있는 동안 유지됩니다.
+- **질문, 한마디를 위한 사실, 영수증 줄, 전달된 메일.** 저희는 보관하지 않습니다. 위에서 설명한 대로 Anthropic이 30일 이내에 삭제합니다.
+- **영수증 사진.** 저희는 보관하지 않습니다. 위에서 설명한 대로 Anthropic이 30일 이내에 삭제합니다.
+- **음성.** 저희는 보관하지 않습니다. Deepgram은 말하는 동안에만 처리하고, ElevenLabs는 자사 방침에 따라 보관합니다.
+- **백업.** 삭제할 때까지. 삭제하면 저희 서버에서 암호화된 데이터를 삭제합니다.
+- **함께 예산.** 공동 저금통은 두 사람 중 한 명이 나갈 때까지, 로그인 정보와 이름은 함께 예산 계정을 삭제할 때까지. 어느 경우든 데이터는 저희 서버에서 즉시 삭제됩니다.
+- **출시 알림 목록.** 이메일 삭제를 요청할 때까지.
+- **구매 기록.** Apple, Google, RevenueCat이 각자의 방침과 법에 따라 보관합니다.
 
-## Your choices and rights
+## 선택과 권리
 
-You control the data on your phone: you can change or delete any of it in the app.
+휴대폰 안의 데이터는 사용자가 관리합니다. 앱에서 무엇이든 바꾸거나 삭제할 수 있습니다.
 
-For anything we hold about you, you can ask us to tell you what it is, correct it, delete it, or stop using it. Contact us on [{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}}). We will answer promptly, and within the time the law gives us. Our server holds very little that points to a person, so we may ask you for something that helps us find it, such as the email you used for the launch list.
+저희가 보유한 사용자에 관한 정보에 대해, 그것이 무엇인지 알려 달라고, 정정하거나 삭제하거나 이용을 중단해 달라고 요청할 수 있습니다. 요청은 전화나 메시지로 보내 주세요: [{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}}). 신속하게, 그리고 법이 정한 기간 안에 답변드리겠습니다. 저희 서버에는 사람을 가리키는 정보가 거의 없기 때문에, 출시 알림 목록에 쓴 이메일처럼 정보를 찾는 데 도움이 되는 것을 여쭤볼 수 있습니다.
 
-You can also complain to the data protection authority where you live.
+거주하는 곳의 개인정보 보호 기관에 민원을 제기할 수도 있습니다.
 
-## Children
+## 아동
 
-6pm is not made for children under 16, and we do not knowingly collect their data. If you think a child has sent us something, write to us and we will delete it.
+6pm은 16세 미만 아동을 위해 만들어지지 않았으며, 저희는 아동의 데이터를 알면서 수집하지 않습니다. 아동이 저희에게 무언가를 보냈다고 생각되면 연락해 주세요. 삭제하겠습니다.
 
-## Security
+## 보안
 
-Your data is encrypted on your phone. Traffic to our server uses HTTPS. Backups are encrypted before they leave your phone, and receipts from your email are kept encrypted until your phone collects them. Our server stores device tokens only in hashed form. No system is perfectly safe, so if you find a problem, please tell us.
+사용자의 데이터는 휴대폰에서 암호화됩니다. 저희 서버와의 통신에는 HTTPS를 사용합니다. 백업은 휴대폰을 떠나기 전에 암호화되며, 메일로 받은 영수증은 휴대폰이 가져갈 때까지 암호화된 상태로 보관됩니다. 저희 서버는 기기 토큰을 해시된 형태로만 저장합니다. 완벽하게 안전한 시스템은 없으므로, 문제를 발견하면 꼭 알려 주세요.
 
-## Changes to this policy
+## 이 방침의 변경
 
-When we change this policy, we will update the date at the top. If the change matters, we will tell you in the app or on this page before it takes effect.
+이 방침을 변경하면 상단의 날짜를 업데이트합니다. 중요한 변경이라면, 효력이 생기기 전에 앱이나 이 페이지에서 알려 드립니다.
 
-## The law and how to reach us
+## 준거법과 연락처
 
-We handle personal data under Vietnamese law, including the Personal Data Protection Law. If you live elsewhere, the rights your own country gives you still apply.
+저희는 개인정보보호법을 포함한 베트남 법률에 따라 개인정보를 처리합니다. 다른 곳에 거주하는 경우에도, 그 나라에서 보장하는 권리는 그대로 적용됩니다.
 
-Questions? Call or message {{OWNER}} on [{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}}).
+궁금한 점은 {{OWNER}}에게 전화나 메시지로 문의해 주세요: [{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}}).

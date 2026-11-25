@@ -1,14 +1,13 @@
-// Translation pending: English text.
 import type { LiveLines } from './live-lines';
 
 export const liveLinesEs: LiveLines = {
-  clock: (time, left) => `${time} where you are · next close in ${left}`,
-  closeNow: 'It’s six. Time to close the day.',
-  duration: (h, m) => (h ? `${h}h ${m}m` : `${m}m`),
-  countdown: (d, h, m) => `${d}d ${h}h ${m}m to launch`,
-  out: 'Out now',
-  sent: 'You’re on the list. See you at six.',
-  notAnEmail: 'That doesn’t look like an email yet.',
-  busy: 'Too many tries from here. Give it a minute, then try again.',
-  unreachable: 'Couldn’t reach the list. Check your connection and try again.',
+  clock: (time, left) => `Donde estás son las ${time} · próximo cierre en ${left}`,
+  closeNow: 'Son las seis. Toca cerrar el día.',
+  duration: (h, m) => (h ? `${h} h ${m} min` : `${m} min`),
+  countdown: (d, h, m) => `${d} d ${h} h ${m} min para el lanzamiento`,
+  out: 'Ya disponible',
+  sent: 'Ya estás en la lista. Nos vemos a las seis.',
+  notAnEmail: 'Eso todavía no parece un correo.',
+  busy: 'Demasiados intentos desde aquí. Espera un minuto y vuelve a probar.',
+  unreachable: 'No se pudo conectar con la lista. Revisa tu conexión y vuelve a probar.',
 };

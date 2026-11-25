@@ -126,6 +126,8 @@ export interface SiteCopy {
     readonly sub: string;
     readonly cards: readonly CloseCard[];
     readonly cardNumSize: string;
+    /** What stands before a receipt's number on its card: `Nº`, `Nr.`. */
+    readonly cardNo: string;
     readonly keptSoFar: string;
     readonly withThis: string;
     readonly keepStamp: string;

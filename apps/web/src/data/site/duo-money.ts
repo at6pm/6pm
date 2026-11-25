@@ -15,10 +15,16 @@ export interface DuoMoney {
   /** An amount, in whole steps of the market's money, as the screens print it. */
   readonly format: (amount: number) => string;
   /**
-   * The propped-up keypad: what it shows around the typed digits, and how many steps one typed
-   * unit is (the English keypad types dollars, ten steps each).
+   * The propped-up keypad: what it shows around the typed digits, how many steps one typed unit is
+   * (the English keypad types dollars, ten steps each), and how many digits it takes, enough for a
+   * big spend in the market's money (four for dollars, seven for won).
    */
-  readonly keypad: { readonly before: string; readonly after: string; readonly per: number };
+  readonly keypad: {
+    readonly before: string;
+    readonly after: string;
+    readonly per: number;
+    readonly digits: number;
+  };
 }
 
 export const duoMoneys: Readonly<Record<SiteLang, DuoMoney>> = {

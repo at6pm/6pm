@@ -1,105 +1,105 @@
 ---
-title: Terms of Use
-description: The rules for using 6pm, including how 6pm Max and look purchases work.
-lede: Plain terms for a plain app. Please read them once. The subscription part matters most.
+title: 使用条款
+description: 使用 6pm 的规则，包括 6pm Max 和外观的购买方式。
+lede: 简单的 App，简单的条款。请花点时间读一遍，订阅部分最重要。
 updated: '2026-10-11'
 ---
 
-<!-- Translation pending: English text. -->
+本页是为方便阅读而提供的中文译本。如与[英文版本](/terms)有任何不一致，以英文版本为准。
 
-## The short version
+## 简要版
 
-- 6pm is a budgeting tool. It counts the money you tell it about. It never moves money, and it is not financial advice.
-- The close, capture and privacy are free, for good.
-- 6pm Max is an auto-renewing subscription with a 7-day free trial. Apple charges you, and you cancel in your Apple ID settings, at least 24 hours before the period ends.
-- Looks are bought once and are yours to keep on your Apple ID.
+- 6pm 是一款预算工具。它记录你告诉它的钱。它从不转移资金，也不构成理财建议。
+- 日结、记账和隐私永久免费。
+- 6pm Max 是自动续期订阅，提供 7 天免费试用。由 Apple 向你收费，你可以在 Apple 账户设置中取消，但须在当期结束前至少 24 小时取消。
+- 外观一次购买，永久归属于你的 Apple 账户。
 
-## Who we are, and what these terms cover
+## 我们是谁，以及本条款的适用范围
 
-6pm is made by {{OWNER}} ("we", "us"). These terms cover the 6pm app for iPhone and the website at at6pm.app. By installing or using 6pm, you agree to them. If you do not agree, please do not use 6pm.
+6pm 由 {{OWNER}}（下称“我们”）开发。本条款适用于 iPhone 版 6pm App 以及网站 at6pm.app。安装或使用 6pm，即表示你同意本条款。如果你不同意，请不要使用 6pm。
 
-6pm is also covered by [Apple's Standard End User License Agreement (EULA)](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/), which is part of this agreement. If the two disagree about something Apple's EULA covers, the EULA wins. Apple is not a party to these terms and is not responsible for 6pm, its support or its content.
+6pm 同时受 [Apple 标准最终用户许可协议（EULA）](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)约束，该协议是本协议的一部分。如果两者在 Apple EULA 涵盖的事项上存在冲突，以 EULA 为准。Apple 不是本条款的当事方，也不对 6pm、其支持服务或其内容负责。
 
-How we handle your data is in our [Privacy Policy](/zh-hans/privacy).
+我们如何处理你的数据，请见我们的[隐私政策](/zh-hans/privacy)。
 
-## Using 6pm
+## 使用 6pm
 
-We give you a personal, non-transferable licence to use 6pm on Apple devices you own or control, under the Usage Rules of the App Store. 6pm is free to download and use, except for the paid parts below.
+我们授予你一项个人的、不可转让的许可，允许你按照 App Store 的使用规则，在你拥有或控制的 Apple 设备上使用 6pm。6pm 可以免费下载和使用，下文所述的付费部分除外。
 
-You agree to:
+你同意：
 
-- use 6pm lawfully, for yourself;
-- not copy, reverse engineer or resell the app, or try to get around its limits or purchases;
-- not attack or overload our servers.
+- 为你自己合法地使用 6pm；
+- 不复制、反向工程或转售本 App，也不试图绕过其限制或购买机制；
+- 不攻击我们的服务器，也不使其超载。
 
-You must be at least 16, or have a parent or guardian's permission.
+你必须年满 16 周岁，或已获得父母或监护人的许可。
 
-Your data is yours. We do not claim any rights over what you put into 6pm.
+你的数据归你所有。对于你放进 6pm 的内容，我们不主张任何权利。
 
-## Not financial advice
+## 不构成理财建议
 
-6pm counts. The number it shows, such as "safe to spend today", is arithmetic on the figures you gave it, plus any spends it catches for you. It is not financial, tax, legal or investment advice, and it does not know everything about your money.
+6pm 只负责计数。它显示的数字，例如“今天可以花”，是根据你提供的数字以及它为你记下的花销所做的算术。它不是理财、税务、法律或投资建议，它也并不了解你财务状况的全部。
 
-- Check what 6pm catches. A receipt or QR code can be misread. A spend can be missed or counted twice.
-- 6pm never moves money. When you pay, you do it in your bank app. Before you send a transfer, check the account name, number and amount there.
-- 6pm is not a bank, a payment service or a lender.
-- You decide what to do with your money. You are responsible for those decisions.
+- 请核对 6pm 记下的内容。小票或二维码可能被误读。一笔花销可能被漏记或重复计算。
+- 6pm 从不转移资金。付款时，你是在银行 App 中完成的。在发起转账之前，请在那里核对户名、账号和金额。
+- 6pm 不是银行、支付服务机构或放贷机构。
+- 如何使用你的钱由你决定。你对这些决定负责。
 
-## Free and paid parts
+## 免费和付费部分
 
-The close, capture of your spends, and your privacy are free. Some extras are paid:
+日结、花销记录和你的隐私都是免费的。部分附加功能需要付费：
 
-- **Looks** are one-time purchases.
-- **6pm Max** is a subscription.
+- **外观** 为一次性购买。
+- **6pm Max** 为订阅。
 
-What each one includes is shown in the app, on the Looks and Max screens. Prices are shown there too, read from the App Store in your currency and including any taxes Apple adds.
+每项包含的内容都显示在 App 的“外观”和“Max”页面上。价格也显示在那里，从 App Store 读取，以你的货币计价，并已包含 Apple 加收的税费。
 
-## 6pm Max subscription
+## 6pm Max 订阅
 
-- **What it is.** 6pm Max is an auto-renewing subscription, monthly or yearly. The plan, its length and its price are shown in the app before you buy.
-- **Free trial.** New subscribers can get a 7-day free trial. The app tells you if you are eligible. Apple allows one trial per Apple ID. If you buy a subscription during a trial, the rest of the trial is lost.
-- **Payment.** Payment is charged to your Apple ID account when you confirm the purchase, or when the free trial ends.
-- **Renewal.** The subscription renews automatically unless you cancel it at least 24 hours before the end of the current period. Your account is charged for the next period within 24 hours before it ends, at the price shown when you subscribed, unless Apple has told you of a new price and you have accepted it.
-- **Manage or cancel.** Go to Settings on your iPhone, tap your name, then Subscriptions. You can also tap Manage in the Max screen of the app. Deleting the app does not cancel the subscription. After you cancel, Max stays on until the end of the period you paid for.
-- **Refunds.** Apple handles payments and refunds. Ask at [reportaproblem.apple.com](https://reportaproblem.apple.com).
-- **If Max ends.** Max-only features stop. The free parts of 6pm keep working, and the data on your phone stays yours.
+- **是什么。** 6pm Max 是按月或按年自动续期的订阅。方案、时长和价格会在你购买前显示在 App 中。
+- **免费试用。** 新订阅者可以获得 7 天免费试用。App 会告诉你是否符合资格。Apple 规定每个 Apple 账户只能试用一次。如果你在试用期间购买订阅，剩余的试用期将失效。
+- **付款。** 在你确认购买时，或在免费试用结束时，费用会从你的 Apple 账户中扣除。
+- **续期。** 除非你在当期结束前至少 24 小时取消，否则订阅会自动续期。你的账户会在当期结束前 24 小时内被扣取下一期的费用，价格为你订阅时显示的价格，除非 Apple 已通知你新的价格且你已接受。
+- **管理或取消。** 打开 iPhone 上的“设置”，轻点你的名字，然后轻点“订阅”。你也可以在 App 的 Max 页面中轻点“管理”。删除 App 不会取消订阅。取消后，Max 会一直保持开启，直到你已付费的那一期结束。
+- **退款。** 付款和退款由 Apple 处理。请前往 [reportaproblem.apple.com](https://reportaproblem.apple.com) 申请。
+- **如果 Max 到期。** 仅限 Max 的功能将停止。6pm 的免费部分继续可用，你手机上的数据仍归你所有。
 
-## Looks
+## 外观
 
-A look is a one-time purchase. You pay once, it does not renew, and it is tied to your Apple ID. If you reinstall 6pm or use a new iPhone with the same Apple ID, tap Restore purchases to get your looks back.
+外观为一次性购买。你只需付费一次，不会续期，并与你的 Apple 账户绑定。如果你重新安装 6pm，或使用同一个 Apple 账户换了新 iPhone，轻点“恢复购买”即可找回你的外观。
 
-## Your data and backups
+## 你的数据和备份
 
-Your data lives on your phone. You are responsible for keeping your phone safe and up to date. If you delete the app or use "Delete all data" in Settings, your data on the phone is erased, and we cannot bring it back.
+你的数据保存在你的手机上。你有责任保护好手机的安全并及时更新。如果你删除 App，或使用设置中的“删除所有数据”，手机上的数据将被清除，我们无法恢复。
 
-Backup is a 6pm Max feature. It is end-to-end encrypted: we cannot read it, and we cannot recover it for you if you lose the key. Keep your Apple ID and iCloud Keychain safe.
+备份是 6pm Max 的功能。它采用端到端加密：我们无法读取，如果你丢失了密钥，我们也无法为你恢复。请保护好你的 Apple 账户和 iCloud 钥匙串。
 
-## Availability and changes
+## 可用性和变更
 
-We work hard to make 6pm reliable, but we do not promise it will always be available or free of errors. Features that need our server can change or be paused. We may update the app and these terms as 6pm grows. If a change to these terms matters, we will tell you in the app or on this page before it takes effect, and your continued use after that means you accept it. If you do not accept it, stop using 6pm.
+我们努力让 6pm 稳定可靠，但不保证它始终可用或没有错误。需要我们服务器的功能可能会变更或暂停。随着 6pm 的发展，我们可能会更新 App 和本条款。如果本条款的变更比较重要，我们会在生效之前通过 App 或本页面告知你；此后你继续使用，即表示你接受变更。如果你不接受，请停止使用 6pm。
 
-## No warranty
+## 不提供保证
 
-To the extent the law allows, 6pm is provided "as is" and "as available", without promises about accuracy, fitness for a particular purpose or uninterrupted service.
+在法律允许的范围内，6pm 按“现状”和“现有”提供，不对准确性、特定用途的适用性或服务不中断作出任何承诺。
 
-## Limit of liability
+## 责任限制
 
-To the extent the law allows, we are not liable for indirect or consequential loss, lost profit, lost savings, or any loss from a decision you made using 6pm, including a spend that 6pm missed or misread. Our total liability for any claim about 6pm is limited to the amount you paid for 6pm in the 12 months before the claim.
+在法律允许的范围内，我们不对间接或后果性损失、利润损失、储蓄损失，或因你使用 6pm 作出的决定而造成的任何损失（包括 6pm 漏记或误读的花销）承担责任。我们就与 6pm 有关的任何索赔所承担的全部责任，以你在索赔前 12 个月内为 6pm 支付的金额为限。
 
-Nothing in these terms limits liability that the law does not allow us to limit, or the rights you have as a consumer where you live.
+本条款中的任何内容，均不限制法律不允许我们限制的责任，也不限制你作为消费者在你所在地享有的权利。
 
-## Ending
+## 终止
 
-You can stop using 6pm at any time by deleting the app. If you have a subscription, cancel it as described above. We may suspend access to our servers if you misuse them or break these terms.
+你可以随时删除 App 以停止使用 6pm。如果你有订阅，请按上文所述取消。如果你滥用我们的服务器或违反本条款，我们可能会暂停你对服务器的访问。
 
-## Other companies
+## 其他公司
 
-Apple, your bank and its app, and the other services 6pm connects to have their own terms. We do not control them and are not responsible for them.
+Apple、你的银行及其 App，以及 6pm 所连接的其他服务都有各自的条款。我们无法控制它们，也不对它们负责。
 
-## Governing law
+## 适用法律
 
-These terms are governed by the laws of Vietnam. If we have a disagreement, please write to us first and we will try to sort it out. If we cannot, the competent courts of Vietnam will decide it. This does not take away the rights you have as a consumer under the law of the country where you live.
+本条款受越南法律管辖。如果我们之间发生争议，请先联系我们，我们会尽力解决。如果无法解决，将由越南有管辖权的法院裁决。这不影响你作为消费者根据你所在国家或地区的法律享有的权利。
 
-## Contact
+## 联系方式
 
-Questions about these terms? Call or message {{OWNER}} on [{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}}).
+对本条款有疑问？请致电或发消息给 {{OWNER}}：[{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}})。

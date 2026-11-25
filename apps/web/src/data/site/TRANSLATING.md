@@ -56,8 +56,9 @@ and each close receipt's `from` plus its `amount` is its `to`.
 
 In `duo-amounts-ja.ts` the amounts are whole steps of your money (English counts in ten cents,
 Vietnamese in thousands of đồng); `format` writes a step count out, and `keypad` says what the
-propped-up keypad shows around the typed digits and how many steps one typed unit is. The four
-`rows` add up to `today.spent`, and `today.start` minus `today.spent` is `today.left`.
+propped-up keypad shows around the typed digits, how many steps one typed unit is, and how many
+digits it takes (enough for a big spend in your money). The four `rows` add up to `today.spent`,
+and `today.start` minus `today.spent` is `today.left`.
 
 ## Checking your work
 

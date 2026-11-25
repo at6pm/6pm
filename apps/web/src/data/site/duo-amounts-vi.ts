@@ -7,7 +7,7 @@ export const duoMoneyVi: DuoMoney = {
     amount < 1000
       ? `${amount}k`
       : `${(amount / 1000).toLocaleString('vi-VN', { maximumFractionDigits: 1 })}tr`,
-  keypad: { before: '', after: 'k', per: 1 },
+  keypad: { before: '', after: 'k', per: 1, digits: 4 },
 };
 
 /** The Vietnamese page's October, in đồng: a 312k day with 183k left at six. */

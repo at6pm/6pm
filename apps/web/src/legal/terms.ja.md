@@ -1,105 +1,105 @@
 ---
-title: Terms of Use
-description: The rules for using 6pm, including how 6pm Max and look purchases work.
-lede: Plain terms for a plain app. Please read them once. The subscription part matters most.
+title: 利用規約
+description: 6pmを使うときのルール。6pm Maxと着せかえの購入の仕組みも含みます。
+lede: シンプルなアプリには、シンプルな規約を。一度だけ目を通してください。いちばん大切なのは、サブスクリプションの部分です。
 updated: '2026-10-11'
 ---
 
-<!-- Translation pending: English text. -->
+この日本語版は、便宜のために用意した翻訳です。英語版と内容に違いがある場合は、[英語版](/terms)が優先します。
 
-## The short version
+## 要約
 
-- 6pm is a budgeting tool. It counts the money you tell it about. It never moves money, and it is not financial advice.
-- The close, capture and privacy are free, for good.
-- 6pm Max is an auto-renewing subscription with a 7-day free trial. Apple charges you, and you cancel in your Apple ID settings, at least 24 hours before the period ends.
-- Looks are bought once and are yours to keep on your Apple ID.
+- 6pmは家計管理のツールです。あなたが伝えたお金を数えます。お金を動かすことは一切なく、金融上の助言でもありません。
+- 締め、記録、プライバシーは、これからもずっと無料です。
+- 6pm Maxは、7日間の無料トライアルつきの自動更新サブスクリプションです。料金はAppleが請求し、解約はApple IDの設定から、期間終了の24時間以上前までに行います。
+- 着せかえは買い切りで、あなたのApple IDでずっと使えます。
 
-## Who we are, and what these terms cover
+## 私たちについて、この規約の対象
 
-6pm is made by {{OWNER}} ("we", "us"). These terms cover the 6pm app for iPhone and the website at at6pm.app. By installing or using 6pm, you agree to them. If you do not agree, please do not use 6pm.
+6pmは{{OWNER}}（以下「私たち」）が制作しています。この規約は、iPhone向けの6pmアプリと、ウェブサイトat6pm.appを対象とします。6pmをインストールまたは利用することで、あなたはこの規約に同意したものとみなされます。同意できない場合は、6pmを利用しないでください。
 
-6pm is also covered by [Apple's Standard End User License Agreement (EULA)](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/), which is part of this agreement. If the two disagree about something Apple's EULA covers, the EULA wins. Apple is not a party to these terms and is not responsible for 6pm, its support or its content.
+6pmには、[Appleの標準使用許諾契約（EULA）](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)も適用され、これはこの契約の一部となります。AppleのEULAが対象とする事項について両者の内容が食い違う場合は、EULAが優先します。Appleはこの規約の当事者ではなく、6pm、そのサポートおよびコンテンツについて責任を負いません。
 
-How we handle your data is in our [Privacy Policy](/ja/privacy).
+あなたのデータの取り扱いについては、[プライバシーポリシー](/ja/privacy)をご覧ください。
 
-## Using 6pm
+## 6pmの利用
 
-We give you a personal, non-transferable licence to use 6pm on Apple devices you own or control, under the Usage Rules of the App Store. 6pm is free to download and use, except for the paid parts below.
+私たちはあなたに、App Storeの利用規則に従い、あなたが所有または管理するApple製デバイスで6pmを利用するための、個人的で譲渡できないライセンスを付与します。6pmは、以下の有料部分を除き、無料でダウンロードして利用できます。
 
-You agree to:
+あなたは次のことに同意します。
 
-- use 6pm lawfully, for yourself;
-- not copy, reverse engineer or resell the app, or try to get around its limits or purchases;
-- not attack or overload our servers.
+- 6pmを、法令に従い、あなた自身のために利用すること。
+- アプリを複製、リバースエンジニアリング、転売しないこと。また、その制限や購入を回避しようとしないこと。
+- 私たちのサーバーを攻撃したり、過剰な負荷をかけたりしないこと。
 
-You must be at least 16, or have a parent or guardian's permission.
+利用には16歳以上であるか、親または保護者の許可が必要です。
 
-Your data is yours. We do not claim any rights over what you put into 6pm.
+あなたのデータはあなたのものです。あなたが6pmに入力したものについて、私たちはいかなる権利も主張しません。
 
-## Not financial advice
+## 金融上の助言ではありません
 
-6pm counts. The number it shows, such as "safe to spend today", is arithmetic on the figures you gave it, plus any spends it catches for you. It is not financial, tax, legal or investment advice, and it does not know everything about your money.
+6pmは数えるだけです。「今日使えるお金」など、6pmが表示する数字は、あなたが入力した数値と、6pmがあなたのために記録した支出をもとにした計算です。金融、税務、法律、投資に関する助言ではなく、6pmがあなたのお金についてすべてを知っているわけでもありません。
 
-- Check what 6pm catches. A receipt or QR code can be misread. A spend can be missed or counted twice.
-- 6pm never moves money. When you pay, you do it in your bank app. Before you send a transfer, check the account name, number and amount there.
-- 6pm is not a bank, a payment service or a lender.
-- You decide what to do with your money. You are responsible for those decisions.
+- 6pmが記録した内容を確認してください。レシートやQRコードは読み間違えられることがあります。支出が漏れたり、二重に数えられたりすることもあります。
+- 6pmがお金を動かすことはありません。支払いは、あなた自身が銀行アプリで行います。振込の前に、銀行アプリで口座名義、口座番号、金額を確認してください。
+- 6pmは銀行、決済サービス、貸金業者ではありません。
+- お金をどう使うかはあなたが決め、その判断にはあなたが責任を負います。
 
-## Free and paid parts
+## 無料の部分と有料の部分
 
-The close, capture of your spends, and your privacy are free. Some extras are paid:
+締め、支出の記録、そしてプライバシーは無料です。いくつかの追加機能は有料です。
 
-- **Looks** are one-time purchases.
-- **6pm Max** is a subscription.
+- **着せかえ**は買い切りの購入です。
+- **6pm Max**はサブスクリプションです。
 
-What each one includes is shown in the app, on the Looks and Max screens. Prices are shown there too, read from the App Store in your currency and including any taxes Apple adds.
+それぞれの内容は、アプリの着せかえ画面とMax画面に表示されます。価格もそこに表示されます。価格はApp Storeからあなたの通貨で読み込まれ、Appleが加算する税金を含みます。
 
-## 6pm Max subscription
+## 6pm Maxのサブスクリプション
 
-- **What it is.** 6pm Max is an auto-renewing subscription, monthly or yearly. The plan, its length and its price are shown in the app before you buy.
-- **Free trial.** New subscribers can get a 7-day free trial. The app tells you if you are eligible. Apple allows one trial per Apple ID. If you buy a subscription during a trial, the rest of the trial is lost.
-- **Payment.** Payment is charged to your Apple ID account when you confirm the purchase, or when the free trial ends.
-- **Renewal.** The subscription renews automatically unless you cancel it at least 24 hours before the end of the current period. Your account is charged for the next period within 24 hours before it ends, at the price shown when you subscribed, unless Apple has told you of a new price and you have accepted it.
-- **Manage or cancel.** Go to Settings on your iPhone, tap your name, then Subscriptions. You can also tap Manage in the Max screen of the app. Deleting the app does not cancel the subscription. After you cancel, Max stays on until the end of the period you paid for.
-- **Refunds.** Apple handles payments and refunds. Ask at [reportaproblem.apple.com](https://reportaproblem.apple.com).
-- **If Max ends.** Max-only features stop. The free parts of 6pm keep working, and the data on your phone stays yours.
+- **内容。** 6pm Maxは、月額または年額の自動更新サブスクリプションです。プラン、期間、価格は購入前にアプリに表示されます。
+- **無料トライアル。** 新規登録者は7日間の無料トライアルを利用できる場合があります。対象かどうかはアプリでお知らせします。Appleが認めるトライアルは、Apple IDごとに1回です。トライアル中にサブスクリプションを購入すると、トライアルの残りの期間は失われます。
+- **支払い。** 料金は、購入を確定したとき、または無料トライアルが終了したときに、あなたのApple IDアカウントに請求されます。
+- **更新。** サブスクリプションは、現在の期間が終了する24時間以上前までに解約しない限り、自動的に更新されます。次の期間の料金は、現在の期間が終了する前の24時間以内に、登録時に表示された価格で請求されます。ただし、Appleから新しい価格の通知があり、あなたがそれに同意した場合を除きます。
+- **管理・解約。** iPhoneの設定を開き、あなたの名前をタップしてから「サブスクリプション」をタップします。アプリのMax画面で「管理」をタップすることもできます。アプリを削除してもサブスクリプションは解約されません。解約後も、支払い済みの期間が終わるまでMaxは使えます。
+- **返金。** 支払いと返金はAppleが扱います。[reportaproblem.apple.com](https://reportaproblem.apple.com)からお問い合わせください。
+- **Maxが終了したとき。** Max限定の機能は使えなくなります。6pmの無料部分は引き続き使え、スマートフォンの中のデータはあなたのもののままです。
 
-## Looks
+## 着せかえ
 
-A look is a one-time purchase. You pay once, it does not renew, and it is tied to your Apple ID. If you reinstall 6pm or use a new iPhone with the same Apple ID, tap Restore purchases to get your looks back.
+着せかえは買い切りの購入です。支払いは一度だけで、更新されず、あなたのApple IDに結びつきます。6pmを再インストールしたり、同じApple IDで新しいiPhoneを使ったりする場合は、「購入を復元」をタップすると着せかえが戻ります。
 
-## Your data and backups
+## あなたのデータとバックアップ
 
-Your data lives on your phone. You are responsible for keeping your phone safe and up to date. If you delete the app or use "Delete all data" in Settings, your data on the phone is erased, and we cannot bring it back.
+あなたのデータはスマートフォンの中にあります。スマートフォンを安全に保ち、最新の状態にしておくのはあなたの責任です。アプリを削除したり、設定の「すべてのデータを削除」を使ったりすると、スマートフォンの中のデータは消去され、私たちが元に戻すことはできません。
 
-Backup is a 6pm Max feature. It is end-to-end encrypted: we cannot read it, and we cannot recover it for you if you lose the key. Keep your Apple ID and iCloud Keychain safe.
+バックアップは6pm Maxの機能です。エンドツーエンドで暗号化されているため、私たちには読めず、あなたが鍵を失った場合に私たちが復元することもできません。Apple IDとiCloudキーチェーンは安全に保ってください。
 
-## Availability and changes
+## 提供状況と変更
 
-We work hard to make 6pm reliable, but we do not promise it will always be available or free of errors. Features that need our server can change or be paused. We may update the app and these terms as 6pm grows. If a change to these terms matters, we will tell you in the app or on this page before it takes effect, and your continued use after that means you accept it. If you do not accept it, stop using 6pm.
+私たちは6pmが安定して動くよう力を尽くしていますが、常に利用できることや、エラーがないことを約束するものではありません。私たちのサーバーを必要とする機能は、変更されたり一時停止されたりすることがあります。6pmの成長に合わせて、アプリやこの規約を更新することがあります。この規約に重要な変更がある場合は、変更が有効になる前に、アプリ内またはこのページでお知らせします。その後も利用を続けた場合は、変更に同意したものとみなされます。同意できない場合は、6pmの利用をやめてください。
 
-## No warranty
+## 保証の否認
 
-To the extent the law allows, 6pm is provided "as is" and "as available", without promises about accuracy, fitness for a particular purpose or uninterrupted service.
+法律で認められる範囲で、6pmは「現状のまま」かつ「提供可能な範囲で」提供され、正確性、特定の目的への適合性、中断のないサービスについて、いかなる約束もしません。
 
-## Limit of liability
+## 責任の制限
 
-To the extent the law allows, we are not liable for indirect or consequential loss, lost profit, lost savings, or any loss from a decision you made using 6pm, including a spend that 6pm missed or misread. Our total liability for any claim about 6pm is limited to the amount you paid for 6pm in the 12 months before the claim.
+法律で認められる範囲で、私たちは、間接的または派生的な損害、逸失利益、失われた貯蓄、あるいは6pmを使ってあなたが下した判断から生じた損害（6pmが記録し漏れたり読み間違えたりした支出によるものを含む）について責任を負いません。6pmに関するあらゆる請求について、私たちの責任の総額は、その請求の前12か月間にあなたが6pmに支払った金額を上限とします。
 
-Nothing in these terms limits liability that the law does not allow us to limit, or the rights you have as a consumer where you live.
+この規約のいかなる内容も、法律上制限することが認められていない責任や、お住まいの地域で消費者としてあなたが持つ権利を制限するものではありません。
 
-## Ending
+## 利用の終了
 
-You can stop using 6pm at any time by deleting the app. If you have a subscription, cancel it as described above. We may suspend access to our servers if you misuse them or break these terms.
+あなたは、アプリを削除することで、いつでも6pmの利用をやめられます。サブスクリプションをお持ちの場合は、上記の方法で解約してください。私たちは、あなたが私たちのサーバーを不正に利用したり、この規約に違反したりした場合、サーバーへのアクセスを停止することがあります。
 
-## Other companies
+## 他の企業
 
-Apple, your bank and its app, and the other services 6pm connects to have their own terms. We do not control them and are not responsible for them.
+Apple、あなたの銀行とそのアプリ、そして6pmが接続するその他のサービスには、それぞれ独自の規約があります。私たちはそれらを管理しておらず、それらについて責任を負いません。
 
-## Governing law
+## 準拠法
 
-These terms are governed by the laws of Vietnam. If we have a disagreement, please write to us first and we will try to sort it out. If we cannot, the competent courts of Vietnam will decide it. This does not take away the rights you have as a consumer under the law of the country where you live.
+この規約はベトナムの法律に準拠します。意見の相違が生じた場合は、まず私たちにご連絡ください。解決に努めます。解決できない場合は、ベトナムの管轄裁判所が判断します。これは、お住まいの国の法律に基づいて消費者としてあなたが持つ権利を奪うものではありません。
 
-## Contact
+## お問い合わせ
 
-Questions about these terms? Call or message {{OWNER}} on [{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}}).
+この規約についてのご質問は、{{OWNER}}（[{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}})）まで、お電話またはメッセージでどうぞ。

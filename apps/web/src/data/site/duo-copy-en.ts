@@ -78,6 +78,7 @@ export const duoCopyEn: DuoCopy = {
       over: (a) => `${a} over. Tomorrow quietly took it.`,
       ofSoFar: (a) => `of ${a} so far`,
       ofThatDay: (a) => `of ${a} that day`,
+      quote: (n) => `“${n}”`,
       items: {
         1: ['Corner Bakery', 'Rideshare', 'Grocery run'],
         2: ['Dinner with Sam', 'Movie night', 'Ride home'],

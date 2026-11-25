@@ -1,65 +1,64 @@
-// Translation pending: English text.
 import type { DuoAmounts } from './duo-data';
 import type { DuoMoney } from './duo-money';
 
-/** Ten-cent steps: 48 is $4.80. Cents under $20, whole dollars from there. */
+/** Ten-cent steps: 19 is 1,90 €. Cents under 20 €, whole euros from there. */
 export const duoMoneyEs: DuoMoney = {
   format: (amount) => {
-    const dollars = amount / 10;
+    const euros = amount / 10;
     return amount < 200
-      ? `$${dollars.toFixed(2)}`
-      : `$${Math.round(dollars).toLocaleString('en-US')}`;
+      ? `${euros.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`
+      : `${Math.round(euros).toLocaleString('es-ES')} €`;
   },
-  keypad: { before: '$', after: '', per: 10 },
+  keypad: { before: '', after: ' €', per: 10, digits: 4 },
 };
 
-/** This page's October, for now the English one in US dollars. */
+/** The Spanish page's October, in euros: a 34 € day with 22 € left at six. */
 export const duoAmountsEs: DuoAmounts = {
   rows: [
-    ['ride', 48],
-    ['food', 95],
-    ['coffee', 55],
-    ['shop', 32],
+    ['ride', 15],
+    ['food', 65],
+    ['coffee', 19],
+    ['shop', 21],
   ],
-  today: { left: 310, start: 540, spent: 230, daily: 540, kept: 530 },
-  spent: { 1: 410, 2: 655, 3: 380, 4: 290, 5: 470, 6: 505, 8: 360 },
+  today: { left: 220, start: 340, spent: 120, daily: 340, kept: 330 },
+  spent: { 1: 290, 2: 465, 3: 257, 4: 210, 5: 260, 6: 318, 8: 260 },
   diary: {
     1: [
-      ['food', 45],
-      ['ride', 62],
-      ['shop', 303],
+      ['food', 25],
+      ['ride', 90],
+      ['shop', 175],
     ],
     2: [
-      ['food', 320],
-      ['fun', 180],
-      ['ride', 155],
+      ['food', 260],
+      ['fun', 95],
+      ['ride', 110],
     ],
     3: [
-      ['food', 65],
-      ['fun', 240],
-      ['coffee', 75],
+      ['food', 115],
+      ['fun', 120],
+      ['coffee', 22],
     ],
     4: [
-      ['shop', 210],
+      ['shop', 160],
       ['coffee', 35],
-      ['ride', 45],
+      ['ride', 15],
     ],
     5: [
-      ['food', 55],
-      ['ride', 96],
-      ['shop', 319],
+      ['food', 125],
+      ['ride', 15],
+      ['shop', 120],
     ],
     6: [
-      ['food', 60],
-      ['coffee', 55],
-      ['fun', 390],
+      ['food', 120],
+      ['coffee', 18],
+      ['fun', 180],
     ],
     8: [
-      ['food', 40],
-      ['coffee', 65],
-      ['shop', 255],
+      ['food', 35],
+      ['coffee', 25],
+      ['shop', 200],
     ],
   },
-  pots: [2400, 1100, 640],
-  standRecent: [40, 15],
+  pots: [9600, 2420, 800],
+  standRecent: [25, 18],
 };

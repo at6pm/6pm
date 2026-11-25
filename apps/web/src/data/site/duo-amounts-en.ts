@@ -9,7 +9,7 @@ export const duoMoneyEn: DuoMoney = {
       ? `$${dollars.toFixed(2)}`
       : `$${Math.round(dollars).toLocaleString('en-US')}`;
   },
-  keypad: { before: '$', after: '', per: 10 },
+  keypad: { before: '$', after: '', per: 10, digits: 4 },
 };
 
 /** The English page's October, in US dollars: a $54 day with $31 left at six. */

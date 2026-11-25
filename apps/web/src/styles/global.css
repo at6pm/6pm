@@ -55,6 +55,20 @@
     'Leelawadee UI', Leelawadee, monospace;
 }
 
+/* Korean breaks lines between words, never inside one; a word too long for its line still wraps. */
+:root:lang(ko) {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+/* Thai is never letter-spaced: tracking pulls its stacked marks off their letters. */
+:root:lang(th) body *:lang(th) {
+  letter-spacing: 0 !important;
+}
+/* Chinese, Japanese and Korean set their display type at the face's own spacing, not tightened. */
+:root:is(:lang(zh-Hans), :lang(ja), :lang(ko)) :is(h1, h2, h3, .beliefs p) {
+  letter-spacing: 0;
+}
+
 html {
   scroll-behavior: smooth;
 }

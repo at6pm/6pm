@@ -130,6 +130,7 @@ export const siteCopyVi: SiteCopy = {
       },
     ],
     cardNumSize: '56px',
+    cardNo: 'Số',
     keptSoFar: 'ĐÃ GIỮ',
     withThis: 'THÊM KHOẢN NÀY',
     keepStamp: 'GIỮ',

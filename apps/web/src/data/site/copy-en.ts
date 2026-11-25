@@ -130,6 +130,7 @@ export const siteCopyEn: SiteCopy = {
       },
     ],
     cardNumSize: '68px',
+    cardNo: 'Nº',
     keptSoFar: 'KEPT SO FAR',
     withThis: 'WITH THIS ONE',
     keepStamp: 'KEEP',

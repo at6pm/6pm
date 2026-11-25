@@ -32,7 +32,8 @@ const { t } = Astro.props;
           >{t.widgets.closesIn}<span class="sym sym-fill">wb_twilight</span></span
         >
         <span class="widget-foot"
-          ><span class="widget-num">8m</span><span class="widget-sub">{t.widgets.caught}</span
+          ><span class="widget-num">{t.island.countdown}</span><span class="widget-sub"
+            >{t.widgets.caught}</span
           ></span
         >
       </div>
@@ -166,6 +167,7 @@ const { t } = Astro.props;
     font-size: 34px;
     line-height: 1;
     letter-spacing: -0.02em;
+    white-space: nowrap;
   }
   .widget-num.big {
     font-size: 38px;

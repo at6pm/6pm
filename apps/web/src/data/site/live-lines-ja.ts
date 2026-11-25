@@ -1,14 +1,13 @@
-// Translation pending: English text.
 import type { LiveLines } from './live-lines';
 
 export const liveLinesJa: LiveLines = {
-  clock: (time, left) => `${time} where you are · next close in ${left}`,
-  closeNow: 'It’s six. Time to close the day.',
-  duration: (h, m) => (h ? `${h}h ${m}m` : `${m}m`),
-  countdown: (d, h, m) => `${d}d ${h}h ${m}m to launch`,
-  out: 'Out now',
-  sent: 'You’re on the list. See you at six.',
-  notAnEmail: 'That doesn’t look like an email yet.',
-  busy: 'Too many tries from here. Give it a minute, then try again.',
-  unreachable: 'Couldn’t reach the list. Check your connection and try again.',
+  clock: (time, left) => `いまの時刻 ${time} · 次の締めまで${left}`,
+  closeNow: '6時です。今日を締めよう。',
+  duration: (h, m) => (h ? `${h}時間${m}分` : `${m}分`),
+  countdown: (d, h, m) => `公開まであと${d}日${h}時間${m}分`,
+  out: '配信中',
+  sent: '登録しました。6時にまた会いましょう。',
+  notAnEmail: 'メールアドレスの形になっていないようです。',
+  busy: '試行回数が多すぎます。1分ほど待ってから、もう一度お試しください。',
+  unreachable: 'リストにつながりませんでした。通信状況を確認して、もう一度お試しください。',
 };

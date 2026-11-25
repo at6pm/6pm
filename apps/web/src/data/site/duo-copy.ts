@@ -68,6 +68,8 @@ export interface DuoScreenCopy {
     readonly over: (amount: string) => string;
     readonly ofSoFar: (amount: string) => string;
     readonly ofThatDay: (amount: string) => string;
+    /** The day's note in the language's quotation marks. */
+    readonly quote: (note: string) => string;
     /** The names of each closed day's three spends, by day of the month. */
     readonly items: Readonly<Record<number, readonly [string, string, string]>>;
   };

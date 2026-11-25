@@ -1,65 +1,62 @@
-// Translation pending: English text.
 import type { DuoAmounts } from './duo-data';
 import type { DuoMoney } from './duo-money';
 
-/** Ten-cent steps: 48 is $4.80. Cents under $20, whole dollars from there. */
+/** Whole won: `₩6,000`, and `₩1.5만` from ten thousand, as the app shortens it. */
 export const duoMoneyKo: DuoMoney = {
-  format: (amount) => {
-    const dollars = amount / 10;
-    return amount < 200
-      ? `$${dollars.toFixed(2)}`
-      : `$${Math.round(dollars).toLocaleString('en-US')}`;
-  },
-  keypad: { before: '$', after: '', per: 10 },
+  format: (amount) =>
+    amount < 10_000
+      ? `₩${amount.toLocaleString('ko-KR')}`
+      : `₩${(amount / 10_000).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}만`,
+  keypad: { before: '₩', after: '', per: 1, digits: 7 },
 };
 
-/** This page's October, for now the English one in US dollars. */
+/** The Korean page's October, in won: a ₩45,000 day with ₩15,000 left at six. */
 export const duoAmountsKo: DuoAmounts = {
   rows: [
-    ['ride', 48],
-    ['food', 95],
-    ['coffee', 55],
-    ['shop', 32],
+    ['ride', 1_550],
+    ['food', 11_000],
+    ['coffee', 5_500],
+    ['shop', 11_950],
   ],
-  today: { left: 310, start: 540, spent: 230, daily: 540, kept: 530 },
-  spent: { 1: 410, 2: 655, 3: 380, 4: 290, 5: 470, 6: 505, 8: 360 },
+  today: { left: 15_000, start: 45_000, spent: 30_000, daily: 45_000, kept: 96_150 },
+  spent: { 1: 35_200, 2: 56_800, 3: 30_800, 4: 23_500, 5: 16_550, 6: 36_800, 8: 31_000 },
   diary: {
     1: [
-      ['food', 45],
-      ['ride', 62],
-      ['shop', 303],
+      ['food', 4_800],
+      ['ride', 12_400],
+      ['shop', 18_000],
     ],
     2: [
-      ['food', 320],
-      ['fun', 180],
-      ['ride', 155],
+      ['food', 32_000],
+      ['fun', 15_000],
+      ['ride', 9_800],
     ],
     3: [
-      ['food', 65],
-      ['fun', 240],
-      ['coffee', 75],
+      ['food', 9_500],
+      ['fun', 16_800],
+      ['coffee', 4_500],
     ],
     4: [
-      ['shop', 210],
-      ['coffee', 35],
-      ['ride', 45],
+      ['shop', 16_500],
+      ['coffee', 5_500],
+      ['ride', 1_500],
     ],
     5: [
-      ['food', 55],
-      ['ride', 96],
-      ['shop', 319],
+      ['food', 9_000],
+      ['ride', 1_550],
+      ['shop', 6_000],
     ],
     6: [
-      ['food', 60],
-      ['coffee', 55],
-      ['fun', 390],
+      ['food', 12_000],
+      ['coffee', 4_800],
+      ['fun', 20_000],
     ],
     8: [
-      ['food', 40],
-      ['coffee', 65],
-      ['shop', 255],
+      ['food', 4_500],
+      ['coffee', 5_200],
+      ['shop', 21_300],
     ],
   },
-  pots: [2400, 1100, 640],
-  standRecent: [40, 15],
+  pots: [1_380_000, 330_000, 120_000],
+  standRecent: [3_000, 2_000],
 };

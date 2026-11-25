@@ -59,7 +59,7 @@ function startStand(section: HTMLElement): void {
   const stand = section.querySelector<HTMLElement>('[data-duo-stand]');
   if (!stand) return;
   const money = duoMoneys[siteLangOf(stand.dataset.lang) ?? 'en'];
-  const { before, after, per } = money.keypad;
+  const { before, after, per, digits } = money.keypad;
   const start = Number(stand.dataset.start);
   let left = Number(stand.dataset.left);
   let typed = '';
@@ -80,7 +80,7 @@ function startStand(section: HTMLElement): void {
   for (const key of stand.querySelectorAll<HTMLElement>('[data-stand-key]')) {
     key.addEventListener('click', () => {
       const k = key.dataset.standKey ?? '';
-      typed = k === 'del' ? typed.slice(0, -1) : (typed + k).replace(/^0+/, '').slice(0, 4);
+      typed = k === 'del' ? typed.slice(0, -1) : (typed + k).replace(/^0+/, '').slice(0, digits);
       showTyped();
     });
   }

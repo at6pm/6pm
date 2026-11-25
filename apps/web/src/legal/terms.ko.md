@@ -1,105 +1,105 @@
 ---
-title: Terms of Use
-description: The rules for using 6pm, including how 6pm Max and look purchases work.
-lede: Plain terms for a plain app. Please read them once. The subscription part matters most.
+title: 이용약관
+description: 6pm을 이용할 때의 규칙. 6pm Max와 룩 구매가 어떻게 이루어지는지도 담았습니다.
+lede: 단순한 앱에 맞는 단순한 약관입니다. 한 번만 읽어 주세요. 가장 중요한 건 구독 부분입니다.
 updated: '2026-10-11'
 ---
 
-<!-- Translation pending: English text. -->
+이 한국어판은 편의를 위해 제공하는 번역본입니다. 영어판과 내용이 다를 경우 [영어판](/terms)이 우선합니다.
 
-## The short version
+## 요약
 
-- 6pm is a budgeting tool. It counts the money you tell it about. It never moves money, and it is not financial advice.
-- The close, capture and privacy are free, for good.
-- 6pm Max is an auto-renewing subscription with a 7-day free trial. Apple charges you, and you cancel in your Apple ID settings, at least 24 hours before the period ends.
-- Looks are bought once and are yours to keep on your Apple ID.
+- 6pm은 예산 관리 도구입니다. 사용자가 알려 준 돈을 셉니다. 절대 돈을 옮기지 않으며, 금융 자문이 아닙니다.
+- 마감, 기록, 프라이버시는 앞으로도 계속 무료입니다.
+- 6pm Max는 7일 무료 체험이 있는 자동 갱신 구독입니다. 요금은 Apple이 청구하며, 해지는 현재 기간이 끝나기 최소 24시간 전에 Apple ID 설정에서 합니다.
+- 룩은 한 번 구매하면 Apple ID로 계속 쓸 수 있습니다.
 
-## Who we are, and what these terms cover
+## 저희는 누구이며, 이 약관은 무엇을 다루나요
 
-6pm is made by {{OWNER}} ("we", "us"). These terms cover the 6pm app for iPhone and the website at at6pm.app. By installing or using 6pm, you agree to them. If you do not agree, please do not use 6pm.
+6pm을 만드는 곳은 {{OWNER}}(이하 "저희")입니다. 이 약관은 iPhone용 6pm 앱과 웹사이트 at6pm.app에 적용됩니다. 6pm을 설치하거나 이용하면 이 약관에 동의한 것으로 봅니다. 동의하지 않는다면 6pm을 이용하지 마세요.
 
-6pm is also covered by [Apple's Standard End User License Agreement (EULA)](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/), which is part of this agreement. If the two disagree about something Apple's EULA covers, the EULA wins. Apple is not a party to these terms and is not responsible for 6pm, its support or its content.
+6pm에는 [Apple 표준 최종 사용자 사용권 계약(EULA)](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)도 적용되며, 이는 이 계약의 일부입니다. Apple EULA가 다루는 사항에 대해 두 문서의 내용이 다르면 EULA가 우선합니다. Apple은 이 약관의 당사자가 아니며, 6pm과 그 지원 및 콘텐츠에 대해 책임지지 않습니다.
 
-How we handle your data is in our [Privacy Policy](/ko/privacy).
+저희가 데이터를 처리하는 방법은 [개인정보 처리방침](/ko/privacy)에 있습니다.
 
-## Using 6pm
+## 6pm 이용
 
-We give you a personal, non-transferable licence to use 6pm on Apple devices you own or control, under the Usage Rules of the App Store. 6pm is free to download and use, except for the paid parts below.
+저희는 App Store 이용 규칙에 따라, 사용자가 소유하거나 관리하는 Apple 기기에서 6pm을 이용할 수 있는 개인적이고 양도할 수 없는 라이선스를 부여합니다. 6pm은 아래의 유료 부분을 제외하면 무료로 내려받아 이용할 수 있습니다.
 
-You agree to:
+사용자는 다음에 동의합니다.
 
-- use 6pm lawfully, for yourself;
-- not copy, reverse engineer or resell the app, or try to get around its limits or purchases;
-- not attack or overload our servers.
+- 6pm을 법에 맞게, 본인을 위해 이용합니다.
+- 앱을 복제하거나 리버스 엔지니어링하거나 재판매하지 않으며, 앱의 제한이나 구매를 우회하려 하지 않습니다.
+- 저희 서버를 공격하거나 과부하를 일으키지 않습니다.
 
-You must be at least 16, or have a parent or guardian's permission.
+만 16세 이상이거나, 부모 또는 보호자의 허락을 받아야 합니다.
 
-Your data is yours. We do not claim any rights over what you put into 6pm.
+사용자의 데이터는 사용자의 것입니다. 사용자가 6pm에 입력한 것에 대해 저희는 어떤 권리도 주장하지 않습니다.
 
-## Not financial advice
+## 금융 자문이 아닙니다
 
-6pm counts. The number it shows, such as "safe to spend today", is arithmetic on the figures you gave it, plus any spends it catches for you. It is not financial, tax, legal or investment advice, and it does not know everything about your money.
+6pm은 셉니다. "오늘 쓸 수 있는 돈"처럼 6pm이 보여 주는 숫자는 사용자가 입력한 수치와 6pm이 대신 기록한 지출로 한 계산입니다. 금융, 세무, 법률, 투자 자문이 아니며, 6pm이 사용자의 돈에 대해 모든 것을 아는 것도 아닙니다.
 
-- Check what 6pm catches. A receipt or QR code can be misread. A spend can be missed or counted twice.
-- 6pm never moves money. When you pay, you do it in your bank app. Before you send a transfer, check the account name, number and amount there.
-- 6pm is not a bank, a payment service or a lender.
-- You decide what to do with your money. You are responsible for those decisions.
+- 6pm이 기록한 내용을 확인하세요. 영수증이나 QR 코드는 잘못 읽힐 수 있습니다. 지출이 빠지거나 두 번 세어질 수도 있습니다.
+- 6pm은 절대 돈을 옮기지 않습니다. 결제는 사용자가 직접 은행 앱에서 합니다. 송금하기 전에 은행 앱에서 예금주, 계좌번호, 금액을 확인하세요.
+- 6pm은 은행, 결제 서비스, 대출 기관이 아닙니다.
+- 돈을 어떻게 쓸지는 사용자가 정합니다. 그 결정에 대한 책임은 사용자에게 있습니다.
 
-## Free and paid parts
+## 무료 부분과 유료 부분
 
-The close, capture of your spends, and your privacy are free. Some extras are paid:
+마감, 지출 기록, 그리고 프라이버시는 무료입니다. 일부 추가 기능은 유료입니다.
 
-- **Looks** are one-time purchases.
-- **6pm Max** is a subscription.
+- **룩**은 일회성 구매입니다.
+- **6pm Max**는 구독입니다.
 
-What each one includes is shown in the app, on the Looks and Max screens. Prices are shown there too, read from the App Store in your currency and including any taxes Apple adds.
+각각에 포함된 내용은 앱의 룩 화면과 Max 화면에 표시됩니다. 가격도 그곳에 표시되며, App Store에서 사용자의 통화로 불러오고 Apple이 더하는 세금을 포함합니다.
 
-## 6pm Max subscription
+## 6pm Max 구독
 
-- **What it is.** 6pm Max is an auto-renewing subscription, monthly or yearly. The plan, its length and its price are shown in the app before you buy.
-- **Free trial.** New subscribers can get a 7-day free trial. The app tells you if you are eligible. Apple allows one trial per Apple ID. If you buy a subscription during a trial, the rest of the trial is lost.
-- **Payment.** Payment is charged to your Apple ID account when you confirm the purchase, or when the free trial ends.
-- **Renewal.** The subscription renews automatically unless you cancel it at least 24 hours before the end of the current period. Your account is charged for the next period within 24 hours before it ends, at the price shown when you subscribed, unless Apple has told you of a new price and you have accepted it.
-- **Manage or cancel.** Go to Settings on your iPhone, tap your name, then Subscriptions. You can also tap Manage in the Max screen of the app. Deleting the app does not cancel the subscription. After you cancel, Max stays on until the end of the period you paid for.
-- **Refunds.** Apple handles payments and refunds. Ask at [reportaproblem.apple.com](https://reportaproblem.apple.com).
-- **If Max ends.** Max-only features stop. The free parts of 6pm keep working, and the data on your phone stays yours.
+- **내용.** 6pm Max는 월간 또는 연간 자동 갱신 구독입니다. 플랜, 기간, 가격은 구매 전에 앱에 표시됩니다.
+- **무료 체험.** 신규 구독자는 7일 무료 체험을 받을 수 있습니다. 대상 여부는 앱이 알려 줍니다. Apple은 Apple ID당 한 번의 체험만 허용합니다. 체험 기간 중에 구독을 구매하면 남은 체험 기간은 사라집니다.
+- **결제.** 요금은 구매를 확정할 때, 또는 무료 체험이 끝날 때 Apple ID 계정으로 청구됩니다.
+- **갱신.** 구독은 현재 기간이 끝나기 최소 24시간 전에 해지하지 않으면 자동으로 갱신됩니다. 다음 기간의 요금은 현재 기간이 끝나기 전 24시간 이내에, 구독할 때 표시된 가격으로 청구됩니다. 단, Apple이 새 가격을 알리고 사용자가 이에 동의한 경우는 예외입니다.
+- **관리 또는 해지.** iPhone에서 설정으로 가서 이름을 탭한 다음 구독을 탭하세요. 앱의 Max 화면에서 관리를 탭해도 됩니다. 앱을 삭제해도 구독은 해지되지 않습니다. 해지한 뒤에도 결제한 기간이 끝날 때까지 Max를 쓸 수 있습니다.
+- **환불.** 결제와 환불은 Apple이 처리합니다. [reportaproblem.apple.com](https://reportaproblem.apple.com)에서 요청하세요.
+- **Max가 끝나면.** Max 전용 기능은 멈춥니다. 6pm의 무료 부분은 계속 작동하며, 휴대폰의 데이터는 그대로 사용자의 것입니다.
 
-## Looks
+## 룩
 
-A look is a one-time purchase. You pay once, it does not renew, and it is tied to your Apple ID. If you reinstall 6pm or use a new iPhone with the same Apple ID, tap Restore purchases to get your looks back.
+룩은 일회성 구매입니다. 한 번 결제하면 갱신되지 않으며, Apple ID에 연결됩니다. 6pm을 다시 설치하거나 같은 Apple ID로 새 iPhone을 쓴다면, 구매 복원을 탭해 룩을 되찾으세요.
 
-## Your data and backups
+## 데이터와 백업
 
-Your data lives on your phone. You are responsible for keeping your phone safe and up to date. If you delete the app or use "Delete all data" in Settings, your data on the phone is erased, and we cannot bring it back.
+사용자의 데이터는 휴대폰에 있습니다. 휴대폰을 안전하게, 최신 상태로 유지할 책임은 사용자에게 있습니다. 앱을 삭제하거나 설정의 "모든 데이터 삭제"를 사용하면 휴대폰의 데이터가 지워지며, 저희는 이를 되살릴 수 없습니다.
 
-Backup is a 6pm Max feature. It is end-to-end encrypted: we cannot read it, and we cannot recover it for you if you lose the key. Keep your Apple ID and iCloud Keychain safe.
+백업은 6pm Max 기능입니다. 종단 간 암호화되어 있어 저희는 읽을 수 없으며, 사용자가 키를 잃어버리면 복구해 드릴 수도 없습니다. Apple ID와 iCloud 키체인을 안전하게 지키세요.
 
-## Availability and changes
+## 제공과 변경
 
-We work hard to make 6pm reliable, but we do not promise it will always be available or free of errors. Features that need our server can change or be paused. We may update the app and these terms as 6pm grows. If a change to these terms matters, we will tell you in the app or on this page before it takes effect, and your continued use after that means you accept it. If you do not accept it, stop using 6pm.
+저희는 6pm이 안정적으로 작동하도록 최선을 다하지만, 항상 이용할 수 있거나 오류가 없다고 약속하지는 않습니다. 저희 서버가 필요한 기능은 바뀌거나 일시 중단될 수 있습니다. 6pm이 성장하면서 앱과 이 약관을 업데이트할 수 있습니다. 이 약관에 중요한 변경이 있으면 효력이 생기기 전에 앱이나 이 페이지에서 알려 드리며, 그 후에도 계속 이용하면 변경에 동의한 것으로 봅니다. 동의하지 않는다면 6pm 이용을 중단하세요.
 
-## No warranty
+## 보증의 부인
 
-To the extent the law allows, 6pm is provided "as is" and "as available", without promises about accuracy, fitness for a particular purpose or uninterrupted service.
+법이 허용하는 범위에서, 6pm은 "있는 그대로" 그리고 "이용 가능한 상태로" 제공되며, 정확성, 특정 목적에의 적합성, 중단 없는 서비스에 대해 어떠한 약속도 하지 않습니다.
 
-## Limit of liability
+## 책임의 제한
 
-To the extent the law allows, we are not liable for indirect or consequential loss, lost profit, lost savings, or any loss from a decision you made using 6pm, including a spend that 6pm missed or misread. Our total liability for any claim about 6pm is limited to the amount you paid for 6pm in the 12 months before the claim.
+법이 허용하는 범위에서, 저희는 간접 손해나 결과적 손해, 이익 손실, 저축 손실, 또는 6pm을 이용해 내린 결정으로 인한 어떠한 손실(6pm이 놓치거나 잘못 읽은 지출로 인한 손실 포함)에 대해서도 책임지지 않습니다. 6pm에 관한 모든 청구에 대한 저희의 총 책임은 청구 전 12개월 동안 사용자가 6pm에 지불한 금액으로 제한됩니다.
 
-Nothing in these terms limits liability that the law does not allow us to limit, or the rights you have as a consumer where you live.
+이 약관의 어떤 내용도 법이 제한을 허용하지 않는 책임이나, 거주지에서 소비자로서 갖는 권리를 제한하지 않습니다.
 
-## Ending
+## 이용 종료
 
-You can stop using 6pm at any time by deleting the app. If you have a subscription, cancel it as described above. We may suspend access to our servers if you misuse them or break these terms.
+사용자는 앱을 삭제해 언제든 6pm 이용을 그만둘 수 있습니다. 구독 중이라면 위에서 설명한 대로 해지하세요. 저희는 사용자가 저희 서버를 오용하거나 이 약관을 위반하면 서버 접근을 정지할 수 있습니다.
 
-## Other companies
+## 다른 회사
 
-Apple, your bank and its app, and the other services 6pm connects to have their own terms. We do not control them and are not responsible for them.
+Apple, 사용자의 은행과 은행 앱, 그리고 6pm이 연결되는 다른 서비스에는 각자의 약관이 있습니다. 저희는 그것들을 관리하지 않으며 책임지지 않습니다.
 
-## Governing law
+## 준거법
 
-These terms are governed by the laws of Vietnam. If we have a disagreement, please write to us first and we will try to sort it out. If we cannot, the competent courts of Vietnam will decide it. This does not take away the rights you have as a consumer under the law of the country where you live.
+이 약관은 베트남 법률을 따릅니다. 의견 차이가 생기면 먼저 저희에게 연락해 주세요. 해결하도록 노력하겠습니다. 해결하지 못하면 베트남의 관할 법원이 판단합니다. 이는 사용자가 거주하는 나라의 법에 따라 소비자로서 갖는 권리를 빼앗지 않습니다.
 
-## Contact
+## 연락처
 
-Questions about these terms? Call or message {{OWNER}} on [{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}}).
+이 약관에 대해 궁금한 점은 {{OWNER}}에게 전화나 메시지로 문의해 주세요: [{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}}).

@@ -1,29 +1,28 @@
-// Translation pending: English text.
 import type { LegalStrings } from './legal';
 import { dateParts } from './legal-dates';
 
 const months = [
-  'January',
-  'February',
-  'March',
+  'Januari',
+  'Februari',
+  'Maret',
   'April',
-  'May',
-  'June',
-  'July',
-  'August',
+  'Mei',
+  'Juni',
+  'Juli',
+  'Agustus',
   'September',
-  'October',
+  'Oktober',
   'November',
-  'December',
+  'Desember',
 ] as const;
 
 export const legalCopyId: LegalStrings = {
-  brandLabel: '6pm, home',
-  updated: 'Last updated',
-  contents: 'On this page',
-  privacy: 'Privacy',
-  terms: 'Terms',
-  language: 'Language',
+  brandLabel: '6pm, beranda',
+  updated: 'Terakhir diperbarui',
+  contents: 'Di halaman ini',
+  privacy: 'Privasi',
+  terms: 'Ketentuan',
+  language: 'Bahasa',
   rights: '© 2026',
   formatDate: (iso) => {
     const [year, month, day] = dateParts(iso);

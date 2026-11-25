@@ -1,105 +1,105 @@
 ---
-title: Terms of Use
-description: The rules for using 6pm, including how 6pm Max and look purchases work.
-lede: Plain terms for a plain app. Please read them once. The subscription part matters most.
+title: ข้อกำหนดการใช้งาน
+description: กฎในการใช้ 6pm รวมถึงวิธีการซื้อ 6pm Max และลุค
+lede: ข้อกำหนดเรียบง่ายสำหรับแอปที่เรียบง่าย โปรดอ่านสักครั้ง ส่วนที่เกี่ยวกับการสมัครสมาชิกสำคัญที่สุด
 updated: '2026-10-11'
 ---
 
-<!-- Translation pending: English text. -->
+หน้านี้เป็นฉบับแปลเพื่อความสะดวก หากมีข้อความใดไม่ตรงกับ[ฉบับภาษาอังกฤษ](/terms) ให้ถือฉบับภาษาอังกฤษเป็นหลัก
 
-## The short version
+## ฉบับย่อ
 
-- 6pm is a budgeting tool. It counts the money you tell it about. It never moves money, and it is not financial advice.
-- The close, capture and privacy are free, for good.
-- 6pm Max is an auto-renewing subscription with a 7-day free trial. Apple charges you, and you cancel in your Apple ID settings, at least 24 hours before the period ends.
-- Looks are bought once and are yours to keep on your Apple ID.
+- 6pm เป็นเครื่องมือจัดการงบประมาณ นับเงินตามที่คุณบอก ไม่เคยโอนเงิน และไม่ใช่คำแนะนำทางการเงิน
+- การปิดวัน การจดรายจ่าย และความเป็นส่วนตัว ใช้ได้ฟรีตลอดไป
+- 6pm Max เป็นการสมัครสมาชิกแบบต่ออายุอัตโนมัติ พร้อมทดลองใช้ฟรี 7 วัน Apple เป็นผู้เรียกเก็บเงิน และคุณยกเลิกได้ในการตั้งค่า Apple ID อย่างน้อย 24 ชั่วโมงก่อนสิ้นสุดรอบ
+- ลุคซื้อครั้งเดียวและเป็นของคุณตลอดไปบน Apple ID ของคุณ
 
-## Who we are, and what these terms cover
+## เราคือใคร และข้อกำหนดนี้ครอบคลุมอะไร
 
-6pm is made by {{OWNER}} ("we", "us"). These terms cover the 6pm app for iPhone and the website at at6pm.app. By installing or using 6pm, you agree to them. If you do not agree, please do not use 6pm.
+6pm สร้างโดย {{OWNER}} ("เรา") ข้อกำหนดนี้ครอบคลุมแอป 6pm สำหรับ iPhone และเว็บไซต์ at6pm.app เมื่อติดตั้งหรือใช้ 6pm ถือว่าคุณยอมรับข้อกำหนดนี้ หากคุณไม่ยอมรับ โปรดอย่าใช้ 6pm
 
-6pm is also covered by [Apple's Standard End User License Agreement (EULA)](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/), which is part of this agreement. If the two disagree about something Apple's EULA covers, the EULA wins. Apple is not a party to these terms and is not responsible for 6pm, its support or its content.
+6pm อยู่ภายใต้[ข้อตกลงสัญญาอนุญาตให้ใช้สิทธิ์สำหรับผู้ใช้ปลายทางมาตรฐานของ Apple (EULA)](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/) ด้วย ซึ่งเป็นส่วนหนึ่งของข้อตกลงนี้ หากทั้งสองขัดแย้งกันในเรื่องที่ EULA ของ Apple ครอบคลุม ให้ถือ EULA เป็นหลัก Apple ไม่ได้เป็นคู่สัญญาในข้อกำหนดนี้ และไม่รับผิดชอบต่อ 6pm การสนับสนุน หรือเนื้อหาของ 6pm
 
-How we handle your data is in our [Privacy Policy](/th/privacy).
+วิธีที่เราจัดการข้อมูลของคุณอยู่ใน[นโยบายความเป็นส่วนตัว](/th/privacy)ของเรา
 
-## Using 6pm
+## การใช้ 6pm
 
-We give you a personal, non-transferable licence to use 6pm on Apple devices you own or control, under the Usage Rules of the App Store. 6pm is free to download and use, except for the paid parts below.
+เราให้สิทธิ์การใช้งานส่วนบุคคลที่โอนไม่ได้แก่คุณ ในการใช้ 6pm บนอุปกรณ์ Apple ที่คุณเป็นเจ้าของหรือควบคุม ภายใต้กฎการใช้งานของ App Store 6pm ดาวน์โหลดและใช้ได้ฟรี ยกเว้นส่วนที่ต้องชำระเงินด้านล่าง
 
-You agree to:
+คุณตกลงว่าจะ
 
-- use 6pm lawfully, for yourself;
-- not copy, reverse engineer or resell the app, or try to get around its limits or purchases;
-- not attack or overload our servers.
+- ใช้ 6pm อย่างถูกกฎหมาย สำหรับตัวคุณเอง
+- ไม่คัดลอก ทำวิศวกรรมย้อนกลับ หรือขายต่อแอป หรือพยายามหลบเลี่ยงข้อจำกัดหรือการซื้อของแอป
+- ไม่โจมตีหรือทำให้เซิร์ฟเวอร์ของเราทำงานเกินกำลัง
 
-You must be at least 16, or have a parent or guardian's permission.
+คุณต้องมีอายุอย่างน้อย 16 ปี หรือได้รับอนุญาตจากผู้ปกครองหรือผู้ปกครองตามกฎหมาย
 
-Your data is yours. We do not claim any rights over what you put into 6pm.
+ข้อมูลของคุณเป็นของคุณ เราไม่อ้างสิทธิ์ใดๆ เหนือสิ่งที่คุณใส่ลงใน 6pm
 
-## Not financial advice
+## ไม่ใช่คำแนะนำทางการเงิน
 
-6pm counts. The number it shows, such as "safe to spend today", is arithmetic on the figures you gave it, plus any spends it catches for you. It is not financial, tax, legal or investment advice, and it does not know everything about your money.
+6pm แค่นับ ตัวเลขที่แสดง เช่น "วันนี้ใช้ได้" เป็นการคำนวณจากตัวเลขที่คุณให้ไว้ รวมถึงรายจ่ายที่ 6pm จับได้ให้คุณ ไม่ใช่คำแนะนำด้านการเงิน ภาษี กฎหมาย หรือการลงทุน และไม่ได้รู้ทุกอย่างเกี่ยวกับเงินของคุณ
 
-- Check what 6pm catches. A receipt or QR code can be misread. A spend can be missed or counted twice.
-- 6pm never moves money. When you pay, you do it in your bank app. Before you send a transfer, check the account name, number and amount there.
-- 6pm is not a bank, a payment service or a lender.
-- You decide what to do with your money. You are responsible for those decisions.
+- ตรวจสอบสิ่งที่ 6pm จับได้ ใบเสร็จหรือคิวอาร์โค้ดอาจถูกอ่านผิด รายจ่ายอาจตกหล่นหรือถูกนับซ้ำ
+- 6pm ไม่เคยโอนเงิน เมื่อคุณจ่าย คุณจ่ายในแอปธนาคารของคุณ ก่อนโอนเงิน ให้ตรวจสอบชื่อบัญชี เลขบัญชี และจำนวนเงินในแอปนั้น
+- 6pm ไม่ใช่ธนาคาร ผู้ให้บริการชำระเงิน หรือผู้ให้กู้
+- คุณเป็นผู้ตัดสินใจว่าจะทำอะไรกับเงินของคุณ และคุณเป็นผู้รับผิดชอบต่อการตัดสินใจเหล่านั้น
 
-## Free and paid parts
+## ส่วนที่ใช้ฟรีและส่วนที่ต้องชำระเงิน
 
-The close, capture of your spends, and your privacy are free. Some extras are paid:
+การปิดวัน การจดรายจ่าย และความเป็นส่วนตัวของคุณ ใช้ได้ฟรี ส่วนเสริมบางอย่างต้องชำระเงิน
 
-- **Looks** are one-time purchases.
-- **6pm Max** is a subscription.
+- **ลุค** เป็นการซื้อครั้งเดียว
+- **6pm Max** เป็นการสมัครสมาชิก
 
-What each one includes is shown in the app, on the Looks and Max screens. Prices are shown there too, read from the App Store in your currency and including any taxes Apple adds.
+สิ่งที่แต่ละอย่างมีให้แสดงอยู่ในแอป บนหน้าจอลุคและ Max ราคาก็แสดงไว้ที่นั่นด้วย โดยอ่านจาก App Store ในสกุลเงินของคุณ และรวมภาษีที่ Apple เรียกเก็บแล้ว
 
-## 6pm Max subscription
+## การสมัครสมาชิก 6pm Max
 
-- **What it is.** 6pm Max is an auto-renewing subscription, monthly or yearly. The plan, its length and its price are shown in the app before you buy.
-- **Free trial.** New subscribers can get a 7-day free trial. The app tells you if you are eligible. Apple allows one trial per Apple ID. If you buy a subscription during a trial, the rest of the trial is lost.
-- **Payment.** Payment is charged to your Apple ID account when you confirm the purchase, or when the free trial ends.
-- **Renewal.** The subscription renews automatically unless you cancel it at least 24 hours before the end of the current period. Your account is charged for the next period within 24 hours before it ends, at the price shown when you subscribed, unless Apple has told you of a new price and you have accepted it.
-- **Manage or cancel.** Go to Settings on your iPhone, tap your name, then Subscriptions. You can also tap Manage in the Max screen of the app. Deleting the app does not cancel the subscription. After you cancel, Max stays on until the end of the period you paid for.
-- **Refunds.** Apple handles payments and refunds. Ask at [reportaproblem.apple.com](https://reportaproblem.apple.com).
-- **If Max ends.** Max-only features stop. The free parts of 6pm keep working, and the data on your phone stays yours.
+- **คืออะไร** 6pm Max เป็นการสมัครสมาชิกแบบต่ออายุอัตโนมัติ รายเดือนหรือรายปี แผน ระยะเวลา และราคาจะแสดงในแอปก่อนที่คุณจะซื้อ
+- **ทดลองใช้ฟรี** ผู้สมัครสมาชิกใหม่อาจได้รับสิทธิ์ทดลองใช้ฟรี 7 วัน แอปจะแจ้งว่าคุณมีสิทธิ์หรือไม่ Apple อนุญาตให้ทดลองใช้ได้หนึ่งครั้งต่อ Apple ID หากคุณซื้อการสมัครสมาชิกระหว่างช่วงทดลองใช้ ช่วงทดลองใช้ที่เหลือจะสิ้นสุดลง
+- **การชำระเงิน** ระบบจะเรียกเก็บเงินจากบัญชี Apple ID ของคุณเมื่อคุณยืนยันการซื้อ หรือเมื่อช่วงทดลองใช้ฟรีสิ้นสุดลง
+- **การต่ออายุ** การสมัครสมาชิกจะต่ออายุโดยอัตโนมัติ เว้นแต่คุณจะยกเลิกอย่างน้อย 24 ชั่วโมงก่อนสิ้นสุดรอบปัจจุบัน บัญชีของคุณจะถูกเรียกเก็บเงินสำหรับรอบถัดไปภายใน 24 ชั่วโมงก่อนรอบปัจจุบันสิ้นสุด ตามราคาที่แสดงตอนที่คุณสมัคร เว้นแต่ Apple ได้แจ้งราคาใหม่แก่คุณและคุณยอมรับแล้ว
+- **จัดการหรือยกเลิก** ไปที่การตั้งค่าบน iPhone ของคุณ แตะชื่อของคุณ แล้วแตะการสมัครสมาชิก คุณยังแตะจัดการในหน้าจอ Max ของแอปได้ด้วย การลบแอปไม่ได้เป็นการยกเลิกการสมัครสมาชิก หลังจากคุณยกเลิก Max จะยังใช้ได้จนสิ้นสุดรอบที่คุณชำระเงินไว้
+- **การคืนเงิน** Apple เป็นผู้ดูแลการชำระเงินและการคืนเงิน ติดต่อได้ที่ [reportaproblem.apple.com](https://reportaproblem.apple.com)
+- **หาก Max สิ้นสุด** ฟีเจอร์เฉพาะ Max จะหยุดทำงาน ส่วนที่ใช้ฟรีของ 6pm ยังใช้งานได้ต่อ และข้อมูลบนมือถือของคุณยังเป็นของคุณ
 
-## Looks
+## ลุค
 
-A look is a one-time purchase. You pay once, it does not renew, and it is tied to your Apple ID. If you reinstall 6pm or use a new iPhone with the same Apple ID, tap Restore purchases to get your looks back.
+ลุคเป็นการซื้อครั้งเดียว คุณจ่ายครั้งเดียว ไม่มีการต่ออายุ และผูกกับ Apple ID ของคุณ หากคุณติดตั้ง 6pm ใหม่หรือใช้ iPhone เครื่องใหม่ด้วย Apple ID เดิม ให้แตะกู้คืนการซื้อเพื่อรับลุคของคุณคืน
 
-## Your data and backups
+## ข้อมูลและการสำรองข้อมูลของคุณ
 
-Your data lives on your phone. You are responsible for keeping your phone safe and up to date. If you delete the app or use "Delete all data" in Settings, your data on the phone is erased, and we cannot bring it back.
+ข้อมูลของคุณอยู่บนมือถือของคุณ คุณมีหน้าที่ดูแลมือถือของคุณให้ปลอดภัยและอัปเดตอยู่เสมอ หากคุณลบแอปหรือใช้ "ลบข้อมูลทั้งหมด" ในการตั้งค่า ข้อมูลบนมือถือจะถูกลบ และเรากู้คืนให้ไม่ได้
 
-Backup is a 6pm Max feature. It is end-to-end encrypted: we cannot read it, and we cannot recover it for you if you lose the key. Keep your Apple ID and iCloud Keychain safe.
+การสำรองข้อมูลเป็นฟีเจอร์ของ 6pm Max เป็นการเข้ารหัสตั้งแต่ต้นทางถึงปลายทาง เราอ่านข้อมูลสำรองไม่ได้ และกู้คืนให้คุณไม่ได้หากคุณทำกุญแจหาย โปรดดูแล Apple ID และพวงกุญแจ iCloud ของคุณให้ปลอดภัย
 
-## Availability and changes
+## ความพร้อมใช้งานและการเปลี่ยนแปลง
 
-We work hard to make 6pm reliable, but we do not promise it will always be available or free of errors. Features that need our server can change or be paused. We may update the app and these terms as 6pm grows. If a change to these terms matters, we will tell you in the app or on this page before it takes effect, and your continued use after that means you accept it. If you do not accept it, stop using 6pm.
+เราตั้งใจทำให้ 6pm เชื่อถือได้ แต่ไม่รับประกันว่าจะพร้อมใช้งานเสมอหรือปราศจากข้อผิดพลาด ฟีเจอร์ที่ต้องใช้เซิร์ฟเวอร์ของเราอาจเปลี่ยนแปลงหรือหยุดชั่วคราว เราอาจอัปเดตแอปและข้อกำหนดนี้เมื่อ 6pm เติบโตขึ้น หากการเปลี่ยนแปลงข้อกำหนดนี้มีความสำคัญ เราจะแจ้งคุณในแอปหรือบนหน้านี้ก่อนที่จะมีผล และการที่คุณยังใช้งานต่อหลังจากนั้นถือว่าคุณยอมรับ หากคุณไม่ยอมรับ โปรดหยุดใช้ 6pm
 
-## No warranty
+## ไม่มีการรับประกัน
 
-To the extent the law allows, 6pm is provided "as is" and "as available", without promises about accuracy, fitness for a particular purpose or uninterrupted service.
+ภายในขอบเขตที่กฎหมายอนุญาต 6pm ให้บริการ "ตามสภาพ" และ "ตามที่มีให้บริการ" โดยไม่มีคำมั่นเกี่ยวกับความถูกต้อง ความเหมาะสมสำหรับวัตถุประสงค์เฉพาะ หรือการให้บริการโดยไม่หยุดชะงัก
 
-## Limit of liability
+## การจำกัดความรับผิด
 
-To the extent the law allows, we are not liable for indirect or consequential loss, lost profit, lost savings, or any loss from a decision you made using 6pm, including a spend that 6pm missed or misread. Our total liability for any claim about 6pm is limited to the amount you paid for 6pm in the 12 months before the claim.
+ภายในขอบเขตที่กฎหมายอนุญาต เราไม่รับผิดต่อความเสียหายทางอ้อมหรือความเสียหายที่เป็นผลสืบเนื่อง การสูญเสียกำไร การสูญเสียเงินออม หรือความเสียหายใดๆ จากการตัดสินใจที่คุณทำโดยใช้ 6pm รวมถึงรายจ่ายที่ 6pm จับไม่ได้หรืออ่านผิด ความรับผิดทั้งหมดของเราสำหรับข้อเรียกร้องใดๆ เกี่ยวกับ 6pm จำกัดไว้ไม่เกินจำนวนเงินที่คุณจ่ายให้ 6pm ในช่วง 12 เดือนก่อนมีข้อเรียกร้อง
 
-Nothing in these terms limits liability that the law does not allow us to limit, or the rights you have as a consumer where you live.
+ไม่มีข้อความใดในข้อกำหนดนี้จำกัดความรับผิดที่กฎหมายไม่อนุญาตให้เราจำกัด หรือจำกัดสิทธิ์ที่คุณมีในฐานะผู้บริโภคในที่ที่คุณอาศัยอยู่
 
-## Ending
+## การยุติ
 
-You can stop using 6pm at any time by deleting the app. If you have a subscription, cancel it as described above. We may suspend access to our servers if you misuse them or break these terms.
+คุณหยุดใช้ 6pm ได้ทุกเมื่อด้วยการลบแอป หากคุณมีการสมัครสมาชิก ให้ยกเลิกตามที่อธิบายไว้ข้างต้น เราอาจระงับการเข้าถึงเซิร์ฟเวอร์ของเรา หากคุณใช้งานในทางที่ผิดหรือละเมิดข้อกำหนดนี้
 
-## Other companies
+## บริษัทอื่น
 
-Apple, your bank and its app, and the other services 6pm connects to have their own terms. We do not control them and are not responsible for them.
+Apple ธนาคารของคุณและแอปของธนาคาร รวมถึงบริการอื่นๆ ที่ 6pm เชื่อมต่อด้วย ต่างมีข้อกำหนดของตนเอง เราไม่ได้ควบคุมและไม่รับผิดชอบต่อบริการเหล่านั้น
 
-## Governing law
+## กฎหมายที่ใช้บังคับ
 
-These terms are governed by the laws of Vietnam. If we have a disagreement, please write to us first and we will try to sort it out. If we cannot, the competent courts of Vietnam will decide it. This does not take away the rights you have as a consumer under the law of the country where you live.
+ข้อกำหนดนี้อยู่ภายใต้กฎหมายของเวียดนาม หากเรามีข้อขัดแย้งกัน โปรดติดต่อเราก่อน แล้วเราจะพยายามหาทางแก้ไข หากแก้ไขไม่ได้ ศาลที่มีเขตอำนาจของเวียดนามจะเป็นผู้ตัดสิน ทั้งนี้ไม่ได้ตัดสิทธิ์ที่คุณมีในฐานะผู้บริโภคตามกฎหมายของประเทศที่คุณอาศัยอยู่
 
-## Contact
+## ติดต่อ
 
-Questions about these terms? Call or message {{OWNER}} on [{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}}).
+มีคำถามเกี่ยวกับข้อกำหนดนี้? โทรหรือส่งข้อความถึง {{OWNER}} ที่ [{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}})

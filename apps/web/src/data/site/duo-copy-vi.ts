@@ -78,6 +78,7 @@ export const duoCopyVi: DuoCopy = {
       over: (a) => `Lố ${a}. Ngày mai lặng lẽ gánh giúp.`,
       ofSoFar: (a) => `trên ${a}, tính đến giờ`,
       ofThatDay: (a) => `trên ${a} hôm đó`,
+      quote: (n) => `“${n}”`,
       items: {
         1: ['Bánh mì Huỳnh Hoa', 'Grab', 'Co.op Mart'],
         2: ['Lẩu với Minh', 'CGV · xem phim', 'Grab về nhà'],

@@ -47,14 +47,17 @@ const base = siteLangInfo[lang].base;
   <script type="application/ld+json" slot="head" set:html={ldJson(homeLd(lang))} />
   <script is:inline slot="head" define:vars={{ homes: homePath }}>
     // The visitor's language: the one they picked in the language menu before, else, on the
-    // English page only, Vietnamese for a phone set to it. A link straight to /vi or /ja stays.
+    // English page only, the browser's own when the site speaks it (Simplified Chinese for any
+    // Chinese but Traditional). A link straight to /vi or /ja stays.
     (function () {
       try {
         var page = document.documentElement.lang;
         var want = localStorage.getItem('6pm-site-lang');
         if (!want) {
           if (page !== 'en') return;
-          want = (navigator.language || '').toLowerCase().indexOf('vi') === 0 ? 'vi' : 'en';
+          var tag = (navigator.language || '').toLowerCase();
+          want = tag.split('-')[0];
+          if (want === 'zh') want = /-(hant|tw|hk|mo)(-|$)/.test(tag) ? 'en' : 'zh-Hans';
         }
         if (want !== page && Object.prototype.hasOwnProperty.call(homes, want)) {
           location.replace(homes[want] + location.search + location.hash);

@@ -1,105 +1,105 @@
 ---
-title: Terms of Use
-description: The rules for using 6pm, including how 6pm Max and look purchases work.
-lede: Plain terms for a plain app. Please read them once. The subscription part matters most.
+title: Conditions d’utilisation
+description: Les règles d’utilisation de 6pm, y compris le fonctionnement de 6pm Max et des achats de looks.
+lede: Des conditions simples pour une app simple. Lis-les une fois. La partie sur l’abonnement est la plus importante.
 updated: '2026-10-11'
 ---
 
-<!-- Translation pending: English text. -->
+Cette page est une traduction fournie pour plus de commodité. En cas de différence, la [version anglaise](/terms) fait foi.
 
-## The short version
+## L’essentiel
 
-- 6pm is a budgeting tool. It counts the money you tell it about. It never moves money, and it is not financial advice.
-- The close, capture and privacy are free, for good.
-- 6pm Max is an auto-renewing subscription with a 7-day free trial. Apple charges you, and you cancel in your Apple ID settings, at least 24 hours before the period ends.
-- Looks are bought once and are yours to keep on your Apple ID.
+- 6pm est un outil de budget. Il compte l’argent dont tu lui parles. Il ne déplace jamais d’argent, et ce n’est pas un conseil financier.
+- La clôture, la saisie des dépenses et la confidentialité sont gratuites, pour de bon.
+- 6pm Max est un abonnement à renouvellement automatique avec un essai gratuit de 7 jours. Apple te facture, et tu résilies dans les réglages de ton identifiant Apple, au moins 24 heures avant la fin de la période.
+- Les looks s’achètent une fois et restent à toi sur ton identifiant Apple.
 
-## Who we are, and what these terms cover
+## Qui nous sommes, et ce que couvrent ces conditions
 
-6pm is made by {{OWNER}} ("we", "us"). These terms cover the 6pm app for iPhone and the website at at6pm.app. By installing or using 6pm, you agree to them. If you do not agree, please do not use 6pm.
+6pm est conçu par {{OWNER}} (« nous »). Ces conditions couvrent l’app 6pm pour iPhone et le site at6pm.app. En installant ou en utilisant 6pm, tu les acceptes. Si tu ne les acceptes pas, n’utilise pas 6pm.
 
-6pm is also covered by [Apple's Standard End User License Agreement (EULA)](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/), which is part of this agreement. If the two disagree about something Apple's EULA covers, the EULA wins. Apple is not a party to these terms and is not responsible for 6pm, its support or its content.
+6pm est aussi régi par le [Contrat de licence utilisateur final standard d’Apple (CLUF)](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/), qui fait partie du présent accord. Si les deux divergent sur un point couvert par le CLUF d’Apple, le CLUF l’emporte. Apple n’est pas partie à ces conditions et n’est pas responsable de 6pm, de son assistance ni de son contenu.
 
-How we handle your data is in our [Privacy Policy](/fr/privacy).
+La façon dont nous traitons tes données est décrite dans notre [Politique de confidentialité](/fr/privacy).
 
-## Using 6pm
+## Utiliser 6pm
 
-We give you a personal, non-transferable licence to use 6pm on Apple devices you own or control, under the Usage Rules of the App Store. 6pm is free to download and use, except for the paid parts below.
+Nous t’accordons une licence personnelle et non transférable pour utiliser 6pm sur les appareils Apple que tu possèdes ou contrôles, conformément aux Règles d’utilisation de l’App Store. 6pm est gratuit à télécharger et à utiliser, à l’exception des parties payantes ci-dessous.
 
-You agree to:
+Tu t’engages à :
 
-- use 6pm lawfully, for yourself;
-- not copy, reverse engineer or resell the app, or try to get around its limits or purchases;
-- not attack or overload our servers.
+- utiliser 6pm légalement, pour toi-même ;
+- ne pas copier, désassembler ni revendre l’app, ni tenter de contourner ses limites ou ses achats ;
+- ne pas attaquer ni surcharger nos serveurs.
 
-You must be at least 16, or have a parent or guardian's permission.
+Tu dois avoir au moins 16 ans, ou l’autorisation d’un parent ou d’un tuteur.
 
-Your data is yours. We do not claim any rights over what you put into 6pm.
+Tes données t’appartiennent. Nous ne revendiquons aucun droit sur ce que tu mets dans 6pm.
 
-## Not financial advice
+## Pas un conseil financier
 
-6pm counts. The number it shows, such as "safe to spend today", is arithmetic on the figures you gave it, plus any spends it catches for you. It is not financial, tax, legal or investment advice, and it does not know everything about your money.
+6pm compte. Le chiffre qu’il affiche, comme « À dépenser aujourd’hui », est un calcul fait à partir des montants que tu lui as donnés, plus les dépenses qu’il repère pour toi. Ce n’est pas un conseil financier, fiscal, juridique ou en investissement, et il ne sait pas tout de ton argent.
 
-- Check what 6pm catches. A receipt or QR code can be misread. A spend can be missed or counted twice.
-- 6pm never moves money. When you pay, you do it in your bank app. Before you send a transfer, check the account name, number and amount there.
-- 6pm is not a bank, a payment service or a lender.
-- You decide what to do with your money. You are responsible for those decisions.
+- Vérifie ce que 6pm repère. Un ticket ou un code QR peut être mal lu. Une dépense peut être manquée ou comptée deux fois.
+- 6pm ne déplace jamais d’argent. Quand tu paies, tu le fais dans ton app bancaire. Avant d’envoyer un virement, vérifie-y le nom du titulaire, le numéro de compte et le montant.
+- 6pm n’est ni une banque, ni un service de paiement, ni un prêteur.
+- C’est toi qui décides quoi faire de ton argent. Tu es responsable de ces décisions.
 
-## Free and paid parts
+## Parties gratuites et payantes
 
-The close, capture of your spends, and your privacy are free. Some extras are paid:
+La clôture, la saisie de tes dépenses et ta confidentialité sont gratuites. Certains extras sont payants :
 
-- **Looks** are one-time purchases.
-- **6pm Max** is a subscription.
+- **Les looks** sont des achats uniques.
+- **6pm Max** est un abonnement.
 
-What each one includes is shown in the app, on the Looks and Max screens. Prices are shown there too, read from the App Store in your currency and including any taxes Apple adds.
+Ce que chacun comprend est indiqué dans l’app, sur les écrans Looks et Max. Les prix y sont aussi affichés, lus depuis l’App Store dans ta devise et incluant les taxes ajoutées par Apple.
 
-## 6pm Max subscription
+## L’abonnement 6pm Max
 
-- **What it is.** 6pm Max is an auto-renewing subscription, monthly or yearly. The plan, its length and its price are shown in the app before you buy.
-- **Free trial.** New subscribers can get a 7-day free trial. The app tells you if you are eligible. Apple allows one trial per Apple ID. If you buy a subscription during a trial, the rest of the trial is lost.
-- **Payment.** Payment is charged to your Apple ID account when you confirm the purchase, or when the free trial ends.
-- **Renewal.** The subscription renews automatically unless you cancel it at least 24 hours before the end of the current period. Your account is charged for the next period within 24 hours before it ends, at the price shown when you subscribed, unless Apple has told you of a new price and you have accepted it.
-- **Manage or cancel.** Go to Settings on your iPhone, tap your name, then Subscriptions. You can also tap Manage in the Max screen of the app. Deleting the app does not cancel the subscription. After you cancel, Max stays on until the end of the period you paid for.
-- **Refunds.** Apple handles payments and refunds. Ask at [reportaproblem.apple.com](https://reportaproblem.apple.com).
-- **If Max ends.** Max-only features stop. The free parts of 6pm keep working, and the data on your phone stays yours.
+- **Ce que c’est.** 6pm Max est un abonnement à renouvellement automatique, mensuel ou annuel. La formule, sa durée et son prix sont affichés dans l’app avant l’achat.
+- **Essai gratuit.** Les nouveaux abonnés peuvent bénéficier d’un essai gratuit de 7 jours. L’app t’indique si tu y as droit. Apple autorise un essai par identifiant Apple. Si tu achètes un abonnement pendant un essai, le reste de l’essai est perdu.
+- **Paiement.** Le paiement est débité sur ton compte Apple quand tu confirmes l’achat, ou à la fin de l’essai gratuit.
+- **Renouvellement.** L’abonnement se renouvelle automatiquement sauf si tu le résilies au moins 24 heures avant la fin de la période en cours. Ton compte est débité pour la période suivante dans les 24 heures précédant sa fin, au prix affiché lors de ta souscription, sauf si Apple t’a informé d’un nouveau prix et que tu l’as accepté.
+- **Gérer ou résilier.** Va dans Réglages sur ton iPhone, touche ton nom, puis Abonnements. Tu peux aussi toucher Gérer dans l’écran Max de l’app. Supprimer l’app ne résilie pas l’abonnement. Après la résiliation, Max reste actif jusqu’à la fin de la période payée.
+- **Remboursements.** Apple gère les paiements et les remboursements. Fais ta demande sur [reportaproblem.apple.com](https://reportaproblem.apple.com).
+- **Si Max prend fin.** Les fonctions réservées à Max s’arrêtent. Les parties gratuites de 6pm continuent de fonctionner, et les données sur ton téléphone restent à toi.
 
 ## Looks
 
-A look is a one-time purchase. You pay once, it does not renew, and it is tied to your Apple ID. If you reinstall 6pm or use a new iPhone with the same Apple ID, tap Restore purchases to get your looks back.
+Un look est un achat unique. Tu paies une fois, il ne se renouvelle pas, et il est lié à ton identifiant Apple. Si tu réinstalles 6pm ou utilises un nouvel iPhone avec le même identifiant Apple, touche Restaurer les achats pour récupérer tes looks.
 
-## Your data and backups
+## Tes données et tes sauvegardes
 
-Your data lives on your phone. You are responsible for keeping your phone safe and up to date. If you delete the app or use "Delete all data" in Settings, your data on the phone is erased, and we cannot bring it back.
+Tes données sont sur ton téléphone. C’est à toi de garder ton téléphone en sécurité et à jour. Si tu supprimes l’app ou utilises « Supprimer toutes les données » dans les Réglages, tes données sur le téléphone sont effacées, et nous ne pouvons pas les récupérer.
 
-Backup is a 6pm Max feature. It is end-to-end encrypted: we cannot read it, and we cannot recover it for you if you lose the key. Keep your Apple ID and iCloud Keychain safe.
+La sauvegarde est une fonction de 6pm Max. Elle est chiffrée de bout en bout : nous ne pouvons pas la lire, et nous ne pouvons pas la récupérer pour toi si tu perds la clé. Protège bien ton identifiant Apple et ton trousseau iCloud.
 
-## Availability and changes
+## Disponibilité et modifications
 
-We work hard to make 6pm reliable, but we do not promise it will always be available or free of errors. Features that need our server can change or be paused. We may update the app and these terms as 6pm grows. If a change to these terms matters, we will tell you in the app or on this page before it takes effect, and your continued use after that means you accept it. If you do not accept it, stop using 6pm.
+Nous faisons de notre mieux pour que 6pm soit fiable, mais nous ne garantissons pas qu’il sera toujours disponible ou exempt d’erreurs. Les fonctions qui dépendent de notre serveur peuvent changer ou être suspendues. Nous pouvons mettre à jour l’app et ces conditions à mesure que 6pm évolue. Si une modification de ces conditions est importante, nous te prévenons dans l’app ou sur cette page avant qu’elle ne prenne effet, et continuer à utiliser 6pm ensuite vaut acceptation. Si tu ne l’acceptes pas, arrête d’utiliser 6pm.
 
-## No warranty
+## Absence de garantie
 
-To the extent the law allows, 6pm is provided "as is" and "as available", without promises about accuracy, fitness for a particular purpose or uninterrupted service.
+Dans les limites permises par la loi, 6pm est fourni « en l’état » et « selon disponibilité », sans garantie d’exactitude, d’adéquation à un usage particulier ni de service ininterrompu.
 
-## Limit of liability
+## Limitation de responsabilité
 
-To the extent the law allows, we are not liable for indirect or consequential loss, lost profit, lost savings, or any loss from a decision you made using 6pm, including a spend that 6pm missed or misread. Our total liability for any claim about 6pm is limited to the amount you paid for 6pm in the 12 months before the claim.
+Dans les limites permises par la loi, nous ne sommes pas responsables des pertes indirectes ou consécutives, du manque à gagner, des économies perdues, ni d’aucune perte résultant d’une décision que tu as prise en utilisant 6pm, y compris une dépense que 6pm a manquée ou mal lue. Notre responsabilité totale pour toute réclamation concernant 6pm est limitée au montant que tu as payé pour 6pm au cours des 12 mois précédant la réclamation.
 
-Nothing in these terms limits liability that the law does not allow us to limit, or the rights you have as a consumer where you live.
+Rien dans ces conditions ne limite une responsabilité que la loi ne nous permet pas de limiter, ni les droits dont tu disposes en tant que consommateur là où tu vis.
 
-## Ending
+## Fin
 
-You can stop using 6pm at any time by deleting the app. If you have a subscription, cancel it as described above. We may suspend access to our servers if you misuse them or break these terms.
+Tu peux arrêter d’utiliser 6pm à tout moment en supprimant l’app. Si tu as un abonnement, résilie-le comme décrit plus haut. Nous pouvons suspendre l’accès à nos serveurs si tu en fais un mauvais usage ou si tu enfreins ces conditions.
 
-## Other companies
+## Autres entreprises
 
-Apple, your bank and its app, and the other services 6pm connects to have their own terms. We do not control them and are not responsible for them.
+Apple, ta banque et son app, et les autres services auxquels 6pm se connecte ont leurs propres conditions. Nous ne les contrôlons pas et n’en sommes pas responsables.
 
-## Governing law
+## Droit applicable
 
-These terms are governed by the laws of Vietnam. If we have a disagreement, please write to us first and we will try to sort it out. If we cannot, the competent courts of Vietnam will decide it. This does not take away the rights you have as a consumer under the law of the country where you live.
+Ces conditions sont régies par le droit du Viêt Nam. En cas de désaccord, écris-nous d’abord et nous essaierons de trouver une solution. Si nous n’y parvenons pas, les tribunaux compétents du Viêt Nam trancheront. Cela ne te retire pas les droits dont tu disposes en tant que consommateur en vertu de la loi du pays où tu vis.
 
 ## Contact
 
-Questions about these terms? Call or message {{OWNER}} on [{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}}).
+Des questions sur ces conditions ? Appelle {{OWNER}} ou envoie-lui un message au [{{CONTACT_PHONE}}](tel:{{CONTACT_TEL}}).
