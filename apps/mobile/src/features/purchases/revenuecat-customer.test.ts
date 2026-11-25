@@ -1,6 +1,7 @@
 import { describe, expect, it } from '@jest/globals';
 
 import { parseCustomer, serializeCustomer } from './customer-memory';
+import { maxStatus } from './max-status';
 import { FREE_CUSTOMER, NO_MAX, type CustomerState } from './purchases-port';
 import {
   customerFromStore,
@@ -74,6 +75,8 @@ describe('customerFromStore', () => {
     // Kept offline for years, it is still Max: there is no end to pass.
     const later = Date.UTC(2040, 0, 1);
     expect(parseCustomer(serializeCustomer(customer), later).max.plan).toBe('lifetime');
+    // Off sale since, it is still told as theirs for good.
+    expect(maxStatus(customer.max)).toEqual({ kind: 'forGood' });
   });
 
   it('gives an earlier 6pm subscriber Max through the same entitlement', () => {

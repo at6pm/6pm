@@ -124,8 +124,6 @@ export const deLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   'max.tile.buddy': 'Max-Begleiter',
   'max.plan.yearly': 'Jährlich',
   'max.plan.monthly': 'Monatlich',
-  'max.plan.lifetime': 'Für immer',
-  'max.plan.once': 'einmal zahlen, kein Abo',
   'max.perMonth': '{price}/Monat',
   'max.perYear': '{price}/Jahr',
   'max.cta.trial': {
@@ -133,7 +131,6 @@ export const deLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
     other: '{count} Tage gratis testen',
   },
   'max.cta.subscribe': 'Max abonnieren',
-  'max.cta.lifetime': 'Max einmal kaufen',
   'max.cta.done': 'Fertig',
   'max.cta.waiting': 'Warte auf den App Store …',
   'max.terms.trialYear': {
@@ -146,7 +143,6 @@ export const deLooks: { readonly [Key in keyof typeof enLooks]: Entry } = {
   },
   'max.terms.year': '{price} pro Jahr. Jederzeit kündbar.',
   'max.terms.month': '{price} pro Monat. Jederzeit kündbar.',
-  'max.terms.lifetime': '{price} einmalig. Keine Verlängerung.',
   'max.terms.storeOff': 'Max lässt sich gerade nicht kaufen: Der App Store antwortet nicht.',
   'max.terms.trialEnds': 'Test endet am {date}.',
   'max.terms.renews': 'Verlängert sich am {date}.',

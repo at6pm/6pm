@@ -27,7 +27,13 @@ import { useRedeemCode } from './max-codes/use-redeem-code';
 import { trialDaysFor, yearlySavingPercent } from './max-pricing';
 import { MaxSheetFrame } from './max-sheet-frame';
 import { MaxPage, MaxSpread } from './max-spread';
-import { LEGAL_LINKS, MAX_PLANS, PAID_LOOKS, PRESELECTED_MAX_PLAN, type MaxPlan } from './products';
+import {
+  LEGAL_LINKS,
+  MAX_SUBSCRIPTIONS,
+  PAID_LOOKS,
+  PRESELECTED_MAX_PLAN,
+  type MaxSubscription,
+} from './products';
 import { usePurchases } from './purchases-provider';
 import { useMaxStatusLine } from './use-max-status-line';
 import { noteFunnel, noteMaxBought } from '../funnel/funnel-sync';
@@ -86,7 +92,7 @@ export function MaxSheet() {
   // Opened across two pages, Max took the whole screen, and keeps it however the phone is held
   // after (the route keeps the presentation it opened with).
   const [tookOver] = useState(form.kind === 'spread');
-  const [chosen, setChosen] = useState<MaxPlan | null>(null);
+  const [chosen, setChosen] = useState<MaxSubscription | null>(null);
   const [footerHeight, setFooterHeight] = useState(0);
   useEffect(() => loadOfferings(), [loadOfferings]);
 
@@ -119,11 +125,11 @@ export function MaxSheet() {
   }, [on, opened, router, from]);
   useEffect(() => noteFunnel({ step: 'max_shown', detail: from }), [from]);
   // The yearly plan is the one the sheet opens on, if the store sells it.
-  const plan: MaxPlan =
+  const plan: MaxSubscription =
     chosen ??
     (offerings?.max[PRESELECTED_MAX_PLAN]
       ? PRESELECTED_MAX_PLAN
-      : (MAX_PLANS.find((p) => offerings?.max[p]) ?? PRESELECTED_MAX_PLAN));
+      : (MAX_SUBSCRIPTIONS.find((p) => offerings?.max[p]) ?? PRESELECTED_MAX_PLAN));
   const offer = offerings?.max[plan];
   const trial = offerings ? trialDaysFor(offerings, plan) : null;
   const saving = offerings ? yearlySavingPercent(offerings) : null;
@@ -190,11 +196,9 @@ export function MaxSheet() {
     ? t('max.cta.done')
     : busy || loading
       ? t('max.cta.waiting')
-      : plan === 'lifetime'
-        ? t('max.cta.lifetime')
-        : trial !== null
-          ? t('max.cta.trial', { count: trial })
-          : t('max.cta.subscribe');
+      : trial !== null
+        ? t('max.cta.trial', { count: trial })
+        : t('max.cta.subscribe');
   const ctaOff = !on && (busy || !offer);
   const terms = on
     ? (statusLine ?? '')
@@ -203,15 +207,13 @@ export function MaxSheet() {
         ? t('maxCodes.playHint')
         : t('maxCodes.playHint.code', { code: playHint.code })
       : offer
-        ? plan === 'lifetime'
-          ? t('max.terms.lifetime', { price: offer.priceText })
-          : trial !== null
-            ? plan === 'yearly'
-              ? t('max.terms.trialYear', { count: trial, price: offer.priceText })
-              : t('max.terms.trialMonth', { count: trial, price: offer.priceText })
-            : plan === 'yearly'
-              ? t('max.terms.year', { price: offer.priceText })
-              : t('max.terms.month', { price: offer.priceText })
+        ? trial !== null
+          ? plan === 'yearly'
+            ? t('max.terms.trialYear', { count: trial, price: offer.priceText })
+            : t('max.terms.trialMonth', { count: trial, price: offer.priceText })
+          : plan === 'yearly'
+            ? t('max.terms.year', { price: offer.priceText })
+            : t('max.terms.month', { price: offer.priceText })
         : offeringsStatus === 'unavailable'
           ? t('max.terms.storeOff')
           : '';

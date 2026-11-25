@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import { ActivityIndicator, Platform, StyleSheet, Text, View } from 'react-native';
 import Animated, {
   Easing,
-  FadeIn,
   useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
@@ -18,7 +17,7 @@ import { haptics } from '../../ui/haptics';
 import { useDesignInsets } from '../../ui/layout/design-insets';
 import { PressScale } from '../../ui/primitives/press-scale';
 import { body } from '../../ui/type/fonts';
-import type { MaxPlan } from './products';
+import type { MaxSubscription } from './products';
 import type { Offerings } from './purchases-port';
 import { MAX_CREAM, MAX_GOLD, MAX_INK } from './max-colours';
 
@@ -81,76 +80,6 @@ function Radio({ selected, color }: { readonly selected: boolean; readonly color
         <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: color }} />
       ) : null}
     </View>
-  );
-}
-
-/**
- * Max bought once, where the store sells it: a plan card laid on its side under the two that
- * renew, with its name and what it means on the left, the one amount and the radio on the right.
- * It arrives with the store's answer, so it fades in.
- */
-function OncePlan({
-  label,
-  sub,
-  price,
-  selected,
-  onPress,
-}: {
-  readonly label: string;
-  readonly sub: string;
-  readonly price: string;
-  readonly selected: boolean;
-  readonly onPress: () => void;
-}) {
-  const fg = selected ? MAX_INK : MAX_CREAM;
-  return (
-    <Animated.View entering={FadeIn.duration(250)}>
-      <PressScale
-        accessibilityRole="radio"
-        accessibilityState={{ selected }}
-        accessibilityLabel={[label, price, sub].join(', ')}
-        scaleTo={0.97}
-        onPress={onPress}
-        style={{
-          minHeight: 56,
-          paddingVertical: 10,
-          paddingRight: 12,
-          paddingLeft: 14,
-          borderRadius: 18,
-          backgroundColor: selected ? MAX_CREAM : 'rgba(255,255,255,.06)',
-          boxShadow: selected
-            ? `0 0 0 1.5px ${MAX_CREAM}`
-            : 'inset 0 0 0 0.5px rgba(255,255,255,.12)',
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 10,
-        }}
-      >
-        <View style={{ flex: 1, minWidth: 0, gap: 1 }}>
-          <Text numberOfLines={1} style={{ ...body(12, 700, 0.02), color: fg }}>
-            {label}
-          </Text>
-          <Text
-            numberOfLines={1}
-            style={{ ...body(11.5), lineHeight: 15, color: fg, opacity: 0.7 }}
-          >
-            {sub}
-          </Text>
-        </View>
-        <Text
-          numberOfLines={1}
-          style={{
-            ...body(19, 700, -0.01),
-            lineHeight: 22,
-            color: fg,
-            fontVariant: ['tabular-nums'],
-          }}
-        >
-          {price}
-        </Text>
-        <Radio selected={selected} color={fg} />
-      </PressScale>
-    </Animated.View>
   );
 }
 
@@ -266,8 +195,8 @@ function PlanCard({
 
 /**
  * The Max sheet's pinned bottom, a frosted card floating over the page (prototype
- * `App:1110-1131`): the two plans with the amount each bills, Max bought once under them where the
- * store sells it, the one button, the terms line, and Manage once Max is on by subscription.
+ * `App:1110-1131`): the two plans with the amount each bills, the one button, the terms line, and
+ * Manage once Max is on by subscription.
  * While the store is asked the plans shimmer; when it does not answer they say so and the button
  * dims.
  */
@@ -292,7 +221,7 @@ export function MaxFooter({
   readonly on: boolean;
   /** Max is a subscription Apple's sheet can manage; Max bought once has nothing to manage. */
   readonly manageable: boolean;
-  readonly plan: MaxPlan;
+  readonly plan: MaxSubscription;
   readonly offerings: Offerings | null;
   /** The store has not answered yet. */
   readonly loading: boolean;
@@ -302,14 +231,13 @@ export function MaxFooter({
   readonly ctaOff: boolean;
   readonly busy: boolean;
   readonly terms: string;
-  readonly onPlan: (plan: MaxPlan) => void;
+  readonly onPlan: (plan: MaxSubscription) => void;
   readonly onStart: () => void;
   readonly onManage: () => void;
 }) {
   const { t } = useI18n();
   const { bottom } = useDesignInsets();
   const waiting = busy || loading;
-  const once = offerings?.max.lifetime;
   return (
     <View
       style={{
@@ -332,57 +260,43 @@ export function MaxFooter({
         }}
       >
         {!on ? (
-          <View accessibilityRole="radiogroup" style={{ gap: 8 }}>
-            <View style={{ flexDirection: 'row', gap: 8 }}>
-              {(['yearly', 'monthly'] as const).map((p) => {
-                const offer = offerings?.max[p];
-                const yearly = p === 'yearly';
-                return (
-                  <PlanCard
-                    key={p}
-                    label={yearly ? t('max.plan.yearly') : t('max.plan.monthly')}
-                    price={
-                      offer
-                        ? yearly
-                          ? t('max.plan.perYear', { price: offer.priceText })
-                          : t('max.perMonth', { price: offer.priceText })
-                        : null
-                    }
-                    sub={
-                      offer
-                        ? yearly
-                          ? t('max.plan.billedYear')
-                          : t('max.plan.billedMonth')
-                        : t('max.plan.unavailable')
-                    }
-                    saving={
-                      yearly && offer && saving !== null
-                        ? t('max.plan.save', { percent: saving })
-                        : null
-                    }
-                    selected={p === plan}
-                    loading={loading}
-                    onPress={() => {
-                      if (!offer) return;
-                      haptics.tick();
-                      onPlan(p);
-                    }}
-                  />
-                );
-              })}
-            </View>
-            {once ? (
-              <OncePlan
-                label={t('max.plan.lifetime')}
-                sub={t('max.plan.once')}
-                price={once.priceText}
-                selected={plan === 'lifetime'}
-                onPress={() => {
-                  haptics.tick();
-                  onPlan('lifetime');
-                }}
-              />
-            ) : null}
+          <View accessibilityRole="radiogroup" style={{ flexDirection: 'row', gap: 8 }}>
+            {(['yearly', 'monthly'] as const).map((p) => {
+              const offer = offerings?.max[p];
+              const yearly = p === 'yearly';
+              return (
+                <PlanCard
+                  key={p}
+                  label={yearly ? t('max.plan.yearly') : t('max.plan.monthly')}
+                  price={
+                    offer
+                      ? yearly
+                        ? t('max.plan.perYear', { price: offer.priceText })
+                        : t('max.perMonth', { price: offer.priceText })
+                      : null
+                  }
+                  sub={
+                    offer
+                      ? yearly
+                        ? t('max.plan.billedYear')
+                        : t('max.plan.billedMonth')
+                      : t('max.plan.unavailable')
+                  }
+                  saving={
+                    yearly && offer && saving !== null
+                      ? t('max.plan.save', { percent: saving })
+                      : null
+                  }
+                  selected={p === plan}
+                  loading={loading}
+                  onPress={() => {
+                    if (!offer) return;
+                    haptics.tick();
+                    onPlan(p);
+                  }}
+                />
+              );
+            })}
           </View>
         ) : null}
         <PressScale

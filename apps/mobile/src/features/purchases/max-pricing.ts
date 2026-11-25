@@ -1,5 +1,40 @@
-import type { MaxPlan } from './products';
+import { maxSubscriptionOfProduct, type MaxSubscription } from './products';
 import type { MaxOffer, Offerings } from './purchases-port';
+
+/** The parts of a store product the Max sheet's plans are made from. */
+export interface StoreMaxProduct {
+  readonly identifier: string;
+  readonly priceString: string;
+  readonly price: number;
+  readonly pricePerMonthString: string | null;
+  readonly pricePerMonth: number | null;
+}
+
+/**
+ * The plans the Max sheet offers, from what the store lists: the plans that renew, and nothing
+ * else. Max bought once is off sale, so it is left out even when the store still lists it (the
+ * App Store's sandbox lists a product after it is taken off sale).
+ */
+export function maxOffersOf<P extends StoreMaxProduct>(
+  products: readonly P[],
+  trialDaysOf: (product: P) => number | null,
+): Offerings['max'] {
+  const max: Partial<Record<MaxSubscription, MaxOffer>> = {};
+  for (const product of products) {
+    const plan = maxSubscriptionOfProduct(product.identifier);
+    if (!plan) continue;
+    max[plan] = {
+      plan,
+      productId: product.identifier,
+      priceText: product.priceString,
+      price: product.price,
+      perMonthText: product.pricePerMonthString,
+      perMonth: product.pricePerMonth,
+      trialDays: trialDaysOf(product),
+    };
+  }
+  return max;
+}
 
 /**
  * How much cheaper a month is on the yearly plan, in whole percent, from the store's two prices.
@@ -22,7 +57,7 @@ export function quotedOffer(offerings: Offerings): MaxOffer | null {
 }
 
 /** The free trial the plan offers this Apple ID, in days; null when it offers none. */
-export function trialDaysFor(offerings: Offerings, plan: MaxPlan): number | null {
+export function trialDaysFor(offerings: Offerings, plan: MaxSubscription): number | null {
   const days = offerings.max[plan]?.trialDays ?? null;
   return days !== null && days > 0 ? days : null;
 }
